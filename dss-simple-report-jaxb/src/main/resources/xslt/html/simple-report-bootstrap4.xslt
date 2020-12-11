@@ -213,10 +213,6 @@
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
 
-			    <xsl:apply-templates select="dss:Errors" />
-			    <xsl:apply-templates select="dss:Warnings" />
-		        <xsl:apply-templates select="dss:Infos" />
-		        
 		        <dl>
 	        		<xsl:attribute name="class">row mb-0</xsl:attribute>
 		            <dt>
@@ -346,10 +342,77 @@
 				        </dl>
 			        </xsl:for-each>
 		        </xsl:if>
-		        
+
+				<xsl:if test="dss:ValidationDetails | dss:QualificationDetails | dss:Timestamps">
+
+					<div>
+						<xsl:attribute name="class">card mt-3</xsl:attribute>
+						<div>
+							<xsl:attribute name="class">card-header</xsl:attribute>
+							<xsl:attribute name="data-target">#collapseSigDetails<xsl:value-of select="$idToken" /></xsl:attribute>
+							<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+							<!-- <xsl:attribute name="aria-expanded">false</xsl:attribute> -->
+
+							More details...
+						</div>
+						<div>
+							<xsl:attribute name="class">card-body collapse</xsl:attribute>
+							<xsl:attribute name="id">collapseSigDetails<xsl:value-of select="$idToken" /></xsl:attribute>
+
+							<xsl:apply-templates select="dss:ValidationDetails" />
+							<xsl:apply-templates select="dss:QualificationDetails" />
+
+							<xsl:if test="(dss:ValidationDetails | dss:QualificationDetails) and dss:Timestamps">
+								<hr />
+							</xsl:if>
+
+							<xsl:apply-templates select="dss:Timestamps" />
+						</div>
+					</div>
+				</xsl:if>
+
     		</div>
     	</div>
     </xsl:template>
+
+	<xsl:template match="dss:ValidationDetails">
+		<dl>
+			<xsl:attribute name="class">row mb-0</xsl:attribute>
+			<dt>
+				<xsl:attribute name="class">col-sm-3</xsl:attribute>
+
+				Validation Details :
+			</dt>
+			<xsl:apply-templates select="dss:Error" />
+			<xsl:apply-templates select="dss:Warning" />
+			<xsl:apply-templates select="dss:Info" />
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="dss:QualificationDetails">
+		<dl>
+			<xsl:attribute name="class">row mb-0</xsl:attribute>
+			<dt>
+				<xsl:attribute name="class">col-sm-3</xsl:attribute>
+
+				Qualification Details :
+			</dt>
+
+			<xsl:apply-templates select="dss:Error" />
+			<xsl:apply-templates select="dss:Warning" />
+			<xsl:apply-templates select="dss:Info" />
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="dss:Timestamps">
+		<div>
+			<strong>
+				Timestamps :
+			</strong>
+
+			<xsl:apply-templates select="dss:Timestamp" />
+		</div>
+	</xsl:template>
 
 	<xsl:template match="dss:SubIndication">
 		<xsl:param name="indicationClass" />
@@ -380,44 +443,26 @@
 			</dd>
 		</dl>
 	</xsl:template>
-	
-	<xsl:template match="dss:Errors">
-		<dl>
-    		<xsl:attribute name="class">row mb-0</xsl:attribute>
-			<dt>
-				<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			</dt>
-			<dd>
-				<xsl:attribute name="class">col-sm-9 text-danger</xsl:attribute>
-				<xsl:value-of select="." />
-			</dd>
-		</dl>
+
+	<xsl:template match="dss:Error">
+		<dd>
+			<xsl:attribute name="class">col-sm-9 ml-auto text-danger</xsl:attribute>
+			<xsl:value-of select="." />
+		</dd>
 	</xsl:template>
 	
-	<xsl:template match="dss:Warnings">
-		<dl>
-    		<xsl:attribute name="class">row mb-0</xsl:attribute>
-			<dt>
-				<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			</dt>
-			<dd>
-				<xsl:attribute name="class">col-sm-9 text-warning</xsl:attribute>
-				<xsl:value-of select="." />
-			</dd>
-		</dl>
+	<xsl:template match="dss:Warning">
+		<dd>
+			<xsl:attribute name="class">col-sm-9 ml-auto text-warning</xsl:attribute>
+			<xsl:value-of select="." />
+		</dd>
 	</xsl:template>
 	
-	<xsl:template match="dss:Infos">
-		<dl>
-    		<xsl:attribute name="class">row mb-0</xsl:attribute>
-			<dt>
-				<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			</dt>
-			<dd>
-				<xsl:attribute name="class">col-sm-9</xsl:attribute>
-				<xsl:value-of select="." />
-			</dd>
-		</dl>
+	<xsl:template match="dss:Info">
+		<dd>
+			<xsl:attribute name="class">col-sm-9 ml-auto</xsl:attribute>
+			<xsl:value-of select="." />
+		</dd>
 	</xsl:template>
 
     <xsl:template name="documentInformation">

@@ -712,8 +712,8 @@ public class DetailedReport {
 	 * @param signatureId {@link String}
 	 * @return a set of {@link String} error messages
 	 */
-    public Set<String> getErrors(String signatureId) {
-    	return getMessageCollector().getErrors(signatureId);
+    public Set<String> getSignatureValidationErrors(String signatureId) {
+    	return getMessageCollector().getSignatureValidationErrors(signatureId);
     }
 
 	/**
@@ -722,8 +722,8 @@ public class DetailedReport {
 	 * @param signatureId {@link String}
 	 * @return a set of {@link String} warning messages
 	 */
-    public Set<String> getWarnings(String signatureId) {
-    	return getMessageCollector().getWarnings(signatureId);
+    public Set<String> getSignatureValidationWarnings(String signatureId) {
+    	return getMessageCollector().getSignatureValidationWarnings(signatureId);
     }
 
 	/**
@@ -732,8 +732,98 @@ public class DetailedReport {
 	 * @param signatureId {@link String}
 	 * @return a set of {@link String} info messages
 	 */
-    public Set<String> getInfos(String signatureId) {
-    	return getMessageCollector().getInfos(signatureId);
+    public Set<String> getSignatureValidationInfos(String signatureId) {
+    	return getMessageCollector().getSignatureValidationInfos(signatureId);
     }
+
+	/**
+	 * Returns a set of error messages for a signature with id
+	 *
+	 * @param signatureId {@link String}
+	 * @return a set of {@link String} error messages
+	 */
+	public Set<String> getSignatureQualificationErrors(String signatureId) {
+		return getMessageCollector().getSignatureQualificationErrors(signatureId);
+	}
+
+	/**
+	 * Returns a set of warning messages for a signature with id
+	 *
+	 * @param signatureId {@link String}
+	 * @return a set of {@link String} warning messages
+	 */
+	public Set<String> getSignatureQualificationWarnings(String signatureId) {
+		return getMessageCollector().getSignatureQualificationWarnings(signatureId);
+	}
+
+	/**
+	 * Returns a set of info messages for a signature with id
+	 *
+	 * @param signatureId {@link String}
+	 * @return a set of {@link String} info messages
+	 */
+	public Set<String> getSignatureQualificationInfos(String signatureId) {
+		return getMessageCollector().getSignatureQualificationInfos(signatureId);
+	}
+
+	/**
+	 * Returns a set of error messages for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return a set of {@link String} error messages
+	 */
+	public Set<String> getTimestampValidationErrors(String timestampId) {
+		return getMessageCollector().getTimestampValidationErrors(timestampId);
+	}
+
+	/**
+	 * Returns a set of warning messages for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return a set of {@link String} warning messages
+	 */
+	public Set<String> getTimestampValidationWarnings(String timestampId) {
+		return getMessageCollector().getTimestampValidationWarnings(timestampId);
+	}
+
+	/**
+	 * Returns a set of info messages for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return a set of {@link String} info messages
+	 */
+	public Set<String> getTimestampValidationInfos(String timestampId) {
+		return getMessageCollector().getTimestampValidationInfos(timestampId);
+	}
+
+	/**
+	 * Returns a set of error messages for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return a set of {@link String} error messages
+	 */
+	public Set<String> getTimestampQualificationErrors(String timestampId) {
+		return getMessageCollector().getTimestampQualificationErrors(timestampId);
+	}
+
+	/**
+	 * Returns a set of warning messages for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return a set of {@link String} warning messages
+	 */
+	public Set<String> getTimestampQualificationWarnings(String timestampId) {
+		return getMessageCollector().getTimestampQualificationWarnings(timestampId);
+	}
+
+	/**
+	 * Returns a set of info messages for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return a set of {@link String} info messages
+	 */
+	public Set<String> getTimestampQualificationInfos(String timestampId) {
+		return getMessageCollector().getTimestampQualificationInfos(timestampId);
+	}
 
 }

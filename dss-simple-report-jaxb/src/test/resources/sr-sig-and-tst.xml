@@ -29,10 +29,14 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>TRY_LATER</SubIndication>
-        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
-        <Errors>The result of the LTV validation process is not acceptable to continue the process!</Errors>
-        <Errors>No acceptable revocation data for the certificate!</Errors>
-        <Warnings>The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
+        <ValidationDetails>
+            <Error>The result of the LTV validation process is not acceptable to continue the process!</Error>
+            <Error>No acceptable revocation data for the certificate!</Error>
+        </ValidationDetails>
+        <QualificationDetails>
+            <Error>Unable to build a certificate chain until a trusted list!</Error>
+            <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
+        </QualificationDetails>
         <SigningTime>2019-12-17T10:12:31</SigningTime>
         <BestSignatureTime>2019-12-17T10:12:32</BestSignatureTime>
         <SignedBy>good-user</SignedBy>
@@ -58,10 +62,14 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>TRY_LATER</SubIndication>
-        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
-        <Errors>The result of the LTV validation process is not acceptable to continue the process!</Errors>
-        <Errors>No acceptable revocation data for the certificate!</Errors>
-        <Warnings>The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
+        <ValidationDetails>
+            <Error>The result of the LTV validation process is not acceptable to continue the process!</Error>
+            <Error>No acceptable revocation data for the certificate!</Error>
+        </ValidationDetails>
+        <QualificationDetails>
+            <Error>Unable to build a certificate chain until a trusted list!</Error>
+            <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
+        </QualificationDetails>
         <SigningTime>2019-12-17T10:12:31</SigningTime>
         <BestSignatureTime>2019-12-17T10:12:32</BestSignatureTime>
         <SignedBy>good-user</SignedBy>

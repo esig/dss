@@ -42,36 +42,144 @@ public class DetailedReportMessageCollector {
 	}
 	
 	/**
-	 * Returns a set of errors from the report for a signature with the given id
+	 * Returns a set of errors from the report for a signature validation with the given id
 	 * 
 	 * @param signatureId {@link String} id of a signature to get validation errors for
 	 * @return a set of {@link String}s
 	 */
-	Set<String> getErrors(String signatureId) {
-		return collect(MessageType.ERROR, signatureId);
+	Set<String> getSignatureValidationErrors(String signatureId) {
+		return collectSignatureValidationMessages(MessageType.ERROR, signatureId);
 	}
 
 	/**
-	 * Returns a set of warnings from the report for a signature with the given id
+	 * Returns a set of warnings from the report for a signature validation with the given id
 	 * 
 	 * @param signatureId {@link String} id of a signature to get validation warnings for
 	 * @return a set of {@link String}s
 	 */
-	Set<String> getWarnings(String signatureId) {
-		return collect(MessageType.WARN, signatureId);
+	Set<String> getSignatureValidationWarnings(String signatureId) {
+		return collectSignatureValidationMessages(MessageType.WARN, signatureId);
 	}
 
 	/**
-	 * Returns a set of infos from the report for a signature with the given id
+	 * Returns a set of infos from the report for a signature validation with the given id
 	 * 
 	 * @param signatureId {@link String} id of a signature to get validation infos for
 	 * @return a set of {@link String}s
 	 */
-	Set<String> getInfos(String signatureId) {
-		return collect(MessageType.INFO, signatureId);
+	Set<String> getSignatureValidationInfos(String signatureId) {
+		return collectSignatureValidationMessages(MessageType.INFO, signatureId);
 	}
 
-	private Set<String> collect(MessageType type, String signatureId) {
+	/**
+	 * Returns a set of errors from the report for a signature qualification with the given id
+	 *
+	 * @param signatureId {@link String} id of a signature to get qualification errors for
+	 * @return a set of {@link String}s
+	 */
+	Set<String> getSignatureQualificationErrors(String signatureId) {
+		return collectSignatureQualificationMessages(MessageType.ERROR, signatureId);
+	}
+
+	/**
+	 * Returns a set of warnings from the report for a signature qualification with the given id
+	 *
+	 * @param signatureId {@link String} id of a signature to get qualification warnings for
+	 * @return a set of {@link String}s
+	 */
+	Set<String> getSignatureQualificationWarnings(String signatureId) {
+		return collectSignatureQualificationMessages(MessageType.WARN, signatureId);
+	}
+
+	/**
+	 * Returns a set of infos from the report for a signature qualification with the given id
+	 *
+	 * @param signatureId {@link String} id of a signature to get qualification infos for
+	 * @return a set of {@link String}s
+	 */
+	Set<String> getSignatureQualificationInfos(String signatureId) {
+		return collectSignatureQualificationMessages(MessageType.INFO, signatureId);
+	}
+
+	/**
+	 * Returns a set of errors from the report for a timestamp validation with the given id
+	 *
+	 * @param timestampId {@link String} id of a timestamp to get validation errors for
+	 * @return a set of {@link String}s
+	 */
+	Set<String> getTimestampValidationErrors(String timestampId) {
+		return collectTimestampValidationMessages(MessageType.ERROR, timestampId);
+	}
+
+	/**
+	 * Returns a set of warnings from the report for a timestamp validation with the given id
+	 *
+	 * @param timestampId {@link String} id of a timestamp to get validation warnings for
+	 * @return a set of {@link String}s
+	 */
+	Set<String> getTimestampValidationWarnings(String timestampId) {
+		return collectTimestampValidationMessages(MessageType.WARN, timestampId);
+	}
+
+	/**
+	 * Returns a set of information from the report for a timestamp validation with the given id
+	 *
+	 * @param timestampId {@link String} id of a timestamp to get validation information for
+	 * @return a set of {@link String}s
+	 */
+	Set<String> getTimestampValidationInfos(String timestampId) {
+		return collectTimestampValidationMessages(MessageType.INFO, timestampId);
+	}
+
+	/**
+	 * Returns a set of errors from the report for a timestamp qualification with the given id
+	 *
+	 * @param timestampId {@link String} id of a timestamp to get qualification errors for
+	 * @return a set of {@link String}s
+	 */
+	Set<String> getTimestampQualificationErrors(String timestampId) {
+		return collectTimestampQualificationMessages(MessageType.ERROR, timestampId);
+	}
+
+	/**
+	 * Returns a set of warnings from the report for a timestamp qualification with the given id
+	 *
+	 * @param timestampId {@link String} id of a timestamp to get qualification warnings for
+	 * @return a set of {@link String}s
+	 */
+	Set<String> getTimestampQualificationWarnings(String timestampId) {
+		return collectTimestampQualificationMessages(MessageType.WARN, timestampId);
+	}
+
+	/**
+	 * Returns a set of infos from the report for a timestamp qualification with the given id
+	 *
+	 * @param timestampId {@link String} id of a timestamp to get qualification infos for
+	 * @return a set of {@link String}s
+	 */
+	Set<String> getTimestampQualificationInfos(String timestampId) {
+		return collectTimestampQualificationMessages(MessageType.INFO, timestampId);
+	}
+
+	private Set<String> collectSignatureValidationMessages(MessageType type, String signatureId) {
+		Set<String> result = new LinkedHashSet<>();
+
+		XmlSignature signatureById = detailedReport.getXmlSignatureById(signatureId);
+
+		if (MessageType.ERROR == type) {
+			collect(type, result, detailedReport.getHighestConclusion(signatureId));
+			// collectTimestamps(type, result, signatureById);
+		} else {
+			collect(type, result, signatureById.getValidationProcessBasicSignature());
+			// collectTimestamps(type, result, signatureById);
+			collect(type, result, signatureById.getValidationProcessLongTermData());
+			collect(type, result, signatureById.getValidationProcessArchivalData());
+		}
+
+		return result;
+	}
+
+	private Set<String> collectSignatureQualificationMessages(MessageType type, String signatureId) {
 		Set<String> result = new LinkedHashSet<>();
 
 		XmlSignature signatureById = detailedReport.getXmlSignatureById(signatureId);
@@ -87,32 +195,28 @@ public class DetailedReportMessageCollector {
 			collect(type, result, validationSignatureQualification);
 		}
 
-		if (MessageType.ERROR == type) {
-			collect(type, result, detailedReport.getHighestConclusion(signatureId));
-			collectTimestamps(type, result, signatureById);
-		} else {
-			collect(type, result, signatureById.getValidationProcessBasicSignature());
-			collectTimestamps(type, result, signatureById);
-			collect(type, result, signatureById.getValidationProcessLongTermData());
-			collect(type, result, signatureById.getValidationProcessArchivalData());
-		}
-
 		return result;
 	}
 
-	private void collectTimestamps(MessageType type, Set<String> result, XmlSignature signatureById) {
-		List<XmlTimestamp> timestamps = signatureById.getTimestamp();
-		for (XmlTimestamp xmlTimestamp : timestamps) {
-			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			if (validationTimestampQualification != null) {
-				collect(type, result, validationTimestampQualification);
-			}
-			XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
-			if (!MessageType.ERROR.equals(type) || !Indication.PASSED.equals(
-					detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId()).getConclusion().getIndication())) {
-				collect(type, result, validationProcessTimestamps);
-			}
+	private Set<String> collectTimestampValidationMessages(MessageType type, String timestampId) {
+		Set<String> result = new LinkedHashSet<>();
+		XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(timestampId);
+		XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
+		if (!MessageType.ERROR.equals(type) || !Indication.PASSED.equals(
+				detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId()).getConclusion().getIndication())) {
+			collect(type, result, validationProcessTimestamps);
 		}
+		return result;
+	}
+
+	private Set<String> collectTimestampQualificationMessages(MessageType type, String timestampId) {
+		Set<String> result = new LinkedHashSet<>();
+		XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(timestampId);
+		XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
+		if (validationTimestampQualification != null) {
+			collect(type, result, validationTimestampQualification);
+		}
+		return result;
 	}
 
 	private void collect(MessageType type, Set<String> result, XmlConstraintsConclusion constraintConclusion) {

@@ -172,11 +172,11 @@
 		        <xsl:apply-templates select="dss:SubIndication">
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
-
+<!--
 			    <xsl:apply-templates select="dss:Errors" />
 			    <xsl:apply-templates select="dss:Warnings" />
 		        <xsl:apply-templates select="dss:Infos" />
-		        
+-->
 		        <dl>
 	        		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
 		            <dt>Certificate Chain:</dt>
@@ -272,7 +272,7 @@
 			</dd>
 		</dl>
 	</xsl:template>
-	
+<!--
 	<xsl:template match="dss:Errors">
 		<dl>
     		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
@@ -304,7 +304,7 @@
 			</dd>
 		</dl>
 	</xsl:template>
-
+-->
     <xsl:template name="documentInformation">
 		<div>
     		<xsl:attribute name="class">panel panel-primary</xsl:attribute>

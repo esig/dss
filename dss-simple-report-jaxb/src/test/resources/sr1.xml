@@ -27,13 +27,17 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>CRYPTO_CONSTRAINTS_FAILURE_NO_POE</SubIndication>
-        <Errors>The past signature validation is not conclusive!</Errors>
-        <Errors>The algorithm is no longer considered reliable!</Errors>
-        <Errors>The certificate validation is not conclusive!</Errors>
-        <Errors>The revocation freshness check is not conclusive!</Errors>
-        <Warnings>The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
-        <Warnings>The validation of manifest entries is not performed!</Warnings>
-        <Warnings>The result of the revocation data validation process is not acceptable!</Warnings>
+        <ValidationDetails>
+            <Error>The past signature validation is not conclusive!</Error>
+            <Error>The algorithm is no longer considered reliable!</Error>
+            <Error>The certificate validation is not conclusive!</Error>
+            <Error>The revocation freshness check is not conclusive!</Error>
+            <Warning>The validation of manifest entries is not performed!</Warning>
+            <Warning>The result of the revocation data validation process is not acceptable!</Warning>
+        </ValidationDetails>
+        <QualificationDetails>
+            <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
+        </QualificationDetails>
         <SigningTime>2013-07-02T06:03:10</SigningTime>
         <BestSignatureTime>2013-07-02T06:03:10</BestSignatureTime>
         <SignedBy>Joaquin Romera Ramirez</SignedBy>
