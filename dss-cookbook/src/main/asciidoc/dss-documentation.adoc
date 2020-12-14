@@ -24,9 +24,9 @@ Three main features can be distinguished within the framework :
  
 On a more detailed manner the following concepts and features are addressed in this document:
  
- * Formats of the signed documents: XML, PDF, DOC, TXT, ZIP...;
+ * Formats of the signed documents: XML, JSON, PDF, DOC, TXT, ZIP...;
  * Packaging structures: enveloping, enveloped, detached and internally-detached;
- * Forms of digital signatures: XAdES, CAdES, PAdES and ASiC-S/ASiC-E;
+ * Forms of digital signatures: XAdES, CAdES, PAdES, JAdES and ASiC-S/ASiC-E;
  * Profiles associated to each form of the digital signature;
  * Trust management;
  * Revocation data handling (OCSP and CRL sources);
@@ -142,7 +142,7 @@ Please note that the DSS framework is still under maintenance and new features w
 |[[R02]]	R02	|ESI - CAdES digital signatures													|ETSI EN 319 122 part 1-2	|1.1.1
 |[[R03]]	R03	|ESI - PAdES digital signatures													|ETSI EN 319 142 part 1-2	|1.1.1
 |[[R04]]	R04	|ESI - Associated Signature Containers (ASiC)									|ETSI EN 319 162 part 1-2	|1.1.1
-|[[R05]]	R05	|ESI - JAdES digital signatures													|ETSI TS 119 182 part 1 	|draft
+|[[R05]]	R05	|ESI - JAdES digital signatures													|ETSI TS 119 182 part 1 	|draft 0.0.6
 |[[R06]]	R06	|Document management - Portable document format - Part 1: PDF 1.7				|ISO 32000-1				|1
 |[[R07]]	R07	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
 |[[R08]]	R08	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
@@ -257,6 +257,11 @@ DSS contains a bundle of JAXB-based modules, generation Java classes in runtime 
  * dss-detailed-report-jaxb;
  * dss-simple-report-jaxb;
  * dss-simple-certificate-report-jaxb.
+
+Specific modules with JWS and JAdES specifications exist. These modules allow to validate the generated JSON against the related JSON Schema :
+
+ * specs-jws;
+ * specs-jades.
 
 Also, as it was explained in the previous section, some modules are required to be built completely for a building of their dependent modules when using a quick profile, namely:
 
@@ -378,6 +383,11 @@ dss-detailed-report-jaxb:: JAXB model of the detailed report.
 dss-simple-report-jaxb:: JAXB model of the simple report.
 dss-simple-certificate-report-jaxb:: JAXB model of the simple report for certificates.
 
+==== JSON validation modules
+
+specs-jws:: JSON Schemas based on the RFC 7515 specifications (not official)
+specs-jades:: ETSI TS 119 182-1 v.0.0.6 JSON Schemas for JAdES
+
 ==== Utils modules
 
 dss-utils:: API with utility methods for String, Collection, I/O,...
@@ -401,6 +411,7 @@ dss-token:: Token definitions and implementations for MS CAPI, PKCS#11, PKCS#12.
 validation-policy:: Business of the signature's validation (ETSI EN 319 102 / TS 119 172-4).
 dss-xades:: Implementation of the XAdES signature, extension and validation.
 dss-cades:: Implementation of the CAdES signature, extension and validation.
+dss-jades:: Implementation of the JAdES signature, extension and validation.
 dss-pades:: Common code which is shared between dss-pades-pdfbox and dss-pades-openpdf.
 dss-pades-pdfbox:: Implementation of the PAdES signature, extension and validation with https://pdfbox.apache.org/[PDFBox].
 dss-pades-openpdf:: Implementation of the PAdES signature, extension and validation with https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)].
@@ -528,20 +539,20 @@ The requirements and build instructions for DSS demonstrations can be found in t
 
 == Signature's profile simplification
 
-The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus we distinguish the following formats: XAdES, CAdES, PAdES and ASIC. To each one of them a specific standard is dedicated. The wide variety of options, settings and versions of the standards makes their interoperability very difficult. This is the main reason for which new standards commonly called "baseline profiles" were published. Their goal is to limit the number of options and variants thereby making possible a better interoperability between different actors.
+The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus we distinguish the following formats: XAdES, CAdES, PAdES, JAdES and ASIC. To each one of them a specific standard is dedicated. The wide variety of options, settings and versions of the standards makes their interoperability very difficult. This is the main reason for which new standards commonly called "baseline profiles" were published. Their goal is to limit the number of options and variants thereby making possible a better interoperability between different actors.
 
 In general can be said that for each format of the digital signature the number of security levels defined in the new standards has been reduced. Below is a comparative table of old and new levels for each format of the signature:
 
-[cols=6]
+[cols=7]
 .Signature supported profiles
 |=======================
-2+|XAdES				  2+|CAdES				  2+|PAdES
-|STANDARD 		|BASELINE	|STANDARD 	|BASELINE 	|STANDARD	|BASELINE
-|XAdES-BES 		.2+^.^|XAdES-B	|CAdES-BES 	.2+^.^|CAdES-B 	|PAdES-BES 	.2+^.^|PAdES-B
-|XAdES-EPES					|CAdES-EPES	 			|PAdES-EPES 
-|XAdES-T 		|XAdES-T	|CAdES-T 	|CAdES-T 	|PAdES-T 	|PAdES-T
-|XAdES-XL 		|XAdES-LT	|CAdES-XL 	|CAdES-LT 	|PAdES-XL 	|PAdES-LT
-|XAdES-A 		|XAdES-LTA	|CAdES-A 	|CAdES-LTA 	|PAdES-LTV 	|PAdES-LTA
+2+|XAdES				  2+|CAdES				  2+|PAdES                              |JAdES
+|STANDARD 		|BASELINE	|STANDARD 	|BASELINE 	|STANDARD	|BASELINE               |BASELINE
+|XAdES-BES 		.2+^.^|XAdES-B	|CAdES-BES 	.2+^.^|CAdES-B 	|PAdES-BES 	.2+^.^|PAdES-B  .2+^.^|JAdES-B
+|XAdES-EPES					|CAdES-EPES	 			|PAdES-EPES                         |
+|XAdES-T 		|XAdES-T	|CAdES-T 	|CAdES-T 	|PAdES-T 	|PAdES-T                |JAdES-T
+|XAdES-XL 		|XAdES-LT	|CAdES-XL 	|CAdES-LT 	|PAdES-XL 	|PAdES-LT               |JAdES-LT
+|XAdES-A 		|XAdES-LTA	|CAdES-A 	|CAdES-LTA 	|PAdES-LTV 	|PAdES-LTA              |JAdES-LTA
 |=======================
 
 Note that the new version (v4) of the DSS framework is compatible with the baseline profiles, it is no longer possible to use the standard profiles for signing purpose. The validation of the signature still takes into account the old profiles.
@@ -554,26 +565,32 @@ Note that the new version (v4) of the DSS framework is compatible with the basel
 Below you can find a table specifying various signature possibilities with available in DSS signature's profiles/formats.
 The vertical column specifies available signature profiles and their extensions. The horizontal row specifies types of documents to be signed with the formats.
 
-[cols="9*^.^"]
 .File formats and Signature types conformance
-|=======================
-  3+|Signature profiles                        |XML   |PDF   |Binary   |Digest   |Multi files   |Parallel signatures
-.10+|XAdES   .4+|Enveloping  |Base64 encoded   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-                             |Embed XML    |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
-                             |Manifest     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
-             .4+|Enveloped   |enveloped transformation   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"]
-                             |based on XPath   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-                             |based on Filter2   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
-              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-              2+|Internally Detached       |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
-.2+|CAdES     2+|Enveloping                |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-|PAdES        2+|Enveloped                 |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-.2+|ASiC        |ASiCS       |CAdES/XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-                |ASiCE       |CAdES/XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-|=======================
+[%header,cols="12*^.^"]
+|===
+  3+|Signature profiles                        |XML   |JSON  |PDF   |Binary   |Digest   |Multiple files   |Parallel signatures |Counter signature |Stand-alone timestamp
+.10+|XAdES   .4+|Enveloping  |Base64 encoded   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Embed XML    |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Manifest     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+             .4+|Enveloped   |enveloped transformation   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |based on XPath   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |based on Filter2   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+              2+|Internally Detached       |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+.2+|CAdES     2+|Enveloping                |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+|PAdES        2+|Enveloped                 |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
+.6+|JAdES    .3+|Enveloping  |Compact Serialization   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"]
+                             |Flattened JSON Serialization     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |JSON Serialization    |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+            .3+|Detached     |Compact Serialization   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"]
+                             |Flattened JSON Serialization  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |JSON Serialization    |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+.2+|ASiC        |ASiCS       |CAdES / XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
+                |ASiCE       |CAdES / XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
+|===
 
 [.portrait]
 <<<
@@ -968,6 +985,8 @@ For execution of the validation process, DSS uses the 'SignedDocumentValidator' 
  * `XMLDocumentValidator` - validates documents in XML format (XAdES format);
  * `CMSDocumentValidator` - validates documents in CMS format (CAdES format);
  * `PDFDocumentValidator` - validates documents in PDF format (PADES format);
+ * `JWSCompactDocumentValidator` - validates documents with base64url encoded content (JAdES compact format);
+ * `JWSSerializationDocumentValidator` - validates documents in JSON format (JAdES serialization formats);
  * `ASiCContainerWithXAdESValidator` - validates ASiC with XAdES containers;
  * `ASiCContainerWithCAdESValidator` - validates ASiC with CAdES containers;
  * `DetachedTimestampValidator` - validates CMS timestamps provided alone.
@@ -1237,17 +1256,17 @@ NOTE: 'Native PDFBox Drawer' implementation supports only one of the following f
 
 === Shadow attack detection
 
-"Shadow attack" is a class of attacks on a signed PDF document that constitutes a change of a visual content of a document after the signature has been made. Due to a structure of PDF document, the signature stays cryptographically valid even after the content's modification has been taken place. There are no algorithms to detect the malicious change with 100% guarantee. For more information please refer to https://pdf-insecurity.org/[the website].
+"Shadow attack" is a class of attacks on a signed PDF document that constitutes a change of a visual content of a document after the signature has been made. Due to a structure of PDF document, the signature stays cryptographically valid even after the content's modification has been taken place. There are no algorithms to detect the malicious change with 100% guarantee. For more information, please refer to https://pdf-insecurity.org/[the website].
 
-Since v5.8 DSS provides a set of own utils to detect the "shadow attack" on a signed PDF document. The following algorithms has been introduced:
+Since v5.8, DSS provides a set of own utils to detect the "shadow attack" on a signed PDF document. The following algorithms have been introduced:
 
- * `Page amount difference` - the validation tool compares the number of pages between the obtained PDF and signed revision. In case if the numbers do not much, the validation fail. The validation level can be configured within the <<validationPolicy>> with the constraint `<PdfPageDifference>`.
- * `Annotations overlap` - check if any annotations overlap with each other. The overlapping is potentially dangerous, because some annotations can cover a visual content, e.g. forms and signature fields. The validation level can be configured with the constraint `<PdfAnnotationOverlap>`.
- * `Visual difference` - check the visual difference between the provided document and signed revision, excluding the newly created annotations (between the validating revisions). The validation level can be configured with the constraint `<PdfVisualDifference>`.
+ * `Page amount difference` - the validation tool compares the number of pages between the obtained PDF and signed revision. If the numbers do not match, the validation fail. The validation level can be configured within the <<validationPolicy>> with the constraint `<PdfPageDifference>`.
+ * `Annotations overlap` - DSS checks if any annotation overlaps occurred. The overlapping is potentially dangerous, because some annotations can cover a visual content, e.g. forms and signature fields. The validation level can be configured with the constraint `<PdfAnnotationOverlap>`.
+ * `Visual difference` - DSS verifies the visual difference between the provided document and signed revision, excluding the newly created annotations (between the validating revisions). The validation level can be configured with the constraint `<PdfVisualDifference>`.
 
 == JAdES signature (JWS)
 
-Since v5.8 DSS includes a possibility of creation and validation of JSON Advanced signatures.
+Since v5.8, DSS includes a possibility of creation and validation of JSON Advanced signatures.
 
 JSON format for AdES Signatures (cf. [R05]) represents an extension of JSON Web Signatures (JWS) as specified in https://tools.ietf.org/html/rfc7515[IETF RFC 7515].
 
@@ -1267,7 +1286,7 @@ The specific parameters for JAdES signature are described in the next sections.
 
 A JWS signature can be represented in different forms which are supported by the JAdES as well:
 
- * `COMPACT_SERIALIZATION` represents a compact, URL-safe serialization. It has no JWS Unprotected Header, therefore only JAdES-BASELINE-B level is possible with the format.
+ * `COMPACT_SERIALIZATION` represents a compact, URL-safe serialization. It has no JWS Unprotected Header, therefore only JAdES-BASELINE-B level is not possible with the format.
  * `JSON_SERIALIZATION` represents a JSON object with a collection of signatures inside the `signatures` header that allows a parallel signing. It allows JAdES-BASELINE-T/-LT/-LTA signature extension levels.
  * `FLATTENED_JSON_SERIALIZATION` represents a JSON object with a single signature container. It allows JAdES-BASELINE-T/-LT/-LTA signature extension levels.
 
@@ -1283,7 +1302,7 @@ JAdES signatures allow two types of JWS Payload (signed data) inclusion: `ENVELO
 
 ==== Enveloping packaging
 
-With `ENVELOPING` packaging the JWS Payload is enveloped into the JAdES Signature. The type allows signing of only one document.
+With `ENVELOPING` packaging the JWS Payload is enveloped into the JAdES Signature. The type only allows signing one document.
 
 ==== Detached packaging
 
@@ -2004,19 +2023,25 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 
 | XAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] 
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] 
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"]
+
+| JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 
 13+|*RSA-PSS*
 
 | XAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | 
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | 
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |
+
+| JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 
 13+|*ECDSA*
 
 | XAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | | icon:check-circle[role="lime"]
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | 
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |
+
+| JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 
 13+|*Ed25519*
 
@@ -2028,13 +2053,17 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 
 | XAdES | icon:check-circle[role="lime"] | | icon:check-circle[role="lime"] | | | | | | | | |  
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | 
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |
+
+| JAdES | | | | | | | | | | | |
 
 13+|*HMAC*
 
 | XAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | | icon:check-circle[role="lime"] 
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |  
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |
+
+| JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 |===
 
 == Implementation management with ServiceLoader

@@ -81,7 +81,7 @@ public class SignHttpHeadersJadesBTest extends CookbookTools {
 
             DSSDocument signedDocument = service.signDocument(documentsToSign, parameters, signatureValue);
 
-            testFinalDocument(signedDocument);
+            testFinalDocument(signedDocument, documentsToSign);
         }
     }
 

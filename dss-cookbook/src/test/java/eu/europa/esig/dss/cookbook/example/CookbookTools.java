@@ -29,6 +29,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -62,10 +63,17 @@ public class CookbookTools extends PKIFactoryAccess {
 	}
 
 	protected DiagnosticData testFinalDocument(DSSDocument signedDocument) {
+		return testFinalDocument(signedDocument, null);
+	}
+
+	protected DiagnosticData testFinalDocument(DSSDocument signedDocument, List<DSSDocument> detachedContents) {
 		assertNotNull(signedDocument);
 		assertNotNull(DSSUtils.toByteArray(signedDocument));
 
 		SignedDocumentValidator validator = getValidator(signedDocument);
+		if (Utils.isCollectionNotEmpty(detachedContents)) {
+			validator.setDetachedContents(detachedContents);
+		}
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
 

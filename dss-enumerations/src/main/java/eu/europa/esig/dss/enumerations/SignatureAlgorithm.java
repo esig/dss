@@ -637,7 +637,7 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 	 *            the encryption algorithm
 	 * @param digestAlgorithm
 	 *            the digest algorithm
-	 * @param mgf
+	 * @param maskGenerationFunction
 	 *            the mask generation function
 	 */
 	SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,

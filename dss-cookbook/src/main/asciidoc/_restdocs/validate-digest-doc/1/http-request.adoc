@@ -4,7 +4,7 @@ POST /services/rest/validation/validateSignature HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 7231
+Content-Length: 7232
 
 {
   "signedDocument" : {
@@ -18,7 +18,7 @@ Content-Length: 7231
     "name" : "sample.xml"
   } ],
   "policy" : null,
-  "tokenExtractionStategy" : "NONE",
+  "tokenExtractionStrategy" : "NONE",
   "signatureId" : null
 }
 ----

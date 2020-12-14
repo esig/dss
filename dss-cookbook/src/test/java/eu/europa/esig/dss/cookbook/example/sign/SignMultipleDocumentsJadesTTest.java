@@ -26,7 +26,7 @@ public class SignMultipleDocumentsJadesTTest extends CookbookTools {
     private List<DSSDocument> documentsToBeSigned;
 
     @Test
-    public void signASiCEBaselineB() throws Exception {
+    public void sign() throws Exception {
 
         // Get a token connection based on a pkcs12 file commonly used to store
         // private
@@ -44,7 +44,7 @@ public class SignMultipleDocumentsJadesTTest extends CookbookTools {
             parameters.setSigningCertificate(privateKey.getCertificate());
             parameters.setCertificateChain(privateKey.getCertificateChain());
             parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-            parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_T);
+            parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
             parameters.setJwsSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
 
             // tag::clearEtsiU[]

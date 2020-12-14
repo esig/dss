@@ -39,7 +39,7 @@ $ echo '{
     "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1604507069789,
+      "signingDate" : 1607960338417,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
@@ -61,7 +61,7 @@ $ echo '{
     "digestAlgorithm" : null,
     "name" : "xades-detached.xml"
   }
-}' | http POST 'http://localhost:8080/dss-demo-webapp/services/rest/signature/one-document/getDataToBeCounterSigned' \
+}' | http POST 'http://localhost:8080/services/rest/signature/one-document/getDataToBeCounterSigned' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \
     'Content-Type:application/json; charset=UTF-8'
 ----
