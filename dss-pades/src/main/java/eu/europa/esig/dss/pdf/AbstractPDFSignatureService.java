@@ -188,11 +188,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public List<PdfRevision> getRevisions(final DSSDocument document, final String pwd) {
-		List<PdfRevision> result = new ArrayList<>();
+		final List<PdfRevision> revisions = new ArrayList<>();
 		try (PdfDocumentReader reader = loadPdfDocumentReader(document, pwd)) {
 
 			final PdfDssDict dssDictionary = reader.getDSSDictionary();
-			boolean mainDssDictionaryAdded = false;
+			PdfDssDict lastDSSDictionary = dssDictionary; // defined the last created DSS dictionary
 
 			Map<PdfSignatureDictionary, List<String>> sigDictionaries = reader.extractSigDictionaries();
 			sigDictionaries = sortSignatureDictionaries(sigDictionaries); // sort from the latest revision to the first
@@ -216,13 +216,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 					boolean signatureCoversWholeDocument = reader.isSignatureCoversWholeDocument(signatureDictionary);
 
-					PdfDssDict previousRevisionDssDict = null;
-					// LT or LTA
-					if (dssDictionary != null) {
-						// obtain covered DSS dictionary if already exist
-						previousRevisionDssDict = getDSSDictionaryPresentInRevision(
-								extractBeforeSignatureValue(byteRange, signedContent), pwd);
-					}
+					// create a DSS revision if updated
+					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, lastDSSDictionary,
+							signedContent, pwd);
 
 					PdfCMSRevision newRevision = null;
 
@@ -242,25 +238,16 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 					}
 
-					boolean dssDictionaryUpdated = previousRevisionDssDict != null
-							&& !previousRevisionDssDict.equals(dssDictionary);
-
-					// add the main dss dictionary as the first revision
-					if (dssDictionaryUpdated && !mainDssDictionaryAdded) {
-						result.add(new PdfDocDssRevision(dssDictionary));
-					}
-					mainDssDictionaryAdded = true;
-
-					// add signature/ timestamp revision
+					// add signature/timestamp revision
 					if (newRevision != null) {
 						newRevision.setModificationDetection(getPdfModificationDetection(reader, signedContent, pwd));
-						result.add(newRevision);
+						revisions.add(newRevision);
 					}
 
-					// add a previous DSS revision
-					if (previousRevisionDssDict != null) {
-						result.add(new PdfDocDssRevision(previousRevisionDssDict));
-					}
+					// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
+					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, lastDSSDictionary,
+							extractBeforeSignatureValue(byteRange, signedContent), pwd);
+
 
 				} catch (Exception e) {
 					String errorMessage = "Unable to parse signature {} . Reason : {}";
@@ -282,7 +269,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		} catch (Exception e) {
 			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
 		}
-		return result;
+		return revisions;
 	}
 
 	@Override
@@ -343,6 +330,15 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						.reversed())
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
 						LinkedHashMap::new));
+	}
+
+	private PdfDssDict getPreviousDssDictAndUpdateIfNeeded(List<PdfRevision> revisions, PdfDssDict lastDSSDictionary,
+														   byte[] dssDictionaryRevision, String pwd) {
+		PdfDssDict currentDssDict = getDSSDictionaryPresentInRevision(dssDictionaryRevision, pwd);
+		if (lastDSSDictionary != null && !lastDSSDictionary.equals(currentDssDict)) {
+			revisions.add(new PdfDocDssRevision(lastDSSDictionary));
+		}
+		return currentDssDict;
 	}
 
 	private PdfDssDict getDSSDictionaryPresentInRevision(final byte[] originalBytes, final String pwd) {
@@ -428,9 +424,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		if (signedContent.length < length) {
 			return new byte[0];
 		}
-		final byte[] result = new byte[length];
-		System.arraycopy(signedContent, 0, result, 0, length);
-		return result;
+		return PAdESUtils.retrievePreviousPDFRevision(new InMemoryDocument(signedContent), byteRange).getBytes();
 	}
 
 	/**
