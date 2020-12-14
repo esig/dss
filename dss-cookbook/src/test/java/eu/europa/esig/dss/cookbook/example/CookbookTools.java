@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -39,6 +32,13 @@ import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CookbookTools extends PKIFactoryAccess {
 
@@ -61,12 +61,11 @@ public class CookbookTools extends PKIFactoryAccess {
 		toSignDocument = new FileDocument(new File("src/main/resources/hello-world.pdf"));
 	}
 
-	protected void testFinalDocument(DSSDocument signedDocument) {
+	protected DiagnosticData testFinalDocument(DSSDocument signedDocument) {
 		assertNotNull(signedDocument);
 		assertNotNull(DSSUtils.toByteArray(signedDocument));
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		SignedDocumentValidator validator = getValidator(signedDocument);
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
 
@@ -83,6 +82,14 @@ public class CookbookTools extends PKIFactoryAccess {
 				assertTrue(timestampWrapper.isSignatureValid());
 			}
 		}
+
+		return diagnosticData;
+	}
+
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		return validator;
 	}
 
 	/**

@@ -13,12 +13,12 @@ public enum SigDMechanism implements UriBasedEnum {
 	HTTP_HEADERS("http://uri.etsi.org/19182/HttpHeaders"),
 
 	/**
-	 * 5.2.8.3	Mechanism ObjectIdByURI
+	 * 5.2.8.3.2	Mechanism ObjectIdByURI
 	 */
 	OBJECT_ID_BY_URI("http://uri.etsi.org/19182/ObjectIdByURI"),
 
 	/**
-	 * 5.2.8.4	Mechanism ObjectIdByURIHash
+	 * 5.2.8.3.3	Mechanism ObjectIdByURIHash
 	 * 
 	 * NOTE: the default signature creation mechanism used by DSS
 	 */
