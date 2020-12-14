@@ -337,7 +337,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public boolean isXLevelTechnicallyValid() {
 		List<TimestampWrapper> timestamps = getTimestampLevelX();
-		return areTimestampsValid(timestamps);
+		return isAtLeastOneTimestampValid(timestamps);
 	}
 
 	public List<TimestampWrapper> getTimestampLevelX() {
@@ -353,7 +353,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public boolean isALevelTechnicallyValid() {
 		List<TimestampWrapper> timestamps = getALevelTimestamps();
-		return areTimestampsValid(timestamps);
+		return isAtLeastOneTimestampValid(timestamps);
 	}
 
 	public List<TimestampWrapper> getALevelTimestamps() {
@@ -373,7 +373,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public boolean isTLevelTechnicallyValid() {
 		List<TimestampWrapper> timestamps = getTLevelTimestamps();
-		return areTimestampsValid(timestamps);
+		return isAtLeastOneTimestampValid(timestamps);
 	}
 
 	public List<TimestampWrapper> getTLevelTimestamps() {
@@ -421,13 +421,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return ArchiveTimestampType.PAdES.equals(timestampWrapper.getArchiveTimestampType());
 	}
 
-	private boolean areTimestampsValid(List<TimestampWrapper> timestampList) {
-		for (final TimestampWrapper timestamp : timestampList) {
-			final boolean signatureValid = timestamp.isSignatureValid();
-			final XmlDigestMatcher messageImprint = timestamp.getMessageImprint();
-			final boolean messageImprintIntact = messageImprint.isDataFound() && messageImprint.isDataIntact();
-			if (signatureValid && messageImprintIntact) {
-				return true;
+	private boolean isAtLeastOneTimestampValid(List<TimestampWrapper> timestampList) {
+		if (timestampList != null && !timestampList.isEmpty()) {
+			for (final TimestampWrapper timestamp : timestampList) {
+				final boolean signatureValid = timestamp.isSignatureValid();
+				final XmlDigestMatcher messageImprint = timestamp.getMessageImprint();
+				final boolean messageImprintIntact = messageImprint.isDataFound() && messageImprint.isDataIntact();
+				if (signatureValid && messageImprintIntact) {
+					return true;
+				}
 			}
 		}
 		return false;

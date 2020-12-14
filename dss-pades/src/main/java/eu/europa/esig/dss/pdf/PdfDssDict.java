@@ -49,7 +49,7 @@ public interface PdfDssDict {
 	/**
 	 * Returns a map of unique identifiers and Certificate Tokens
 	 * 
-	 * @return a map of indetifiers and {@link CertificateToken}s
+	 * @return a map of identifiers and {@link CertificateToken}s
 	 */
 	Map<Long, CertificateToken> getCERTs();
 

@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PAdESExtensionLTAToLTATest extends AbstractPAdESTestExtension {
 
@@ -53,7 +53,8 @@ public class PAdESExtensionLTAToLTATest extends AbstractPAdESTestExtension {
 		// second LTA
 		if (allTimestamps.size() > 2) {
 			PDFDocumentValidator pdfValidator = (PDFDocumentValidator) validator;
-			assertEquals(2, pdfValidator.getDssDictionaries().size());
+			// dss dict is not updated -> revision is not created by the validator
+			assertEquals(1, pdfValidator.getDssDictionaries().size());
 		}
 	}
 
