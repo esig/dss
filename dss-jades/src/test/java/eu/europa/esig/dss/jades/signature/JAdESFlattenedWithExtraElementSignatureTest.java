@@ -1,14 +1,5 @@
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -18,6 +9,14 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESFlattenedWithExtraElementSignatureTest extends AbstractJAdESTestSignature {
 
@@ -45,7 +44,7 @@ public class JAdESFlattenedWithExtraElementSignatureTest extends AbstractJAdESTe
 	@Override
 	public void signAndVerify() {
 		Exception exception = assertThrows(DSSException.class, () -> super.sign());
-		assertTrue(exception.getMessage().contains("JWS Serialization is not supported for invalid RFC 7515 files."));
+		assertTrue(exception.getMessage().contains("Parallel signing is not supported for invalid RFC 7515 signatures."));
 		assertTrue(exception.getMessage().contains("extraneous key [evil] is not permitted"));
 	}
 

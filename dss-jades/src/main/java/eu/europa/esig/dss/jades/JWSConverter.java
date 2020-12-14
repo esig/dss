@@ -77,7 +77,8 @@ public final class JWSConverter {
 		jwsJsonSerializationObject.getSignatures().add(jws);
 		jwsJsonSerializationObject.setPayload(jws.getSignedPayload());
 
-		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject, JWSSerializationType.JSON_SERIALIZATION);
+		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
+				JWSSerializationType.JSON_SERIALIZATION);
 
 		DSSDocument signatureDocument = generator.generate();
 		signatureDocument.setName(SERIALIZATION_DOCUMENT_NAME);

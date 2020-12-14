@@ -136,8 +136,11 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
 			throw new DSSException("Unsupported signature packaging for JSON Serialization Signature: " + packaging);
 		}
-		if (JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(signatureParameters.getJwsSerializationType()) && jwsJsonSerializationObject != null) {
-			throw new DSSException("The FLATTENED Serialization type is not supported for a document with existing signatures!");
+		if (!JWSSerializationType.JSON_SERIALIZATION.equals(signatureParameters.getJwsSerializationType())
+				&& jwsJsonSerializationObject != null) {
+			throw new DSSException(String.format(
+					"The '%s' type is not supported for a parallel signing!",
+					signatureParameters.getJwsSerializationType()));
 		}
 	}
 

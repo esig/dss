@@ -8,7 +8,6 @@ import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
@@ -62,13 +61,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
 
-		if (!DSSJsonUtils.isJsonDocument(document)) {
-			throw new DSSException("The extending document shall have a JWS Serialization (or Flattened) format!");
-		}
-
-		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(document);
-		JWSJsonSerializationObject jwsJsonSerializationObject = parser.parse();
-
+		JWSJsonSerializationObject jwsJsonSerializationObject = DSSJsonUtils.toJWSJsonSerializationObject(document);
 		if (jwsJsonSerializationObject == null || Utils.isCollectionEmpty(jwsJsonSerializationObject.getSignatures())) {
 			throw new DSSException("There is no signature to extend!");
 		}

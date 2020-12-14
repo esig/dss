@@ -429,29 +429,41 @@ public class DSSJsonUtils {
 	 * @return TRUE of the document is JSON, FALSE otherwise
 	 */
 	public static boolean isJsonDocument(DSSDocument document) {
+		if (isAllowedSignatureDocumentType(document)) {
+			try (InputStream is = document.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+				int firstChar = is.read();
+				if (firstChar == '{') {
+					baos.write(firstChar);
+					Utils.copy(is, baos);
+					if (baos.size() < 2) {
+						return false;
+					}
+					Map<String, Object> json = JsonUtil.parseJson(baos.toString());
+					return json != null;
+				}
+			} catch (JoseException e) {
+				LOG.warn("Unable to parse content as JSON : {}", e.getMessage());
+			} catch (IOException e) {
+				throw new DSSException(String.format("Cannot read the document. Reason : %s", e.getMessage()), e);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the signature document has an allowed type (bytes can be extracted)
+	 *
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the document is of an allowed signature type, FALSE otherwise
+	 */
+	public static boolean isAllowedSignatureDocumentType(DSSDocument document) {
 		if (document instanceof DigestDocument || document instanceof HTTPHeader) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("The provided document of class '{}' cannot be parsed as JSON.", document.getClass());
+				LOG.debug("The provided document of class '{}' cannot be parsed.", document.getClass());
 			}
 			return false;
 		}
-		try (InputStream is = document.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			int firstChar = is.read();
-			if (firstChar == '{') {
-				baos.write(firstChar);
-				Utils.copy(is, baos);
-				if (baos.size() < 2) {
-					return false;
-				}
-				Map<String, Object> json = JsonUtil.parseJson(baos.toString());
-				return json != null;
-			}
-		} catch (JoseException e) {
-			LOG.warn("Unable to parse content as JSON : {}", e.getMessage());
-		} catch (IOException e) {
-			throw new DSSException(String.format("Cannot read the document. Reason : %s", e.getMessage()), e);
-		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -722,6 +734,37 @@ public class DSSJsonUtils {
 
 		} catch (Exception e) {
 			LOG.warn("An error occurred during 'etsiU' component parsing : {}", e.getMessage(), e);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Converts the {@code jadesDocument} to {@link JWSJsonSerializationObject}, if not possible returns null
+	 *
+	 * @param jadesDocument {@link DSSDocument} to convert
+	 * @return {@link JWSJsonSerializationObject} if able to convert, null otherwise
+	 */
+	public static JWSJsonSerializationObject toJWSJsonSerializationObject(DSSDocument jadesDocument) {
+		try {
+			JWSCompactSerializationParser jwsCompactSerializationParser = new JWSCompactSerializationParser(jadesDocument);
+			if (jwsCompactSerializationParser.isSupported()) {
+				jadesDocument = JWSConverter.fromJWSCompactToJSONSerialization(jadesDocument);
+			}
+		} catch (Exception e) {
+			LOG.debug("An error occurred during an attempt to parse a compact JWS signature : {}", e.getMessage(), e);
+		}
+
+		try {
+			JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(jadesDocument);
+			if (jwsJsonSerializationParser.isSupported()) {
+				return jwsJsonSerializationParser.parse();
+			}
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Unable to parse signatures in the provided document with name '{}'.",
+						jadesDocument.getName());
+			}
 		}
 
 		return null;

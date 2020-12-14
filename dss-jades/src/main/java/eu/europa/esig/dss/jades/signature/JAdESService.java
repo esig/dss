@@ -9,7 +9,6 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
@@ -127,8 +126,9 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 
 	/**
 	 * Only DETACHED signatures are allowed
-	 * 
-	 * @param parameters
+	 *
+	 * @param toSignDocuments list of {@link DSSDocument}s
+	 * @param parameters {@link JAdESSignatureParameters}
 	 */
 	private void assertMultiDocumentsAllowed(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
@@ -177,34 +177,40 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	 * @return {@link JAdESBuilder}
 	 */
 	protected JAdESBuilder getJAdESBuilder(JAdESSignatureParameters parameters, List<DSSDocument> documentsToSign) {
+		JWSJsonSerializationObject jwsJsonSerializationObject = getJWSJsonSerializationObjectToSign(documentsToSign);
+		if (containsSignatures(jwsJsonSerializationObject)) {
+			if (!jwsJsonSerializationObject.isValid()) {
+				throw new DSSException(String.format(
+						"Parallel signing is not supported for invalid RFC 7515 signatures. Reason(s) : %s",
+						jwsJsonSerializationObject.getStructuralValidationErrors()));
+			}
+			// return a builder for parallel signing
+			return new JAdESSerializationBuilder(certificateVerifier, parameters, jwsJsonSerializationObject);
+		}
+
 		switch (parameters.getJwsSerializationType()) {
 			case COMPACT_SERIALIZATION:
 				return new JAdESCompactBuilder(certificateVerifier, parameters, documentsToSign);
 			case JSON_SERIALIZATION:
 			case FLATTENED_JSON_SERIALIZATION:
-				// check if the document contains JWS signature(s)
-				if (documentsToSign.size() == 1) {
-					DSSDocument documentToSign = documentsToSign.get(0);
-					if (DSSJsonUtils.isJsonDocument(documentToSign)) {
-						JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(documentToSign);
-						
-						JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
-						if (Utils.isCollectionNotEmpty(jwsJsonSerializationObject.getSignatures())) {
-							if (!jwsJsonSerializationObject.isValid()) {
-								throw new DSSException(String.format("JWS Serialization is not supported for invalid RFC 7515 files. "
-										+ "Reason(s) : %s",
-										jwsJsonSerializationObject.getStructuralValidationErrors()));
-							}
-							
-							return new JAdESSerializationBuilder(certificateVerifier, parameters, jwsJsonSerializationObject);
-						}
-						// continue otherwise
-					}
-				}
 				return new JAdESSerializationBuilder(certificateVerifier, parameters, documentsToSign);
+
 			default:
-				throw new DSSException(String.format("The requested JWS Serialization Type '%s' is not supported!", parameters.getJwsSerializationType()));
+				throw new DSSException(String.format("The requested JWS Serialization Type '%s' is not supported!",
+						parameters.getJwsSerializationType()));
 		}
+	}
+
+	private JWSJsonSerializationObject getJWSJsonSerializationObjectToSign(List<DSSDocument> documentsToSign) {
+		if (Utils.isCollectionNotEmpty(documentsToSign) && documentsToSign.size() == 1) {
+			return DSSJsonUtils.toJWSJsonSerializationObject(documentsToSign.get(0));
+		}
+		return null;
+	}
+
+	private boolean containsSignatures(JWSJsonSerializationObject jwsJsonSerializationObject) {
+		return jwsJsonSerializationObject != null &&
+				Utils.isCollectionNotEmpty(jwsJsonSerializationObject.getSignatures());
 	}
 
 	@Override
@@ -212,6 +218,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		assertExtensionPossible(parameters);
 
 		final SignatureExtension<JAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
@@ -222,6 +229,14 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			return dssDocument;
 		}
 		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel());
+	}
+
+	private void assertExtensionPossible(JAdESSignatureParameters parameters) {
+		if (!JWSSerializationType.JSON_SERIALIZATION.equals(parameters.getJwsSerializationType()) &&
+				!JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(parameters.getJwsSerializationType())) {
+			throw new DSSException(String.format("The type '%s' does not support signature extension!",
+					parameters.getJwsSerializationType()));
+		}
 	}
 
 	private SignatureExtension<JAdESSignatureParameters> getExtensionProfile(JAdESSignatureParameters parameters) {

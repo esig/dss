@@ -50,6 +50,10 @@ public class JWSCompactSerializationParser {
 	 * @return TRUE if the document is a Compact JWS and supported by the parser, FALSE otherwise
 	 */
 	public boolean isSupported() {
+		if (!DSSJsonUtils.isAllowedSignatureDocumentType(document)) {
+			return false;
+		}
+
 		int separatorCounter = 0;
 		try (InputStream is = document.openStream()) {
 			int b = -1;

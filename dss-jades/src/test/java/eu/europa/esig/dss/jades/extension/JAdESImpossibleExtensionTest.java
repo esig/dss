@@ -1,12 +1,5 @@
 package eu.europa.esig.dss.jades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Collections;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
@@ -23,6 +16,12 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 
@@ -35,6 +34,7 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 
 		JAdESSignatureParameters parameters = new JAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_T);
+		parameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
 		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(doc, parameters));
 		assertEquals("There is no signature to extend!", exception.getMessage());
@@ -65,6 +65,7 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		JAdESSignatureParameters extensionParameters = new JAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
 		extensionParameters.setDetachedContents(Collections.singletonList(digestDocument));
+		extensionParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 
 		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, extensionParameters));
 		assertEquals("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "
