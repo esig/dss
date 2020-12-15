@@ -54,6 +54,9 @@ public final class PAdESUtils {
 	 */
 	public static final int DEFAULT_FIRST_PAGE = 1;
 
+	/** The starting bytes of a PDF document */
+	private static final byte[] PDF_PREAMBLE = new byte[]{'%', 'P', 'D', 'F', '-'};
+
 	private PAdESUtils() {
 	}
 
@@ -214,6 +217,16 @@ public final class PAdESUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if the given {@code DSSDocument} represents a PDF document
+	 *
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the document is a PDF, FALSE otherwise
+	 */
+	public static boolean isPDFDocument(DSSDocument document) {
+		return DSSUtils.compareFirstBytes(document, PDF_PREAMBLE);
 	}
 
 }

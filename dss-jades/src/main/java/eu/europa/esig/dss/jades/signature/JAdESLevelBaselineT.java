@@ -18,7 +18,6 @@ import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 import java.util.Collections;
@@ -61,11 +60,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
 
-		JWSJsonSerializationObject jwsJsonSerializationObject = DSSJsonUtils.toJWSJsonSerializationObject(document);
-		if (jwsJsonSerializationObject == null || Utils.isCollectionEmpty(jwsJsonSerializationObject.getSignatures())) {
-			throw new DSSException("There is no signature to extend!");
-		}
-
+		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(document);
 		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
 			assertEtsiUComponentsConsistent(signature, params.isBase64UrlEncodedEtsiUComponents());
 

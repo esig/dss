@@ -65,14 +65,15 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 	}
 
 	@Override
-	public DSSDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) throws DSSException {
+	public DSSDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) {
+		assertExtensionPossible(document);
 
 		// check if needed to extends with PAdESLevelBaselineT
 		PDFDocumentValidator pdfDocumentValidator = getPDFDocumentValidator(document, parameters);
 
 		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
 		if (Utils.isCollectionEmpty(signatures)) {
-			throw new DSSException("No signature to be extended");
+			throw new DSSException("No signatures found to be extended!");
 		}
 
 		for (final AdvancedSignature signature : signatures) {

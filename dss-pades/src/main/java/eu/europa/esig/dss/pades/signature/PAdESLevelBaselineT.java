@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
@@ -53,7 +54,8 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	}
 
 	@Override
-	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) throws DSSException {
+	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) {
+		assertExtensionPossible(document);
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
 		return timestampDocument(document, params.getSignatureTimestampParameters(), params.getPasswordProtection());
 	}
@@ -80,6 +82,18 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 */
 	protected PDFSignatureService newPdfSignatureService() {
 		return pdfObjectFactory.newSignatureTimestampService();
+	}
+
+	/**
+	 * Checks if the document can be extended
+	 *
+	 * @param document {@link DSSDocument}
+	 */
+	protected void assertExtensionPossible(DSSDocument document) {
+		if (!PAdESUtils.isPDFDocument(document)) {
+			throw new DSSException(String.format("Unable to extend the document with name '%s'. " +
+					"PDF document is expected!", document.getName()));
+		}
 	}
 
 }

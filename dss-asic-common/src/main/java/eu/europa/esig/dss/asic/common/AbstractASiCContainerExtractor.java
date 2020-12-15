@@ -69,7 +69,7 @@ public abstract class AbstractASiCContainerExtractor {
 			}
 
 		} catch (IOException e) {
-			LOG.warn("Unable to parse the container {}", e.getMessage());
+			LOG.warn("Unable to parse the container. Reason : {}", e.getMessage(), e);
 		}
 
 		result.setZipComment(getZipComment());

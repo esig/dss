@@ -7,6 +7,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
@@ -51,6 +52,9 @@ public class CAdESSignaturePolicyStoreBuilder {
 		Objects.requireNonNull(signaturePolicyStore.getSignaturePolicyContent(), "Signature policy content must be provided");
 		
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
+		if (Utils.isCollectionEmpty(signerInformationCollection)) {
+			throw new DSSException("Unable to extend the document! No signatures found.");
+		}
 		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 		
 		for (SignerInformation signerInformation : signerInformationCollection) {

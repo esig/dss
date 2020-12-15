@@ -1,17 +1,5 @@
 package eu.europa.esig.dss.xades.signature;
 
-import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
@@ -31,6 +19,17 @@ import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 /**
  * The XAdES CounterSignatureBuilder used to create a counter signature 
@@ -62,8 +61,8 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	 */
 	public DSSDocument getCanonicalizedSignatureValue(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
 		params = parameters;
+
 		documentDom = DomUtils.buildDOM(signatureDocument);
-		
 		xadesSignature = extractSignatureById(documentDom, parameters);
 
 		Element signatureValueElement = getSignatureValueElement(xadesSignature);
@@ -87,8 +86,8 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	 */
 	public DSSReference buildCounterSignatureDSSReference(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
 		documentDom = DomUtils.buildDOM(signatureDocument);
-		
 		xadesSignature = extractSignatureById(documentDom, parameters);
+
 		xadesPaths = xadesSignature.getXAdESPaths();
 		
 		DSSReference reference = new DSSReference();
@@ -121,10 +120,9 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	public DSSDocument buildEmbeddedCounterSignature(DSSDocument signatureDocument, DSSDocument counterSignature, 
 			XAdESCounterSignatureParameters parameters) {
 		params = parameters;
+
 		documentDom = DomUtils.buildDOM(signatureDocument);
-		
 		xadesSignature = extractSignatureById(documentDom, parameters);
-		
 		currentSignatureDom = xadesSignature.getSignatureElement();
 		xadesPaths = xadesSignature.getXAdESPaths();
 
@@ -164,11 +162,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 		}
 		
-		final NodeList signatureNodeList = documentDom.getElementsByTagNameNS(XMLNS, XMLDSigElement.SIGNATURE.getTagName());
-		if (signatureNodeList.getLength() == 0) {
-			throw new DSSException("No signatures found!");
-		}
-		
+		final NodeList signatureNodeList = getSignaturesNodeListToExtend(documentDom);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 			Element signatureDom = (Element) signatureNodeList.item(ii);
 			XAdESSignature signature = new XAdESSignature(signatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));

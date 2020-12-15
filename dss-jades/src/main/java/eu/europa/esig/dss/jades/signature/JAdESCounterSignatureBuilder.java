@@ -6,7 +6,6 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
@@ -36,9 +35,9 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	 * @return {@link DSSDocument} extracted SignatureValue
 	 */
 	public DSSDocument getSignatureValueToBeSigned(DSSDocument signatureDocument, JAdESCounterSignatureParameters parameters) {
-		JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(signatureDocument);
-		JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
-		
+		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(signatureDocument);
+		assertIsJSONSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
+
 		JAdESSignature jadesSignature = (JAdESSignature) extractSignatureById(jwsJsonSerializationObject,
 				parameters.getSignatureIdToCounterSign());
 		return new InMemoryDocument(jadesSignature.getSignatureValue());
@@ -54,9 +53,9 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	 */
 	public DSSDocument buildEmbeddedCounterSignature(DSSDocument signatureDocument, DSSDocument counterSignature, 
 			JAdESCounterSignatureParameters parameters) {
-		JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(signatureDocument);
-		JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
-		
+		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(signatureDocument);
+		assertIsJSONSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
+
 		JAdESSignature jadesSignature = (JAdESSignature) extractSignatureById(jwsJsonSerializationObject,
 				parameters.getSignatureIdToCounterSign());
 		assertEtsiUComponentsConsistent(jadesSignature.getJws(), parameters.isBase64UrlEncodedEtsiUComponents());

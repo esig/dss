@@ -61,9 +61,6 @@ import java.util.Objects;
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
 
-    /** The starting bytes of a PDF document */
-    private static final byte[] pdfPreamble = new byte[]{'%', 'P', 'D', 'F', '-'};
-
     /** Loads the relevant implementation for PDF document reading */
     private IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
 
@@ -86,15 +83,15 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      */
     public PDFDocumentValidator(final DSSDocument document) {
         super(new PAdESSignatureScopeFinder());
-        this.document = document;
-        if (!DSSUtils.compareFirstBytes(document, pdfPreamble)) {
+        if (!isSupported(document)) {
             throw new DSSException("Not supported document");
         }
+        this.document = document;
     }
 
     @Override
     public boolean isSupported(DSSDocument dssDocument) {
-        return DSSUtils.compareFirstBytes(dssDocument, pdfPreamble);
+        return PAdESUtils.isPDFDocument(dssDocument);
     }
 
     /**

@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
 import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
@@ -740,19 +741,38 @@ public class DSSJsonUtils {
 	}
 
 	/**
-	 * Converts the {@code jadesDocument} to {@link JWSJsonSerializationObject}, if not possible returns null
+	 * Converts the {@code JWS} to {@link JWSJsonSerializationObject}
 	 *
-	 * @param jadesDocument {@link DSSDocument} to convert
+	 * @param jws {@link JWS} to convert
+	 * @return {@link JWSJsonSerializationObject}
+	 */
+	public static JWSJsonSerializationObject toJWSJsonSerializationObject(JWS jws) {
+		JWSJsonSerializationObject jwsJsonSerializationObject = new JWSJsonSerializationObject();
+		jwsJsonSerializationObject.getSignatures().add(jws);
+		jwsJsonSerializationObject.setPayload(jws.getSignedPayload());
+		return jwsJsonSerializationObject;
+	}
+
+	/**
+	 * Converts the {@code DSSDocument} to {@link JWSJsonSerializationObject}, if not possible returns null
+	 *
+	 * @param jadesDocument Compact {@link DSSDocument} to convert
 	 * @return {@link JWSJsonSerializationObject} if able to convert, null otherwise
 	 */
 	public static JWSJsonSerializationObject toJWSJsonSerializationObject(DSSDocument jadesDocument) {
 		try {
 			JWSCompactSerializationParser jwsCompactSerializationParser = new JWSCompactSerializationParser(jadesDocument);
 			if (jwsCompactSerializationParser.isSupported()) {
-				jadesDocument = JWSConverter.fromJWSCompactToJSONSerialization(jadesDocument);
+				JWS jws = jwsCompactSerializationParser.parse();
+				JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObject(jws);
+				jwsJsonSerializationObject.setJWSSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
+				return jwsJsonSerializationObject;
 			}
 		} catch (Exception e) {
-			LOG.debug("An error occurred during an attempt to parse a compact JWS signature : {}", e.getMessage(), e);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Unable to parse a compact JWS signature from the document with name '{}'. Reason : {}",
+						jadesDocument.getName(), e.getMessage(), e);
+			}
 		}
 
 		try {
@@ -762,8 +782,8 @@ public class DSSJsonUtils {
 			}
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Unable to parse signatures in the provided document with name '{}'.",
-						jadesDocument.getName());
+				LOG.debug("Unable to parse signatures in the provided document with name '{}'. Reason : {}",
+						jadesDocument.getName(), e.getMessage(), e);
 			}
 		}
 

@@ -1,9 +1,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -29,8 +27,6 @@ import org.w3c.dom.NodeList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
-
 /**
  * Builds a XAdES SignaturePolicyStore
  */
@@ -50,11 +46,11 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 	/**
 	 * Adds a signaturePolicyStore to all signatures inside the document
 	 *
-	 * @param document {@link DSSDocument} containing signatures to add signature policy store into
+	 * @param signatureDocument {@link DSSDocument} containing signatures to add signature policy store into
 	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
 	 * @return {@link DSSDocument} with signaturePolicyStore
 	 */
-	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
+	public DSSDocument addSignaturePolicyStore(DSSDocument signatureDocument, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(signaturePolicyStore, "SignaturePolicyStore must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification(), "SpDocSpecification must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification().getId(), "ID (OID or URI) for SpDocSpecification must be provided");
@@ -62,13 +58,8 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 
 		params = new XAdESSignatureParameters();
 
-		documentDom = DomUtils.buildDOM(document);
-
-		final NodeList signatureNodeList = documentDom.getElementsByTagNameNS(XMLNS, XMLDSigElement.SIGNATURE.getTagName());
-		if (signatureNodeList.getLength() == 0) {
-			throw new DSSException("No signature to extend!");
-		}
-
+		documentDom = DomUtils.buildDOM(signatureDocument);
+		final NodeList signatureNodeList = getSignaturesNodeListToExtend(documentDom);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 			currentSignatureDom = (Element) signatureNodeList.item(ii);
 

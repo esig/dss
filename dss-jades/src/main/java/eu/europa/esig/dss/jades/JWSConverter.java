@@ -49,11 +49,7 @@ public final class JWSConverter {
 		JWSCompactSerializationParser parser = new JWSCompactSerializationParser(document);
 		JWS jws = parser.parse();
 
-		JWSJsonSerializationObject jwsJsonSerializationObject = new JWSJsonSerializationObject();
-		jwsJsonSerializationObject.getSignatures().add(jws);
-		jwsJsonSerializationObject.setJWSSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
-		jwsJsonSerializationObject.setPayload(jws.getSignedPayload());
-
+		JWSJsonSerializationObject jwsJsonSerializationObject = DSSJsonUtils.toJWSJsonSerializationObject(jws);
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
 				JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
@@ -73,10 +69,7 @@ public final class JWSConverter {
 		JWSCompactSerializationParser parser = new JWSCompactSerializationParser(document);
 		JWS jws = parser.parse();
 
-		JWSJsonSerializationObject jwsJsonSerializationObject = new JWSJsonSerializationObject();
-		jwsJsonSerializationObject.getSignatures().add(jws);
-		jwsJsonSerializationObject.setPayload(jws.getSignedPayload());
-
+		JWSJsonSerializationObject jwsJsonSerializationObject = DSSJsonUtils.toJWSJsonSerializationObject(jws);
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
 				JWSSerializationType.JSON_SERIALIZATION);
 

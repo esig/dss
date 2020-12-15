@@ -43,23 +43,22 @@ public abstract class ASiCCounterSignatureHelper {
 	 * @param signatureId {@link String} id of a signature to extract a file with
 	 * @return {@link DSSDocument} signature document containing a signature to be counter signed with a defined id
 	 */
-	public DSSDocument extractSignatureDocument(String signatureId) {		
-		if (ASiCUtils.isZip(asicContainer)) {
-			
-			List<DSSDocument> signatureDocuments = getSignatureDocuments();
-			if (Utils.isCollectionNotEmpty(signatureDocuments)) {
-				for (DSSDocument signatureDocument : signatureDocuments) {
-					if (containsSignatureToBeCounterSigned(signatureDocument, signatureId)) {
-						checkCounterSignaturePossible(signatureDocument);
-						return signatureDocument;
-					}
-				}
-
-				throw new DSSException(String.format("A signature with id '%s' has not been found!", signatureId));
-			}
-			
+	public DSSDocument extractSignatureDocument(String signatureId) {
+		if (!ASiCUtils.isZip(asicContainer)) {
+			throw new DSSException("The provided file shall be an ASiC container with signatures inside!");
 		}
-		throw new DSSException("The provided file shall be an ASiC container with signatures inside!");
+		List<DSSDocument> signatureDocuments = getSignatureDocuments();
+		if (Utils.isCollectionEmpty(signatureDocuments)) {
+			throw new DSSException("No signatures found to be extended!");
+		}
+
+		for (DSSDocument signatureDocument : signatureDocuments) {
+			if (containsSignatureToBeCounterSigned(signatureDocument, signatureId)) {
+				checkCounterSignaturePossible(signatureDocument);
+				return signatureDocument;
+			}
+		}
+		throw new DSSException(String.format("A signature with id '%s' has not been found!", signatureId));
 	}
 
 	/**

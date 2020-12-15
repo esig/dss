@@ -4,13 +4,11 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -54,12 +52,8 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification().getId(), "ID (OID or URI) for SpDocSpecification must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSignaturePolicyContent(), "Signature policy content must be provided");
 
-		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(document);
-		JWSJsonSerializationObject jwsJsonSerializationObject = parser.parse();
-
-		if (jwsJsonSerializationObject == null || Utils.isCollectionEmpty(jwsJsonSerializationObject.getSignatures())) {
-			throw new DSSException("There is no signature to extend!");
-		}
+		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(document);
+		assertIsJSONSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
 
 		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
 			assertEtsiUComponentsConsistent(signature, base64UrlInstance);

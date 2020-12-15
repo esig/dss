@@ -77,11 +77,6 @@ public class JWSJsonSerializationObject {
 	 * @param jwsSerializationType {@link JWSSerializationType}
 	 */
 	public void setJWSSerializationType(JWSSerializationType jwsSerializationType) {
-		if (!JWSSerializationType.JSON_SERIALIZATION.equals(jwsSerializationType) &&
-				!JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(jwsSerializationType)) {
-			throw new IllegalArgumentException(String.format("The JWSSerializationType '%s' is not supported for the JWSJsonSerializationObject", 
-					jwsSerializationType));
-		}
 		this.jwsSerializationType = jwsSerializationType;
 	}
 
