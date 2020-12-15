@@ -1296,7 +1296,7 @@ The specific parameters for JAdES signature are described in the next sections.
 
 A JWS signature can be represented in different forms which are supported by the JAdES as well:
 
- * `COMPACT_SERIALIZATION` represents a compact, URL-safe serialization. It has no JWS Unprotected Header, therefore only JAdES-BASELINE-B level is not possible with the format.
+ * `COMPACT_SERIALIZATION` represents a compact, URL-safe serialization. It has no JWS Unprotected Header, therefore only JAdES-BASELINE-B level is possible with the format.
  * `JSON_SERIALIZATION` represents a JSON object with a collection of signatures inside the `signatures` header that allows a parallel signing. It allows JAdES-BASELINE-T/-LT/-LTA signature extension levels.
  * `FLATTENED_JSON_SERIALIZATION` represents a JSON object with a single signature container. It allows JAdES-BASELINE-T/-LT/-LTA signature extension levels.
 
