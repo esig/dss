@@ -18,18 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.extension.suite;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.Map;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.junit.jupiter.api.Test;
+package eu.europa.esig.dss.pades.validation.suite;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
@@ -51,6 +40,16 @@ import eu.europa.esig.validationreport.jaxb.SADSSType;
 import eu.europa.esig.validationreport.jaxb.SAFilterType;
 import eu.europa.esig.validationreport.jaxb.SASubFilterType;
 import eu.europa.esig.validationreport.jaxb.SAVRIType;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1523Test extends AbstractPkiFactoryTestValidation<PAdESSignatureParameters, PAdESTimestampParameters> {
 
@@ -100,7 +99,7 @@ public class DSS1523Test extends AbstractPkiFactoryTestValidation<PAdESSignature
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 	

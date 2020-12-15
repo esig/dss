@@ -3687,17 +3687,19 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(diagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+		assertEquals(diagnosticData.getValidationDate(),
+				simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 
 		executor.setValidationLevel(ValidationLevel.LONG_TERM_DATA);
 		reports = executor.execute();
 		simpleReport = reports.getSimpleReport();
-		assertEquals(diagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+		assertEquals(diagnosticData.getUsedTimestamps().get(1).getProductionTime(),
+				simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 
 		executor.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
 		reports = executor.execute();
 		simpleReport = reports.getSimpleReport();
-		assertEquals(diagnosticData.getUsedTimestamps().iterator().next().getProductionTime(),
+		assertEquals(diagnosticData.getUsedTimestamps().get(0).getProductionTime(),
 				simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 	}
 
@@ -3715,18 +3717,19 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(diagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+		assertEquals(diagnosticData.getValidationDate(),
+				simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 
 		executor.setValidationLevel(ValidationLevel.LONG_TERM_DATA);
 		reports = executor.execute();
 		simpleReport = reports.getSimpleReport();
-		assertEquals(diagnosticData.getUsedTimestamps().iterator().next().getProductionTime(),
+		assertEquals(diagnosticData.getUsedTimestamps().get(0).getProductionTime(),
 				simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 
 		executor.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
 		reports = executor.execute();
 		simpleReport = reports.getSimpleReport();
-		assertEquals(diagnosticData.getUsedTimestamps().iterator().next().getProductionTime(),
+		assertEquals(diagnosticData.getUsedTimestamps().get(0).getProductionTime(),
 				simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 	}
 

@@ -378,7 +378,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public List<TimestampWrapper> getTLevelTimestamps() {
 		List<TimestampWrapper> timestamps = new ArrayList<>(getSignatureTimestamps());
-		timestamps.addAll(getDocumentTimestamps(false));
+		timestamps.addAll(getDocumentTimestamps());
 		return timestamps;
 	}
 

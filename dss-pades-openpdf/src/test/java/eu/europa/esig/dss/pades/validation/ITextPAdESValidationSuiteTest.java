@@ -24,6 +24,7 @@ import eu.europa.esig.dss.pades.validation.suite.ASN1PolicyTest;
 import eu.europa.esig.dss.pades.validation.suite.BadEncodedCMSTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS1188Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1376GetOriginalDocTest;
+import eu.europa.esig.dss.pades.validation.suite.DSS1523Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1538Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1683Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1690Test;
@@ -89,7 +90,7 @@ import org.junit.runner.RunWith;
 		ArchiveTimestampCoverageTest.class, DoubleArchiveTstCoverageTest.class, PolicyZeroHashTest.class, SIWATest.class, DSS1794CrlTest.class,
 		DSS1794OcspTest.class, PAdESMultipleFieldSignatureReferenceTest.class, DSS1899Test.class, DSS1899TstWithNullTypeTest.class, PAdESInfiniteLoopTest.class,
 		PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class, BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class,
-		DSS1469Test.class, DSS1469LTTest.class, PAdESOCSPSigningCertificateTest.class, PAdESWithDssVriAndCertRefTest.class,
+		DSS1469Test.class, DSS1469LTTest.class, DSS1523Test.class, PAdESOCSPSigningCertificateTest.class, PAdESWithDssVriAndCertRefTest.class,
 		PAdESWithOcspFromDssRevisionTest.class, PAdESInvalidDigestAlgorithmTest.class, DSS2023Test.class, DSS2025Test.class, DSS2116WithPAdESTest.class,
 		PAdESExtendedToTLevelTest.class, DSS2199Test.class, PAdESSameBorderAnnotationsTest.class, PAdESMultiplePagesAnnotationsOverlapTest.class,
 		PAdESWithAddedPageTest.class, PAdESWithRemovedPagesTest.class, DSS2258Test.class, TimestampedAndSignedTest.class })
