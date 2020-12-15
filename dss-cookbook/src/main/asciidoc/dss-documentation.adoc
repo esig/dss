@@ -920,6 +920,16 @@ By default, all XAdES are supported and DSS loads/parses all versions of XAdES. 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/XAdES132OnlyTest.java[tags=demo]
 ----
 
+=== Sign a Trusted List
+
+The standard ETSI TS 119 612 specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization,...). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
+
+[source,java,indent=0]
+.Sign a Trusted List with the TrustedListSignatureParametersBuilder
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignTrustedListTest.java[tags=demo]
+----
+
 == Signature Extension
 
 The -B level contains immutable signed properties. Once this level is created, these properties cannot be changed.
