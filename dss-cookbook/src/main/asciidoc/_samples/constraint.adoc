@@ -43,6 +43,9 @@
 			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 			<SignerInformationStore Level="FAIL" />
+			<PdfPageDifference Level="FAIL" />
+			<PdfAnnotationOverlap Level="WARN" />
+			<PdfVisualDifference Level="WARN" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
@@ -198,15 +201,16 @@
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="WARN" />
-			<UnicitySigningCertificate Level="WARN" />
+			<!-- <UnicitySigningCertificate Level="WARN" /> RFC 5816 -->
 			<CertDigestPresent Level="WARN" />
-			<CertDigestMatch Level="WARN" />
+			<AllCertDigestsMatch Level="WARN" />
 			<IssuerSerialMatch Level="WARN" />
 		</SignedAttributes>
 	</Timestamp>
 	<Revocation>
         <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
         <UnknownStatus Level="FAIL" />
+        <SelfIssuedOCSP Level="WARN" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
@@ -303,14 +307,15 @@
 			<Algo Date="2026" Size="256">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
 			<Algo Date="2026" Size="384">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
 			<Algo Date="2026" Size="512">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.3.1 -->
+
 <!-- 		<Algo Date="2026" Size="32">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
 			<!-- end Encryption algorithms -->
 		</AlgoExpirationDate>
-	</Cryptographic> 
-	
+	</Cryptographic>
+
 	<Model Value="SHELL" />
-	
-	<!-- eIDAS REGL 910/EU/2014 --> 
+
+	<!-- eIDAS REGL 910/EU/2014 -->
 	<eIDAS>
 		<TLFreshness Level="WARN" Unit="HOURS" Value="6" />
 		<TLNotExpired Level="WARN" />

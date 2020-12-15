@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Wed, 04 Nov 2020 15:02:06 GMT
+Date: Mon, 14 Dec 2020 15:38:59 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -13,12 +13,12 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 6826
+Content-Length: 6880
 
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2020-11-04T15:02:06",
+    "ValidationDate" : "2020-12-14T15:38:59",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -45,8 +45,9 @@ Content-Length: 6826
       "CountryName" : null,
       "OrganizationIdentifier" : null,
       "OrganizationName" : "DSS-test",
-      "GivenName" : null,
       "OrganizationalUnit" : null,
+      "Title" : null,
+      "GivenName" : null,
       "Surname" : null,
       "Pseudonym" : null,
       "Email" : null,
@@ -79,6 +80,7 @@ Content-Length: 6826
       "certificatePolicy" : [ ],
       "qcStatementOid" : [ ],
       "qcTypeOid" : [ ],
+      "QCLimitValue" : null,
       "SemanticsIdentifier" : null,
       "TrustedServiceProvider" : [ ],
       "CertificateRevocation" : [ ],
@@ -92,7 +94,7 @@ Content-Length: 6826
     "Revocation" : [ ],
     "Timestamp" : null,
     "OrphanTokens" : null,
-    "SignerData" : [ ],
+    "SignerData" : null,
     "TrustedList" : [ ]
   },
   "simpleCertificateReport" : {
@@ -131,7 +133,7 @@ Content-Length: 6826
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2020-11-04T15:02:06"
+    "ValidationTime" : "2020-12-14T15:38:59"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {

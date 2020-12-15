@@ -138,7 +138,7 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 
 	/**
 	 * Sets if the signature MimeType string must be included into the signed header ('typ' attribute)
-	 * Default: TRUE (the signature MimeTipe will be included into the signed header)
+	 * Default: TRUE (the signature MimeType will be included into the signed header)
 	 *
 	 * @param includeSignatureType if the signature MimeType be included into the signed header
 	 */

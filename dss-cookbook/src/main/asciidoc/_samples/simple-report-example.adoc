@@ -1,7 +1,7 @@
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<SimpleReport xmlns="http://dss.esig.europa.eu/validation/simple-report">
+<SimpleReport ValidationTime="2020-12-14T11:03:21" xmlns="http://dss.esig.europa.eu/validation/simple-report">
     <ValidationPolicy>
         <PolicyName>QES AdESQC TL based</PolicyName>
         <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
@@ -9,11 +9,10 @@
                 signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
         </PolicyDescription>
     </ValidationPolicy>
-    <ValidationTime>2020-01-21T06:07:03</ValidationTime>
     <DocumentName>EmptyPage-signed-pades-baseline-b.pdf</DocumentName>
     <ValidSignaturesCount>1</ValidSignaturesCount>
     <SignaturesCount>1</SignaturesCount>
-    <Signature SignatureFormat="PAdES-BASELINE-B" Id="S-3723FC8ECE93FD281E21E7239EFAFA0E286306CB5F57F777F5E3A0A3426CA6B1">
+    <Signature SignatureFormat="PAdES-BASELINE-B" ExtensionPeriodMin="2020-12-14T11:04:21" ExtensionPeriodMax="2027-01-21T23:59:59" Id="S-08113A9BAB65F6271F837FF4992635CC725B49D27B1AED0D714EAD428BE98C6E">
         <CertificateChain>
             <Certificate>
                 <id>C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F</id>
@@ -24,14 +23,14 @@
                 <qualifiedName>Citizen CA</qualifiedName>
             </Certificate>
             <Certificate>
-                <id>C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0</id>
+                <id>C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</id>
                 <qualifiedName>Belgium Root CA4</qualifiedName>
             </Certificate>
         </CertificateChain>
         <Indication>TOTAL_PASSED</Indication>
         <Warnings>The organization name is missing in the trusted certificate!</Warnings>
         <SigningTime>2019-08-27T14:06:11</SigningTime>
-        <BestSignatureTime>2020-01-21T06:07:03</BestSignatureTime>
+        <BestSignatureTime>2020-12-14T11:03:21</BestSignatureTime>
         <SignedBy>Pierrick Vandenbroucke (Signature)</SignedBy>
         <SignatureLevel description="Qualified Electronic Signature">QESig</SignatureLevel>
         <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>

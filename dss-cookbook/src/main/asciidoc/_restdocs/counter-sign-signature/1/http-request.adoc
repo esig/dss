@@ -1,6 +1,6 @@
 [source,http,options="nowrap"]
 ----
-POST /dss-demo-webapp/services/rest/signature/one-document/getDataToBeCounterSigned HTTP/1.1
+POST /services/rest/signature/one-document/getDataToBeCounterSigned HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
@@ -45,7 +45,7 @@ Content-Length: 9972
     "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1604507069789,
+      "signingDate" : 1607960338417,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

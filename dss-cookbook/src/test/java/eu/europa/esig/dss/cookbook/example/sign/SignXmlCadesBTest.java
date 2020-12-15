@@ -78,7 +78,7 @@ public class SignXmlCadesBTest extends CookbookTools {
 
 			// Create common certificate verifier
 			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-			// Create CAdES xadesService for signature
+			// Create CAdESService for signature
 			CAdESService service = new CAdESService(commonCertificateVerifier);
 
 			// Get the SignedInfo segment that need to be signed.
@@ -89,7 +89,7 @@ public class SignXmlCadesBTest extends CookbookTools {
 			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 			SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
 
-			// We invoke the xadesService to sign the document with the signature value obtained in
+			// We invoke the CAdESService to sign the document with the signature value obtained in
 			// the previous step.
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 

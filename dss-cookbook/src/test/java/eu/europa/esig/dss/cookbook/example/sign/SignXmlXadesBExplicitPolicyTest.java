@@ -20,16 +20,17 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
@@ -37,6 +38,7 @@ import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
 
 /**
  * How to set explicit policy.
@@ -69,9 +71,8 @@ public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 			// Get and use the explicit policy
 			String signaturePolicyId = "http://www.example.com/policy.txt";
 			DigestAlgorithm signaturePolicyHashAlgo = DigestAlgorithm.SHA256;
-			String signaturePolicyDescription = "Policy text to digest";
-			byte[] signaturePolicyDescriptionBytes = signaturePolicyDescription.getBytes();
-			byte[] digestedBytes = DSSUtils.digest(signaturePolicyHashAlgo, signaturePolicyDescriptionBytes);
+			DSSDocument policyContent = new InMemoryDocument("Policy text to digest".getBytes());
+			byte[] digestedBytes = DSSUtils.digest(signaturePolicyHashAlgo, policyContent);
 
 			Policy policy = new Policy();
 			policy.setId(signaturePolicyId);
@@ -99,7 +100,24 @@ public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 
 			// end::demo[]
 
-			testFinalDocument(signedDocument);
+			// tag::addSPS[]
+
+			// Create the SignaturePolicyStore object
+			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+			// Provide the policy content referenced within Signature Policy Identifier
+			signaturePolicyStore.setSignaturePolicyContent(policyContent);
+			// Define Id of the policy
+			SpDocSpecification spDocSpec = new SpDocSpecification();
+			spDocSpec.setId(signaturePolicyId);
+			signaturePolicyStore.setSpDocSpecification(spDocSpec);
+
+			// add the SignaturePolicyStore
+			XAdESService xadesService = new XAdESService(commonCertificateVerifier);
+			DSSDocument signedDocumentWithSignaturePolicyStore = xadesService.addSignaturePolicyStore(signedDocument, signaturePolicyStore);
+
+			// end::addSPS[]
+
+			testFinalDocument(signedDocumentWithSignaturePolicyStore);
 		}
 	}
 }

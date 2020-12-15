@@ -42,7 +42,7 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getData
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1604502121165,
+      "signingDate" : 1607960338155,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

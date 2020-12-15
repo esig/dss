@@ -188,7 +188,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	/**
 	 * Gets a SubIndication in case of failure
 	 *
-	 * @return {@link Indication}
+	 * @return {@link SubIndication}
 	 */
 	protected abstract SubIndication getFailedSubIndicationForConclusion();
 
