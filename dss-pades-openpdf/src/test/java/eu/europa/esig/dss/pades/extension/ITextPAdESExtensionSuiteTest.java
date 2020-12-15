@@ -22,7 +22,6 @@ package eu.europa.esig.dss.pades.extension;
 
 import eu.europa.esig.dss.pades.extension.suite.DSS1443Test;
 import eu.europa.esig.dss.pades.extension.suite.DSS1469ExtensionTest;
-import eu.europa.esig.dss.pades.validation.suite.DSS1523Test;
 import eu.europa.esig.dss.pades.extension.suite.DSS2058LTATest;
 import eu.europa.esig.dss.pades.extension.suite.DSS2058QCLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionAllSelfSignedCertsTest;
