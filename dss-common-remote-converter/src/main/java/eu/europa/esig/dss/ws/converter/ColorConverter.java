@@ -20,15 +20,24 @@
  */
 package eu.europa.esig.dss.ws.converter;
 
-import java.awt.Color;
-
 import eu.europa.esig.dss.ws.dto.RemoteColor;
 
+import java.awt.*;
+
+/**
+ * Contains utils to convert {@code Color} to {@code RemoteColor} object and vice versa
+ */
 public final class ColorConverter {
 
 	private ColorConverter() {
 	}
 
+	/**
+	 * Converts {@code Color} to {@code RemoteColor} object
+	 *
+	 * @param color {@link Color} to convert
+	 * @return {@link RemoteColor}
+	 */
 	public static RemoteColor toRemoteColor(Color color) {
 		if (color == null) {
 			return null;
@@ -41,6 +50,12 @@ public final class ColorConverter {
 		return remote;
 	}
 
+	/**
+	 * Converts {@code RemoteColor} to {@code Color} object
+	 *
+	 * @param remoteColor {@link RemoteColor} to convert
+	 * @return {@link Color}
+	 */
 	public static Color toColor(RemoteColor remoteColor) {
 		if (remoteColor == null) {
 			return null;

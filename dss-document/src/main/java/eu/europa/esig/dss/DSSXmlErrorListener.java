@@ -20,12 +20,16 @@
  */
 package eu.europa.esig.dss;
 
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
+
+/**
+ * The DSS implementation of {@code ErrorListener}
+ * Logs errors according to its level
+ */
 public class DSSXmlErrorListener implements ErrorListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSXmlErrorListener.class);

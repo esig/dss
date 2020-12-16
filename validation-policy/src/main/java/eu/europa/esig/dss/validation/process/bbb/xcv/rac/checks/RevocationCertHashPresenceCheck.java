@@ -29,10 +29,22 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the revocation's certHash is present
+ */
 public class RevocationCertHashPresenceCheck extends ChainItem<XmlRAC> {
 
+	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlRAC}
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public RevocationCertHashPresenceCheck(I18nProvider i18nProvider, XmlRAC result, RevocationWrapper revocationData, 
 			LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

@@ -20,28 +20,28 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import java.util.Date;
-import java.util.Map;
-
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.AbstractTokenProxy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.Indication;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.CryptographicChecker;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.CryptographicInformationBuilder;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheckerResultCheck;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -50,14 +50,33 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstra
  */
 public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy> extends Chain<XmlSAV> {
 
+	/** The token to be validated */
 	protected final T token;
+
+	/** The validation time */
 	protected final Date currentTime;
+
+	/** The validation context */
 	protected final Context context;
+
+	/** The validation policy */
 	protected final ValidationPolicy validationPolicy;
 
-	public AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context, ValidationPolicy validationPolicy) {
-		super(i18nProvider, new XmlSAV());
+	/** Builds cryptographic information for the report */
+	private CryptographicInformationBuilder cryptographicInformationBuilder;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param token to validate
+	 * @param currentTime {@link Date}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context,
+										ValidationPolicy validationPolicy) {
+		super(i18nProvider, new XmlSAV());
 		this.token = token;
 		this.currentTime = currentTime;
 		this.context = context;
@@ -65,63 +84,65 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	}
 
 	protected ChainItem<XmlSAV> cryptographic() {
+		ChainItem<XmlSAV> firstItem;
+		
+		// The basic signature constraints validation
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new CryptographicCheck<>(i18nProvider, result, token, currentTime, constraint);
+		MessageTag position = ValidationProcessUtils.getCryptoPosition(context);
+		
+		CryptographicChecker cc = new CryptographicChecker(i18nProvider, token, currentTime, position, constraint);
+		XmlCC ccResult = cc.execute();
+		
+		ChainItem<XmlSAV> item = firstItem = cryptographicCheckResult(ccResult, position, constraint);
+		
+		cryptographicInformationBuilder = new CryptographicInformationBuilder(token, ccResult.getConclusion(), constraint);
+		
+		if (!isValid(ccResult)) {
+			// return if not valid
+			return firstItem;
+		}
+		
+		// process digestMatchers
+		List<XmlDigestMatcher> digestMatchers = token.getDigestMatchers();
+		if (Utils.isCollectionNotEmpty(digestMatchers)) {
+			for (XmlDigestMatcher digestMatcher : digestMatchers) {
+				DigestAlgorithm digestAlgorithm = digestMatcher.getDigestMethod();
+				if (digestAlgorithm == null) {
+					continue;
+				}
+				
+				position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatcher);
+				DigestCryptographicChecker dac = new DigestCryptographicChecker(i18nProvider, digestAlgorithm, currentTime, position, constraint);
+				XmlCC dacResult = dac.execute();
+				
+				item = item.setNextItem(digestAlgorithmCheckResult(digestMatcher, dacResult, position, constraint));
+				
+				if (!isValid(dacResult)) {
+					// update the failed constraints and brake the loop
+					cryptographicInformationBuilder = new CryptographicInformationBuilder(digestMatcher, dacResult.getConclusion(), constraint);
+					break;
+				}
+			}
+		}
+		
+		return firstItem;
+	}
+	
+	private ChainItem<XmlSAV> cryptographicCheckResult(XmlCC ccResult, MessageTag position, CryptographicConstraint constraint) {
+		return new CryptographicCheckerResultCheck<>(i18nProvider, result, token, currentTime, position, ccResult, constraint);
+	}
+	
+	private ChainItem<XmlSAV> digestAlgorithmCheckResult(XmlDigestMatcher digestMatcher, XmlCC ccResult, 
+			MessageTag position, CryptographicConstraint constraint) {
+		return new DigestCryptographicCheckerResultCheck<>(i18nProvider, result, currentTime, position, digestMatcher.getName(), ccResult, constraint);
 	}
 
 	@Override
 	protected void addAdditionalInfo() {
 		super.addAdditionalInfo();
-
-		result.setValidationTime(currentTime);
-
-		XmlCryptographicInformation cryptoInfo = new XmlCryptographicInformation();
-
-		fillAlgorithmURI(cryptoInfo, token);
-		cryptoInfo.setKeyLength(token.getKeyLengthUsedToSignThisToken());
 		
-		XmlConclusion conclusion = result.getConclusion();
-		if (Indication.INDETERMINATE.equals(conclusion.getIndication())
-				&& (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication()))) {
-			cryptoInfo.setSecure(false);
-		} else {
-			cryptoInfo.setSecure(true);
-		}
-
-		CryptographicConstraint cryptographicConstraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		if (cryptographicConstraint != null) {
-			Date notAfter = null;
-			CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
-			Map<String, Date> expirationDates = wrapper.getExpirationTimes();
-			String digestAlgoToFind = token.getDigestAlgorithm() == null ? "" : token.getDigestAlgorithm().getName();
-			notAfter = expirationDates.get(digestAlgoToFind);
-			String encryptionAlgoToFind = token.getEncryptionAlgorithm() == null ? "" : token.getEncryptionAlgorithm().name();
-			int keySize = Utils.isStringDigits(token.getKeyLengthUsedToSignThisToken()) ? Integer.parseInt(token.getKeyLengthUsedToSignThisToken()) : 0;
-			Date expirationEncryption = wrapper.getExpirationDate(encryptionAlgoToFind, keySize);
-			if (notAfter != null && (expirationEncryption == null || expirationEncryption.before(notAfter))) {
-				// return null in case if one of the dates is not defined
-				notAfter = expirationEncryption;
-			}
-			cryptoInfo.setNotAfter(notAfter);
-		}
-
-		result.setCryptographicInfo(cryptoInfo);
-	}
-
-	private void fillAlgorithmURI(XmlCryptographicInformation cryptoInfo, AbstractTokenProxy token) {
-		try {
-			EncryptionAlgorithm encryptionAlgorithm = token.getEncryptionAlgorithm();
-			MaskGenerationFunction maskGenerationFunction = token.getMaskGenerationFunction();
-			DigestAlgorithm digestAlgorithm = token.getDigestAlgorithm();
-			SignatureAlgorithm sigAlgo = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
-			String uri = sigAlgo.getUri();
-			if (uri == null) {
-				uri = sigAlgo.getURIBasedOnOID();
-			}
-			cryptoInfo.setAlgorithm(uri);
-		} catch (Exception e) {
-			cryptoInfo.setAlgorithm("???");
-		}
+		result.setValidationTime(currentTime);
+		result.setCryptographicInfo(cryptographicInformationBuilder.build());
 	}
 
 }

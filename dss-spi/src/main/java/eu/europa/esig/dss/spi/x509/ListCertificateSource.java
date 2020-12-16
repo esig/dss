@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
@@ -265,6 +266,38 @@ public class ListCertificateSource {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSource source : sources) {
 			result.addAll(source.getByCertificateIdentifier(certificateIdentifier));
+		}
+		return result;
+	}
+
+	/**
+	 * This method returns the found {@link CertificateToken} from all
+	 * {@link CertificateSource} for the given {@link Digest}.
+	 * 
+	 * @param digest the {@link Digest} to find in the
+	 *                              sources
+	 * @return a Set of found {@link CertificateToken}
+	 */
+	public Set<CertificateToken> getByCertificateDigest(Digest digest) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSource source : sources) {
+			result.addAll(source.getByCertificateDigest(digest));
+		}
+		return result;
+	}
+
+	/**
+	 * This method returns the found {@link CertificateToken} from all
+	 * {@link CertificateSource} for the given {@code certificateRef}.
+	 * 
+	 * @param certificateRef the {@link CertificateRef} to find in the
+	 *                              sources
+	 * @return a Set of found {@link CertificateToken}
+	 */
+	public Set<CertificateToken> findTokensFromRefs(CertificateRef certificateRef) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSource source : sources) {
+			result.addAll(source.findTokensFromCertRef(certificateRef));
 		}
 		return result;
 	}

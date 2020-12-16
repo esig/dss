@@ -22,7 +22,6 @@ package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 
 /**
  * Extends the level of AdES signature of a document. After level -B, going upper in the signature format level
@@ -35,10 +34,9 @@ public interface SignatureExtension<SP extends AbstractSignatureParameters> {
 	 * Extends the level of the signatures contained in a document.
 	 *
 	 * @param document The signed document to be signed
-	 * @param params
-	 * @return
-	 * @throws DSSException
+	 * @param params   the parameters for the extension
+	 * @return the extended document
 	 */
-	DSSDocument extendSignatures(DSSDocument document, SP params) throws DSSException;
+	DSSDocument extendSignatures(DSSDocument document, SP params);
 
 }

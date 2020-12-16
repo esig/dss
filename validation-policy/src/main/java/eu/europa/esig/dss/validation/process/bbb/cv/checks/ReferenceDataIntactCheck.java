@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -30,10 +31,22 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the referenced data is intact
+ */
 public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 
+	/** The reference DigestMatcher */
 	private final XmlDigestMatcher digestMatcher;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlCV}
+	 * @param digestMatcher {@link XmlDigestMatcher}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public ReferenceDataIntactCheck(I18nProvider i18nProvider, XmlCV result, XmlDigestMatcher digestMatcher, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.digestMatcher = digestMatcher;
@@ -46,12 +59,20 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_CV_IRDOI;
+		if (DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
+			return MessageTag.BBB_CV_TSP_IRDOI;
+		} else {
+			return MessageTag.BBB_CV_IRDOI;
+		}
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_CV_IRDOI_ANS;
+		if (DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
+			return MessageTag.BBB_CV_TSP_IRDOI_ANS;
+		} else {
+			return MessageTag.BBB_CV_IRDOI_ANS;
+		}
 	}
 
 	@Override
@@ -65,9 +86,9 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String referenceName = Utils.isStringNotBlank(digestMatcher.getName()) ? digestMatcher.getName() : digestMatcher.getType().name();
-		return MessageTag.REFERENCE.setArgs(referenceName);
+		return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);
 	}
 
 }

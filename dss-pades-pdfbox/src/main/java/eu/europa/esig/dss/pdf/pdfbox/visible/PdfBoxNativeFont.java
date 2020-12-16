@@ -20,18 +20,26 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
-import java.awt.Font;
-
-import org.apache.pdfbox.pdmodel.font.PDFont;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.AbstractDSSFont;
 import eu.europa.esig.dss.pades.DSSNativeFont;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 
+import java.awt.*;
+
+/**
+ * The PDFBox native implementation of a Font
+ */
 public class PdfBoxNativeFont extends AbstractDSSFont implements DSSNativeFont<PDFont> {
-	
+
+	/** PDFBox font */
 	private final PDFont pdFont;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param pdFont {@link PDFont}
+	 */
 	public PdfBoxNativeFont(PDFont pdFont) {
 		this.pdFont = pdFont;
 	}

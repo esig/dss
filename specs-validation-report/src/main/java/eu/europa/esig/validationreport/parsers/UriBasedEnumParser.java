@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.validationreport.parsers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -32,8 +29,15 @@ import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.enums.SignatureValidationProcessID;
 import eu.europa.esig.validationreport.enums.TypeOfProof;
 
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Parser for different uri-based values
+ */
 public final class UriBasedEnumParser {
 
+	/** The map of enum values and corresponding URIs */
 	private static final Map<String, UriBasedEnum> URI_TO_ENUM_MAP = new HashMap<>();
 
 	static {
@@ -55,30 +59,72 @@ public final class UriBasedEnumParser {
 	private UriBasedEnumParser() {
 	}
 
+	/**
+	 * Parses the string value and returns {@code Indication}
+	 *
+	 * @param v {@link String}
+	 * @return {@link Indication}, null if not able to parse
+	 */
 	public static Indication parseMainIndication(String v) {
 		return (Indication) parse(v);
 	}
 
-	public static ObjectType parseObjectType(String v) {
-		return (ObjectType) parse(v);
-	}
-
-	public static RevocationReason parseRevocationReason(String v) {
-		return (RevocationReason) parse(v);
-	}
-
-	public static SignatureValidationProcessID parseSignatureValidationProcessID(String v) {
-		return (SignatureValidationProcessID) parse(v);
-	}
-
+	/**
+	 * Parses the string value and returns {@code SubIndication}
+	 *
+	 * @param v {@link String}
+	 * @return {@link SubIndication}, null if not able to parse
+	 */
 	public static SubIndication parseSubIndication(String v) {
 		return (SubIndication) parse(v);
 	}
 
+	/**
+	 * Parses the string value and returns {@code ObjectType}
+	 *
+	 * @param v {@link String}
+	 * @return {@link ObjectType}, null if not able to parse
+	 */
+	public static ObjectType parseObjectType(String v) {
+		return (ObjectType) parse(v);
+	}
+
+	/**
+	 * Parses the string value and returns {@code RevocationReason}
+	 *
+	 * @param v {@link String}
+	 * @return {@link RevocationReason}, null if not able to parse
+	 */
+	public static RevocationReason parseRevocationReason(String v) {
+		return (RevocationReason) parse(v);
+	}
+
+	/**
+	 * Parses the string value and returns {@code SignatureValidationProcessID}
+	 *
+	 * @param v {@link String}
+	 * @return {@link SignatureValidationProcessID}, null if not able to parse
+	 */
+	public static SignatureValidationProcessID parseSignatureValidationProcessID(String v) {
+		return (SignatureValidationProcessID) parse(v);
+	}
+
+	/**
+	 * Parses the string value and returns {@code TypeOfProof}
+	 *
+	 * @param v {@link String}
+	 * @return {@link TypeOfProof}, null if not able to parse
+	 */
 	public static TypeOfProof parseTypeOfProof(String v) {
 		return (TypeOfProof) parse(v);
 	}
 
+	/**
+	 * Parses the string value and returns {@code ConstraintStatus}
+	 *
+	 * @param v {@link String}
+	 * @return {@link ConstraintStatus}, null if not able to parse
+	 */
 	public static ConstraintStatus parseConstraintStatus(String v) {
 		return (ConstraintStatus) parse(v);
 	}

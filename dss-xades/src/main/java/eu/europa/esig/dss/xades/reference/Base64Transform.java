@@ -37,16 +37,24 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
  */
 public class Base64Transform extends AbstractTransform {
 
+	/**
+	 * Default constructor
+	 */
 	public Base64Transform() {
 		super(Transforms.TRANSFORM_BASE64_DECODE);
 	}
 
+	/**
+	 * Constructor with namespace
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 */
 	public Base64Transform(DSSNamespace xmlDSigNamespace) {
 		super(xmlDSigNamespace, Transforms.TRANSFORM_BASE64_DECODE);
 	}
 
 	@Override
-	public byte[] getBytesAfterTranformation(Node node, String uri) {
+	public byte[] getBytesAfterTransformation(Node node) {
 		return DSSXMLUtils.serializeNode(node);
 	}
 

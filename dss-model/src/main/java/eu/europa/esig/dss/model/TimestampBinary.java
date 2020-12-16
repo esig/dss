@@ -25,13 +25,24 @@ package eu.europa.esig.dss.model;
  *
  */
 public class TimestampBinary {
-	
+
+	/** The binaries of a timestamp */
 	private final byte[] bytes;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param bytes byte array
+	 */
 	public TimestampBinary(final byte[] bytes) {
 		this.bytes = bytes;
 	}
-	
+
+	/**
+	 * Gets timestamp's binary
+	 *
+	 * @return byte array
+	 */
 	public byte[] getBytes() {
 		return bytes;
 	}

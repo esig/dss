@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -32,22 +30,39 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
-/*
- * If best-signature-time is before the issuance date of the signing certificate, the process shall return the
- * indication FAILED with the sub-indication NOT_YET_VALID. Otherwise, the process shall return the indication 
- * and sub-indication which was returned by previous step.
+import java.util.Date;
+
+/**
+ * If best-signature-time is before the issuance date of the signing
+ * certificate, the process shall return the indication FAILED with the
+ * sub-indication NOT_YET_VALID. Otherwise, the process shall return the
+ * indication and sub-indication which was returned by previous step.
  * 
- * {@code currentIndication} and {@code currentSubIndication} shall be null when return of original result is not required
+ * {@code currentIndication} and {@code currentSubIndication} shall be null when
+ * return of original result is not required
  */
 public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Best signature time */
 	private final Date bestSignatureTime;
+
+	/** The signing certificate */
 	private final CertificateWrapper signingCertificate;
+
+	/** Current Indication */
 	private final Indication currentIndication;
+
+	/** Current SubIndication */
 	private final SubIndication currentSubIndication;
 
 	/**
 	 * The default constructor
+	 * 
+	 * @param i18nProvider       the il8n provider
+	 * @param result             the result
+	 * @param bestSignatureTime  the best signature time
+	 * @param signingCertificate the signing certificate
+	 * @param constraint         the constraint
 	 */
 	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, T result, Date bestSignatureTime,
 			CertificateWrapper signingCertificate, LevelConstraint constraint) {
@@ -56,6 +71,14 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlCon
 
 	/**
 	 * The default constructor allowing setting of returned Indication/subIndication on success result
+	 *
+	 * @param i18nProvider       the il8n provider
+	 * @param result             the result
+	 * @param bestSignatureTime  the best signature time
+	 * @param signingCertificate the signing certificate
+	 * @param currentIndication  {@link Indication}
+	 * @param currentSubIndication {@link SubIndication}
+	 * @param constraint         the constraint
 	 */
 	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, T result, Date bestSignatureTime,
 			CertificateWrapper signingCertificate, Indication currentIndication, SubIndication currentSubIndication, LevelConstraint constraint) {
@@ -73,9 +96,9 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlCon
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String bestSignatureTimeStr = bestSignatureTime == null ? " ? " : ValidationProcessUtils.getFormattedDate(bestSignatureTime);
-		return MessageTag.BEST_SIGNATURE_TIME.setArgs(bestSignatureTimeStr);
+		return i18nProvider.getMessage(MessageTag.BEST_SIGNATURE_TIME, bestSignatureTimeStr);
 	}
 
 	@Override

@@ -20,67 +20,135 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.io.Serializable;
+import eu.europa.esig.dss.utils.Utils;
 
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * Contains a result if a signature cryptographic validation
+ */
 public class SignatureCryptographicVerification implements Serializable {
 
+	/** Builds the error message if applicable. Empty value if validation succeeds. */
+	private final StringBuilder errorMessageBuilder = new StringBuilder();
+
+	/** Defines if (all) references data found */
 	private boolean referenceDataFound;
 
+	/** Defines if (all) references data intact */
 	private boolean referenceDataIntact;
 
 	/**
-	 * This can be true but the {@code signatureValid} can be false
+	 * Defines if the SignatureValue is valid
+	 *
+	 * NOTE: This can be true but the {@code signatureValid} can be false
 	 */
 	private boolean signatureIntact;
 
-	private String errorMessage = "";
-
+	/**
+	 * Gets if (all) references data found
+	 *
+	 * @return if (all) references data found
+	 */
 	public boolean isReferenceDataFound() {
 		return referenceDataFound;
 	}
 
+	/**
+	 * Sets if (all) references data found
+	 *
+	 * @param referenceDataFound if (all) references data found
+	 */
 	public void setReferenceDataFound(boolean referenceDataFound) {
 		this.referenceDataFound = referenceDataFound;
 	}
 
+	/**
+	 * Gets if (all) references data intact
+	 *
+	 * @return if (all) references data intact
+	 */
 	public boolean isReferenceDataIntact() {
 		return referenceDataIntact;
 	}
 
+	/**
+	 * Sets if (all) references data intact
+	 *
+	 * @param referenceDataIntact if (all) references data intact
+	 */
 	public void setReferenceDataIntact(boolean referenceDataIntact) {
 		this.referenceDataIntact = referenceDataIntact;
 	}
 
+	/**
+	 * Gets if the SignatureValue is valid
+	 *
+	 * @return if the SignatureValue is valid
+	 */
 	public boolean isSignatureIntact() {
 		return signatureIntact;
 	}
 
+	/**
+	 * Sets if the SignatureValue is valid
+	 *
+	 * @param signatureIntact if the SignatureValue is valid
+	 */
 	public void setSignatureIntact(boolean signatureIntact) {
 		this.signatureIntact = signatureIntact;
 	}
 
 	/**
-	 * This means that the {@code referenceDataFound} and {@code referenceDataIntact} and {@code signatureValid} are true
+	 * Returns if the signature is valid.
+	 * This means that the {@code referenceDataFound} and
+	 *                     {@code referenceDataIntact} and
+	 *                     {@code signatureValid} are true
+	 *
+	 * @return TRUE if the signature is valid, FALSE otherwise
 	 */
 	public boolean isSignatureValid() {
 		return referenceDataFound && signatureIntact && referenceDataIntact;
 	}
 
+	/**
+	 * Returns a list of error messages obtained during signature cryptographic verification
+	 * 
+	 * @return {@link String} error message, empty string "" is signature is valid
+	 */
 	public String getErrorMessage() {
-		return errorMessage;
+		return errorMessageBuilder.toString();
 	}
 
+	/**
+	 * Sets the error message (adds the message to error list)
+	 *
+	 * @param errorMessage {@link String} to add
+	 */
 	public void setErrorMessage(final String errorMessage) {
-		if (this.errorMessage != null && !this.errorMessage.isEmpty()) {
-			this.errorMessage += "<br/>\n" + errorMessage;
-		} else {
-			this.errorMessage = errorMessage;
+		if (errorMessageBuilder.length() != 0) {
+			errorMessageBuilder.append("<br/>\n");
+		}
+		errorMessageBuilder.append(errorMessage);
+	}
+
+	/**
+	 * Sets all error messages (adds the messages to error list)
+	 *
+	 * @param errorMessages a list of {@link String} messages
+	 */
+	public void setErrorMessages(List<String> errorMessages) {
+		if (Utils.isCollectionNotEmpty(errorMessages)) {
+			for (String errorMessage : errorMessages) {
+				setErrorMessage(errorMessage);
+			}
 		}
 	}
 
 	@Override
 	public String toString() {
-		return "referenceDataFound:" + referenceDataFound + ", referenceDataIntact:" + referenceDataIntact + ", signatureValid;" + signatureIntact + " / " + errorMessage;
+		return "referenceDataFound:" + referenceDataFound + ", referenceDataIntact:" + referenceDataIntact + ", signatureValid;" + signatureIntact + " / " + errorMessageBuilder.toString();
 	}
 
 }

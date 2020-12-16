@@ -126,8 +126,7 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 
 		assertThrows(InvalidPasswordException.class, () -> service.getDataToSign(openProtected, parameters));
 
-		assertThrows(InvalidPasswordException.class,
-				() -> service.signDocument(openProtected, parameters, new SignatureValue()));
+		assertThrows(InvalidPasswordException.class, () -> service.signDocument(openProtected, parameters,sigValue));
 
 		assertThrows(InvalidPasswordException.class, () -> service.timestamp(openProtected, timestampParameters));
 
@@ -139,7 +138,7 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 				() -> service.getDataToSign(editionProtectedNone, parameters));
 
 		assertThrows(ProtectedDocumentException.class,
-				() -> service.signDocument(editionProtectedNone, parameters, new SignatureValue()));
+				() -> service.signDocument(editionProtectedNone, parameters, sigValue));
 
 		assertThrows(ProtectedDocumentException.class,
 				() -> service.timestamp(editionProtectedNone, timestampParameters));
@@ -152,7 +151,7 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 				() -> service.getDataToSign(editionProtectedSigningAllowedNoField, parameters));
 
 		assertThrows(ProtectedDocumentException.class, () -> service.signDocument(editionProtectedSigningAllowedNoField,
-				parameters, new SignatureValue()));
+				parameters, sigValue));
 
 		assertThrows(ProtectedDocumentException.class,
 				() -> service.timestamp(editionProtectedSigningAllowedNoField, timestampParameters));
@@ -165,7 +164,7 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 				() -> service.getDataToSign(editionProtectedSigningAllowedWithField, parameters));
 
 		assertThrows(ProtectedDocumentException.class, () -> service
-				.signDocument(editionProtectedSigningAllowedWithField, parameters, new SignatureValue()));
+				.signDocument(editionProtectedSigningAllowedWithField, parameters, sigValue));
 
 		assertThrows(ProtectedDocumentException.class,
 				() -> service.timestamp(editionProtectedSigningAllowedWithField, timestampParameters));

@@ -7,9 +7,7 @@
             <SignatureFilename>problematic-signed-pades-baseline-b.pdf</SignatureFilename>
             <ClaimedSigningTime>2017-02-10T13:18:14</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

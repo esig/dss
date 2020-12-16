@@ -98,4 +98,5 @@ public class XAdESLevelBaselineB implements SignatureProfile {
 		parameters.getContext().setBuilder(builder);
 		return dssDocument;
 	}
+
 }

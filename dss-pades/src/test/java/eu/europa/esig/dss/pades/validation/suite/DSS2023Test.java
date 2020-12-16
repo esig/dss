@@ -20,21 +20,22 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.HashSet;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
+
+import java.util.HashSet;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS2023Test extends AbstractPAdESTestValidation {
 
@@ -59,9 +60,17 @@ public class DSS2023Test extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		// no signature timestamp
-		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertEquals(2, signatures.size());
+		for (SignatureWrapper signatureWrapper : signatures) {
+			if (Utils.isCollectionNotEmpty(signatureWrapper.getTimestampList())) {
+				assertTrue(diagnosticData.isTLevelTechnicallyValid(signatureWrapper.getId()));
+				assertTrue(diagnosticData.isALevelTechnicallyValid(signatureWrapper.getId()));
+			} else {
+				assertFalse(diagnosticData.isTLevelTechnicallyValid(signatureWrapper.getId()));
+				assertFalse(diagnosticData.isALevelTechnicallyValid(signatureWrapper.getId()));
+			}
+		}
 	}
 
 }

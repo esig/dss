@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.cache.access;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
@@ -36,17 +30,37 @@ import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.dto.builder.DownloadCacheDTOBuilder;
 import eu.europa.esig.dss.tsl.dto.builder.ParsingCacheDTOBuilder;
 import eu.europa.esig.dss.tsl.dto.builder.ValidationCacheDTOBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Reads the relevant cache by the given key
+ */
 public class ReadOnlyCacheAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ReadOnlyCacheAccess.class);
 
-	/* Global Cache */
+	/** Global download Cache */
 	protected final DownloadCache downloadCache;
+
+	/** Global parsing Cache */
 	protected final ParsingCache parsingCache;
+
+	/** Global validation Cache */
 	protected final ValidationCache validationCache;
 
-	public ReadOnlyCacheAccess(final DownloadCache fileCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
+	/**
+	 * Default constructor
+	 *
+	 * @param fileCache {@link DownloadCache}
+	 * @param parsingCache {@link ParsingCache}
+	 * @param validationCache {@link ValidationCache}
+	 */
+	public ReadOnlyCacheAccess(final DownloadCache fileCache, final ParsingCache parsingCache,
+							   final ValidationCache validationCache) {
 		this.downloadCache = fileCache;
 		this.parsingCache = parsingCache;
 		this.validationCache = validationCache;

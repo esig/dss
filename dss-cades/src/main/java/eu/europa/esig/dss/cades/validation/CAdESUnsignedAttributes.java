@@ -20,65 +20,59 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TimeStampToken;
 
-import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
+import java.util.Collections;
+import java.util.List;
 
+/**
+ * Represents the CAdES Unsigned attributes
+ */
 public class CAdESUnsignedAttributes extends CAdESSigProperties {
-	
-	private static List<ASN1ObjectIdentifier> timestampOids;
-	
-	static {
-		timestampOids = new ArrayList<>();
-		timestampOids.add(id_aa_ets_archiveTimestampV2);
-		timestampOids.add(id_aa_ets_archiveTimestampV3);
-		timestampOids.add(id_aa_ets_certCRLTimestamp);
-		timestampOids.add(id_aa_ets_escTimeStamp);
-		timestampOids.add(id_aa_signatureTimeStampToken);
-	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param attributeTable {@link AttributeTable} unsigned attributes table
+	 */
 	CAdESUnsignedAttributes(AttributeTable attributeTable) {
 		super(attributeTable);
 	}
-	
+
+	/**
+	 * Builds the {@code CAdESUnsignedAttributes} from a {@code SignerInformation}
+	 *
+	 * @param signerInformation {@link SignerInformation} to build {@link CAdESUnsignedAttributes} from
+	 * @return {@link CAdESUnsignedAttributes}
+	 */
 	public static CAdESUnsignedAttributes build(SignerInformation signerInformation) {
 		return new CAdESUnsignedAttributes(signerInformation.getUnsignedAttributes());
 	}
 	
 	@Override
 	public List<CAdESAttribute> getAttributes() {
+		List<CAdESAttribute> attributes = super.getAttributes();
 		// Multiple timestamps need to be sorted in CAdES by their production date
-		return sortTimestamps(super.getAttributes());
+		return sortTimestamps(attributes, DSSASN1Utils.getTimestampOids());
 	}
 	
-	private List<CAdESAttribute> sortTimestamps(List<CAdESAttribute> attributes) {
-		// TODO: improve ?
+	private List<CAdESAttribute> sortTimestamps(List<CAdESAttribute> attributes, List<ASN1ObjectIdentifier> timestampOids) {
 		TimeStampTokenProductionComparator comparator = new TimeStampTokenProductionComparator();
-		
 		for (int ii = 0; ii < attributes.size() - 1; ii++) {
 			for (int jj = 0; jj < attributes.size() - ii - 1; jj++) {
 				CAdESAttribute cadesAttribute = attributes.get(jj);
-				// if the first element is a timestamp
+				// if the element is a timestamp
 				if (timestampOids.contains(cadesAttribute.getASN1Oid())) {
 					CAdESAttribute nextCAdESAttribute = attributes.get(jj + 1);
 					// swap if the next element is not a timestamp
 					if (!timestampOids.contains(nextCAdESAttribute.getASN1Oid())) {
 						Collections.swap(attributes, jj, jj + 1);
 					} else {
-
 						TimeStampToken current = cadesAttribute.toTimeStampToken();
 						TimeStampToken next = nextCAdESAttribute.toTimeStampToken();
 						// swap if the current element was generated after the following timestamp attribute

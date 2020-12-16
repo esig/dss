@@ -37,6 +37,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -85,11 +86,15 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			SignatureImageParameters imageParameters = new SignatureImageParameters();
 			// set an image
 			imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png")));
+			
+			// initialize signature field parameters
+			SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+			imageParameters.setFieldParameters(fieldParameters);
 			// the origin is the left and top corner of the page
-			imageParameters.setxAxis(200);
-			imageParameters.setyAxis(400);
-			imageParameters.setWidth(300);
-			imageParameters.setHeight(200);
+			fieldParameters.setOriginX(200);
+			fieldParameters.setOriginY(400);
+			fieldParameters.setWidth(300);
+			fieldParameters.setHeight(200);
 			// end::parameters-configuration[]
 			
 			// tag::font[]

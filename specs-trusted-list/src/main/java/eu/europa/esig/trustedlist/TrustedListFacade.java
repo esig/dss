@@ -20,22 +20,29 @@
  */
 package eu.europa.esig.trustedlist;
 
-import java.io.IOException;
+import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.validation.Schema;
+import java.io.IOException;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
-import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
-
+/**
+ * Performs marshalling/unmarshalling operation for a TrustedList XML
+ */
 public class TrustedListFacade extends AbstractJaxbFacade<TrustStatusListType> {
-	
+
+	/** TL utils */
 	private static final TrustedListUtils TL_UTILS = TrustedListUtils.getInstance();
 
+	/**
+	 * Creates a new facade
+	 *
+	 * @return {@link TrustedListFacade}
+	 */
 	public static TrustedListFacade newFacade() {
 		return new TrustedListFacade();
 	}

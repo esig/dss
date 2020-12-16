@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -37,6 +30,7 @@ import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.scope.ContainerContentSignatureScope;
 import eu.europa.esig.dss.validation.scope.ContainerSignatureScope;
+import eu.europa.esig.dss.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.ManifestEntrySignatureScope;
@@ -45,6 +39,12 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Performs operations in order to find all signed data for a XAdES Signature
@@ -59,7 +59,8 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		List<ReferenceValidation> referenceValidations = xadesSignature.getReferenceValidations();
 		for (ReferenceValidation referenceValidation : referenceValidations) {
 			if (DigestMatcherType.SIGNED_PROPERTIES.equals(referenceValidation.getType()) || 
-					DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) ) {
+					DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) ||
+					DigestMatcherType.SIGNATURE_PROPERTIES.equals(referenceValidation.getType())) {
 				// not a subject for the Signature Scope
 				continue;
 			}
@@ -99,6 +100,10 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 						}
 					}
 				}
+				
+			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.COUNTER_SIGNATURE.equals(xadesReferenceValidation.getType()) &&
+					xadesSignature.getMasterSignature() != null) {
+            	result.add(new CounterSignatureScope(xadesSignature.getMasterSignature().getId(), getDigest(xadesReferenceValidation.getOriginalContentBytes())));
 				
 			} else if (xadesReferenceValidation.isFound() && Utils.EMPTY_STRING.equals(uri)) {
 				byte[] originalContentBytes = xadesReferenceValidation.getOriginalContentBytes();
@@ -152,17 +157,17 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 	
 					} else if (Utils.isCollectionNotEmpty(transformations)) {
 						detachedSignatureScopes
-								.add(new XmlFullSignatureScope(fileName, transformations, DSSUtils.getDigest(getDefaultDigestAlgorithm(), detachedDocument)));
+								.add(new XmlFullSignatureScope(fileName, transformations, getDigest(detachedDocument)));
 	
 					} else if (isASiCSArchive(xadesSignature, detachedDocument)) {
-						detachedSignatureScopes.add(new ContainerSignatureScope(decodedUrl, DSSUtils.getDigest(getDefaultDigestAlgorithm(), detachedDocument)));
+						detachedSignatureScopes.add(new ContainerSignatureScope(decodedUrl, getDigest(detachedDocument)));
 						for (DSSDocument archivedDocument : xadesSignature.getContainerContents()) {
 							detachedSignatureScopes.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()),
-									DSSUtils.getDigest(getDefaultDigestAlgorithm(), archivedDocument)));
+									getDigest(archivedDocument)));
 						}
 	
 					} else {
-						detachedSignatureScopes.add(new FullSignatureScope(fileName, DSSUtils.getDigest(getDefaultDigestAlgorithm(), detachedDocument)));
+						detachedSignatureScopes.add(new FullSignatureScope(fileName, getDigest(detachedDocument)));
 					}
 				}
 			}
@@ -170,7 +175,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		return detachedSignatureScopes;
 	}
 
-	public boolean isEverythingCovered(XAdESSignature signature, String coveredObjectId) {
+	private boolean isEverythingCovered(XAdESSignature signature, String coveredObjectId) {
 		Element parent = signature.getSignatureElement().getOwnerDocument().getDocumentElement();
 		if (parent != null) {
 			if (isRelatedToUri(parent, coveredObjectId)) {

@@ -79,7 +79,7 @@ public class XAdESAttrAuthoritiesValuesTest extends AbstractXAdESTestValidation 
 		SignatureWrapper signatureWrapper = signatures.get(0);
 		
 		List<RelatedCertificateWrapper> attrAuthoritiesCertValues = signatureWrapper.foundCertificates().
-				getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+				getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES);
 		assertEquals(2, attrAuthoritiesCertValues.size());
 		
 		List<TimestampWrapper> archiveTimestamps = signatureWrapper.getArchiveTimestamps();

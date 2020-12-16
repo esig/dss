@@ -23,10 +23,19 @@ package eu.europa.esig.dss.spi.tsl.identifier;
 import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 
+/**
+ * Abstract class for DSS internal identifier
+ */
 public abstract class AbstractTLIdentifier extends MultipleDigestIdentifier {
 
 	private static final long serialVersionUID = -250692069626295484L;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param prefix {@link String} identifier prefix (e.g. 'TL-')
+	 * @param tlInfo {@link TLInfo} of the target TL
+	 */
 	protected AbstractTLIdentifier(final String prefix, TLInfo tlInfo) {
 		super(prefix, tlInfo.getUrl().getBytes());
 	}

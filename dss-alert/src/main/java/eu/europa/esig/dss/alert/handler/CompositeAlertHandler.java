@@ -22,10 +22,21 @@ package eu.europa.esig.dss.alert.handler;
 
 import java.util.List;
 
+/**
+ * The class allows to define multiple {@code AlertHandler}s to process
+ *
+ * @param <T> defines class of an object to process
+ */
 public class CompositeAlertHandler<T> implements AlertHandler<T> {
 
+	/** A list of handlers to execute */
 	private final List<AlertHandler<T>> handlers;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param handlers a list of {@link AlertHandler}s to proces
+	 */
 	public CompositeAlertHandler(List<AlertHandler<T>> handlers) {
 		this.handlers = handlers;
 	}

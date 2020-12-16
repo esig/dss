@@ -65,7 +65,5 @@ public class CertificateRefIdentifier extends Identifier {
 		}
 		throw new DSSException("One of [certDigest, publicKeyDigest, issuerInfo] must be defined for a CertificateRef!");
 	}
-	
-	
 
 }

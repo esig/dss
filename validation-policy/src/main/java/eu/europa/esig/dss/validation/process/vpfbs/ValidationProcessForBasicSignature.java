@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfbs;
 
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -32,18 +30,32 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.SignatureBasicBuildingBlocksCheck;
 
+import java.util.Map;
+
 /**
  * 5.3 Validation process for Basic Signature
  */
 public class ValidationProcessForBasicSignature extends Chain<XmlValidationProcessBasicSignature> {
 
+	/** Diagnostic Data */
 	private final DiagnosticData diagnosticData;
+
+	/** The signature */
 	private final SignatureWrapper signature;
 
+	/** Map of BasicBuildingBlocks */
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-	public ValidationProcessForBasicSignature(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature, 
-			Map<String, XmlBasicBuildingBlocks> bbbs) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param signature {@link SignatureWrapper}
+	 * @param bbbs map of BasicBuildingBlocks
+	 */
+	public ValidationProcessForBasicSignature(I18nProvider i18nProvider, DiagnosticData diagnosticData,
+											  SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		super(i18nProvider, new XmlValidationProcessBasicSignature());
 		this.diagnosticData = diagnosticData;
 		this.signature = signature;

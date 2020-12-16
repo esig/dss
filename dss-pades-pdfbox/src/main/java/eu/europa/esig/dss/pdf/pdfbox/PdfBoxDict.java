@@ -20,13 +20,8 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
+import eu.europa.esig.dss.pdf.PdfArray;
+import eu.europa.esig.dss.pdf.PdfDict;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -34,14 +29,30 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
-import eu.europa.esig.dss.pdf.PdfArray;
-import eu.europa.esig.dss.pdf.PdfDict;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
+/**
+ * The PDFBox implementation of {@code eu.europa.esig.dss.pdf.PdfDict}
+ */
 class PdfBoxDict implements PdfDict {
 
+	/** The PDFBox object */
 	private COSDictionary wrapped;
+
+	/** The document */
 	private PDDocument document;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param wrapped {@link COSDictionary}
+	 * @param document {@link PDDocument}
+	 */
 	public PdfBoxDict(COSDictionary wrapped, PDDocument document) {
 		this.wrapped = wrapped;
 		this.document = document;

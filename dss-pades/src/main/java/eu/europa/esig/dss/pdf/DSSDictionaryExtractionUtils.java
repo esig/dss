@@ -20,44 +20,33 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLUtils;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.crl.CRLBinary;
-import eu.europa.esig.dss.crl.CRLUtils;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * Contains utils for a DSS dictionary content extarction
+ */
 public class DSSDictionaryExtractionUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSDictionaryExtractionUtils.class);
 
-	public static Map<Long, CRLBinary> getCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, CRLBinary> crlMap = new HashMap<>();
-		final PdfArray crlArray = dict.getAsArray(arrayName);
-		if (crlArray != null) {
-			LOG.debug("There are {} CRLs in the '{}' dictionary", crlArray.size(), dictionaryName);
-			for (int ii = 0; ii < crlArray.size(); ii++) {
-				try {
-					long objectNumber = crlArray.getObjectNumber(ii);
-					if (!crlMap.containsKey(objectNumber)) {
-						crlMap.put(objectNumber, CRLUtils.buildCRLBinary(crlArray.getBytes(ii)));
-					}
-				} catch (Exception e) {
-					LOG.debug("Unable to read CRL '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
-				}
-			}
-		} else {
-			LOG.debug("No CRLs found in the '{}' dictionary", dictionaryName);
-		}
-		return crlMap;
-	}
-
+	/**
+	 * Extract certificate object map
+	 *
+	 * @param dict {@link PdfDict}
+	 * @param dictionaryName {@link String} name of the dictionary
+	 * @param arrayName {@link String} containing the certificates
+	 * @return a map of certificate objects
+	 */
 	public static Map<Long, CertificateToken> getCertsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
 		Map<Long, CertificateToken> certMap = new HashMap<>();
 		final PdfArray certsArray = dict.getAsArray(arrayName);
@@ -79,6 +68,43 @@ public class DSSDictionaryExtractionUtils {
 		return certMap;
 	}
 
+	/**
+	 * Extract CRL object map
+	 *
+	 * @param dict {@link PdfDict}
+	 * @param dictionaryName {@link String} name of the dictionary
+	 * @param arrayName {@link String} containing the CRLs
+	 * @return a map of CRL objects
+	 */
+	public static Map<Long, CRLBinary> getCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
+		Map<Long, CRLBinary> crlMap = new HashMap<>();
+		final PdfArray crlArray = dict.getAsArray(arrayName);
+		if (crlArray != null) {
+			LOG.debug("There are {} CRLs in the '{}' dictionary", crlArray.size(), dictionaryName);
+			for (int ii = 0; ii < crlArray.size(); ii++) {
+				try {
+					long objectNumber = crlArray.getObjectNumber(ii);
+					if (!crlMap.containsKey(objectNumber)) {
+						crlMap.put(objectNumber, CRLUtils.buildCRLBinary(crlArray.getBytes(ii)));
+					}
+				} catch (Exception e) {
+					LOG.debug("Unable to read CRL '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
+				}
+			}
+		} else {
+			LOG.debug("No CRLs found in the '{}' dictionary", dictionaryName);
+		}
+		return crlMap;
+	}
+
+	/**
+	 * Extract OCSP object map
+	 *
+	 * @param dict {@link PdfDict}
+	 * @param dictionaryName {@link String} name of the dictionary
+	 * @param arrayName {@link String} containing the OCSPs
+	 * @return a map of OCSP objects
+	 */
 	public static Map<Long, BasicOCSPResp> getOCSPsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
 		Map<Long, BasicOCSPResp> ocspMap = new HashMap<>();
 		PdfArray ocspArray = dict.getAsArray(arrayName);

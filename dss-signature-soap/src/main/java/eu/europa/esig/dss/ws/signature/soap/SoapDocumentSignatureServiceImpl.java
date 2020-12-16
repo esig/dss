@@ -23,17 +23,28 @@ package eu.europa.esig.dss.ws.signature.soap;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.common.RemoteDocumentSignatureService;
+import eu.europa.esig.dss.ws.signature.dto.CounterSignSignatureDTO;
+import eu.europa.esig.dss.ws.signature.dto.DataToBeCounterSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.DataToSignOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.ExtendDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.SignOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.TimestampOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.soap.client.SoapDocumentSignatureService;
 
+/**
+ * SOAP implementation of the remote signature service
+ */
 @SuppressWarnings("serial")
 public class SoapDocumentSignatureServiceImpl implements SoapDocumentSignatureService {
 
+	/** The service to use */
 	private RemoteDocumentSignatureService service;
 
+	/**
+	 * Sets the remote signature service
+	 *
+	 * @param service {@link RemoteDocumentSignatureService}
+	 */
 	public void setService(RemoteDocumentSignatureService service) {
 		this.service = service;
 	}
@@ -56,6 +67,17 @@ public class SoapDocumentSignatureServiceImpl implements SoapDocumentSignatureSe
 	@Override
 	public RemoteDocument timestampDocument(TimestampOneDocumentDTO timestampDocument) {
 		return service.timestamp(timestampDocument.getToTimestampDocument(), timestampDocument.getTimestampParameters());
+	}
+
+	@Override
+	public ToBeSignedDTO getDataToBeCounterSigned(DataToBeCounterSignedDTO dataToBeCounterSigned) {
+		return service.getDataToBeCounterSigned(dataToBeCounterSigned.getSignatureDocument(), dataToBeCounterSigned.getParameters());
+	}
+
+	@Override
+	public RemoteDocument counterSignSignature(CounterSignSignatureDTO counterSignSignature) {
+		return service.counterSignSignature(counterSignSignature.getSignatureDocument(),
+				counterSignSignature.getParameters(), counterSignSignature.getSignatureValue());
 	}
 
 }

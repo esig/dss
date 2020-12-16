@@ -58,7 +58,6 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		checkSignedAttributesOrder(byteArray);
-
 	}
 
 	@Override

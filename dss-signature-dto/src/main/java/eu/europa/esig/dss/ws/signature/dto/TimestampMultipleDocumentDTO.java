@@ -20,27 +20,51 @@
  */
 package eu.europa.esig.dss.ws.signature.dto;
 
-import java.util.List;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 
+import java.util.List;
+
+/**
+ * Request DTO to timestamps a list of documents
+ */
 public class TimestampMultipleDocumentDTO extends AbstractTimestampDocumentDTO {
-	
+
+	/** List of documents to be timestamped */
 	private List<RemoteDocument> toTimestampDocuments;
-	
+
+	/**
+	 * Empty constructor
+	 */
 	public TimestampMultipleDocumentDTO() {
 	}
-	
-	public TimestampMultipleDocumentDTO(List<RemoteDocument> toTimestampDocuments, RemoteTimestampParameters timestampParameters) {
+
+	/**
+	 * Default constructor
+	 *
+	 * @param toTimestampDocuments a list of {@link RemoteDocument}s to timestamp
+	 * @param timestampParameters {@link RemoteTimestampParameters}
+	 */
+	public TimestampMultipleDocumentDTO(List<RemoteDocument> toTimestampDocuments,
+										RemoteTimestampParameters timestampParameters) {
 		super(timestampParameters);
 		this.setToTimestampDocuments(toTimestampDocuments);
 	}
 
+	/**
+	 * Gets a list of documents to be timestamped
+	 *
+	 * @return a list of {@link RemoteDocument}s
+	 */
 	public List<RemoteDocument> getToTimestampDocuments() {
 		return toTimestampDocuments;
 	}
 
+	/**
+	 * Sets a list of documents to be timestamped
+	 *
+	 * @param toTimestampDocuments a list of {@link RemoteDocument}s
+	 */
 	public void setToTimestampDocuments(List<RemoteDocument> toTimestampDocuments) {
 		this.toTimestampDocuments = toTimestampDocuments;
 	}

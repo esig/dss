@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.bouncycastle.asn1.cms.SignerInfo;
@@ -36,7 +35,6 @@ import org.bouncycastle.cms.SignerInformationStore;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -47,9 +45,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
-import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureReferenceType;
-import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
@@ -69,27 +65,6 @@ public class CAdESSignatureWrapperTest extends AbstractCAdESTestValidation {
 		assertNotNull(signature.getDigestMatchers());
 		assertEquals(1, signature.getDigestMatchers().size());
 		assertNotNull(signature.getSignatureValue());
-	}
-	
-	@Override
-	protected void checkReportsSignatureIdentifier(Reports reports) {
-		// TODO Auto-generated method stub
-		super.checkReportsSignatureIdentifier(reports);
-		
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		
-		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
-		SignatureValidationReportType signatureValidationReport = etsiValidationReport.getSignatureValidationReport().get(0);
-		assertNotNull(signatureValidationReport);
-		SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
-		assertNotNull(signatureIdentifier);
-		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
-		assertEquals(signature.getDigestMatchers().get(0).getDigestMethod(),
-				DigestAlgorithm.forXML(signatureIdentifier.getDigestAlgAndValue().getDigestMethod().getAlgorithm()));
-		assertTrue(Arrays.equals(signature.getDigestMatchers().get(0).getDigestValue(), signatureIdentifier.getDigestAlgAndValue().getDigestValue()));
-		assertNotNull(signatureIdentifier.getSignatureValue());
-		assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
 	}
 	
 	@Override

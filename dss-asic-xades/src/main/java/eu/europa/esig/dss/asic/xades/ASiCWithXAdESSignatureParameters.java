@@ -21,10 +21,11 @@
 package eu.europa.esig.dss.asic.xades;
 
 import eu.europa.esig.dss.asic.common.ASiCParameters;
-import eu.europa.esig.dss.enumerations.SignatureForm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
+/**
+ * Defines SignatureParameters to deal with ASiC with XAdES signature creation/extension
+ */
 public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
 
 	private static final long serialVersionUID = 5004478692506008320L;
@@ -34,16 +35,13 @@ public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
 	 */
 	private ASiCParameters asicParams = new ASiCParameters();
 
+	/**
+	 * Returns ASiCParameters
+	 *
+	 * @return {@link ASiCParameters}
+	 */
 	public ASiCParameters aSiC() {
 		return asicParams;
-	}
-
-	@Override
-	public void setSignatureLevel(SignatureLevel signatureLevel) {
-		if (signatureLevel == null || SignatureForm.XAdES != signatureLevel.getSignatureForm()) {
-			throw new IllegalArgumentException("Only XAdES form is allowed !");
-		}
-		super.setSignatureLevel(signatureLevel);
 	}
 
 }

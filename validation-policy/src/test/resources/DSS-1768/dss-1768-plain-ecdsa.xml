@@ -7,9 +7,7 @@
             <SignatureFilename>simple-test.signed-enveloped-transform-ar-LuxTrust3-lta(dss5.3).xml</SignatureFilename>
             <ClaimedSigningTime>2018-06-12T11:28:54</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="old-simple-report.pdf">
                     <DigestMethod>SHA256</DigestMethod>
@@ -394,8 +392,8 @@
             <Locality>DE</Locality>
             <CountryName>DE</CountryName>
             <OrganizationName>DIaLOGIKa GmbH</OrganizationName>
-            <GivenName>Andreas</GivenName>
             <OrganizationalUnit>HRB NR. 7347</OrganizationalUnit>
+            <GivenName>Andreas</GivenName>
             <Surname>Reifschneider</Surname>
             <Email>Andreas.Reifschneider@dialogika.de</Email>
             <AuthorityInformationAccessUrls>

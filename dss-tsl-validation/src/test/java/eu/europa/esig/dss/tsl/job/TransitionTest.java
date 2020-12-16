@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.job;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -28,9 +29,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -64,7 +67,7 @@ public class TransitionTest {
 	private DSSDocument CZ_NOT_COMPLIANT = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
 
 	@Test
-	public void nullDoc() throws InterruptedException {
+	public void nullDoc() {
 
 		String url = "null-doc";
 
@@ -79,7 +82,10 @@ public class TransitionTest {
 		assertNull(firstCZ.getDownloadCacheInfo().getLastSuccessSynchronizationTime());
 		checkSummary(firstSummary, CacheStateEnum.ERROR, CacheStateEnum.REFRESH_NEEDED, CacheStateEnum.REFRESH_NEEDED);
 
-		Thread.sleep(1);
+		// Wait
+		Calendar nextMilliSecond = Calendar.getInstance();
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
 
 		job.onlineRefresh();
 

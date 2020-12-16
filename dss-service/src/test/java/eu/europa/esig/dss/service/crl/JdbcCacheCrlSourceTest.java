@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.service.crl;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,6 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterEach;
@@ -92,8 +95,12 @@ public class JdbcCacheCrlSourceTest {
 		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getExternalOrigin());
 
 		crlSource.setMaxNextUpdateDelay(1L);
-		Thread.sleep(1000);
 		
+		// wait one second
+		Calendar nextSecond = Calendar.getInstance();
+		nextSecond.add(Calendar.SECOND, 1);
+		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
+
 		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(forceRefresh);
 		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getExternalOrigin());

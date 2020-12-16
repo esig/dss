@@ -16,6 +16,7 @@
 			</xs:sequence>
 			<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Semantic" type="Semantic" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="ValidationTime" type="xs:dateTime" />
 	</xs:complexType>
@@ -29,6 +30,8 @@
 			
 			<!-- eIDAS stuffs -->
 			<xs:element name="ValidationSignatureQualification" type="ValidationSignatureQualification" minOccurs="0" />
+			
+			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" /> 
 		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
@@ -211,6 +214,11 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="CC"> <!-- Cryptographic Checker -->
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="CV">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion" />
@@ -323,9 +331,11 @@
 
 	<xs:simpleType name="Indication" final="restriction">
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="TOTAL_PASSED" />
 			<xs:enumeration value="PASSED" />
 			<xs:enumeration value="INDETERMINATE" />
 			<xs:enumeration value="FAILED" />
+			<xs:enumeration value="TOTAL_FAILED" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -473,9 +483,10 @@
 	<xs:complexType name="CryptographicInformation">
 		<xs:sequence>
 			<xs:element name="Algorithm" type="xs:string" />
-			<xs:element name="KeyLength" type="xs:string" />
+			<xs:element name="KeyLength" type="xs:string" minOccurs="0" />
 			<xs:element name="Secure" type="xs:boolean" />
 			<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="ConcernedMaterial" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -493,5 +504,13 @@
 			<xs:enumeration value="aACompromise" />
 		</xs:restriction>
 	</xs:simpleType>
+	
+	<xs:complexType name="Semantic">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Key" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	
 </xs:schema>

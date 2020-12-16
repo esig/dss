@@ -20,12 +20,18 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines available types of a SignerRole element
+ */
 public enum EndorsementType {
-	
+
+	/** Attributes certified in attribute certificates issued by an Attribute Authority */
 	CERTIFIED("certified"),
-	
+
+	/** Attributes claimed by the signer */
 	CLAIMED("claimed"),
-	
+
+	/** Assertions signed by a third party */
 	SIGNED("signed");
 	
 	private final String value;
@@ -34,10 +40,21 @@ public enum EndorsementType {
 		this.value = value;
 	}
 
+	/**
+	 * Returns the string value of the enumeration
+	 *
+	 * @return {@link String}
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Parses the string value and returns the {@code EndorsementType}
+	 *
+	 * @param value {@link String} representing the {@link EndorsementType}
+	 * @return {@link EndorsementType} if the values has been parsed successfully, null otherwise
+	 */
 	public static EndorsementType fromString(String value) {
 		for (EndorsementType endorsement : values()) {
 			if (endorsement.value.equals(value)) {

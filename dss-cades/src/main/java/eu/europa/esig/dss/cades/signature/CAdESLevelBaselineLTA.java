@@ -20,12 +20,20 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
-
-import java.io.IOException;
-import java.util.List;
-
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -41,20 +49,11 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
-import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
+import java.io.IOException;
+import java.util.List;
+
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
 
 /**
  * This class holds the CAdES-A signature profiles; it supports the later, over time _extension_ of a signature with
@@ -65,15 +64,18 @@ import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
  * from the XL profile.
  *
  */
-public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
+public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLTA.class);
 
-	private final CAdESLevelBaselineLT cadesProfileLT;
-
-	public CAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
-		super(tspSource, onlyLastSigner);
-		cadesProfileLT = new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastSigner);
+	/**
+	 * The default constructor
+	 *
+	 * @param tspSource {@link TSPSource} to request a timestamp
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 */
+	public CAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier) {
+		super(tspSource, certificateVerifier);
 	}
 
 	@Override
@@ -91,27 +93,19 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		 *   SignedData.certificates, or SignedData.crls as applicable.
 		 */
 		if (!includesATSv2(cmsSignedData)) {
-			cmsSignedData = cadesProfileLT.extendCMSSignatures(cmsSignedData, parameters);
+			for (SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
+				signerInformation = super.extendSignerInformation(cmsSignedData, signerInformation, parameters);
+				cmsSignedData = super.extendCMSSignedData(cmsSignedData, signerInformation, parameters);
+			}
 		}
 		return cmsSignedData;
 	}
-	
-	private boolean includesATSv2(CMSSignedData cmsSignedData) {
-		SignerInformation signerInformation = cmsSignedData.getSignerInfos().iterator().next();
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		Attribute[] attributes = unsignedAttributes.toASN1Structure().getAttributes();
-		for (final Attribute attribute : attributes) {
-			if (DSSASN1Utils.isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV2)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	protected SignerInformation extendCMSSignature(final CMSSignedData cmsSignedData, SignerInformation signerInformation,
+	protected SignerInformation extendSignerInformation(CMSSignedData cmsSignedData, SignerInformation signerInformation,
 			final CAdESSignatureParameters parameters) throws DSSException {
+		signerInformation = super.extendSignerInformation(cmsSignedData, signerInformation, parameters);
+		
 		/*
 		 * If non ATSv2 is present, then the root SignedData is extended in {@code preExtendCMSSignedData(cmsSignedData, parameters)} method
 		 */
@@ -129,7 +123,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 			try {
 				// add missing validation data to the previous (last) ArchiveTimestamp
 				CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
-				ValidationDataForInclusionBuilder validationDataForInclusionBuilder = cadesProfileLT.getValidationDataForInclusionBuilder(cadesSignature)
+				ValidationDataForInclusionBuilder validationDataForInclusionBuilder = getValidationDataForInclusionBuilder(cadesSignature)
 						.excludeCertificateTokens(cadesSignature.getCompleteCertificateSource().getAllCertificateTokens())
 						.excludeCRLs(cadesSignature.getCompleteCRLSource().getAllRevocationBinaries())
 						.excludeOCSPs(cadesSignature.getCompleteOCSPSource().getAllRevocationBinaries());
@@ -147,12 +141,19 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 	}
 	
+	@Override
+	protected CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation,
+			CAdESSignatureParameters parameters) {
+		// post extension is not required for LTA level
+		return cmsSignedData;
+	}
+	
 	private AttributeTable addValidationData(AttributeTable unsignedAttributes, final ValidationDataForInclusion validationDataForInclusion,
 			final List<DSSDocument> detachedContents) throws IOException, CMSException, TSPException {
 		TimeStampToken timestampTokenToExtend = getLastArchiveTimestamp(unsignedAttributes);
 		if (timestampTokenToExtend != null) {
 			CMSSignedData timestampCMSSignedData = timestampTokenToExtend.toCMSSignedData();
-			CMSSignedData extendedTimestampCMSSignedData = cadesProfileLT.extendWithValidationData(
+			CMSSignedData extendedTimestampCMSSignedData = extendWithValidationData(
 					timestampCMSSignedData, validationDataForInclusion, detachedContents);
 					
 			unsignedAttributes = replaceTimeStampAttribute(unsignedAttributes, timestampCMSSignedData, extendedTimestampCMSSignedData);
@@ -224,10 +225,10 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	 * <li>A single instance of ATSHashIndex type (created as specified in clause 6.4.2).
 	 * </ol>
 	 *
-	 * @param cadesSignature
-	 * @param signerInformation
-	 * @param parameters
-	 * @param unsignedAttributes
+	 * @param cadesSignature {@link CAdESSignature}
+	 * @param signerInformation {@link SignerInformation}
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @param unsignedAttributes {@link AttributeTable}
 	 */
 	private AttributeTable addArchiveTimestampV3Attribute(CAdESSignature cadesSignature, SignerInformation signerInformation,
 			CAdESSignatureParameters parameters, AttributeTable unsignedAttributes) {
@@ -253,6 +254,15 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		} else {
 			return id_aa_ATSHashIndexV3;
 		}
+	}
+	
+	private boolean includesATSv2(CMSSignedData cmsSignedData) {
+		for (SignerInformation signerInformation : cmsSignedData.getSignerInfos()) {
+			if (CMSUtils.containsATSTv2(signerInformation)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

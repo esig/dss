@@ -20,26 +20,44 @@
  */
 package eu.europa.esig.dss.crl.x509.impl;
 
-import java.security.cert.X509CRL;
-
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLValidity;
 
+import java.security.cert.X509CRL;
+
+/**
+ * The java.security.cert.X509CRL extension of {@code CRLValidity}
+ */
 public class X509CRLValidity extends CRLValidity {
 
+	/**
+	 * The {@code X509CRL} object
+	 */
 	private X509CRL x509CRL;
 	
 	/**
 	 * Default constructor
+	 *
+	 * @param crlBinary {@link CRLBinary}
 	 */
 	public X509CRLValidity(CRLBinary crlBinary) {
 		super(crlBinary);
 	}
 
+	/**
+	 * Gets the {@code X509CRL}
+	 *
+	 * @return {@link X509CRL}
+	 */
 	public X509CRL getX509CRL() {
 		return x509CRL;
 	}
 
+	/**
+	 * Sets the {@code X509CRL}
+	 *
+	 * @param x509crl {@link X509CRL}
+	 */
 	public void setX509CRL(X509CRL x509crl) {
 		x509CRL = x509crl;
 	}

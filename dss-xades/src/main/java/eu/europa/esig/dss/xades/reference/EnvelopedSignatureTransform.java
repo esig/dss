@@ -42,9 +42,8 @@ public class EnvelopedSignatureTransform extends AbstractTransform {
 	}
 
 	@Override
-	public byte[] getBytesAfterTranformation(Node node, String uri) {
+	public byte[] getBytesAfterTransformation(Node node) {
 		// do nothing the new signature is not existing yet
-		// TODO: can be improved (e.g. extended from {@link ComplexTransform})
 		return DSSXMLUtils.serializeNode(node);
 	}
 

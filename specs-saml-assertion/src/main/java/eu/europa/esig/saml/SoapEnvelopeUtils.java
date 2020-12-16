@@ -20,27 +20,36 @@
  */
 package eu.europa.esig.saml;
 
-import java.util.ArrayList;
-import java.util.List;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.ArrayList;
+import java.util.List;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
-
+/**
+ * SOAP envelop utils
+ */
 public class SoapEnvelopeUtils extends XSDAbstractUtils {
 
 	public static final String XML_SOAP_SCHEMA_LOCATION = "/xsd/schemas.xmlsoap.org.xsd";
 
+	/** Singleton */
 	private static SoapEnvelopeUtils singleton;
 
+	/** JAXBContext */
 	private JAXBContext jc;
 
 	private SoapEnvelopeUtils() {
 	}
 
+	/**
+	 * Returns instance of {@code SoapEnvelopeUtils}
+	 *
+	 * @return {@link SoapEnvelopeUtils}
+	 */
 	public static SoapEnvelopeUtils getInstance() {
 		if (singleton == null) {
 			singleton = new SoapEnvelopeUtils();

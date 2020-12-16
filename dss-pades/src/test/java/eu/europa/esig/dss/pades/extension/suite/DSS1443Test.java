@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -46,6 +38,13 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1443Test extends PKIFactoryAccess {
 
@@ -76,7 +75,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 		assertEquals(2, allTimestamps.size());
 
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
-			assertEquals(TimestampType.ARCHIVE_TIMESTAMP, timestampWrapper.getType());
+			assertEquals(TimestampType.DOCUMENT_TIMESTAMP, timestampWrapper.getType());
 			assertTrue(timestampWrapper.isMessageImprintDataFound());
 			assertTrue(timestampWrapper.isMessageImprintDataIntact());
 			

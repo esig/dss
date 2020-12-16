@@ -31,6 +31,8 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class CAdESLevelBDetachedTest extends AbstractCAdESTestSignature {
@@ -57,8 +59,12 @@ public class CAdESLevelBDetachedTest extends AbstractCAdESTestSignature {
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
 		// test with wrong provided certificate
-		validator.defineSigningCertificate(getCertificate(ECDSA_USER));
+		CertificateSource signingCertificateResolver = new CommonCertificateSource();
+		signingCertificateResolver.addCertificate(getCertificate(ECDSA_USER));
+		validator.setSigningCertificateSource(signingCertificateResolver);
+
 		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);

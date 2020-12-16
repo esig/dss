@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.service.ocsp;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -29,7 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Hex;
 import org.h2.jdbcx.JdbcDataSource;
@@ -118,7 +121,11 @@ public class JdbcCacheOcspSourceTest {
 		
 		// Force refresh (1 second)
 		ocspSource.setMaxNextUpdateDelay(1L);
-		Thread.sleep(1000);
+
+		// wait one second
+		Calendar nextSecond = Calendar.getInstance();
+		nextSecond.add(Calendar.SECOND, 1);
+		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
 
 		// check the dummy token with forcing one second refresh
 		refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);

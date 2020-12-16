@@ -82,6 +82,25 @@
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
 				    
    					<xsl:apply-templates select="dss:TLAnalysis"/>
+	    			
+   					<xsl:if test="dss:Semantic">
+   						
+						<fo:block>
+							<xsl:attribute name="keep-together.within-page">always</xsl:attribute>
+							<xsl:attribute name="font-weight">bold</xsl:attribute>
+							<xsl:attribute name="margin-top">25px</xsl:attribute>
+				       		<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+				       		<xsl:attribute name="color">#004494</xsl:attribute>
+				       		
+				       		<xsl:attribute name="border-bottom-style">solid</xsl:attribute>
+				       		<xsl:attribute name="border-color">#004494</xsl:attribute>
+				       		<xsl:attribute name="border-width">1px</xsl:attribute>
+   					
+   							Semantics
+   						</fo:block>
+						
+						<xsl:apply-templates select="dss:Semantic"/>
+   					</xsl:if>
 					
 					<fo:block>
 						<xsl:attribute name="id">theEnd</xsl:attribute>
@@ -514,6 +533,50 @@
 				</fo:table-row>
 			</fo:table-body>
 		</fo:table>
+    </xsl:template>
+	 
+    <xsl:template match="dss:Semantic">
+    
+    	<fo:table table-layout="fixed">
+    	
+			<fo:table-column>
+				<xsl:attribute name="column-width">30%</xsl:attribute>
+			</fo:table-column>
+			<fo:table-column>
+				<xsl:attribute name="column-width">70%</xsl:attribute>
+			</fo:table-column>
+    	
+			<fo:table-body>
+				<xsl:attribute name="start-indent">0</xsl:attribute>
+				<xsl:attribute name="end-indent">0</xsl:attribute>
+				
+		    	<fo:table-row>
+					<fo:table-cell>
+						<xsl:attribute name="display-align">center</xsl:attribute>
+						
+						<fo:block>
+		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
+    						<xsl:attribute name="font-size">7pt</xsl:attribute>
+       						<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+		    				
+							<xsl:value-of select="@Key"/>
+						</fo:block>
+					</fo:table-cell>
+					<fo:table-cell>
+						<xsl:attribute name="display-align">center</xsl:attribute>
+						
+						<fo:block>
+		    				<xsl:attribute name="font-weight">normal</xsl:attribute>
+							<xsl:attribute name="font-size">7pt</xsl:attribute>
+       						<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+							
+							<xsl:value-of select="."/>
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>    
+    
     </xsl:template>
     
     <xsl:template match="dss:Conclusion" />

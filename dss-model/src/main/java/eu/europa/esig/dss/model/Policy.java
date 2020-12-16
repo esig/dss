@@ -20,34 +20,44 @@
  */
 package eu.europa.esig.dss.model;
 
-import java.io.Serializable;
-import java.util.Arrays;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * This class allows to define the signature policy.
  */
-@SuppressWarnings("serial")
 public class Policy implements Serializable {
 
+	private static final long serialVersionUID = 2792220193195511748L;
+
+	/** The Id of the SignaturePolicy */
 	private String id;
 
-	/* Qualifier attribute for XAdES Identifier */
+	/** Qualifier attribute for XAdES Identifier */
 	private ObjectIdentifierQualifier qualifier;
 
+	/** The SignaturePolicy description */
 	private String description;
 	
-	/* Used in XAdES */
+	/** The array of documentation references (used in XAdES) */
 	private String[] documentationReferences;
 
+	/** The digest algorithm used to conpute the digest */
 	private DigestAlgorithm digestAlgorithm;
 
+	/** The computed digest value */
 	private byte[] digestValue;
 
+	/** The SignaturePolicy URI */
 	private String spuri;
 
+	/**
+	 * Empty constructor
+	 */
 	public Policy() {
 	}
 
@@ -183,6 +193,36 @@ public class Policy implements Serializable {
 	public void setSpuri(String spuri) {
 		this.spuri = spuri;
 	}
+	
+	/**
+	 * Checks if the object's data is not filled
+	 * 
+	 * @return TRUE if the Policy object does not have filled data, FALSE otherwise
+	 */
+	public boolean isEmpty() {
+		if (id != null && !id.isEmpty()) {
+			return false;
+		}
+		if (qualifier != null) {
+			return false;
+		}
+		if (description != null && !description.isEmpty()) {
+			return false;
+		}
+		if (documentationReferences != null && documentationReferences.length != 0) {
+			return false;
+		}
+		if (digestAlgorithm != null) {
+			return false;
+		}
+		if (digestValue != null && digestValue.length != 0) {
+			return false;
+		}
+		if (spuri != null && !spuri.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public int hashCode() {
@@ -209,11 +249,7 @@ public class Policy implements Serializable {
 			return false;
 		}
 		Policy other = (Policy) obj;
-		if (description == null) {
-			if (other.description != null) {
-				return false;
-			}
-		} else if (!description.equals(other.description)) {
+		if (!Objects.equals(description, other.description)) {
 			return false;
 		}
 		if (documentationReferences == null) {
@@ -229,18 +265,10 @@ public class Policy implements Serializable {
 		if (!Arrays.equals(digestValue, other.digestValue)) {
 			return false;
 		}
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
+		if (!Objects.equals(id, other.id)) {
 			return false;
 		}
-		if (spuri == null) {
-			if (other.spuri != null) {
-				return false;
-			}
-		} else if (!spuri.equals(other.spuri)) {
+		if (!Objects.equals(spuri, other.spuri)) {
 			return false;
 		}
 		return true;

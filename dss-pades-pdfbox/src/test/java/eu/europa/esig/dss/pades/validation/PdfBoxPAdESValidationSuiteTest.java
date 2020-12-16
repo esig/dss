@@ -20,14 +20,11 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.runner.RunWith;
-
 import eu.europa.esig.dss.pades.validation.suite.ASN1PolicyTest;
 import eu.europa.esig.dss.pades.validation.suite.BadEncodedCMSTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS1188Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1376GetOriginalDocTest;
+import eu.europa.esig.dss.pades.validation.suite.DSS1523Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1538Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1683Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1690Test;
@@ -35,22 +32,31 @@ import eu.europa.esig.dss.pades.validation.suite.DSS1972Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS1983Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2023Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2025Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS2116WithPAdESTest;
+import eu.europa.esig.dss.pades.validation.suite.DSS2199Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS2258Test;
+import eu.europa.esig.dss.pades.validation.suite.PAdESExtendedToTLevelTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInvalidDigestAlgorithmTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureReferenceTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESMultiplePagesAnnotationsOverlapTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOCSPSigningCertificateTest;
-import eu.europa.esig.dss.pades.validation.suite.PAdESOrphanOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOutOfByteRangeTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESSameBorderAnnotationsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleCorruptedTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESTimestampWithOrphanRefsTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithAddedPageTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithDssVriAndCertRefTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithRemovedPagesTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7Test;
 import eu.europa.esig.dss.pades.validation.suite.PolicyZeroHashTest;
 import eu.europa.esig.dss.pades.validation.suite.SIWATest;
 import eu.europa.esig.dss.pades.validation.suite.SignatureTimestampCertificateNotFoundTest;
+import eu.europa.esig.dss.pades.validation.suite.TimestampedAndSignedTest;
 import eu.europa.esig.dss.pades.validation.suite.dss1420.DSS1420Sha224Test;
 import eu.europa.esig.dss.pades.validation.suite.dss1420.DSS1420Test;
 import eu.europa.esig.dss.pades.validation.suite.dss1469.DSS1469LTTest;
@@ -71,18 +77,23 @@ import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESFiveSignaturesD
 import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESMultiSignedDocRevocTest;
 import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESRevocationOriginTest;
 import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESSignatureDigestReferenceTest;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.runner.RunWith;
 
 @RunWith(JUnitPlatform.class)
 @SelectClasses({ ASN1PolicyTest.class, DSS1188Test.class, DSS1376GetOriginalDocTest.class, DSS1420Test.class, DSS1420Sha224Test.class,
-		DSS818CRYTest.class, DSS818ADOTest.class, DSS818SKTest.class, DSS917Test.class, DSS917CorruptedTest.class, PadesWrongDigestAlgoTest.class, 
-		PdfPkcs7Test.class, DSS1538Test.class, DSS1683Test.class, DSS1690Test.class, PAdESRevocationOriginTest.class, PAdESMultiSignedDocRevocTest.class, 
-		PAdESDssAndVriTest.class, PAdESFiveSignaturesDocTest.class, PAdESSignatureDigestReferenceTest.class, PAdESSignatureDigestReferenceTest.class, 
-		SignatureTimestampCertificateNotFoundTest.class, PAdESSimpleValidationTest.class, PAdESSimpleCorruptedTest.class, PAdESOutOfByteRangeTest.class, 
-		ArchiveTimestampCoverageTest.class, DoubleArchiveTstCoverageTest.class, PolicyZeroHashTest.class, SIWATest.class, DSS1794CrlTest.class, 
+		DSS818CRYTest.class, DSS818ADOTest.class, DSS818SKTest.class, DSS917Test.class, DSS917CorruptedTest.class, PadesWrongDigestAlgoTest.class,
+		PdfPkcs7Test.class, DSS1538Test.class, DSS1683Test.class, DSS1690Test.class, PAdESRevocationOriginTest.class, PAdESMultiSignedDocRevocTest.class,
+		PAdESDssAndVriTest.class, PAdESFiveSignaturesDocTest.class, PAdESSignatureDigestReferenceTest.class, PAdESSignatureDigestReferenceTest.class,
+		SignatureTimestampCertificateNotFoundTest.class, PAdESSimpleValidationTest.class, PAdESSimpleCorruptedTest.class, PAdESOutOfByteRangeTest.class,
+		ArchiveTimestampCoverageTest.class, DoubleArchiveTstCoverageTest.class, PolicyZeroHashTest.class, SIWATest.class, DSS1794CrlTest.class,
 		DSS1794OcspTest.class, PAdESMultipleFieldSignatureReferenceTest.class, DSS1899Test.class, DSS1899TstWithNullTypeTest.class, PAdESInfiniteLoopTest.class,
-		PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class, BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class, 
-		DSS1469Test.class, DSS1469LTTest.class, PAdESOCSPSigningCertificateTest.class, PAdESWithDssVriAndCertRefTest.class, 
-		PAdESOrphanOcspFromDssRevisionTest.class, PAdESInvalidDigestAlgorithmTest.class, DSS2023Test.class, DSS2025Test.class })
+		PAdESTimestampWithOrphanRefsTest.class, DSS1972Test.class, BadEncodedCMSTest.class, PAdESWithOrphanOcspCertRefsTest.class, DSS1983Test.class,
+		DSS1469Test.class, DSS1469LTTest.class, DSS1523Test.class, PAdESOCSPSigningCertificateTest.class, PAdESWithDssVriAndCertRefTest.class,
+		PAdESWithOcspFromDssRevisionTest.class, PAdESInvalidDigestAlgorithmTest.class, DSS2023Test.class, DSS2025Test.class, DSS2116WithPAdESTest.class,
+		PAdESExtendedToTLevelTest.class, DSS2199Test.class, PAdESSameBorderAnnotationsTest.class, PAdESMultiplePagesAnnotationsOverlapTest.class,
+		PAdESWithAddedPageTest.class, PAdESWithRemovedPagesTest.class, DSS2258Test.class, TimestampedAndSignedTest.class })
 public class PdfBoxPAdESValidationSuiteTest {
 
 }

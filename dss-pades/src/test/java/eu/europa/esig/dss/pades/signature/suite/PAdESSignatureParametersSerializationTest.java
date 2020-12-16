@@ -58,7 +58,7 @@ public class PAdESSignatureParametersSerializationTest extends AbstractPAdESTest
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setSignatureFieldId("Signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("Signature1");
 
 		service = new PAdESService(getEmptyCertificateVerifier());
 		service.setTspSource(getGoodTsa());

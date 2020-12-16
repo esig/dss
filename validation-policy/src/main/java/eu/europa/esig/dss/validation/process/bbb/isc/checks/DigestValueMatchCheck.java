@@ -28,12 +28,27 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if the digest value matches for a signing certificate reference
+ */
 public class DigestValueMatchCheck extends ChainItem<XmlISC> {
 
+	/** The token to verify */
 	private final TokenProxy token;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlISC}
+	 * @param token {@link TokenProxy}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public DigestValueMatchCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.token = token;
@@ -41,9 +56,13 @@ public class DigestValueMatchCheck extends ChainItem<XmlISC> {
 
 	@Override
 	protected boolean process() {
-		CertificateRefWrapper signingCertificateReference = token.getSigningCertificateReference();
-		if (signingCertificateReference != null) {
-			return signingCertificateReference.isDigestValueMatch();
+		List<CertificateRefWrapper> signingCertificateReferences = token.getSigningCertificateReferences();
+		if (Utils.isCollectionNotEmpty(signingCertificateReferences)) {
+			for (CertificateRefWrapper reference : signingCertificateReferences) {
+				if (reference.isDigestValuePresent() && reference.isDigestValueMatch()) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}

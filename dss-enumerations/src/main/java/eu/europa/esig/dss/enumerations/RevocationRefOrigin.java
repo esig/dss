@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * List of possible revocation reference origins
+ */
 public enum RevocationRefOrigin {
 	
 	/**

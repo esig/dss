@@ -20,36 +20,49 @@
  */
 package eu.europa.esig.dss.pades.validation.suite.revocation;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.validationreport.jaxb.SATimestampType;
+import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
+import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+
+import javax.xml.bind.JAXBElement;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.enumerations.RevocationType;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.validationreport.jaxb.SATimestampType;
-import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
-import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 
 public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
 		return new InMemoryDocument(getClass().getResourceAsStream("/validation/Signature-P-BG_BOR-2.pdf"));
+	}
+
+	@Override
+	protected void checkValidationContext(SignedDocumentValidator validator) {
+		super.checkValidationContext(validator);
+
+		assertTrue(validator instanceof PDFDocumentValidator);
+		PDFDocumentValidator pdfDocumentValidator = (PDFDocumentValidator) validator;
+
+		assertEquals(1, pdfDocumentValidator.getSignatures().size());
+		assertEquals(1, pdfDocumentValidator.getDssDictionaries().size());
 	}
 	
 	@Override
@@ -80,7 +93,7 @@ public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 		List<TimestampWrapper> timestamps = signature.getTimestampList();
 		assertNotNull(timestamps);
 		assertEquals(2, timestamps.size());
-		List<TimestampWrapper> docTimestamps = signature.getTimestampListByLocation(TimestampLocation.DOC_TIMESTAMP);
+		List<TimestampWrapper> docTimestamps = signature.getTimestampListByType(TimestampType.DOCUMENT_TIMESTAMP);
 		assertNotNull(docTimestamps);
 		assertEquals(1, docTimestamps.size());
 	}
@@ -94,12 +107,11 @@ public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 	
 	@Override
 	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes) {
-		// TODO Auto-generated method stub
 		super.validateETSISignatureAttributes(signatureAttributes);
 		
 		assertNotNull(signatureAttributes);
@@ -150,6 +162,30 @@ public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals("ПОДПИСАН ОТ", signature.getReason());
+	}
+
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(2, timestampList.size());
+
+		boolean sigTstFound = false;
+		boolean arcTstFound = false;
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				sigTstFound = true;
+			} else if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(ArchiveTimestampType.PAdES, timestampWrapper.getArchiveTimestampType());
+				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
+				assertEquals(1, timestampWrapper.getTimestampedTimestamps().size());
+				assertEquals(1, timestampWrapper.getTimestampedRevocations().size());
+				arcTstFound = true;
+			}
+		}
+		assertTrue(sigTstFound);
+		assertTrue(arcTstFound);
 	}
 
 }

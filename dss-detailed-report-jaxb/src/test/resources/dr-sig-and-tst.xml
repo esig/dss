@@ -69,6 +69,10 @@
                 <Warnings NameId="QUAL_IS_ADES_IND">The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
             </Conclusion>
         </ValidationSignatureQualification>
+        <Conclusion>
+            <Indication>INDETERMINATE</Indication>
+            <SubIndication>TRY_LATER</SubIndication>
+        </Conclusion>
     </Signature>
     <Signature Id="S-5A5C2391891B3D58E7AC7472ACC38CE3894E965FA5840694D7A94AFC9A4BDB59">
         <ValidationProcessBasicSignature Title="Validation Process for Basic Signatures">
@@ -139,6 +143,10 @@
                 <Warnings NameId="QUAL_IS_ADES_IND">The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
             </Conclusion>
         </ValidationSignatureQualification>
+        <Conclusion>
+            <Indication>INDETERMINATE</Indication>
+            <SubIndication>TRY_LATER</SubIndication>
+        </Conclusion>
     </Signature>
     <Timestamp Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
         <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-12-17T10:12:31" Title="Validation Process for Timestamps">
@@ -264,6 +272,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -359,6 +368,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -612,6 +622,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>S-132A03478A000A8356CE0470BCB15FF5A51B7A4C00B1EBD83AFC78DB67DFE178</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -870,6 +881,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>S-5A5C2391891B3D58E7AC7472ACC38CE3894E965FA5840694D7A94AFC9A4BDB59</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -889,4 +901,8 @@
             <Errors NameId="BBB_XCV_IRDPFC_ANS">No revocation data for the certificate</Errors>
         </Conclusion>
     </BasicBuildingBlocks>
+    <Semantic Key="INDETERMINATE">The available information is insufficient to ascertain the signature to be TOTAL-PASSED or TOTAL-FAILED.</Semantic>
+    <Semantic Key="PASSED">The validation process succeeded</Semantic>
+    <Semantic Key="FAILED">The validation process failed</Semantic>
+    <Semantic Key="TRY_LATER">The signature validation process results into INDETERMINATE because not all constraints can be fulfilled using available information. However, it may be possible to do so using additional revocation information that will be available at a later point of time.</Semantic>    
 </DetailedReport>

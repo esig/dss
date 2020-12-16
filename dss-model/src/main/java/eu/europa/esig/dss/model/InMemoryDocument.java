@@ -33,8 +33,12 @@ import java.util.Objects;
 @SuppressWarnings("serial")
 public class InMemoryDocument extends CommonDocument {
 
+	/** The binary content of the document */
 	private byte[] bytes;
 
+	/**
+	 * Empty constructor
+	 */
 	public InMemoryDocument() {
 	}
 
@@ -133,14 +137,29 @@ public class InMemoryDocument extends CommonDocument {
 		return new ByteArrayInputStream(bytes);
 	}
 
+	/**
+	 * Gets binary content of the document
+	 *
+	 * @return byte array
+	 */
 	public byte[] getBytes() {
 		return bytes;
 	}
 
+	/**
+	 * Sets binary content of the document
+	 *
+	 * @param bytes byte array
+	 */
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
 	}
 
+	/**
+	 * Gets base64-encoded content of the document
+	 *
+	 * @return {@link String} base64 encoded
+	 */
 	public String getBase64Encoded() {
 		return Base64.getEncoder().encodeToString(bytes);
 	}

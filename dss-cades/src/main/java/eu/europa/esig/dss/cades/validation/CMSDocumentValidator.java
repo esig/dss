@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -40,6 +29,16 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Validation of CMS document
@@ -49,12 +48,21 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSDocumentValidator.class);
 
+	/** The CMSSignedData to be validated */
 	protected CMSSignedData cmsSignedData;
 
+	/**
+	 * The empty constructor, instantiate {@link CAdESSignatureScopeFinder}
+	 */
 	CMSDocumentValidator() {
 		this(new CAdESSignatureScopeFinder());
 	}
-	
+
+	/**
+	 * The empty constructor
+	 *
+	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use for a signatureScopes extraction
+	 */
 	CMSDocumentValidator(SignatureScopeFinder<CAdESSignature> signatureScopeFinder) {
 		super(signatureScopeFinder);
 	}
@@ -81,7 +89,13 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		this.document = document;
 		this.cmsSignedData = DSSUtils.toCMSSignedData(document);
 	}
-	
+
+	/**
+	 * Creates a validator from a {@code DSSDocument}
+	 *
+	 * @param document {@link DSSDocument} representing a CMSSignedData to be validated
+	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use
+	 */
 	protected CMSDocumentValidator(final DSSDocument document, SignatureScopeFinder<CAdESSignature> signatureScopeFinder) {
 		this(signatureScopeFinder);
 		this.document = document;
@@ -108,8 +122,8 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 				}
 				cadesSignature.setDetachedContents(detachedContents);
 				cadesSignature.setContainerContents(containerContents);
-				cadesSignature.setManifestFiles(manifestFiles);
-				cadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+				cadesSignature.setManifestFile(manifestFile);
+				cadesSignature.setSigningCertificateSource(signingCertificateSource);
 				cadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 				signatures.add(cadesSignature);
 			}
@@ -127,7 +141,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 			cadesSignature.setSignatureFilename(document.getName());
 			cadesSignature.setDetachedContents(detachedContents);
-			cadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+			cadesSignature.setSigningCertificateSource(signingCertificateSource);
 			if (Utils.areStringsEqual(cadesSignature.getId(), signatureId) || isCounterSignature(cadesSignature, signatureId)) {
 				results.add(cadesSignature.getOriginalDocument());
 			}
@@ -136,7 +150,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	}
 	
 	private boolean isCounterSignature(final CAdESSignature masterSignature, final String signatureId) {
-		for (final SignerInformation counterSignerInformation : masterSignature.getSignerInformation().getCounterSignatures()) {
+		for (final SignerInformation counterSignerInformation : masterSignature.getCounterSignatureStore()) {
 			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
 			countersignature.setMasterSignature(masterSignature);
 			if (Utils.areStringsEqual(countersignature.getId(), signatureId) || isCounterSignature(countersignature, signatureId)) {
@@ -144,6 +158,11 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	protected CAdESDiagnosticDataBuilder initializeDiagnosticDataBuilder() {
+		return new CAdESDiagnosticDataBuilder();
 	}
 
 	@Override

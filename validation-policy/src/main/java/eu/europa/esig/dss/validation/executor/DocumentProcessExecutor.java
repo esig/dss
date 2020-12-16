@@ -22,6 +22,9 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.validation.reports.Reports;
 
+/**
+ * Processes a document validation
+ */
 public interface DocumentProcessExecutor extends ProcessExecutor<Reports> {
 
 	/**
@@ -36,7 +39,8 @@ public interface DocumentProcessExecutor extends ProcessExecutor<Reports> {
 	/**
 	 * Specifies if the ETSI Validation Report must be created
 	 * 
-	 * @param enableEtsiValidationReport
+	 * @param enableEtsiValidationReport enable the ETSI Validation Report
+	 *                                   generation
 	 */
 	void setEnableEtsiValidationReport(boolean enableEtsiValidationReport);
 

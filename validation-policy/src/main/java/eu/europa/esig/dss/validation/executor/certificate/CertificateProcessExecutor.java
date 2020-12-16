@@ -23,6 +23,9 @@ package eu.europa.esig.dss.validation.executor.certificate;
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
+/**
+ * Processes a certificate validation
+ */
 public interface CertificateProcessExecutor extends ProcessExecutor<CertificateReports> {
 	
 	/**

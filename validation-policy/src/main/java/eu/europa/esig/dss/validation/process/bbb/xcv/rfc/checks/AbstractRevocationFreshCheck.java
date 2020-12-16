@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -32,18 +30,40 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+import java.util.Date;
+
+/**
+ * Abstract revocation check class
+ */
 public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 
+	/** Revocation data to check */
 	protected final RevocationWrapper revocationData;
+
+	/** Validation time */
 	private final Date validationDate;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlRFC}
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param validationDate {@link Date}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	protected AbstractRevocationFreshCheck(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData, 
 			Date validationDate, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.revocationData = revocationData;
 		this.validationDate = validationDate;
 	}
-	
+
+	/**
+	 * Returns if the revocation production data is after validation time with the allowed freshness
+	 *
+	 * @return TRUE is revocation is after validation time, FALSE otherwise
+	 */
 	protected boolean isProductionDateAfterValidationTime() {
 		long maxFreshness = getMaxFreshness();
 		long validationDateTime = validationDate.getTime();
@@ -53,10 +73,15 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 		return productionDate != null && productionDate.after(new Date(limit));
 	}
 
+	/**
+	 * Returns the maximum freshness
+	 *
+	 * @return maximum freshness
+	 */
 	protected abstract long getMaxFreshness();
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String productionTimeString = "not defined";
 		String nextUpdateString = "not defined";
 		if (revocationData != null) {
@@ -65,8 +90,8 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 			if (revocationData.getNextUpdate() != null)
 				nextUpdateString = ValidationProcessUtils.getFormattedDate(revocationData.getNextUpdate());
 		}
-		Object[] params = new Object[] { ValidationProcessUtils.getFormattedDate(validationDate), productionTimeString, nextUpdateString };
-		return MessageTag.REVOCATION_CHECK.setArgs(params);
+		return i18nProvider.getMessage(MessageTag.REVOCATION_CHECK, ValidationProcessUtils.getFormattedDate(validationDate), productionTimeString,
+				nextUpdateString);
 	}
 
 	@Override

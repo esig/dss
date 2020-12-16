@@ -20,24 +20,36 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.Date;
+
+/**
+ * Checks if the nextUpdate is present
+ */
 public class NextUpdateCheck extends ChainItem<XmlRFC> {
 
+	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
 
-	public NextUpdateCheck(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public NextUpdateCheck(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData,
+						   LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
 		this.revocationData = revocationData;
 	}
 

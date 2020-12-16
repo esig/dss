@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.transform.stream.StreamSource;
 
@@ -74,8 +75,8 @@ public class XAdES111LevelLTTest extends AbstractXAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		
 		try (InputStream is = new ByteArrayInputStream(byteArray)) {
-			String exceptionMessage = XAdES111Utils.getInstance().validateAgainstXSD(new StreamSource(is));
-			assertTrue(Utils.isStringEmpty(exceptionMessage), "Unable to validate against the XSD : " + exceptionMessage);
+			List<String> errorMessages = XAdES111Utils.getInstance().validateAgainstXSD(new StreamSource(is));
+			assertTrue(Utils.isCollectionEmpty(errorMessages), "Unable to validate against the XSD : " + errorMessages);
 		} catch (IOException e) {
 			fail("Unable to read the signed document : " + e.getMessage());
 		}

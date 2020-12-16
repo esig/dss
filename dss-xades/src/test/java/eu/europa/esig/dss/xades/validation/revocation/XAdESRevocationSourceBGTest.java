@@ -28,7 +28,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -62,25 +61,24 @@ public class XAdESRevocationSourceBGTest extends AbstractXAdESTestValidation {
 	}
 	
 	@Override
-	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-	
-	@Override
-	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		assertEquals(1, timestampList.size());
-		
-		TimestampWrapper timestampWrapper = timestampList.get(0);
-		assertTrue(timestampWrapper.isMessageImprintDataFound());
-		assertFalse(timestampWrapper.isMessageImprintDataIntact());
-	}
-	
-	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
 		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size());
+	}
+
+	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isStructuralValidationValid());
+		assertEquals(6, signatureWrapper.getStructuralValidationMessages().size());
+
+		boolean mixedSequenceOrderErrorFound = false;
+		for (String error : signatureWrapper.getStructuralValidationMessages()) {
+			if (error.contains("xades:StateOrProvince")) {
+				mixedSequenceOrderErrorFound = true;
+			}
+		}
+		assertTrue(mixedSequenceOrderErrorFound);
 	}
 
 }

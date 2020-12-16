@@ -71,20 +71,20 @@ public class I18nProviderTest {
 			Locale.setDefault(Locale.ENGLISH);
 			
 			String status = "granted";
-			MessageTag messageTag = MessageTag.TRUSTED_SERVICE_STATUS.setArgs(status);
+			MessageTag messageTag = MessageTag.TRUSTED_SERVICE_STATUS;
 		
 			final I18nProvider i18nProvider = new I18nProvider(Locale.ENGLISH);
-			String message = i18nProvider.getMessage(messageTag);
+			String message = i18nProvider.getMessage(messageTag, status);
 			assertNotNull(message);
 			assertEquals("Status : granted", message);
 			
 			final I18nProvider i18nFrenchProvider = new I18nProvider(Locale.FRENCH);
-			message = i18nFrenchProvider.getMessage(messageTag);
+			message = i18nFrenchProvider.getMessage(messageTag, status);
 			assertNotNull(message);
 			assertEquals("Statut : granted", message);
 	
 			final I18nProvider i18nGermanProvider = new I18nProvider(Locale.GERMAN);
-			message = i18nGermanProvider.getMessage(messageTag);
+			message = i18nGermanProvider.getMessage(messageTag, status);
 			assertNotNull(message);
 			assertEquals("Status : granted", message);
 		} finally {
@@ -98,21 +98,20 @@ public class I18nProviderTest {
 		try {
 			Locale.setDefault(Locale.ENGLISH);
 			
-			MessageTag validationTime = MessageTag.VT_VALIDATION_TIME;
-			MessageTag messageTag = MessageTag.CERT_QUALIFICATION_AT_TIME.setArgs(validationTime);
+			MessageTag messageTag = MessageTag.CERT_QUALIFICATION_AT_TIME;
 		
 			final I18nProvider i18nProvider = new I18nProvider(Locale.ENGLISH);
-			String message = i18nProvider.getMessage(messageTag);
+			String message = i18nProvider.getMessage(messageTag, MessageTag.VT_VALIDATION_TIME);
 			assertNotNull(message);
 			assertEquals("Certificate Qualification at validation time", message);
 			
 			final I18nProvider i18nFrenchProvider = new I18nProvider(Locale.FRENCH);
-			message = i18nFrenchProvider.getMessage(messageTag);
+			message = i18nFrenchProvider.getMessage(messageTag, MessageTag.VT_VALIDATION_TIME);
 			assertNotNull(message);
 			assertEquals("Qualification du certificat au moment de la validation", message);
 	
 			final I18nProvider i18nGermanProvider = new I18nProvider(Locale.GERMAN);
-			message = i18nGermanProvider.getMessage(messageTag);
+			message = i18nGermanProvider.getMessage(messageTag, MessageTag.VT_VALIDATION_TIME);
 			assertNotNull(message);
 			assertEquals("Certificate Qualification at validation time", message);
 		} finally {

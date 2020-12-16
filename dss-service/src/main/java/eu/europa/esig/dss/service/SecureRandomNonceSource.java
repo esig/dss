@@ -28,7 +28,8 @@ import java.security.SecureRandom;
  */
 public class SecureRandomNonceSource implements NonceSource {
 
-	private SecureRandom secureRandom = new SecureRandom();
+	/** The secure random instance */
+	private final SecureRandom secureRandom = new SecureRandom();
 
 	@Override
 	public BigInteger getNonce() {

@@ -20,90 +20,43 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.Date;
-
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.CryptographicChecker;
 
-public class CryptographicCheck<T extends XmlConstraintsConclusion> extends AbstractCryptographicCheck<T> {
+import java.util.Date;
 
-	private final TokenProxy token;
-	private final CryptographicConstraint constraint;
+/**
+ * The cryptographic check
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
+public class CryptographicCheck<T extends XmlConstraintsConclusion> extends CryptographicCheckerResultCheck<T> {
 
-	public CryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
-		super(i18nProvider, result, currentTime, constraint);
-		this.constraint = constraint;
-		this.token = token;
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param token {@link TokenProxy}
+	 * @param position {@link MessageTag}
+	 * @param validationDate {@link Date}
+	 * @param constraint {@link CryptographicConstraint}
+	 */
+	public CryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token, MessageTag position,
+							  Date validationDate, CryptographicConstraint constraint) {
+		super(i18nProvider, result, token, validationDate, position,
+				execute(i18nProvider, token, validationDate, position, constraint), constraint);
 	}
-
-	@Override
-	protected boolean process() {
-
-		// Check if there are any expiration dates
-		boolean expirationCheckRequired = isExpirationDateAvailable(constraint);
-
-		// Check encryption algorithm
-		if (!encryptionAlgorithmIsReliable(token.getEncryptionAlgorithm()))
-			return false;
-
-		// Check digest algorithm
-		if (!digestAlgorithmIsReliable(token.getDigestAlgorithm()))
-			return false;
-
-		// Check digest algorithm expiration date
-		if (expirationCheckRequired) {
-			if (!digestAlgorithmIsValidOnValidationDate(token.getDigestAlgorithm())) {
-				return false;
-			}
-		}
-
-		// Check key size
-		if (!isPublicKeySizeKnown(token.getKeyLengthUsedToSignThisToken()))
-			return false;
-
-		// Check public key size
-		if (!publicKeySizeIsAcceptable(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken()))
-			return false;
-
-		// Check encryption algorithm expiration date
-		if (expirationCheckRequired) {
-			if (!encryptionAlgorithmIsValidOnValidationDate(token.getEncryptionAlgorithm(), token.getKeyLengthUsedToSignThisToken())) {
-				return false;
-			}
-		}
-
-		return true;
-
-	}
-
-	@Override
-	protected MessageTag getMessageTag() {
-		if (token instanceof CertificateWrapper) {
-			return MessageTag.ACCCM;
-		} else if (token instanceof RevocationWrapper) {
-			return MessageTag.ARCCM;
-		} else if (token instanceof TimestampWrapper) {
-			return MessageTag.ATCCM;
-		}
-		return super.getMessageTag();
-	}
-
-	@Override
-	protected MessageTag getAdditionalInfo() {
-		String dateTime = ValidationProcessUtils.getFormattedDate(validationDate);
-		if (Utils.isStringNotEmpty(failedAlgorithm)) {
-			return MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID.setArgs(failedAlgorithm, dateTime, token.getId());
-		} else {
-			return MessageTag.VALIDATION_TIME_WITH_ID.setArgs(dateTime, token.getId());
-		}
+	
+	private static XmlCC execute(I18nProvider i18nProvider, TokenProxy token, Date validationDate,
+			MessageTag position, CryptographicConstraint constraint) {
+		CryptographicChecker cc = new CryptographicChecker(i18nProvider, token, validationDate, position, constraint);
+		return cc.execute();
 	}
 
 }

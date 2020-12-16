@@ -20,22 +20,25 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.TimestampType;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Contains Proof Of Existence for validation objects
  *
  */
 public class POE {
-	
-	private TimestampWrapper timestampWrapper;
+
+	/** The POE time */
 	private final Date poeTime;
+
+	/** The POE provider */
+	private TimestampWrapper timestampWrapper;
 	
 	/**
 	 * The constructor to instantiate POE by a timestamp

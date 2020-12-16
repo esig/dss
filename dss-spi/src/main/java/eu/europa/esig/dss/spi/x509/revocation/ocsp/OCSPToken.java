@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ *
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
 import java.io.StringWriter;
+import java.security.PublicKey;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Objects;
@@ -57,6 +58,7 @@ import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
+import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
 /**
@@ -71,7 +73,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	 * The encapsulated basic OCSP response.
 	 */
 	private final BasicOCSPResp basicOCSPResp;
-	
+
 	/**
 	 * The used SingleResp (can be null)
 	 */
@@ -82,7 +84,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	 */
 	private CertificateToken issuerCertificateToken;
 
-	
+
 	/**
 	 * The source of embedded into the OCSP token certificates
 	 */
@@ -90,7 +92,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 
 	/**
 	 * The default constructor to instantiate an OCSPToken with BasicOCSPResp only
-	 * 
+	 *
 	 * @param basicOCSPResp    {@link BasicOCSPResp} containing the response
 	 *                         binaries
 	 * @param latestSingleResp {@link SingleResp} to be used with the current
@@ -115,7 +117,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 			extractArchiveCutOff(latestSingleResp);
 			extractCertHashExtension(latestSingleResp);
 		}
-		
+
 		checkSignatureValidity(issuer);
 	}
 
@@ -162,14 +164,14 @@ public class OCSPToken extends RevocationToken<OCSP> {
 
 	/**
 	 * This method extracts the CertHash extension if present
-	 * 
+	 *
 	 * Common PKI Part 4: Operational Protocols
 	 * 3.1.2 Common PKI Private OCSP Extensions
-	 * 
+	 *
 	 * CertHash ::= SEQUENCE {
 	 * hashAlgorithm AlgorithmIdentifier,
 	 * certificateHash OCTET STRING }
-	 * 
+	 *
 	 * @param bestSingleResp
 	 *            the related SingleResponse
 	 */
@@ -192,31 +194,17 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		}
 	}
 
-	private void checkSignatureValidity(CertificateToken issuerCertificateToken) {
-		CandidatesForSigningCertificate candidates = getCertificateSource().getCandidatesForSigningCertificate(issuerCertificateToken);
-		
-		LOG.debug("Determining OCSP's signing certificate from certificate candidates list...");
-		
-		CertificateValidity bestCertificateValidity = candidates.getTheBestCandidate();
-		if (bestCertificateValidity != null) {
-			LOG.debug("Checking the Best Certificate Validity...");
-			CertificateToken certificateToken = bestCertificateValidity.getCertificateToken();
-			if (isSignedBy(certificateToken)) {
-				return;
-			} else {
-				LOG.warn("The best signing certificate candidate is not the OCSP's signing certificate!",
-						certificateToken.getDSSIdAsString());
-			}
-		}
+	private void checkSignatureValidity(CertificateToken caCertificateToken) {
+		CandidatesForSigningCertificate candidates = getCertificateSource().getCandidatesForSigningCertificate(caCertificateToken);
 
-		for (final CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
+		SignatureIntegrityValidator signingCertificateValidator = new OCSPSignatureIntegrityValidator(this);
+		CertificateValidity certificateValidity = signingCertificateValidator.validate(candidates);
+		if (certificateValidity != null) {
+			candidates.setTheCertificateValidity(certificateValidity);
+
 			CertificateToken certificateToken = certificateValidity.getCertificateToken();
-			if (certificateToken != null && isSignedBy(certificateToken)) {
-				return;
-			}
+			this.issuerCertificateToken = certificateToken;
 		}
-		
-		LOG.warn("Failed to find an OCSP's signing certificate for a token with Id '{}'", getDSSIdAsString());
 	}
 
 	@Override
@@ -230,7 +218,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		}
 		return signatureAlgorithm;
 	}
-	
+
 	@Override
 	public String getRevocationTokenKey() {
 		if (revocationTokenKey == null) {
@@ -283,25 +271,20 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	public boolean isValid() {
 		return SignatureValidity.VALID == signatureValidity;
 	}
-	
-	@Override
-	public boolean isSignedBy(CertificateToken token) {
-		boolean signedBy = super.isSignedBy(token);
-		if (signedBy) {
-			LOG.debug("Determining OCSP's signing certificate from certificate candidates list succeeded : {}",
-					token.getDSSIdAsString());
-			issuerCertificateToken = token;
-		}
-		return signedBy;
-	}
 
+	/**
+	 * Verifies if the current OCSP token has been signed by the specified publicKey
+	 * @param publicKey {@link PublicKey} of a signing candidate
+	 *
+	 * @return {@link SignatureValidity}
+	 */
 	@Override
-	protected SignatureValidity checkIsSignedBy(final CertificateToken candidate) {
+	protected SignatureValidity checkIsSignedBy(final PublicKey publicKey) {
 		try {
 			signatureInvalidityReason = "";
 			JcaContentVerifierProviderBuilder jcaContentVerifierProviderBuilder = new JcaContentVerifierProviderBuilder();
 			jcaContentVerifierProviderBuilder.setProvider(DSSSecurityProvider.getSecurityProvider());
-			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(candidate.getPublicKey());
+			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(publicKey);
 			signatureValidity = SignatureValidity.get(basicOCSPResp.isSignatureValid(contentVerifierProvider));
 		} catch (Exception e) {
 			LOG.error("An error occurred during in attempt to check signature owner : ", e);

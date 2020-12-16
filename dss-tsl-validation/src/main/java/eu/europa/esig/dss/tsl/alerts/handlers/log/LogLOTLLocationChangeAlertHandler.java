@@ -20,16 +20,18 @@
  */
 package eu.europa.esig.dss.tsl.alerts.handlers.log;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+/**
+ * Warns on the LOTL location change
+ */
 public class LogLOTLLocationChangeAlertHandler implements AlertHandler<LOTLInfo> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogLOTLLocationChangeAlertHandler.class);

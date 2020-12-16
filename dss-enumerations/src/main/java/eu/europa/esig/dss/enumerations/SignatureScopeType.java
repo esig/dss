@@ -20,18 +20,24 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines the used SignatureScope types
+ */
 public enum SignatureScopeType {
 
-	/* The signature covers the complete document */
+	/** The signature covers the complete document */
 	FULL,
 
-	/* The signature covers only a part of the document */
+	/** The signature covers only a part of the document */
 	PARTIAL,
 	
-	/* The signature covers only the digest of document */
+	/** The signature covers only the digest of document */
 	DIGEST,
 	
-	/* The signature covers its bounded archive */
+	/** The signature covers its bounded archive */
 	ARCHIVED,
+	
+	/** The signature counter signs its master signature */
+	COUNTER_SIGNATURE
 
 }

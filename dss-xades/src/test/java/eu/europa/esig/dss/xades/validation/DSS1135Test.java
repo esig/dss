@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -68,13 +67,6 @@ public class DSS1135Test extends AbstractXAdESTestValidation {
 		assertEquals("http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf", policyUrl);
 		assertTrue(signatureWrapper.isPolicyIdentified());
 		assertTrue(signatureWrapper.isPolicyStatus());
-	}
-	
-	@Override
-	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		super.verifyOriginalDocuments(validator, diagnosticData);
-		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
-		assertEquals(1, retrievedOriginalDocuments.size());
 	}
 
 }

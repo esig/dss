@@ -39,6 +39,7 @@ import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
@@ -264,16 +265,22 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void getDeterministicId() throws InterruptedException {
-		Date d1 = new Date();
+	public void getDeterministicId() {
+
+		Calendar calendar = Calendar.getInstance();
+
+		Date d1 = calendar.getTime();
+
 		String deterministicId = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
 		assertNotNull(deterministicId);
 		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
 		assertEquals(deterministicId, deterministicId2);
 		assertNotNull(DSSUtils.getDeterministicId(null, certificateWithAIA.getDSSId()));
 
-		Thread.sleep(1);
-		String deterministicId3 = DSSUtils.getDeterministicId(new Date(), certificateWithAIA.getDSSId());
+		calendar.add(Calendar.MILLISECOND, 1);
+		Date d2 = calendar.getTime();
+
+		String deterministicId3 = DSSUtils.getDeterministicId(d2, certificateWithAIA.getDSSId());
 		
 		assertNotEquals(deterministicId2, deterministicId3);
 	}
@@ -377,9 +384,56 @@ public class DSSUtilsTest {
 		logger.info("{}", token);
 		logger.info("{}", token.getPublicKey());
 		assertEquals(SignatureAlgorithm.ED25519, token.getSignatureAlgorithm());
-		assertEquals(EncryptionAlgorithm.ED25519, EncryptionAlgorithm.forKey(token.getPublicKey()));
+		assertEquals(EncryptionAlgorithm.EDDSA, EncryptionAlgorithm.forKey(token.getPublicKey()));
 		assertTrue(token.isSelfSigned());
 		assertTrue(token.isSignedBy(token));
+	}
+
+	@Test
+	public void isUrnOidTest() {
+		assertFalse(DSSUtils.isUrnOid(null));
+		assertFalse(DSSUtils.isUrnOid(""));
+		assertFalse(DSSUtils.isUrnOid("aurn:oid:1.2.3.4"));
+		assertTrue(DSSUtils.isUrnOid("urn:oid:1.2.3.4"));
+		assertTrue(DSSUtils.isUrnOid("URN:OID:1.2.3.4"));
+	}
+	
+	@Test
+	public void isOidCode() {
+		assertFalse(DSSUtils.isOidCode(null));
+		assertFalse(DSSUtils.isOidCode(""));
+		assertFalse(DSSUtils.isOidCode("aurn:oid:1.2.3.4"));
+		assertFalse(DSSUtils.isOidCode("http://sample.com"));
+		assertFalse(DSSUtils.isOidCode("25.25"));
+		assertFalse(DSSUtils.isOidCode("0.4.00.1733.2"));
+		assertTrue(DSSUtils.isOidCode("1.2.3.4"));
+		assertTrue(DSSUtils.isOidCode("1.3.6.1.4.1.343"));
+		assertTrue(DSSUtils.isOidCode("0.4.0.1733.2"));
+		assertTrue(DSSUtils.isOidCode("0.4.0.19122.1"));
+		assertTrue(DSSUtils.isOidCode("2.16.840.1.113883.3.3190.100"));
+	}
+	
+	@Test
+	public void getOidCodeTest() {
+		assertEquals(null, DSSUtils.getOidCode(null));
+		assertEquals("", DSSUtils.getOidCode(""));
+		assertEquals("1.2.3.4", DSSUtils.getOidCode("aurn:oid:1.2.3.4"));
+		assertEquals("1.2.3.4", DSSUtils.getOidCode("urn:oid:1.2.3.4"));
+		assertEquals("1.2.3.4", DSSUtils.getOidCode("URN:OID:1.2.3.4"));
+		assertEquals("urn.oid.1.2.3.4", DSSUtils.getOidCode("urn.oid.1.2.3.4"));
+	}
+	
+	@Test
+	public void stripFirstLeadingOccuranceTest() {
+		assertEquals(null, DSSUtils.stripFirstLeadingOccurance(null, null));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", null));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", ""));
+		assertEquals("aabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "a"));
+		assertEquals("bbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "aaa"));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "aaaa"));
+		assertEquals("", DSSUtils.stripFirstLeadingOccurance("application/", "application/"));
+		assertEquals("json", DSSUtils.stripFirstLeadingOccurance("application/json", "application/"));
+		assertEquals("application/json", DSSUtils.stripFirstLeadingOccurance("application/application/json", "application/"));
 	}
 
 }

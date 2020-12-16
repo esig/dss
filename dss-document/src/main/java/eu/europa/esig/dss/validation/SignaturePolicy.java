@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * Represents the value of a SignaturePolicy
@@ -32,21 +33,42 @@ import eu.europa.esig.dss.model.Digest;
  */
 public class SignaturePolicy {
 
+	/** The signature policy identifier */
 	private final String identifier;
+
+	/** If it is a zero-hash policy */
 	private boolean zeroHash;
+
+	/** The digest of the signature policy */
 	private Digest digest;
+
+	/** The policy content document */
 	private DSSDocument policyContent;
-	
-	// optional parameters (used in XAdES)
+
+	/** The policy description */
 	private String description;
+
+	/** The documentation references */
 	private List<String> documentationReferences;
+
+	/** The transforms Element (used in XAdES) */
+	private Element transforms;
+
+	/** The build list of transforms descriptions */
+	private List<String> transformsDescription;
 
 	/**
 	 * Two qualifiers for the signature policy have been identified so far:
-	 * • a URL where a copy of the signature policy MAY be obtained;
-	 * • a user notice that should be displayed when the signature is verified.
+	 * ...
+	 * A URL where a copy of the signature policy MAY be obtained;
 	 */
 	private String url;
+
+	/**
+	 * Two qualifiers for the signature policy have been identified so far:
+	 * ...
+	 * User notice that should be displayed when the signature is verified.
+	 */
 	private String notice;
 
 	/**
@@ -75,18 +97,38 @@ public class SignaturePolicy {
 		return identifier;
 	}
 
+	/**
+	 * Gets if the policy is a zero-hash (no hash check shall be performed)
+	 *
+	 * @return TRUE if the policy is a zero-hash, FALSE otherwise
+	 */
 	public boolean isZeroHash() {
 		return zeroHash;
 	}
 
+	/**
+	 * Sets if the policy is a zero-hash (no hash check shall be performed)
+	 *
+	 * @param zeroHash if the policy is a zero-hash
+	 */
 	public void setZeroHash(boolean zeroHash) {
 		this.zeroHash = zeroHash;
 	}
 
+	/**
+	 * Gets the {@code Digest}
+	 *
+	 * @return {@link Digest}
+	 */
 	public Digest getDigest() {
 		return digest;
 	}
 
+	/**
+	 * Sets the {@code Digest}
+	 *
+	 * @param digest {@link Digest}
+	 */
 	public void setDigest(Digest digest) {
 		this.digest = digest;
 	}
@@ -100,12 +142,19 @@ public class SignaturePolicy {
 		return url;
 	}
 
+	/**
+	 * Sets the signature policy url
+	 *
+	 * @param url signature policy url
+	 */
 	public void setUrl(final String url) {
 		this.url = url;
 	}
 	
 	/**
 	 * Gets description
+	 *
+	 * @return {@link String}
 	 */
 	public String getDescription() {
 		return description;
@@ -113,6 +162,7 @@ public class SignaturePolicy {
 	
 	/**
 	 * Sets description (*optional)
+	 *
 	 * @param description {@link String}
 	 */
 	public void setDescription(final String description) {
@@ -131,16 +181,65 @@ public class SignaturePolicy {
 
 	/**
 	 * Sets the documentation references
+	 *
 	 * @param documentationReferences a list of {@link String} documentation references
 	 */
 	public void setDocumentationReferences(List<String> documentationReferences) {
 		this.documentationReferences = documentationReferences;
 	}
 
+	/**
+	 * Returns a 'ds:Tranforms' element if found
+	 * NOTE: XAdES only
+	 * 
+	 * @return 'ds:Tranforms' {@link Element} if found, NULL otherwise
+	 */
+	public Element getTransforms() {
+		return transforms;
+	}
+
+	/**
+	 * Sets a 'ds:Tranforms' node
+	 * 
+	 * @param transforms {@link Element}
+	 */
+	public void setTransforms(Element transforms) {
+		this.transforms = transforms;
+	}
+
+	/**
+	 * Gets a list of Strings describing the 'ds:Tranforms' element
+	 * NOTE: XAdES only
+	 * 
+	 * @return a description of 'ds:Tranforms' if present, null otherwise
+	 */
+	public List<String> getTransformsDescription() {
+		return transformsDescription;
+	}
+
+	/**
+	 * Sets a list of Strings describing the 'ds:Tranforms' element
+	 * 
+	 * @param transformsDescription a list of Strings describing the 'ds:Transforms' element
+	 */
+	public void setTransformsDescription(List<String> transformsDescription) {
+		this.transformsDescription = transformsDescription;
+	}
+
+	/**
+	 * Gets user notice that should be displayed when the signature is verified
+	 *
+	 * @return {@link String}
+	 */
 	public String getNotice() {
 		return notice;
 	}
 
+	/**
+	 * Sets user notice that should be displayed when the signature is verified
+	 *
+	 * @param notice {@link String} user notice
+	 */
 	public void setNotice(final String notice) {
 		this.notice = notice;
 	}
@@ -154,6 +253,11 @@ public class SignaturePolicy {
 		return policyContent;
 	}
 
+	/**
+	 * Sets policy document content
+	 *
+	 * @param policyContent {@link DSSDocument}
+	 */
 	public void setPolicyContent(DSSDocument policyContent) {
 		this.policyContent = policyContent;
 	}

@@ -20,21 +20,54 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines available types of DigestMatchers (signed data origins)
+ */
 public enum DigestMatcherType {
 
-	/* XAdES */
-	REFERENCE, OBJECT, MANIFEST, SIGNED_PROPERTIES, KEY_INFO, XPOINTER,
-	
-	/* XAdES and ASiC CAdES*/
-	MANIFEST_ENTRY,
+	/** XAdES signed reference */
+	REFERENCE, 
 
-	/* CAdES */
+	/** XAdES signed reference of Object type */
+	OBJECT, 
+
+	/** XAdES signed manifest */
+	MANIFEST, 
+
+	/** XAdES SignedProperties element */
+	SIGNED_PROPERTIES,
+	
+	/** XAdES KeyInfo element */
+	KEY_INFO,
+
+	/** XAdES SignatureProperties element */
+	SIGNATURE_PROPERTIES,
+
+	/** XAdES XPointer reference */
+	XPOINTER,
+	
+	/** XAdES and ASiC CAdES*/
+	MANIFEST_ENTRY,
+	
+	/** XAdES signed SignatureValue (counter signature) */
+	COUNTER_SIGNATURE,
+
+	/** CAdES */
 	MESSAGE_DIGEST, 
 	
-	// Digest from decrypted content SignatureValue (CAdES/PAdES)
+	/** Digest from decrypted content SignatureValue (CAdES/PAdES) */
 	CONTENT_DIGEST,
+	
+	/** 
+	 * JAdES Digest on result of concatenation 
+	 * ASCII(BASE64URL(UTF8(JWSProtected Header)) || '.' || BASE64URL(JWS Payload)) 
+	 */
+	JWS_SIGNING_INPUT_DIGEST,
+	
+	/** JAdES Detached entry */
+	SIG_D_ENTRY,
 
-	/* Timestamp */
+	/** Timestamp */
 	MESSAGE_IMPRINT
 
 }

@@ -20,30 +20,42 @@
  */
 package eu.europa.esig.dss.validation.process;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+/**
+ * Contains utils for a validation process
+ */
 public class ValidationProcessUtils {
 
+	/** The Validaiton policy date format */
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	
-	/*
+	/**
+	 * Verifies if the revocation check is required for the OCSP Responder's certificate
+	 *
 	 * RFC 2560 : 4.2.2.2.1  Revocation Checking of an Authorized Responder
 	 * 
 	 * A CA may specify that an OCSP client can trust a responder for the
 	 * lifetime of the responder's certificate. The CA does so by including
 	 * the extension id-pkix-ocsp-nocheck.
+	 *
+	 * @param certificate {@link CertificateWrapper} to check
+	 * @param controlTime {@link Date} validation time
+	 * @return TRUE if the revocation check is required for the OCSP Responder certificate, FALSE otherwise
 	 */
 	public static boolean isRevocationCheckRequired(CertificateWrapper certificate, Date controlTime) {
 		if (certificate.isIdPkixOcspNoCheck()) {
@@ -79,7 +91,8 @@ public class ValidationProcessUtils {
 	public static CertificateRevocationWrapper getLatestAcceptableRevocationData(CertificateWrapper certificate, XmlBasicBuildingBlocks bbb) {
 		if (bbb != null && bbb.getXCV() != null) {
 			for (XmlSubXCV subXCV : bbb.getXCV().getSubXCV()) {
-				if (certificate.getId().equals(subXCV.getId()) && subXCV.getRFC() != null) {
+				// rfc.getId can be null if no revocation data is available
+				if (certificate.getId().equals(subXCV.getId()) && (subXCV.getRFC() != null) && (subXCV.getRFC().getId() != null)) {
 					return certificate.getRevocationDataById(subXCV.getRFC().getId());
 				}
 			}
@@ -103,14 +116,98 @@ public class ValidationProcessUtils {
 	 * Builds a String message from the provided {@code messageTag}
 	 * 
 	 * @param i18nProvider {@link I18nProvider} to build a message
-	 * @param messageTag {@link MessageTag} defining the message to be build
+	 * @param messageTag   {@link MessageTag} defining the message to be build
+	 * @param args         the arguments to fill the message
 	 * @return final message {@link String}
 	 */
-	public static String buildStringMessage(I18nProvider i18nProvider, MessageTag messageTag) {
+	public static String buildStringMessage(I18nProvider i18nProvider, MessageTag messageTag, Object... args) {
 		if (messageTag != null) {
-			return i18nProvider.getMessage(messageTag);
+			return i18nProvider.getMessage(messageTag, args);
 		}
 		return null;
+	}
+
+	/**
+	 * Returns the message tag for the given context (signature creation,...)
+	 * 
+	 * @param context the context
+	 * @return the related message tag
+	 */
+	public static MessageTag getCryptoPosition(Context context) {
+		switch (context) {
+		case SIGNATURE:
+		case COUNTER_SIGNATURE:
+			return MessageTag.ACCM_POS_SIG_SIG;
+		case TIMESTAMP:
+			return MessageTag.ACCM_POS_TST_SIG;
+		case REVOCATION:
+			return MessageTag.ACCM_POS_REVOC_SIG;
+		case CERTIFICATE:
+			return MessageTag.ACCM_POS_CERT_CHAIN;
+		default:
+			throw new IllegalArgumentException("Unsupported context " + context);
+		}
+	}
+
+	/**
+	 * Returns the message tag for the certificate chain of the given context
+	 * 
+	 * @param context the context
+	 * @return the related message tag
+	 */
+	public static MessageTag getCertificateChainCryptoPosition(Context context) {
+		switch (context) {
+		case SIGNATURE:
+		case COUNTER_SIGNATURE:
+			return MessageTag.ACCM_POS_CERT_CHAIN_SIG;
+		case TIMESTAMP:
+			return MessageTag.ACCM_POS_CERT_CHAIN_TST;
+		case REVOCATION:
+			return MessageTag.ACCM_POS_CERT_CHAIN_REVOC;
+		case CERTIFICATE:
+			return MessageTag.ACCM_POS_CERT_CHAIN;
+		default:
+			throw new IllegalArgumentException("Unsupported context " + context);
+		}
+	}
+	
+	/**
+	 * Returns crypto possition MessageTag for the given XmlDigestMatcher
+	 * 
+	 * @param digestMatcher {@link XmlDigestMatcher} to get crypto position for
+	 * @return {@link MessageTag} position
+	 */
+	public static MessageTag getDigestMatcherCryptoPosition(XmlDigestMatcher digestMatcher) {
+		switch (digestMatcher.getType()) {
+		case OBJECT:
+		case REFERENCE:
+		case XPOINTER:
+			return MessageTag.ACCM_POS_REF;
+		case MANIFEST:
+			return MessageTag.ACCM_POS_MAN;
+		case MANIFEST_ENTRY:
+			return MessageTag.ACCM_POS_MAN_ENT;
+		case SIGNED_PROPERTIES:
+			return MessageTag.ACCM_POS_SIGND_PRT;
+		case KEY_INFO:
+			return MessageTag.ACCM_POS_KEY;
+		case SIGNATURE_PROPERTIES:
+			return MessageTag.ACCM_POS_SIGNTR_PRT;
+		case COUNTER_SIGNATURE:
+			return MessageTag.ACCM_POS_CNTR_SIG;
+		case MESSAGE_DIGEST:
+			return MessageTag.ACCM_POS_MES_DIG;
+		case CONTENT_DIGEST:
+			return MessageTag.ACCM_POS_CON_DIG;
+		case JWS_SIGNING_INPUT_DIGEST:
+			return MessageTag.ACCM_POS_JWS;
+		case SIG_D_ENTRY:
+			return MessageTag.ACCM_POS_SIG_D_ENT;
+		case MESSAGE_IMPRINT:
+			return MessageTag.ACCM_POS_MESS_IMP;
+		default:
+			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!", digestMatcher.getType()));
+		}
 	}
 
 }

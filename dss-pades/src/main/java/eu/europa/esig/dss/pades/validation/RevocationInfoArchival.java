@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.util.Enumeration;
-
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -32,6 +30,8 @@ import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.esf.OtherRevVals;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.x509.CertificateList;
+
+import java.util.Enumeration;
 
 /**
  * <pre>
@@ -46,10 +46,21 @@ public class RevocationInfoArchival
     extends ASN1Object
 {
 
+    /** The CRL values */
     private ASN1Sequence crlVals;
+
+    /** The OCSP values */
     private ASN1Sequence ocspVals;
+
+    /** The other revocation values */
     private OtherRevVals otherRevVals;
 
+    /**
+     * Gets the {@code RevocationInfoArchival} objet
+     *
+     * @param obj representing the {@link RevocationInfoArchival}
+     * @return {@link RevocationInfoArchival} if the object of the correct type, null otherwise
+     */
     public static RevocationInfoArchival getInstance(Object obj)
     {
         if (obj instanceof RevocationInfoArchival)
@@ -105,6 +116,13 @@ public class RevocationInfoArchival
         }
     }
 
+    /**
+     * The constructor
+     *
+     * @param crlVals a list of CRL values
+     * @param ocspVals a list of OCSP responses
+     * @param otherRevVals a list of other revocation values
+     */
     public RevocationInfoArchival(CertificateList[] crlVals, OCSPResponse[] ocspVals, OtherRevVals otherRevVals)
     {
         if (null != crlVals)
@@ -118,6 +136,11 @@ public class RevocationInfoArchival
         this.otherRevVals = otherRevVals;
     }
 
+    /**
+     * Gets the CRL values
+     *
+     * @return array of {@link CertificateList}s
+     */
     public CertificateList[] getCrlVals()
     {
         if (null == this.crlVals)
@@ -133,6 +156,11 @@ public class RevocationInfoArchival
         return result;
     }
 
+    /**
+     * Gets the OCSP values
+     *
+     * @return array of {@link OCSPResponse}s
+     */
     public OCSPResponse[] getOcspVals()
     {
         if (null == this.ocspVals)
@@ -148,6 +176,11 @@ public class RevocationInfoArchival
         return result;
     }
 
+    /**
+     * Gets the other revocation values
+     *
+     * @return {@link OtherRevVals}
+     */
     public OtherRevVals getOtherRevVals()
     {
         return this.otherRevVals;
@@ -171,4 +204,5 @@ public class RevocationInfoArchival
         }
         return new DERSequence(v);
     }
+
 }

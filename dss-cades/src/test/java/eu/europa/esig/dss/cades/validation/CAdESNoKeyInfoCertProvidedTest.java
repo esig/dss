@@ -30,6 +30,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class CAdESNoKeyInfoCertProvidedTest extends AbstractCAdESTestValidation {
@@ -42,7 +44,9 @@ public class CAdESNoKeyInfoCertProvidedTest extends AbstractCAdESTestValidation 
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
-		validator.defineSigningCertificate(DSSUtils.loadCertificate(new File("src/test/resources/validation/signCert.cer")));
+		CertificateSource signingCertificateSource = new CommonCertificateSource();
+		signingCertificateSource.addCertificate(DSSUtils.loadCertificate(new File("src/test/resources/validation/signCert.cer")));
+		validator.setSigningCertificateSource(signingCertificateSource );
 		return validator;
 	}
 	

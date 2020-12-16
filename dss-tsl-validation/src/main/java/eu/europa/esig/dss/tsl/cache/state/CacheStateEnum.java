@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.tsl.cache.state;
 
+/**
+ * Contains states for a cache record
+ */
 public enum CacheStateEnum implements CacheState {
 
 	/**

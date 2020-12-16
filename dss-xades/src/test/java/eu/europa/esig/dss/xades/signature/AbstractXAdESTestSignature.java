@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.signature;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +44,6 @@ import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -66,14 +64,6 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 		super.onDocumentSigned(byteArray);
 		// Check for duplicate ids
 		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(new InMemoryDocument(byteArray)));
-	}
-	
-	@Override
-	protected void checkStructureValidation(DiagnosticData diagnosticData) {
-		super.checkStructureValidation(diagnosticData);
-		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
-			assertTrue(Utils.isStringEmpty(signature.getStructuralValidationMessage()));
-		}
 	}
 
 	@Override
@@ -116,7 +106,7 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
 			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
 			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size()
 					+ foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
 			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size()
@@ -145,7 +135,7 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
 				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES).size());
+				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
 				assertEquals(certificateSource.getSignedDataCertificates().size(),
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
 				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());

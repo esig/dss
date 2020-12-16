@@ -30,6 +30,8 @@ import javax.ws.rs.core.MediaType;
 
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.signature.dto.CounterSignSignatureDTO;
+import eu.europa.esig.dss.ws.signature.dto.DataToBeCounterSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.DataToSignOneDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.ExtendDocumentDTO;
 import eu.europa.esig.dss.ws.signature.dto.SignOneDocumentDTO;
@@ -44,11 +46,13 @@ import eu.europa.esig.dss.ws.signature.dto.TimestampOneDocumentDTO;
 public interface RestDocumentSignatureService extends Serializable {
 
 	/**
-	 * Retrieves the bytes of the data that need to be signed based on the toSignDocument and parameters.
+	 * Retrieves the bytes of the data that need to be signed based on the
+	 * toSignDocument and parameters.
 	 * 
-	 * @param dataToSign
-	 *            a DTO with the needed information (document and parameters) to compute the data to be signed
-	 * @return the data to be signed
+	 * @param dataToSign {@link DataToSignOneDocumentDTO} a DTO with the needed
+	 *                   information (document and parameters) to compute the data
+	 *                   to be signed
+	 * @return {@link ToBeSignedDTO} the data to be signed
 	 */
 	@POST
 	@Path("getDataToSign")
@@ -57,10 +61,10 @@ public interface RestDocumentSignatureService extends Serializable {
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.
 	 * 
-	 * @param signDocument
-	 *            a DTO with the needed information (document, parameter and signature value) to generate the signed
-	 *            document
-	 * @return the signed document
+	 * @param signDocument {@link SignOneDocumentDTO} a DTO with the needed
+	 *                     information (document, parameter and signature value) to
+	 *                     generate the signed document
+	 * @return {@link RemoteDocument} the signed document
 	 */
 	@POST
 	@Path("signDocument")
@@ -69,10 +73,10 @@ public interface RestDocumentSignatureService extends Serializable {
 	/**
 	 * Extends the level of the signatures in the toExtendDocument
 	 * 
-	 * @param extendDocument
-	 *            a DTO with the needed information (the signed document and extension parameters) to generate the
-	 *            extended document
-	 * @return the extended document
+	 * @param extendDocument {@link ExtendDocumentDTO} a DTO with the needed
+	 *                       information (the signed document and extension
+	 *                       parameters) to generate the extended document
+	 * @return {@link RemoteDocument} the extended document
 	 */
 	@POST
 	@Path("extendDocument")
@@ -81,12 +85,39 @@ public interface RestDocumentSignatureService extends Serializable {
 	/**
 	 * Timestamps a toTimestampDocument with the provided parameters.
 	 * 
-	 * @param timestampDocument
-	 *            a DTO with the needed information (document, timestamp parameters) to timestamp a document
-	 * @return a timestamped document
+	 * @param timestampDocument {@link TimestampOneDocumentDTO} a DTO with the
+	 *                          needed information (document, timestamp parameters)
+	 *                          to timestamp a document
+	 * @return {@link RemoteDocument} a timestamped document
 	 */
 	@POST
 	@Path("timestampDocument")
 	RemoteDocument timestampDocument(TimestampOneDocumentDTO timestampDocument);
+
+	/**
+	 * Retrieves the data to be signed for counter signature creation
+	 * 
+	 * @param dataToBeCounterSigned {@link DataToBeCounterSignedDTO} a DTO with the
+	 *                              required information (signatureDocument,
+	 *                              parameters) to get data to be counter signed
+	 * @return {@link DataToBeCounterSignedDTO} the data to be counter signed
+	 */
+	@POST
+	@Path("getDataToBeCounterSigned")
+	ToBeSignedDTO getDataToBeCounterSigned(DataToBeCounterSignedDTO dataToBeCounterSigned);
+
+	/**
+	 * Counter signs the defined signature
+	 * 
+	 * @param counterSignSignature {@link CounterSignSignatureDTO} a DTO with the
+	 *                             required information (dataToBeCounterSigned,
+	 *                             parameters, signatureValue) to counter sign a
+	 *                             signature
+	 * @return {@link RemoteDocument} representing a signatureDocument containing
+	 *         the created counter signature
+	 */
+	@POST
+	@Path("counterSignSignature")
+	RemoteDocument counterSignSignature(CounterSignSignatureDTO counterSignSignature);
 
 }

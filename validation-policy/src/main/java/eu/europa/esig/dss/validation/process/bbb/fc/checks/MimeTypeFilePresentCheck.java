@@ -28,10 +28,22 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if a mimetype file is present
+ */
 public class MimeTypeFilePresentCheck extends ChainItem<XmlFC> {
 
+	/** Defines if the mimetype file is present */
 	private final boolean mimetypePresent;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param mimetypePresent defines if the mimetype file is present
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public MimeTypeFilePresentCheck(I18nProvider i18nProvider, XmlFC result, boolean mimetypePresent, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.mimetypePresent = mimetypePresent;

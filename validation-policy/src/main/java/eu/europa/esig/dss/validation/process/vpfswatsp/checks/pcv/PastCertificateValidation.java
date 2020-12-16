@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
@@ -38,23 +35,53 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ValidationTimeSlidingCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.ValidationTimeSliding;
 
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Validates certificate in a past
+ */
 public class PastCertificateValidation extends Chain<XmlPCV> {
 
+	/** Token to be validated */
 	private final TokenProxy token;
+
+	/** The related BBBs */
 	private final XmlBasicBuildingBlocks bbb;
+
+	/** POE container */
 	private final POEExtraction poe;
 
+	/** Validation time */
 	private final Date currentTime;
+
+	/** Validation policy */
 	private final ValidationPolicy policy;
+
+	/** Validation context */
 	private final Context context;
+
+	/** The control time */
 	private Date controlTime;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param token {@link TokenProxy}
+	 * @param bbb {@link XmlBasicBuildingBlocks}
+	 * @param poe {@link POEExtraction}
+	 * @param currentTime {@link Date}
+	 * @param policy {@link ValidationPolicy}
+	 * @param context {@link Context}
+	 */
 	public PastCertificateValidation(I18nProvider i18nProvider, TokenProxy token, XmlBasicBuildingBlocks bbb, 
 			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
 		super(i18nProvider, new XmlPCV());
@@ -180,7 +207,9 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
 		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, subContext);
-		return new CryptographicCheck<>(i18nProvider, result, certificate, validationTime, constraint);
+		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
+		
+		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, constraint);
 	}
 
 	@Override

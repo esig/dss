@@ -127,6 +127,8 @@ public abstract class PKIFactoryAccess {
 	protected static final String RSA_SHA3_USER = "sha3-good-user";
 	protected static final String SELF_SIGNED_USER = "self-signed";
 	protected static final String EE_GOOD_USER = "ee-good-user";
+	protected static final String OCSP_SKIP_USER = "ocsp-skip-user";
+	protected static final String OCSP_SKIP_USER_WITH_CRL = "ocsp-skip-user-with-crl";
 	protected static final String ROOT_CA = "root-ca";
 	
 	private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";

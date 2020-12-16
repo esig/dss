@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+
+import java.util.Date;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -35,9 +35,17 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
  */
 public class CertificateAcceptanceValidation extends AbstractAcceptanceValidation<CertificateWrapper> {
 
-    public CertificateAcceptanceValidation(I18nProvider i18nProvider, Date currentTime, CertificateWrapper certificateWrapper,
-            ValidationPolicy validationPolicy) {
-        super(i18nProvider, certificateWrapper, currentTime, Context.CERTIFICATE, validationPolicy);
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentTime {@link Date} validation time
+	 * @param certificateWrapper {@link CertificateWrapper}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public CertificateAcceptanceValidation(I18nProvider i18nProvider, Date currentTime,
+										   CertificateWrapper certificateWrapper, ValidationPolicy validationPolicy) {
+		super(i18nProvider, certificateWrapper, currentTime, Context.CERTIFICATE, validationPolicy);
     }
     
 	@Override

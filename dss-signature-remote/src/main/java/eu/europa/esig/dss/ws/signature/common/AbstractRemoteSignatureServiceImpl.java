@@ -20,26 +20,25 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import java.io.ByteArrayInputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampContainerForm;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.jades.signature.JAdESCounterSignatureParameters;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.SignerLocation;
@@ -49,6 +48,7 @@ import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.utils.Utils;
@@ -58,15 +58,32 @@ import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteBLevelParameters;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureFieldParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageTextParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 
+import java.io.ByteArrayInputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * The abstract remote signature service
+ */
 public abstract class AbstractRemoteSignatureServiceImpl {
 
+	/**
+	 * Gets the ASiC Signature Parameters
+	 *
+	 * @param asicContainerType {@link ASiCContainerType}
+	 * @param signatureForm {@link SignatureForm}
+	 * @return {@link SerializableSignatureParameters}
+	 */
 	protected SerializableSignatureParameters getASiCSignatureParameters(ASiCContainerType asicContainerType,
 			SignatureForm signatureForm) {
 		switch (signatureForm) {
@@ -83,6 +100,12 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 	}
 
+	/**
+	 * Creates {@code SerializableSignatureParameters} from {@code RemoteSignatureParameters}
+	 *
+	 * @param remoteParameters {@link RemoteSignatureParameters}
+	 * @return {@link SerializableSignatureParameters}
+	 */
 	@SuppressWarnings("unchecked")
 	protected SerializableSignatureParameters createParameters(RemoteSignatureParameters remoteParameters) {
 		SerializableSignatureParameters parameters = null;
@@ -92,17 +115,17 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			parameters = getASiCSignatureParameters(asicContainerType, signatureForm);
 		} else {
 			switch (signatureForm) {
+			case XAdES:
+				parameters = new XAdESSignatureParameters();
+				break;
 			case CAdES:
 				parameters = new CAdESSignatureParameters();
 				break;
 			case PAdES:
-				PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
-				padesParams.setContentSize(9472 * 2); // double reserved space for signature
-				padesParams.setImageParameters(this.toImageParameters(remoteParameters.getImageParameters()));
-				parameters = padesParams;
+				parameters = getPAdESSignatureParameters(remoteParameters);
 				break;
-			case XAdES:
-				parameters = new XAdESSignatureParameters();
+			case JAdES:
+				parameters = getJAdESSignatureParameters(remoteParameters);
 				break;
 			default:
 				throw new DSSException("Unsupported signature form : " + signatureForm);
@@ -118,7 +141,44 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return parameters;
 	}
 
-	protected void fillParameters(AbstractSignatureParameters<TimestampParameters> parameters, RemoteSignatureParameters remoteParameters) {
+	/**
+	 * Gets PAdES signature parameters
+	 *
+	 * @param remoteParameters {@link RemoteSignatureParameters}
+	 * @return {@link SerializableSignatureParameters}
+	 */
+	protected SerializableSignatureParameters getPAdESSignatureParameters(RemoteSignatureParameters remoteParameters) {
+		PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
+		padesParams.setContentSize(9472 * 2); // double reserved space for signature
+		padesParams.setImageParameters(toImageParameters(remoteParameters.getImageParameters()));
+		return padesParams;
+	}
+	
+	/**
+	 * Return {@code SerializableCounterSignatureParameters} in order to support
+	 * counter signature
+	 *
+	 * @param remoteParameters {@link RemoteSignatureParameters}
+	 * @return {@link SerializableCounterSignatureParameters}
+	 */
+	protected SerializableCounterSignatureParameters getJAdESSignatureParameters(
+			RemoteSignatureParameters remoteParameters) {
+		JAdESCounterSignatureParameters jadesParameters = new JAdESCounterSignatureParameters();
+		if (remoteParameters.getJwsSerializationType() != null) {
+			jadesParameters.setJwsSerializationType(remoteParameters.getJwsSerializationType());
+		}
+		jadesParameters.setSigDMechanism(remoteParameters.getSigDMechanism());
+		return jadesParameters;
+	}
+
+	/**
+	 * Fills the parameters
+	 *
+	 * @param parameters {@link AbstractSignatureParameters} to fill
+	 * @param remoteParameters {@link RemoteSignatureParameters} to get values from
+	 */
+	protected void fillParameters(AbstractSignatureParameters<TimestampParameters> parameters,
+								  RemoteSignatureParameters remoteParameters) {
 		parameters.setBLevelParams(toBLevelParameters(remoteParameters.getBLevelParams()));
 		parameters.setDetachedContents(RemoteDocumentConverter.toDSSDocuments(remoteParameters.getDetachedContents()));
 		parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
@@ -167,7 +227,9 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		policy.setId(remoteBLevelParameters.getPolicyId());
 		policy.setQualifier(remoteBLevelParameters.getPolicyQualifier());
 		policy.setSpuri(remoteBLevelParameters.getPolicySpuri());
-		bLevelParameters.setSignaturePolicy(policy);
+		if (!policy.isEmpty()) {
+			bLevelParameters.setSignaturePolicy(policy);
+		}
 		
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry(remoteBLevelParameters.getSignerLocationCountry());
@@ -175,14 +237,20 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		signerLocation.setPostalAddress(remoteBLevelParameters.getSignerLocationPostalAddress());
 		signerLocation.setPostalCode(remoteBLevelParameters.getSignerLocationPostalCode());
 		signerLocation.setStateOrProvince(remoteBLevelParameters.getSignerLocationStateOrProvince());
-		signerLocation.setStreet(remoteBLevelParameters.getSignerLocationStreet());
+		signerLocation.setStreetAddress(remoteBLevelParameters.getSignerLocationStreet());
 		if (!signerLocation.isEmpty()) {
 			bLevelParameters.setSignerLocation(signerLocation);
 		}
 		
 		return bLevelParameters;
 	}
-	
+
+	/**
+	 * Transforms {@code RemoteTimestampParameters} to {@code TimestampParameters}
+	 *
+	 * @param remoteTimestampParameters {@link RemoteTimestampParameters}
+	 * @return {@link TimestampParameters}
+	 */
 	protected TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters) {
 		TimestampContainerForm timestampForm = remoteTimestampParameters.getTimestampContainerForm();
 		if (timestampForm != null) {
@@ -200,7 +268,15 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			throw new DSSException("Timestamp container form is not defined!");
 		}
 	}
-	
+
+	/**
+	 * Transforms ASiC {@code RemoteTimestampParameters} to {@code TimestampParameters}
+	 *
+	 * @param remoteTimestampParameters {@link RemoteTimestampParameters}
+	 * @param signatureForm {@link SignatureForm}
+	 * @param asicContainerType {@link ASiCContainerType}
+	 * @return {@link TimestampParameters}
+	 */
 	protected TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters, 
 			SignatureForm signatureForm, ASiCContainerType asicContainerType) {
 		TimestampParameters timestampParameters;
@@ -231,17 +307,32 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 					timestampParameters = new XAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm(), 
 							remoteTimestampParameters.getCanonicalizationMethod());
 					break;
+				case JAdES:
+					timestampParameters = new JAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm());
+					break;
 				default:
 					throw new DSSException("Unsupported signature form : " + signatureForm);
 			}
 		}
 		return timestampParameters;
 	}
-	
+
+	/**
+	 * Transforms {@code SignatureValueDTO} to {@code SignatureValue}
+	 *
+	 * @param signatureValueDTO {@link SignatureValueDTO}
+	 * @return {@link SignatureValue}
+	 */
 	protected SignatureValue toSignatureValue(SignatureValueDTO signatureValueDTO) {
 		return new SignatureValue(signatureValueDTO.getAlgorithm(), signatureValueDTO.getValue());
 	}
-	
+
+	/**
+	 * Transforms a list of {@code CommitmentTypeEnum}s to a list of {@code CommitmentType}s
+	 *
+	 * @param commitmentTypeEnums a list of {@link CommitmentTypeEnum}s
+	 * @return a list of {@link CommitmentType}s
+	 */
 	protected List<CommitmentType> toCommitmentTypeList(List<CommitmentTypeEnum> commitmentTypeEnums) {
 		if (Utils.isCollectionNotEmpty(commitmentTypeEnums)) {
 			return commitmentTypeEnums.stream().map(obj -> (CommitmentType) obj).collect(Collectors.toList());
@@ -269,36 +360,18 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 		// dpi
 		imageParameters.setDpi(remoteImageParameters.getDpi());
-		// height
-		if (remoteImageParameters.getHeight() != null) {
-			imageParameters.setHeight(remoteImageParameters.getHeight());
-		}
 		// image
 		if (remoteImageParameters.getImage() != null && remoteImageParameters.getImage().getBytes() != null && remoteImageParameters.getImage().getName() != null) {
 			imageParameters.setImage(new InMemoryDocument(remoteImageParameters.getImage().getBytes(), remoteImageParameters.getImage().getName()));
-		}
-		// page
-		if (remoteImageParameters.getPage() != null) {
-			imageParameters.setPage(remoteImageParameters.getPage());
 		}
 		// rotation
 		if (remoteImageParameters.getRotation() != null) {
 			imageParameters.setRotation(remoteImageParameters.getRotation());
 		}
+		// fieldParameters
+		imageParameters.setFieldParameters(toFieldParameters(remoteImageParameters.getFieldParameters()));
 		// textParameters
-		imageParameters.setTextParameters(this.toTextParameters(remoteImageParameters.getTextParameters()));
-		// width
-		if (remoteImageParameters.getWidth() != null) {
-			imageParameters.setWidth(remoteImageParameters.getWidth());
-		}
-		// xAxis
-		if (remoteImageParameters.getxAxis() != null) {
-			imageParameters.setxAxis(remoteImageParameters.getxAxis());
-		}
-		// yAxis
-		if (remoteImageParameters.getyAxis() != null) {
-			imageParameters.setyAxis(remoteImageParameters.getyAxis());
-		}
+		imageParameters.setTextParameters(toTextParameters(remoteImageParameters.getTextParameters()));
 		// zoom
 		if (remoteImageParameters.getZoom() != null) {
 			imageParameters.setZoom(remoteImageParameters.getZoom());
@@ -306,8 +379,36 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 
 		return imageParameters;
 	}
+	
+	private SignatureFieldParameters toFieldParameters(final RemoteSignatureFieldParameters remoteFieldParameters) {
+		if (remoteFieldParameters == null) {
+			return null;
+		}
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		if (remoteFieldParameters.getFieldId() != null) {
+			fieldParameters.setFieldId(remoteFieldParameters.getFieldId());
+		}
+		if (remoteFieldParameters.getPage() != null) {
+			fieldParameters.setPage(remoteFieldParameters.getPage());
+		}
+		if (remoteFieldParameters.getOriginX() != null) {
+			fieldParameters.setOriginX(remoteFieldParameters.getOriginX());
+		}
+		if (remoteFieldParameters.getOriginY() != null) {
+			fieldParameters.setOriginY(remoteFieldParameters.getOriginY());
+		}
+		if (remoteFieldParameters.getWidth() != null) {
+			fieldParameters.setWidth(remoteFieldParameters.getWidth());
+		}
+		if (remoteFieldParameters.getHeight() != null) {
+			fieldParameters.setHeight(remoteFieldParameters.getHeight());
+		}
+		
+		return fieldParameters;
+	}
 
-	private SignatureImageTextParameters toTextParameters(final RemoteSignatureImageTextParameters remoteTextParameters){
+	private SignatureImageTextParameters toTextParameters(final RemoteSignatureImageTextParameters remoteTextParameters) {
 		if (remoteTextParameters == null) {
 			return null;
 		}
@@ -352,6 +453,44 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return textParameters;
 	}
 
+	/**
+	 * Creates counter signature parameters
+	 *
+	 * @param remoteParameters {@link RemoteSignatureParameters}
+	 * @return {@link SerializableCounterSignatureParameters}
+	 */
+	protected SerializableCounterSignatureParameters createCounterSignatureParameters(
+			RemoteSignatureParameters remoteParameters) {
+		SerializableCounterSignatureParameters parameters;
+
+		SignatureForm signatureForm = remoteParameters.getSignatureLevel().getSignatureForm();
+		switch (signatureForm) {
+			case XAdES:
+				parameters = new XAdESCounterSignatureParameters();
+				break;
+			case CAdES:
+				parameters = new CAdESCounterSignatureParameters();
+				break;
+			case JAdES:
+				parameters = getJAdESSignatureParameters(remoteParameters);
+				break;
+			default:
+				throw new DSSException("Unsupported signature form for counter singature : " + signatureForm);
+		}
+		
+		fillCounterSignatureParameters(parameters, remoteParameters);
+		return parameters;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void fillCounterSignatureParameters(SerializableCounterSignatureParameters parameters,
+			RemoteSignatureParameters remoteParameters) {
+		parameters.setSignatureIdToCounterSign(remoteParameters.getSignatureIdToCounterSign());
+		if (parameters instanceof AbstractSignatureParameters<?>) {
+			AbstractSignatureParameters<TimestampParameters> abstractSignatureParameters = (AbstractSignatureParameters<TimestampParameters>) parameters;
+			fillParameters(abstractSignatureParameters, remoteParameters);
+		}
+	}
 
 
 }

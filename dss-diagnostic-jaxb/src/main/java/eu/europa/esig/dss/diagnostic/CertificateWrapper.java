@@ -174,6 +174,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.getSubjectSerialNumber();
 	}
 
+	public String getTitle() {
+		return certificate.getTitle();
+	}
+
 	public String getCommonName() {
 		return certificate.getCommonName();
 	}
@@ -348,6 +352,13 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public PSD2InfoWrapper getPSD2Info() {
 		if (certificate.getPSD2Info() != null) {
 			return new PSD2InfoWrapper(certificate.getPSD2Info());
+		}
+		return null;
+	}
+
+	public QCLimitValueWrapper getQCLimitValue() {
+		if (certificate.getQCLimitValue() !=null) {
+			return new QCLimitValueWrapper(certificate.getQCLimitValue());
 		}
 		return null;
 	}

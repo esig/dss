@@ -30,13 +30,5 @@ public class DSS1871Test extends AbstractCAdESTestValidation {
 	protected DSSDocument getSignedDocument() {
 		return new FileDocument("src/test/resources/validation/wrongContentHints.p7m");
 	}
-	
-//	@Override
-//	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-//		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-//		assertTrue(signature.isSigningCertificateReferencePresent());
-//		assertTrue(signature.isDigestValuePresent());
-//		assertTrue(signature.isDigestValueMatch());
-//	}
 
 }

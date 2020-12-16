@@ -25,25 +25,50 @@ import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
 import eu.europa.esig.dss.tsl.cache.ValidationCache;
 
+/**
+ * Forces an update of a TL validation
+ */
 public class TLChangesCacheAccess {
 
-	/* Global Cache */
+	/** Global download Cache */
 	private final DownloadCache downloadCache;
+
+	/** Global parsing Cache */
 	private final ParsingCache parsingCache;
+
+	/** Global validation Cache */
 	private final ValidationCache validationCache;
 
-	public TLChangesCacheAccess(final DownloadCache downloadCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
+	/**
+	 * Default constructor
+	 *
+	 * @param downloadCache {@link DownloadCache}
+	 * @param parsingCache {@link ParsingCache}
+	 * @param validationCache {@link ValidationCache}
+	 */
+	public TLChangesCacheAccess(final DownloadCache downloadCache, final ParsingCache parsingCache,
+								final ValidationCache validationCache) {
 		this.downloadCache = downloadCache;
 		this.parsingCache = parsingCache;
 		this.validationCache = validationCache;
 	}
 
+	/**
+	 * Sets 'toBeDeleted' status for all records with the given key
+	 *
+	 * @param cacheKey {@link CacheKey}
+	 */
 	public void toBeDeleted(CacheKey cacheKey) {
 		downloadCache.toBeDeleted(cacheKey);
 		parsingCache.toBeDeleted(cacheKey);
 		validationCache.toBeDeleted(cacheKey);
 	}
 
+	/**
+	 * Sets the expired status for the validation record for the {@code cacheKey}
+	 *
+	 * @param cacheKey {@link CacheKey}
+	 */
 	public void expireSignatureValidation(CacheKey cacheKey) {
 		validationCache.expire(cacheKey);
 	}

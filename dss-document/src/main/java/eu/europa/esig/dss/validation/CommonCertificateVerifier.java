@@ -231,13 +231,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	@Deprecated
-	public void setTrustedCertSource(final CertificateSource trustedCertSource) {
-		Objects.requireNonNull(trustedCertSource, "CertificateSource cannot be null!");
-		setTrustedCertSources(trustedCertSource);
-	}
-	
-	@Override
 	public void setTrustedCertSources(final CertificateSource... certSources) {
 		this.trustedCertSources = new ListCertificateSource();
 		addTrustedCertSources(certSources);
@@ -272,13 +265,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 		return adjunctCertSources;
 	}
 
-	@Override
-	@Deprecated
-	public void setAdjunctCertSource(final CertificateSource adjunctCertSource) {
-		Objects.requireNonNull(adjunctCertSource, "CertificateSource cannot be null!");
-		addAdjunctCertSources(adjunctCertSource);
-	}
-	
 	@Override
 	public void setAdjunctCertSources(final CertificateSource... certSources) {
 		this.adjunctCertSources = new ListCertificateSource();

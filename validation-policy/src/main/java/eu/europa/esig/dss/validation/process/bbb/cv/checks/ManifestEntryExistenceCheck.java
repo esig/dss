@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -32,11 +30,26 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if a manifest entry is present
+ */
 public class ManifestEntryExistenceCheck extends ChainItem<XmlCV> {
 
+	/** The digest matchers to check */
 	private final List<XmlDigestMatcher> digestMatchers;
 
-	public ManifestEntryExistenceCheck(I18nProvider i18nProvider, XmlCV result, List<XmlDigestMatcher> digestMatchers, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlCV}
+	 * @param digestMatchers a list of {@link XmlDigestMatcher}s
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public ManifestEntryExistenceCheck(I18nProvider i18nProvider, XmlCV result, List<XmlDigestMatcher> digestMatchers,
+									   LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.digestMatchers = digestMatchers;
 	}

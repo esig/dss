@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Locale;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * Container for a Digest and his algorithm
@@ -33,18 +33,34 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 @SuppressWarnings("serial")
 public final class Digest implements Serializable {
 
+	/** The used DigestAlgorithm */
 	private DigestAlgorithm algorithm;
 
+	/** The digest value */
 	private byte[] value;
 
+	/**
+	 * Empty constructor
+	 */
 	public Digest() {
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param algorithm {@link DigestAlgorithm} used algorithm
+	 * @param value byte array digest
+	 */
 	public Digest(DigestAlgorithm algorithm, byte[] value) {
 		this.algorithm = algorithm;
 		this.value = value;
 	}
 
+	/**
+	 * Gets the HEX (base16) encoded digest value String
+	 *
+	 * @return {@link String} HEX-encoded digest
+	 */
 	public String getHexValue() {
 		String hex = new BigInteger(1, value).toString(16);
 		if (hex.length() % 2 == 1) {
@@ -54,6 +70,8 @@ public final class Digest implements Serializable {
 	}
 
 	/**
+	 * Gets the DigestAlgorithm
+	 *
 	 * @return the algorithm
 	 */
 	public DigestAlgorithm getAlgorithm() {
@@ -61,6 +79,8 @@ public final class Digest implements Serializable {
 	}
 
 	/**
+	 * Sets the DigestAlgorithm
+	 *
 	 * @param algorithm
 	 *                  the algorithm to set
 	 */
@@ -69,6 +89,8 @@ public final class Digest implements Serializable {
 	}
 
 	/**
+	 * Gets the digest value
+	 *
 	 * @return the value
 	 */
 	public byte[] getValue() {
@@ -76,6 +98,8 @@ public final class Digest implements Serializable {
 	}
 
 	/**
+	 * Sets the digest value
+	 *
 	 * @param value
 	 *              the value to set
 	 */

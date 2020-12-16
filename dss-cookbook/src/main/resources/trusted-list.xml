@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns4="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="TL12345" TSLTag="http://uri.etsi.org/19612/TSLTag">
+    <SchemeInformation>
+        <TSLVersionIdentifier>5</TSLVersionIdentifier>
+        <TSLSequenceNumber>1</TSLSequenceNumber>
+        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+        <SchemeOperatorName>
+            <Name xml:lang="en">XX Operator name</Name>
+        </SchemeOperatorName>
+        <SchemeOperatorAddress>
+            <PostalAddresses>
+                <PostalAddress xml:lang="en">
+                    <StreetAddress>TEST</StreetAddress>
+                    <Locality>TEST</Locality>
+                    <PostalCode>TEST</PostalCode>
+                    <CountryName>EU</CountryName>
+                </PostalAddress>
+            </PostalAddresses>
+            <ElectronicAddress>
+                <URI xml:lang="en">mailto:test@test.test</URI>
+            </ElectronicAddress>
+        </SchemeOperatorAddress>
+        <SchemeName>
+            <Name xml:lang="en">XX: TEST</Name>
+        </SchemeName>
+        <SchemeInformationURI>
+            <URI xml:lang="en">https://webgate.ec.europa.eu/esig-validation-tests/test-disclaimer/</URI>
+        </SchemeInformationURI>
+        <StatusDeterminationApproach>https://webgate.ec.europa.eu/esig-validation-tests/test-disclaimer/</StatusDeterminationApproach>
+        <SchemeTypeCommunityRules>
+            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon</URI>
+            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/XX</URI>
+        </SchemeTypeCommunityRules>
+        <SchemeTerritory>XX</SchemeTerritory>
+        <PolicyOrLegalNotice>
+            <TSLLegalNotice xml:lang="en">TEST</TSLLegalNotice>
+        </PolicyOrLegalNotice>
+        <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+        <PointersToOtherTSL>
+            <OtherTSLPointer>
+                <ServiceDigitalIdentities>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>MIIDRjCCAi6gAwIBAgIBATANBgkqhkiG9w0BAQ0FADBVMRQwEgYDVQQDDAtDRVJULUxPVEwtMjEYMBYGA1UECgwPRVUgT3JnYW5pemF0aW9uMRYwFAYDVQQLDA1DRVJUIEZPUiBURVNUMQswCQYDVQQGEwJMVTAeFw0xOTEyMTMwMDAwMDRaFw0yMTEyMTMwMDAwMDRaMFUxFDASBgNVBAMMC0NFUlQtTE9UTC0yMRgwFgYDVQQKDA9FVSBPcmdhbml6YXRpb24xFjAUBgNVBAsMDUNFUlQgRk9SIFRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnWOxSY5IZYMboLywPDwDQ7oYP+VBTMfV3gnCDJzxTECePhPjwYWMgh4Wx1OqOgvLiJScD2begznF55tdNoS+WoVWOAkv9j79t+DApvDALVpenvUFS9h3w02q9oIVjhrqvqrvV/2irX/ywbL2S1AvG/edCQLpVzG2rZWbiq3+U5zqN2pjnvXgEeaVfXNDfIrwhBwi9BIoOfoyPk6DFU1meUln/tjE86GxfBZLT5IOmz4RdUfCWJdOZx4WhWvICKoULBJ4McxVfqJ9s+AX/3Xdi0SsctJc5KdatU7f+tSERPQ8zWbHth1B6rG6xlkPIC2+Y3eYVhZcTR7uv0t7ssQAcQIDAQABoyEwHzAdBgNVHQ4EFgQUA2FS8H/mM8vFubvA9JqqsMOIsdIwDQYJKoZIhvcNAQENBQADggEBADZSKk4KjDA6UhYyQner1uVtvMvILNZoy6mRSDxRlQ5vUYwtI1p4WW+gqOnAcYxzd4oZG61Tp4ik+zwuFFBNI/OkyK3gnJDgAsNduD01gsmHqH4MqqevQP80ItKcyzq7g+5mJepeQcyE1VKNbn5J6nEvG6nmeUjHVra04bZqVLgQqqXH3WFkJzygFCJKxSrW5CIuG90fwUw8jZlQOsY7Vo5HaZr+KFUALR8Bqnl0cQsBEI0ATNtA8qPO+humSY14WgvJ1Km5Qp96/fDXKjBSxJhPeHT6FnpBhOer9TqGAt+qXLj6+QThzV9qQsK6+do/625zyStotcjrzs2t3HQqPc4=</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                </ServiceDigitalIdentities>
+                <TSLLocation>https://webgate.ec.europa.eu/esig-validation-tests/tl/LOTL-2.xml</TSLLocation>
+                <AdditionalInformation>
+                    <OtherInformation>
+                        <SchemeTerritory>EU</SchemeTerritory>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeOperatorName>
+                            <Name xml:lang="en">EU Operator name</Name>
+                        </SchemeOperatorName>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <ns4:MimeType>application/vnd.etsi.tsl+xml</ns4:MimeType>
+                    </OtherInformation>
+                </AdditionalInformation>
+            </OtherTSLPointer>
+        </PointersToOtherTSL>
+        <ListIssueDateTime>2020-12-12T00:00:00Z</ListIssueDateTime>
+        <NextUpdate>
+            <dateTime>2021-01-13T00:00:00Z</dateTime>
+        </NextUpdate>
+    </SchemeInformation>
+    <TrustServiceProviderList>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">TSP-21.1 Name</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">TSP-21.1 Trade name</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Street address</StreetAddress>
+                            <Locality>Locality</Locality>
+                            <StateOrProvince>Province</StateOrProvince>
+                            <PostalCode>123</PostalCode>
+                            <CountryName>XX</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:test@test.test</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">TS-21.1.1 Name</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIDYTCCAkmgAwIBAgIBAzANBgkqhkiG9w0BAQsFADBSMRMwEQYDVQQDDApTREktMjEuMS4xMRYwFAYDVQQKDA1UU1AtMjEuMSBOYW1lMRYwFAYDVQQLDA1DRVJUIEZPUiBURVNUMQswCQYDVQQGEwJMVTAeFw0xOTEyMTMwMDAwMDRaFw0yMTEyMTMwMDAwMDRaMFIxEzARBgNVBAMMClNESS0yMS4xLjExFjAUBgNVBAoMDVRTUC0yMS4xIE5hbWUxFjAUBgNVBAsMDUNFUlQgRk9SIFRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhCjqjranMuc++JkD2R1VXgswkZa175XaH5dgZXkqm9d096j9Ue0BcyJeD7xMT9UsgcKQ9+1iGaQkATckn2F4oJwKAbymZ/P41tpw2mlw19LxPLPsSVRW8/PcR8yRxA58yU2wxePwItDgRbT/Kv+kMuPXSXejs5eS6NBCOJHxicyXdx4UmUP+4QPvmjMYV8NyGiCq7CjPiGwjqZ0sGvMHFSYw6lQvz4PMRI1+z+Hz//aj+Cx3j+dIO5skGAG1yCXoJpDYGTUKv4Gg5KOQZNnhb4qcbbzkMOAojFP/RtAahteeuiwVwq0TYiftUbo2pD5HwRdj7+pLuPzlNzzaiM4pLQIDAQABo0IwQDAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFJgSJBAUkK95fJzUmtIweTy9+FVCMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAAfKhT2Yqbl8iwRHOIMQ+8ZATpdzSV4K/DH7pepJdq2awJsb/410flSOkUnmnSl9Gm5xpThGi/yMBZaCJRsLJKdDiSde/kT9couW7GaQBW8q85RjLZYL0KbFEhHFIkYpu5VCU16IoDLous8lCm0px22zUlUYwk9OoReXtfswbB6D5MOiOD8ikZ1cVG6E0cfOk8qfX4kDWOSXAgpeoB+NVIvdQatzhMkLKgAiMj9A3Vs2xsAVedpctlpQkYSr1hjbO7EvkZ7+pKuhVIlR36/BvkPWaB0l4s7ydNf+BroKxgEWHLvbXidxQyyb7umXW1/hZbhpjunHLp2aU+HwBeoKg2w=</X509Certificate>
+<X509SubjectName>C=XX,OU=CERT FOR TEST,O=TSP-21.1 Name,CN=SDI-21.1.1</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+    </TrustServiceProviderList>
+</TrustServiceStatusList>

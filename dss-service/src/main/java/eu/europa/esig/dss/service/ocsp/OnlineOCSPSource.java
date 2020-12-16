@@ -22,6 +22,8 @@ package eu.europa.esig.dss.service.ocsp;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -82,6 +85,12 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	 * The DigestAlgorithm to be used in hash calculation for CertID on a request building
 	 */
 	private DigestAlgorithm certIDDigestAlgorithm = DigestAlgorithm.SHA1;
+	
+	/**
+	 * A collection of DigestAlgorithms to exclude OCSPTokens signed by them
+	 */
+	private Collection<DigestAlgorithm> digestAlgorithmsForExclusion = Arrays.asList(DigestAlgorithm.MD2, DigestAlgorithm.MD5, 
+			DigestAlgorithm.RIPEMD160, DigestAlgorithm.SHA1, DigestAlgorithm.WHIRLPOOL);
 
 	/**
 	 * Create an OCSP source The default constructor for OnlineOCSPSource. The
@@ -131,6 +140,17 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		this.certIDDigestAlgorithm = certIDDigestAlgorithm;
 	}
 
+	/**
+	 * Sets a collection of DigestAlgorithms for exclusion
+	 * If an OCSPToken is signed with a listed algorithm, the OCSPToken will be skipped
+	 * 
+	 * @param digestAlgorithmsForExclusion an array if {@link DigestAlgorithm}s
+	 */
+	public void setDigestAlgorithmsForExclusion(Collection<DigestAlgorithm> digestAlgorithmsForExclusion) {
+		Objects.requireNonNull(digestAlgorithmsForExclusion, "The collection of DigestAlgorithms for exclusion cannot be null!");
+		this.digestAlgorithmsForExclusion = digestAlgorithmsForExclusion;
+	}
+
 	@Override
 	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		return getRevocationToken(certificateToken, issuerCertificateToken, Collections.<String>emptyList());
@@ -178,7 +198,12 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 						OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerCertificateToken);
 						ocspToken.setSourceURL(ocspAccessLocation);
 						ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
-						return ocspToken;
+						if (isAcceptableDigestAlgo(ocspToken.getSignatureAlgorithm())) {
+							return ocspToken;
+						} else {
+							LOG.warn("The SignatureAlgorithm '{}' of the obtained OCSPToken from URL '{}' is not acceptable! "
+									+ "The OCSPToken is skipped.", ocspToken.getSignatureAlgorithm(), ocspAccessLocation);
+						}
 					} else {
 						LOG.warn("Ignored OCSP Response from URL '{}' : status -> {}", ocspAccessLocation, status);
 					}
@@ -250,6 +275,10 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to extract the nonce from the OCSPResponse! Reason : [%s]", e.getMessage()), e);
 		}
+	}
+	
+	private boolean isAcceptableDigestAlgo(SignatureAlgorithm signatureAlgorithm) {
+		return signatureAlgorithm != null && !digestAlgorithmsForExclusion.contains(signatureAlgorithm.getDigestAlgorithm());
 	}
 
 }

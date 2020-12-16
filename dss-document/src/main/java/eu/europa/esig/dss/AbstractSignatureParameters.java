@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -32,13 +29,19 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Parameters for a Signature creation/extension
  */
 @SuppressWarnings("serial")
 public abstract class AbstractSignatureParameters<TP extends SerializableTimestampParameters> extends AbstractSerializableSignatureParameters<TP> {
 
-	private String deterministicId;
+	/**
+	 * The id created in a deterministic way based on the filled parameters to use in the signature file
+	 */
+	protected String deterministicId;
 
 	/**
 	 * The documents to be signed
@@ -63,7 +66,7 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	 */
 	private List<CertificateToken> certificateChain = new LinkedList<>();
 
-	/*
+	/**
 	 * This parameter is here because that's a signed attribute. It must be computed before getDataToSign/signDocument
 	 */
 	private List<TimestampToken> contentTimestamps;
@@ -78,6 +81,11 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 		return contentTimestamps;
 	}
 
+	/**
+	 * Sets a list of content timestamps to be included into the signature
+	 *
+	 * @param contentTimestamps a list of {@link TimestampToken}s
+	 */
 	public void setContentTimestamps(final List<TimestampToken> contentTimestamps) {
 		this.contentTimestamps = contentTimestamps;
 	}
@@ -145,7 +153,7 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	/**
 	 * Get signed data
 	 * 
-	 * @return
+	 * @return signed data binaries
 	 */
 	public byte[] getSignedData() {
 		return signedData;

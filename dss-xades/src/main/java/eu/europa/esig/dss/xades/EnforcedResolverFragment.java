@@ -20,21 +20,26 @@
  */
 package eu.europa.esig.dss.xades;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-
+import eu.europa.esig.dss.utils.Utils;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.implementations.ResolverFragment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.utils.Utils;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
+/**
+ * This class tests the xpath expression against injection.
+ *
+ * See https://www.owasp.org/index.php/XPATH_Injection_Java.
+ */
 public class EnforcedResolverFragment extends ResolverFragment {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EnforcedResolverFragment.class);
 
+	/** The XPath filter */
 	private static final String XPATH_CHAR_FILTER = "()='[]:,*/ ";
 
 	@Override
@@ -43,9 +48,7 @@ public class EnforcedResolverFragment extends ResolverFragment {
 	}
 
 	/**
-	 * This method tests the xpath expression against injection.
-	 * 
-	 * See https://www.owasp.org/index.php/XPATH_Injection_Java
+	 * This method tests the xpath expression against injection
 	 * 
 	 * @param xpathString
 	 *                    the xpath expression to be tested

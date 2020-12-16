@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,9 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
+import eu.europa.esig.dss.pades.validation.PdfModification;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
@@ -126,12 +129,72 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		stp.setIncludeFileID(true);
 		stp.setOverrideFileId(generateFileId(parameters));
 
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(parameters.getSigningDate());
+
+		stp.setEnforcedModificationDate(cal);
+
 		PdfSignatureAppearance sap = stp.getSignatureAppearance();
 		sap.setAcro6Layers(true);
+		
+		SignatureImageParameters sip = parameters.getImageParameters();
+		SignatureFieldParameters fieldParameters = sip.getFieldParameters();
 
-		PdfDictionary dic = null;
-		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getFieldId())) {
-			dic = findExistingSignature(reader, parameters.getFieldId());
+		Item fieldItem = findExistingSignatureField(reader, fieldParameters);
+		if (!sip.isEmpty()) {
+			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(sip);
+			signatureDrawer.init(sip.getFieldParameters().getFieldId(), sip, sap);
+			
+			if (fieldItem == null) {
+				checkVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
+			}
+			
+			signatureDrawer.draw();
+		}
+
+		PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
+		if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
+			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
+			
+			CertificationPermission permission = signatureParameters.getPermission();
+			// A document can contain only one signature field that contains a DocMDP
+			// transform method;
+			// it shall be the first signed field in the document.
+			if (permission != null && !containsFilledSignature(reader)) {
+				sap.setCertificationLevel(permission.getCode());
+			}
+
+			signatureDictionary.put(PdfName.M, new PdfDate(cal));
+		}
+
+		sap.setCryptoDictionary(signatureDictionary);
+
+		int csize = parameters.getContentSize();
+		HashMap exc = new HashMap();
+		exc.put(PdfName.CONTENTS, Integer.valueOf((csize * 2) + 2));
+
+		sap.preClose(exc);
+
+		return stp;
+	}
+	
+	private Item findExistingSignatureField(PdfReader reader, SignatureFieldParameters fieldParameters) {
+		String signatureFieldId = fieldParameters.getFieldId();
+		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(signatureFieldId)) {
+			AcroFields acroFields = reader.getAcroFields();
+			List<String> signatureNames = acroFields.getFieldNamesWithBlankSignatures();
+			if (signatureNames.contains(signatureFieldId)) {
+				return acroFields.getFieldItem(signatureFieldId);
+			}
+			throw new DSSException("The signature field '" + signatureFieldId + "' does not exist.");
+		}
+		return null;
+	}
+	
+	private PdfDictionary createSignatureDictionary(Item fieldItem, PAdESCommonParameters parameters) {
+		PdfDictionary dic;
+		if (fieldItem != null) {
+			dic = fieldItem.getMerged(0);
 		} else {
 			dic = new PdfDictionary();
 		}
@@ -145,11 +208,6 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		if (Utils.isStringNotEmpty(parameters.getSubFilter())) {
 			dic.put(PdfName.SUBFILTER, new PdfName(parameters.getSubFilter()));
 		}
-
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(parameters.getSigningDate());
-
-		stp.setEnforcedModificationDate(cal);
 
 		if (PdfName.SIG.equals(type)) {
 			
@@ -168,45 +226,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				dic.put(PdfName.CONTACTINFO, new PdfString(signatureParameters.getContactInfo(), PdfObject.TEXT_UNICODE));
 			}
 
-			CertificationPermission permission = signatureParameters.getPermission();
-			// A document can contain only one signature field that contains a DocMDP
-			// transform method;
-			// it shall be the first signed field in the document.
-			if (permission != null && !containsFilledSignature(reader)) {
-				sap.setCertificationLevel(permission.getCode());
-			}
-
-			dic.put(PdfName.M, new PdfDate(cal));
-
 		}
-
-		sap.setCryptoDictionary(dic);
-
-		SignatureImageParameters sip = parameters.getImageParameters();
-		if (sip != null && signatureDrawerFactory != null) {
-			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) signatureDrawerFactory
-					.getSignatureDrawer(sip);
-			signatureDrawer.init(parameters.getFieldId(), sip, sap);
-			signatureDrawer.draw();
-		}
-
-		int csize = parameters.getContentSize();
-		HashMap exc = new HashMap();
-		exc.put(PdfName.CONTENTS, Integer.valueOf((csize * 2) + 2));
-
-		sap.preClose(exc);
-
-		return stp;
-	}
-
-	private PdfDictionary findExistingSignature(PdfReader reader, String signatureFieldId) {
-		AcroFields acroFields = reader.getAcroFields();
-		List<String> signatureNames = acroFields.getFieldNamesWithBlankSignatures();
-		if (signatureNames.contains(signatureFieldId)) {
-			Item item = acroFields.getFieldItem(signatureFieldId);
-			return item.getMerged(0);
-		}
-		throw new DSSException("The signature field '" + signatureFieldId + "' does not exist.");
+		
+		return dic;
 	}
 
 	private boolean containsFilledSignature(PdfReader reader) {
@@ -254,7 +276,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
 			}
 			return digest;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -286,7 +308,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
 			signature.setMimeType(MimeType.PDF);
 			return signature;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -406,9 +428,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
 
 			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
-
-			stp.addSignature(parameters.getName(), parameters.getPage() + 1, parameters.getOriginX(),
-					parameters.getOriginY(), parameters.getWidth(), parameters.getHeight());
+			
+			AnnotationBox annotationBox = checkVisibleSignatureFieldBoxPosition(new ITextDocumentReader(reader), parameters);
+			
+			stp.addSignature(parameters.getFieldId(), parameters.getPage(), 
+					annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());
 
 			stp.close();
 
@@ -436,6 +460,13 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, String passwordProtection) throws IOException {
 		return new ITextDocumentReader(binaries, getPasswordBinary(passwordProtection));
+	}
+
+	@Override
+	protected List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader,
+			final PdfDocumentReader finalRevisionReader) throws IOException {
+		// not supported
+		return Collections.emptyList();
 	}
 
 }

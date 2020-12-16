@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +32,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.EnumMap;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-
 /**
  * This class implements the default methods.
  *
@@ -39,13 +39,25 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 @SuppressWarnings("serial")
 public abstract class CommonDocument implements DSSDocument {
 
+	/**
+	 * Cached map of DigestAlgorithms and the corresponding digests for the document
+	 */
 	protected EnumMap<DigestAlgorithm, String> base64EncodeDigestMap = new EnumMap<>(
 			DigestAlgorithm.class);
 
+	/**
+	 * The MimeType of the document
+	 */
 	protected MimeType mimeType;
 
+	/**
+	 * The document name
+	 */
 	protected String name;
 
+	/**
+	 * The document's absolute path
+	 */
 	protected String absolutePath;
 
 	@Override

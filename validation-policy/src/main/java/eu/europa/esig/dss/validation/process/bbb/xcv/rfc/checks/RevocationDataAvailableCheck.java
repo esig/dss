@@ -29,11 +29,26 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if a revocation data is available for the certificate
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Certificate to check */
 	private final CertificateWrapper certificate;
 
-	public RevocationDataAvailableCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public RevocationDataAvailableCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
+										LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}
@@ -62,10 +77,10 @@ public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> ex
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.TRY_LATER;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		return MessageTag.CERTIFICATE_ID.setArgs(certificate.getId());
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.CERTIFICATE_ID, certificate.getId());
 	}
 
 }

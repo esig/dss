@@ -279,11 +279,11 @@ public class CertificateToken extends Token {
 	}
 
 	@Override
-	protected SignatureValidity checkIsSignedBy(final CertificateToken candidate) {
+	protected SignatureValidity checkIsSignedBy(final PublicKey publicKey) {
 		signatureValidity = SignatureValidity.INVALID;
 		signatureInvalidityReason = "";
 		try {
-			x509Certificate.verify(candidate.getPublicKey());
+			x509Certificate.verify(publicKey);
 			signatureValidity = SignatureValidity.VALID;
 		} catch (NoSuchProviderException e) { // if there's no default provider.
 			throw new DSSException(e);

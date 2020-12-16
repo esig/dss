@@ -22,23 +22,51 @@ package eu.europa.esig.dss.ws.dto;
 
 import java.io.Serializable;
 
+/**
+ * DTO for a {@code Color} object
+ */
 @SuppressWarnings("serial")
 public class RemoteColor implements Serializable {
 
+	/** The red color layer value */
 	private Integer red;
+
+	/** The green color layer value */
 	private Integer green;
+
+	/** The blue color layer value */
 	private Integer blue;
+
+	/** The blue color layer value */
 	private Integer alpha;
 
+	/**
+	 * The empty constructor
+	 */
 	public RemoteColor() {
 	}
 
+	/**
+	 * The default constructor without alpha layer
+	 *
+	 * @param red R color value
+	 * @param green G color value
+	 * @param blue B color value
+	 */
 	public RemoteColor(int red, int green, int blue) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
 	}
 
+	/**
+	 * The default constructor with alpha layer
+	 *
+	 * @param red R color value
+	 * @param green G color value
+	 * @param blue B color value
+	 * @param alpha alpha layer value
+	 */
 	public RemoteColor(Integer red, Integer green, Integer blue, Integer alpha) {
 		this.red = red;
 		this.green = green;
@@ -46,34 +74,74 @@ public class RemoteColor implements Serializable {
 		this.alpha = alpha;
 	}
 
+	/**
+	 * Gets red color value
+	 *
+	 * @return {@link Integer}
+	 */
 	public Integer getRed() {
 		return red;
 	}
 
+	/**
+	 * Sets red color value
+	 *
+	 * @param red {@link Integer}
+	 */
 	public void setRed(Integer red) {
 		this.red = red;
 	}
 
+	/**
+	 * Gets green color value
+	 *
+	 * @return {@link Integer}
+	 */
 	public Integer getGreen() {
 		return green;
 	}
 
+	/**
+	 * Sets green color value
+	 *
+	 * @param green {@link Integer}
+	 */
 	public void setGreen(Integer green) {
 		this.green = green;
 	}
 
+	/**
+	 * Gets blue color value
+	 *
+	 * @return {@link Integer}
+	 */
 	public Integer getBlue() {
 		return blue;
 	}
 
+	/**
+	 * Sets blue color value
+	 *
+	 * @param blue {@link Integer}
+	 */
 	public void setBlue(Integer blue) {
 		this.blue = blue;
 	}
 
+	/**
+	 * Gets alpha layer value
+	 *
+	 * @return {@link Integer}
+	 */
 	public Integer getAlpha() {
 		return alpha;
 	}
 
+	/**
+	 * Sets alpha layer value
+	 *
+	 * @param alpha {@link Integer}
+	 */
 	public void setAlpha(Integer alpha) {
 		this.alpha = alpha;
 	}

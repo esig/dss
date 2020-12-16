@@ -155,7 +155,7 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setLocation(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setSignatureFieldId(Utils.EMPTY_STRING);
+        signatureParameters.getImageParameters().getFieldParameters().setFieldId(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setContentSize(1);
@@ -180,8 +180,7 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setImageParameters(new SignatureImageParameters());
-        exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertTrue(exception.getMessage().contains("Neither image nor text parameters are defined!"));
+        signAndValidate(documentToSign, signatureParameters);
 
         signatureParameters.setImageParameters(null);
         signatureParameters.getArchiveTimestampParameters().setFilter(null);
@@ -197,8 +196,7 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.getArchiveTimestampParameters().setImageParameters(new SignatureImageParameters());
-        exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertTrue(exception.getMessage().contains("Neither image nor text parameters are defined!"));
+        signAndValidate(documentToSign, signatureParameters);
 
         signatureParameters.getArchiveTimestampParameters().setImageParameters(null);
         signatureParameters.setPermission(CertificationPermission.NO_CHANGE_PERMITTED);

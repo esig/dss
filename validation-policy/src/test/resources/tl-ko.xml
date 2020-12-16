@@ -7,9 +7,7 @@
             <SignatureFilename>https___ec_europa_eu_information_society_policy_esignature_trusted_list_tl_pivot_191_mp_xml.xml</SignatureFilename>
             <ClaimedSigningTime>2017-12-12T08:29:06</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="xml_ref_id">
                     <DigestMethod>SHA256</DigestMethod>
@@ -75,8 +73,8 @@
             <Locality>BE</Locality>
             <CountryName>BE</CountryName>
             <OrganizationName>European Commission</OrganizationName>
-            <GivenName>Maarten Joris</GivenName>
             <OrganizationalUnit>0949.383.342</OrganizationalUnit>
+            <GivenName>Maarten Joris</GivenName>
             <Surname>Ottoy</Surname>
             <Email>maarten.ottoy@ec.europa.eu</Email>
             <AuthorityInformationAccessUrls>

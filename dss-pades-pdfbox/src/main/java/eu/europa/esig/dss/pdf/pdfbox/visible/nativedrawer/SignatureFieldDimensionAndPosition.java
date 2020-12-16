@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 
-public class SignatureFieldDimensionAndPosition {
+public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldAppearance {
 	
 	private float boxX = 0;
 	private float boxY = 0;
@@ -191,6 +193,11 @@ public class SignatureFieldDimensionAndPosition {
 		// minus, because PDF starts to count from bottom
 		this.textY -= CommonDrawerUtils.toDpiAxisPoint(padding / CommonDrawerUtils.getTextScaleFactor(getyDpi()), getyDpi()) * 
 				CommonDrawerUtils.getTextScaleFactor(imageDpi);
+	}
+
+	@Override
+	public AnnotationBox getAnnotationBox() {
+		return new AnnotationBox(boxX, boxY, boxX + boxWidth, boxY + boxHeight);
 	}
 	
 }

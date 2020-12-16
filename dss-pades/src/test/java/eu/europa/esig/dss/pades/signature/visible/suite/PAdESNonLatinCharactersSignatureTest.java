@@ -56,10 +56,9 @@ public class PAdESNonLatinCharactersSignatureTest extends AbstractPAdESTestSigna
 		signatureParameters.setLocation("Люксембург");
 		signatureParameters.setReason("DSS ხელმოწერა");
 		signatureParameters.setContactInfo("Jira");
-		signatureParameters.setSignatureFieldId("подпись1");
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
-		parameters.setName("подпись1");
+		parameters.setFieldId("подпись1");
 		parameters.setOriginX(10);
 		parameters.setOriginY(10);
 		parameters.setHeight(150);
@@ -73,6 +72,9 @@ public class PAdESNonLatinCharactersSignatureTest extends AbstractPAdESTestSigna
 		textParameters.setText("Моя подпись 1");
 		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		signatureImageParameters.setTextParameters(textParameters);
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setFieldId("подпись1");
+		signatureImageParameters.setFieldParameters(fieldParameters);
 		signatureParameters.setImageParameters(signatureImageParameters);
 
 		padesService = new PAdESService(getCompleteCertificateVerifier());

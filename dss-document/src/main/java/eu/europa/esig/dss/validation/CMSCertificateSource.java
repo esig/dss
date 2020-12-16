@@ -20,17 +20,19 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
+import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CertificateValidity;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -49,25 +51,30 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.CertificateOrigin;
-import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
-import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.CertificateValidity;
-import eu.europa.esig.dss.utils.Utils;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
+import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
+
+/**
+ * CMS certificate source
+ */
 @SuppressWarnings("serial")
 public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCertificateSource.class);
-	
+
+	/** The CMSSignedData */
 	private final transient CMSSignedData cmsSignedData;
+
+	/** The SignerInformation of the current signature */
 	private final transient SignerInformation currentSignerInformation;
 	
 	/**
@@ -123,7 +130,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	public void extractSigningCertificateReferences() {
+	private void extractSigningCertificateReferences() {
 		AttributeTable signedAttributes = currentSignerInformation.getSignedAttributes();
 		if (signedAttributes != null && signedAttributes.size() > 0) {
 			final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);
@@ -243,14 +250,18 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	@Override
-	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken) {
+	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(
+			CertificateSource signingCertificateSource) {
 		CandidatesForSigningCertificate candidates = new CandidatesForSigningCertificate();
 
 		CertificateIdentifier currentCertificateIdentifier = getCurrentCertificateIdentifier();
 		CertificateToken certificate = getCertificateToken(currentCertificateIdentifier);
-		if (certificate == null && providedSigningCertificateToken != null) {
-			LOG.info("Use the provided signing certificate");
-			certificate = providedSigningCertificateToken;
+		if (certificate == null && signingCertificateSource != null) {
+			Set<CertificateToken> foundTokens = signingCertificateSource.getByCertificateIdentifier(currentCertificateIdentifier);
+			if (Utils.isCollectionNotEmpty(foundTokens)) {
+				LOG.debug("Resolved signing certificate by certificate identifier");
+				certificate = foundTokens.iterator().next();
+			}
 		}
 
 		CertificateValidity certificateValidity = null;

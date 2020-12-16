@@ -35,7 +35,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESBaselineTTest extends AbstractRequirementChecks {
+public class XAdESBaselineTTest extends AbstractXAdESRequirementChecks {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;

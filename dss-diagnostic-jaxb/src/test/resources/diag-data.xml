@@ -7,9 +7,7 @@
             <SignatureFilename>SK_MIN-P-EN-B-LT-V-3.pdf</SignatureFilename>
             <ClaimedSigningTime>2019-05-15T08:17:51</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-LT</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>
@@ -79,7 +77,7 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-8B7D55AFED499B486D6BF0FBFF5B24135535CB1CB1FB317B999B210D138B9018" Location="CAdES"/>
+                <FoundTimestamp Timestamp="T-8B7D55AFED499B486D6BF0FBFF5B24135535CB1CB1FB317B999B210D138B9018"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-4CC29A694C9F13BEB5A2BB32E8FACFE33C80EF17D53B130FDD2A421F8FB697C6">

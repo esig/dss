@@ -38,6 +38,7 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
  * Supported implementations :
  * -XAdES Enveloping
  * -XAdES Detached
+ * -JAdES Detached
  * -ASiC-S/E with XAdES
  * -ASiC-S/E with CAdES
  * 

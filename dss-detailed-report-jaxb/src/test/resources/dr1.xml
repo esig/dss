@@ -234,6 +234,9 @@
                 </Conclusion>
             </ValidationCertificateQualification>
         </ValidationSignatureQualification>
+        <Conclusion>
+            <Indication>TOTAL_PASSED</Indication>
+        </Conclusion>
     </Signature>
     <BasicBuildingBlocks Id="R-54A348E8CB0461CB2A672B9FEE07605AC6CE8AAA6070A23A2E3F30A2A72CC652" Type="REVOCATION">
         <ISC Title="Identification of the Signing Certificate">
@@ -295,6 +298,7 @@
                 <KeyLength>4096</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2025-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>R-54A348E8CB0461CB2A672B9FEE07605AC6CE8AAA6070A23A2E3F30A2A72CC652</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -464,6 +468,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>R-D617BFD380A606FA144B7207257891B5516E8FE2A155A65B1E466656C604E61C</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -541,6 +546,7 @@
                 <KeyLength>4096</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2025-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>R-C6107EDB0D55A32E70246643933113552E59120A3B073C72D159CA5D1BF257C0</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -729,6 +735,7 @@
                 <KeyLength>4096</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2025-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>T-E70F7C745B498A2208A0096422489744EEAEC0F30FE781A6DC6F3E96467EDEE2</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -1025,6 +1032,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>S-3933842D6213C62CF3BE126A56FCF3A9EFFC24D93FEA04B66D6DA5BDEC550703</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -1106,4 +1114,6 @@
             <Indication>PASSED</Indication>
         </Conclusion>
     </TLAnalysis>
+    <Semantic Key="TOTAL_PASSED">The signature validation process results into TOTAL-PASSED based on the following considerations: the format check succeeded; the cryptographic checks of the signature succeeded (including checks of hashes of individual data objects that have been signed indirectly); any constraints applicable to the signer's certificate have been positively validated (e.g. the signing certificate consequently has been found trustworthy); and the signature has been positively validated against the validation constraints and hence is considered conformant to these constraints.</Semantic>
+	<Semantic Key="PASSED">The validation process succeeded</Semantic>
 </DetailedReport>

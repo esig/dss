@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -34,15 +32,39 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
+import java.util.Date;
+
+/**
+ * Checks if a POE exists before the control time
+ */
 public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 
+	/** Token to check */
 	private final TokenProxy token;
+
+	/** The object's type */
 	private final TimestampedObjectType referenceCategory;
+
+	/** Control time to check against */
 	private final Date controlTime;
+
+	/** POE container */
 	private final POEExtraction poe;
 
-	public POEExistsAtOrBeforeControlTimeCheck(I18nProvider i18nProvider, XmlVTS result, TokenProxy token, TimestampedObjectType referenceCategory, 
-			Date controlTime, POEExtraction poe, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlVTS}
+	 * @param token {@link TokenProxy}
+	 * @param referenceCategory {@link TimestampedObjectType}
+	 * @param controlTime {@link Date}
+	 * @param poe {@link POEExtraction}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public POEExistsAtOrBeforeControlTimeCheck(I18nProvider i18nProvider, XmlVTS result, TokenProxy token,
+											   TimestampedObjectType referenceCategory, Date controlTime,
+											   POEExtraction poe, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.token = token;
@@ -57,8 +79,8 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		return MessageTag.CONTROL_TIME.setArgs(ValidationProcessUtils.getFormattedDate(controlTime));
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.CONTROL_TIME, ValidationProcessUtils.getFormattedDate(controlTime));
 	}
 
 	@Override

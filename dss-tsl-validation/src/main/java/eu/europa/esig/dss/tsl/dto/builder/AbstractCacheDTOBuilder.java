@@ -20,26 +20,41 @@
  */
 package eu.europa.esig.dss.tsl.dto.builder;
 
-import java.util.Date;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.tsl.cache.CachedResult;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.dto.AbstractCacheDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+
+/**
+ * An abstract builder of a Cache DTO
+ *
+ * @param <R> type of the cache result
+ */
 public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCacheDTOBuilder.class);
-	
+
+	/** The cached entry */
 	private final CachedEntry<R> cachedEntry;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param cachedEntry the entry
+	 */
 	protected AbstractCacheDTOBuilder(final CachedEntry<R> cachedEntry) {
 		this.cachedEntry = cachedEntry;
 	}
-	
+
+	/**
+	 * Builds the DTO
+	 *
+	 * @return {@link AbstractCacheDTO}
+	 */
 	public AbstractCacheDTO build() {
 		AbstractCacheDTO abstractCacheDTO = new AbstractCacheDTO();
 		abstractCacheDTO.setCacheState(getCurrentState());
@@ -52,11 +67,21 @@ public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 		abstractCacheDTO.setResultExist(isResultExist());
 		return abstractCacheDTO;
 	}
-	
+
+	/**
+	 * Gets the cached result
+	 *
+	 * @return cached result
+	 */
 	protected final R getResult() {
 		return cachedEntry.getCachedResult();
 	}
-	
+
+	/**
+	 * Gets if the result exists
+	 *
+	 * @return TRUE if the result exists, FALSE otherwise
+	 */
 	protected boolean isResultExist() {
 		boolean resultExist = getResult() != null;
 		if (resultExist) {
@@ -74,8 +99,8 @@ public abstract class AbstractCacheDTOBuilder<R extends CachedResult> {
 	private Date getLastStateTransitionTime() {
 		return cachedEntry.getLastStateTransitionTime();
 	}
-	
-	protected Date getLastSuccessSynchronizationTime() {
+
+	private Date getLastSuccessSynchronizationTime() {
 		return cachedEntry.getLastSuccessSynchronizationTime();
 	}
 	

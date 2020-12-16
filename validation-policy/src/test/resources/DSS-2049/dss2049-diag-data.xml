@@ -8,9 +8,7 @@
             <SignatureFilename>xades-baseline-t.xml</SignatureFilename>
             <ClaimedSigningTime>2019-11-08T10:55:01</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="OBJECT" name="r-id-1d69266294a96bd3728396a05b34653c-1">
                     <DigestMethod>SHA256</DigestMethod>
@@ -56,7 +54,7 @@
             </FoundCertificates>
             <FoundRevocations/>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-EE61AA17CF333524A2214136F03446DBE0B8214672927D1476EADB23254A6926" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-EE61AA17CF333524A2214136F03446DBE0B8214672927D1476EADB23254A6926"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-59DA3AC971CEB47FEF44596AF39A2380CB4745472B6EFD580984C191BB05D2F3">
@@ -134,8 +132,8 @@
             <Locality>LU</Locality>
             <CountryName>BE</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
-            <GivenName>Franz</GivenName>
             <OrganizationalUnit>B582186</OrganizationalUnit>
+            <GivenName>Franz</GivenName>
             <Surname>Franzuasse</Surname>
             <Email>franz.franzuasse@nowina.lu</Email>
             <AuthorityInformationAccessUrls>

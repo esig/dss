@@ -21,11 +21,11 @@
 package eu.europa.esig.dss.tsl.dto.condition;
 
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.Condition;
+
+import java.util.Objects;
 
 /**
  * Condition based on the certificate key usage
@@ -34,7 +34,10 @@ public class KeyUsageCondition implements Condition {
 
 	private static final long serialVersionUID = -5078159553328523044L;
 
+	/** Key usage bit to be checked */
 	private final KeyUsageBit bit;
+
+	/** The bit value of the key to be checked */
 	private final boolean value;
 
 	/**

@@ -20,8 +20,12 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.util.Map;
-
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
+import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.CMSAttributeTableGenerationException;
 import org.bouncycastle.cms.CMSAttributeTableGenerator;
@@ -32,17 +36,10 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
-import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import java.util.Map;
 
 /**
- * TODO
- *
- *
+ * Builds a CMSSignedData for a PAdES signature
  */
 class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 
@@ -69,8 +66,8 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 	 */
 	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final PAdESSignatureParameters parameters, final byte[] messageDigest) {
 
-		final CAdESLevelBaselineB cAdESLevelBaselineB = new CAdESLevelBaselineB(true);
-		final PAdESLevelBaselineB pAdESProfileB = new PAdESLevelBaselineB();
+		final CAdESLevelBaselineB cadesLevelBaselineB = new CAdESLevelBaselineB(true);
+		final PAdESLevelBaselineB padesProfileB = new PAdESLevelBaselineB();
 
 		final DigestCalculatorProvider digestCalculatorProvider = new BcDigestCalculatorProvider();
 
@@ -79,14 +76,14 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 		signerInfoGeneratorBuilder = signerInfoGeneratorBuilder.setSignedAttributeGenerator(new CMSAttributeTableGenerator() {
 			@Override
 			public AttributeTable getAttributes(@SuppressWarnings("rawtypes") Map params) throws CMSAttributeTableGenerationException {
-				return pAdESProfileB.getSignedAttributes(params, cAdESLevelBaselineB, parameters, messageDigest);
+				return padesProfileB.getSignedAttributes(params, cadesLevelBaselineB, parameters, messageDigest);
 			}
 		});
 
 		signerInfoGeneratorBuilder = signerInfoGeneratorBuilder.setUnsignedAttributeGenerator(new CMSAttributeTableGenerator() {
 			@Override
 			public AttributeTable getAttributes(@SuppressWarnings("rawtypes") Map params) throws CMSAttributeTableGenerationException {
-				return pAdESProfileB.getUnsignedAttributes();
+				return padesProfileB.getUnsignedAttributes();
 			}
 		});
 

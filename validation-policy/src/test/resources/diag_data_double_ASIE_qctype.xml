@@ -7,9 +7,7 @@
             <SignatureFilename>5.1.5-TEST FILE.xml</SignatureFilename>
             <ClaimedSigningTime>2018-07-05T13:19:42</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="SIGNED_PROPERTIES" name="r-id-6fe99e5d341658ccc17e2dc22e55ae48-1">
                     <DigestMethod>SHA256</DigestMethod>

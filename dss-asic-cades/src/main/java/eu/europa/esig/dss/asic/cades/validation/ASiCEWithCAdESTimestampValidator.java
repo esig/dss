@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -37,11 +33,19 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * The validator for an ASiC-E with CAdES timestamp
+ */
 public class ASiCEWithCAdESTimestampValidator extends DetachedTimestampValidator {
 
-	/* ASiCArchiveManifest */
+	/** ASiCArchiveManifest */
 	private final ManifestFile manifestFile;
-	/* A list of original documents present in the container */
+
+	/** A list of original documents present in the container */
 	private final List<DSSDocument> originalDocuments;
 
 	/**
@@ -79,12 +83,12 @@ public class ASiCEWithCAdESTimestampValidator extends DetachedTimestampValidator
 		TimestampToken timestamp = super.getTimestamp();
 		timestamp.setManifestFile(getCoveredManifest());
 		timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_DETACHED);
-		timestamp.setTimestampScopes(getTimestampSignatureScope());
+		timestamp.setTimestampScopes(getTimestampSignatureScopes());
 		return timestamp;
 	}
 
 	@Override
-	protected List<SignatureScope> getTimestampSignatureScope() {
+	protected List<SignatureScope> getTimestampSignatureScopes() {
 		List<SignatureScope> result = new ArrayList<>();
 		result.add(new ManifestSignatureScope(manifestFile.getFilename(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), getTimestampedData())));
 		if (Utils.isCollectionNotEmpty(originalDocuments)) {

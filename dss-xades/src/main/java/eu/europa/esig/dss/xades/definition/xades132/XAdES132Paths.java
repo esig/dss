@@ -29,9 +29,13 @@ import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.xades.XAdES319132Utils;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
+/**
+ * XAdES 1.3.2 paths
+ */
 public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 
 	// TODO find a proper way (namespace independent)
+	/** Gets all signatures without counter signatures */
 	public static final String ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH = allNotParent(XMLDSigElement.SIGNATURE,
 			XAdES132Element.COUNTER_SIGNATURE);
 
@@ -295,6 +299,13 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2);
 	}
 
+	@Override
+	public String getSignaturePolicyStorePath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES,
+				XAdES132Element.UNSIGNED_PROPERTIES, XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES,
+				XAdES141Element.SIGNATURE_POLICY_STORE);
+	}
+
 	// ------------------------------------------------
 
 	@Override
@@ -392,6 +403,11 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	public String getCurrentSignaturePolicyImplied() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_IMPLIED);
 	}
+	
+	@Override
+	public String getCurrentSignaturePolicyTransforms() {
+		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XMLDSigElement.TRANSFORMS);
+	}
 
 	@Override
 	public String getCurrentIssuerSerialIssuerNamePath() {
@@ -468,9 +484,32 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 		return fromCurrentPosition(XAdES132Element.QUALIFYING_PROPERTIES);
 	}
 
+	// --------------------------- Signature Policy Store
+
+	@Override
+	public String getCurrentSPDocSpecificationIdentifier() {
+		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.IDENTIFIER);
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDescription() {
+		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.DESCRIPTION);
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDocumentReferenceElements() {
+		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.DOCUMENTATION_REFERENCES, XAdES132Element.DOCUMENTATION_REFERENCE);
+	}
+
+	@Override
+	public String getCurrentSignaturePolicyDocument() {
+		return fromCurrentPosition(XAdES141Element.SIGNATURE_POLICY_DOCUMENT);
+	}
+
 	@Override
 	public XSDAbstractUtils getXSDUtils() {
 		return XAdES319132Utils.getInstance();
 	}
+
 
 }

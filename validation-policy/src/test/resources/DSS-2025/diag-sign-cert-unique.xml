@@ -7,9 +7,7 @@
             <SignatureFilename></SignatureFilename>
             <ClaimedSigningTime>2019-01-29T19:52:10</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-T</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>
@@ -75,7 +73,7 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-B33214FDF416CEB644D68B0D1555F4018D52A5747E54691FF7AE1F7E6607DF82" Location="CAdES"/>
+                <FoundTimestamp Timestamp="T-B33214FDF416CEB644D68B0D1555F4018D52A5747E54691FF7AE1F7E6607DF82"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-15D4F9A1AF7B4D0EB89293ECB61D783E2A6382A744CE4BD9FDBA57D770D9BA85">

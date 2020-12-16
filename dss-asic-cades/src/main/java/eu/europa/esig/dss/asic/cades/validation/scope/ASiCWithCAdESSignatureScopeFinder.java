@@ -20,19 +20,26 @@
  */
 package eu.europa.esig.dss.asic.cades.validation.scope;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.scope.ContainerContentSignatureScope;
 import eu.europa.esig.dss.validation.scope.ContainerSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Finds a list of {@code SignatureScope}s for an ASiC with CAdES container
+ */
 public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder {
 
     @Override
@@ -46,19 +53,22 @@ public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder
         if (isASiCSArchive(cadesSignature, originalDocument)) {
 			result.add(new ContainerSignatureScope(originalDocument.getName(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
 			for (DSSDocument archivedDocument : cadesSignature.getContainerContents()) {
-				result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), 
-						DSSUtils.getDigest(getDefaultDigestAlgorithm(), archivedDocument)));
+				result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), getDigest(archivedDocument)));
 			}
 			
         } else if (isASiCEArchive(cadesSignature)) {
-			result.add(new ManifestSignatureScope(originalDocument.getName(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
-        	for (DSSDocument manifestContent : cadesSignature.getManifestedDocuments()) {
-				result.add(new FullSignatureScope(manifestContent.getName(), 
-						DSSUtils.getDigest(getDefaultDigestAlgorithm(), manifestContent)));
+			ManifestFile manifestFile = cadesSignature.getManifestFile();
+			result.add(new ManifestSignatureScope(manifestFile.getFilename(), 
+					new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(manifestFile.getDigestBase64String(getDefaultDigestAlgorithm())))) );
+			
+        	for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+        		if (manifestEntry.isIntact()) {
+					result.add(new FullSignatureScope(manifestEntry.getFileName(), manifestEntry.getDigest()));
+        		}
         	}
         	
         } else {
-        	return getSignatureScopeFromOriginalDocument(originalDocument);
+        	return getSignatureScopeFromOriginalDocument(cadesSignature, originalDocument);
         }
         return result;
     }

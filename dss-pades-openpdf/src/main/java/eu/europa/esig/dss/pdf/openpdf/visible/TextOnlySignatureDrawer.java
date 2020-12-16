@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -44,10 +43,25 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	
 	private Font iTextFont;
 	
+	private ITextFontMetrics iTextFontMetrics;
+	
 	@Override
 	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException {
 		super.init(signatureFieldId, parameters, appearance);
 		this.iTextFont = initFont();
+	}
+
+	@Override
+	public ITextVisualSignatureAppearance buildSignatureFieldBox() {
+		ITextFontMetrics iTextFontMetrics = getITextFontMetrics();
+		return new TextOnlyAppearenceRectangleBuilder(parameters, iTextFontMetrics, getProperSize()).build();
+	}
+	
+	private ITextFontMetrics getITextFontMetrics() {
+		if (iTextFontMetrics == null) {
+			iTextFontMetrics = new ITextFontMetrics(iTextFont.getBaseFont());
+		}
+		return iTextFontMetrics;
 	}
 
 	@Override
@@ -64,24 +78,11 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			appearance.setLayer2Text(text);
 			
 		} else {
-			Rectangle pageSize = appearance.getStamper().getReader().getPageSize(parameters.getPage());
-			float originY = pageSize.getHeight();
+			ITextVisualSignatureAppearance appearenceRectangle = buildSignatureFieldBox();
+			Rectangle iTextRectangle = toITextRectangle(appearenceRectangle);
 			
-			ITextFontMetrics iTextFontMetrics = new ITextFontMetrics(iTextFont.getBaseFont());
-
-			int width = parameters.getWidth();
-			int height = parameters.getHeight();
-			if (width == 0 || height == 0) {
-				Dimension dimension = computeDimensions(iTextFontMetrics);
-				width = dimension.width;
-				height = dimension.height;
-			}
-
-			Rectangle rect = new Rectangle(parameters.getxAxis(), originY - parameters.getyAxis() - height, parameters.getxAxis() + width,
-					originY - parameters.getyAxis());
-			appearance.setVisibleSignature(rect, parameters.getPage()); // defines signature field borders
-			
-			showText(iTextFontMetrics, rect);
+			appearance.setVisibleSignature(iTextRectangle, parameters.getFieldParameters().getPage()); // defines signature field borders
+			showText(iTextFontMetrics, iTextRectangle);
 		}
 
 	}
@@ -115,12 +116,6 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 	}
 	
-	private Dimension computeDimensions(ITextFontMetrics iTextFontMetrics) {
-		SignatureImageTextParameters textParameters = parameters.getTextParameters();
-		float size = getProperSize();
-		return iTextFontMetrics.computeDimension(textParameters.getText(), size, textParameters.getPadding());
-	}
-	
 	private float getProperSize() {
 		float size = parameters.getTextParameters().getFont().getSize();
 		size *= ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
@@ -138,11 +133,11 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		layer.setFontAndSize(iTextFont.getBaseFont(), size);
 		
 		Rectangle boundingRectangle = new Rectangle(sigFieldRect.getWidth(), sigFieldRect.getHeight()); // defines text field borders
-		boundingRectangle.setBackgroundColor(parameters.getTextParameters().getBackgroundColor());
+		boundingRectangle.setBackgroundColor(textParameters.getBackgroundColor());
 		layer.rectangle(boundingRectangle);
 		
 		layer.setBoundingBox(boundingRectangle);
-		layer.setColorStroke(textParameters.getTextColor());
+		layer.setColorFill(textParameters.getTextColor());
 		
 		String[] lines = iTextFontMetrics.getLines(text);
 		

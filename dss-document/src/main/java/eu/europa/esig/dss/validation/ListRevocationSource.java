@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
@@ -30,6 +27,9 @@ import eu.europa.esig.dss.spi.x509.revocation.MultipleRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class allows to handle a list {@code OfflineRevocationSource}
@@ -40,36 +40,63 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 
 	private List<OfflineRevocationSource<R>> sources = new ArrayList<>();
 
+	/**
+	 * Default constructor
+	 */
 	public ListRevocationSource() {
-		// default constructor
 	}
 
 	/**
 	 * This constructor allows to initialize the list with an
 	 * {@code OfflineRevocationSource}.
 	 *
-	 * @param revocationSource an offline revocation source
+	 * @param revocationSource {@link OfflineRevocationSource}
 	 */
 	public ListRevocationSource(final OfflineRevocationSource<R> revocationSource) {
 		add(revocationSource);
 	}
 
+	/**
+	 * Adds the {@code revocationSource} to the list by keeping old values
+	 *
+	 * @param revocationSource {@link OfflineRevocationSource} to add
+	 */
 	public void add(OfflineRevocationSource<R> revocationSource) {
 		sources.add(revocationSource);
 	}
 
+	/**
+	 * Adds all sources from a {@code listRevocationSource} to the list by keeping old values
+	 *
+	 * @param listRevocationSource {@link ListRevocationSource} to add
+	 */
 	public void addAll(ListRevocationSource<R> listRevocationSource) {
 		addAll(listRevocationSource.getSources());
 	}
 
+	/**
+	 * Adds all {@code revocationSources} to the list by keeping old values
+	 *
+	 * @param revocationSources a list of {@link OfflineRevocationSource}s to add
+	 */
 	public void addAll(List<OfflineRevocationSource<R>> revocationSources) {
 		sources.addAll(revocationSources);
 	}
 
+	/**
+	 * Gets a list of all embedded sources
+	 *
+	 * @return a list of {@link OfflineRevocationSource}s
+	 */
 	public List<OfflineRevocationSource<R>> getSources() {
 		return sources;
 	}
 
+	/**
+	 * Checks if the current ListRevocationSource and its children are empty
+	 *
+	 * @return TRUE if the current source and its children are empty, FALSE if there is at leats one revocation token
+	 */
 	public boolean isEmpty() {
 		for (OfflineRevocationSource<R> revocationSource : sources) {
 			if (!revocationSource.isEmpty()) {
@@ -88,17 +115,29 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 		return result;
 	}
 
-	public List<EncapsulatedRevocationTokenIdentifier> getAllRevocationBinaries() {
-		List<EncapsulatedRevocationTokenIdentifier> result = new ArrayList<>();
+	/**
+	 * Gets all revocation token binaries from all incorporated sources
+	 *
+	 * @return a list of {@link EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getAllRevocationBinaries() {
+		List<EncapsulatedRevocationTokenIdentifier<R>> result = new ArrayList<>();
 		for (OfflineRevocationSource<R> revocationSource : sources) {
 			result.addAll(revocationSource.getAllRevocationBinaries());
 		}
 		return result;
 	}
 
-	public EncapsulatedRevocationTokenIdentifier findBinaryForReference(RevocationRef<R> reference) {
+	/**
+	 * Gets the incorporated {@code EncapsulatedRevocationTokenIdentifier} corresponding
+	 * to the provided {@code reference}
+	 *
+	 * @param reference {@link RevocationRef} to get revocation token identifier for
+	 * @return {@link EncapsulatedRevocationTokenIdentifier}
+	 */
+	public EncapsulatedRevocationTokenIdentifier<R> findBinaryForReference(RevocationRef<R> reference) {
 		for (OfflineRevocationSource<R> revocationSource : sources) {
-			EncapsulatedRevocationTokenIdentifier tokenIdentifier = revocationSource.findBinaryForReference(reference);
+			EncapsulatedRevocationTokenIdentifier<R> tokenIdentifier = revocationSource.findBinaryForReference(reference);
 			if (tokenIdentifier != null) {
 				return tokenIdentifier;
 			}
@@ -106,9 +145,15 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 		return null;
 	}
 
-	public boolean isOrphan(RevocationRef<R> ref) {
+	/**
+	 * Checks if the source does not contain revocation identifiers matching to the {@code reference}
+	 *
+	 * @param reference {@link RevocationRef} to check
+	 * @return TRUE if the reference is orphan, FALSE otherwise
+	 */
+	public boolean isOrphan(RevocationRef<R> reference) {
 		for (OfflineRevocationSource<R> revocationSource : sources) {
-			if (!revocationSource.isOrphan(ref)) {
+			if (!revocationSource.isOrphan(reference)) {
 				return false;
 			}
 		}

@@ -33,6 +33,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import eu.europa.esig.dss.asic.common.SecureContainerHandler;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -48,7 +50,6 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(new FileDocument("src/test/resources/validation/zip-bomb.asice"));
 		docs.add(new FileDocument("src/test/resources/validation/zip-bomb-package-zip.asics"));
-		docs.add(new FileDocument("src/test/resources/validation/container-too-many-files.asics"));
 		
 		List<Arguments> args = new ArrayList<>();
 		for (DSSDocument document : docs) {
@@ -61,7 +62,6 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 	@MethodSource("data")
 	public void init(DSSDocument fileToTest) {
 		document = fileToTest;
-		
 		super.validate();
 	}
 
@@ -84,14 +84,22 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 	public void zipBombingOneLevelAsice() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/one-level-zip-bombing.asice");
 		Exception exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
-		assertEquals("Unable to close entry", exception.getMessage());
+		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
 	}
 
 	@Test
 	public void zipBombingOneLevelAsice2() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/one-level-zip-bombing.asice");
+
+		// decreased value to pass the test on low memory configuration (less than -Xmx3072m)
+		SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
+		secureContainerHandler.setMaxCompressionRatio(20);
+		ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
+
 		Exception exception = assertThrows(DSSException.class, () -> new ASiCContainerWithXAdESValidator(doc));
-		assertEquals("Unable to close entry", exception.getMessage());
+		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
+
+		ZipUtils.getInstance().setZipContainerHandler(new SecureContainerHandler()); // return settings
 	}
 
 	@Test
@@ -112,7 +120,14 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 	public void zipBombingTooManyFilesAsice() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/container-too-many-files.asice");
 		Exception exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
-		assertEquals("Too many files detected. Cannot extract ASiC content", exception.getMessage());
+		assertEquals("Too many files detected. Cannot extract ASiC content from the file.", exception.getMessage());
+	}
+
+	@Test
+	public void zipBombingTooManyFilesAsics() {
+		FileDocument doc = new FileDocument("src/test/resources/validation/container-too-many-files.asics");
+		Exception exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
+		assertEquals("Too many files detected. Cannot extract ASiC content from the file.", exception.getMessage());
 	}
 
 }

@@ -20,14 +20,16 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+
 import java.util.List;
 import java.util.Map;
 
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-
-import eu.europa.esig.dss.crl.CRLBinary;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-
+/**
+ * Represents the DSS dictionary
+ */
 public interface PdfDssDict {
 	
 	/**
@@ -47,7 +49,7 @@ public interface PdfDssDict {
 	/**
 	 * Returns a map of unique identifiers and Certificate Tokens
 	 * 
-	 * @return a map of indetifiers and {@link CertificateToken}s
+	 * @return a map of identifiers and {@link CertificateToken}s
 	 */
 	Map<Long, CertificateToken> getCERTs();
 

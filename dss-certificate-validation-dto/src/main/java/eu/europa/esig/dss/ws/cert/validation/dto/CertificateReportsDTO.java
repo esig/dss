@@ -20,49 +20,98 @@
  */
 package eu.europa.esig.dss.ws.cert.validation.dto;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 
+import java.io.Serializable;
+
+/**
+ * The DTO representing the validation response result
+ */
 public class CertificateReportsDTO implements Serializable {
 
 	private static final long serialVersionUID = 6655102454289129851L;
-	
+
+	/** The DiagnosticData report */
 	private XmlDiagnosticData diagnosticData;
+
+	/** The Simple Certificate report */
 	private XmlSimpleCertificateReport simpleCertificateReport;
+
+	/** The Detailed report */
 	private XmlDetailedReport detailedReport;
-	
+
+	/**
+	 * Empty constructor
+	 */
 	public CertificateReportsDTO() {
 	}
-	
-	public CertificateReportsDTO(XmlDiagnosticData diagnosticData, XmlSimpleCertificateReport simpleCertificateReport, XmlDetailedReport detailedReport) {
+
+	/**
+	 * The default constructor
+	 *
+	 * @param diagnosticData {@link XmlDiagnosticData}
+	 * @param simpleCertificateReport {@link XmlSimpleCertificateReport}
+	 * @param detailedReport {@link XmlDetailedReport}
+	 */
+	public CertificateReportsDTO(XmlDiagnosticData diagnosticData, XmlSimpleCertificateReport simpleCertificateReport,
+								 XmlDetailedReport detailedReport) {
 		this.diagnosticData = diagnosticData;
 		this.simpleCertificateReport = simpleCertificateReport;
 		this.detailedReport = detailedReport;
 	}
 
+	/**
+	 * Gets the DiagnosticData report
+	 *
+	 * @return {@link XmlDiagnosticData}
+	 */
 	public XmlDiagnosticData getDiagnosticData() {
 		return diagnosticData;
 	}
 
+	/**
+	 * Sets the DiagnosticData report
+	 *
+	 * @param diagnosticData {@link XmlDiagnosticData}
+	 */
 	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
 		this.diagnosticData = diagnosticData;
 	}
-	
+
+	/**
+	 * Gets the Simple Certificate report
+	 *
+	 * @return {@link XmlSimpleCertificateReport}
+	 */
 	public XmlSimpleCertificateReport getSimpleCertificateReport() {
 		return simpleCertificateReport;
 	}
-	
+
+	/**
+	 * Sets the Simple Certificate report
+	 *
+	 * @param simpleCertificateReport {@link XmlSimpleCertificateReport}
+	 */
 	public void setSimpleCertificateReport(XmlSimpleCertificateReport simpleCertificateReport) {
 		this.simpleCertificateReport = simpleCertificateReport;
 	}
 
+	/**
+	 * Gets the Detailed report
+	 *
+	 * @return {@link XmlDetailedReport}
+	 */
 	public XmlDetailedReport getDetailedReport() {
 		return detailedReport;
 	}
 
+	/**
+	 * Sets the Detailed report
+	 *
+	 * @param detailedReport {@link XmlDetailedReport}
+	 */
 	public void setDetailedReport(XmlDetailedReport detailedReport) {
 		this.detailedReport = detailedReport;
 	}

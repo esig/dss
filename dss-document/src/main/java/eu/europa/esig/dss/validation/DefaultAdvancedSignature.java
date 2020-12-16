@@ -20,17 +20,14 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
@@ -41,14 +38,16 @@ import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * A common implementation of {@code AdvancedSignature}
+ */
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private static final long serialVersionUID = 6452189007886779360L;
-
-	/**
-	 * In the case of a non AdES signature the signing certificate is not mandatory within the signature and can be provided by the driving application.
-	 */
-	protected CertificateToken providedSigningCertificateToken;
 
 	/**
 	 * In case of a detached signature this is the signed document.
@@ -56,14 +55,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected List<DSSDocument> detachedContents;
 
 	/**
-	 * In case of a ASiC signature this is the archive or manifest content.
+	 * In case of a ASiC-S signature this is the archive or manifest content.
 	 */
 	private List<DSSDocument> containerContents;
 	
 	/**
-	 * In case of a ASiC-E signature this is the list of found manifest files.
+	 * In case of a ASiC-E signature this is the found related manifest file.
 	 */
-	protected List<ManifestFile> manifestFiles;
+	protected ManifestFile manifestFile;
 
 	/**
 	 * This variable contains a list of reference validations (reference tag for
@@ -77,39 +76,82 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	protected SignatureCryptographicVerification signatureCryptographicVerification;
 
-	protected String structureValidation;
+	/**
+	 * A list of error messages occurred during a structure validation
+	 */
+	protected List<String> structureValidationMessages;
 
+	/**
+	 * The offline copy of a CertificateVerifier
+	 */
 	private CertificateVerifier offlineCertificateVerifier;
 
-	// Cached {@code SignatureCertificateSource}
+	/**
+	 * The certificate source of a signing certificate
+	 */
+	protected CertificateSource signingCertificateSource;
+
+	/**
+	 * Cached offline signature certificate source
+	 */
 	protected SignatureCertificateSource offlineCertificateSource;
 
-	// Cached {@code OfflineCRLSource}
+	/**
+	 * Cached offline signature CRL source
+	 */
 	protected OfflineCRLSource signatureCRLSource;
 
-	// Cached {@code OfflineOCSPSource}
+	/**
+	 * Cached offline signature OCSP source
+	 */
 	protected OfflineOCSPSource signatureOCSPSource;
 
-	// Cached {@code TimestampSource}
+	/**
+	 * Cached offline signature timestamp source
+	 */
 	protected TimestampSource signatureTimestampSource;
 
+	/**
+	 * Cached list of embedded counter signatures
+	 */
+	protected List<AdvancedSignature> counterSignatures;
+
+	/**
+	 * The master signature in case if the current signature is a counter signature
+	 */
 	private AdvancedSignature masterSignature;
 
+	/**
+	 * The SignaturePolicy identifier
+	 */
 	protected SignaturePolicy signaturePolicy;
 
+	/**
+	 * A list of found {@code SignatureScope}s
+	 */
 	private List<SignatureScope> signatureScopes;
 
+	/**
+	 * The name of a signature file
+	 */
 	private String signatureFilename;
 	
-	/*
+	/**
 	 * Unique signature identifier
 	 */
 	protected SignatureIdentifier signatureIdentifier;
 	
 	/**
-	 * Build and defines {@code signatureIdentifier} value
+	 * Returns a builder to define and build a signature Id
+	 * 
+	 * @return {@link SignatureIdentifierBuilder}
 	 */
-	protected abstract SignatureIdentifier buildSignatureIdentifier();
+	protected abstract SignatureIdentifierBuilder getSignatureIdentifierBuilder();
+
+	@Override
+	public void setSigningCertificateSource(CertificateSource signingCertificateSource) {
+		this.signingCertificateSource = signingCertificateSource;
+	}
 
 	@Override
 	public String getSignatureFilename() {
@@ -142,14 +184,19 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public void setManifestFiles(List<ManifestFile> manifestFiles) {
-		this.manifestFiles = manifestFiles;
+	public ManifestFile getManifestFile() {
+		return manifestFile;
+	}
+	
+	@Override
+	public void setManifestFile(ManifestFile manifestFile) {
+		this.manifestFile = manifestFile;
 	}
 	
 	@Override
 	public SignatureIdentifier getDSSId() {
 		if (signatureIdentifier == null) {
-			signatureIdentifier = buildSignatureIdentifier();
+			signatureIdentifier = getSignatureIdentifierBuilder().build();
 		}
 		return signatureIdentifier;
 	}
@@ -158,53 +205,104 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public String getId() {
 		return getDSSId().asXmlId();
 	}
-
-	@Override
-	public List<DSSDocument> getManifestedDocuments() {
-		if (Utils.isCollectionEmpty(manifestFiles) || Utils.isCollectionEmpty(containerContents)) {
-			return Collections.emptyList();
-		}
-		List<DSSDocument> foundManifestedDocuments = new ArrayList<>();
-		for (ManifestFile manifestFile : manifestFiles) {
-			if (Utils.areStringsEqual(manifestFile.getSignatureFilename(), signatureFilename)) {
-				for (DSSDocument document : containerContents) {
-					for (ManifestEntry entry : manifestFile.getEntries()) {
-						if (Utils.areStringsEqual(entry.getFileName(), document.getName())) {
-							foundManifestedDocuments.add(document);
-						}
-					}
-				}
-				break;
-			}
-		}
-		return foundManifestedDocuments;
-	}
 	
 	@Override
 	public ListCertificateSource getCompleteCertificateSource() {
 		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
 		certificateSource.addAll(getTimestampSource().getTimestampCertificateSources());
+		certificateSource.addAll(getCounterSignaturesCertificateSource());
 		return certificateSource;
 	}
 	
 	public ListCertificateSource getCertificateSourcesExceptLastArchiveTimestamp() {
 		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
 		certificateSource.addAll(getTimestampSource().getTimestampCertificateSourcesExceptLastArchiveTimestamp());
+		certificateSource.addAll(getCounterSignaturesCertificateSource());
 		return certificateSource;
 	}
 
 	@Override
-	public ListRevocationSource getCompleteCRLSource() {
-		ListRevocationSource crlSource = new ListRevocationSource(getCRLSource());
+	public ListRevocationSource<CRL> getCompleteCRLSource() {
+		ListRevocationSource<CRL> crlSource = new ListRevocationSource<>(getCRLSource());
 		crlSource.addAll(getTimestampSource().getTimestampCRLSources());
+		crlSource.addAll(getCounterSignaturesCRLSource());
 		return crlSource;
 	}
 
 	@Override
-	public ListRevocationSource getCompleteOCSPSource() {
-		ListRevocationSource ocspSource = new ListRevocationSource(getOCSPSource());
+	public ListRevocationSource<OCSP> getCompleteOCSPSource() {
+		ListRevocationSource<OCSP> ocspSource = new ListRevocationSource<>(getOCSPSource());
 		ocspSource.addAll(getTimestampSource().getTimestampOCSPSources());
+		ocspSource.addAll(getCounterSignaturesOCSPSource());
 		return ocspSource;
+	}
+	
+	/**
+	 * Returns a merged certificate source for values incorporated within counter signatures
+	 * 
+	 * @return {@link ListCertificateSource}
+	 */
+	protected ListCertificateSource getCounterSignaturesCertificateSource() {
+		ListCertificateSource certificateSource = new ListCertificateSource();
+		for (AdvancedSignature counterSignature : getCounterSignatures()) {
+			certificateSource.addAll(counterSignature.getCompleteCertificateSource());
+		}
+		return certificateSource;
+	}
+
+	/**
+	 * Returns a merged CRL source for values incorporated within counter signatures
+	 * 
+	 * @return CRL {@link ListRevocationSource}
+	 */
+	protected ListRevocationSource<CRL> getCounterSignaturesCRLSource() {
+		ListRevocationSource<CRL> crlSource = new ListRevocationSource<>();
+		for (AdvancedSignature counterSignature : getCounterSignatures()) {
+			crlSource.addAll(counterSignature.getCompleteCRLSource());
+		}
+		return crlSource;
+	}
+
+	/**
+	 * Returns a merged OCSP source for values incorporated within counter signatures
+	 * 
+	 * @return OCSP {@link ListRevocationSource}
+	 */
+	protected ListRevocationSource<OCSP> getCounterSignaturesOCSPSource() {
+		ListRevocationSource<OCSP> crlSource = new ListRevocationSource<>();
+		for (AdvancedSignature counterSignature : getCounterSignatures()) {
+			crlSource.addAll(counterSignature.getCompleteOCSPSource());
+		}
+		return crlSource;
+	}
+	
+	/**
+	 * This method resets the source of certificates. It must be called when 
+	 * any certificate is added to the KeyInfo or CertificateValues (XAdES), or 'xVals' (JAdES).
+	 * 
+	 * NOTE: used in XAdES and JAdES
+	 */
+	public void resetCertificateSource() {
+		offlineCertificateSource = null;
+	}
+
+	/**
+	 * This method resets the sources of the revocation data. It must be called when -LT level is created.
+	 * 
+	 * NOTE: used in XAdES and JAdES
+	 */
+	public void resetRevocationSources() {
+		signatureCRLSource = null;
+		signatureOCSPSource = null;
+	}
+
+	/**
+	 * This method resets the timestamp source. It must be called when -LT level is created.
+	 * 
+	 * NOTE: used in XAdES and JAdES
+	 */
+	public void resetTimestampSource() {
+		signatureTimestampSource = null;
 	}
 
 	/**
@@ -214,20 +312,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * of certificate identifiers from SigningCertificate shall be the key used
 	 * to verify the digital signature.
 	 *
-	 * @return
+	 * @return {@link CandidatesForSigningCertificate}
 	 */
 	@Override
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
-		return getCertificateSource().getCandidatesForSigningCertificate(providedSigningCertificateToken);
+		return getCertificateSource().getCandidatesForSigningCertificate(signingCertificateSource);
 	}
 
-	/**
-	 * This method prepares an offline CertificateVerifier. The instance is used to
-	 * know if all required revocation data are present
-	 * 
-	 * @param certificateVerifier the configured CertificateVerifier with all
-	 *                            external sources
-	 */
+	@Override
 	public void prepareOfflineCertificateVerifier(final CertificateVerifier certificateVerifier) {
 		offlineCertificateVerifier = new CertificateVerifierBuilder(certificateVerifier).buildOfflineAndSilentCopy();
 	}
@@ -235,6 +327,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * This method validates the signing certificate and all timestamps.
 	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
 	 * @return signature validation context containing all certificates and
 	 *         revocation data used during the validation process.
 	 */
@@ -247,14 +340,22 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		
 		validationContext.initialize(certificateVerifier);
 
-		if (providedSigningCertificateToken != null) {
-			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
+		// Add resolved certificates
+		List<CertificateValidity> certificateValidities = getCandidatesForSigningCertificate().getCertificateValidityList();
+		if (Utils.isCollectionNotEmpty(certificateValidities)) {
+			for (CertificateValidity certificateValidity : certificateValidities) {
+				if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
+					validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
+				}
+			}
 		}
+
 		final List<CertificateToken> certificates = getCertificates();
 		for (final CertificateToken certificate : certificates) {
 			validationContext.addCertificateTokenForVerification(certificate);
 		}
 		prepareTimestamps(validationContext);
+		prepareCounterSignatures(validationContext);
 		validationContext.validate();
 
 		validationContext.checkAllTimestampsValid();
@@ -321,20 +422,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-	public CertificateToken getProvidedSigningCertificateToken() {
-		return providedSigningCertificateToken;
-	}
-
-	@Override
-	public void setProvidedSigningCertificateToken(final CertificateToken certificateToken) {
-		this.providedSigningCertificateToken = certificateToken;
-	}
-
-	@Override
 	public CertificateToken getSigningCertificateToken() {
 		// This ensures that the variable candidatesForSigningCertificate has been initialized
 		CandidatesForSigningCertificate candidatesForSigningCertificate = getCertificateSource()
-				.getCandidatesForSigningCertificate(providedSigningCertificateToken);
+				.getCandidatesForSigningCertificate(signingCertificateSource);
 		// This ensures that the variable signatureCryptographicVerification has been initialized
 		signatureCryptographicVerification = getSignatureCryptographicVerification();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
@@ -348,12 +439,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return theBestCandidate == null ? null : theBestCandidate.getCertificateToken();
 	}
 
-	/**
-	 * This method adds to the {@code ValidationContext} all timestamps to be validated.
-	 *
-	 * @param validationContext
-	 *            {@code ValidationContext} to which the timestamps must be added
-	 */
 	@Override
 	public void prepareTimestamps(final ValidationContext validationContext) {
 
@@ -391,22 +476,45 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
-	}
 
-	@Override
-	public void validateStructure() {
-	}
-
-	@Override
-	public String getStructureValidationResult() {
-		return structureValidation;
-	}
-
-	@Override
-	public SignaturePolicy getPolicyId() {
-		return signaturePolicy;
+		/*
+		 * This validates the document timestamps present in a PDF (used in PAdES only)
+		 */
+		for (final TimestampToken timestampToken : getDocumentTimestamps()) {
+			validationContext.addTimestampTokenForVerification(timestampToken);
+		}
 	}
 	
+	@Override
+	public void prepareCounterSignatures(final ValidationContext validationContext) {
+		for (AdvancedSignature counterSignature : getCounterSignatures()) {
+			for (CertificateToken certificateToken : counterSignature.getCertificates()) {
+				validationContext.addCertificateTokenForVerification(certificateToken);
+			}
+			counterSignature.prepareTimestamps(validationContext);
+			counterSignature.prepareCounterSignatures(validationContext);
+		}
+	}
+
+	@Override
+	public List<String> getStructureValidationResult() {
+		if (Utils.isCollectionEmpty(structureValidationMessages)) {
+			structureValidationMessages = validateStructure();
+		}
+		return structureValidationMessages;
+	}
+	
+	/**
+	 * This method processes the structure validation of the signature.
+	 *
+	 * @return list of {@link String} errors
+	 */
+	protected List<String> validateStructure() {
+		// not implemented by default
+		return Collections.emptyList();
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void findSignatureScope(SignatureScopeFinder signatureScopeFinder) {
 		signatureScopes = signatureScopeFinder.findSignatureScope(this);
@@ -465,12 +573,20 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		getTimestampSource().addExternalTimestamp(timestamp);
 	}
 
-	/* Defines the level T */
+	/**
+	 * Checks if the T-level is present in the signature
+	 *
+	 * @return TRUE if the T-level is present, FALSE otherwise
+	 */
 	public boolean hasTProfile() {
 		return Utils.isCollectionNotEmpty(getSignatureTimestamps());
 	}
 
-	/* Defines the level LT */
+	/**
+	 * Checks if the LT-level is present in the signature
+	 *
+	 * @return TRUE if the LT-level is present, FALSE otherwise
+	 */
 	public boolean hasLTProfile() {
 		ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
 		boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
@@ -480,12 +596,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		boolean emptyOCSPs = getCompleteOCSPSource().getAllRevocationBinaries().isEmpty();
 		boolean emptyRevocation = emptyCRLs && emptyOCSPs;
 
-		boolean minimalLTrequirement = !allSelfSigned && !emptyRevocation;
-		if (minimalLTrequirement) {
+		boolean minimalLTRequirement = !allSelfSigned && !emptyRevocation;
+		if (minimalLTRequirement) {
 			// check presence of all revocation data
 			return isAllRevocationDataPresent(certificateSources);
 		}
-		return minimalLTrequirement;
+		return minimalLTRequirement;
 	}
 
 	private boolean isAllRevocationDataPresent(ListCertificateSource certificateSources) {
@@ -494,9 +610,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		offlineCertificateVerifier.setSignatureOCSPSource(getCompleteOCSPSource());
 		offlineCertificateVerifier.setSignatureCertificateSource(getCompleteCertificateSource());
 		validationContext.initialize(offlineCertificateVerifier);
-		if (providedSigningCertificateToken != null) {
-			validationContext.addCertificateTokenForVerification(providedSigningCertificateToken);
+
+		List<CertificateValidity> certificateValidityList = getCandidatesForSigningCertificate()
+				.getCertificateValidityList();
+		for (CertificateValidity certificateValidity : certificateValidityList) {
+			if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
+				validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
+			}
 		}
+
 		for (final CertificateToken certificate : certificateSources.getAllCertificateTokens()) {
 			validationContext.addCertificateTokenForVerification(certificate);
 		}
@@ -511,7 +633,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return certificateFound && certificateSources.isAllSelfSigned();
 	}
 
-	/* Defines the level LTA */
+	/**
+	 * Checks if the LTA-level is present in the signature
+	 *
+	 * @return TRUE if the LTA-level is present, FALSE otherwise
+	 */
 	public boolean hasLTAProfile() {
 		return Utils.isCollectionNotEmpty(getArchiveTimestamps());
 	}
@@ -533,24 +659,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public boolean isHashOnlyValidation() {
 		// TODO: not implemented yet
 		return false;
-	}
-	
-	@Override
-	public byte[] getMessageDigestValue() {
-		// Not applicable by default (CAdES/PAdES only)
-		return null;
-	}
-	
-	@Override
-	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
-		// Not applicable by default (CAdES/PAdES only)
-		return Collections.emptySet();
-	}
-	
-	@Override
-	public PdfRevision getPdfRevision() {
-		// Not applicable by default (PDF only)
-		return null;
 	}
 
 	@Override

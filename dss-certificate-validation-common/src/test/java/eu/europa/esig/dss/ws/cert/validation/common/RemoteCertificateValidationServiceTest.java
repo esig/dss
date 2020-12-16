@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
@@ -82,7 +82,7 @@ public class RemoteCertificateValidationServiceTest {
 	public void noCertificateChainNoStrategyAndValidationTimeProvidedTest() {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
 		certificateDTO.setCertificateChain(null);
-		certificateDTO.setTokenExtractionStategy(null);
+		certificateDTO.setTokenExtractionStrategy(null);
 		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
 		validateReports(reportsDTO);
 	}
@@ -104,7 +104,7 @@ public class RemoteCertificateValidationServiceTest {
 		Date validationDate = calendar.getTime();
 		validationDate.setTime((validationDate.getTime() / 1000) * 1000); // clean millis
 		return new CertificateToValidateDTO(remoteCertificate, Arrays.asList(issuerCertificate), validationDate,
-				TokenExtractionStategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
+				TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
 	}
 	
 	protected void validateReports(CertificateReportsDTO reportsDTO) {

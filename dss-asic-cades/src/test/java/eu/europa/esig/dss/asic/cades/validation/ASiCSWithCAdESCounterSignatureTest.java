@@ -58,7 +58,11 @@ public class ASiCSWithCAdESCounterSignatureTest extends AbstractASiCWithCAdESTes
 			assertEquals(1, validator.getOriginalDocuments(advancedSignature).size());
 		}
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			assertEquals(1, validator.getOriginalDocuments(signatureWrapper.getId()).size());
+			if (signatureWrapper.isCounterSignature()) {
+				assertEquals(0, validator.getOriginalDocuments(signatureWrapper.getId()).size());
+			} else {
+				assertEquals(1, validator.getOriginalDocuments(signatureWrapper.getId()).size());
+			}
 		}
 	}
 

@@ -20,6 +20,35 @@
  */
 package eu.europa.esig.dss.spi;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.enumerations.X520Attributes;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.DigestInfo;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.crypto.digests.SHAKEDigest;
+import org.bouncycastle.crypto.io.DigestOutputStream;
+import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
+import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
+import org.bouncycastle.util.io.pem.PemWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.x500.X500Principal;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -55,37 +84,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.DERNull;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.DigestInfo;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.crypto.digests.SHAKEDigest;
-import org.bouncycastle.crypto.io.DigestOutputStream;
-import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
-import org.bouncycastle.tsp.TimeStampToken;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemReader;
-import org.bouncycastle.util.io.pem.PemWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.X520Attributes;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * Set of common utils
+ */
 public final class DSSUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSUtils.class);
@@ -94,9 +97,14 @@ public final class DSSUtils {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 	}
 
+	/** Empty byte array */
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
+	/** Default DateTime format */
 	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	
+	/** The URN OID prefix (RFC 3061) */
+	public static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -106,6 +114,7 @@ public final class DSSUtils {
 
 	/**
 	 * Formats a date to use for internal purposes (logging, toString)
+	 * Example: "2019-11-19T17:28:15Z"
 	 *
 	 * @param date
 	 *            the date to be converted
@@ -114,9 +123,44 @@ public final class DSSUtils {
 	public static String formatInternal(final Date date) {
 		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT);
 	}
-	
+
+	/**
+	 * Formats the date according to the given format (with system TimeZone)
+	 * 
+	 * @param date {@link Date} to transform to a String
+	 * @param format {@link String} representing a Date format to be used
+	 * @return {@link String} formatted date
+	 */
 	public static String formatDateWithCustomFormat(final Date date, final String format) {
-		return (date == null) ? "N/A" : new SimpleDateFormat(format).format(date);
+		return formatDateWithCustomFormat(date, format, null);
+	}
+
+	/**
+	 * Formats a date to use according to RFC 3339. The date is aligned to UTC TimeZone
+	 * Example: "2019-11-19T17:28:15Z"
+	 *
+	 * @param date
+	 *            the date to be converted
+	 * @return the textual representation (a null date will result in "N/A")
+	 */
+	public static String formatDateToRFC(final Date date) {
+		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT, "UTC");
+	}
+	
+	/**
+	 * Formats the date according to the given format and timeZone
+	 * 
+	 * @param date {@link Date} to transform to a String
+	 * @param format {@link String} representing a Date format to be used
+	 * @param timeZone {@link String} specifying a TimeZone
+	 * @return {@link String} formatted date
+	 */
+	public static String formatDateWithCustomFormat(final Date date, final String format, final String timeZone) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+		if (Utils.isStringNotEmpty(timeZone)) {
+			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		}
+		return (date == null) ? "N/A" : simpleDateFormat.format(date);
 	}
 
 	/**
@@ -216,6 +260,12 @@ public final class DSSUtils {
 		throw new DSSException("Could not parse certificate");
 	}
 
+	/**
+	 * Loads a collection of certificates from a p7c source
+	 *
+	 * @param is {@link InputStream} p7c
+	 * @return a collection of {@link CertificateToken}s
+	 */
 	public static Collection<CertificateToken> loadCertificateFromP7c(InputStream is) {
 		return loadCertificates(is);
 	}
@@ -335,6 +385,16 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * This method checks if the provided {@code str} represents a SHA-1 digest
+	 *
+	 * @param str {@link String} to check
+	 * @return TRUE if the string represents SHA-1 digest, FALSE otherwise
+	 */
+	public static boolean isSHA1Digest(final String str) {
+		return Utils.isStringNotBlank(str) && Utils.isHexEncoded(str) && str.length() == 40;
+	}
+
+	/**
 	 * This method allows to digest the data with the given algorithm.
 	 *
 	 * @param digestAlgorithm
@@ -365,6 +425,12 @@ public final class DSSUtils {
 		}
 	}
 
+	/**
+	 * Gets the message digest from the {@code DigestAlgorithm}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @return {@link MessageDigest}
+	 */
 	public static MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
 		Objects.requireNonNull(digestAlgorithm, "The DigestAlgorithm cannot be null");
 		try {
@@ -418,6 +484,13 @@ public final class DSSUtils {
 		}
 	}
 
+	/**
+	 * Computes the digests for the {@code document}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @param document {@link DSSDocument} to calculate the digest on
+	 * @return digest value
+	 */
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, DSSDocument document) {
 		try (InputStream is = document.openStream()) {
 			return digest(digestAlgorithm, is);
@@ -426,6 +499,13 @@ public final class DSSUtils {
 		}
 	}
 
+	/**
+	 * Computes the digest on the data concatenation
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @param data an sequence of byte arrays to compute digest on
+	 * @return digest value
+	 */
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
 		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		for (final byte[] bytes : data) {
@@ -494,8 +574,8 @@ public final class DSSUtils {
 	 */
 	public static DSSDocument splitDocument(DSSDocument origin, int start, int end) {
 		try (InputStream is = origin.openStream();
-				BufferedInputStream bis = new BufferedInputStream(is);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			 BufferedInputStream bis = new BufferedInputStream(is);
+			 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
 			int i = 0;
 			int r;
@@ -680,6 +760,35 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Return a unique id for a counter signature.
+	 *
+	 * @param signingTime
+	 *            the signing time
+	 * @param id
+	 *            the token identifier
+	 * @param masterSignatureId
+	 *            id of a signature to be counter signed
+	 * @return a unique string
+	 */
+	public static String getCounterSignatureDeterministicId(final Date signingTime, TokenIdentifier id, String masterSignatureId) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
+			if (signingTime != null) {
+				dos.writeLong(signingTime.getTime());
+			}
+			if (id != null) {
+				dos.writeChars(id.asXmlId());
+			}
+			if (masterSignatureId != null) {
+				dos.writeChars(masterSignatureId);
+			}
+			dos.flush();
+			return "id-" + getMD5Digest(baos.toByteArray());
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
 	 * Returns a Hex encoded of the MD5 digest of binaries
 	 *
 	 * @param bytes
@@ -811,6 +920,12 @@ public final class DSSUtils {
 	}
 
 
+	/**
+	 * Decodes URI to UTF-8
+	 *
+	 * @param uri {@link String}
+	 * @return {@link String} UTF-8
+	 */
 	public static String decodeUrl(String uri) {
 		try {
 			return URLDecoder.decode(uri, "UTF-8");
@@ -907,7 +1022,7 @@ public final class DSSUtils {
 		String uriDelimiter = "";
 		final String[] uriParts = fileURI.split("/");
 		for (String part : uriParts) {
-			sb.append(uriDelimiter );
+			sb.append(uriDelimiter);
 			sb.append(encodePartURI(part));
 			uriDelimiter = "/";
 		}
@@ -953,6 +1068,13 @@ public final class DSSUtils {
 		}
 	}
 
+	/**
+	 * Returns {@code Digest} of the {@code dssDocument}
+	 *
+	 * @param digestAlgo {@link DigestAlgorithm} to use
+	 * @param dssDocument {@link DSSDocument} to compute digest on
+	 * @return {@link Digest}
+	 */
 	public static Digest getDigest(DigestAlgorithm digestAlgo, DSSDocument dssDocument) {
 		return new Digest(digestAlgo, digest(digestAlgo, dssDocument));
 	}
@@ -972,6 +1094,145 @@ public final class DSSUtils {
 			return cleanedString;
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if the given id is a URN representation of OID according to IETF RFC 3061
+	 * 
+	 * @param id {@link String} to check
+	 * @return TRUE if the provided id is aURN representation of OID, FALSE otherwise
+	 */
+	public static boolean isUrnOid(String id) {
+		return id != null && id.matches("^(?i)urn:oid:.*$");
+	}
+
+	/**
+	 * Returns a URN URI generated from the given OID:
+	 * 
+	 * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
+	 * 
+	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
+	 *
+	 * @param oid {@link String} to be converted to URN URI
+	 * @return URI based on the algorithm's OID
+	 */
+	public static String toUrnOid(String oid) {
+		return OID_NAMESPACE_PREFIX + oid;
+	}
+	
+	/**
+	 * Checks if the given {@code oid} is a valid OID
+	 * Ex.: 1.3.6.1.4.1.343 = valid
+	 *      25.25 = invalid
+	 *      http://sample.com = invalid
+	 * Source: regexr.com/38m0v (OID Validator)
+	 * 
+	 * @param oid {@link String} oid to verify
+	 * @return TRUE if the string is a valid OID code, FALSE otherwise
+	 */
+	public static boolean isOidCode(String oid) {
+		return oid != null && oid.matches("^([0-2])((\\.0)|(\\.[1-9][0-9]*))*$");
+	}
+	
+	/**
+	 * Keeps only code of the oid string
+	 * e.g. "urn:oid:1.2.3" to "1.2.3"
+	 * 
+	 * @param urnOid {@link String} uri to extract OID value from
+	 * @return OID Code
+	 */
+	public static String getOidCode(String urnOid) {
+		if (urnOid == null) {
+			return null;
+		}
+		return urnOid.substring(urnOid.lastIndexOf(':') + 1);
+	}
+	
+	/**
+	 * Returns URI if present, otherwise URN encoded OID (see RFC 3061)
+	 * Returns NULL if non of them is present
+	 * 
+	 * @param objectIdentifier {@link ObjectIdentifier} used to build an object of 'oid' type
+	 * @return {@link String} URI
+	 */
+	public static String getUriOrUrnOid(ObjectIdentifier objectIdentifier) {
+		/*
+		 * TS 119 182-1 : 5.4.1 The oId data type
+		 * If both an OID and a URI exist identifying one object, the URI value should be used in the id member.
+		 */
+		String uri = objectIdentifier.getUri();
+		if (uri == null && objectIdentifier.getOid() != null) {
+			uri = DSSUtils.toUrnOid(objectIdentifier.getOid());
+		}
+		return uri;
+	}
+	
+	/**
+	 * Normalizes and retrieves a {@code String} identifier
+	 * Examples:
+	 *      "http://website.com" = "http://website.com"
+	 *      "urn:oid:1.2.3" = "1.2.3"
+	 *      "1.2.3" = "1.2.3"
+	 * 
+	 * @param oidOrUriString {@link String} identifier
+	 * @return {@link String}
+	 */
+	public static String getObjectIdentifier(String oidOrUriString) {
+		String policyIdString = oidOrUriString;
+		if (Utils.isStringNotEmpty(oidOrUriString)) {
+			policyIdString = policyIdString.replace("\n", "");
+			policyIdString = Utils.trim(policyIdString);
+			if (isUrnOid(policyIdString)) {
+				// urn:oid:1.2.3 --> 1.2.3
+				policyIdString = getOidCode(policyIdString);
+			}
+		}
+		return policyIdString;
+	}
+	
+	/**
+	 * Trims the leading string if it is a leading part of the text
+	 * 
+	 * @param text {@link String} to trim
+	 * @param leading {@link String} to remove
+	 * @return trimmed text {@link String}
+	 */
+	public static String stripFirstLeadingOccurance(String text, String leading) {
+		if (text == null) {
+			return null;
+		}
+		if (leading == null) {
+			return text;
+		}
+		return text.replaceFirst("^"+leading, "");
+	}
+
+	/**
+	 * Returns a list of document names from the given document list
+	 * 
+	 * @param dssDocuments a list of {@link DSSDocument}s to get names of
+	 * @return a list of {@link String} document names
+	 */
+	public static List<String> getDocumentNames(List<DSSDocument> dssDocuments) {
+		if (Utils.isCollectionNotEmpty(dssDocuments)) {
+			return dssDocuments.stream().map(DSSDocument::getName).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Adds all objects from {@code toAddCollection} into {@code currentCollection} without duplicates
+	 *
+	 * @param currentCollection a collection to enrich
+	 * @param toAddCollection a collection to add values from
+	 * @param <T> an Object
+	 */
+	public static <T extends Object> void enrichCollection(Collection<T> currentCollection, Collection<T> toAddCollection) {
+		for (T object : toAddCollection) {
+			if (!currentCollection.contains(object)) {
+				currentCollection.add(object);
+			}
+		}
 	}
 
 }

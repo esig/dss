@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -54,17 +55,29 @@ public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTest
 
 		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
 		signatureImageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		signatureImageParameters.setxAxis(25);
-		signatureImageParameters.setyAxis(25);
+		
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(25);
+		fieldParameters.setOriginY(25);
+		signatureImageParameters.setFieldParameters(fieldParameters);
+		
 		signatureParameters.setImageParameters(signatureImageParameters);
 
 		SignatureImageParameters timestampImageParameters = new SignatureImageParameters();
+		
+		SignatureFieldParameters tstFieldParameters = new SignatureFieldParameters();
+		tstFieldParameters.setOriginX(100);
+		tstFieldParameters.setOriginY(25);
+		timestampImageParameters.setFieldParameters(tstFieldParameters);
+		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("My signature");
+		textParameters.setText("Timestamp");
 		textParameters.setTextColor(Color.GREEN);
 		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
 		timestampImageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(timestampImageParameters);
+		
+		PAdESTimestampParameters archiveTimestampParameters = signatureParameters.getArchiveTimestampParameters();
+		archiveTimestampParameters.setImageParameters(timestampImageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

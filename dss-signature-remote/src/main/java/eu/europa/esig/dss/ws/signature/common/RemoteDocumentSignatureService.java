@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
+
+import java.io.Serializable;
 
 /**
  * This interface {@code RemoteDocumentSignatureService} provides operations for the signature creation and for its
@@ -37,8 +37,8 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 public interface RemoteDocumentSignatureService extends Serializable {
 
 	/**
-	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}
-	 * .
+	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}.
+	 *
 	 * When {@code toSignDocument} contains an already existing signature the returned bytes are related to a new
 	 * parallel signature.
 	 *
@@ -108,5 +108,31 @@ public interface RemoteDocumentSignatureService extends Serializable {
 	 *             if an error occurred
 	 */
 	RemoteDocument timestamp(final RemoteDocument toTimestampDocument, final RemoteTimestampParameters parameters) throws DSSException;
+	
+	/**
+	 * Retrieves the bytes of the data that need to be counter signed from {@code signatureDocument}.
+	 * {@code signatureDocument} shall be a valid signature of the same type
+	 * 
+	 * @param signatureDocument 
+	 *           {@link RemoteDocument} representing the original signature to be counter signed
+	 * @param parameters
+	 *            {@link RemoteSignatureParameters} set of the driving signing parameters for a counter signature
+	 * @return {@link ToBeSignedDTO} to be counter signed byte array (signature value retrieved from the {@code signatureDocument})
+	 */
+	ToBeSignedDTO getDataToBeCounterSigned(final RemoteDocument signatureDocument, final RemoteSignatureParameters parameters);
+
+	/**
+	 * Counter signs the {@code signatureDocument} with the provided signatureValue.
+	 *
+	 * @param signatureDocument
+	 *            {@link RemoteDocument} to be counter signed
+	 * @param parameters
+	 *            {@link RemoteSignatureParameters} set of the driving signing parameters for a counter signature
+	 * @param signatureValue
+	 *            {@link SignatureValueDTO} the signature value to incorporate
+	 * @return {@link RemoteDocument} the signature document enveloping a newly created counter signature
+	 */
+	RemoteDocument counterSignSignature(final RemoteDocument signatureDocument,
+			final RemoteSignatureParameters parameters, final SignatureValueDTO signatureValue);
 
 }

@@ -25,12 +25,21 @@ import eu.europa.esig.dss.ws.timestamp.dto.TimestampResponseDTO;
 import eu.europa.esig.dss.ws.timestamp.remote.RemoteTimestampService;
 import eu.europa.esig.dss.ws.timestamp.remote.soap.client.SoapTimestampService;
 
+/**
+ * The SOAP implementation of the timestamping service
+ */
 public class SoapTimestampServiceImpl implements SoapTimestampService {
 	
 	private static final long serialVersionUID = 7421969260893851663L;
-	
+
+	/** The timestamp service to use */
 	private RemoteTimestampService timestampService;
-	
+
+	/**
+	 * Sets the timestamping service
+	 *
+	 * @param timestampService {@link RemoteTimestampService}
+	 */
 	public void setTimestampService(RemoteTimestampService timestampService) {
 		this.timestampService = timestampService;
 	}

@@ -49,9 +49,9 @@ public class IsQualificationConflictDetected extends ChainItem<XmlValidationCert
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (Utils.collectionSize(certificateQualificationsAtTime) > 1) {
-			return MessageTag.RESULTS.setArgs(certificateQualificationsAtTime.toString());
+			return i18nProvider.getMessage(MessageTag.RESULTS, certificateQualificationsAtTime.toString());
 		}
 		return null;
 	}

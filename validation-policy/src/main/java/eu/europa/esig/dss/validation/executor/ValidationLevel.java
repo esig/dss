@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
+/**
+ * The target validation level
+ */
 public enum ValidationLevel {
 
 	BASIC_SIGNATURES, TIMESTAMPS, LONG_TERM_DATA, ARCHIVAL_DATA;

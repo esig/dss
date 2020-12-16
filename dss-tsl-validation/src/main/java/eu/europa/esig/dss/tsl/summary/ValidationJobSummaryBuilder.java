@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.summary;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.CertificatePivotStatus;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
@@ -46,7 +35,20 @@ import eu.europa.esig.dss.tsl.parsing.ParsingUtils;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * Builds a {@code TLValidationJobSummary}
+ */
 public class ValidationJobSummaryBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationJobSummaryBuilder.class);
@@ -66,12 +68,25 @@ public class ValidationJobSummaryBuilder {
 	 */
 	private final LOTLSource[] lotlSources;
 
-	public ValidationJobSummaryBuilder(final ReadOnlyCacheAccess readOnlyCacheAccess, final TLSource[] tlSources, final LOTLSource[] lotlSources) {
+	/**
+	 * Default constructor
+	 *
+	 * @param readOnlyCacheAccess {@link ReadOnlyCacheAccess}
+	 * @param tlSources {@link TLSource}s
+	 * @param lotlSources {@link LOTLSource}s
+	 */
+	public ValidationJobSummaryBuilder(final ReadOnlyCacheAccess readOnlyCacheAccess, final TLSource[] tlSources,
+									   final LOTLSource[] lotlSources) {
 		this.readOnlyCacheAccess = readOnlyCacheAccess;
 		this.tlSources = tlSources;
 		this.lotlSources = lotlSources;
 	}
 
+	/**
+	 * Builds the {@code TLValidationJobSummary}
+	 *
+	 * @return {@link TLValidationJobSummary}
+	 */
 	public TLValidationJobSummary build() {
 
 		final List<TLInfo> otherTLInfos = new ArrayList<>();
@@ -184,8 +199,7 @@ public class ValidationJobSummaryBuilder {
 				result.add(pivotSource);
 			}
 		}
-		Collections.reverse(result);
-		return result;
+		return Utils.reverseList(result);
 	}
 	
 	private List<CertificateToken> getPivotCertificateTokens(LOTLSource pivotSource) {

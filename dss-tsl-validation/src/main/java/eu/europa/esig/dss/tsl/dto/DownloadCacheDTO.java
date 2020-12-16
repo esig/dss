@@ -20,21 +20,32 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
+import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
-
+/**
+ * The download record DTO
+ */
 public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRecord {
 
 	private static final long serialVersionUID = 514589372769360786L;
 
+	/**
+	 * Empty constructor
+	 */
 	public DownloadCacheDTO() {
 	}
 
+	/**
+	 * Copies the cache DTO
+	 *
+	 * @param cacheDTO {@link AbstractCacheDTO}
+	 */
 	public DownloadCacheDTO(AbstractCacheDTO cacheDTO) {
 		super(cacheDTO);
 	}

@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.token;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
@@ -27,22 +31,22 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-
 /**
  * Wrapper of a PrivateKeyEntry coming from a KeyStore.
  *
  */
 public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 
+	/** The key's alias */
 	private final String alias;
 
+	/** The certificate */
 	private final CertificateToken certificate;
 
+	/** The corresponding certificate chain */
 	private final CertificateToken[] certificateChain;
 
+	/** The private key */
 	private final PrivateKey privateKey;
 
 	/**

@@ -29,32 +29,39 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
 
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
+	
+	private Image image;
+	private ITextVisualSignatureAppearance appearenceRectangle;
+
+	@Override
+	public ITextVisualSignatureAppearance buildSignatureFieldBox() throws IOException {
+		if (appearenceRectangle == null) {
+			Image image = getImage();
+			appearenceRectangle = new ImageOnlyAppearanceRectangleBuilder(parameters, image).build();
+		}
+		return appearenceRectangle;
+	}
+	
+	private Image getImage() throws IOException {
+		if (image == null) {
+			image = Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
+		}
+		return image;
+	}
 
 	@Override
 	public void draw() throws IOException {
 
-		Image image = Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
+		Image image = getImage();
 
-		float zoom = ImageUtils.getScaleFactor(parameters.getZoom());
-		int width = parameters.getWidth();
-		int height = parameters.getHeight();
-		
-		ImageAndResolution ires = ImageUtils.readDisplayMetadata(parameters.getImage());
-		if (width == 0) {
-			width = (int) (image.getWidth() * CommonDrawerUtils.getPageScaleFactor(ires.getxDpi()));
-		}
-		if (height == 0) {
-			height = (int) (image.getHeight() * CommonDrawerUtils.getPageScaleFactor(ires.getyDpi()));
-		}
-		width *= zoom;
-		height *= zoom;
+		SignatureFieldParameters fieldParameters = parameters.getFieldParameters();
+		float width = fieldParameters.getWidth();
+		float height = fieldParameters.getHeight();
 
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
@@ -64,13 +71,15 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 				height = (int) rect.getHeight();
 			}
 		} else {
-			Rectangle pageSize = appearance.getStamper().getReader().getPageSize(parameters.getPage());
-			float originY = pageSize.getHeight();
-
-			Rectangle rect = new Rectangle(parameters.getxAxis(), originY - parameters.getyAxis() - height, parameters.getxAxis() + width,
-					originY - parameters.getyAxis());
-			rect.setBackgroundColor(parameters.getBackgroundColor());
-			appearance.setVisibleSignature(rect, parameters.getPage());
+			ITextVisualSignatureAppearance appearenceRectangle = buildSignatureFieldBox();
+			
+			Rectangle iTextRectangle = toITextRectangle(appearenceRectangle);
+			iTextRectangle.setBackgroundColor(parameters.getBackgroundColor());
+			
+			width = iTextRectangle.getWidth();
+			height = iTextRectangle.getHeight();
+			
+			appearance.setVisibleSignature(iTextRectangle, fieldParameters.getPage());
 		}
 		
 		image.scaleAbsolute(width, height);

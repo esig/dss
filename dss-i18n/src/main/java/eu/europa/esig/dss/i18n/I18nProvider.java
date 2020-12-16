@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.i18n;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Internalization provider
@@ -66,15 +66,16 @@ public class I18nProvider {
 	 * Extracts an {@code I18nMessage} by its key
 	 * 
 	 * @param messageTag {@link MessageTag} key of the message to get value for
+	 * @param args an array of optional parameters
 	 * @return {@link String} message value
 	 */
-	public String getMessage(MessageTag messageTag) {
+	public String getMessage(MessageTag messageTag, Object... args) {
 		if (messageTag == null) {
 			throw new IllegalArgumentException("messageTag cannot be null!");
 			
 		} else if (keySet.contains(messageTag.getId())) {
 			String patternString = bundle.getString(messageTag.getId());
-			return MessageFormat.format(patternString, getArgs(messageTag));
+			return MessageFormat.format(patternString, getArgs(args));
 			
 		} else {
 			// in case if a value for the message tag does not exist
@@ -82,19 +83,19 @@ public class I18nProvider {
 			return messageTag.getId();
 		}
 	}
-	
-	/* Allows nested MessageTags */
-	private Object[] getArgs(MessageTag messageTag) {
-		Object[] args = null;
-		if (messageTag.getArgs() != null) {
-			args = messageTag.getArgs().clone();
+
+	/** Allows nested MessageTags */
+	private Object[] getArgs(Object[] args) {
+		Object[] translated = null;
+		if (args != null) {
+			translated = args.clone();
 			for (int i = 0; i < args.length; ++i) {
 				if (args[i] instanceof MessageTag) {
-					args[i] = getMessage((MessageTag) args[i]);
+					translated[i] = getMessage((MessageTag) args[i]);
 				}
 			}
 		}
-		return args;
+		return translated;
 	}
 	
 }

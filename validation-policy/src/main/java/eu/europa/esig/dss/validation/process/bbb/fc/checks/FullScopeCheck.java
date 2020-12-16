@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -33,10 +31,24 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if the signature covers FULL scope documents
+ */
 public class FullScopeCheck extends ChainItem<XmlFC> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public FullScopeCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 

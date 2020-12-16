@@ -20,14 +20,23 @@
  */
 package eu.europa.esig.dss.utils.guava.impl;
 
-import java.io.File;
-
 import com.google.common.base.Predicate;
 
+import java.io.File;
+
+/**
+ * Filters files by extension
+ */
 public class FilterByExtensions implements Predicate<File> {
 
+	/** Extensions */
 	private final String[] extensions;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param extensions {@link String}s
+	 */
 	public FilterByExtensions(String[] extensions) {
 		this.extensions = extensions;
 	}

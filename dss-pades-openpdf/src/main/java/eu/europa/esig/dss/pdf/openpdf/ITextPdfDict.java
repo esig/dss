@@ -20,22 +20,30 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
-import java.util.Date;
-import java.util.Set;
-
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfString;
-
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 
+import java.util.Date;
+import java.util.Set;
+
+/**
+ * The IText (OpenPDF) implementation of {@code eu.europa.esig.dss.pdf.PdfDict}
+ */
 class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 
+	/** The OpenPDF object */
 	private PdfDictionary wrapped;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param wrapped {@link PdfDictionary}
+	 */
 	public ITextPdfDict(PdfDictionary wrapped) {
 		if (wrapped == null) {
 			throw new IllegalArgumentException();

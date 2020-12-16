@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
-import java.util.Date;
-import java.util.Map;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
@@ -38,21 +35,55 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
 
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * Checks if the past signature validation result is acceptable
+ */
 public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
 
+	/** The validated signature */
 	private final SignatureWrapper signature;
+
+	/** Map of all BBBs */
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
+	/** POE container */
 	private final POEExtraction poe;
+
+	/** Validation time */
 	private final Date currentTime;
+
+	/** Validation policy */
 	private final ValidationPolicy policy;
+
+	/** Validation context */
 	private final Context context;
 
+	/** Indication */
 	private Indication indication;
+
+	/** SubIndication */
 	private SubIndication subIndication;
 
-	public PastSignatureValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, SignatureWrapper signature,
-			Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe, Date currentTime,
-			ValidationPolicy policy, Context context, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationProcessArchivalData}
+	 * @param signature {@link SignatureWrapper}
+	 * @param bbbs map of all BBBs
+	 * @param poe {@link POEExtraction}
+	 * @param currentTime {@link Date}
+	 * @param policy {@link ValidationPolicy}
+	 * @param context {@link Context}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public PastSignatureValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
+										SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs,
+										POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context,
+										LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, signature.getId());
 
 		this.signature = signature;

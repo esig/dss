@@ -20,8 +20,11 @@
  */
 package eu.europa.esig.dss.pdf.visible;
 
-import java.awt.Dimension;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 
+/**
+ * Contains methods for dealing with textual visual signature creation
+ */
 public abstract class AbstractFontMetrics {
 	
 	/**
@@ -35,14 +38,14 @@ public abstract class AbstractFontMetrics {
 	}
 
 	/**
-	 * Computes a text Dimension boundary box
+	 * Computes a text boundary box
 	 * 
 	 * @param text {@link String} the original text to get Dimension for
 	 * @param fontSize the size of a font
 	 * @param padding the padding between text and its boundaries
-	 * @return {@link Dimension} of the text
+	 * @return {@link AnnotationBox} of the text
 	 */
-	public Dimension computeDimension(String text, float fontSize, float padding) {
+	public AnnotationBox computeTextBoundaryBox(String text, float fontSize, float padding) {
 		String[] lines = getLines(text);
 		float width = 0;
 		for (String line : lines) {
@@ -56,9 +59,7 @@ public abstract class AbstractFontMetrics {
 		float strHeight = getHeight(text, fontSize);
 		float height = (strHeight * lines.length) + doublePadding;
 		
-		Dimension dimension = new Dimension();
-		dimension.setSize(width, height);
-		return dimension;
+		return new AnnotationBox(0, 0, width, height);
 	}
 	
 	/**

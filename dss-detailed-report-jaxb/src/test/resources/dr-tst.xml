@@ -115,6 +115,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>T-517648400E98B8EAEA60C1376EDA4D03A454CAA28DBA7E5ACEE5E96A2B1FE0CD</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -174,4 +175,5 @@
             <Indication>PASSED</Indication>
         </Conclusion>
     </TLAnalysis>
+    <Semantic Key="PASSED">The validation process succeeded</Semantic>
 </DetailedReport>

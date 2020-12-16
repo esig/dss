@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.ws.signature.dto;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+
+import java.util.Objects;
 
 /**
  * This class is a DTO to transfer required objects to execute getDataToSign method
@@ -31,23 +31,43 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
  * It's impossible to transfer big objects by GET (url size limitation)
  */
 @SuppressWarnings("serial")
-public class DataToSignOneDocumentDTO extends AbstractDataToSignDTO implements Serializable {
+public class DataToSignOneDocumentDTO extends AbstractDataToSignDTO {
 
+	/** Th document to be signed */
 	private RemoteDocument toSignDocument;
 
+	/**
+	 * Empty constructor
+	 */
 	public DataToSignOneDocumentDTO() {
 		super(null);
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param toSignDocument {@link RemoteDocument} to be signed
+	 * @param parameters {@link RemoteSignatureParameters}
+	 */
 	public DataToSignOneDocumentDTO(RemoteDocument toSignDocument, RemoteSignatureParameters parameters) {
 		super(parameters);
 		this.toSignDocument = toSignDocument;
 	}
 
+	/**
+	 * Gets document to be signed
+	 *
+	 * @return {@link RemoteDocument}
+	 */
 	public RemoteDocument getToSignDocument() {
 		return toSignDocument;
 	}
 
+	/**
+	 * Sets document to be signed
+	 *
+	 * @param toSignDocument {@link RemoteDocument}
+	 */
 	public void setToSignDocument(RemoteDocument toSignDocument) {
 		this.toSignDocument = toSignDocument;
 	}
@@ -60,9 +80,8 @@ public class DataToSignOneDocumentDTO extends AbstractDataToSignDTO implements S
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((getParameters() == null) ? 0 : getParameters().hashCode());
-		result = (prime * result) + ((toSignDocument == null) ? 0 : toSignDocument.hashCode());
+		int result = super.hashCode();
+		result = prime * result + ((toSignDocument == null) ? 0 : toSignDocument.hashCode());
 		return result;
 	}
 
@@ -71,25 +90,14 @@ public class DataToSignOneDocumentDTO extends AbstractDataToSignDTO implements S
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
+		if (!super.equals(obj)) {
 			return false;
 		}
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		DataToSignOneDocumentDTO other = (DataToSignOneDocumentDTO) obj;
-		if (getParameters() == null) {
-			if (other.getParameters() != null) {
-				return false;
-			}
-		} else if (!getParameters().equals(other.getParameters())) {
-			return false;
-		}
-		if (toSignDocument == null) {
-			if (other.toSignDocument != null) {
-				return false;
-			}
-		} else if (!toSignDocument.equals(other.toSignDocument)) {
+		if (!Objects.equals(toSignDocument, other.toSignDocument)) {
 			return false;
 		}
 		return true;

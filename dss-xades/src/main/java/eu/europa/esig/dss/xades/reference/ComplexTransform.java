@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import java.io.IOException;
-import java.util.Map.Entry;
-
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.model.DSSException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
@@ -31,16 +32,24 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.model.DSSException;
+import java.io.IOException;
+import java.util.Map.Entry;
 
+/**
+ * Transform processed by Apache {@code XMLSignatureInput} utils
+ */
 public abstract class ComplexTransform extends AbstractTransform {
-	
-	private Transform transformObject; // internal object, used to build the Transformation
 
-	public ComplexTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
+	/** Internal object, used to build the Transformation */
+	private Transform transformObject;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 * @param algorithm {@link String} url
+	 */
+	protected ComplexTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
 		super(xmlDSigNamespace, algorithm);
 	}
 	
@@ -62,12 +71,12 @@ public abstract class ComplexTransform extends AbstractTransform {
 	}
 	
 	@Override
-	public byte[] getBytesAfterTranformation(Node node, String uri) {
+	public byte[] getBytesAfterTransformation(Node node) {
 		if (transformObject == null) {
 			buildTransformObject();
 		}
 		try {
-			final XMLSignatureInput xmlSignatureInput = getXMLSignatureInput(node, uri);
+			final XMLSignatureInput xmlSignatureInput = getXMLSignatureInput(node);
 			final XMLSignatureInput xmlSignatureInputOut = transformObject.performTransform(xmlSignatureInput);
 			return xmlSignatureInputOut.getBytes();
 		} catch (IOException | XMLSecurityException e) {
@@ -75,8 +84,14 @@ public abstract class ComplexTransform extends AbstractTransform {
 					algorithm, e.getMessage()), e);
 		}
 	}
-	
-	protected XMLSignatureInput getXMLSignatureInput(Node node, String uri) {
+
+	/**
+	 * Gets {@code XMLSignatureInput} for the given node
+	 *
+	 * @param node {@link Node}
+	 * @return {@link XMLSignatureInput}
+	 */
+	protected XMLSignatureInput getXMLSignatureInput(Node node) {
 		return new XMLSignatureInput(node);
 	}
 

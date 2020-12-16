@@ -24,6 +24,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Contains attributes of a certificate's distinguished name
+ */
 public enum X520Attributes implements OidDescription {
 
 	OBJECTCLASS("objectClass", "2.5.4.0"),
@@ -500,7 +503,9 @@ public enum X520Attributes implements OidDescription {
 
 	LDAPSYNTAXDESCRIPTION("ldapSyntaxDescription", "1.3.6.1.4.1.1466.115.121.1.54"),
 
-	SUBSTRINGASSERTION("substringAssertion", "1.3.6.1.4.1.1466.115.121.1.58");
+	SUBSTRINGASSERTION("substringAssertion", "1.3.6.1.4.1.1466.115.121.1.58"),
+
+	EMAIL_ADDRESS("emailAddress", "1.2.840.113549.1.9.1");
 	
 	private static final Map<String, String> UPPERCASE_DESCRIPTION_OID = registerUpperCaseDescriptionAndOids();
 

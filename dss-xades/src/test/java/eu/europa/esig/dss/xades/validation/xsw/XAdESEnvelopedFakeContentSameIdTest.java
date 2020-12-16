@@ -81,8 +81,8 @@ public class XAdESEnvelopedFakeContentSameIdTest extends AbstractXAdESTestValida
 	protected void verifySimpleReport(SimpleReport simpleReport) {
 		super.verifySimpleReport(simpleReport);
 
-		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 	}
 	
 	@Override

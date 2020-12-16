@@ -79,18 +79,6 @@ public interface CertificateVerifier {
 	ListCertificateSource getTrustedCertSources();
 
 	/**
-	 * Sets the trusted certificate source.
-	 * 
-	 * @deprecated since 5.7. Will be removed in 5.8.
-	 * Use {@code setTrustedCertSources(CertificateSource... certSources)} instead
-	 *
-	 * @param certSource
-	 *                   The certificates source with known trusted certificates
-	 */
-	@Deprecated
-	void setTrustedCertSource(final CertificateSource certSource);
-	
-	/**
 	 * Sets multiple trusted certificate sources.
 	 *
 	 * @param certSources
@@ -122,19 +110,6 @@ public interface CertificateVerifier {
 	 */
 	ListCertificateSource getAdjunctCertSources();
 
-	/**
-	 * Sets an adjunct certificate source to this verifier.
-	 * 
-	 * @deprecated since 5.7. Will be removed in 5.8.
-	 * Use {@code setAdjunctCertSource(CertificateSource... certSources)} instead
-	 *
-	 * @param adjunctCertSource
-	 *                          the certificate source with additional and missing
-	 *                          certificates
-	 */
-	@Deprecated
-	void setAdjunctCertSource(final CertificateSource adjunctCertSource);
-	
 	/**
 	 * Sets multiple adjunct certificate sources.
 	 *

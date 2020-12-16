@@ -7,9 +7,7 @@
             <SignatureFilename>screenshot.png.signed_qes_detached.extended.p7s</SignatureFilename>
             <ClaimedSigningTime>2013-08-14T15:45:21</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

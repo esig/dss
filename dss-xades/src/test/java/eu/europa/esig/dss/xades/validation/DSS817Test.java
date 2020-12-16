@@ -30,7 +30,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class DSS817Test extends AbstractXAdESTestValidation {
 
@@ -49,14 +48,5 @@ public class DSS817Test extends AbstractXAdESTestValidation {
 		assertEquals(1, commitmentTypeIdentifiers.size());
 		assertEquals(CommitmentTypeEnum.ProofOfApproval.getUri(), commitmentTypeIdentifiers.get(0).getIdentifier());
 	}
-	
-	@Override
-	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		super.verifyOriginalDocuments(validator, diagnosticData);
 
-		String signatureId = diagnosticData.getFirstSignatureId();
-		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
-		assertEquals(1, retrievedOriginalDocuments.size());
-	}
-	
 }

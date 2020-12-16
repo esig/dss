@@ -20,16 +20,23 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
+import eu.europa.esig.dss.model.DSSException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
-import eu.europa.esig.dss.model.DSSException;
-
+/**
+ * Gets the absolute path for the defined class
+ */
 public class ResourceLoader {
 
+	/** The class to be used to build the absolute path */
 	protected Class<?> anyClass = ResourceLoader.class;
 
+	/**
+	 * Empty constructor. Loads path relatively to the {@link ResourceLoader} class directory.
+	 */
 	public ResourceLoader() {
 	}
 

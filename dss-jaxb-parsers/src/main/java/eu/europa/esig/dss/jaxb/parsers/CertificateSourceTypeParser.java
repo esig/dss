@@ -22,15 +22,30 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 
+/**
+ * Parses the {@code ArchiveTimestampType}
+ */
 public class CertificateSourceTypeParser {
 
 	private CertificateSourceTypeParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code CertificateSourceType}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link CertificateSourceType}
+	 */
 	public static CertificateSourceType parse(String v) {
 		return CertificateSourceType.valueOf(v);
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link CertificateSourceType}
+	 * @return {@link String}
+	 */
 	public static String print(CertificateSourceType v) {
 		return v.name();
 	}

@@ -50,7 +50,7 @@ public class InvisibleSignatureFieldSignTest extends AbstractPAdESTestSignature 
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
-		signatureParameters.setSignatureFieldId("Signature1");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("Signature1");
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

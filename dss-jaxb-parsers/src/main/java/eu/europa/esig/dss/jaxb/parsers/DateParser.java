@@ -20,24 +20,35 @@
  */
 package eu.europa.esig.dss.jaxb.parsers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+/**
+ * Parses the {@code Date}
+ */
 public final class DateParser {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DateParser.class);
 
+	/** The data format to be parsed against */
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
+	/** The default timezone (UTC) */
 	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
 	private DateParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code Date}
+	 *
+	 * @param v {@link String} to parse in the format "yyyy-MM-dd'T'HH:mm:ss"
+	 * @return {@link Date}
+	 */
 	public static Date parse(String v) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
@@ -50,6 +61,12 @@ public final class DateParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text value of the date
+	 *
+	 * @param v {@link Date}
+	 * @return {@link String} in the format "yyyy-MM-dd'T'HH:mm:ss"
+	 */
 	public static String print(Date v) {
 		if (v != null) {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);

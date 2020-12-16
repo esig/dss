@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.ws.dto;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 import java.io.Serializable;
 import java.util.Arrays;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * This class is used to transport a DSSDocument with SOAP and/or REST
@@ -31,11 +31,18 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 @SuppressWarnings("serial")
 public class RemoteDocument implements Serializable {
 
+	/** Binaries of the document or its digest value (for DigestDocument) */
 	private byte[] bytes;
-	/* Allows to send only the digest of the document */
+
+	/** The used DigestAlgorithm in case of a DigestDocument (allows to send only the digest of the document) */
 	private DigestAlgorithm digestAlgorithm;
+
+	/** The document name */
 	private String name = "RemoteDocument";
 
+	/**
+	 * Empty constructor
+	 */
 	public RemoteDocument() {
 	}
 
@@ -46,7 +53,7 @@ public class RemoteDocument implements Serializable {
 	 * @param bytes
 	 *              the full document binaries
 	 * @param name
-	 *              the document name
+	 *              {@link String} the document name
 	 */
 	public RemoteDocument(byte[] bytes, String name) {
 		this.bytes = bytes;
@@ -60,9 +67,9 @@ public class RemoteDocument implements Serializable {
 	 * @param bytes
 	 *                        the result of the digest
 	 * @param digestAlgorithm
-	 *                        the used digest algorithm
+	 *                        {@link DigestAlgorithm} the used digest algorithm
 	 * @param name
-	 *                        the document name
+	 *                        {@link String} the document name
 	 */
 	public RemoteDocument(byte[] bytes, DigestAlgorithm digestAlgorithm, String name) {
 		this.bytes = bytes;
@@ -71,7 +78,7 @@ public class RemoteDocument implements Serializable {
 	}
 
 	/**
-	 * Returns the array of bytes representing the document or its digest value.
+	 * Returns the array of bytes representing the document or its digest value (for DigestDocument).
 	 *
 	 * @return array of {@code byte}
 	 */
@@ -79,27 +86,47 @@ public class RemoteDocument implements Serializable {
 		return bytes;
 	}
 
+	/**
+	 * Sets binaries of the document or its digest value (for DigestDocument).
+	 *
+	 * @param bytes binaries of the document or its digest value (for DigestDocument)
+	 */
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
 	}
 
 	/**
-	 * Returns the current used digest algorithm
+	 * Returns the current used digest algorithm for a DigestDocument
 	 * 
-	 * @return
+	 * @return {@link DigestAlgorithm}
 	 */
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}
 
+	/**
+	 * Sets the used {@link DigestAlgorithm} for a DigestDocument
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 */
 	public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
 	}
 
+	/**
+	 * Gets the document name
+	 *
+	 * @return {@link String}
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Sets the document name
+	 *
+	 * @param name {@link String}
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}

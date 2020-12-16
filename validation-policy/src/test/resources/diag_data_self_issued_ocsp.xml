@@ -1,0 +1,838 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Signature-C-DE_OPE-6.p7m</DocumentName>
+    <ValidationDate>2020-11-02T08:34:22</ValidationDate>
+    <Signatures>
+        <Signature Id="S-7DDA717AF2E601BDD95B8AA352B81ADD04B09B1531ABD7924AD2FB1AE8B5998C">
+            <SignatureFilename>Signature-C-DE_OPE-6.p7m</SignatureFilename>
+            <ClaimedSigningTime>2019-11-06T08:24:25</ClaimedSigningTime>
+            <SignatureFormat>CAdES-BASELINE-LT</SignatureFormat>
+            <StructuralValidation valid="true" />
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>F0FIgcODTpn9d4YBY4+5O7FtQ7RTBf0ffTNMHQs1ACU=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>PLAIN-ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-2B454923074796A626F8EA662C87BC37B988335D67F12C800597E86F7CCBAF03"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-2B454923074796A626F8EA662C87BC37B988335D67F12C800597E86F7CCBAF03"/>
+                <ChainItem Certificate="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7"/>
+                <ChainItem Certificate="C-2F8233689C6E9A75E2DB3B5C0D04AB124DC6549FE9CE4CD48A7CA9CADC84A5F7"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>OID.2.5.4.97=USt-IdNr. DE 123475223, CN=TeleSec PKS eIDAS QES CA 1, O=Deutsche Telekom AG, C=DE</IssuerName>
+                    <SerialNumber>22656234380109519569930803501896310962</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-5F40DEF90FD8B098FBBACE1D2AC1D06F65F04E8F885CEFB615843BA126932B08">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-CF91E7FA963E177CEE5E2E8087618FA48934BD6F20A9573050DD6F57BF5D2A56">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-2F8233689C6E9A75E2DB3B5C0D04AB124DC6549FE9CE4CD48A7CA9CADC84A5F7">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-C0EDC093EF6A0D162F999D69AF3E62A7AAA6A907DDFA305B042BF2070297C10E">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-2B454923074796A626F8EA662C87BC37B988335D67F12C800597E86F7CCBAF03">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIGJMHWkczBxMQswCQYDVQQGEwJERTEcMBoGA1UECgwTRGV1dHNjaGUgVGVsZWtvbSBBRzEjMCEGA1UEAwwaVGVsZVNlYyBQS1MgZUlEQVMgUUVTIENBIDExHzAdBgNVBGEMFlVTdC1JZE5yLiBERSAxMjM0NzUyMjMCEBELbpj96/UoQKZLBEbcILI=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>K0VJIwdHlqYm+OpmLIe8N7mIM11n8SyABZfob3zLrwM=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-2227739D8DD70A1E4BCC0286FFD1052E20804D95B9059A11202EFBA6CA8F8C59">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-6779870BA341124B5BE084F2970A492D798C29882F8F5832637FE237D3F095A0">
+                    <Type>OCSP</Type>
+                    <Origin>CMS_SIGNED_DATA</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-AEB1958FE4517F52D8488F4E7DBE4A82E2DE0ADFE01B7BF11DEE0B53BFE12C55">
+                    <Type>OCSP</Type>
+                    <Origin>CMS_SIGNED_DATA</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-470D91719C6C2C8DCABA187313EAF16DBBD2E5FED5EA1828BE4FCB3B30C90F75">
+                    <Type>OCSP</Type>
+                    <Origin>CMS_SIGNED_DATA</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-C4AA07E6BB16219A07AB8275786B6DEA0243F3BF24E2C60869FEB87C8FE8296A"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-9684A6F17104D156AF8BF65961CE9D6681F9739C7EA7DC2F06AB6CFE27416EF1">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CQYX4HoqXg8+xCpVqq+ZgL93z8YQCJsriRYMeCuRCkE=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>KTdUWKCRTDeM2qdFcQinJ/AArtaPc2cPJeS2cexz7RhJca1VAFYREvKwHIylLAb6K5lK41R0TBfs468Mj3IUfQ==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-10C1E13EF3F885AF9BE2D98DF27FB2164383B480B955BF3317C88AF728A7E878">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp-signer telesec pks eidas qes ca 1,2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,o=deutsche telekom ag,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP-Signer TeleSec PKS eIDAS QES CA 1,2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,O=Deutsche Telekom AG,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,cn=telesec pks eidas qes ca 1,o=deutsche telekom ag,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,CN=TeleSec PKS eIDAS QES CA 1,O=Deutsche Telekom AG,C=DE</IssuerDistinguishedName>
+            <SerialNumber>13917656693409050179360438599508533579</SerialNumber>
+            <CommonName>OCSP-Signer TeleSec PKS eIDAS QES CA 1</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationIdentifier>USt-IdNr. DE 123475223</OrganizationIdentifier>
+            <OrganizationName>Deutsche Telekom AG</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://tqrca1.pki.telesec.de/crt/TeleSec_PKS_eIDAS_QES_CA_1.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.pks.telesec.de/ocspr</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2021-04-11T23:59:00</NotAfter>
+            <NotBefore>2020-04-08T10:08:00</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-45EA5BE3D09B72FD91EDC2E3A313C4884EF12F1D2EEF33C6E4D8A40BBF575763</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7"/>
+                <ChainItem Certificate="C-2F8233689C6E9A75E2DB3B5C0D04AB124DC6549FE9CE4CD48A7CA9CADC84A5F7"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://pks.telesec.de/cps">1.3.6.1.4.1.7879.13.27</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-7BB859CB9EB7F767827B99BF5EB441D24AEEA96B7948F9BE15CAD37E073BDE8F">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>EMHhPvP4ha+b4tmN8n+yFkODtIC5Vb8zF8iK9yin6Hg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-2227739D8DD70A1E4BCC0286FFD1052E20804D95B9059A11202EFBA6CA8F8C59">
+            <SubjectDistinguishedName Format="CANONICAL">cn=exceet tsa 05,2.5.4.97=#0c0e4e545244452d4852423738373730,o=exceet secure solutions gmbh,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=exceet TSA 05,2.5.4.97=#0c0e4e545244452d4852423738373730,O=exceet Secure Solutions GmbH,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=exceet trustcenter ca2,o=exceet secure solutions gmbh,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=exceet trustcenter CA2,O=exceet Secure Solutions GmbH,C=DE</IssuerDistinguishedName>
+            <SerialNumber>7</SerialNumber>
+            <CommonName>exceet TSA 05</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationIdentifier>NTRDE-HRB78770</OrganizationIdentifier>
+            <OrganizationName>exceet Secure Solutions GmbH</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.exceet.cloud/ocsp</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2023-05-02T11:05:17</NotAfter>
+            <NotBefore>2018-05-03T11:05:18</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-458667B8201CA0FBFB7F360B78EE64CEA0F8DDC6394824686295D84FD7058C68</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <MaskGenerationFunctionUsedToSignThisToken>MGF1</MaskGenerationFunctionUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-5F40DEF90FD8B098FBBACE1D2AC1D06F65F04E8F885CEFB615843BA126932B08"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-5F40DEF90FD8B098FBBACE1D2AC1D06F65F04E8F885CEFB615843BA126932B08"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-AEB1958FE4517F52D8488F4E7DBE4A82E2DE0ADFE01B7BF11DEE0B53BFE12C55">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>IidznY3XCh5LzAKG/9EFLiCATZW5BZoRIC77psqPjFk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-2B454923074796A626F8EA662C87BC37B988335D67F12C800597E86F7CCBAF03">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#391301,cn=jagielka, ferdi,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#391301,CN=Jagielka\, Ferdi,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,cn=telesec pks eidas qes ca 1,o=deutsche telekom ag,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,CN=TeleSec PKS eIDAS QES CA 1,O=Deutsche Telekom AG,C=DE</IssuerDistinguishedName>
+            <SerialNumber>95195699308035018963109622265623438010</SerialNumber>
+            <SubjectSerialNumber>15</SubjectSerialNumber>
+            <CommonName>Jagielka, Ferdi</CommonName>
+            <CountryName>DE</CountryName>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>ferdi.jagielka@closeboundaries.com</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://some.url.de/crt/TeleSec_PKS_eIDAS_QES_CA_1.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.sec.de/ocspr</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2021-08-19T23:59:00</NotAfter>
+            <NotBefore>2019-08-19T09:13:23</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-EBB8D610F0960344055DE2E166B38C797C8B5996B1DFE38A5AC74DDAA82649C5</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7"/>
+                <ChainItem Certificate="C-2F8233689C6E9A75E2DB3B5C0D04AB124DC6549FE9CE4CD48A7CA9CADC84A5F7"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://pks.telesec.de/cps" Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
+                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
+                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
+            </QCStatementIds>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-883A3DDA88FB4A296DE0BCD4531EF6C105F62B530247224295BF1D8E0961F0B3">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-470D91719C6C2C8DCABA187313EAF16DBBD2E5FED5EA1828BE4FCB3B30C90F75">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>K0VJIwdHlqYm+OpmLIe8N7mIM11n8SyABZfob3zLrwM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-2F8233689C6E9A75E2DB3B5C0D04AB124DC6549FE9CE4CD48A7CA9CADC84A5F7">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,cn=telesec qualified root ca 1,o=deutsche telekom ag,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,CN=TeleSec qualified Root CA 1,O=Deutsche Telekom AG,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,cn=telesec qualified root ca 1,o=deutsche telekom ag,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,CN=TeleSec qualified Root CA 1,O=Deutsche Telekom AG,C=DE</IssuerDistinguishedName>
+            <SerialNumber>1259216535417856451</SerialNumber>
+            <CommonName>TeleSec qualified Root CA 1</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationIdentifier>USt-IdNr. DE 123475223</OrganizationIdentifier>
+            <OrganizationName>Deutsche Telekom AG</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2047-04-05T23:59:59</NotAfter>
+            <NotBefore>2017-04-05T09:30:31</NotBefore>
+            <PublicKeySize>521</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-2971695C1F8194FDCF19A7BF6C80278A89DE685A250723B74A8F2262478351FC</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>L4IzaJxumnXi2ztcDQSrEk3GVJ/pzkzUinypytyEpfc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-5F40DEF90FD8B098FBBACE1D2AC1D06F65F04E8F885CEFB615843BA126932B08">
+            <SubjectDistinguishedName Format="CANONICAL">cn=exceet trustcenter ca2,o=exceet secure solutions gmbh,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=exceet trustcenter CA2,O=exceet Secure Solutions GmbH,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=exceet trustcenter ca2,o=exceet secure solutions gmbh,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=exceet trustcenter CA2,O=exceet Secure Solutions GmbH,C=DE</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <CommonName>exceet trustcenter CA2</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationName>exceet Secure Solutions GmbH</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.exceet.cloud/ocsp</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2036-07-27T08:45:44</NotAfter>
+            <NotBefore>2016-08-01T08:45:44</NotBefore>
+            <PublicKeySize>3072</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-0C1E8E7BC95C19B220A14C909E1104C4277B77C4EC9E41D377F325A2BED8E637</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <MaskGenerationFunctionUsedToSignThisToken>MGF1</MaskGenerationFunctionUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>X0De+Q/YsJj7us4dKsHQb2XwTo+IXO+2FYQ7oSaTKwg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-C0EDC093EF6A0D162F999D69AF3E62A7AAA6A907DDFA305B042BF2070297C10E">
+            <SubjectDistinguishedName Format="CANONICAL">cn=exceet trustcenter ocsp2,o=exceet secure solutions gmbh,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=exceet trustcenter OCSP2,O=exceet Secure Solutions GmbH,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=exceet trustcenter ca2,o=exceet secure solutions gmbh,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=exceet trustcenter CA2,O=exceet Secure Solutions GmbH,C=DE</IssuerDistinguishedName>
+            <SerialNumber>3</SerialNumber>
+            <CommonName>exceet trustcenter OCSP2</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationName>exceet Secure Solutions GmbH</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.exceet.cloud/ocsp</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2021-07-31T08:47:20</NotAfter>
+            <NotBefore>2016-08-01T08:47:21</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C71FD22AD707EA5C02D60F7845D5824D76C835B19B203D698A6AD96F43B6A340</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <MaskGenerationFunctionUsedToSignThisToken>MGF1</MaskGenerationFunctionUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-5F40DEF90FD8B098FBBACE1D2AC1D06F65F04E8F885CEFB615843BA126932B08"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-5F40DEF90FD8B098FBBACE1D2AC1D06F65F04E8F885CEFB615843BA126932B08"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>wO3Ak+9qDRYvmZ1prz5ip6qmqQfd+jBbBCvyBwKXwQ4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,cn=telesec pks eidas qes ca 1,o=deutsche telekom ag,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,CN=TeleSec PKS eIDAS QES CA 1,O=Deutsche Telekom AG,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,cn=telesec qualified root ca 1,o=deutsche telekom ag,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,CN=TeleSec qualified Root CA 1,O=Deutsche Telekom AG,C=DE</IssuerDistinguishedName>
+            <SerialNumber>15838446020011323637</SerialNumber>
+            <CommonName>TeleSec PKS eIDAS QES CA 1</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationIdentifier>USt-IdNr. DE 123475223</OrganizationIdentifier>
+            <OrganizationName>Deutsche Telekom AG</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://tqrca1.pki.telesec.de/crt/TeleSec_qualified_Root_CA_1.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://tqrca1.pki.telesec.de/rl/TeleSec_qualified_Root_CA_1.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://tqrca1.ocsp.telesec.de/ocspr</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2032-05-03T23:59:59</NotAfter>
+            <NotBefore>2017-05-03T10:45:04</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-DB177620ABBA8A3A832C90FFB94918047C87762EF732A5780F93532A34D55EE5</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-2F8233689C6E9A75E2DB3B5C0D04AB124DC6549FE9CE4CD48A7CA9CADC84A5F7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-2F8233689C6E9A75E2DB3B5C0D04AB124DC6549FE9CE4CD48A7CA9CADC84A5F7"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://pks.telesec.de/cps">1.3.6.1.4.1.7879.13.27</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>zJ1NzM6oxpGqcoOSwtffsx+jE3Z8hEv10yd25/hUZNc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-CF91E7FA963E177CEE5E2E8087618FA48934BD6F20A9573050DD6F57BF5D2A56">
+            <SubjectDistinguishedName Format="CANONICAL">cn=telesec pks eidas qes ocsp 18,2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,o=deutsche telekom ag,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=TeleSec PKS eIDAS QES OCSP 18,2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,O=Deutsche Telekom AG,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,cn=telesec pks eidas qes ca 1,o=deutsche telekom ag,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c165553742d49644e722e20444520313233343735323233,CN=TeleSec PKS eIDAS QES CA 1,O=Deutsche Telekom AG,C=DE</IssuerDistinguishedName>
+            <SerialNumber>347823541</SerialNumber>
+            <CommonName>TeleSec PKS eIDAS QES OCSP 18</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationIdentifier>USt-IdNr. DE 123475223</OrganizationIdentifier>
+            <OrganizationName>Deutsche Telekom AG</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://tqrca1.pki.telesec.de/crt/TeleSec_PKS_eIDAS_QES_CA_1.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.pks.telesec.de/ocspr</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2020-05-05T23:59:00</NotAfter>
+            <NotBefore>2018-05-02T13:19:45</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-2DAC85F32BF7CE26D21D2D160A886E8570DBE54993FE084A9C2F601855482E0E</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7"/>
+                <ChainItem Certificate="C-2F8233689C6E9A75E2DB3B5C0D04AB124DC6549FE9CE4CD48A7CA9CADC84A5F7"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://pks.telesec.de/cps">1.3.6.1.4.1.7879.13.27</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-6779870BA341124B5BE084F2970A492D798C29882F8F5832637FE237D3F095A0">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>z5Hn+pY+F3zuXi6Ah2GPpIk0vW8gqVcwUN1vV79dKlY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-470D91719C6C2C8DCABA187313EAF16DBBD2E5FED5EA1828BE4FCB3B30C90F75">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2019-11-14T09:41:30</ProductionDate>
+            <ThisUpdate>2019-11-14T09:41:30</ThisUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-CF91E7FA963E177CEE5E2E8087618FA48934BD6F20A9573050DD6F57BF5D2A56"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-CF91E7FA963E177CEE5E2E8087618FA48934BD6F20A9573050DD6F57BF5D2A56"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-CF91E7FA963E177CEE5E2E8087618FA48934BD6F20A9573050DD6F57BF5D2A56">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=TeleSec PKS eIDAS QES OCSP 18, OID.2.5.4.97=USt-IdNr. DE 123475223, O=Deutsche Telekom AG, C=DE</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Rw2RcZxsLI3KuhhzE+rxbbvS5f7V6hgovk/LOzDJD3U=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-6779870BA341124B5BE084F2970A492D798C29882F8F5832637FE237D3F095A0">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2019-11-14T09:41:30</ProductionDate>
+            <ThisUpdate>2019-11-14T09:41:30</ThisUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-CF91E7FA963E177CEE5E2E8087618FA48934BD6F20A9573050DD6F57BF5D2A56"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-CF91E7FA963E177CEE5E2E8087618FA48934BD6F20A9573050DD6F57BF5D2A56"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-CF91E7FA963E177CEE5E2E8087618FA48934BD6F20A9573050DD6F57BF5D2A56">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=TeleSec PKS eIDAS QES OCSP 18, OID.2.5.4.97=USt-IdNr. DE 123475223, O=Deutsche Telekom AG, C=DE</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Z3mHC6NBEktb4ITylwpJLXmMKYgvj1gyY3/iN9PwlaA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-7BB859CB9EB7F767827B99BF5EB441D24AEEA96B7948F9BE15CAD37E073BDE8F">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.pks.telesec.de/ocspr</SourceAddress>
+            <ProductionDate>2020-11-02T08:34:21</ProductionDate>
+            <ThisUpdate>2020-11-02T08:34:21</ThisUpdate>
+            <ArchiveCutOff>2017-05-03T10:45:04</ArchiveCutOff>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-10C1E13EF3F885AF9BE2D98DF27FB2164383B480B955BF3317C88AF728A7E878"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-10C1E13EF3F885AF9BE2D98DF27FB2164383B480B955BF3317C88AF728A7E878"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-10C1E13EF3F885AF9BE2D98DF27FB2164383B480B955BF3317C88AF728A7E878">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=OCSP-Signer TeleSec PKS eIDAS QES CA 1, OID.2.5.4.97=USt-IdNr. DE 123475223, O=Deutsche Telekom AG, C=DE</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>e7hZy56392eCe5m/XrRB0kruqWt5SPm+FcrTfgc73o8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-883A3DDA88FB4A296DE0BCD4531EF6C105F62B530247224295BF1D8E0961F0B3">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://pks.telesec.de/ocspr</SourceAddress>
+            <ProductionDate>2020-11-02T08:34:20</ProductionDate>
+            <ThisUpdate>2020-11-02T08:34:20</ThisUpdate>
+            <ArchiveCutOff>2017-05-03T10:45:04</ArchiveCutOff>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-10C1E13EF3F885AF9BE2D98DF27FB2164383B480B955BF3317C88AF728A7E878"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-10C1E13EF3F885AF9BE2D98DF27FB2164383B480B955BF3317C88AF728A7E878"/>
+                <ChainItem Certificate="C-CC9D4DCCCEA8C691AA728392C2D7DFB31FA313767C844BF5D32776E7F85464D7"/>
+                <ChainItem Certificate="C-2F8233689C6E9A75E2DB3B5C0D04AB124DC6549FE9CE4CD48A7CA9CADC84A5F7"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-10C1E13EF3F885AF9BE2D98DF27FB2164383B480B955BF3317C88AF728A7E878">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=OCSP-Signer TeleSec PKS eIDAS QES CA 1, OID.2.5.4.97=USt-IdNr. DE 123475223, O=Deutsche Telekom AG, C=DE</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>iDo92oj7Silt4LzUUx72wQX2K1MCRyJClb8djglh8LM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-AEB1958FE4517F52D8488F4E7DBE4A82E2DE0ADFE01B7BF11DEE0B53BFE12C55">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2019-11-14T09:41:30</ProductionDate>
+            <ThisUpdate>2019-11-14T09:41:30</ThisUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C0EDC093EF6A0D162F999D69AF3E62A7AAA6A907DDFA305B042BF2070297C10E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C0EDC093EF6A0D162F999D69AF3E62A7AAA6A907DDFA305B042BF2070297C10E"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-C0EDC093EF6A0D162F999D69AF3E62A7AAA6A907DDFA305B042BF2070297C10E">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=exceet trustcenter OCSP2, O=exceet Secure Solutions GmbH, C=DE</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>rrGVj+RRf1LYSI9Ofb5KguLeCt/gG3vxHe4LU7/hLFU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-C4AA07E6BB16219A07AB8275786B6DEA0243F3BF24E2C60869FEB87C8FE8296A">
+            <ProductionTime>2019-11-06T08:24:34</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>McqaTjGr9fxlnj9QsOyJqsIXcKIKkq6hHEATbNbQ2ko=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <MaskGenerationFunctionUsedToSignThisToken>MGF1</MaskGenerationFunctionUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-2227739D8DD70A1E4BCC0286FFD1052E20804D95B9059A11202EFBA6CA8F8C59"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-2227739D8DD70A1E4BCC0286FFD1052E20804D95B9059A11202EFBA6CA8F8C59"/>
+                <ChainItem Certificate="C-5F40DEF90FD8B098FBBACE1D2AC1D06F65F04E8F885CEFB615843BA126932B08"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=exceet trustcenter CA2, O=exceet Secure Solutions GmbH, C=DE</IssuerName>
+                    <SerialNumber>7</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-5F40DEF90FD8B098FBBACE1D2AC1D06F65F04E8F885CEFB615843BA126932B08">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-2227739D8DD70A1E4BCC0286FFD1052E20804D95B9059A11202EFBA6CA8F8C59">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MF4wWaRXMFUxCzAJBgNVBAYTAkRFMSUwIwYDVQQKDBxleGNlZXQgU2VjdXJlIFNvbHV0aW9ucyBHbWJIMR8wHQYDVQQDDBZleGNlZXQgdHJ1c3RjZW50ZXIgQ0EyAgEH</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>QpfSFxRp33fUH5KoP6A3MEDrqlU=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-9684A6F17104D156AF8BF65961CE9D6681F9739C7EA7DC2F06AB6CFE27416EF1" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-7DDA717AF2E601BDD95B8AA352B81ADD04B09B1531ABD7924AD2FB1AE8B5998C" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-2B454923074796A626F8EA662C87BC37B988335D67F12C800597E86F7CCBAF03" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>xKoH5rsWIZoHq4J1eGtt6gJD878k4sYIaf64fI/oKWo=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-9684A6F17104D156AF8BF65961CE9D6681F9739C7EA7DC2F06AB6CFE27416EF1">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>F0FIgcODTpn9d4YBY4+5O7FtQ7RTBf0ffTNMHQs1ACU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <SequenceNumber>275</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-11-02T07:55:41</LastLoading>
+            <IssueDate>2020-10-21T12:00:00</IssueDate>
+            <NextUpdate>2021-04-20T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL-9D6AE04C6116D10A8ECA538ABCDE8FE5B7F30A339496427502348337D7EA033C">
+            <CountryCode>DE</CountryCode>
+            <Url>https://tl.bundesnetzagentur.de/TL-DE.XML</Url>
+            <SequenceNumber>92</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-11-02T07:55:42</LastLoading>
+            <IssueDate>2020-09-08T10:00:00</IssueDate>
+            <NextUpdate>2021-03-07T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

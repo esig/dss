@@ -33,11 +33,16 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFileContentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableZipCommentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.AllFilesSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ContainerTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfPageDifferenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfVisualDifferenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.ReferencesNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedFilesPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
@@ -52,13 +57,29 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentChec
  */
 public class FormatChecking extends Chain<XmlFC> {
 
+	/** Diagnostic data */
 	private final DiagnosticData diagnosticData;
+
+	/** The signature to validate */
 	private final SignatureWrapper signature;
 
+	/** The validation context */
 	private final Context context;
+
+	/** The validation policy */
 	private final ValidationPolicy policy;
 
-	public FormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature, Context context, ValidationPolicy policy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param signature {@link SignatureWrapper}
+	 * @param context {@link Context}
+	 * @param policy {@link ValidationPolicy}
+	 */
+	public FormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData, SignatureWrapper signature,
+						  Context context, ValidationPolicy policy) {
 		super(i18nProvider, new XmlFC());
 		this.diagnosticData = diagnosticData;
 		this.signature = signature;
@@ -75,13 +96,23 @@ public class FormatChecking extends Chain<XmlFC> {
 	protected void initChain() {
 		ChainItem<XmlFC> item = firstItem = formatCheck();
 		
-		item = item.setNextItem(duplicateCheck());
+		item = item.setNextItem(signatureDuplicateCheck());
+
+		item = item.setNextItem(referenceDuplicateCheck());
 
 		item = item.setNextItem(fullScopeCheck());
 		
 		// PAdES only
 		if (signature.getPDFRevision() != null) {
+			
 			item = item.setNextItem(signerInformationStoreCheck());
+			
+			item = item.setNextItem(pdfPageDifferenceCheck());
+			
+			item = item.setNextItem(pdfAnnotationOverlapCheck());
+			
+			item = item.setNextItem(pdfVisualDifferenceCheck());
+			
 		}
 
 		if (diagnosticData.isContainerInfoPresent()) {
@@ -99,7 +130,11 @@ public class FormatChecking extends Chain<XmlFC> {
 			item = item.setNextItem(manifestFilePresentCheck());
 
 			item = item.setNextItem(signedFilesPresentCheck());
+			
+			item = item.setNextItem(allFilesSignedCheck());
+			
 		}
+		
 	}
 
 	private ChainItem<XmlFC> formatCheck() {
@@ -107,9 +142,13 @@ public class FormatChecking extends Chain<XmlFC> {
 		return new FormatCheck(i18nProvider, result, signature, constraint);
 	}
 	
-	private ChainItem<XmlFC> duplicateCheck() {
+	private ChainItem<XmlFC> signatureDuplicateCheck() {
 		LevelConstraint constraint = policy.getSignatureDuplicatedConstraint(context);
 		return new SignatureNotAmbiguousCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> referenceDuplicateCheck() {
+		return new ReferencesNotAmbiguousCheck(i18nProvider, result, signature, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlFC> fullScopeCheck() {
@@ -120,6 +159,21 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> signerInformationStoreCheck() {
 		LevelConstraint constraint = policy.getSignerInformationStoreConstraint(context);
 		return new SignerInformationStoreCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> pdfPageDifferenceCheck() {
+		LevelConstraint constraint = policy.getPdfPageDifferenceConstraint(context);
+		return new PdfPageDifferenceCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> pdfAnnotationOverlapCheck() {
+		LevelConstraint constraint = policy.getPdfAnnotationOverlapConstraint(context);
+		return new PdfAnnotationOverlapCheck(i18nProvider, result, signature, constraint);
+	}
+	
+	private ChainItem<XmlFC> pdfVisualDifferenceCheck() {
+		LevelConstraint constraint = policy.getPdfVisualDifferenceConstraint(context);
+		return new PdfVisualDifferenceCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {
@@ -155,6 +209,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> signedFilesPresentCheck() {
 		LevelConstraint constraint = policy.getSignedFilesPresentConstraint();
 		return new SignedFilesPresentCheck(i18nProvider, result, diagnosticData.getContainerInfo(), constraint);
+	}
+
+	private ChainItem<XmlFC> allFilesSignedCheck() {
+		LevelConstraint constraint = policy.getAllFilesSignedConstraint();
+		return new AllFilesSignedCheck(i18nProvider, result, signature, diagnosticData.getContainerInfo(), constraint);
 	}
 
 }

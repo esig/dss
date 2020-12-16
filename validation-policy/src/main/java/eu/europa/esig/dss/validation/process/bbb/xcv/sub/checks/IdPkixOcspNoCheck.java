@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -32,12 +30,32 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+import java.util.Date;
+
+/**
+ * Checks if the certificate has ocsp-no-check extension and not expired in validation time
+ *
+ * @param <T> {code XmlConstraintsConclusion}
+ */
 public class IdPkixOcspNoCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
-	
+
+	/** Certificate to check */
 	private final CertificateWrapper certificate;
+
+	/** Validation time */
 	private final Date controlTime;
 
-	public IdPkixOcspNoCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificateWrapper, Date controlTime, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificateWrapper {@link CertificateWrapper}
+	 * @param controlTime {@link Date}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public IdPkixOcspNoCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificateWrapper,
+							 Date controlTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificateWrapper;
 		this.controlTime = controlTime;
@@ -68,14 +86,13 @@ public class IdPkixOcspNoCheck<T extends XmlConstraintsConclusion> extends Chain
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return null;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotBefore());
 		String notAfterStr = certificate.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotAfter());
 		String validationTime = ValidationProcessUtils.getFormattedDate(controlTime);
-		Object[] params = new Object[] { notBeforeStr, notAfterStr, validationTime };
-		return MessageTag.OCSP_NO_CHECK.setArgs(params);
+		return i18nProvider.getMessage(MessageTag.OCSP_NO_CHECK, notBeforeStr, notAfterStr, validationTime);
 	}
 
 }

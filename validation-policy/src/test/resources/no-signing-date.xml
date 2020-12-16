@@ -6,9 +6,7 @@
         <Signature Id="id-1e71de2a815b8732fdcdc48064062d7b">
             <SignatureFilename>submissionReport(Getekend)_v1_2.xml</SignatureFilename>
             <SignatureFormat>XML-NOT-ETSI</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="#test">
                     <DigestMethod>SHA256</DigestMethod>
@@ -204,8 +202,8 @@
             <SerialNumber>213079583810666991238537790414025420025379483227</SerialNumber>
             <CommonName>h v e</CommonName>
             <CountryName>NL</CountryName>
-            <GivenName>j N.</GivenName>
             <OrganizationalUnit>Qualified Certificate</OrganizationalUnit>
+            <GivenName>j N.</GivenName>
             <Surname>v e</Surname>
             <AuthorityInformationAccessUrls>
                 <aiaUrl>http://trust.quovadisglobal.com/qveucag3.crt</aiaUrl>

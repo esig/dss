@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 
+/**
+ * Parses the {@code ArchiveTimestampType}
+ */
 public class MaskGenerationFunctionParser {
 
 	private MaskGenerationFunctionParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code MaskGenerationFunction}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link MaskGenerationFunction}
+	 */
 	public static MaskGenerationFunction parse(String v) {
 		if (v != null) {
 			return MaskGenerationFunction.valueOf(v);
@@ -34,6 +43,12 @@ public class MaskGenerationFunctionParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link MaskGenerationFunction}
+	 * @return {@link String}
+	 */
 	public static String print(MaskGenerationFunction v) {
 		if (v != null) {
 			return v.name();

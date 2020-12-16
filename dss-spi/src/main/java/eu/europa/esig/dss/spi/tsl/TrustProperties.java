@@ -23,11 +23,21 @@ package eu.europa.esig.dss.spi.tsl;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 
+/**
+ * Contains the Trust properties for certificates
+ */
 public class TrustProperties {
 
+	/** The LOTL id */
 	private final Identifier lotlId;
+
+	/** The TL id */
 	private final Identifier tlId;
+
+	/** The trustServiceProvider */
 	private final TrustServiceProvider trustServiceProvider;
+
+	/** The trustService */
 	private final TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService;
 
 	/**
@@ -69,18 +79,38 @@ public class TrustProperties {
 		this.trustService = trustService;
 	}
 
+	/**
+	 * Gets LOTL Id
+	 *
+	 * @return {@link Identifier}
+	 */
 	public Identifier getLOTLIdentifier() {
 		return lotlId;
 	}
 
+	/**
+	 * Gets TL Id
+	 *
+	 * @return {@link Identifier}
+	 */
 	public Identifier getTLIdentifier() {
 		return tlId;
 	}
 
+	/**
+	 * Gets trust service provider
+	 *
+	 * @return {@link TrustServiceProvider}
+	 */
 	public TrustServiceProvider getTrustServiceProvider() {
 		return trustServiceProvider;
 	}
 
+	/**
+	 * Gets trust service
+	 *
+	 * @return {@link TimeDependentValues}
+	 */
 	public TimeDependentValues<TrustServiceStatusAndInformationExtensions> getTrustService() {
 		return trustService;
 	}

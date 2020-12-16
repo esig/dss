@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>MVC.pdf</DocumentName>
+    <ValidationDate>2018-02-06T09:39:33</ValidationDate>
+    <Signatures>
+        <Signature Id="id-a28e6cf46b56eb7ab0eb91f9c7b08f77819f4f2160a03c5d92a0555745d53b52">
+            <SignatureFilename>MVC.pdf</SignatureFilename>
+            <ClaimedSigningTime>2004-08-28T12:08:07</ClaimedSigningTime>
+            <SignatureFormat>PAdES-BASELINE-T</SignatureFormat>
+            <StructuralValidation valid="true" />
+	        <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524"/>
+                <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
+            </CertificateChain>
+            <ContentType>application/pdf</ContentType>
+            <CommitmentTypeIndications/>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>9dNRCulCqMssAtCUon8YTOCcqnc=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+			<FoundTimestamps>
+				<FoundTimestamp Timestamp="T-478805477111202956F33117583157569FBFA250686FE98FBF5D7131AACC8A57"/>
+			</FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-c38c6acc7dbac2dad32dd2d23a3eadacda43d24c98a3cfd7bc677fec53288440">
+                    <Scope>PARTIAL</Scope>
+                    <Name>PDF previous version #1</Name>
+                    <Description>The document byte range: [0, 311011, 341013, 856]</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>s+JDxQzJJJYTISGnxqtkd3+Ks4Px7Qh92+ze0p1PoiM=</DigestValue>
+            </SignatureDigestReference>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        
+        <Certificate Id="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524">
+            <SubjectDistinguishedName Format="CANONICAL">cn=marie ange liegeois,2.5.4.5=#13206131616139643866623831353932623538376366343065363232643238383135</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=MARIE ANGE LIEGEOIS,2.5.4.5=#13206131616139643866623831353932623538376366343065363232643238383135</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=universign ca hardware,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Universign CA hardware,OU=0002 43912916400026,O=Cryptolog International,C=FR</IssuerDistinguishedName>
+            <SerialNumber>235385453502690318507749662384188402573</SerialNumber>
+            <CommonName>MARIE ANGE LIEGEOIS</CommonName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.universign.eu/universign_ca_hardware.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://scah.ocsp.universign.eu/</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
+            <NotAfter>2020-08-28T12:08:39</NotAfter>
+            <NotBefore>2000-08-28T12:08:39</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.15819.5.1.3.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <qcStatementOid Description="qc-compliant">0.4.0.1862.1.1</qcStatementOid>
+            </QCStatementIds>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                	<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203462028</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
+                    		<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
+                    		<ServiceNames><ServiceName lang="en">Universign CA hardware</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2012-06-14T22:00:00</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris/>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-38860679fab0e6d8490335aa94f3968c97098c9d206512f2335106090eb865243bfb691278ec85174c63a76d10731f08af4c43e05681ff999a0048caf0c5bcb7">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <Base64Encoded>MIIEhDCCA2ygAwIBAgIRALEVlt7Q25djS1TEtp7Rq40wDQYJKoZIhvcNAQELBQAwbjELMAkGA1UEBhMCRlIxIDAeBgNVBAoTF0NyeXB0b2xvZyBJbnRlcm5hdGlvbmFsMRwwGgYDVQQLExMwMDAyIDQzOTEyOTE2NDAwMDI2MR8wHQYDVQQDExZVbml2ZXJzaWduIENBIGhhcmR3YXJlMB4XDTE1MDgyODEyMDgzOVoXDTIwMDgyODEyMDgzOVowSTEpMCcGA1UEBRMgYTFhYTlkOGZiODE1OTJiNTg3Y2Y0MGU2MjJkMjg4MTUxHDAaBgNVBAMTE01BUklFIEFOR0UgTElFR0VPSVMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC/us/dUxhmf8g52myQEE4igBo3Cor+ZyMSNzLvUsQ+vfuWUXin1V++Xd5onRex+6Ipe41TIIS9Xeq6FXp1ixkbXhBw9Lr4R6zEHWAWwVP6ZJA5DlpRgHPnBx9dba9Go/YB61S5UTI9GPYZ5Lsi5bZ+I52x17NF6DABBTg88IsSOARsA0FSHldTu3DW19/ypiw2K7KiQXBij8D5+Gl/eAb4lg5PLdBG114wLTPu+avurQq3zK7UNfESBzcUMQVaRj4QlDifPQKmJsirgfBuq1HbWEuk9Kn39qEweSAR3rqU4EUut8fAlCQ/QSmDeGbyDVQ3j1aDXM9ncKjvHjMiS+zfAgMBAAGjggFAMIIBPDAOBgNVHQ8BAf8EBAMCBkAwHQYDVR0OBBYEFBI6tujvJ0OZY2jr0zGZODdAJIiJMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL3NjYWgub2NzcC51bml2ZXJzaWduLmV1LzBEBgNVHR8EPTA7MDmgN6A1hjNodHRwOi8vY3JsLnVuaXZlcnNpZ24uZXUvdW5pdmVyc2lnbl9jYV9oYXJkd2FyZS5jcmwwQgYDVR0gBDswOTA3BgsrBgEEAftLBQEDATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vZG9jcy51bml2ZXJzaWduLmV1LzAYBggrBgEFBQcBAwQMMAowCAYGBACORgEBMAkGA1UdEwQCMAAwHwYDVR0jBBgwFoAUYOQw3e561NB+XSXZ/Tt7IWRP3bswDQYJKoZIhvcNAQELBQADggEBAHsBtHQmXUKFniC15wwyQCLLmcryF9URoNVzi8GkPm7K1f64RUEZFVcXFLHgueL7CtFZnBU7Nv48gKYkqCQohXGx/HH0zuPrMHyjO3TRQo+qbYdVGHNKsTF5xyAs7LFEPs9q6V5WXRHSAAtnk7NbWoUV856jJy6v9CwAkjDHLPA3RGMmKHZWLg+e35zOGSDQTzqOzF8YnC4s8+6uAtzmPMkZdYEe316Qh06HJ5bw0ZcijizzdruVJ52h0QAbGTjWEwLNOSj9aB3+pa1PlbSw1OdrF87xCpq5XJnBBqmXcLpU9EgOtaTfvQzyedDsjOryAV0zOWk6wqo4e/FXWkEejfw=</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD">
+            <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping unit 013</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=FR,O=Cryptolog International,OU=0002 43912916400026,CN=Universign Timestamping Unit 013</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Universign Timestamping CA 2015,OU=0002 43912916400026,O=Cryptolog International,C=FR</IssuerDistinguishedName>
+            <SerialNumber>90360400720351854698032102460357140181</SerialNumber>
+            <CommonName>Universign Timestamping Unit 013</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Cryptolog International</OrganizationName>
+            <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+            	<Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2021-04-01T14:32:32</NotAfter>
+            <NotBefore>2002-04-01T14:32:32</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                	<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203462028</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2015-04-13T22:00:00</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-12-01T01:00:00</StartDate>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <EndDate>2016-12-01T01:00:00</EndDate>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2015-04-13T22:00:00</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-5a2f7f6fc616cb7fcc1084819f0d1b91cf9f1caf18c8808aab6779001dbf2cad1a69421eeca0415425d70ea02078a6a732a7ac5b7e4a00a8bdab1035e6fd41c5">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <Base64Encoded>MIIEXDCCA0SgAwIBAgIQQ/rHuCJdsLnQEzm/0Wje1TANBgkqhkiG9w0BAQsFADB3MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxKDAmBgNVBAMTH1VuaXZlcnNpZ24gVGltZXN0YW1waW5nIENBIDIwMTUwHhcNMTUwNDAxMTQzMjMyWhcNMjEwNDAxMTQzMjMyWjB4MSkwJwYDVQQDEyBVbml2ZXJzaWduIFRpbWVzdGFtcGluZyBVbml0IDAxMzEcMBoGA1UECxMTMDAwMiA0MzkxMjkxNjQwMDAyNjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxCzAJBgNVBAYTAkZSMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyxeUTr4cq3eadnesUoHwFdujxmaO2vUjpA1L0apvnXQ0+ZBYL55vZZ4JfBZ95gKNMEv0SY13eS/BtRT1ER4qInDPxs6aC7ruoxhJL3JEKKiZ6rC2aNbGOk6SWBZWhBBLs9kTfP0OqFNs3+GVkOwpL137DrGsq/5qe+R1vViFqwzno50Xj+OSeFW/wr3PDMEpWHyRQyq9H1RwqDBKHj+7KrxCeAMQ+Sz9gfWmQY8hzEBhyK1ovrRMfNlQx9ZNrWTZywbE0UmLXIyMPXNFAjhLsly6QeZMv4EZWrZizLttGvBKXLKhEZ0fg/owjDlHp3eZfAbGuUbJhTIqXjn25rjKYQIDAQABo4HiMIHfMAkGA1UdEwQCMAAwQQYDVR0gBDowODA2BgorBgEEAftLBQEBMCgwJgYIKwYBBQUHAgEWGmh0dHA6Ly9kb2NzLnVuaXZlcnNpZ24uZXUvMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwudW5pdmVyc2lnbi5ldS91bml2ZXJzaWduX3RzYV9yb290XzIwMTUuY3JsMA4GA1UdDwEB/wQEAwIHgDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCDAfBgNVHSMEGDAWgBT6Te1XO70/85Ezmgs5pH9dEt0HRjANBgkqhkiG9w0BAQsFAAOCAQEAZsTuFP1rEnO4Niaao3XhSBz+74ytMToRBbrMmFThXivPkR/Eit64KxG46xi/LcH73b92j5ao4QW+sZ9GQqJFk2/lPgxOWbyeYDhnq8x1aFFKnssOg4Sn2kBMZu5dW+R+g6e+AP6x2gc6faw1bLvbAEwXofB8nZVy3227dGUc4pMEV3e6Hd2HDGM8v9BCKr3P7I7h8MSJuHhMX7Okm/nKIyE2/1695urL6xklPhnRhhESGnyCyTQF6M1CBi5WHzdBP4g9UKzOfmCU/9Y/YtSF97SxR4ooM2XT2RVx2ggbzE8hJh2JqOZisk07uaP9kdodQtFdRg4XpD2A70IO17NPNw==</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+            <SubjectDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Universign Timestamping CA 2015,OU=0002 43912916400026,O=Cryptolog International,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Universign Timestamping CA 2015,OU=0002 43912916400026,O=Cryptolog International,C=FR</IssuerDistinguishedName>
+            <SerialNumber>84798768403750469096602040280354891940</SerialNumber>
+            <CommonName>Universign Timestamping CA 2015</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Cryptolog International</OrganizationName>
+            <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2025-01-29T14:03:15</NotAfter>
+            <NotBefore>2000-01-29T14:03:15</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                	<TSPNames><TSPName lang="en">Universign</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203462028</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2015-04-13T22:00:00</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-12-01T01:00:00</StartDate>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <EndDate>2016-12-01T01:00:00</EndDate>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2015-04-13T22:00:00</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIID/zCCAuegAwIBAgIQP8umE0YUpE/yhLiMgaeopDANBgkqhkiG9w0BAQsFADB3MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxKDAmBgNVBAMTH1VuaXZlcnNpZ24gVGltZXN0YW1waW5nIENBIDIwMTUwHhcNMTUwMTI5MTQwMzE1WhcNMjUwMTI5MTQwMzE1WjB3MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxKDAmBgNVBAMTH1VuaXZlcnNpZ24gVGltZXN0YW1waW5nIENBIDIwMTUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYc1VJ69W70ojewtKbCLZ+P8bDAVJ1qujzgIZEvm15GYX7Jp+Hl9rwxBdswSZ8S5A/x+0j6YMOHH0Z+iGl649+0GGX1gdAuovQKShsvLSzD/waINxkXXTVXpAW3V4dnCgcb3qaV/pO9NTk/sdRJxM8lUtWuD7TEAfLzz7Ucl6gBjDTA0Gz+AtUkNWPcofCWuDfiSDOOpyKwSxovde6SRwHdTXXIiC2Dphffjrr74MvLb0La5JAUwmJLIH42j/frgZeWk148wLMwBW+lvrIJtPz7eHNtTlNfQLrmmJHW4l+yvTsdJJDs7QYtfzBTNg1zqV8eo/hHxFTFJ8/T9wTmENJAgMBAAGjgYYwgYMwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwQQYDVR0gBDowODA2BgorBgEEAftLBQEBMCgwJgYIKwYBBQUHAgEWGmh0dHA6Ly9kb2NzLnVuaXZlcnNpZ24uZXUvMB0GA1UdDgQWBBT6Te1XO70/85Ezmgs5pH9dEt0HRjANBgkqhkiG9w0BAQsFAAOCAQEAc7ud6793wgdjR8Xc1L47ufdVTamI5SHfOThtROfn8JL0HuNHKdRgv6COpdjtt6RwQEUUX/km7Q+Pn+A2gA/XoPfqD0iMfP63kMMyqgalEPRv+lXbFw3GSC9BQ9s2FL7ScvSuPm7VDZhpYN5xN6H72y4z7BgsDVNhkMu5AiWwbaWF+BHzZeiuvYHX0z/OgY2oH0hluovuRAanQd4dOa73bbZhTJPFUzkgeIzOiuYS421IiAqsjkFwu3+k4dMDqYfDKUSITbMymkRDszR0WGNzIIy2NsTBcKYCHmbIV9S+165i8YjekraBjTTSbpfbty87A1S53CzA2EN1qnmQPwqFfg==</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B">
+            <SubjectDistinguishedName Format="CANONICAL">cn=universign ocsp 001,ou=universign ca hardware,ou=0002 43912916400026,o=cryptolog international,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Universign OCSP 001,OU=Universign CA hardware,OU=0002 43912916400026,O=Cryptolog International,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=universign ca hardware,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Universign CA hardware,OU=0002 43912916400026,O=Cryptolog International,C=FR</IssuerDistinguishedName>
+            <SerialNumber>107221834449674488974243346747144779806</SerialNumber>
+            <CommonName>Universign OCSP 001</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Cryptolog International</OrganizationName>
+            <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2018-07-20T15:32:16</NotAfter>
+            <NotBefore>2004-07-20T15:32:16</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                	<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIIECjCCAvKgAwIBAgIQUKosliKFEZxUaYg2Tke4HjANBgkqhkiG9w0BAQsFADBuMQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxHzAdBgNVBAMTFlVuaXZlcnNpZ24gQ0EgaGFyZHdhcmUwHhcNMTYwNzIwMTUzMjE2WhcNMTgwNzIwMTUzMjE2WjCBjDELMAkGA1UEBhMCRlIxIDAeBgNVBAoTF0NyeXB0b2xvZyBJbnRlcm5hdGlvbmFsMRwwGgYDVQQLExMwMDAyIDQzOTEyOTE2NDAwMDI2MR8wHQYDVQQLExZVbml2ZXJzaWduIENBIGhhcmR3YXJlMRwwGgYDVQQDExNVbml2ZXJzaWduIE9DU1AgMDAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm3NArFYQc4jcPUErRrQwzZAt9FLVgmIQvBefABIfKScFcoXpcLCAYYOYKIYpwkwbxUTW3OoISBy3stQtJWoPARfRJ2vnTgOrD4xD8AJC/HCToqSCbw0jTvhCol4W3uuf1yl4CKURhIJ0nhc0kN4AO03Yl4Pk1cJDnaYKOeBG27BR0EEzvc7+24mE25v9Obh7QdfajfEYcqkRacKKaPPKAyCL6QSQaBfuVOacttqSGY8SxtATGEau3mfHKVA49uY3MVLGtyW0Zu1PsU2vZ/vSPoCMVglX9l9UOAtzH8irh/cz2E4yYnSO58wETaVNKVUJYhF7kYlG4iPyJ6K3xHdxTQIDAQABo4GEMIGBMA4GA1UdDwEB/wQEAwIHgDAPBgkrBgEFBQcwAQUEAgUAMB0GA1UdDgQWBBQMDLx1pTNMSw8EcC9Lh/QBuWmMYDATBgNVHSUEDDAKBggrBgEFBQcDCTAJBgNVHRMEAjAAMB8GA1UdIwQYMBaAFGDkMN3uetTQfl0l2f07eyFkT927MA0GCSqGSIb3DQEBCwUAA4IBAQBW1VjyDn8o6L5njUxZfE1qu5G5YGug7RAy4kG13VC3bpRGno77YzxN/Ns0nubL+A164+iQ9cpxqSZZ+JguVyHE2w5Tz8etbmYMXgpG/hGA8mi4bzcYXaI9/IYXTWV88vG4gi4P5ch/NoqnrGXKHqjuQBDkmgBb2ZRLCoxG1Q2DFd86gtc4EGp9Kqe3Tn84sjIRisdnRavwHokMqrQ3vhb8f5/JdHL3foXm9x7qhbAc+wJIIkFOm3drWN71DF5L+ZFOQD4eqUZkDrADQyRnO5JJKgOt4gNoIqtg4DY5TdxutKyUamLR7XV6TzFYlTS+Du5YKO5fBuTxxznSfvB+UzzO</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-0A373229426E85A6000B07E11855DA8668BD137906A2BF791F4D60B8FF7530DD">
+            <SubjectDistinguishedName Format="CANONICAL">cn=universign primary ca hardware,ou=0002 43912916400026,o=cryptolog international,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Universign Primary CA hardware,OU=0002 43912916400026,O=Cryptolog International,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=universign primary ca hardware,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Universign Primary CA hardware,OU=0002 43912916400026,O=Cryptolog International,C=FR</IssuerDistinguishedName>
+            <SerialNumber>259438482142957653826574432754588014580</SerialNumber>
+            <CommonName>Universign Primary CA hardware</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Cryptolog International</OrganizationName>
+            <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
+            <NotAfter>2042-05-29T16:58:07</NotAfter>
+            <NotBefore>1998-05-29T16:58:07</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-0A373229426E85A6000B07E11855DA8668BD137906A2BF791F4D60B8FF7530DD</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                	<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2012-06-14T22:00:00</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIIDuTCCAqGgAwIBAgIRAMMuCL31l3GyxK1mYwBZV/QwDQYJKoZIhvcNAQELBQAwdjELMAkGA1UEBhMCRlIxIDAeBgNVBAoTF0NyeXB0b2xvZyBJbnRlcm5hdGlvbmFsMRwwGgYDVQQLExMwMDAyIDQzOTEyOTE2NDAwMDI2MScwJQYDVQQDEx5Vbml2ZXJzaWduIFByaW1hcnkgQ0EgaGFyZHdhcmUwHhcNMTIwNTI5MTY1ODA3WhcNNDIwNTI5MTY1ODA3WjB2MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxJzAlBgNVBAMTHlVuaXZlcnNpZ24gUHJpbWFyeSBDQSBoYXJkd2FyZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANmadE1N1cZBcDXE229NXXGngVJgy8DHoB3vVT2k16NHHI9AtynXWo+xtiaSEi3IU6uoT85iPv+8IXb7pc7Kws7usrxoSkQKauqD10JGezozwU26+MIS96XZnWtxLieW7L7ibMnRyrH8eCQXA1VZox/QX5tM+fCL2cPLWbzDlVoh9Kkg7OmIMPteTb6G5mTTBUzon7oAlEi3NRxpqsSMi2XMqYnqpP6w2hX/Yyjw3c+rZbjpFyxCpPxC1EvtkTP2znfsszmLwgvwO1wF47fJuhts4FgIZmTfAOKrVLzW7wC3JW58/gUQXskc1i51TueF87X/2G4Wq4rXnz5Dn0k+Vb0CAwEAAaNCMEAwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFE3Z/Kgtx8hapK1fSa5opNyeihIiMA0GCSqGSIb3DQEBCwUAA4IBAQAww+NfjmXYX/dQ6l6woSclAhPBZIGsfQ3mRTAsKsrvaEZvjhr+kM+btAVzG6UbDIRrp4JmeZId/teMYKo72hrT68x6ZOkyFfIsv1oD0TGjEFYbX8JRfFd0xRm6vLJZfP6JdRIOH5vHsbid1P7Q6DbWO2c7orwAM5PYQpnmf0dXvZ8DcxMajxtoSWGVw/gZRKQLm0x1Y3Hy6laHlzr6HBrPX5oVL8AGGCythlO4SjO8c6nCa+gD6khN2PfC09NnoM6hma2xMtyiuv2yxpX9qCdQUJsPoMYrphXqLU9uos/nNY4w+h0LSEBC3BOa6jH6sZZzoPuQXJR+CLgJaJ9te3gs</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
+            <SubjectDistinguishedName Format="CANONICAL">cn=universign ca hardware,ou=0002 43912916400026,o=cryptolog international,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Universign CA hardware,OU=0002 43912916400026,O=Cryptolog International,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=universign primary ca hardware,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Universign Primary CA hardware,OU=0002 43912916400026,O=Cryptolog International,C=FR</IssuerDistinguishedName>
+            <SerialNumber>44308746886567293780037745620762591959</SerialNumber>
+            <CommonName>Universign CA hardware</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Cryptolog International</OrganizationName>
+            <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.universign.eu/universign_primary_ca_hardware.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2022-06-15T12:56:25</NotAfter>
+            <NotBefore>1999-06-15T12:56:25</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                	<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2034482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    		<ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2012-06-14T22:00:00</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIIEYTCCA0mgAwIBAgIQIVWN4tmvyrr2CIjMBjGC1zANBgkqhkiG9w0BAQsFADB2MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxJzAlBgNVBAMTHlVuaXZlcnNpZ24gUHJpbWFyeSBDQSBoYXJkd2FyZTAeFw0xMjA2MTUxMjU2MjVaFw0yMjA2MTUxMjU2MjVaMG4xCzAJBgNVBAYTAkZSMSAwHgYDVQQKExdDcnlwdG9sb2cgSW50ZXJuYXRpb25hbDEcMBoGA1UECxMTMDAwMiA0MzkxMjkxNjQwMDAyNjEfMB0GA1UEAxMWVW5pdmVyc2lnbiBDQSBoYXJkd2FyZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKHfv76grtwK9PRFTBq4BDtmmLaaHDAqkj1wd0lHIN2QH1jM6hKWeS4U/wy8QuYtvw0aFxYxiMWzS/vrj0Sczv5hAt8reE1Eg1uQcx6+aSUBqJ6a+1TbM7PtkHg1ozgbmVXGuiOLyviLhhUo8XmeeGEhux+cyRNiYCs37VPN5OVrKks29dspMkvllkexfrxiPfc+gB58EU+iNEcip/YrZLu4ZqErlCePIVBLyX9skb7QwKXDW8XBIgAzpoBj0U9/4Vxaiyj209xT1Uuz2vKsuT8Hq7I1vt7miYviHg/ovsWXH6yGcNomxX55l0qWQ4z+mGlVhCLDPMKmspY5D+1kSqsCAwEAAaOB8jCB7zA7BgNVHSAENDAyMDAGBFUdIAAwKDAmBggrBgEFBQcCARYaaHR0cDovL2RvY3MudW5pdmVyc2lnbi5ldS8wEgYDVR0TAQH/BAgwBgEB/wIBADBMBgNVHR8ERTBDMEGgP6A9hjtodHRwOi8vY3JsLnVuaXZlcnNpZ24uZXUvdW5pdmVyc2lnbl9wcmltYXJ5X2NhX2hhcmR3YXJlLmNybDAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFGDkMN3uetTQfl0l2f07eyFkT927MB8GA1UdIwQYMBaAFE3Z/Kgtx8hapK1fSa5opNyeihIiMA0GCSqGSIb3DQEBCwUAA4IBAQAQrQJxwn+DBwN+KTt75IuOkaPOnZ+FfmF/1V7zDt3YNz7n1hRXlflbx9wBJn30TwyuTuZ/Cq1gEiA+TJMrsdZPKvagY8a/q7oCm6jYw6cBhopErwV/sZ9R3Ic+fphKSxoEnygpZs4uKMU2bB7nbul+sdJkP/OrIHKfHydMk3ayeAxnnieOj8EU+Z5w3fpekOGOtb4VUTESWU/xQfDZcNaauNRU2DYFi1eDypfVnyD8tORDoFVaAqzdIJuMJ06jJB5fnmNBXU7GOQFLcdK7hy3ZDmPNh5FNGnaQRrlY2st7lXfV3mu9AgHmjPjxrbAwgo1GzLRY0byI9bfitN0sLT+d</Base64Encoded>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-f43d5e9d13f33da1113595d755c7946d0db74961b469cb139f03eda1cfd77bb21a69421eeca0415425d70ea02078a6a732a7ac5b7e4a00a8bdab1035e6fd41c5">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl</SourceAddress>
+            <ProductionDate>2004-02-02T09:30:30</ProductionDate>
+            <ThisUpdate>2004-02-02T09:30:30</ThisUpdate>
+            <NextUpdate>2006-02-09T08:30:30</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>GmlCHuygQVQl1w6gIHimpzKnrFt+SgCovasQNeb9QcU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-38860679fab0e6d8490335aa94f3968c97098c9d206512f2335106090eb865243bfb691278ec85174c63a76d10731f08af4c43e05681ff999a0048caf0c5bcb7">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://scah.ocsp.universign.eu/</SourceAddress>
+            <ProductionDate>2004-02-06T09:39:33</ProductionDate>
+            <ThisUpdate>2004-02-06T09:05:30</ThisUpdate>
+            <NextUpdate>2006-02-13T09:05:30</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B"/>
+                <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>O/tpEnjshRdMY6dtEHMfCK9MQ+BWgf+ZmgBIyvDFvLc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-5a2f7f6fc616cb7fcc1084819f0d1b91cf9f1caf18c8808aab6779001dbf2cad1a69421eeca0415425d70ea02078a6a732a7ac5b7e4a00a8bdab1035e6fd41c5">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl</SourceAddress>
+            <ProductionDate>2004-02-02T09:30:30</ProductionDate>
+            <ThisUpdate>2004-02-02T09:30:30</ThisUpdate>
+            <NextUpdate>2006-02-09T08:30:30</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>GmlCHuygQVQl1w6gIHimpzKnrFt+SgCovasQNeb9QcU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-b500d1a6a280c57c5433dccd8924b5517e6aa08b18d4687e6a5820780d3fa2504354fe72336123fb5365e8851f1f27a9224553108c51199fb0f3086255904d86">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://scah.ocsp.universign.eu/</SourceAddress>
+            <ProductionDate>2004-02-06T09:39:34</ProductionDate>
+            <ThisUpdate>2004-02-06T09:05:30</ThisUpdate>
+            <NextUpdate>2006-02-13T09:05:30</NextUpdate>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B"/>
+                <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Q1T+cjNhI/tTZeiFHx8nqSJFUxCMURmfsPMIYlWQTYY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    
+            <UsedTimestamps>
+                <Timestamp Id="T-478805477111202956F33117583157569FBFA250686FE98FBF5D7131AACC8A57" Type="SIGNATURE_TIMESTAMP">
+                    <ProductionTime>2004-08-28T12:08:40</ProductionTime>
+					<DigestMatcher type="MESSAGE_IMPRINT">
+					    <DigestMethod>SHA256</DigestMethod>
+					    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+					    <DataFound>true</DataFound>
+					    <DataIntact>true</DataIntact>
+					</DigestMatcher>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Certificate="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD"/>
+                    <CertificateChain>
+                        <ChainItem Certificate="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD"/>
+                        <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+                    </CertificateChain>
+		            <FoundCertificates/>
+		            <FoundRevocations/>
+			       <TimestampedObjects>
+				       	<TimestampedObject Category="SIGNATURE" Token="id-a28e6cf46b56eb7ab0eb91f9c7b08f77819f4f2160a03c5d92a0555745d53b52" />
+				       	<TimestampedObject Category="CERTIFICATE" Token="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD" />
+			       </TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>sA0gXGfS47+kGPgVLkd4bfLvC30=</DigestValue>
+		            </DigestAlgoAndValue>
+                </Timestamp>
+            </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-c38c6acc7dbac2dad32dd2d23a3eadacda43d24c98a3cfd7bc677fec53288440">
+            <ReferencedName>PDF previous version #1</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>8AzgcURkeZDp/DL2CgdfJVCpi8HUm73bbsUj79VEIhA=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-277297261129ed0557b918a6ceae3767ec8795812dc93235c5aca70aaebe1982">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>J3KXJhEp7QVXuRimzq43Z+yHlYEtyTI1xaynCq6+GYI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F">
+            <CountryCode>FR</CountryCode>
+            <Url>http://www.ssi.gouv.fr/eidas/TL-FR.xml</Url>
+            <SequenceNumber>39</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2018-02-06T09:20:24</LastLoading>
+            <IssueDate>2018-01-30T01:00:00</IssueDate>
+            <NextUpdate>2018-07-30T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+	    <TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>198</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-02-06T09:20:23</LastLoading>
+	        <IssueDate>2018-02-01T13:00:00</IssueDate>
+	        <NextUpdate>2018-07-31T00:00:00</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

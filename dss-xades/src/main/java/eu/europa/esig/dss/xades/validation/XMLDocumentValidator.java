@@ -20,23 +20,13 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.SAMLAssertionNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
@@ -45,6 +35,15 @@ import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Validator of XML Signed document
@@ -52,19 +51,19 @@ import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
  */
 public class XMLDocumentValidator extends SignedDocumentValidator {
 
-	private static final byte[] xmlPreamble = new byte[] { '<' };
-	private static final byte[] xmlWithBomPreample = new byte[] { -17, -69, -65, '<' }; // UTF-8 with BOM
-
 	/**
 	 * This variable contains the list of {@code XAdESPaths} adapted to the specific
 	 * signature schema.
 	 */
 	protected List<XAdESPaths> xadesPathsHolders;
 
+	/** The root element of the document to validate */
 	protected Document rootElement;
 
+	/** Defines if the XSW protection shall be disabled (false by default) */
 	private boolean disableXSWProtection = false;
 
+	/** Cached list of found signatures */
 	private List<AdvancedSignature> signatures;
 
 	static {
@@ -73,6 +72,9 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		DomUtils.registerNamespace(SAMLAssertionNamespace.NS);
 	}
 
+	/**
+	 * Empty constructor
+	 */
 	XMLDocumentValidator() {
 	}
 
@@ -97,7 +99,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		return DSSUtils.compareFirstBytes(dssDocument, xmlPreamble) || DSSUtils.compareFirstBytes(dssDocument, xmlWithBomPreample);
+		return DomUtils.startsWithXmlPreamble(dssDocument);
 	}
 
 	/**
@@ -119,7 +121,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		}
 
 		signatures = new ArrayList<>();
-		final NodeList signatureNodeList = DomUtils.getNodeList(rootElement, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
+		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(rootElement);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
@@ -135,7 +137,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			xadesSignature.setSignatureFilename(document.getName());
 			xadesSignature.setDetachedContents(detachedContents);
 			xadesSignature.setContainerContents(containerContents);
-			xadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
+			xadesSignature.setSigningCertificateSource(signingCertificateSource);
 			xadesSignature.setDisableXSWProtection(disableXSWProtection);
 			xadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 			signatures.add(xadesSignature);
@@ -201,7 +203,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	/**
 	 * This getter returns the {@code XAdESPaths}
 	 *
-	 * @return
+	 * @return a list of {@link XAdESPaths}
 	 */
 	public List<XAdESPaths> getXAdESPathsHolder() {
 		return xadesPathsHolders;
@@ -211,7 +213,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 * This adds a {@code XAdESPaths}. This is useful when the signature follows a
 	 * particular schema.
 	 *
-	 * @param xadesPathsHolder
+	 * @param xadesPathsHolder {@link XAdESPaths}
 	 */
 	public void addXAdESPathsHolder(final XAdESPaths xadesPathsHolder) {
 		xadesPathsHolders.add(xadesPathsHolder);
@@ -225,7 +227,9 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	/**
-	 * @return
+	 * Returns the root element of the validating document
+	 *
+	 * @return {@link Document}
 	 */
 	public Document getRootElement() {
 		return rootElement;

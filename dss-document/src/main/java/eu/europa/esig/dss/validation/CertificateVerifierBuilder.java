@@ -22,14 +22,28 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 
+/**
+ * Builds a copy of CertificateVerifier
+ */
 public class CertificateVerifierBuilder {
 
+	/** The CertificateVerifier to copy */
 	private final CertificateVerifier certificateVerifier;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier} to copy
+	 */
 	public CertificateVerifierBuilder(CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
 
+	/**
+	 * Builds a compete copy of the {@code certificateVerifier}
+	 *
+	 * @return {@link CertificateVerifier} copy
+	 */
 	public CertificateVerifier buildCompleteCopy() {
 		CertificateVerifier copy = new CommonCertificateVerifier(true);
 		if (certificateVerifier != null) {
@@ -48,7 +62,12 @@ public class CertificateVerifierBuilder {
 		}
 		return copy;
 	}
-	
+
+	/**
+	 * Builds a copy of the {@code certificateVerifier} by skipping the data sources and disabling alerts
+	 *
+	 * @return {@link CertificateVerifier} copy
+	 */
 	public CertificateVerifier buildOfflineAndSilentCopy() {
 		CertificateVerifier offlineCertificateVerifier = new CommonCertificateVerifier(true);
 		if (certificateVerifier != null) {

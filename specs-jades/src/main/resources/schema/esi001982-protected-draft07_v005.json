@@ -1,0 +1,83 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"definitions":{
+		"jwsProtectedHeader": {
+			"allOf": [
+				{
+					"$ref": "rfc7515.json#/definitions/jwsProtectedHeader"
+				},
+				{
+					"properties": {
+						"b64": {
+							"$ref": "rfc7797.json#/definitions/b64"
+						}
+					}
+				},
+				{
+					"properties": {
+						"sigT": {
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigT"
+						},
+						"x5t#o": {
+							"$ref": "esi001982-draft07_v006.json#/definitions/x5t%23o"
+						},
+						"sigX5ts": {
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigX5ts"
+						},
+						"srCms": {
+							"$ref": "esi001982-draft07_v006.json#/definitions/srCms"
+						},
+						"sigPl": {
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigPl"
+						},
+						"srAts": {
+							"$ref": "esi001982-draft07_v006.json#/definitions/srAts"
+						},
+						"adoTst": {
+							"$ref": "esi001982-draft07_v006.json#/definitions/adoTst"
+						},
+						"sigPId": {
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigPId"
+						},
+						"sigD": {
+							"$ref": "esi001982-draft07_v006.json#/definitions/sigD"
+						}
+					},
+					"required": [
+						"alg"
+					],
+					"anyOf": [
+						{
+							"required": [
+								"x5c"
+							]
+						},
+						{
+							"required": [
+								"x5t#S256"
+							]
+						},
+						{
+							"required": [
+								"sigX5ts"
+							]
+						},
+						{
+							"required": [
+								"x5t#o"
+							]
+						}
+					],
+					"not": {
+						"required": [
+							"x5t"
+						]
+					}
+				}
+			]
+		}
+	},
+	
+	"$ref": "#/definitions/jwsProtectedHeader"
+	
+}

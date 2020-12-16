@@ -22,6 +22,9 @@ package eu.europa.esig.dss.xades.definition.xades132;
 
 import eu.europa.esig.dss.definition.DSSAttribute;
 
+/**
+ * The XAdES 1.3.2 attributes
+ */
 public enum XAdES132Attribute implements DSSAttribute {
 
 	ENCODING("Encoding"),
@@ -38,6 +41,7 @@ public enum XAdES132Attribute implements DSSAttribute {
 
 	URI("URI");
 
+	/** Attribute name */
 	private final String attributeName;
 
 	XAdES132Attribute(String attributeName) {

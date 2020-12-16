@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +30,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.asic.xades.signature.AbstractASiCWithXAdESMultipleDocumentsTestSignature;
@@ -63,6 +68,36 @@ public class ASiCSXAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCWithX
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+	}
+
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(new InMemoryDocument(byteArray));
+		ASiCExtractResult result = extractor.extract();
+
+		assertEquals(0, result.getUnsupportedDocuments().size());
+
+		List<DSSDocument> signatureDocuments = result.getSignatureDocuments();
+		assertEquals(1, signatureDocuments.size());
+		String signatureFilename = signatureDocuments.get(0).getName();
+		assertTrue(signatureFilename.startsWith("META-INF/signature"));
+		assertTrue(signatureFilename.endsWith(".xml"));
+
+		List<DSSDocument> manifestDocuments = result.getManifestDocuments();
+		assertEquals(0, manifestDocuments.size());
+
+		List<DSSDocument> signedDocuments = result.getSignedDocuments();
+		assertEquals(1, signedDocuments.size());
+		assertEquals("package.zip", signedDocuments.get(0).getName());
+
+		List<DSSDocument> containerDocuments = result.getContainerDocuments();
+		assertEquals(2, containerDocuments.size());
+
+		for (DSSDocument document : containerDocuments) {
+			assertNotNull(document.getName());
+		}
 	}
 
 	@Override

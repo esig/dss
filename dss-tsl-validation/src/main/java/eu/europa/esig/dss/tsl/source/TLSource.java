@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.tsl.source;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 
+import java.util.Objects;
+
+/**
+ * Represent a Trusted List source
+ */
 public class TLSource {
 
 	/**

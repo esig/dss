@@ -160,7 +160,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		
 		XAdESSignatureParameters extendParams = getExtendParams(digestDocument);
 		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDoc, extendParams));
-		assertEquals("An error occurred while building a message imprint data. Reason : No binaries found for URI ''", exception.getMessage());
+		assertEquals("XAdES-LTA requires complete binaries of signed documents! Extension with a DigestDocument is not possible.", exception.getMessage());
 	}
 
 	private DiagnosticData validate(DSSDocument signedDocument, DSSDocument original) {

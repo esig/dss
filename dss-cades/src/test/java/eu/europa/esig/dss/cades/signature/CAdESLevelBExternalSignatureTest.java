@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -133,6 +135,7 @@ public class CAdESLevelBExternalSignatureTest extends AbstractCAdESTestSignature
 
 		SignatureValue signatureValue = getToken().sign(toBeSigned, getSignatureParameters().getDigestAlgorithm(),
 				getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+		assertTrue(service.isValidSignatureValue(toBeSigned, signatureValue, getSigningCert()));
 		externalSignatureResult.setSignatureValue(signatureValue);
 
 		return externalSignatureResult;

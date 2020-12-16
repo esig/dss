@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,15 +50,16 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
@@ -110,7 +112,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		int availableSignatureFieldsNumber = availableSignatureFields.size();
 
 		if ((originalSignatureFieldsNumber > 0)) {
-			if (originalSignatureFields.contains(getSignatureParameters().getFieldId())) {
+			if (originalSignatureFields.contains(getSignatureParameters().getImageParameters().getFieldParameters().getFieldId())) {
 				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber - 1);
 			} else {
 				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber);
@@ -141,9 +143,15 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertEquals(getSignatureParameters().getSubFilter(), signature.getSubFilter());
 		assertEquals(getSignatureParameters().getReason(), signature.getReason());
 		assertEquals(getSignatureParameters().getContactInfo(), signature.getContactInfo());
-		assertEquals(getSignatureParameters().getLocation(), signature.getCountryName());
+		assertEquals(getSignatureParameters().getLocation(), signature.getLocation());
 	}
 	
+	@Override
+	protected void checkSignatureProductionPlace(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isSignatureProductionPlacePresent()); // see PdfSignatureDictionary.location
+	}
+
 	@Override
 	protected void checkSignatureInformationStore(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
@@ -178,6 +186,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 			assertNotNull(signature.getFilter());
 			assertNotNull(signature.getSubFilter());
 			assertNotNull(signature.getSignatureByteRange());
+			
+			assertFalse(signature.arePdfModificationsDetected());
 		}
 		
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
@@ -189,7 +199,9 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 				assertNotNull(timestamp.getSignatureDictionaryType());
 				assertNotNull(timestamp.getFilter());
 				assertNotNull(timestamp.getSubFilter());
-				assertNotNull(timestamp.getSignatureByteRange());
+				assertNotNull(timestamp.getSignatureByteRange());		
+				
+				assertFalse(timestamp.arePdfModificationsDetected());
 			}
 		}
 	}
@@ -252,9 +264,10 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 
 	@Override
-	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace) {
+	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace, SerializableSignatureParameters parameters) {
+		PAdESSignatureParameters padesSignatureParameters = (PAdESSignatureParameters) parameters;
+		String signerLocation = padesSignatureParameters.getLocation();
 		List<String> addressString = productionPlace.getAddressString();
-		String signerLocation = getSignatureParameters().getLocation();
 		if (signerLocation != null) {
 			assertTrue(addressString.contains(signerLocation));
 		} else {

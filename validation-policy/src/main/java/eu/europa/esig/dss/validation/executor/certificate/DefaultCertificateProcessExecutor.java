@@ -20,16 +20,20 @@
  */
 package eu.europa.esig.dss.validation.executor.certificate;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.validation.executor.AbstractProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
+import java.util.Objects;
+
+/**
+ * Executes a certificate validation
+ */
 public class DefaultCertificateProcessExecutor extends AbstractProcessExecutor implements CertificateProcessExecutor {
 
+	/** Id of a certificate to validate */
 	private String certificateId;
 
 	@Override

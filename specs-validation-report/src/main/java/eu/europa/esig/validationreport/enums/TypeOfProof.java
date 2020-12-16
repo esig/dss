@@ -22,6 +22,9 @@ package eu.europa.esig.validationreport.enums;
 
 import eu.europa.esig.dss.enumerations.UriBasedEnum;
 
+/**
+ * Defines a TypeOfProof
+ */
 public enum TypeOfProof implements UriBasedEnum {
 
 	/**

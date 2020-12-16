@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -58,18 +53,44 @@ import eu.europa.esig.dss.validation.process.bbb.sav.TimestampAcceptanceValidati
 import eu.europa.esig.dss.validation.process.bbb.vci.ValidationContextInitialization;
 import eu.europa.esig.dss.validation.process.bbb.xcv.X509CertificateValidation;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * 5.2 Basic building blocks
  */
 public class BasicBuildingBlocks {
 
+	/** i18nProvider */
 	private final I18nProvider i18nProvider;
+
+	/** Diagnostic Data */
 	private final DiagnosticData diagnosticData;
+
+	/** The validating token */
 	private final TokenProxy token;
+
+	/** The validation policy */
 	private final ValidationPolicy policy;
+
+	/** The validation time */
 	private final Date currentTime;
+
+	/** The validation context */
 	private final Context context;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param token {@link TokenProxy} to validate
+	 * @param currentTime {@link Date} validation time
+	 * @param policy {@link ValidationPolicy}
+	 * @param context {@link Context}
+	 */
 	public BasicBuildingBlocks(I18nProvider i18nProvider, DiagnosticData diagnosticData, TokenProxy token, 
 			Date currentTime, ValidationPolicy policy, Context context) {
 		this.i18nProvider = i18nProvider;
@@ -80,6 +101,11 @@ public class BasicBuildingBlocks {
 		this.context = context;
 	}
 
+	/**
+	 * Executes 5.2 token validation process
+	 *
+	 * @return {@link XmlBasicBuildingBlocks}
+	 */
 	public XmlBasicBuildingBlocks execute() {
 		XmlBasicBuildingBlocks result = new XmlBasicBuildingBlocks();
 		result.setId(token.getId());
@@ -203,7 +229,7 @@ public class BasicBuildingBlocks {
 
 	private XmlCV executeCryptographicVerification() {
 		if (!Context.CERTIFICATE.equals(context)) {
-			CryptographicVerification cv = new CryptographicVerification(i18nProvider, diagnosticData, token, context, policy);
+			CryptographicVerification cv = new CryptographicVerification(i18nProvider, token, context, policy);
 			return cv.execute();
 		} else {
 			return null;

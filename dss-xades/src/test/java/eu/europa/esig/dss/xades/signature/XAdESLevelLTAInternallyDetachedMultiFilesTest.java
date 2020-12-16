@@ -36,15 +36,13 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
-import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESLevelLTAInternallyDetachedMultiFilesTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
+public class XAdESLevelLTAInternallyDetachedMultiFilesTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
 	private XAdESService service;
 	private XAdESSignatureParameters signatureParameters;
@@ -68,7 +66,7 @@ public class XAdESLevelLTAInternallyDetachedMultiFilesTest extends AbstractPkiFa
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry("BE");
 		signerLocation.setLocality("Brussels");
-		signerLocation.setStreet("Anspach");
+		signerLocation.setStreetAddress("Anspach");
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 
 		signatureParameters.bLevel()
@@ -87,26 +85,6 @@ public class XAdESLevelLTAInternallyDetachedMultiFilesTest extends AbstractPkiFa
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
 		assertEquals(2, signatureScopes.size());
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.XML;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return true;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return true;
 	}
 
 	@Override

@@ -20,18 +20,14 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampContainerForm;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -47,6 +43,11 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl
@@ -54,22 +55,52 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteMultipleDocumentsSignatureServiceImpl.class);
 
+	/** XAdES multiple signature service */
 	private MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> xadesService;
 
+	/** JAdES multiple signature service */
+	private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> jadesService;
+
+	/** ASiC with XAdES multiple signature service */
 	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService;
 
+	/** ASiC with CAdES multiple signature service */
 	private MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService;
 
+	/**
+	 * Sets the XAdES multiple signature service
+	 *
+	 * @param xadesService {@link MultipleDocumentsSignatureService}
+	 */
 	public void setXadesService(MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> xadesService) {
 		this.xadesService = xadesService;
 	}
 
-	public void setAsicWithCAdESService(MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService) {
-		this.asicWithCAdESService = asicWithCAdESService;
+	/**
+	 * Sets the JAdES multiple signature service
+	 *
+	 * @param jadesService {@link MultipleDocumentsSignatureService}
+	 */
+	public void setJadesService(MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> jadesService) {
+		this.jadesService = jadesService;
 	}
 
+	/**
+	 * Sets the ASiC with XAdES multiple signature service
+	 *
+	 * @param asicWithXAdESService {@link MultipleDocumentsSignatureService}
+	 */
 	public void setAsicWithXAdESService(MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService) {
 		this.asicWithXAdESService = asicWithXAdESService;
+	}
+
+	/**
+	 * Sets the ASiC with CAdES multiple signature service
+	 *
+	 * @param asicWithCAdESService {@link MultipleDocumentsSignatureService}
+	 */
+	public void setAsicWithCAdESService(MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService) {
+		this.asicWithCAdESService = asicWithCAdESService;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -84,10 +115,13 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 					throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 				}
 		} else {
-			if (SignatureForm.XAdES == signatureForm) {
-				return xadesService;
-			} else {
-				throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC or XAdES) : " + signatureForm);
+			switch (signatureForm) {
+				case XAdES:
+					return xadesService;
+				case JAdES:
+					return jadesService;
+				default:
+					throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC or XAdES) : " + signatureForm);
 			}
 		}
 	}

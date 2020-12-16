@@ -8,9 +8,7 @@
             <SignatureFilename>OJ_L_2018_109_FULL.xml</SignatureFilename>
             <ClaimedSigningTime>2018-04-27T07:32:00</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MANIFEST" name="Signature_1524814320911-Reference-0">
                     <DigestMethod>SHA512</DigestMethod>
@@ -84,8 +82,8 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-FB6A7EA61BCE6E3C2545CB591DF4D68D14B8124EDAEC9D1A1F76096B16739A61" Location="XAdES"/>
-                <FoundTimestamp Timestamp="T-BFABE9A8842579041A9CFC30DBE5BDE4A606F2C52D6A7BEDAE3B31F34F9D16DB" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-FB6A7EA61BCE6E3C2545CB591DF4D68D14B8124EDAEC9D1A1F76096B16739A61"/>
+                <FoundTimestamp Timestamp="T-BFABE9A8842579041A9CFC30DBE5BDE4A606F2C52D6A7BEDAE3B31F34F9D16DB"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-0A18BBCC8DFAF11A42F34326F5E8AEA2BEAC2CB6DE981EF99655F493E937DD79">
@@ -344,8 +342,8 @@
             <Locality>LU</Locality>
             <CountryName>SI</CountryName>
             <OrganizationName>Publications Office</OrganizationName>
-            <GivenName>Janez</GivenName>
             <OrganizationalUnit>00000</OrganizationalUnit>
+            <GivenName>Janez</GivenName>
             <Surname>Sever</Surname>
             <Email>janez.sever@publications.europa.eu</Email>
             <AuthorityInformationAccessUrls>

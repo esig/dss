@@ -73,7 +73,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	public void signatureTest() throws Exception {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		
-        Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate(null, signatureParameters));
+        Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate((DSSDocument) null, signatureParameters));
         assertEquals("toSignDocument cannot be null!", exception.getMessage());
 		
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, null));
@@ -165,9 +165,60 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	private DSSDocument signAndValidate(DSSDocument documentToSign, XAdESSignatureParameters signatureParameters) {
-        ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
+				getPrivateKeyEntry());
+		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+		assertNotNull(signedDocument);
+		validate(signedDocument);
+		return signedDocument;
+	}
+
+	@Test
+	public void multipleDocumentsSignatureTest() throws Exception {
+		DSSDocument documentToSign1 = new InMemoryDocument("Hello World!".getBytes());
+		DSSDocument documentToSign2 = new InMemoryDocument("Bye World.".getBytes());
+
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+
+		Exception exception = assertThrows(NullPointerException.class,
+				() -> signAndValidate((List<DSSDocument>) null, signatureParameters));
+		assertEquals("toSignDocuments cannot be null!", exception.getMessage());
+
+		exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, null));
+		assertEquals("SignatureParameters cannot be null!", exception.getMessage());
+
+		final List<DSSDocument> documents = Arrays.asList(documentToSign1, documentToSign2);
+		exception = assertThrows(NullPointerException.class, () -> signAndValidate(documents, signatureParameters));
+		assertEquals("SignaturePackaging shall be defined!", exception.getMessage());
+
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		exception = assertThrows(DSSException.class, () -> signAndValidate(documents, signatureParameters));
+		assertEquals("All documents in the list to be signed shall have names!", exception.getMessage());
+
+		documentToSign1.setName("doc");
+		documentToSign2.setName("doc");
+		final List<DSSDocument> docsWithName = Arrays.asList(documentToSign1, documentToSign2);
+		exception = assertThrows(DSSException.class, () -> signAndValidate(docsWithName, signatureParameters));
+		assertEquals("The documents to be signed shall have different names! "
+				+ "The name 'doc' appears multiple times.", exception.getMessage());
+		
+		documentToSign2.setName("anotherDoc");
+		exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
+		assertEquals("Signing Certificate is not defined!", exception.getMessage());
+
+		signatureParameters.setSigningCertificate(getSigningCert());
+		exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
+		assertEquals("SignatureLevel must be defined!", exception.getMessage());
+
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signAndValidate(documentToSign, signatureParameters);
+	}
+
+	private DSSDocument signAndValidate(List<DSSDocument> documentsToSign, XAdESSignatureParameters signatureParameters) {
+		ToBeSigned dataToSign = service.getDataToSign(documentsToSign, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-        DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+		DSSDocument signedDocument = service.signDocument(documentsToSign, signatureParameters, signatureValue);
         assertNotNull(signedDocument);
         validate(signedDocument);
         return signedDocument;
@@ -206,13 +257,19 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	@Test
 	public void contentTstTest() throws Exception {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
-		service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters);
+		InMemoryDocument emptyBinaryDoc = new InMemoryDocument(new byte[]{});
+		Exception exception = assertThrows(NullPointerException.class, () -> 
+				service.getContentTimestamp(emptyBinaryDoc, signatureParameters));
+		assertEquals("SignaturePackaging must be defined!", exception.getMessage());
+		
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		assertNotNull(service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters));
 		
 		signatureParameters.setContentTimestampParameters(null);
-		service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters);
+		assertNotNull(service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters));
 		
 		XAdESTimestampParameters timestampParameters = new XAdESTimestampParameters();
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(null));
+		exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(null));
 		assertEquals("Canonicalization cannot be empty! See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.", exception.getMessage());
 		
 		exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(""));

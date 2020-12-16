@@ -24,12 +24,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 
 public abstract class AbstractSignaturePolicyValidator implements SignaturePolicyValidator {
 
-	private AdvancedSignature signature;
+	private SignaturePolicy signaturePolicy;
 	private boolean identified = false;
 	private boolean status = false;
 	private boolean asn1Processable = false;
@@ -37,12 +39,18 @@ public abstract class AbstractSignaturePolicyValidator implements SignaturePolic
 	private Map<String, String> errors = new HashMap<>();
 
 	protected SignaturePolicy getSignaturePolicy() {
-		return signature.getPolicyId();
+		return signaturePolicy;
 	}
 
 	@Override
+	@Deprecated
 	public void setSignature(AdvancedSignature signature) {
-		this.signature = signature;
+		this.signaturePolicy = signature.getSignaturePolicy();
+	}
+	
+	@Override
+	public void setSignaturePolicy(SignaturePolicy signaturePolicy) {
+		this.signaturePolicy = signaturePolicy;
 	}
 
 	protected void setIdentified(boolean identified) {
@@ -96,6 +104,12 @@ public abstract class AbstractSignaturePolicyValidator implements SignaturePolic
 			stringBuilder.setLength(stringBuilder.length() - 1);
 		}
 		return stringBuilder.toString();
+	}
+	
+	@Override
+	public Digest getComputedDigest(DigestAlgorithm digestAlgorithm) {
+		// not implemented by default
+		return null;
 	}
 
 }

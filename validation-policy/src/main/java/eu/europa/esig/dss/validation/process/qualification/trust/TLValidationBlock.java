@@ -57,13 +57,12 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 	}
 
 	@Override
-	protected MessageTag getTitle() {
+	protected String buildChainTitle() {
 		if (Utils.isTrue(currentTL.isLOTL())) {
-			return MessageTag.LOTL.setArgs(currentTL.getCountryCode());
+			return i18nProvider.getMessage(MessageTag.LOTL, currentTL.getCountryCode());
 		} else {
-			return MessageTag.TL.setArgs(currentTL.getCountryCode());
+			return i18nProvider.getMessage(MessageTag.TL, currentTL.getCountryCode());
 		}
-
 	}
 
 	@Override

@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.7</version>
+		<version>5.8.RC1</version>
 	</parent>
 
 	<artifactId>dss-asic-xades</artifactId>
@@ -27,6 +27,12 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-test</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-asic-common</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

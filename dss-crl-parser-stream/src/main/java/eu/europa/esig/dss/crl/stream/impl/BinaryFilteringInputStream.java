@@ -25,13 +25,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Reads {@code InputStream} and writes the data to {@code OutputStream}
+ */
 public class BinaryFilteringInputStream extends FilterInputStream {
 
-	/* Reading ? */
+	/** Defines if the 'reading' command shall be performed */
 	private boolean on = true;
 
+	/** The OutputStream to write data to */
 	private final OutputStream os;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param in to read
+	 * @param os to write data to
+	 */
 	public BinaryFilteringInputStream(InputStream in, OutputStream os) {
 		super(in);
 		this.os = os;
@@ -55,6 +65,11 @@ public class BinaryFilteringInputStream extends FilterInputStream {
 		return result;
 	}
 
+	/**
+	 * Sets if reading of InputStream is allowed
+	 *
+	 * @param on if reading of InputStream is allowed
+	 */
 	public void on(boolean on) {
 		this.on = on;
 	}

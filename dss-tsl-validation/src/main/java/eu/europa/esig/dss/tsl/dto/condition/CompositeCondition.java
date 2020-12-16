@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.tsl.dto.condition;
 
-import static java.util.Collections.unmodifiableList;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.trustedlist.enums.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Collections.unmodifiableList;
 
 /**
  * Condition resulting of the matchingCriteriaIndicator of other Conditions
@@ -37,6 +37,7 @@ public class CompositeCondition implements Condition {
 
 	private static final long serialVersionUID = -3756905347291887068L;
 
+	/** The matching criteria */
 	private Assert matchingCriteriaIndicator;
 
 	/**

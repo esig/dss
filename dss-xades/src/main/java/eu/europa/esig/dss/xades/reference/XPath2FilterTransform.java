@@ -20,28 +20,45 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import java.util.Objects;
-
-import org.apache.xml.security.transforms.Transforms;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import org.apache.xml.security.transforms.Transforms;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import java.util.Objects;
+
+/**
+ * Represents Filter 2.0 transform
+ */
 public class XPath2FilterTransform extends XPathTransform {
 
+	/** The filter attribute name */
 	private static final String FILTER_ATTRIBUTE = "Filter";
 
+	/** The filter */
 	private final String filter;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param xPathExpression {@link String}
+	 * @param filter {@link String}
+	 */
 	public XPath2FilterTransform(String xPathExpression, String filter) {
 		this(XAdESNamespaces.XMLDSIG, xPathExpression, filter);
 	}
 
+	/**
+	 * Constructor with namespace
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 * @param xPathExpression {@link String}
+	 * @param filter {@link String}
+	 */
 	public XPath2FilterTransform(DSSNamespace xmlDSigNamespace, String xPathExpression, String filter) {
 		super(xmlDSigNamespace, Transforms.TRANSFORM_XPATH2FILTER, xPathExpression);
 		Objects.requireNonNull(filter, "filter cannot be null!");
@@ -61,6 +78,38 @@ public class XPath2FilterTransform extends XPathTransform {
 		xPathElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + namespace.getPrefix(), namespace.getUri());
 		xPathElement.setAttribute(FILTER_ATTRIBUTE, filter);
 		return xPathElement;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((filter == null) ? 0 : filter.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		XPath2FilterTransform other = (XPath2FilterTransform) obj;
+		if (!Objects.equals(filter, other.filter)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "XPath2FilterTransform [filter=" + filter + ", xPathExpression=" + xPathExpression + ", algorithm="
+				+ algorithm + ", namespace=" + namespace + "]";
 	}
 
 }

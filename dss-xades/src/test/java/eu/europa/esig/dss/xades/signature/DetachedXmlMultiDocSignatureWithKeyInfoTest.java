@@ -29,14 +29,12 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
-import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class DetachedXmlMultiDocSignatureWithKeyInfoTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
+public class DetachedXmlMultiDocSignatureWithKeyInfoTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
@@ -74,28 +72,8 @@ public class DetachedXmlMultiDocSignatureWithKeyInfoTest extends AbstractPkiFact
 	}
 
 	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
-	}
-
-	@Override
 	protected List<DSSDocument> getDocumentsToSign() {
 		return documentToSigns;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.XML;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 }

@@ -41,6 +41,9 @@
 			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 			<SignerInformationStore Level="FAIL" />
+			<PdfPageDifference Level="FAIL" />
+			<PdfAnnotationOverlap Level="WARN" />
+			<PdfVisualDifference Level="WARN" />
 <!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->
 <!-- 				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
 <!-- 			</TrustedServiceTypeIdentifier> -->
@@ -89,6 +92,7 @@
 		<SignedAttributes>
 			<SigningCertificatePresent Level="FAIL" />
 			<UnicitySigningCertificate Level="WARN" />
+			<SigningCertificateRefersCertificateChain Level="WARN" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
@@ -219,15 +223,16 @@
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="WARN" />
-			<UnicitySigningCertificate Level="WARN" />
+			<!-- <UnicitySigningCertificate Level="WARN" /> RFC 5816 -->
 			<CertDigestPresent Level="WARN" />
-			<CertDigestMatch Level="WARN" />
+			<AllCertDigestsMatch Level="WARN" />
 			<IssuerSerialMatch Level="WARN" />
 		</SignedAttributes>
 	</Timestamp>
 	<Revocation>
         <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
         <UnknownStatus Level="FAIL" />
+        <SelfIssuedOCSP Level="WARN" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />

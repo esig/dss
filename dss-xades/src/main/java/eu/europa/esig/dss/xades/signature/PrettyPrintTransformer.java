@@ -27,16 +27,26 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+/**
+ * Performs pretty-print transformations on an XML signature
+ */
 public class PrettyPrintTransformer {
-	
+
+	/** New line character */
 	private static final String NEW_LINE = "\n";
+
+	/** Whitespace character */
 	private static final String SPACE = " ";
-	
+
+	/** The parent document */
 	private Document ownerDocument;
-	private int indentAmount = DomUtils.TRANSFORMER_INDENT_NUMBER; // 4 by default
+
+	/** The indent amount (4 by default) */
+	private int indentAmount = DomUtils.TRANSFORMER_INDENT_NUMBER;
 	
 	/**
 	 * Configures the amount of spaces to add
+	 *
 	 * @param indentAmount {@code int}
 	 */
 	public void setIndentAmount(int indentAmount) {
@@ -45,6 +55,7 @@ public class PrettyPrintTransformer {
 	
 	/**
 	 * Indents the provided {@code nodeToTransform}, by keeping the original indents if present
+	 *
 	 * @param nodeToTransform {@link Node} to be indented
 	 * @return {@link Node} with indents
 	 */

@@ -20,26 +20,46 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import java.util.List;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.List;
+
+/**
+ * An abstract class to generate a DataToSign with ASiC-E with XAdES
+ */
 public abstract class AbstractDataToSignASiCEWithXAdES {
 
-	protected static final String META_INF = "META-INF/";
-    private static final String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = META_INF + "signatures001.xml";
+    /** The default signature filename */
+    private static final String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signatures001.xml";
 
+    /** The default manifest filename */
+	private static final String ZIP_ENTRY_ASICE_METAINF_MANIFEST = ASiCUtils.META_INF_FOLDER + "manifest.xml";
+
+    /**
+     * Returns the ASiC Manifest
+     *
+     * @param documents a list of {@link DSSDocument}s to cover by the manifest
+     * @return {@link DSSDocument} manifest
+     */
 	protected DSSDocument getASiCManifest(List<DSSDocument> documents) {
 		ASiCEWithXAdESManifestBuilder manifestBuilder = new ASiCEWithXAdESManifestBuilder(documents);
-		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), META_INF + "manifest.xml");
+		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), ZIP_ENTRY_ASICE_METAINF_MANIFEST);
 	}
 
+    /**
+     * Returns the signature filename
+     *
+     * @param asicParameters {@link ASiCParameters}
+     * @param existingSignatures a list of {@link DSSDocument}s
+     * @return {@link String} signature filename
+     */
 	protected String getSignatureFileName(final ASiCParameters asicParameters, List<DSSDocument> existingSignatures) {
 		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return META_INF + asicParameters.getSignatureFileName();
+			return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
 		}
 
         if (Utils.isCollectionNotEmpty(existingSignatures)) {
@@ -50,8 +70,8 @@ public abstract class AbstractDataToSignASiCEWithXAdES {
     }
 	
     private String getSignatureNumber(List<DSSDocument> existingSignatures) {
-        int signatureNumbre = existingSignatures.size() + 1;
-        String sigNumberStr = String.valueOf(signatureNumbre);
+        int signatureNumber = existingSignatures.size() + 1;
+        String sigNumberStr = String.valueOf(signatureNumber);
         String zeroPad = "000";
         return zeroPad.substring(sigNumberStr.length()) + sigNumberStr; // 2 -> 002
 	}

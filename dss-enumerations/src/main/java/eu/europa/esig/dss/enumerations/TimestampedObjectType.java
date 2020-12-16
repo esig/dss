@@ -20,20 +20,30 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines possible object types to be timestamped
+ */
 public enum TimestampedObjectType {
-	
+
+	/** Original document (signed data) */
 	SIGNED_DATA,
 
+	/** Signature */
 	SIGNATURE,
 
+	/** Certificate */
 	CERTIFICATE,
 
+	/** Revocation data */
 	REVOCATION,
 
+	/** Timestamp */
 	TIMESTAMP,
 
+	/** Not used certificate token */
 	ORPHAN_CERTIFICATE,
 
-	ORPHAN_REVOCATION;
+	/** Not used revocation token */
+	ORPHAN_REVOCATION
 
 }

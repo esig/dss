@@ -28,10 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 
-public class OCSPResponseBinary extends EncapsulatedRevocationTokenIdentifier {
+public class OCSPResponseBinary extends EncapsulatedRevocationTokenIdentifier<OCSP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPResponseBinary.class);
 

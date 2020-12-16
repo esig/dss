@@ -30,11 +30,26 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if the structural validation of the signature succeeds
+ */
 public class StructuralValidationCheck extends ChainItem<XmlSAV> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
 
-	public StructuralValidationCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSAV}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public StructuralValidationCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+									 LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 	}
@@ -63,12 +78,12 @@ public class StructuralValidationCheck extends ChainItem<XmlSAV> {
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.SIG_CONSTRAINTS_FAILURE;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		String errorMessage = signature.getStructuralValidationMessage();
-		if (Utils.isStringNotBlank(errorMessage)) {
-			return MessageTag.STRUCTURAL_VALIDATION_FAILURE.setArgs(errorMessage);
+	protected String buildAdditionalInfo() {
+		List<String> errorMessages = signature.getStructuralValidationMessages();
+		if (Utils.isCollectionNotEmpty(errorMessages)) {
+			return i18nProvider.getMessage(MessageTag.STRUCTURAL_VALIDATION_FAILURE, errorMessages.toString());
 		}
 		return null;
 	}

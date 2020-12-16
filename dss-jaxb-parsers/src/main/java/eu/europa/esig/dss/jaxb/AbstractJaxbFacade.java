@@ -20,13 +20,7 @@
  */
 package eu.europa.esig.dss.jaxb;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Objects;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -39,8 +33,13 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-
-import org.xml.sax.SAXException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Objects;
 
 /**
  * Generic JAXB Facade which contains basic marshalling/unmarshalling
@@ -330,6 +329,19 @@ public abstract class AbstractJaxbFacade<T> {
 		return unmarshal.getValue();
 	}
 
+	/**
+	 * Returns the Marshaller
+	 *
+	 * @param validate defines if the schema should be validated
+	 * @return {@link Marshaller}
+	 * @throws JAXBException
+	 *                            if an exception occurred with the
+	 *                            {@link JAXBContext}
+	 * @throws SAXException
+	 *                            if an exception occurred with the {@link Schema}
+	 * @throws IOException
+	 *                            if an exception occurred with the I/O.
+	 */
 	public Marshaller getMarshaller(boolean validate) throws JAXBException, SAXException, IOException {
 		Marshaller marshaller = getJAXBContext().createMarshaller();
 		if (validate) {
@@ -338,7 +350,19 @@ public abstract class AbstractJaxbFacade<T> {
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		return marshaller;
 	}
-
+	/**
+	 * Returns the Unmarshaller
+	 *
+	 * @param validate defines if the schema should be validated
+	 * @return {@link Unmarshaller}
+	 * @throws JAXBException
+	 *                            if an exception occurred with the
+	 *                            {@link JAXBContext}
+	 * @throws SAXException
+	 *                            if an exception occurred with the {@link Schema}
+	 * @throws IOException
+	 *                            if an exception occurred with the I/O.
+	 */
 	public Unmarshaller getUnmarshaller(boolean validate) throws JAXBException, IOException, SAXException {
 		Unmarshaller unmarshaller = getJAXBContext().createUnmarshaller();
 		if (validate) {

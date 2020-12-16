@@ -29,13 +29,24 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
+/**
+ * Checks if the signature format is acceptable
+ */
 public class FormatCheck extends AbstractMultiValuesCheckItem<XmlFC> {
 
+	/** The signature */
 	private final SignatureWrapper signature;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlFC}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link MultiValuesConstraint}
+	 */
 	public FormatCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
 		this.signature = signature;
 	}
 

@@ -23,6 +23,9 @@ package eu.europa.esig.dss.jaxb;
 import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerFactory;
 
+/**
+ * Builds a {@code TransformerFactory}
+ */
 public class TransformerFactoryBuilder extends AbstractFactoryBuilder<TransformerFactory> {
 	
 	private TransformerFactoryBuilder() {

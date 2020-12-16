@@ -23,19 +23,36 @@ package eu.europa.esig.dss.ws.timestamp.dto;
 import java.io.Serializable;
 import java.util.Arrays;
 
+/**
+ * The DTO representing a response of a timestamp service
+ */
 @SuppressWarnings("serial")
 public class TimestampResponseDTO implements Serializable {
-	
+
+	/** The timestamp binaries */
     private byte[] binaries;
-    
-    public TimestampResponseDTO() {
+
+	/**
+	 * Default constructor
+	 */
+	public TimestampResponseDTO() {
     }
 
-    public byte[] getBinaries() {
+	/**
+	 * Gets binaries of the timestamp's response
+	 *
+	 * @return binaries
+	 */
+	public byte[] getBinaries() {
         return binaries;
     }
 
-    public void setBinaries(byte[] binaries) {
+	/**
+	 * Sets binaries of the timestamp's response
+	 *
+	 * @param binaries byte array
+	 */
+	public void setBinaries(byte[] binaries) {
         this.binaries = binaries;
     }
 

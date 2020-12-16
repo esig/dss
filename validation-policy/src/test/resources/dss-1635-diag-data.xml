@@ -8,9 +8,7 @@
             <SignatureFilename>OJ_L_2013_332_FULL (1).xml</SignatureFilename>
             <ClaimedSigningTime>2013-12-11T07:32:28</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MANIFEST" name="Signature_1386747148868-Reference-0">
                     <DigestMethod>SHA512</DigestMethod>
@@ -83,9 +81,9 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-DC28990F58F563B39B12796B809101F99D2DD9CD400F4D36771130ED37D8C95C" Location="XAdES"/>
-                <FoundTimestamp Timestamp="T-6F8D0A2ABE179D04110320814551A68A219DDDAEAC214B3E63FC0BE0C90E33D1" Location="XAdES"/>
-                <FoundTimestamp Timestamp="T-87A0F50D1469EF529B7AB29B0404ABD9EA9B06EB980ECED21E5B6BB5E563B107" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-DC28990F58F563B39B12796B809101F99D2DD9CD400F4D36771130ED37D8C95C"/>
+                <FoundTimestamp Timestamp="T-6F8D0A2ABE179D04110320814551A68A219DDDAEAC214B3E63FC0BE0C90E33D1"/>
+                <FoundTimestamp Timestamp="T-87A0F50D1469EF529B7AB29B0404ABD9EA9B06EB980ECED21E5B6BB5E563B107"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-8AE74C55A08E465AC528438682973F010EE823E5B958698EBEC94273C5D80A8E">
@@ -398,8 +396,8 @@
             <Locality>LU</Locality>
             <CountryName>ES</CountryName>
             <OrganizationName>Office Publications</OrganizationName>
-            <GivenName>Ana Maria</GivenName>
             <OrganizationalUnit>OP/LU/532/13</OrganizationalUnit>
+            <GivenName>Ana Maria</GivenName>
             <Surname>SANDIN AMOR</Surname>
             <Email>ana-maria.sandin-amor@publications.europa.eu</Email>
             <AuthorityInformationAccessUrls>

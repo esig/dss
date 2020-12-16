@@ -20,25 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1Object;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
@@ -53,6 +34,25 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Object;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Base class for extending a CAdESSignature.
@@ -62,146 +62,102 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignatureExtension.class);
 
+	/** The TSPSource to request a timestamp (T- and LTA-levels) */
 	protected final TSPSource tspSource;
 
 	/**
-	 * true if only the last signature must be extended
+	 * The default constructor
+	 * 
+	 * @param tspSource {@link TSPSource}
 	 */
-	private final boolean onlyLastCMSSignature;
-
-	/**
-	 * @param tspSource
-	 * @param onlyLastCMSSignature
-	 *            true if only the last signature must be extended, otherwise all signatures are extended
-	 */
-	public CAdESSignatureExtension(final TSPSource tspSource, final boolean onlyLastCMSSignature) {
+	protected CAdESSignatureExtension(final TSPSource tspSource) {
 		Objects.requireNonNull(tspSource, "Missing TSPSource");
 		this.tspSource = tspSource;
-		this.onlyLastCMSSignature = onlyLastCMSSignature;
 	}
 
 	/**
 	 * @param signatureToExtend
-	 *            to be extended
+	 *            {@link DSSDocument} to be extended
 	 * @param parameters
-	 *            of the extension
-	 * @return a new extended document
+	 *            {@link CAdESSignatureParameters} of the extension
+	 * @return {@link CMSSignedDocument} a new extended document
 	 */
 	@Override
 	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final CAdESSignatureParameters parameters) {
-		LOG.info("EXTEND SIGNATURES.");
+		LOG.trace("EXTEND SIGNATURES.");
 		try (InputStream inputStream = signatureToExtend.openStream()) {
 			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
 			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
 			return new CMSSignedDocument(extendCMSSignedData);
 		} catch (IOException | CMSException e) {
-			throw new DSSException("Cannot parse CMS data", e);
+			throw new DSSException(String.format("Cannot parse CMS data. Reason : %s", e.getMessage()), e);
 		}
-	}
-
-	public CMSSignedData extendCMSSignatures(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
-		CMSSignedData extendCMSSignedData;
-		if (onlyLastCMSSignature) {
-			extendCMSSignedData = extendLastCMSSignature(cmsSignedData, parameters);
-		} else {
-			extendCMSSignedData = extendAllCMSSignatures(cmsSignedData, parameters);
-		}
-		return extendCMSSignedData;
 	}
 
 	/**
-	 * Loops on each signerInformation of the cmsSignedData and extends the signature
-	 *
-	 * @param cmsSignedData
-	 * @return
+	 * Extends a {@code CMSSignedData}
+	 * 
+	 * @param cmsSignedData {@link CMSSignedData} to extend
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @return {@link CMSSignedData}
 	 */
-	private CMSSignedData extendAllCMSSignatures(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
-		LOG.info("EXTEND ALL CMS SIGNATURES.");
+	public CMSSignedData extendCMSSignatures(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
+		return extendCMSSignatures(cmsSignedData, cmsSignedData.getSignerInfos().getSigners(), parameters);
+	}
 
-		cmsSignedData = preExtendCMSSignedData(cmsSignedData, parameters);
+	/**
+	 * Extends a {@code CMSSignedData} with a specified {@code SignerInformation}
+	 * NOTE: does not modify other {@code SignerInformation}s
+	 * 
+	 * @param cmsSignedData {@link CMSSignedData} to extend
+	 * @param signerInformation {@link SignerInformation} to extend
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @return {@link CMSSignedData}
+	 */
+	public CMSSignedData extendCMSSignatures(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
+		return extendCMSSignatures(cmsSignedData, Collections.singleton(signerInformation), parameters);
+	}
 
+	/**
+	 * Loops on each signerInformation of the {@code cmsSignedData} and 
+	 * extends ones defined in the collection {@code signerInformationsToExtend}
+	 *
+	 * @param cmsSignedData {@link CMSSignedData}
+	 * @param signerInformationsToExtend a collection of {@link SignerInformation} to be extended
+	 * @param parameters {@link CAdESSignatureParameters} for the extension
+	 * @return {@link CMSSignedData} with extended signerInformations
+	 */
+	private CMSSignedData extendCMSSignatures(CMSSignedData cmsSignedData, Collection<SignerInformation> signerInformationsToExtend, 
+			CAdESSignatureParameters parameters) {
+		LOG.info("EXTEND CMS SIGNATURES.");
+		assertCMSSignaturesValid(cmsSignedData, signerInformationsToExtend, parameters);
+
+		// extract signerInformations before pre-extension
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
-		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
+		if (Utils.isCollectionEmpty(signerInformationCollection)) {
+			throw new DSSException("Unable to extend the document! No signatures found.");
+		}
 		
+		cmsSignedData = preExtendCMSSignedData(cmsSignedData, parameters);
+		
+		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 		for (SignerInformation signerInformation : signerInformationCollection) {
-			final CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
-			assertSignatureValid(cadesSignature, parameters);
-			final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
+			SignerInformation newSignerInformation = signerInformation;
+			if (signerInformationsToExtend.contains(signerInformation)) {
+				newSignerInformation = extendSignerInformation(cmsSignedData, signerInformation, parameters);
+				cmsSignedData = extendCMSSignedData(cmsSignedData, newSignerInformation, parameters);
+			}
 			newSignerInformationList.add(newSignerInformation);
 		}
+
 		final SignerInformationStore newSignerStore = new SignerInformationStore(newSignerInformationList);
-		
 		cmsSignedData = CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
-		signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
-		
-		for (SignerInformation signerInformation : signerInformationCollection) {
-			cmsSignedData = postExtendCMSSignedData(cmsSignedData, signerInformation, parameters.getDetachedContents());
-		}
-		
+
 		return cmsSignedData;
 	}
 
 	/**
-	 * Take the last signerInformation of the cmsSignedData and extends the signature
-	 *
-	 * @param cmsSignedData
-	 * @return
-	 */
-	private CMSSignedData extendLastCMSSignature(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
-
-		LOG.info("EXTEND LAST CMS SIGNATURES.");
-		cmsSignedData = preExtendCMSSignedData(cmsSignedData, parameters);
-
-		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
-		SignerInformation lastSignerInformation = getFirstSigner(cmsSignedData);
-		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
-		for (SignerInformation signerInformation : signerInformationCollection) {
-
-			if (lastSignerInformation == signerInformation) {
-
-				final CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
-				assertSignatureValid(cadesSignature, parameters);
-				final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
-				newSignerInformationList.add(newSignerInformation);
-			} else {
-				newSignerInformationList.add(signerInformation);
-			}
-		}
-
-		final SignerInformationStore newSignerStore = new SignerInformationStore(newSignerInformationList);
-		cmsSignedData = CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
-
-		lastSignerInformation = getFirstSigner(cmsSignedData);
-		return postExtendCMSSignedData(cmsSignedData, lastSignerInformation, parameters.getDetachedContents());
-	}
-
-	protected SignerInformation getFirstSigner(CMSSignedData cmsSignedData) {
-		final Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
-		return signers.iterator().next();
-	}
-
-	private void assertSignatureValid(final CAdESSignature cadesSignature, final CAdESSignatureParameters parameters) {
-		if (!SignatureForm.PAdES.equals(parameters.getSignatureLevel().getSignatureForm())) {
-			final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.getSignatureCryptographicVerification();
-			if (!signatureCryptographicVerification.isSignatureIntact()) {
-				final String errorMessage = signatureCryptographicVerification.getErrorMessage();
-				throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
-			}
-		}
-	}
-
-	/**
-	 * Extends the {@code SignerInformation}
-	 *
-	 * @param signedData {@link CMSSignedData}
-	 * @param signerInformation {@link SignerInformation}
-	 * @param parameters {@link CAdESSignatureParameters}
-	 * @return {@link SignerInformation}
-	 */
-	protected abstract SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters);
-
-	/**
-	 * Extends the root Signed Data. Nothing to do by default.
+	 * Pre-extends the root Signed Data. Executed at the beginning for all {@code SignerInformation}s
 	 *
 	 * @param cmsSignedData {@link CMSSignedData}
 	 * @param parameters {@link CAdESSignatureParameters}
@@ -212,14 +168,24 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	}
 
 	/**
+	 * Extends the {@code SignerInformation}
+	 *
+	 * @param signedData {@link CMSSignedData}
+	 * @param signerInformation {@link SignerInformation}
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @return {@link SignerInformation}
+	 */
+	protected abstract SignerInformation extendSignerInformation(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters);
+
+	/**
 	 * Extends the root Signed Data. Nothing to do by default.
 	 *
 	 * @param cmsSignedData {@link CMSSignedData}
 	 * @param signerInformation {@link SignerInformation}
-	 * @param detachedContents list of {@link DSSDocument}s
+	 * @param parameters {@link CAdESSignatureParameters}
 	 * @return extended {@link CMSSignedData}
 	 */
-	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
+	protected CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
 		return cmsSignedData;
 	}
 	
@@ -238,12 +204,15 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		return cadesSignature;
 	}
 
-	protected ASN1Object getTimeStampAttributeValue(byte[] message, CAdESSignatureParameters parameters) {
-		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
-		return getTimeStampAttributeValue(message, timestampDigestAlgorithm);
-	}
-
-	public ASN1Object getTimeStampAttributeValue(final byte[] messageToTimestamp, final DigestAlgorithm timestampDigestAlgorithm,
+	/**
+	 * Generates and returns a TimeStamp attribute value
+	 *
+	 * @param messageToTimestamp binaries to be timestamped
+	 * @param timestampDigestAlgorithm {@link DigestAlgorithm} to use
+	 * @param attributesForTimestampToken {@link Attribute}s to add
+	 * @return {@link ASN1Object} representing a TimeStamp token attribute value
+	 */
+	protected ASN1Object getTimeStampAttributeValue(final byte[] messageToTimestamp, final DigestAlgorithm timestampDigestAlgorithm,
 			final Attribute... attributesForTimestampToken) {
 		try {
 
@@ -283,6 +252,27 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		} catch (IOException | CMSException e) {
 			throw new DSSException("Cannot obtain timestamp attribute value.", e);
 		}
-
 	}
+
+	private void assertCMSSignaturesValid(final CMSSignedData cmsSignedData, Collection<SignerInformation> signerInformationsToExtend, 
+			CAdESSignatureParameters parameters) {
+		if (!SignatureForm.PAdES.equals(parameters.getSignatureLevel().getSignatureForm())) {
+			Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
+			for (SignerInformation signerInformation : signerInformationCollection) {
+				if (signerInformationsToExtend.contains(signerInformation)) {
+					CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
+					assertSignatureValid(cadesSignature);
+				}
+			}
+		}
+	}
+
+	private void assertSignatureValid(final CAdESSignature cadesSignature) {
+		final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.getSignatureCryptographicVerification();
+		if (!signatureCryptographicVerification.isSignatureIntact()) {
+			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
+			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
+		}
+	}
+	
 }

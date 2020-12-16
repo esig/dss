@@ -137,6 +137,11 @@
 					<xsd:documentation>Checks the availability of the signature policy (PDF resource,...)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SignaturePolicyStorePresent" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of a SignaturePolicyStore as an unsigned attribute, containing a policy content</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="PolicyHashMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the hash value for the given signature policy</xsd:documentation>
@@ -185,6 +190,16 @@
 					<xsd:documentation>Checks the unicity of the signingCertificate (V1/V2) attribute</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SigningCertificateRefersCertificateChain" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks is the signingCertificate (V1/V2) attribute covers only those certificates present in the certificate chain</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ReferencesToAllCertificateChainPresent" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>If the signingCertificate (V1/V2) attribute contains more than one reference, checks if the whole certificate chain is covered</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="CertDigestPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the signing certificate digest</xsd:documentation>
@@ -192,7 +207,12 @@
 			</xsd:element>
 			<xsd:element name="CertDigestMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the signing certificate digest match with the found signer</xsd:documentation>
+					<xsd:documentation>Checks if any signing certificate digest match with the found signer</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AllCertDigestsMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if all signing certificate digests match with the found signer (v1/v2)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="IssuerSerialMatch" type="LevelConstraint" minOccurs="0">
@@ -331,6 +351,11 @@
 							<xsd:documentation>Checks if a value of certHash attribute matches the signing certificate</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element name="SelfIssuedOCSP" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if a checked certificate appears in the OCSP Responder's certificate path</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Group of common checks on this token signature</xsd:documentation>
@@ -384,6 +409,21 @@
 			<xsd:element name="SignerInformationStore" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if CMS Signed Data Signer Information Store has only one signer information</xsd:documentation> <!-- PAdES only (!) -->
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PdfPageDifference" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the signed revision has more or less pages comparing to the final provided document</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PdfAnnotationOverlap" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the document contains any annotation overlaps</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PdfVisualDifference" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the signed revision have a visual difference(s) with the provided document</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="TrustedServiceTypeIdentifier" type="MultiValuesConstraint" minOccurs="0">

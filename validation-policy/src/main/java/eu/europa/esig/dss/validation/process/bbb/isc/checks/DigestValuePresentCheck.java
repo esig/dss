@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
@@ -33,10 +31,24 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if the digest value is present for a signing certificate reference
+ */
 public class DigestValuePresentCheck extends ChainItem<XmlISC> {
 
+	/** The token to verify */
 	private final TokenProxy token;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlISC}
+	 * @param token {@link TokenProxy}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public DigestValuePresentCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.token = token;
@@ -44,13 +56,13 @@ public class DigestValuePresentCheck extends ChainItem<XmlISC> {
 
 	@Override
 	protected boolean process() {
-		CertificateRefWrapper signingCertificateReference = token.getSigningCertificateReference();
-		if (signingCertificateReference != null) {
-			return signingCertificateReference.isDigestValuePresent();
-		}
 		List<CertificateRefWrapper> signingCertificateReferences = token.getSigningCertificateReferences();
 		if (Utils.isCollectionNotEmpty(signingCertificateReferences)) {
-			return signingCertificateReferences.iterator().next().isDigestValuePresent();
+			for (CertificateRefWrapper reference : signingCertificateReferences) {
+				if (reference.isDigestValuePresent()) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}

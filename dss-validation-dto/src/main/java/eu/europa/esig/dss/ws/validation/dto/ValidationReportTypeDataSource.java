@@ -20,21 +20,29 @@
  */
 package eu.europa.esig.dss.ws.validation.dto;
 
+import eu.europa.esig.validationreport.ValidationReportFacade;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+import javax.activation.DataSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.activation.DataSource;
-
-import eu.europa.esig.validationreport.ValidationReportFacade;
-import eu.europa.esig.validationreport.jaxb.ValidationReportType;
-
+/**
+ * Represents an ETSI Validation Report data source
+ */
 public class ValidationReportTypeDataSource implements DataSource {
 
+	/** The ETSI Validation report */
 	private final ValidationReportType validationReport;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param validationReport {@link ValidationReportType}
+	 */
 	public ValidationReportTypeDataSource(ValidationReportType validationReport) {
 		this.validationReport = validationReport;
 	}

@@ -56,9 +56,9 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> {
 		Objects.requireNonNull(issuer, "The issuer of the certificate to be verified cannot be null");
 
 		List<RevocationToken<OCSP>> result = new ArrayList<>();
-		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getAllRevocationBinaries();
+		final Set<EncapsulatedRevocationTokenIdentifier<OCSP>> collectedBinaries = getAllRevocationBinaries();
 		LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", certificate.getDSSIdAsString(), collectedBinaries.size());
-		for (EncapsulatedRevocationTokenIdentifier binary : collectedBinaries) {
+		for (EncapsulatedRevocationTokenIdentifier<OCSP> binary : collectedBinaries) {
 			OCSPResponseBinary ocspBinary = (OCSPResponseBinary) binary;
 			BasicOCSPResp basicOCSPResp = ocspBinary.getBasicOCSPResp();
 			SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicOCSPResp, certificate, issuer);

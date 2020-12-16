@@ -20,30 +20,32 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PdfScreenshotUtils;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pades.signature.visible.AbstractTestVisualComparator;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class DetectionModificationAfterSignTest {
+public class DetectionModificationAfterSignTest extends AbstractTestVisualComparator {
 
 	@Test
 	public void testWithModification() throws IOException {
-		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/modified_after_signature.pdf"));
+		DSSDocument dssDocument = new InMemoryDocument(
+				getClass().getResourceAsStream("/validation/modified_after_signature.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
@@ -56,12 +58,39 @@ public class DetectionModificationAfterSignTest {
 		assertEquals(1, retrievedDocuments.size());
 		DSSDocument retrievedDocument = retrievedDocuments.get(0);
 
-		DSSDocument expected = new InMemoryDocument(getClass().getResourceAsStream("/validation/retrieved-modified_after_signature.pdf"));
+		DSSDocument expected = new InMemoryDocument(
+				getClass().getResourceAsStream("/validation/retrieved-modified_after_signature.pdf"));
 		assertEquals(expected.getDigest(DigestAlgorithm.SHA256), retrievedDocument.getDigest(DigestAlgorithm.SHA256));
 
 		// Additional code to detect visual difference
-		BufferedImage differenceImage = PdfScreenshotUtils.getDifferenceImage(dssDocument, expected);
-		ImageIO.write(differenceImage, "PNG", new File("target/diff.png"));
+		assertFalse(areVisuallyEqual(dssDocument, expected));
+
+		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(dssDocument, expected, 1);
+		assertNotNull(subtractionImage);
+	}
+
+	@Override
+	protected String getTestName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected PAdESService getService() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected PAdESSignatureParameters getSignatureParameters() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
@@ -36,6 +29,13 @@ import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 5.6.2.3 POE extraction
@@ -149,7 +149,12 @@ public class POEExtraction {
 	}
 
 	/**
-	 * Returns true if there is a POE exists for a given id at (or before) the control time.
+	 * Returns true if there is a POE exists for a given id at (or before) the
+	 * control time.
+	 * 
+	 * @param tokenId     the token id to be find
+	 * @param controlTime the control time
+	 * @return TRUE if the POE exists, FALSE otherwise
 	 */
 	public boolean isPOEExists(final String tokenId, final Date controlTime) {
 		List<POE> poes = poeMap.get(tokenId);

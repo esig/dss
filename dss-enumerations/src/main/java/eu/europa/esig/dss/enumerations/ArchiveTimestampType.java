@@ -26,19 +26,28 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum ArchiveTimestampType {
 
+	/** Default XAdES Archive Timestamp Type */
 	XAdES,
 
+	/** ETSI TS 101 903 (XAdES 1.4.1) ArchiveTimeStamp */
 	XAdES_141,
 
+	/** Default CAdES Archive Timestamp Type */
 	CAdES,
 
+	/** archive-time-stamp-v2 */
 	CAdES_V2,
 
+	/** archive-time-stamp-v3 */
 	CAdES_V3,
 	
-	/* For ASiC */
+	/** Detached timestamp, used for For ASiC */
 	CAdES_DETACHED,
-	
+
+	/** arcTst */
+	JAdES,
+
+	/** DOCUMENT_TIMESTAMP covering a DSS dictionary (revision) */
 	PAdES;
 
 }

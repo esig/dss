@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Context;
@@ -41,6 +39,8 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.NextUpdateCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheckWithNullConstraint;
 
+import java.util.Date;
+
 /**
  * 5.2.5 Revocation freshness checker This building block checks that a given
  * revocation status information is "fresh" at a given validation time. The
@@ -51,15 +51,36 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFr
  */
 public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
+	/** Defines the name of th revocation position */
+	private final static MessageTag REVOCATION_POSITION = MessageTag.ACCM_POS_REVOC_SIG;
+
+	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
+
+	/** Validation time */
 	private final Date validationDate;
+
+	/** Validation policy */
 	private final ValidationPolicy policy;
 
+	/** Validation context */
 	private final Context context;
+
+	/** Validation subContext */
 	private final SubContext subContext;
 
-	public RevocationFreshnessChecker(I18nProvider i18nProvider, RevocationWrapper revocationData, Date validationDate, Context context, 
-			SubContext subContext, ValidationPolicy policy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param validationDate {@link Date}
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @param policy {@link ValidationPolicy}
+	 */
+	public RevocationFreshnessChecker(I18nProvider i18nProvider, RevocationWrapper revocationData, Date validationDate,
+									  Context context, SubContext subContext, ValidationPolicy policy) {
 		super(i18nProvider, new XmlRFC());
 
 		if (revocationData != null) {
@@ -81,7 +102,6 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	@Override
 	protected void initChain() {
-
 		ChainItem<XmlRFC> item = firstItem = revocationDataAvailable(revocationData);
 
 		if (revocationData != null) {
@@ -156,7 +176,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {
 		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(Context.REVOCATION);
-		return new CryptographicCheck<>(i18nProvider, result, revocationData, validationDate, cryptographicConstraint);
+		return new CryptographicCheck<>(i18nProvider, result, revocationData, REVOCATION_POSITION, validationDate, cryptographicConstraint);
 	}
 
 }

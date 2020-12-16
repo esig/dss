@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -41,27 +37,52 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.LatestRevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashPresenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationDataKnownCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerRevocationDataAvailableCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.SelfIssuedOCSPCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Checks if the revocation is acceptable and can be used
+ */
 public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 
+	/** The certificate in question */
 	private final CertificateWrapper certificate;
+
+	/** The revocation data */
 	private final CertificateRevocationWrapper revocationData;
+
+	/** Validation time */
 	private final Date controlTime;
+
+	/** Validation policy */
 	private final ValidationPolicy policy;
-	
+
+	/** Internal list of processed tokens (avoids infinite loop) */
 	private final List<String> validatedTokens;
 
-	public RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
-			Date controlTime, ValidationPolicy policy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param certificate {@link CertificateWrapper}
+	 * @param revocationData {@link CertificateRevocationWrapper}
+	 * @param controlTime {@link Date}
+	 * @param policy {@link ValidationPolicy}
+	 */
+	public RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate,
+									   CertificateRevocationWrapper revocationData, Date controlTime,
+									   ValidationPolicy policy) {
 		this(i18nProvider, certificate, revocationData, controlTime, policy, new ArrayList<String>());
 		result.setId(revocationData.getId());
 		result.setRevocationProductionDate(revocationData.getProductionDate());
@@ -69,7 +90,7 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	
 	@Override
 	protected MessageTag getTitle() {
-		return MessageTag.RAV;
+		return MessageTag.RAC;
 	}
 	
 	private RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
@@ -92,11 +113,15 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		 * responder knows the certificate as we have it, and so also its revocation state
 		 */
 		if (RevocationType.OCSP.equals(revocationData.getRevocationType())) {
+
 			item = item.setNextItem(revocationCertHashPresent());
 			
 			if (revocationData.isCertHashExtensionPresent()) {
 				item = item.setNextItem(revocationCertHashMatch());
 			}
+
+			item = item.setNextItem(selfIssuedOcsp());
+
 		}
 
 		item = item.setNextItem(revocationDataConsistent());
@@ -129,7 +154,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 				item = item.setNextItem(revocationDataPresentForRevocationChain(revocationCertificate, subContext));
 				
 				CertificateRevocationWrapper latestRevocationData = null;
-				XmlRAC latestRacResult = null;
 				for (CertificateRevocationWrapper revocationWrapper : revocationCertificate.getCertificateRevocationData()) {
 					
 					if (isTokenValidated(revocationWrapper)) {
@@ -148,16 +172,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 					if (isValid(racResult) && (latestRevocationData == null || 
 							revocationWrapper.getProductionDate().after(latestRevocationData.getProductionDate()))) {
 						latestRevocationData = revocationWrapper;
-						latestRacResult = racResult;
 					}
 					
 				}
 				
 				item = item.setNextItem(acceptableRevocationDataAvailable(latestRevocationData, revocationCertificate, subContext));
-				
-				if (latestRacResult != null) {
-					item = item.setNextItem(latestRevocationAcceptable(latestRacResult));
-				}
 				
 			}
 			
@@ -177,6 +196,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	private ChainItem<XmlRAC> revocationCertHashMatch() {
 		LevelConstraint constraint = policy.getOCSPResponseCertHashMatchConstraint();
 		return new RevocationCertHashMatchCheck(i18nProvider, result, revocationData, constraint);
+	}
+
+	private ChainItem<XmlRAC> selfIssuedOcsp() {
+		LevelConstraint constraint = policy.getSelfIssuedOCSPConstraint();
+		return new SelfIssuedOCSPCheck(i18nProvider, result, certificate, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> revocationDataConsistent() {
@@ -219,10 +243,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	
 	private ChainItem<XmlRAC> revocationAcceptanceResultCheck(XmlRAC racResult) {
 		return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
-	}
-	
-	private ChainItem<XmlRAC> latestRevocationAcceptable(XmlRAC racResult) {
-		return new LatestRevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlRAC> acceptableRevocationDataAvailable(RevocationWrapper revocationData, 

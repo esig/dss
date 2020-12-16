@@ -20,66 +20,55 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
+import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
-import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import java.io.IOException;
 
+/**
+ * The default PDFBox signature drawer.
+ * Creates an image for a text content of the signature.
+ */
 public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
+
+	/** Defines the image and position of the signature */
+	private SignatureImageAndPosition signatureImageAndPosition;
+
+	@Override
+	public SignatureImageAndPosition buildSignatureFieldBox() throws IOException {
+		if (signatureImageAndPosition == null) {
+			// DSS-747. Using the DPI resolution to convert java size to dot
+			ImageAndResolution ires = DefaultDrawerImageUtils.create(parameters);
+			signatureImageAndPosition = new SignatureImageAndPositionBuilder().build(parameters, document, ires);
+		}
+		return signatureImageAndPosition;
+	}
 
 	@Override
 	public void draw() throws IOException {
-		// DSS-747. Using the DPI resolution to convert java size to dot
-		ImageAndResolution ires = DefaultDrawerImageUtils.create(parameters);
+		SignatureImageAndPosition signatureImageAndPosition = buildSignatureFieldBox();
 
-		SignatureImageAndPosition signatureImageAndPosition = SignatureImageAndPositionProcessor.process(parameters, document, ires);
-
-		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(document, new ByteArrayInputStream(signatureImageAndPosition.getSignatureImage()),
-				parameters.getPage());
+		int page = parameters.getFieldParameters().getPage();
+		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(document,
+				signatureImageAndPosition.getSignatureImage(), page);
 
 		visibleSig.xAxis(signatureImageAndPosition.getX());
 		visibleSig.yAxis(signatureImageAndPosition.getY());
-		
-		float width = parameters.getWidth();
-		float height = parameters.getHeight();
-		if (ImageRotationUtils.isSwapOfDimensionsRequired(signatureImageAndPosition.getGlobalRotation())) {
-			width = parameters.getHeight();
-			height = parameters.getWidth();
-		}
-		
-		if (width != 0) {
-			visibleSig.width(width);
-		} else if (parameters.getTextParameters() != null) {
-			visibleSig.width(CommonDrawerUtils.toDpiAxisPoint(visibleSig.getWidth(), CommonDrawerUtils.getDpi(parameters.getDpi())));
-		} else {
-			visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
-		}
-		if (height != 0) {
-			visibleSig.height(height);
-		} else if (parameters.getTextParameters() != null) {
-			visibleSig.height(CommonDrawerUtils.toDpiAxisPoint(visibleSig.getHeight(), CommonDrawerUtils.getDpi(parameters.getDpi())));
-		} else {
-			visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
-		}
+		visibleSig.width(signatureImageAndPosition.getWidth());
+		visibleSig.height(signatureImageAndPosition.getHeight());
 
-		// zoom image
-		visibleSig.zoom(((float) parameters.getZoom()) - 100); // pdfbox is 0 based
-		
 		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
 		signatureProperties.visualSignEnabled(true);
 		signatureProperties.setPdVisibleSignature(visibleSig);
 		signatureProperties.buildSignature();
-		
+
 		signatureOptions.setVisualSignature(signatureProperties);
-		signatureOptions.setPage(parameters.getPage() - 1); // DSS-1138
+		signatureOptions.setPage(page - ImageUtils.DEFAULT_FIRST_PAGE); // DSS-1138
 	}
 
 	@Override

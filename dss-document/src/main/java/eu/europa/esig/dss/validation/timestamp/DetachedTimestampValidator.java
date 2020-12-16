@@ -20,16 +20,8 @@
  */
 package eu.europa.esig.dss.validation.timestamp;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.tsp.TSPException;
-
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -42,19 +34,48 @@ import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.tsp.TSPException;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Detached CMS TimestampToken Validator
+ *
+ */
 public class DetachedTimestampValidator extends SignedDocumentValidator {
 
+	/** The type of the timestamp */
 	protected TimestampType timestampType;
+
+	/** The TimestampToken to be validated */
 	protected TimestampToken timestampToken;
 
+	/**
+	 * Empty constructor
+	 */
 	DetachedTimestampValidator() {
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param timestampFile {@link DSSDocument} timestamp document to validate
+	 */
 	public DetachedTimestampValidator(final DSSDocument timestampFile) {
 		this(timestampFile, TimestampType.CONTENT_TIMESTAMP);
 	}
 
+	/**
+	 * The default constructor with a type
+	 *
+	 * @param timestampFile {@link DSSDocument} timestamp document to validate
+	 * @param timestampType {@link TimestampType}
+	 */
 	public DetachedTimestampValidator(final DSSDocument timestampFile, TimestampType timestampType) {
 		this.document = timestampFile;
 		this.timestampType = timestampType;
@@ -86,22 +107,33 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 	 */
 	public TimestampToken getTimestamp() {
 		if (timestampToken == null) {
-
-			Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
-			Objects.requireNonNull(document, "The timestampFile must be defined!");
-			Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
-
-			try {
-				timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
-				timestampToken.setFileName(document.getName());
-				timestampToken.matchData(getTimestampedData());
-				timestampToken.setTimestampScopes(getTimestampSignatureScope());
-			} catch (CMSException | TSPException | IOException e) {
-				throw new DSSException("Unable to parse timestamp", e);
-			}
+			timestampToken = createTimestampToken();
 		}
 
 		return timestampToken;
+	}
+
+	private TimestampToken createTimestampToken() {
+		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
+		Objects.requireNonNull(document, "The timestampFile must be defined!");
+		Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
+		try {
+			timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
+			timestampToken.setFileName(document.getName());
+			timestampToken.matchData(getTimestampedData());
+
+			List<SignatureScope> signatureScopes = getTimestampSignatureScopes();
+			timestampToken.setTimestampScopes(signatureScopes);
+			for (SignatureScope signatureScope : signatureScopes) {
+				timestampToken.getTimestampedReferences().add(
+						new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+			}
+			return timestampToken;
+
+		} catch (CMSException | TSPException | IOException e) {
+			throw new DSSException(String.format("Unable to create a TimestampToken. Reason : %s", e.getMessage()), e);
+
+		}
 	}
 
 	@Override
@@ -112,11 +144,21 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 		super.setValidationLevel(validationLevel);
 	}
 
+	/**
+	 * Sets the data that has been timestamped
+	 *
+	 * @param document {@link DSSDocument} timestamped data
+	 */
 	public void setTimestampedData(DSSDocument document) {
 		Objects.requireNonNull(document, "The document is null");
 		setDetachedContents(Arrays.asList(document));
 	}
 
+	/**
+	 * Returns the timestamped data
+	 *
+	 * @return {@link DSSDocument} timestamped data
+	 */
 	public DSSDocument getTimestampedData() {
 		int size = Utils.collectionSize(detachedContents);
 		if (size == 0) {
@@ -132,7 +174,7 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 	 * 
 	 * @return a list of {@link SignatureScope}s
 	 */
-	protected List<SignatureScope> getTimestampSignatureScope() {
+	protected List<SignatureScope> getTimestampSignatureScopes() {
 		DSSDocument timestampedData = getTimestampedData();
 		if (timestampedData != null) {
 			if (timestampedData instanceof DigestDocument) {

@@ -22,29 +22,61 @@ package eu.europa.esig.dss.alert.status;
 
 import java.util.Collection;
 
+/**
+ * The class used for a custom event creation
+ */
 public class Status {
 
+	/** Defines a message of the event */
 	private final String message;
+
+	/** Defines a collection of object ids associated with the event */
 	private final Collection<String> relatedObjectIds;
 
+	/**
+	 * The constructor taking a message only as an input
+	 *
+	 * @param message {@link String} message describing the event
+	 */
 	public Status(String message) {
 		this.message = message;
 		this.relatedObjectIds = null;
 	}
 
+	/**
+	 * The default constructor
+	 *
+	 * @param message {@link String} the message associated with the event
+	 * @param relatedObjectIds a collection of {@link String} object ids, associated with the event
+	 */
 	public Status(String message, Collection<String> relatedObjectIds) {
 		this.message = message;
 		this.relatedObjectIds = relatedObjectIds;
 	}
 
+	/**
+	 * Returns the message event
+	 *
+	 * @return {@link String}
+	 */
 	public String getMessage() {
 		return message;
 	}
 
+	/**
+	 * Returns a list of object ids associated with the event
+	 *
+	 * @return a collection of {@link String} object ids associated with the event
+	 */
 	public Collection<String> getRelatedObjectIds() {
 		return relatedObjectIds;
 	}
 
+	/**
+	 * Returns of the Status event is not filled (all values are null)
+	 *
+	 * @return TRUE if the Status is empty, FALSE otherwise
+	 */
 	public boolean isEmpty() {
 		return message == null || message.isEmpty();
 	}

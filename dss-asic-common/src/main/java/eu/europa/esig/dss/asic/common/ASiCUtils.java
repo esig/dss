@@ -20,58 +20,63 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Contains utils for working with ASiC containers
+ */
 public final class ASiCUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCUtils.class);
 
+	/** The manifest name */
 	public static final String MANIFEST_FILENAME = "Manifest";
-	public static final String MIME_TYPE = "mimetype";
-	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
-	public static final String META_INF_FOLDER = "META-INF/";
-	public static final String PACKAGE_ZIP = "package.zip";
-	public static final String SIGNATURE_FILENAME = "signature";
-	public static final String TIMESTAMP_FILENAME = "timestamp";
-	public static final String TST_EXTENSION = ".tst";
-	public static final String XML_EXTENSION = ".xml";
-	public static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 
-    /**
-     * Minimum file size to be analized on zip bombing
-     */
-	private static final long ZIP_ENTRY_THRESHOLD = 1000000; // 1 MB
-	
-    /**
-     * Maximum compression ratio.
-     */
-	private static final long ZIP_ENTRY_RATIO = 50;
-	
-    /**
-	 * Max iteration over the zip entries
-	 */
-	private static final int MAX_MALFORMED_FILES = 100;
+	/** The ASiC Manifest name */
+	public static final String ASIC_MANIFEST_FILENAME = "ASiCManifest";
+
+	/** The ASiC Archive Manifest name */
+	public static final String ASIC_ARCHIVE_MANIFEST_FILENAME = "ASiCArchiveManifest";
+
+	/** The mimetype filename */
+	public static final String MIME_TYPE = "mimetype";
+
+	/** The mimetype comment */
+	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
+
+	/** The META-INF folder */
+	public static final String META_INF_FOLDER = "META-INF/";
+
+	/** The "package.zip" filename */
+	public static final String PACKAGE_ZIP = "package.zip";
+
+	/** The signature filename */
+	public static final String SIGNATURE_FILENAME = "signature";
+
+	/** The timestamp filename */
+	public static final String TIMESTAMP_FILENAME = "timestamp";
+
+	/** The signature file extension */
+	public static final String CADES_SIGNATURE_EXTENSION = ".p7s";
+
+	/** The timestamp file extension */
+	public static final String TST_EXTENSION = ".tst";
+
+	/** The XML file extension */
+	public static final String XML_EXTENSION = ".xml";
 
 	private ASiCUtils() {
 	}
@@ -96,6 +101,12 @@ public final class ASiCUtils {
 		return entryName.startsWith(META_INF_FOLDER) && entryName.contains(TIMESTAMP_FILENAME) && entryName.endsWith(TST_EXTENSION);
 	}
 
+	/**
+	 * Returns the target MimeType string
+	 * 
+	 * @param asicParameters {@link ASiCParameters}
+	 * @return {@link String} MimeType
+	 */
 	public static String getMimeTypeString(final ASiCParameters asicParameters) {
 		final String asicParameterMimeType = asicParameters.getMimeType();
 		String mimeTypeString;
@@ -111,14 +122,55 @@ public final class ASiCUtils {
 		return mimeTypeString;
 	}
 
-	public static boolean isASiCMimeType(final MimeType asicMimeType) {
-		return MimeType.ASICS.equals(asicMimeType) || MimeType.ASICE.equals(asicMimeType);
+	/**
+	 * Returns a ZIP Comment String according to the given parameters
+	 * 
+	 * @param asicParameters {@link ASiCParameters}
+	 * @return {@link String} zip comment
+	 */
+	public static String getZipComment(final ASiCParameters asicParameters) {
+		if (asicParameters.isZipComment()) {
+			return getZipComment(ASiCUtils.getMimeTypeString(asicParameters));
+		}
+		return Utils.EMPTY_STRING;
 	}
 
+	/**
+	 * Returns a ZIP Comment String from the provided {@code mimeTypeString}
+	 * 
+	 * @param mimeTypeString {@link String}
+	 * @return {@link String} zip comment
+	 */
+	public static String getZipComment(final String mimeTypeString) {
+		return ASiCUtils.MIME_TYPE_COMMENT + mimeTypeString;
+	}
+
+	/**
+	 * Checks if the given MimeType is ASiC MimeType
+	 * 
+	 * @param mimeType {@link MimeType} to check
+	 * @return TRUE if the given MimeType is ASiC MimeType, FALSE otherwise
+	 */
+	public static boolean isASiCMimeType(final MimeType mimeType) {
+		return MimeType.ASICS.equals(mimeType) || MimeType.ASICE.equals(mimeType);
+	}
+
+	/**
+	 * Checks if the given MimeType is OpenDocument MimeType
+	 * 
+	 * @param mimeType {@link MimeType} to check
+	 * @return TRUE if the given MimeType is OpenDocument MimeType, FALSE otherwise
+	 */
 	public static boolean isOpenDocumentMimeType(final MimeType mimeType) {
 		return MimeType.ODT.equals(mimeType) || MimeType.ODS.equals(mimeType) || MimeType.ODG.equals(mimeType) || MimeType.ODP.equals(mimeType);
 	}
 
+	/**
+	 * Returns related {@code ASiCContainerType} for the given {@code asicMimeType}
+	 * 
+	 * @param asicMimeType {@link MimeType} to get {@link ASiCContainerType} for
+	 * @return {@link ASiCContainerType}
+	 */
 	public static ASiCContainerType getASiCContainerType(final MimeType asicMimeType) {
 		if (MimeType.ASICS.equals(asicMimeType)) {
 			return ASiCContainerType.ASiC_S;
@@ -129,29 +181,48 @@ public final class ASiCUtils {
 		}
 	}
 
+	/**
+	 * Checks if the parameters are configured for ASiCE creation
+	 * 
+	 * @param asicParameters {@link ASiCParameters}
+	 * @return TRUE if parameters are configured for ASiCE, FALSE otherwise
+	 */
 	public static boolean isASiCE(final ASiCParameters asicParameters) {
 		Objects.requireNonNull(asicParameters.getContainerType(), "ASiCContainerType must be defined!");
 		return ASiCContainerType.ASiC_E.equals(asicParameters.getContainerType());
 	}
 
+	/**
+	 * Checks if the parameters are configured for ASiCS creation
+	 * 
+	 * @param asicParameters {@link ASiCParameters}
+	 * @return TRUE if parameters are configured for ASiCS, FALSE otherwise
+	 */
 	public static boolean isASiCS(final ASiCParameters asicParameters) {
 		Objects.requireNonNull(asicParameters.getContainerType(), "ASiCContainerType must be defined!");
 		return ASiCContainerType.ASiC_S.equals(asicParameters.getContainerType());
 	}
 
+	/**
+	 * Returns a relevant MimeType for the provided parameters
+	 * 
+	 * @param asicParameters {@link ASiCParameters}
+	 * @return {@link MimeType}
+	 */
 	public static MimeType getMimeType(ASiCParameters asicParameters) {
 		return isASiCE(asicParameters) ? MimeType.ASICE : MimeType.ASICS;
 	}
 	
 	/**
-	 * Checks if the container contains a signature with the expected {@code extension}
+	 * Checks if the list of filenames contains a signature with the expected
+	 * {@code extension}
 	 * 
-	 * @param container {@link DSSDocument} representing an ASiC container
+	 * @param filenames a list of file names
 	 * @param extension {@link String} signature file extension to find
-	 * @return TRUE if the container contains the expected signature file, FALSE otherwise
+	 * @return TRUE if the list of filename contains the expected signature file,
+	 *         FALSE otherwise
 	 */
-	public static boolean isArchiveContainsCorrectSignatureFileWithExtension(DSSDocument container, String extension) {
-		List<String> filenames = getFileNames(container);
+	public static boolean areFilesContainCorrectSignatureFileWithExtension(List<String> filenames, String extension) {
 		for (String filename : filenames) {
 			if (isSignature(filename) && filename.endsWith(extension)) {
 				return true;
@@ -161,13 +232,41 @@ public final class ASiCUtils {
 	}
 
 	/**
-	 * Checks if the container contains a timestamp
+	 * Checks if the list of filenames contains a signature(s)
 	 * 
-	 * @param container {@link DSSDocument} representing an ASiC container
-	 * @return TRUE if the container contains the expected timestamp file, FALSE otherwise
+	 * @param filenames a list of file names
+	 * @return TRUE if the list of filename contains a signature file(s)
 	 */
-	public static boolean isArchiveContainsCorrectTimestamp(DSSDocument container) {
-		List<String> filenames = getFileNames(container);
+	public static boolean areFilesContainSignatures(List<String> filenames) {
+		for (String filename : filenames) {
+			if (isSignature(filename)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the list of filenames represents an ASiC container content
+	 * 
+	 * @param filenames a list of {@link String} file names
+	 * @return TRUE if the list of filenames represents an ASiC container content,
+	 *         FALSE otherwise
+	 */
+	public static boolean isAsicFileContent(List<String> filenames) {
+		return areFilesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
+				|| areFilesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION)
+				|| areFilesContainTimestamp(filenames);
+	}
+
+	/**
+	 * Checks if the list of filenames contains a timestamp
+	 * 
+	 * @param filenames a list of filenames to check
+	 * @return TRUE if the list of filenames contains the expected timestamp file,
+	 *         FALSE otherwise
+	 */
+	public static boolean areFilesContainTimestamp(List<String> filenames) {
 		for (String filename : filenames) {
 			if (isTimestamp(filename)) {
 				return true;
@@ -176,19 +275,18 @@ public final class ASiCUtils {
 		return false;
 	}
 
-	public static boolean isArchive(List<DSSDocument> docs) {
-		if (Utils.collectionSize(docs) == 1) {
-			return isZip(docs.get(0));
-		}
-		return false;
-	}
-
-	public static boolean isZip(DSSDocument dssDocument) {
-		if (dssDocument == null) {
+	/**
+	 * Checks if the {@code document} is a ZIP container
+	 * 
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the {@code DSSDocument} is a ZIP container, FALSE otherwise
+	 */
+	public static boolean isZip(DSSDocument document) {
+		if (document == null) {
 			return false;
 		}
 		byte[] preamble = new byte[2];
-		try (InputStream is = dssDocument.openStream()) {
+		try (InputStream is = document.openStream()) {
 			int r = is.read(preamble, 0, 2);
 			if (r != 2) {
 				return false;
@@ -200,18 +298,45 @@ public final class ASiCUtils {
 		return (preamble[0] == 'P') && (preamble[1] == 'K');
 	}
 	
-	public static boolean isASiCWithCAdES(DSSDocument archive) {
-		return isArchiveContainsCorrectSignatureFileWithExtension(archive, ".p7s") || isArchiveContainsCorrectTimestamp(archive);
+	/**
+	 * Checks if the extracted filenames represent an ASiC with CAdES content
+	 * 
+	 * @param filenames a list of {@link String} file names to check
+	 * @return TRUE if the filenames represent an ASiC with CAdES content, FALSE
+	 *         otherwise
+	 */
+	public static boolean isASiCWithCAdES(List<String> filenames) {
+		return areFilesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
+				|| areFilesContainTimestamp(filenames);
 	}
 
+	/**
+	 * Checks if the entryName is a relevant XAdES signature
+	 * 
+	 * @param entryName {@link String} to check
+	 * @return TRUE if the entryName is a relevant XAdES signature, FALSE otherwise
+	 */
 	public static boolean isXAdES(final String entryName) {
-		return isSignature(entryName) && entryName.endsWith(".xml");
+		return isSignature(entryName) && entryName.endsWith(XML_EXTENSION);
 	}
 
+	/**
+	 * Checks if the entryName is a relevant CAdES signature
+	 * 
+	 * @param entryName {@link String} to check
+	 * @return TRUE if the entryName is a relevant CAdES signature, FALSE otherwise
+	 */
 	public static boolean isCAdES(final String entryName) {
-		return isSignature(entryName) && (entryName.endsWith(".p7s"));
+		return isSignature(entryName) && (entryName.endsWith(CADES_SIGNATURE_EXTENSION));
 	}
 
+	/**
+	 * Checks if the mimeType document defines an OpenDocument
+	 * 
+	 * @param mimeTypeDoc {@link DSSDocument} mimetype file extracted from an ASiC
+	 *                    container
+	 * @return TRUE if the mimeTypeDoc file defines an OpenDocument, FALSE otherwise
+	 */
 	public static boolean isOpenDocument(final DSSDocument mimeTypeDoc) {
 		MimeType mimeType = getMimeType(mimeTypeDoc);
 		if (mimeTypeDoc != null) {
@@ -220,6 +345,22 @@ public final class ASiCUtils {
 		return false;
 	}
 
+	/**
+	 * Checks if the given name is a "mimetype"
+	 * 
+	 * @param entryName {@link String} document name
+	 * @return TRUE if the name is a "mimetype", FALSE otherwise
+	 */
+	public static boolean isMimetype(String entryName) {
+		return ASiCUtils.MIME_TYPE.equals(entryName);
+	}
+
+	/**
+	 * Extracts and returns MimeType from the document
+	 * 
+	 * @param mimeTypeDocument {@link DSSDocument} to get a MimeType of
+	 * @return {@link MimeType}
+	 */
 	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) {
 		if (mimeTypeDocument == null) {
 			return null;
@@ -233,6 +374,15 @@ public final class ASiCUtils {
 		}
 	}
 
+	/**
+	 * Returns target container type
+	 * 
+	 * @param archive         {@link DSSDocument} archive
+	 * @param mimetype        {@link DSSDocument} mimetype file
+	 * @param zipComment      {@link String} zipComment
+	 * @param signedDocuments a list of {@link DSSDocument}s
+	 * @return {@link ASiCContainerType}
+	 */
 	public static ASiCContainerType getContainerType(DSSDocument archive, DSSDocument mimetype, String zipComment, List<DSSDocument> signedDocuments) {
 		ASiCContainerType containerType = getContainerTypeFromMimeType(archive.getMimeType());
 		if (containerType == null) {
@@ -286,7 +436,8 @@ public final class ASiCUtils {
 	/**
 	 * Transforms {@code num} with the pattern:
 	 *     {@code "2 -> 002"}, {@code "10 -> 010"}, etc.
-	 * @param num
+	 *
+	 * @param num number to transform
 	 * @return {@link String}
 	 */
 	public static String getPadNumber(int num) {
@@ -295,122 +446,15 @@ public final class ASiCUtils {
 		return zeroPad.substring(numStr.length()) + numStr;
 	}
 
-	public static boolean isAsic(List<DSSDocument> documents) {
-		if (ASiCUtils.isArchive(documents)) {
-			DSSDocument archive = documents.get(0);
-			boolean cades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archive, "p7s");
-			boolean xades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archive, "xml");
-			boolean timestamp = ASiCUtils.isArchiveContainsCorrectTimestamp(archive);
-			return cades || xades || timestamp;
-		}
-
-		return false;
-	}
-	
+	/**
+	 * Checks if the fileName matches to an Archive Manifest name standard
+	 * 
+	 * @param fileName {@link String} to check
+	 * @return TRUE if the given name matches to and ASiC Archive Manifest filename,
+	 *         FALSE otherwise
+	 */
 	public static boolean isArchiveManifest(String fileName) {
-		return fileName.contains("ASiCArchiveManifest") && fileName.endsWith(".xml");
-	}
-	
-	/**
-	 * Reads and copies InputStream in a secure way, depending on the provided container size
-	 * This method allows to detect "ZipBombing" (large files inside a zip container)
-	 * @param is {@link InputStream} of file
-	 * @param os {@link OutputStream} where save file to
-	 * @param containerSize - zip container size
-	 */
-	public static void secureCopy(InputStream is, OutputStream os, long containerSize) throws IOException {
-		byte[] data = new byte[2048];
-		int nRead;
-	    int byteCounter = 0;
-	    long allowedSize = containerSize * ZIP_ENTRY_RATIO;
-	    while ((nRead = is.read(data)) != -1) {
-	    	byteCounter += nRead;
-	    	if (byteCounter > ZIP_ENTRY_THRESHOLD && byteCounter > allowedSize) {
-	    		throw new DSSException("Zip Bomb detected in the ZIP container. Validation is interrupted.");
-	    	}
-	    	os.write(data, 0, nRead);
-	    }
-	}
-
-	/**
-	 * Returns the file names for the given archive
-	 * 
-	 * @param archive
-	 *                the archive to be analyzed
-	 * @return a list of filename
-	 */
-	public static List<String> getFileNames(DSSDocument archive) {
-		List<String> filenames = new ArrayList<>();
-		try (InputStream is = archive.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
-			ZipEntry entry;
-			while ((entry = getNextValidEntry(zis)) != null) {
-				filenames.add(entry.getName());
-			}
-		} catch (IOException e) {
-			throw new DSSException("Unable to retrieve filenames", e);
-		}
-		return filenames;
-	}
-
-	/**
-	 * Returns the next entry from the given ZipInputStream by skipping corrupted or
-	 * not accessible files NOTE: returns null only when the end of ZipInputStream
-	 * is reached
-	 * 
-	 * @param zis {@link ZipInputStream} to get next entry from
-	 * @return list of file name {@link String}s
-	 * @throws DSSException if too much tries failed
-	 */
-	public static ZipEntry getNextValidEntry(ZipInputStream zis) {
-		int counter = 0;
-		while (counter < MAX_MALFORMED_FILES) {
-			try {
-				return zis.getNextEntry();
-			} catch (Exception e) {
-				LOG.warn("ZIP container contains a malformed, corrupted or not accessible entry! The entry is skipped. Reason: [{}]", e.getMessage());
-				// skip the entry and continue until find the next valid entry or end of the
-				// stream
-				counter++;
-				closeEntry(zis);
-			}
-		}
-		throw new DSSException("Unable to retrieve a valid ZipEntry (" + MAX_MALFORMED_FILES + " tries)");
-	}
-
-	/**
-	 * Returns file from the given ZipInputStream
-	 * 
-	 * @param filepath
-	 *                      {@link String} filepath where the file is located
-	 * @param zis
-	 *                      {@link ZipInputStream} of the file
-	 * @param containerSize
-	 *                      - long byte size of the parent container
-	 * @return {@link DSSDocument} created from the given {@code zis}
-	 * @throws IOException
-	 *                     in case of ZipInputStream read error
-	 */
-	public static DSSDocument getCurrentDocument(String filepath, ZipInputStream zis, long containerSize) throws IOException {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-		    secureCopy(zis, baos, containerSize);
-			baos.flush();
-			return new InMemoryDocument(baos.toByteArray(), filepath);
-		}
-	}
-	
-	/**
-	 * This method closes the current Zip Entry. If an error occurs, a
-	 * {@link DSSException} is thrown.
-	 * 
-	 * @param zis
-	 *            the {@link ZipInputStream}
-	 */
-	public static void closeEntry(ZipInputStream zis) {
-		try {
-			zis.closeEntry();
-		} catch (IOException e) {
-			throw new DSSException("Unable to close entry", e);
-		}
+		return fileName.contains(ASIC_ARCHIVE_MANIFEST_FILENAME) && fileName.endsWith(XML_EXTENSION);
 	}
 	
 	/**
@@ -420,7 +464,7 @@ public final class ASiCUtils {
 	 * @return {@link String} new manifest name
 	 */
 	public static String getNextASiCEManifestName(final String expectedManifestName, final List<DSSDocument> existingManifests) {
-		List<String> manifestNames = getDSSDocumentNames(existingManifests);
+		List<String> manifestNames = DSSUtils.getDocumentNames(existingManifests);
 		
 		String manifestName = null;
 		for (int i = 0; i < existingManifests.size() + 1; i++) {
@@ -431,15 +475,6 @@ public final class ASiCUtils {
 			}
 		}
 		return manifestName;
-	}
-	
-	/**
-	 * Returns a list of document names
-	 * @param documents list of {@link DSSDocument}s to get file names
-	 * @return list of {@link String} document names
-	 */
-	public static List<String> getDSSDocumentNames(List<DSSDocument> documents) {
-		return documents.stream().map(DSSDocument::getName).collect(Collectors.toList());
 	}
 	
 	private static boolean isValidName(final String name, final List<String> notValidNames) {
@@ -453,25 +488,6 @@ public final class ASiCUtils {
 	 */
 	public static boolean isASiCSArchive(DSSDocument document) {
 		return Utils.areStringsEqual(PACKAGE_ZIP, document.getName());
-	}
-
-	/**
-	 * Returns a content of the packageZip container
-	 * @param packageZip {@link DSSDocument} ZIP container to get entries from
-	 * @return list of {@link DSSDocument}s
-	 */
-	public static List<DSSDocument> getPackageZipContent(DSSDocument packageZip) {
-		List<DSSDocument> result = new ArrayList<>();
-		long containerSize = DSSUtils.getFileByteSize(packageZip);
-		try (InputStream is = packageZip.openStream(); ZipInputStream packageZipInputStream = new ZipInputStream(is)) {
-			ZipEntry entry;
-			while ((entry = ASiCUtils.getNextValidEntry(packageZipInputStream)) != null) {
-				result.add(ASiCUtils.getCurrentDocument(entry.getName(), packageZipInputStream, containerSize));
-			}
-		} catch (IOException e) {
-			throw new DSSException("Unable to extract package.zip", e);
-		}
-		return result;
 	}
 
 }

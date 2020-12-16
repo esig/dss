@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.tsl.cache;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.spi.DSSUtils;
 
+import java.util.Objects;
+
+/**
+ * Defines a key for a cache record
+ */
 public class CacheKey {
 
 	/**

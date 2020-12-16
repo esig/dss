@@ -26,6 +26,16 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum SignaturePackaging {
 
-	ENVELOPED, ENVELOPING, DETACHED, INTERNALLY_DETACHED
+	/** The signature is enveloped to the signed document */
+	ENVELOPED,
+
+	/** The signature envelops the signed document */
+	ENVELOPING,
+
+	/** The signature is detached from the signed document */
+	DETACHED,
+
+	/** The signature file contains the signed document (XAdES only) */
+	INTERNALLY_DETACHED
 
 }

@@ -20,18 +20,26 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
-public class SignatureImageAndPosition {
+import java.awt.image.BufferedImage;
+
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
+
+public class SignatureImageAndPosition implements VisualSignatureFieldAppearance {
 
     private final float x;
     private final float y;
-	private final byte[] signatureImage;
-	private final int globalRotation;
+    private final float width;
+    private final float height;
+
+	private final BufferedImage signatureImage;
 	
-	public SignatureImageAndPosition(final float x, final float y, final byte[] signatureImage, final int globalRotation) {
+	public SignatureImageAndPosition(final float x, final float y, final float width, final float height, final BufferedImage signatureImage) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
         this.signatureImage = signatureImage;
-        this.globalRotation = globalRotation;
     }
 
     public float getX() {
@@ -41,13 +49,22 @@ public class SignatureImageAndPosition {
     public float getY() {
         return y;
     }
+    
+	public float getWidth() {
+		return width;
+	}
 
-    public byte[] getSignatureImage() {
+	public float getHeight() {
+		return height;
+	}
+
+    public BufferedImage getSignatureImage() {
         return signatureImage;
     }
 
-    public int getGlobalRotation() {
-		return globalRotation;
+	@Override
+	public AnnotationBox getAnnotationBox() {
+		return new AnnotationBox(x, y, x + width, y + height);
 	}
     
 }

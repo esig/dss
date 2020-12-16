@@ -25,37 +25,80 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * Defines the error for a cache record
+ */
 public class CachedException {
 
+	/** The first occurrence date of the exception */
 	private final Date date = new Date();
-	private Date lastOccurrenceDate = new Date();
+
+	/** The exception */
 	private final Exception exception;
 
+	/** The last occurrence date of the exception */
+	private Date lastOccurrenceDate = new Date();
+
+	/**
+	 * Default constructor
+	 *
+	 * @param exception {@link Exception}
+	 */
 	public CachedException(Exception exception) {
 		Objects.requireNonNull(exception);
 		this.exception = exception;
 	}
 
+	/**
+	 * Gets the first occurrence date of the exception
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getDate() {
 		return date;
 	}
-	
+
+	/**
+	 * Gets the last occurrence date of the exception
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getLastOccurrenceDate()  {
 		return lastOccurrenceDate;
 	}
-	
+
+	/**
+	 * Sets the last occurrence date of the exception
+	 *
+	 * @param lastOccurrenceDate {@link Date}
+	 */
 	public void setLastOccurrenceDate(Date lastOccurrenceDate) {
 		this.lastOccurrenceDate = lastOccurrenceDate;
 	}
 
+	/**
+	 * Gets the exception
+	 *
+	 * @return {@link Exception}
+	 */
 	public Exception getException() {
 		return exception;
 	}
-	
+
+	/**
+	 * Gets the exception message
+	 *
+	 * @return {@link String}
+	 */
 	public String getExceptionMessage() {
 		return exception.getMessage();
 	}
-	
+
+	/**
+	 * Gets the exception stack trace
+	 *
+	 * @return {@link String}
+	 */
 	public String getStackTrace() {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);

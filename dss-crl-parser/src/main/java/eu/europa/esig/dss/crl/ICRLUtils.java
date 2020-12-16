@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.crl;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.X509CRLEntry;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
-
+/**
+ * The interface for dealing with CRLs
+ */
 public interface ICRLUtils {
 	
 	/**
@@ -33,10 +36,8 @@ public interface ICRLUtils {
 	 * 
 	 * @param binaries byte array representing an encoded CRL
 	 * @return DER encoded {@link CRLBinary}
-	 * @throws IOException
-	 *             if an IO error occurred
 	 */
-	CRLBinary buildCRLBinary(final byte[] binaries) throws IOException;
+	CRLBinary buildCRLBinary(final byte[] binaries);
 
 	/**
 	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence

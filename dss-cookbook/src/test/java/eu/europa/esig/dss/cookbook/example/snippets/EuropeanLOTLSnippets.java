@@ -57,7 +57,6 @@ import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
 public class EuropeanLOTLSnippets {
 	
@@ -83,11 +82,10 @@ public class EuropeanLOTLSnippets {
 		commonCertificateVerifier.setDataLoader(commonsDataLoader);
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(
-				new FileDocument("C:\\Users\\aleksandr.beliakov\\Downloads\\prova_firma.pdf"));
+				new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml"));
 		validator.setCertificateVerifier(commonCertificateVerifier);
 		
-		Reports reports = validator.validateDocument();
-		reports.print();
+		validator.validateDocument();
 	}
 	
 	public TLValidationJob job() {

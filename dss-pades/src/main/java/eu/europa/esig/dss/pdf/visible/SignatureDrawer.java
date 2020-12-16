@@ -31,7 +31,7 @@ public interface SignatureDrawer {
 	/**
 	 * Draw the visible signature
 	 * 
-	 * @throws IOException
+	 * @throws IOException if an exception occurs
 	 */
 	void draw() throws IOException;
 

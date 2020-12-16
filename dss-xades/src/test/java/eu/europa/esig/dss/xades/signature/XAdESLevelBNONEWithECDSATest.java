@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +97,7 @@ public class XAdESLevelBNONEWithECDSATest extends AbstractXAdESTestSignature {
 		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(), DSSUtils.digest(signatureParameters.getDigestAlgorithm(), dataToSign.getBytes()));
 
 		SignatureValue signatureValue = getToken().signDigest(digest, getPrivateKeyEntry());
+		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 

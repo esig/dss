@@ -20,17 +20,25 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Used for a detached timestamping service
+ */
 public enum TimestampContainerForm {
 	
-	/* Used to timestamp a PDF document */
+	/** Used to timestamp a PDF document */
 	PDF,
 	
-	/* Used to timestamp provided document(s) and creates an ASiC-E container */
+	/** Used to timestamp provided document(s) and creates an ASiC-E container */
 	ASiC_E,
 	
-	/* Used to timestamp provided document(s) and creates an ASiC-S container */
+	/** Used to timestamp provided document(s) and creates an ASiC-S container */
 	ASiC_S;
 
+	/**
+	 * Returns user friendly name of the form
+	 *
+	 * @return {@link String}
+	 */
 	public String getReadable() {
 		String name = this.name();
 		return name.replace('_', '-');

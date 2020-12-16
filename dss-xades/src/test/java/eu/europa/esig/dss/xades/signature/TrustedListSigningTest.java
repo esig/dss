@@ -72,6 +72,7 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 	@BeforeEach
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
+		service = new XAdESService(getOfflineCertificateVerifier());
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -80,8 +81,6 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setEn319132(false);
-
-		service = new XAdESService(getOfflineCertificateVerifier());
 
 		final List<DSSReference> references = new ArrayList<>();
 
@@ -124,22 +123,41 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 			dbf.setNamespaceAware(true);
 			Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(byteArray));
 
-			NodeList taglist = doc.getDocumentElement().getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Signature");
-			assertEquals(1, taglist.getLength());
+			NodeList signlist = doc.getDocumentElement().getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Signature");
+			assertEquals(1, signlist.getLength());
 
-			NodeList refList = ((Element) taglist.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Reference");
+			NodeList refList = ((Element) signlist.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Reference");
 			assertEquals(2, refList.getLength());
 
 			NodeList transormfList = ((Element) refList.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Transform");
 			assertEquals(2, transormfList.getLength());
 
 			assertEquals("http://www.w3.org/2000/09/xmldsig#enveloped-signature", ((Element) transormfList.item(0)).getAttribute("Algorithm"));
+
+			assertEquals("http://www.w3.org/2001/10/xml-exc-c14n#", ((Element) transormfList.item(1)).getAttribute("Algorithm"));
+			
+			NodeList objectlist = ((Element) signlist.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Object");
+			assertEquals(1, objectlist.getLength());
+			
+			NodeList qualProplist = ((Element) objectlist.item(0)).getElementsByTagNameNS("http://uri.etsi.org/01903/v1.3.2#", "QualifyingProperties");
+			assertEquals(1, qualProplist.getLength());
+			
+			NodeList signProplist = ((Element) qualProplist.item(0)).getElementsByTagNameNS("http://uri.etsi.org/01903/v1.3.2#", "SignedProperties");
+			assertEquals(1, signProplist.getLength());
+			
+			NodeList signSigProplist = ((Element) qualProplist.item(0)).getElementsByTagNameNS("http://uri.etsi.org/01903/v1.3.2#", "SignedSignatureProperties");
+			assertEquals(1, signSigProplist.getLength());
+			
+			NodeList signCertlist = ((Element) qualProplist.item(0)).getElementsByTagNameNS("http://uri.etsi.org/01903/v1.3.2#", "SigningCertificate");
+			assertEquals(1, signCertlist.getLength());
+			
+			NodeList signCertV2list = ((Element) qualProplist.item(0)).getElementsByTagNameNS("http://uri.etsi.org/01903/v1.3.2#", "SigningCertificateV2");
+			assertEquals(0, signCertV2list.getLength());
 			
 			unmarshallingTester(doc);
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
+			fail(e);
 		}
 	}
 

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -33,17 +31,45 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+import java.util.Date;
+
+/**
+ * Checks if the revocation is consistent and can be used for the given certificate
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
-	
+
+	/** The certificate in question */
 	private final CertificateWrapper certificate;
+
+	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
-	
+
+	/** ThisUpdate of the revocation */
 	private Date thisUpdate;
+
+	/** Certificate's NotBefore */
 	private Date certNotBefore;
+
+	/** Certificate's NotAfter */
 	private Date certNotAfter;
+
+	/** Defines date after which the revocation issuer ensure the revocation is contained for the certificate */
 	private Date notAfterRevoc;
+
+	/** Defines if certHash matches */
 	private boolean certHashOK;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param revocationData {@link RevocationWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public RevocationConsistentCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate, 
 			RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
@@ -117,22 +143,22 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.TRY_LATER;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (thisUpdate == null) {
-			return MessageTag.REVOCATION_NO_THIS_UPDATE.setArgs(revocationData.getId());
+			return i18nProvider.getMessage(MessageTag.REVOCATION_NO_THIS_UPDATE, revocationData.getId());
 		} else if (!certNotBefore.before(thisUpdate)) {
-			return MessageTag.REVOCATION_THIS_UPDATE_BEFORE.setArgs(revocationData.getId(), ValidationProcessUtils.getFormattedDate(thisUpdate), 
-					ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_BEFORE, revocationData.getId(), ValidationProcessUtils.getFormattedDate(
+					thisUpdate), ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
 		} else if (certNotAfter.compareTo(notAfterRevoc) < 0 && !certHashOK) {
-			return MessageTag.REVOCATION_NOT_AFTER_AFTER.setArgs(revocationData.getId(), ValidationProcessUtils.getFormattedDate(notAfterRevoc), 
-					ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return i18nProvider.getMessage(MessageTag.REVOCATION_NOT_AFTER_AFTER, revocationData.getId(), ValidationProcessUtils.getFormattedDate(
+					notAfterRevoc), ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
 		} else if (certHashOK) {
-			return MessageTag.REVOCATION_CERT_HASH_OK.setArgs(revocationData.getId());
+			return i18nProvider.getMessage(MessageTag.REVOCATION_CERT_HASH_OK, revocationData.getId());
 		} else {
-			return MessageTag.REVOCATION_CONSISTENT.setArgs(revocationData.getId(), ValidationProcessUtils.getFormattedDate(thisUpdate), 
-					ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT, revocationData.getId(), ValidationProcessUtils.getFormattedDate(
+					thisUpdate), ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
 		}
 	}
 

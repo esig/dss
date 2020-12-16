@@ -23,13 +23,19 @@ package eu.europa.esig.dss.asic.xades.definition;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;
 
+/**
+ * The Manifest element enumeration
+ */
 public enum ManifestElement implements DSSElement {
 
 	MANIFEST("manifest"),
 
 	FILE_ENTRY("file-entry");
 
+	/** The namespace */
 	private final DSSNamespace namespace;
+
+	/** The element tag name */
 	private final String tagName;
 
 	ManifestElement(String tagName) {

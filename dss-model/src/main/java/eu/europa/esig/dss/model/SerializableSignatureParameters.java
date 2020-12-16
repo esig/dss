@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.model;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
+import java.io.Serializable;
+
+/**
+ * The interface defines signature parameters
+ */
 public interface SerializableSignatureParameters extends Serializable {
 	
 	/**

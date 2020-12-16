@@ -50,6 +50,31 @@ public class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 	}
 	
 	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		assertEquals(2, digestMatchers.size());
+		
+		boolean ASiCManifestSigned = false;
+		boolean entryFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			assertNotNull(digestMatcher.getName());
+			if ("META-INF/ASiCManifest.xml".equals(digestMatcher.getName())) {
+				assertEquals(DigestMatcherType.MESSAGE_DIGEST, digestMatcher.getType());
+				ASiCManifestSigned = true;
+			} else if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+				entryFound = true;
+			}
+		}
+		assertTrue(ASiCManifestSigned);
+		assertTrue(entryFound);
+	}
+	
+	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		List<XmlManifestFile> manifestFiles = diagnosticData.getContainerInfo().getManifestFiles();
 		assertTrue(Utils.isCollectionNotEmpty(manifestFiles));

@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.crl.stream.impl;
 
+import org.bouncycastle.asn1.ASN1InputStream;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import org.bouncycastle.asn1.ASN1InputStream;
 
 /**
  * This class is used to access to static methods of ASN1InputStream
@@ -35,12 +35,26 @@ final class DERUtil {
 	private DERUtil() {
 	}
 
+	/**
+	 * Reads the next tag if {@code InputStream}
+	 *
+	 * @param is {@link InputStream} to read
+	 * @return integer
+	 * @throws IOException if an exception occurs
+	 */
 	public static int readTag(InputStream is) throws IOException {
 		return is.read();
 	}
 
-	public static int readLength(InputStream s) throws IOException {
-		try (ASN1InputStreamDSS dssIS = new ASN1InputStreamDSS(s, Integer.MAX_VALUE)) {
+	/**
+	 * Reads length of {@code InputStream}
+	 *
+	 * @param is {@link InputStream} to read
+	 * @return length
+	 * @throws IOException if an exception occurs
+	 */
+	public static int readLength(InputStream is) throws IOException {
+		try (ASN1InputStreamDSS dssIS = new ASN1InputStreamDSS(is, Integer.MAX_VALUE)) {
 			return dssIS.readLength();
 		}
 	}
@@ -48,7 +62,7 @@ final class DERUtil {
 	/**
 	 * Adaptation from org.bouncycastle.asn1.ASN1OutputStream.writeLength(int)
 	 * 
-	 * @param os     the output stream
+	 * @param os     {@link OutputStream}
 	 * @param length the length to add
 	 * @throws IOException
 	 */
@@ -72,12 +86,17 @@ final class DERUtil {
 	}
 
 	/**
-	 * 
+	 * Reads the tag number
+	 *
 	 * Copied from
 	 * https://github.com/bcgit/bc-java/blob/r1rv63/core/src/main/java/org/bouncycastle/asn1/ASN1InputStream.java
-	 * 
+	 *
+	 * @param is {@link InputStream}
+	 * @param tag the tag number to read
+	 * @return tag number
+	 * @throws IOException if an excsption occurs
 	 */
-	public static int readTagNumber(InputStream s, int tag) throws IOException {
+	public static int readTagNumber(InputStream is, int tag) throws IOException {
 		int tagNo = tag & 0x1f;
 
 		//
@@ -87,7 +106,7 @@ final class DERUtil {
 		if (tagNo == 0x1f) {
 			tagNo = 0;
 
-			int b = s.read();
+			int b = is.read();
 
 			// X.690-0207 8.1.2.4.2
 			// "c) bits 7 to 1 of the first subsequent octet shall not all be zero."
@@ -99,7 +118,7 @@ final class DERUtil {
 			while ((b >= 0) && ((b & 0x80) != 0)) {
 				tagNo |= (b & 0x7f);
 				tagNo <<= 7;
-				b = s.read();
+				b = is.read();
 			}
 
 			if (b < 0) {

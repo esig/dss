@@ -157,9 +157,9 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 	HMAC_RIPEMD160(EncryptionAlgorithm.HMAC, DigestAlgorithm.RIPEMD160),
 
 	// https://tools.ietf.org/html/rfc8419#section-3.1
-	ED25519(EncryptionAlgorithm.ED25519, DigestAlgorithm.SHA512),
+	ED25519(EncryptionAlgorithm.EDDSA, DigestAlgorithm.SHA512),
 
-	ED448(EncryptionAlgorithm.ED448, DigestAlgorithm.SHAKE256_512);
+	ED448(EncryptionAlgorithm.EDDSA, DigestAlgorithm.SHAKE256_512);
 
 	private final EncryptionAlgorithm encryptionAlgo;
 
@@ -433,6 +433,42 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		return javaAlgorithms;
 	}
 
+	private static final Map<String, SignatureAlgorithm> JWA_ALGORITHMS = registerJsonWebAlgorithms();
+
+	private static final Map<SignatureAlgorithm, String> JWA_ALGORITHMS_FOR_KEY = registerJsonWebAlgorithmsForKey();
+	
+	private static Map<String, SignatureAlgorithm> registerJsonWebAlgorithms() {
+
+		// https://tools.ietf.org/html/rfc7518#section-3.1
+		Map<String, SignatureAlgorithm> jsonWebAlgorithms = new HashMap<>();
+
+		jsonWebAlgorithms.put("HS256", HMAC_SHA256);
+		jsonWebAlgorithms.put("HS384", HMAC_SHA384);
+		jsonWebAlgorithms.put("HS512", HMAC_SHA512);
+
+		jsonWebAlgorithms.put("RS256", RSA_SHA256);
+		jsonWebAlgorithms.put("RS384", RSA_SHA384);
+		jsonWebAlgorithms.put("RS512", RSA_SHA512);
+
+		jsonWebAlgorithms.put("ES256", ECDSA_SHA256);
+		jsonWebAlgorithms.put("ES384", ECDSA_SHA384);
+		jsonWebAlgorithms.put("ES512", ECDSA_SHA512);
+		
+		jsonWebAlgorithms.put("PS256", RSA_SSA_PSS_SHA256_MGF1);
+		jsonWebAlgorithms.put("PS384", RSA_SSA_PSS_SHA384_MGF1);
+		jsonWebAlgorithms.put("PS512", RSA_SSA_PSS_SHA512_MGF1);
+	
+		return jsonWebAlgorithms;
+	}
+
+	private static Map<SignatureAlgorithm, String> registerJsonWebAlgorithmsForKey() {
+		final Map<SignatureAlgorithm, String> jsonWebAlgorithms = new EnumMap<>(SignatureAlgorithm.class);
+		for (Entry<String, SignatureAlgorithm> entry : JWA_ALGORITHMS.entrySet()) {
+			jsonWebAlgorithms.put(entry.getValue(), entry.getKey());
+		}
+		return jsonWebAlgorithms;
+	}
+
 	public static SignatureAlgorithm forXML(final String xmlName) {
 		final SignatureAlgorithm algorithm = XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
@@ -480,6 +516,14 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 			}
 		}
 
+		return algorithm;
+	}
+	
+	public static SignatureAlgorithm forJWA(String jsonWebAlgorithm) {
+		final SignatureAlgorithm algorithm = JWA_ALGORITHMS.get(jsonWebAlgorithm);
+		if (algorithm == null) {
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGO_MSG, jsonWebAlgorithm));
+		}
 		return algorithm;
 	}
 
@@ -593,7 +637,7 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 	 *            the encryption algorithm
 	 * @param digestAlgorithm
 	 *            the digest algorithm
-	 * @param mgf
+	 * @param maskGenerationFunction
 	 *            the mask generation function
 	 */
 	SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
@@ -670,6 +714,15 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 	 */
 	public String getJCEId() {
 		return JAVA_ALGORITHMS_FOR_KEY.get(this);
+	}
+	
+	/**
+	 * Returns algorithm identifier corresponding to JWA accepted algorithms (RFC 7518)
+	 * 
+	 * @return the JWA algorithm identifier
+	 */
+	public String getJWAId() {
+		return JWA_ALGORITHMS_FOR_KEY.get(this);
 	}
 
 }

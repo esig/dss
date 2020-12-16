@@ -24,6 +24,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+/**
+ * This class returns a relevant validator for an ASiC with CAdES container valdiation
+ */
 public class ASiCContainerWithCAdESValidatorFactory implements DocumentValidatorFactory {
 
 	@Override

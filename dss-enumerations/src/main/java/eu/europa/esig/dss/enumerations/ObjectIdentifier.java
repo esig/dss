@@ -36,13 +36,13 @@ public interface ObjectIdentifier extends OidAndUriBasedEnum, OidDescription {
 	 * 
 	 * @return an array of URI {@link String} references
 	 */
-	public String[] getDocumentationReferences();
+	String[] getDocumentationReferences();
 	
 	/**
 	 * Returns Object Identifier Qualifier
 	 * 
 	 * @return {@link ObjectIdentifierQualifier}
 	 */
-	public ObjectIdentifierQualifier getQualifier();
+	ObjectIdentifierQualifier getQualifier();
 
 }

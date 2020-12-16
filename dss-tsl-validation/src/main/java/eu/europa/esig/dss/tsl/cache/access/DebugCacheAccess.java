@@ -27,23 +27,42 @@ import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
 import eu.europa.esig.dss.tsl.cache.ValidationCache;
 
+/**
+ * Generates a prints a report of the current cache state
+ */
 public class DebugCacheAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DebugCacheAccess.class);
 
+	/** New line character */
 	private static final String CARRIAGE_RETURN = "\n";
 
-	/* Global Cache */
+	/** Global download Cache */
 	private final DownloadCache downloadCache;
+
+	/** Global parsing Cache */
 	private final ParsingCache parsingCache;
+
+	/** Global validation Cache */
 	private final ValidationCache validationCache;
 
-	public DebugCacheAccess(final DownloadCache downloadCache, final ParsingCache parsingCache, final ValidationCache validationCache) {
+	/**
+	 * Default constructor
+	 *
+	 * @param downloadCache {@link DownloadCache}
+	 * @param parsingCache {@link ParsingCache}
+	 * @param validationCache {@link ValidationCache}
+	 */
+	public DebugCacheAccess(final DownloadCache downloadCache, final ParsingCache parsingCache,
+							final ValidationCache validationCache) {
 		this.downloadCache = downloadCache;
 		this.parsingCache = parsingCache;
 		this.validationCache = validationCache;
 	}
 
+	/**
+	 * Prints the report for the current cache state
+	 */
 	public void dump() {
 		StringBuilder sb = new StringBuilder("Cache contents");
 		sb.append(CARRIAGE_RETURN);

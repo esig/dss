@@ -53,12 +53,30 @@ public class SSLCertificateLoaderTest {
 	}
 	
 	@Test
+	public void urlWithSpaces() throws Exception {
+		String url = " https://wikipedia.org  ";
+
+		SSLCertificateLoader sslCertificateDataLoader = new SSLCertificateLoader();
+		List<CertificateToken> certificateTokens = sslCertificateDataLoader.getCertificates(url);
+		assertTrue(Utils.isCollectionNotEmpty(certificateTokens));
+	}
+	
+	@Test
 	public void ldapUrl() throws Exception {
 		String url = "ldap://crl-source.hn/o=Hello";
 
 		SSLCertificateLoader sslCertificateDataLoader = new SSLCertificateLoader();
 		DSSException exception = assertThrows(DSSException.class, () -> sslCertificateDataLoader.getCertificates(url));
-		assertEquals("DSS framework only supports HTTP(S) certificate extraction", exception.getMessage());
+		assertEquals("DSS framework supports only HTTP(S) certificate extraction. Obtained URL : 'ldap://crl-source.hn/o=Hello'", exception.getMessage());
+	}
+	
+	@Test
+	public void emptyUrl() throws Exception {
+		String url = " ";
+
+		SSLCertificateLoader sslCertificateDataLoader = new SSLCertificateLoader();
+		DSSException exception = assertThrows(DSSException.class, () -> sslCertificateDataLoader.getCertificates(url));
+		assertEquals("DSS framework supports only HTTP(S) certificate extraction. Obtained URL : ' '", exception.getMessage());
 	}
 
 }

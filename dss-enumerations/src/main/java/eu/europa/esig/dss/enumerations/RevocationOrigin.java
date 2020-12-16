@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * List of possible revocation data origins
+ */
 public enum RevocationOrigin {
 
 	/**
@@ -76,6 +79,11 @@ public enum RevocationOrigin {
 	 */
 	CACHED;
 
+	/**
+	 * Checks if the revocation has been obtained from the input document
+	 *
+	 * @return TRUE if the revocation has been obtained from the input document, FALSE otherwise
+	 */
 	public boolean isInternalOrigin() {
 		return EXTERNAL != this && CACHED != this;
 	}

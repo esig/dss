@@ -20,38 +20,62 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
+import java.util.List;
+
+/**
+ * Checks if message-digest (CAdES/PAdES) or SignedProperties (XAdES) is present
+ */
 public class MessageDigestOrSignedPropertiesCheck extends ChainItem<XmlSAV> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
 
-	public MessageDigestOrSignedPropertiesCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSAV}
+	 * @param signature {@link SignatureWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public MessageDigestOrSignedPropertiesCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+												LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 	}
 
 	@Override
 	protected boolean process() {
+		switch (signature.getSignatureFormat().getSignatureForm()) {
+			case XAdES:
+				return isRequiredDigestMatcherPresent(DigestMatcherType.SIGNED_PROPERTIES);
+			case CAdES:
+			case PAdES:
+			case PKCS7:
+				return isRequiredDigestMatcherPresent(DigestMatcherType.MESSAGE_DIGEST);
+			default:
+				// JAdES shall be skipped
+				return false;
+		}
+	}
+	
+	private boolean isRequiredDigestMatcherPresent(DigestMatcherType digestMatcherType) {
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				// for CAdES and PAdES
-				if (DigestMatcherType.MESSAGE_DIGEST.equals(digestMatcher.getType()) || 
-						// for XAdES
-						DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType())) {
+				if (digestMatcherType.equals(digestMatcher.getType())) {
 					return true;
 				}
 			}

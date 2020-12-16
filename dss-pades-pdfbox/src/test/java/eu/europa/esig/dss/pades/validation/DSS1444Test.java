@@ -40,6 +40,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -88,15 +90,6 @@ public class DSS1444Test {
 		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
 			Exception exception = assertThrows(IOException.class, () -> PDDocument.load(is));
 			assertEquals("Error: End-of-File, expected line", exception.getMessage());
-		}
-	}
-
-	@Test
-	public void test3bis() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			Exception exception = assertThrows(DSSException.class, () -> val.getSignatures());
-			assertTrue(exception.getMessage().contains("Error: End-of-File, expected line"));
 		}
 	}
 
@@ -157,8 +150,9 @@ public class DSS1444Test {
 		List<XmlName> xmlNames = xmlConclusion.getErrors();
 		assertNotNull(xmlNames);
 		for (int i = 0; i < xmlNames.size(); i++) {
-			if ("ASCCM_ANS_1".equals(xmlNames.get(i).getNameId())) {
-				assertEquals("The encryption algorithm is not authorised!", xmlNames.get(i).getValue());
+			if (MessageTag.ASCCM_EAA_ANS.name().equals(xmlNames.get(i).getNameId())) {
+				assertEquals(new I18nProvider().getMessage(MessageTag.ASCCM_EAA_ANS, EncryptionAlgorithm.PLAIN_ECDSA, MessageTag.ACCM_POS_SIG_SIG),
+						xmlNames.get(i).getValue());
 				return;
 			}
 		}

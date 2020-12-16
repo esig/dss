@@ -24,14 +24,23 @@ import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 
 /**
- * The class containing a general logic for alert handling
+ * The class contains a general logic for alert handling
  *
  */
 public abstract class AbstractAlert<T> implements Alert<T> {
 
+	/** Serves as an event detector, in order to trigget the handler */
 	private final AlertDetector<T> detector;
+
+	/** Runs a custom code for the event */
 	private final AlertHandler<T> handler;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param detector {@link AlertDetector} to detect an event
+	 * @param handler {@link AlertHandler} to execute the corresponding code
+	 */
 	protected AbstractAlert(AlertDetector<T> detector, AlertHandler<T> handler) {
 		this.detector = detector;
 		this.handler = handler;

@@ -25,6 +25,9 @@ import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextDefaultSignatureDrawerFactory;
 
+/**
+ * The IText (OpenPdf) implementation of {@code IPdfObjFactory}
+ */
 public class ITextDefaultPdfObjFactory implements IPdfObjFactory {
 
 	@Override

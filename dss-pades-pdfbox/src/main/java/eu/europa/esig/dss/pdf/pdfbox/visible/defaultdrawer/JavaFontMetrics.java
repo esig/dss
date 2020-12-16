@@ -20,14 +20,23 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
-import java.awt.FontMetrics;
-
 import eu.europa.esig.dss.pdf.visible.AbstractFontMetrics;
 
+import java.awt.*;
+
+/**
+ * Contains font metrics for a Java font
+ */
 public class JavaFontMetrics extends AbstractFontMetrics {
-	
+
+	/** Java FontMetrics */
 	private final FontMetrics fontMetrics;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param fontMetrics {@link FontMetrics}
+	 */
 	public JavaFontMetrics(FontMetrics fontMetrics) {
 		this.fontMetrics = fontMetrics;
 	}

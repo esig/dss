@@ -20,36 +20,47 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * XAdES signed properties
+ */
 public abstract class XAdESSigProperties implements SignatureProperties<XAdESAttribute> {
-	
-	private final Element signatureProptiesDom;
+
+	/** Signature properties element */
+	private final Element signaturePropertiesDom;
+
+	/** The XAdES XPaths */
 	private final XAdESPaths xadesPaths;
-	
-	XAdESSigProperties(Element signaturePropties, XAdESPaths xadesPaths) {
-		this.signatureProptiesDom = signaturePropties;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param signatureProperties {@link Element}
+	 * @param xadesPaths {@link XAdESPaths}
+	 */
+	XAdESSigProperties(Element signatureProperties, XAdESPaths xadesPaths) {
+		this.signaturePropertiesDom = signatureProperties;
 		this.xadesPaths = xadesPaths;
 	}
 	
 	@Override
 	public boolean isExist() {
-		return signatureProptiesDom != null;
+		return signaturePropertiesDom != null;
 	}
 
 	@Override
 	public List<XAdESAttribute> getAttributes() {
 		List<XAdESAttribute> unsignedAttributes = new ArrayList<>();
-		if (signatureProptiesDom != null && signatureProptiesDom.hasChildNodes()) {
-			final NodeList unsignedProperties = signatureProptiesDom.getChildNodes();
+		if (signaturePropertiesDom != null && signaturePropertiesDom.hasChildNodes()) {
+			final NodeList unsignedProperties = signaturePropertiesDom.getChildNodes();
 			for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 				Node node = unsignedProperties.item(ii);
 				if (isElementNode(node)) {

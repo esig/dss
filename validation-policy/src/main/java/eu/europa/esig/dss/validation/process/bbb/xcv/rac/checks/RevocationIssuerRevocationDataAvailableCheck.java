@@ -27,9 +27,21 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 
+/**
+ * Checks if the revocation data is available for the revocation issuer's certificate
+ */
 public class RevocationIssuerRevocationDataAvailableCheck extends RevocationDataAvailableCheck<XmlRAC> {
 
-	public RevocationIssuerRevocationDataAvailableCheck(I18nProvider i18nProvider, XmlRAC result, CertificateWrapper certificate, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public RevocationIssuerRevocationDataAvailableCheck(I18nProvider i18nProvider, XmlRAC result,
+														CertificateWrapper certificate, LevelConstraint constraint) {
 		super(i18nProvider, result, certificate, constraint);
 	}
 

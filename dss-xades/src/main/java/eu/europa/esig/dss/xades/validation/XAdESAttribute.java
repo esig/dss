@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
@@ -37,16 +29,36 @@ import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Represents a XAdES attribute
+ */
 public class XAdESAttribute implements ISignatureAttribute {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESAttribute.class);
-	
+
+	/** The corresponding element */
 	private final Element element;
+
+	/** The XPath list to use */
 	private final XAdESPaths xadesPaths;
-	
+
+	/** The tag name of the element */
 	private String localName;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param element {@link Element}
+	 * @param xadesPaths {@link XAdESPaths}
+	 */
 	XAdESAttribute(Element element, XAdESPaths xadesPaths) {
 		this.element = element;
 		this.xadesPaths = xadesPaths;
@@ -64,7 +76,17 @@ public class XAdESAttribute implements ISignatureAttribute {
 	}
 	
 	/**
-	 * Returns namespae of the element
+	 * Returns the current {@code Element}
+	 * 
+	 * @return {@link Element}
+	 */
+	public final Element getElement() {
+		return element;
+	}
+	
+	/**
+	 * Returns namespace of the element
+	 *
 	 * @return {@link String} namespace
 	 */
 	public String getNamespace() {
@@ -73,7 +95,9 @@ public class XAdESAttribute implements ISignatureAttribute {
 	
 	/**
 	 * Returns an inner {@link Element} found by the given {@code xPathExpression}
+	 *
 	 * @param xPathExpression {@link String} to find an element
+	 * @return {@link Element}
 	 */
 	public final Element findElement(String xPathExpression) {
 		return DomUtils.getElement(element, xPathExpression);
@@ -81,7 +105,9 @@ public class XAdESAttribute implements ISignatureAttribute {
 
 	/**
 	 * Returns a {@link NodeList} found by the given {@code xPathExpression}
+	 *
 	 * @param xPathExpression {@link String} to find an element
+	 * @return {@link NodeList}
 	 */
 	public final NodeList getNodeList(String xPathExpression) {
 		return DomUtils.getNodeList(element, xPathExpression);
@@ -89,6 +115,7 @@ public class XAdESAttribute implements ISignatureAttribute {
 
 	/**
 	 * Returns TimeStamp Canonicalization Method
+	 *
 	 * @return {@link String} timestamp canonicalization method
 	 */
 	public String getTimestampCanonicalizationMethod() {
@@ -108,6 +135,7 @@ public class XAdESAttribute implements ISignatureAttribute {
 	/**
 	 * Returns a list of {@link TimestampInclude}d refereces in case of IndividualDataObjectsTimestamp,
 	 * NULL if does not contain any includes
+	 *
 	 * @return list of {@link TimestampInclude}s in case of IndividualDataObjectsTimestamp, NULL otherwise
 	 */
 	public List<TimestampInclude> getTimestampIncludedReferences() {
@@ -127,7 +155,12 @@ public class XAdESAttribute implements ISignatureAttribute {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Gets element's hashCode (used for timestamp message-imprint calculation)
+	 *
+	 * @return hashcode
+	 */
 	public int getElementHashCode() {
 		return element.hashCode();
 	}

@@ -20,28 +20,37 @@
  */
 package eu.europa.esig.saml;
 
-import java.util.List;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.List;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
-import eu.europa.esig.xmldsig.XmlDSigUtils;
-import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
-
+/**
+ * XML Enc Utils
+ */
 public class XMLEncUtils extends XSDAbstractUtils {
 
 	public static final String XML_ENC_SCHEMA_LOCATION = "/xsd/xenc-schema.xsd";
 
+	/** Singleton */
 	private static XMLEncUtils singleton;
 
+	/** JAXBContext */
 	private JAXBContext jc;
 
 	private XMLEncUtils() {
 	}
 
+	/**
+	 * Returns instance of {@code XMLEncUtils}
+	 *
+	 * @return {@link XMLEncUtils}
+	 */
 	public static XMLEncUtils getInstance() {
 		if (singleton == null) {
 			singleton = new XMLEncUtils();

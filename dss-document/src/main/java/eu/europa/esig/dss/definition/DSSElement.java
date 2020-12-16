@@ -20,14 +20,38 @@
  */
 package eu.europa.esig.dss.definition;
 
+/**
+ * The XML element
+ */
 public interface DSSElement {
 
+	/**
+	 * Returns element tag name
+	 *
+	 * @return {@link String} element tag name
+	 */
 	String getTagName();
 
+	/**
+	 * Returns the namespace
+	 *
+	 * @return {@link DSSNamespace}
+	 */
 	DSSNamespace getNamespace();
 
+	/**
+	 * Returns namespace URI
+	 *
+	 * @return {@link String} uri
+	 */
 	String getURI();
 
+	/**
+	 * Checks if the tag name matches to the current element
+	 *
+	 * @param value {@link String} element name to compare
+	 * @return TRUE if the value matches, FALSE otherwise
+	 */
 	boolean isSameTagName(String value);
 
 }

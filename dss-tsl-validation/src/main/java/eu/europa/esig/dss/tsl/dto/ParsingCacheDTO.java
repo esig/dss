@@ -20,33 +20,65 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TrustService;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.Date;
+import java.util.List;
+
+/**
+ * The parsing record DTO
+ */
 public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoRecord {
 	
 	private static final long serialVersionUID = 5464908480606825440L;
-	
+
+	/** The LOTL/TL sequence number */
 	private Integer sequenceNumber;
+
+	/** LOTL/TL version */
 	private Integer version;
+
+	/** The country (territory) */
 	private String territory;
+
+	/** The issuance date of the LOTL/TL */
 	private Date issueDate;
+
+	/** The next update date */
 	private Date nextUpdateDate;
+
+	/** The distribution points urls */
 	private List<String> distributionPoints;
+
+	/** List of found trust service providers */
 	private List<TrustServiceProvider> trustServiceProviders;
+
+	/** List of LOTL other pointers */
 	private List<OtherTSLPointer> lotlOtherPointers;
+
+	/** List of TL other pointers */
 	private List<OtherTSLPointer> tlOtherPointers;
+
+	/** List of pivot URLs */
 	private List<String> pivotUrls;
+
+	/** Signing certificate announcement URL */
 	private String signingCertificateAnnouncementUrl;
 
+	/**
+	 * Default constructor
+	 */
 	public ParsingCacheDTO() {}
-	
+
+	/**
+	 * Copies the cache DTO
+	 *
+	 * @param cacheDTO {@link AbstractCacheDTO}
+	 */
 	public ParsingCacheDTO(AbstractCacheDTO cacheDTO) {
 		super(cacheDTO);
 	}
@@ -56,6 +88,11 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 		return sequenceNumber;
 	}
 
+	/**
+	 * Sets the sequence number
+	 *
+	 * @param sequenceNumber {@link Integer}
+	 */
 	public void setSequenceNumber(Integer sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
@@ -64,7 +101,12 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	public Integer getVersion() {
 		return version;
 	}
-	
+
+	/**
+	 * Sets the version
+	 *
+	 * @param version {@link Integer}
+	 */
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
@@ -73,7 +115,12 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	public String getTerritory() {
 		return territory;
 	}
-	
+
+	/**
+	 * Sets the territory
+	 *
+	 * @param territory {@link String}
+	 */
 	public void setTerritory(String territory) {
 		this.territory = territory;
 	}
@@ -82,7 +129,12 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	public Date getIssueDate() {
 		return issueDate;
 	}
-	
+
+	/**
+	 * Sets the issue date
+	 *
+	 * @param issueDate {@link Date}
+	 */
 	public void setIssueDate(Date issueDate) {
 		this.issueDate = issueDate;
 	}
@@ -91,7 +143,12 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	public Date getNextUpdateDate() {
 		return nextUpdateDate;
 	}
-	
+
+	/**
+	 * Sets the next update date
+	 *
+	 * @param nextUpdateDate {@link Date}
+	 */
 	public void setNextUpdateDate(Date nextUpdateDate) {
 		this.nextUpdateDate = nextUpdateDate;
 	}
@@ -100,7 +157,12 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	public List<String> getDistributionPoints() {
 		return distributionPoints;
 	}
-	
+
+	/**
+	 * Sets a list of distribution point urls
+	 *
+	 * @param distributionPoints a list of {@link String}s
+	 */
 	public void setDistributionPoints(List<String> distributionPoints) {
 		this.distributionPoints = distributionPoints;
 	}
@@ -109,7 +171,12 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	public List<TrustServiceProvider> getTrustServiceProviders() {
 		return trustServiceProviders;
 	}
-	
+
+	/**
+	 * Sets trust service providers
+	 *
+	 * @param trustServiceProviders a list of {@link TrustServiceProvider}s
+	 */
 	public void setTrustServiceProviders(List<TrustServiceProvider> trustServiceProviders) {
 		this.trustServiceProviders = trustServiceProviders;
 	}
@@ -118,7 +185,12 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	public List<OtherTSLPointer> getLotlOtherPointers() {
 		return lotlOtherPointers;
 	}
-	
+
+	/**
+	 * Sets LOTL other pointers
+	 *
+	 * @param lotlOtherPointers a list of {@link OtherTSLPointer}s
+	 */
 	public void setLotlOtherPointers(List<OtherTSLPointer> lotlOtherPointers) {
 		this.lotlOtherPointers = lotlOtherPointers;
 	}
@@ -127,7 +199,12 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	public List<OtherTSLPointer> getTlOtherPointers() {
 		return tlOtherPointers;
 	}
-	
+
+	/**
+	 * Sets TL other pointers
+	 *
+	 * @param tlOtherPointers a list of {@link OtherTSLPointer}s
+	 */
 	public void setTlOtherPointers(List<OtherTSLPointer> tlOtherPointers) {
 		this.tlOtherPointers = tlOtherPointers;
 	}
@@ -137,6 +214,11 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 		return pivotUrls;
 	}
 
+	/**
+	 * Sets pivot URLs
+	 *
+	 * @param pivotUrls a list of {@link String}s
+	 */
 	public void setPivotUrls(List<String> pivotUrls) {
 		this.pivotUrls = pivotUrls;
 	}
@@ -146,6 +228,11 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 		return signingCertificateAnnouncementUrl;
 	}
 
+	/**
+	 * Sets the signing certificate announcement URL
+	 *
+	 * @param signingCertificateAnnouncementUrl {@link String}
+	 */
 	public void setSigningCertificateAnnouncementUrl(String signingCertificateAnnouncementUrl) {
 		this.signingCertificateAnnouncementUrl = signingCertificateAnnouncementUrl;
 	}

@@ -20,34 +20,49 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
+import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
+import eu.europa.esig.dss.asic.common.ASiCParameters;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * A class to generate a DataToSign with ASiC-S with CAdES from a files to be signed
+ */
 public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiCSWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
+	/** The list of documents to be signed */
 	private final List<DSSDocument> filesToBeSigned;
-	private final Date signingDate;
-	private final ASiCParameters asicParameters;
 
+	/** The signing date */
+	private final Date signingDate;
+
+	/** The cached ToBeSigned document */
 	private List<DSSDocument> signedDocuments;
 
-	public DataToSignASiCSWithCAdESFromFiles(List<DSSDocument> filesToBeSigned, Date signingDate, ASiCParameters asicParameters) {
+	/**
+	 * The default constructor
+	 *
+	 * @param filesToBeSigned a list of {@link DSSDocument}s to sign
+	 * @param signingDate {@link Date} of signing
+	 * @param asicParameters {@link ASiCParameters}
+	 */
+	public DataToSignASiCSWithCAdESFromFiles(final List<DSSDocument> filesToBeSigned, final Date signingDate,
+											 final ASiCParameters asicParameters) {
+		super(asicParameters);
 		this.filesToBeSigned = filesToBeSigned;
 		this.signingDate = signingDate;
-		this.asicParameters = asicParameters;
 	}
 
 	@Override
 	public String getSignatureFilename() {
-		return getSignatureFileName(asicParameters);
+		return getSignatureFileName();
 	}
 
 	@Override
@@ -69,7 +84,9 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 	public List<DSSDocument> getSignedDocuments() {
 		if (signedDocuments == null) {
 			if (Utils.collectionSize(filesToBeSigned) > 1) {
-				signedDocuments = Arrays.asList(createPackageZip(filesToBeSigned, signingDate));
+				DSSDocument packageZip = createPackageZip(filesToBeSigned, signingDate,
+						ASiCUtils.getZipComment(asicParameters));
+				signedDocuments = Arrays.asList(packageZip);
 			} else {
 				signedDocuments = new ArrayList<>(filesToBeSigned);
 			}

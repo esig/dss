@@ -20,29 +20,43 @@
  */
 package eu.europa.esig.xmldsig;
 
-import java.util.ArrayList;
-import java.util.List;
+import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.ArrayList;
+import java.util.List;
 
-import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
-
+/**
+ * XMLDSIG schema utils
+ */
 public final class XmlDSigUtils extends XSDAbstractUtils {
 
+	/** XML schema location */
 	public static final String XML_SCHEMA_LOCATION = "/xsd/xml.xsd";
+
+	/** XMLDSIG schema location */
 	public static final String XMLDSIG_SCHEMA_LOCATION = "/xsd/xmldsig-core-schema.xsd";
+
+	/** XMLDSIG Filter 2.0 schema location */
 	public static final String XMLDSIG_FILTER2_SCHEMA_LOCATION = "/xsd/xmldsig-filter2.xsd";
 
+	/** Singleton */
 	private static XmlDSigUtils singleton;
 
+	/** JAXBContext */
 	private JAXBContext jc;
 
 	private XmlDSigUtils() {
 	}
-	
+
+	/**
+	 * Returns instance of {@code XmlDSigUtils}
+	 *
+	 * @return {@link XmlDSigUtils}
+	 */
 	public static XmlDSigUtils getInstance() {
 		if (singleton == null) {
 			singleton = new XmlDSigUtils();

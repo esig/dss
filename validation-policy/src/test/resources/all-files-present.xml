@@ -24,9 +24,7 @@
             <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
             <ClaimedSigningTime>2018-11-28T14:42:30</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="FUL-pain.001.001.03.sct-1543416150404">
                     <DigestMethod>SHA256</DigestMethod>
@@ -119,8 +117,8 @@
             <CommonName>a,m j,37305300123</CommonName>
             <CountryName>EE</CountryName>
             <OrganizationName>ESTEID (DIGI-ID E-RESIDENT)</OrganizationName>
-            <GivenName>m j</GivenName>
             <OrganizationalUnit>digital signature</OrganizationalUnit>
+            <GivenName>m j</GivenName>
             <Surname>a</Surname>
             <AuthorityInformationAccessUrls>
                 <aiaUrl>http://c.sk.ee/ESTEID-SK_2015.der.crt</aiaUrl>

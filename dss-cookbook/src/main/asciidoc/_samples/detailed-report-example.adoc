@@ -1,10 +1,10 @@
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DetailedReport xmlns="http://dss.esig.europa.eu/validation/detailed-report">
-    <Signature Id="S-3723FC8ECE93FD281E21E7239EFAFA0E286306CB5F57F777F5E3A0A3426CA6B1">
+<DetailedReport ValidationTime="2020-12-14T11:03:21" xmlns="http://dss.esig.europa.eu/validation/detailed-report">
+    <Signature Id="S-08113A9BAB65F6271F837FF4992635CC725B49D27B1AED0D714EAD428BE98C6E">
         <ValidationProcessBasicSignature Title="Validation Process for Basic Signatures">
-            <Constraint Id="S-3723FC8ECE93FD281E21E7239EFAFA0E286306CB5F57F777F5E3A0A3426CA6B1">
+            <Constraint Id="S-08113A9BAB65F6271F837FF4992635CC725B49D27B1AED0D714EAD428BE98C6E">
                 <Name NameId="ADEST_ROBVPIIC">Is the result of the Basic Validation Process conclusive?</Name>
                 <Status>OK</Status>
             </Constraint>
@@ -12,7 +12,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2020-01-21T06:07:03</Time>
+                <Time>2020-12-14T11:03:21</Time>
             </ProofOfExistence>
         </ValidationProcessBasicSignature>
         <ValidationProcessLongTermData Title="Validation Process for Signatures with Time and Signatures with Long-Term Validation Data">
@@ -20,28 +20,28 @@
                 <Name NameId="LTV_ABSV">Is the result of the Basic Validation Process acceptable?</Name>
                 <Status>OK</Status>
             </Constraint>
-            <Constraint Id="R-5E2868FF9EE4FC069B79171D768B0A90AB137847ADD4F5344EB5F153BB1F19C9">
+            <Constraint Id="R-83B6DB1D1C8369D90161C212DEBCE29E2608D9B117356B8AA9E531721CB1F5BF">
                 <Name NameId="ADEST_RORPIIC">Is the result of the revocation data validation process acceptable?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
                 <Name NameId="BBB_XCV_IRDC">Is the revocation data consistent?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Revocation R-5E2868FF9EE4FC069B79171D768B0A90AB137847ADD4F5344EB5F153BB1F19C9 thisUpdate 2020-01-21 06:07 is in the certificate validity range : 2017-01-25 22:12 - 2027-01-21 23:59</AdditionalInfo>
+                <AdditionalInfo>Revocation R-83B6DB1D1C8369D90161C212DEBCE29E2608D9B117356B8AA9E531721CB1F5BF thisUpdate 2020-12-14 11:03 is in the certificate validity range : 2017-01-25 22:12 - 2027-01-21 23:59</AdditionalInfo>
             </Constraint>
             <Constraint>
                 <Name NameId="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Certificate Id = C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F</AdditionalInfo>
             </Constraint>
-            <Constraint Id="R-4B614C6CFB8CF6B1F9E9C74E07464CE6483EA31E0C3D58A7D4C56D540EDF40FB">
+            <Constraint Id="R-46B3B0FDA4A56A2601A20B31701AF2B1D0DCAEA8A903CD1346FBA80F49DFF1BD">
                 <Name NameId="ADEST_RORPIIC">Is the result of the revocation data validation process acceptable?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
                 <Name NameId="BBB_XCV_IRDC">Is the revocation data consistent?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Revocation R-4B614C6CFB8CF6B1F9E9C74E07464CE6483EA31E0C3D58A7D4C56D540EDF40FB thisUpdate 2020-01-01 11:00 is in the certificate validity range : 2015-11-25 10:00 - 2027-07-25 10:00</AdditionalInfo>
+                <AdditionalInfo>Revocation R-46B3B0FDA4A56A2601A20B31701AF2B1D0DCAEA8A903CD1346FBA80F49DFF1BD thisUpdate 2020-07-01 11:00 is in the certificate validity range : 2015-11-25 10:00 - 2027-07-25 10:00</AdditionalInfo>
             </Constraint>
             <Constraint>
                 <Name NameId="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
@@ -56,7 +56,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2020-01-21T06:07:03</Time>
+                <Time>2020-12-14T11:03:21</Time>
             </ProofOfExistence>
         </ValidationProcessLongTermData>
         <ValidationProcessArchivalData Title="Validation Process for Signatures with Archival Data">
@@ -68,10 +68,10 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2020-01-21T06:07:03</Time>
+                <Time>2020-12-14T11:03:21</Time>
             </ProofOfExistence>
         </ValidationProcessArchivalData>
-        <ValidationSignatureQualification Id="S-3723FC8ECE93FD281E21E7239EFAFA0E286306CB5F57F777F5E3A0A3426CA6B1" SignatureQualification="QESig" Title="Signature Qualification">
+        <ValidationSignatureQualification SignatureQualification="QESig" Title="Signature Qualification">
             <Constraint>
                 <Name NameId="QUAL_IS_ADES">Is the signature/seal an acceptable AdES digital signature (ETSI EN 319 102-1)?</Name>
                 <Status>OK</Status>
@@ -81,7 +81,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Constraint Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
-                <Name NameId="QUAL_TRUSTED_LIST_ACCEPT">Is the trusted list acceptable?</Name>
+                <Name NameId="QUAL_LIST_OF_TRUSTED_LISTS_ACCEPT">Is the list of trusted lists acceptable?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Trusted List : https://ec.europa.eu/tools/lotl/eu-lotl.xml</AdditionalInfo>
             </Constraint>
@@ -89,6 +89,10 @@
                 <Name NameId="QUAL_TRUSTED_LIST_ACCEPT">Is the trusted list acceptable?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Trusted List : https://tsl.belgium.be/tsl-be.xml</AdditionalInfo>
+            </Constraint>
+            <Constraint>
+                <Name NameId="QUAL_VALID_TRUSTED_LIST_PRESENT">Has been an acceptable trusted list found?</Name>
+                <Status>OK</Status>
             </Constraint>
             <Constraint>
                 <Name NameId="QUAL_QC_AT_ST">Is the certificate qualified at (best) signing time?</Name>
@@ -119,7 +123,7 @@
                     <Indication>PASSED</Indication>
                 </Conclusion>
             </ValidationCertificateQualification>
-            <ValidationCertificateQualification Id="C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F" DateTime="2020-01-21T06:07:03" ValidationTime="BEST_SIGNATURE_TIME" CertificateQualification="QC for eSig with QSCD" Title="Certificate Qualification at best signature time">
+            <ValidationCertificateQualification Id="C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F" DateTime="2020-12-14T11:03:21" ValidationTime="BEST_SIGNATURE_TIME" CertificateQualification="QC for eSig with QSCD" Title="Certificate Qualification at best signature time">
                 <Constraint>
                     <Name NameId="QUAL_HAS_CAQC">Is the certificate related to a CA/QC?</Name>
                     <Status>OK</Status>
@@ -130,8 +134,11 @@
                 </Conclusion>
             </ValidationCertificateQualification>
         </ValidationSignatureQualification>
+        <Conclusion>
+            <Indication>TOTAL_PASSED</Indication>
+        </Conclusion>
     </Signature>
-    <BasicBuildingBlocks Id="R-4B614C6CFB8CF6B1F9E9C74E07464CE6483EA31E0C3D58A7D4C56D540EDF40FB" Type="REVOCATION">
+    <BasicBuildingBlocks Id="R-46B3B0FDA4A56A2601A20B31701AF2B1D0DCAEA8A903CD1346FBA80F49DFF1BD" Type="REVOCATION">
         <ISC Title="Identification of the Signing Certificate">
             ...
         </ISC>
@@ -141,11 +148,11 @@
         <CV Title="Cryptographic Verification">
             ...
         </CV>
-        <SAV ValidationTime="2020-01-21T06:07:03" Title="Signature Acceptance Validation">
+        <SAV ValidationTime="2020-12-14T11:03:21" Title="Signature Acceptance Validation">
             ...
         </SAV>
         <CertificateChain>
-            <ChainItem Id="C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
+            <ChainItem Id="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                 <Source>TRUSTED_LIST</Source>
             </ChainItem>
         </CertificateChain>
@@ -153,24 +160,35 @@
             <Indication>PASSED</Indication>
         </Conclusion>
     </BasicBuildingBlocks>
-    <BasicBuildingBlocks Id="R-5E2868FF9EE4FC069B79171D768B0A90AB137847ADD4F5344EB5F153BB1F19C9" Type="REVOCATION">
+    <BasicBuildingBlocks Id="R-83B6DB1D1C8369D90161C212DEBCE29E2608D9B117356B8AA9E531721CB1F5BF" Type="REVOCATION">
         <ISC Title="Identification of the Signing Certificate">
             ...
         </ISC>
         <XCV Title="X509 Certificate Validation">
-           ...
+            ...
         </XCV>
         <CV Title="Cryptographic Verification">
             ...
         </CV>
-        <SAV ValidationTime="2020-01-21T06:07:03" Title="Signature Acceptance Validation">
+        <SAV ValidationTime="2020-12-14T11:03:21" Title="Signature Acceptance Validation">
             ...
         </SAV>
+        <CertificateChain>
+            <ChainItem Id="C-B336CAA1F3C4930E4EF9C803C12877A004991EE9206C0D4AD3891688C1E478FF">
+                <Source>OCSP_RESPONSE</Source>
+            </ChainItem>
+            <ChainItem Id="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
+                <Source>SIGNATURE</Source>
+            </ChainItem>
+            <ChainItem Id="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
+                <Source>TRUSTED_LIST</Source>
+            </ChainItem>
+        </CertificateChain>
         <Conclusion>
             <Indication>PASSED</Indication>
         </Conclusion>
     </BasicBuildingBlocks>
-    <BasicBuildingBlocks Id="S-3723FC8ECE93FD281E21E7239EFAFA0E286306CB5F57F777F5E3A0A3426CA6B1" Type="SIGNATURE">
+    <BasicBuildingBlocks Id="S-08113A9BAB65F6271F837FF4992635CC725B49D27B1AED0D714EAD428BE98C6E" Type="SIGNATURE">
         <FC Title="Format Checking">
             <Constraint>
                 <Name NameId="BBB_FC_IEFF">Does the signature format correspond to an expected format?</Name>
@@ -181,7 +199,23 @@
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
+                <Name NameId="BBB_FC_ISRIA">Is the signed references identification not ambiguous?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
                 <Name NameId="BBB_FC_IOSIP">Is only one SignerInfo present?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name NameId="BBB_FC_DSFREAP">Do signed and final revisions contain equal amount of pages?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name NameId="BBB_FC_IAOD">Is no element overlapping detected in the PDF?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name NameId="BBB_FC_IVDBSFR">Is there no visual difference between signed and final revisions in the PDF?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
@@ -194,11 +228,15 @@
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name NameId="BBB_ICS_ISASCP">Is the signed attribute: signing-certificate present?</Name>
+                <Name NameId="BBB_ICS_ISASCP">Is the signed attribute: 'signing-certificate' present?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name NameId="BBB_ICS_ISACDP">Is the signed attribute: cert-digest of the certificate present?</Name>
+                <Name NameId="BBB_ICS_ISASCPU">Is the signed attribute: 'signing-certificate' present only once?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name NameId="BBB_ICS_ISACDP">Is the signed attribute: 'cert-digest' of the certificate present?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
@@ -219,7 +257,7 @@
                 <ChainItem Id="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
+                <ChainItem Id="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -246,48 +284,34 @@
                 <Name NameId="BBB_XCV_SUB">Is the certificate validation conclusive?</Name>
                 <Status>OK</Status>
             </Constraint>
-            <Constraint Id="C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
+            <Constraint Id="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                 <Name NameId="BBB_XCV_SUB">Is the certificate validation conclusive?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <SubXCV Id="C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F" TrustAnchor="false" Title="Certificate">
+            <SubXCV Id="C-4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F" TrustAnchor="false" SelfSigned="false" Title="Certificate">
                 <Constraint>
                     <Name NameId="QUAL_UNIQUE_CERT">Is the certificate unique?</Name>
                     <Status>OK</Status>
                 </Constraint>
-                <Constraint>
-                    <Name NameId="BBB_XCV_PSEUDO_USE">Is a pseudonym used?</Name>
-                    <Status>OK</Status>
-                </Constraint>
-                <Constraint>
-                    <Name NameId="BBB_XCV_ISNSSC">Is certificate not self-signed?</Name>
-                    <Status>OK</Status>
-                </Constraint>
                 ...
-                <Constraint>
-                    <Name NameId="BBB_XCV_ICTIVRSC">Is the current time in the validity range of the signers certificate?</Name>
-                    <Status>OK</Status>
-                    <AdditionalInfo>Certificate validity : 2017-01-25 22:12 to 2027-01-21 23:59</AdditionalInfo>
-                </Constraint>
                 <Conclusion>
                     <Indication>PASSED</Indication>
                 </Conclusion>
-                <RAC Id="R-5E2868FF9EE4FC069B79171D768B0A90AB137847ADD4F5344EB5F153BB1F19C9" Title="Revocation Acceptance Validation">
+                <RAC Id="R-83B6DB1D1C8369D90161C212DEBCE29E2608D9B117356B8AA9E531721CB1F5BF" Title="Revocation Acceptance Checker">
                     <Constraint>
-                        <Name NameId="BBB_XCV_IRDC">Is the revocation data consistent?</Name>
+                        <Name NameId="BBB_XCV_ISCUKN">Is the revocation status known?</Name>
                         <Status>OK</Status>
-                        <AdditionalInfo>Revocation R-5E2868FF9EE4FC069B79171D768B0A90AB137847ADD4F5344EB5F153BB1F19C9 thisUpdate 2020-01-21 06:07 is in the certificate validity range : 2017-01-25 22:12 - 2027-01-21 23:59</AdditionalInfo>
                     </Constraint>
                     ...
                     <Conclusion>
                         <Indication>PASSED</Indication>
                     </Conclusion>
-                    <RevocationProductionDate>2020-01-21T06:07:03</RevocationProductionDate>
+                    <RevocationProductionDate>2020-12-14T11:03:21</RevocationProductionDate>
                 </RAC>
-                <RFC Id="R-5E2868FF9EE4FC069B79171D768B0A90AB137847ADD4F5344EB5F153BB1F19C9" Title="Revocation Freshness Checker">
+                <RFC Id="R-83B6DB1D1C8369D90161C212DEBCE29E2608D9B117356B8AA9E531721CB1F5BF" Title="Revocation Freshness Checker">
                     <Constraint>
                         <Name NameId="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
                         <Status>OK</Status>
@@ -298,16 +322,14 @@
                     </Conclusion>
                 </RFC>
             </SubXCV>
-            <SubXCV Id="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA" TrustAnchor="false" Title="Certificate">
+            <SubXCV Id="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA" TrustAnchor="false" SelfSigned="false" Title="Certificate">
                 ...
-                <Conclusion>
-                    <Indication>PASSED</Indication>
-                </Conclusion>
             </SubXCV>
-            <SubXCV Id="C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0" TrustAnchor="true" Title="Certificate">
+            <SubXCV Id="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F" TrustAnchor="true" SelfSigned="true" Title="Certificate">
                 <Conclusion>
                     <Indication>PASSED</Indication>
                 </Conclusion>
+                <EquivalentCertificate>C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0</EquivalentCertificate>
             </SubXCV>
         </XCV>
         <CV Title="Cryptographic Verification">
@@ -324,29 +346,38 @@
             <Constraint>
                 <Name NameId="BBB_CV_ISI">Is the signature intact?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Id = S-3723FC8ECE93FD281E21E7239EFAFA0E286306CB5F57F777F5E3A0A3426CA6B1</AdditionalInfo>
+                <AdditionalInfo>Id = S-08113A9BAB65F6271F837FF4992635CC725B49D27B1AED0D714EAD428BE98C6E</AdditionalInfo>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2020-01-21T06:07:03" Title="Signature Acceptance Validation">
+        <SAV ValidationTime="2020-12-14T11:03:21" Title="Signature Acceptance Validation">
             <Constraint>
                 <Name NameId="BBB_SAV_ISSV">Is the structure of the signature valid?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name NameId="BBB_SAV_ISQPSTP">Is the signed qualifying property: signing-time present?</Name>
+                <Name NameId="BBB_SAV_DSCACRCC">Does Signing Certificate attribute contains references only to the certificate chain?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name NameId="BBB_SAV_ISQPMDOSPP">Is the signed qualifying property: message-digest or SignedProperties present?</Name>
+                <Name NameId="BBB_SAV_ISQPSTP">Is the signed qualifying property: 'signing-time' present?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name NameId="ASCCM">Are signature cryptographic constraints met?</Name>
+                <Name NameId="BBB_SAV_ISQPMDOSPP">Is the signed qualifying property: 'message-digest' or 'SignedProperties' present?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Validation time : 2020-01-21 06:07 for token with ID : [S-3723FC8ECE93FD281E21E7239EFAFA0E286306CB5F57F777F5E3A0A3426CA6B1]</AdditionalInfo>
+            </Constraint>
+            <Constraint>
+                <Name NameId="ACCM">Are cryptographic constraints met for the signature creation?</Name>
+                <Status>OK</Status>
+                <AdditionalInfo>Validation time : 2020-12-14 11:03</AdditionalInfo>
+            </Constraint>
+            <Constraint>
+                <Name NameId="ACCM">Are cryptographic constraints met for the message digest?</Name>
+                <Status>OK</Status>
+                <AdditionalInfo>Validation time : 2020-12-14 11:03 for message digest</AdditionalInfo>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
@@ -356,6 +387,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>S-08113A9BAB65F6271F837FF4992635CC725B49D27B1AED0D714EAD428BE98C6E</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -365,7 +397,7 @@
             <ChainItem Id="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
                 <Source>SIGNATURE</Source>
             </ChainItem>
-            <ChainItem Id="C-C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
+            <ChainItem Id="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
                 <Source>TRUSTED_LIST</Source>
             </ChainItem>
         </CertificateChain>

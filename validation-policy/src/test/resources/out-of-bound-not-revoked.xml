@@ -7,9 +7,7 @@
             <SignatureFilename>seal-cz.pdf</SignatureFilename>
             <ClaimedSigningTime>2018-09-01T14:28:46</ClaimedSigningTime>
             <SignatureFormat>PKCS7-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>

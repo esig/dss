@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="62c0c65c-00fe-478c-a060-00529a090280" activeEnvironment="Default" name="DSS-SOAP-REST" resourceRoot="" soapui-version="5.5.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="17828c3d-c8ef-495c-b77c-fc90a19c79fd" wsaVersion="NONE" name="SoapDocumentValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://validation.dss.esig.europa.eu/}SoapDocumentValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentValidationServiceImplService" targetNamespace="http://validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://validation.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+<con:soapui-project id="62c0c65c-00fe-478c-a060-00529a090280" activeEnvironment="Default" name="DSS-SOAP-REST" resourceRoot="" soapui-version="5.6.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="17828c3d-c8ef-495c-b77c-fc90a19c79fd" wsaVersion="NONE" name="SoapDocumentValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://validation.dss.esig.europa.eu/}SoapDocumentValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentValidationServiceImplService" targetNamespace="http://validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://validation.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
   <wsdl:types>
     <xs:schema elementFormDefault="unqualified" targetNamespace="http://validation.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="http://dss.esig.europa.eu/validation/simple-report" xmlns:ns3="http://dss.esig.europa.eu/validation/diagnostic" xmlns:ns2="http://dss.esig.europa.eu/validation/detailed-report" xmlns:ns1="http://dss.esig.europa.eu/validation/policy">
       <xs:import namespace="http://dss.esig.europa.eu/validation/policy"/>
@@ -1033,7 +1033,7 @@
          </dataToValidateDTO>
       </val:validateSignature>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://validation.dss.esig.europa.eu/SoapDocumentValidationService/validateSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:RestService" id="66dd2adb-201a-45ee-8bf6-e6ef4a5ba1ca" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost:8080/services/rest/validation?_wadl</con:endpoint></con:endpoints><con:resource name="ValidateSignature" path="/services/rest/validation/validateSignature" id="5f2a4735-1c67-4420-b681-210881b11193"><con:settings/><con:parameters/><con:method name="ValidateSignature" id="76126e65-876a-45ae-b2cb-949f940c23e6" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature">val:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="c2b0bdab-f911-4774-b27c-386e3b74a2ce" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{"signedDocument":{"bytes":"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT4zc2xnUVQvTHdwRWozRVVNTmpDSWlPaXBaUDVGaVdGOC92cmM1WXpEMFZRPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPlZKSDl2ckVmM2tvOG5COUJDbkxWK0R4UDBRUXIyTzdEeGxGK1ZacWJrV2hPV1RRQ1RqTlhHbW5wWnFtWi9QbFllTUJqSXRQNWpMdHVyMHF2UjFTSEJwR2E5bWF1Y2tBTXBCYjhmSC9UUmZjMDI5UHFuUkpyV0JXZWZDY2J6L2VVcGRYckJvOUtvTnJlOUV6ckQvTjl4S0FZdVdqemRxVFVqS3RCK0ZicG1vMkR5OVk2ejJDSERabmxkOUVJVjdtYUk5d2c4RlM2U21WdWhkUVZES0NQMU85NDI0b2dzSVRjUURzZTRZMnAxaHlPeFJGRHFzNWgycGg5YllocTJzR1pYZ1FQS1B3VW1vWDcwbDBLZE00WDR6dHRrdzBWbjZCNlZ3WnF0QjhJL3pyS3Y4RjlUOHVSRTMvcmR6NElWQi9zUGVkQndmMTZzK0Zra041ZWxsQlNtQT09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDNmpDQ0FkS2dBd0lCQWdJR0U0TVUzM2R4TUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakFvTVJNd0VRWURWUVFEREFwVGFXZHVaWEpHWVd0bE1SRXdEd1lEVlFRS0RBaEVVMU10ZEdWemREQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUpieS9IbklhWUJsa1VaZ29LbnhNRDRhUnFQQktmZTQvMnNIdjd4eGVodVArR1pxYWFVSmZNMEY4UXRWTkhCMWNROXBhaHpEeXpzVk5lU3hpWllneENQVTZhV0lmSktpWFdoQmtUayswb1Q4NXJhZFhsMWFnRmJWQmJEaWpWZll1THZlQTk4enFxc2phQ1h3REJ2dXdZSEh2ejdHZDBIY0J1bE5MODVtOUFhelI4ZDU1QURLZ1htYWJ4R1Z2UWRoQUNaSlczcHlUUWdvMUJueXdhVGVabjJsVnZaZGZFZHludFV0ODhuZWZ5Tjl3czBHays2TlcwV2RtY1A4QmlRYnNWbkIwTHl4bnJua1JFL2NSaHBCNmRhNjM5d1ArQWJyQ2R3VE1oMmt4aUxQbVErek9XOHQxM3dmNjRIbzZTMU41M2pOV0M3NTVjQ21OMlBPcE1vNVJWRUNBd0VBQWFNU01CQXdEZ1lEVlIwUEFRSC9CQVFEQWdFR01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQndBOVhBMkRCWXM5RWxJQkE0ZVZtQ2t5WnFTWUJNdFVSU2VqMWhuN3JpK3F4SXk0THlsRGl0djhlV3hncmN6ZEQ4TzZYVUU3ZDRtUU9kN2FSS0ZicCs1R0NXZTNSc3NRQzMramhsMEJ3NmhRcGVmTytkd3lVeWR1aTlrcVRHY0s4UVgzT3BpNS9PZVR4YUNOUGFtaUZqcUZwMUZlMjJXbnJzTUxUYnNNTGsrajJCZXY0cEEvVXdxRHAzWG5xdWFIKzg5V1pnVVdSVG01VjBkdkhMalFyZjAybjQvTzJWVU1xWE1kNjlMUmFJdXFNcDcxOXk1WnI0VVgvMWdRNC9xTmp2ektsNDNFQytCVFBBM3d1L21IV1NGQkh4R092eVBkNFhGcytxajNER25VRW1WQ09XYjlvS1NBMm16VmlWc3owdUhUNktybm8rc29hU1lTdyt0SU8yPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDOGpDQ0FkcWdBd0lCQWdJR0NtckdiTlhYTUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakF3TVJzd0dRWURWUVFEREJKU2IyOTBVMlZzWmxOcFoyNWxaRVpoYTJVeEVUQVBCZ05WQkFvTUNFUlRVeTEwWlhOME1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcHJtWC9YYVBCWFd4S1pnM0VOaEJVRlZxelFSYzZ0RDlLSCtKNXdHQUZselVzNmZ3dkRQcEVXZDhYTVBSaGlEU3QvTXF2cGM2Z2ZpK1UreXVqaHFQSFRxajJEVTJzakpWc0dqaTg5QzMwQWpXNEN3RnVKMkhnak12ci9vRWphV3RIVXhrZ2t1WkpKQ3laYzZGUTAzSG8xUFFnbUpQWlVaNzdyTFNwbHk0aXN1SVJFUHNHNzl0Rk5WNFF0L3MySFpKZlRmbmNyME9XUXZTV1JMRTJOZlBqYzF5Qjc1VDBIdDdacVk1eGxyblB4YU9PM1V2TkVjamdsQUpwWUpGWHRuRUMwNTJGaWdRalorTzdPLzVjaFdQYlZYWFhMWk5aUWpyaDYvN2ZDU0lObGh6ZmJFTWhRSlYrNElMQThRaXBSb2RhOW1IRk0rck1QMEJQOWhadW1SMm1RSURBUUFCb3hJd0VEQU9CZ05WSFE4QkFmOEVCQU1DQVFZd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFDNTBIeU5YY2RYaTlUMkhhUGJQcWZ2ZXlydXFuNEJBcUhNUmFLZlhMM3h5RklmQ2JEM2VrandwVFhGRFNuVmhlZDZFOGtUYTlkMmkzWURydytxRi9sZlF5bjFDSHNrTHI4UWRaZHRjWHJrN0paRHRYSXphYm5QMmZXeVp2di9wOUNMRDNNcGNycXBtSDRlZ2k2S2lmZFM4WitnWjZaNnFHUEtnbVM1ckp4T25FVTREaEhuTDhzdEcvUlR6M3ZhWXlFT0JleVVTK3psNGxhREJqNmNwaFFCcW5VZUVoaGp5WjhFVWlJVjRqTUl3ckF2TEZZMy9XUkYxK3BnSnhlWWZEOGovNERLYVBISnJ0MmhBVDR2K1JyTzFuUWt5WXdCYUZOTUh4TENwa3FXSFVBRkg4YURTeWxnRGVSTzZMUzhhcjhGdlVhcFF5SGdoU0p2YWNEcW5ldVk9PC9kczpYNTA5Q2VydGlmaWNhdGU+PC9kczpYNTA5RGF0YT48L2RzOktleUluZm8+PGRzOk9iamVjdD48eGFkZXM6UXVhbGlmeWluZ1Byb3BlcnRpZXMgeG1sbnM6eGFkZXM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMvdjEuMy4yIyIgVGFyZ2V0PSIjaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjx4YWRlczpTaWduZWRQcm9wZXJ0aWVzIElkPSJ4YWRlcy1pZC0zZmNmNjE2NDY1NmZkOWI5M2YyZGRiZDgxYzFjNGI0ZCI+PHhhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25pbmdUaW1lPjIwMTYtMDEtMjVUMDg6NTA6MzJaPC94YWRlczpTaWduaW5nVGltZT48eGFkZXM6U2lnbmluZ0NlcnRpZmljYXRlPjx4YWRlczpDZXJ0Pjx4YWRlczpDZXJ0RGlnZXN0PjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjc2hhMSIvPjxkczpEaWdlc3RWYWx1ZT5XVDFUczhCSXoyQUM5d3JROVBnYi9oNk5Rbms9PC9kczpEaWdlc3RWYWx1ZT48L3hhZGVzOkNlcnREaWdlc3Q+PHhhZGVzOklzc3VlclNlcmlhbD48ZHM6WDUwOUlzc3Vlck5hbWU+Tz1EU1MtdGVzdCxDTj1Sb290U2VsZlNpZ25lZEZha2U8L2RzOlg1MDlJc3N1ZXJOYW1lPjxkczpYNTA5U2VyaWFsTnVtYmVyPjIxNDUzNzExODMyOTQ1PC9kczpYNTA5U2VyaWFsTnVtYmVyPjwveGFkZXM6SXNzdWVyU2VyaWFsPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZT48L3hhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjx4YWRlczpEYXRhT2JqZWN0Rm9ybWF0IE9iamVjdFJlZmVyZW5jZT0iI3ItaWQtMSI+PHhhZGVzOk1pbWVUeXBlPnRleHQveG1sPC94YWRlczpNaW1lVHlwZT48L3hhZGVzOkRhdGFPYmplY3RGb3JtYXQ+PC94YWRlczpTaWduZWREYXRhT2JqZWN0UHJvcGVydGllcz48L3hhZGVzOlNpZ25lZFByb3BlcnRpZXM+PC94YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcz48L2RzOk9iamVjdD48L2RzOlNpZ25hdHVyZT4=","name":"xades-detached.xml"},"originalDocuments":[{"bytes":"PGhlbGxvPndvcmxkPC9oZWxsbz4=","name":"sample.xml"}],"policy":null}</con:request><con:originalUri>http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="one-document" path="/services/rest/signature/one-document/getDataToSign" id="4b22f5c8-ff08-473a-a340-7dccd88e91ca"><con:settings/><con:parameters/><con:method name="getDataToSign" id="70047513-c52e-4462-9361-52e0c5952229" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="673985ee-102c-40d0-823d-ac348831bccd" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://validation.dss.esig.europa.eu/SoapDocumentValidationService/validateSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:RestService" id="66dd2adb-201a-45ee-8bf6-e6ef4a5ba1ca" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost:8080/services/rest/validation?_wadl</con:endpoint></con:endpoints><con:resource name="validateSignature" path="/services/rest/validation/validateSignature" id="5f2a4735-1c67-4420-b681-210881b11193"><con:settings/><con:parameters/><con:method name="ValidateSignature" id="76126e65-876a-45ae-b2cb-949f940c23e6" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature">val:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="c2b0bdab-f911-4774-b27c-386e3b74a2ce" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{"signedDocument":{"bytes":"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT4zc2xnUVQvTHdwRWozRVVNTmpDSWlPaXBaUDVGaVdGOC92cmM1WXpEMFZRPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPlZKSDl2ckVmM2tvOG5COUJDbkxWK0R4UDBRUXIyTzdEeGxGK1ZacWJrV2hPV1RRQ1RqTlhHbW5wWnFtWi9QbFllTUJqSXRQNWpMdHVyMHF2UjFTSEJwR2E5bWF1Y2tBTXBCYjhmSC9UUmZjMDI5UHFuUkpyV0JXZWZDY2J6L2VVcGRYckJvOUtvTnJlOUV6ckQvTjl4S0FZdVdqemRxVFVqS3RCK0ZicG1vMkR5OVk2ejJDSERabmxkOUVJVjdtYUk5d2c4RlM2U21WdWhkUVZES0NQMU85NDI0b2dzSVRjUURzZTRZMnAxaHlPeFJGRHFzNWgycGg5YllocTJzR1pYZ1FQS1B3VW1vWDcwbDBLZE00WDR6dHRrdzBWbjZCNlZ3WnF0QjhJL3pyS3Y4RjlUOHVSRTMvcmR6NElWQi9zUGVkQndmMTZzK0Zra041ZWxsQlNtQT09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDNmpDQ0FkS2dBd0lCQWdJR0U0TVUzM2R4TUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakFvTVJNd0VRWURWUVFEREFwVGFXZHVaWEpHWVd0bE1SRXdEd1lEVlFRS0RBaEVVMU10ZEdWemREQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUpieS9IbklhWUJsa1VaZ29LbnhNRDRhUnFQQktmZTQvMnNIdjd4eGVodVArR1pxYWFVSmZNMEY4UXRWTkhCMWNROXBhaHpEeXpzVk5lU3hpWllneENQVTZhV0lmSktpWFdoQmtUayswb1Q4NXJhZFhsMWFnRmJWQmJEaWpWZll1THZlQTk4enFxc2phQ1h3REJ2dXdZSEh2ejdHZDBIY0J1bE5MODVtOUFhelI4ZDU1QURLZ1htYWJ4R1Z2UWRoQUNaSlczcHlUUWdvMUJueXdhVGVabjJsVnZaZGZFZHludFV0ODhuZWZ5Tjl3czBHays2TlcwV2RtY1A4QmlRYnNWbkIwTHl4bnJua1JFL2NSaHBCNmRhNjM5d1ArQWJyQ2R3VE1oMmt4aUxQbVErek9XOHQxM3dmNjRIbzZTMU41M2pOV0M3NTVjQ21OMlBPcE1vNVJWRUNBd0VBQWFNU01CQXdEZ1lEVlIwUEFRSC9CQVFEQWdFR01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQndBOVhBMkRCWXM5RWxJQkE0ZVZtQ2t5WnFTWUJNdFVSU2VqMWhuN3JpK3F4SXk0THlsRGl0djhlV3hncmN6ZEQ4TzZYVUU3ZDRtUU9kN2FSS0ZicCs1R0NXZTNSc3NRQzMramhsMEJ3NmhRcGVmTytkd3lVeWR1aTlrcVRHY0s4UVgzT3BpNS9PZVR4YUNOUGFtaUZqcUZwMUZlMjJXbnJzTUxUYnNNTGsrajJCZXY0cEEvVXdxRHAzWG5xdWFIKzg5V1pnVVdSVG01VjBkdkhMalFyZjAybjQvTzJWVU1xWE1kNjlMUmFJdXFNcDcxOXk1WnI0VVgvMWdRNC9xTmp2ektsNDNFQytCVFBBM3d1L21IV1NGQkh4R092eVBkNFhGcytxajNER25VRW1WQ09XYjlvS1NBMm16VmlWc3owdUhUNktybm8rc29hU1lTdyt0SU8yPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDOGpDQ0FkcWdBd0lCQWdJR0NtckdiTlhYTUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakF3TVJzd0dRWURWUVFEREJKU2IyOTBVMlZzWmxOcFoyNWxaRVpoYTJVeEVUQVBCZ05WQkFvTUNFUlRVeTEwWlhOME1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcHJtWC9YYVBCWFd4S1pnM0VOaEJVRlZxelFSYzZ0RDlLSCtKNXdHQUZselVzNmZ3dkRQcEVXZDhYTVBSaGlEU3QvTXF2cGM2Z2ZpK1UreXVqaHFQSFRxajJEVTJzakpWc0dqaTg5QzMwQWpXNEN3RnVKMkhnak12ci9vRWphV3RIVXhrZ2t1WkpKQ3laYzZGUTAzSG8xUFFnbUpQWlVaNzdyTFNwbHk0aXN1SVJFUHNHNzl0Rk5WNFF0L3MySFpKZlRmbmNyME9XUXZTV1JMRTJOZlBqYzF5Qjc1VDBIdDdacVk1eGxyblB4YU9PM1V2TkVjamdsQUpwWUpGWHRuRUMwNTJGaWdRalorTzdPLzVjaFdQYlZYWFhMWk5aUWpyaDYvN2ZDU0lObGh6ZmJFTWhRSlYrNElMQThRaXBSb2RhOW1IRk0rck1QMEJQOWhadW1SMm1RSURBUUFCb3hJd0VEQU9CZ05WSFE4QkFmOEVCQU1DQVFZd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFDNTBIeU5YY2RYaTlUMkhhUGJQcWZ2ZXlydXFuNEJBcUhNUmFLZlhMM3h5RklmQ2JEM2VrandwVFhGRFNuVmhlZDZFOGtUYTlkMmkzWURydytxRi9sZlF5bjFDSHNrTHI4UWRaZHRjWHJrN0paRHRYSXphYm5QMmZXeVp2di9wOUNMRDNNcGNycXBtSDRlZ2k2S2lmZFM4WitnWjZaNnFHUEtnbVM1ckp4T25FVTREaEhuTDhzdEcvUlR6M3ZhWXlFT0JleVVTK3psNGxhREJqNmNwaFFCcW5VZUVoaGp5WjhFVWlJVjRqTUl3ckF2TEZZMy9XUkYxK3BnSnhlWWZEOGovNERLYVBISnJ0MmhBVDR2K1JyTzFuUWt5WXdCYUZOTUh4TENwa3FXSFVBRkg4YURTeWxnRGVSTzZMUzhhcjhGdlVhcFF5SGdoU0p2YWNEcW5ldVk9PC9kczpYNTA5Q2VydGlmaWNhdGU+PC9kczpYNTA5RGF0YT48L2RzOktleUluZm8+PGRzOk9iamVjdD48eGFkZXM6UXVhbGlmeWluZ1Byb3BlcnRpZXMgeG1sbnM6eGFkZXM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMvdjEuMy4yIyIgVGFyZ2V0PSIjaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjx4YWRlczpTaWduZWRQcm9wZXJ0aWVzIElkPSJ4YWRlcy1pZC0zZmNmNjE2NDY1NmZkOWI5M2YyZGRiZDgxYzFjNGI0ZCI+PHhhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25pbmdUaW1lPjIwMTYtMDEtMjVUMDg6NTA6MzJaPC94YWRlczpTaWduaW5nVGltZT48eGFkZXM6U2lnbmluZ0NlcnRpZmljYXRlPjx4YWRlczpDZXJ0Pjx4YWRlczpDZXJ0RGlnZXN0PjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjc2hhMSIvPjxkczpEaWdlc3RWYWx1ZT5XVDFUczhCSXoyQUM5d3JROVBnYi9oNk5Rbms9PC9kczpEaWdlc3RWYWx1ZT48L3hhZGVzOkNlcnREaWdlc3Q+PHhhZGVzOklzc3VlclNlcmlhbD48ZHM6WDUwOUlzc3Vlck5hbWU+Tz1EU1MtdGVzdCxDTj1Sb290U2VsZlNpZ25lZEZha2U8L2RzOlg1MDlJc3N1ZXJOYW1lPjxkczpYNTA5U2VyaWFsTnVtYmVyPjIxNDUzNzExODMyOTQ1PC9kczpYNTA5U2VyaWFsTnVtYmVyPjwveGFkZXM6SXNzdWVyU2VyaWFsPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZT48L3hhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjx4YWRlczpEYXRhT2JqZWN0Rm9ybWF0IE9iamVjdFJlZmVyZW5jZT0iI3ItaWQtMSI+PHhhZGVzOk1pbWVUeXBlPnRleHQveG1sPC94YWRlczpNaW1lVHlwZT48L3hhZGVzOkRhdGFPYmplY3RGb3JtYXQ+PC94YWRlczpTaWduZWREYXRhT2JqZWN0UHJvcGVydGllcz48L3hhZGVzOlNpZ25lZFByb3BlcnRpZXM+PC94YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcz48L2RzOk9iamVjdD48L2RzOlNpZ25hdHVyZT4=","name":"xades-detached.xml"},"originalDocuments":[{"bytes":"PGhlbGxvPndvcmxkPC9oZWxsbz4=","name":"sample.xml"}],"policy":null}</con:request><con:originalUri>http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSign" path="/services/rest/signature/one-document/getDataToSign" id="4b22f5c8-ff08-473a-a340-7dccd88e91ca"><con:settings/><con:parameters/><con:method name="getDataToSign" id="70047513-c52e-4462-9361-52e0c5952229" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="673985ee-102c-40d0-823d-ac348831bccd" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
@@ -1074,7 +1074,7 @@
     "digestAlgorithm" : null,
     "name" : "RemoteDocument"
   }
-}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="" value="" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method></con:resource><con:resource name="one-document" path="/services/rest/signature/one-document/extendDocument" id="8f4c1dd4-760c-42cd-893b-6ea1e0b52d4f"><con:settings/><con:parameters/><con:method name="Method 1" id="515327ec-1758-473d-945b-cad7517af299" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ext="http://localhost/services/rest/signature/one-document/extendDocument">ext:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="32122e73-706c-4504-b6ca-0c716ea86603" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="" value="" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry/></con:parameterOrder></con:request></con:method></con:resource><con:resource name="extendDocument" path="/services/rest/signature/one-document/extendDocument" id="8f4c1dd4-760c-42cd-893b-6ea1e0b52d4f"><con:settings/><con:parameters/><con:method name="Method 1" id="515327ec-1758-473d-945b-cad7517af299" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ext="http://localhost/services/rest/signature/one-document/extendDocument">ext:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="32122e73-706c-4504-b6ca-0c716ea86603" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "toExtendDocument" : {
     "bytes" : "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT5EenR3TlRtUm9PQW02L2xNSThSeW01eFpQekl2TFlEem4vZWJZWWtQc3I0PTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPllBN3NFTnQzTjh1ZkxGTW5LcjM2cjBQcXpNaVkzUTBzKytJR1RFVUMwc3BheFV2MGRIWk0wZC95bjNrcExKTG9Va0k0TTNmbGo1V0duODNrZjA1QnFNMWtoc1g2MUdKemFGVFBHcG03YWtSUUtodm9IMjV5eXFUWVhFU2xCY20wNGl6aUtoTE16WmpVZng0L0IxWkl5c3Y1cElCZ0oycjJvaTZqTG9wOXd3M2dlNGM0WUpvYUsrU1hrNmh5VE5PY044UGpHZTYzV1lPVE5WUFFGdmphOEJud2crYTBiQnV3RCs4TjZmd2lnQ2RXNWEvNERKVWUvSjhNYjcwWkk4UG9Pem5HRGZpK1RQYmlJZVZtQ2JsNW1Vb1VnMlEveFlsdUpmTGgzdUdRQVhLQnZGNDVvRElIUlZlZm5OL0QvV3l0QUNsVVZEb1FTeXdlbW5qUHBxRjhlZz09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlEMURDQ0FyeWdBd0lCQWdJQkNqQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZG5iMjlrTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXhXaGNOTVRnd09ESTJNRGMxTkRNeFdqQlBNUkl3RUFZRFZRUUREQWxuYjI5a0xYVnpaWEl4R1RBWEJnTlZCQW9NRUU1dmQybHVZU0JUYjJ4MWRHbHZibk14RVRBUEJnTlZCQXNNQ0ZCTFNTMVVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxSQ1VJUVpidzNuU2RMcCtCOWN6RUNncFpra1E1eFY0ZzlNLzd3bGc5N29DQ2Y3VUVoOUJBMWQrellqc3p2K0JKMWJKWlBnYW4yMTQ0QXZnc29HSmZiNlVJeVZXNGdrbFVnSWwxYXJVdm9uK1drS25zZUZ1UU9mSnlqU0ZVREl3bnV2cDBoemNKWEhYUm1MZG15aCtuKzZOTUgwb201dFZvU2ZRcnRCVmlDTGVTTVZ6dUQ1RVBqMG1JUmN4OTFwTDM4ZTNGTlRXN05hR1pMZWV6dUZ1Ui9xN3o5M2xMa3ZaNFZBTU5HR0x2SVhPWWVSQlpNeVBocEJaNEwzQThJM0VFbEtXSC8xTHdpaVhUVFNHMXNNNld2TVRWYmYydmJkNDduWlJRQTJtU3BOR2pRb3VPQUVyZmVWVlVxeklDZ2hRQ0hSR09OdVNMRy9IZnFGSGI0aldnMENBd0VBQWFPQnZEQ0J1VEFPQmdOVkhROEJBZjhFQkFNQ0JrQXdnWWNHQ0NzR0FRVUZCd0VCQkhzd2VUQTVCZ2dyQmdFRkJRY3dBWVl0YUhSMGNEb3ZMMlJ6Y3k1dWIzZHBibUV1YkhVdmNHdHBMV1poWTNSdmNua3ZiMk56Y0M5bmIyOWtMV05oTUR3R0NDc0dBUVVGQnpBQ2hqQm9kSFJ3T2k4dlpITnpMbTV2ZDJsdVlTNXNkUzl3YTJrdFptRmpkRzl5ZVM5amNuUXZaMjl2WkMxallTNWpjblF3SFFZRFZSME9CQllFRk4ycEhELzdQZWZtQlQ4b1gyOVpoV3kvT0hKMU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkszVk9MaERJVldLb0ZycmhoV3phZGR0azZYUXRjd1JvTlBWU3NpL2dPcnpzZE03MEEzMXhJVHc3WWZMaHBvVkExeG83b3ZIbGRwTGxocXk5bzV3aDI4MnlDcHFCVUF0Z3JTa0RHb2crSzdDTDZnVXBybFlpWnVHWnJ0ZzJYM2ZIUzJVc3g0WkozdElqNndWZWNERVVxSVNGZkZUMkVzbTBRWFVuZ0lLRk1sOTVYZ210dzJ3eFhiT3pVZURkNERJUHJ2K21XNXBvQVdyNkl0c1YrSDJWUStaTC9rQm53V0hqU1RPYUdGaXNxWFkvYUgvMVB0QlhBKzE1K1lJV2VtSkJTdjNrRGFGek9YQUV0UjlaSThsWU9KYXJuWTdBeS9hTjZiOXVHZmZyYm8vaFZBY0w0V0RkaGtiQk4zbTh3K2c3NkxvQVhOZUVldTA0QS8weExaelVCPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlENmpDQ0F0S2dBd0lCQWdJQkJEQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZHliMjkwTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXdXaGNOTVRnd09ESTJNRGMxTkRNd1dqQk5NUkF3RGdZRFZRUUREQWRuYjI5a0xXTmhNUmt3RndZRFZRUUtEQkJPYjNkcGJtRWdVMjlzZFhScGIyNXpNUkV3RHdZRFZRUUxEQWhRUzBrdFZFVlRWREVMTUFrR0ExVUVCaE1DVEZVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNiYmw1c0tCQ2pTQjhUTWRhY3lteC9XZk9qTVcxZ2lJalZKUlkyOEpiTldrQ1ZtdHpnbWl0Z2hmclBRUGx1ZXUwRFRhbGJEa3JTU3loQ3Z6elBTR1B3Q0ZPYWhGL243aFFhMUYzVWFIU3hUS3JGQzVuT3dkTHp4S1JPM1dqVnRJR1JTWDJrdjFGZlVwUXk1RXl5K3JzZlN6SjU5ZFU1WlpkV3BkYUR1RHhWVnlEZXIzRUl5Q2JHNy81SDlNRDRZdXpOcGVURldtTTZjVVNUMDc5NlhEbGJFeFNUVEdRWEZKQTIrQ0NzeTlEWG5KYThuejBGRThmbWN2UUhlVTZrOVFicHpHak1kM0RXbEU2bm83VWRDWUQxSDA0K3VzQnA1aGhDckFCNjcwTmRvVHJOVG1HTkFGdDRKVDB2aXRqS0hxOUtFSWQ2TGhkY20yVGc5M2REY1dGdEFnTUJBQUdqZ2RRd2dkRXdEZ1lEVlIwUEFRSC9CQVFEQWdlQU1FRUdBMVVkSHdRNk1EZ3dOcUEwb0RLR01HaDBkSEE2THk5a2MzTXVibTkzYVc1aExteDFMM0JyYVMxbVlXTjBiM0o1TDJOeWJDOXliMjkwTFdOaExtTnliREJNQmdnckJnRUZCUWNCQVFSQU1ENHdQQVlJS3dZQkJRVUhNQUtHTUdoMGRIQTZMeTlrYzNNdWJtOTNhVzVoTG14MUwzQnJhUzFtWVdOMGIzSjVMMk55ZEM5eWIyOTBMV05oTG1OeWREQWRCZ05WSFE0RUZnUVUrMnRGcXBOZTNHMjNZUjh5cUJaSWlWV1MzdlV3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBRStOdWQwNVhHT002RkVaSFdUYzgrYm16LzZCMFhRWE41NjRLV0JCaGNoOWk1R2FkanFwU3NldmtuK3RlTHE1bTZDTG8zZTRsWDJkSjdoc1BBdnlhTHFPSXB6ZzQ5VEdkaWIxbk9CMk83NCt5QWhUOHY5Rlp0SDFFQ0hYeFlzdXlTR0lLdmQrTDVJakpUaXMzbGw0dlU4Rkh6eVJsTTlJUW53WlI1MDZqRmNKZUdsT2d5WmgrVUxXblJORUV3cU44RFRGMkQwWG9nWUJzckN4Q0JqMFBwYUpGcnV2RVFxcFV1dVlnMTRSMURKRmFoTHdxVllTT0Q1Z1BobUEwSFI0ejNHRjNqSFN6MGk5alhTVE9zVWNka3ZVSnkwdElPbnVqc1VFa2czSDZXZzNsejhUdzNJYzdWMU5IYitNQzVLNFp2WCs1U1l5dTArZXI3YkZzY0lyWVp3PT08L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48ZHM6T2JqZWN0Pjx4YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcyB4bWxuczp4YWRlcz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiBUYXJnZXQ9IiNpZC1hZmRlNzgyNDM2NDY4ZGQ3NGVlYjE4MWY3Y2UxMTBlMSI+PHhhZGVzOlNpZ25lZFByb3BlcnRpZXMgSWQ9InhhZGVzLWlkLWFmZGU3ODI0MzY0NjhkZDc0ZWViMTgxZjdjZTExMGUxIj48eGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmluZ1RpbWU+MjAxNy0wOS0yOFQxMTowOTowNFo8L3hhZGVzOlNpZ25pbmdUaW1lPjx4YWRlczpTaWduaW5nQ2VydGlmaWNhdGVWMj48eGFkZXM6Q2VydD48eGFkZXM6Q2VydERpZ2VzdD48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48ZHM6RGlnZXN0VmFsdWU+YytWb2hnMGpJY1o0VVFTV2VnbENnMG9HTldzPTwvZHM6RGlnZXN0VmFsdWU+PC94YWRlczpDZXJ0RGlnZXN0Pjx4YWRlczpJc3N1ZXJTZXJpYWxWMj5NRll3VWFSUE1FMHhFREFPQmdOVkJBTU1CMmR2YjJRdFkyRXhHVEFYQmdOVkJBb01FRTV2ZDJsdVlTQlRiMngxZEdsdmJuTXhFVEFQQmdOVkJBc01DRkJMU1MxVVJWTlVNUXN3Q1FZRFZRUUdFd0pNVlFJQkNnPT08L3hhZGVzOklzc3VlclNlcmlhbFYyPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZVYyPjwveGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmVkRGF0YU9iamVjdFByb3BlcnRpZXM+PHhhZGVzOkRhdGFPYmplY3RGb3JtYXQgT2JqZWN0UmVmZXJlbmNlPSIjci1pZC0xIj48eGFkZXM6TWltZVR5cGU+dGV4dC94bWw8L3hhZGVzOk1pbWVUeXBlPjwveGFkZXM6RGF0YU9iamVjdEZvcm1hdD48L3hhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjwveGFkZXM6U2lnbmVkUHJvcGVydGllcz48L3hhZGVzOlF1YWxpZnlpbmdQcm9wZXJ0aWVzPjwvZHM6T2JqZWN0PjwvZHM6U2lnbmF0dXJlPg==",
     "digestAlgorithm" : null,
@@ -1299,7 +1299,7 @@
     "digestAlgorithm" : null,
     "name" : "test2.bin"
   } ]
-}</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/getDataToSignMultiple</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="keys" path="/services/rest/server-signing/keys" id="9c6daa74-9fd7-4e32-8902-851cffe110ea"><con:settings/><con:parameters/><con:method name="Method 1" id="3d5dc747-8a7d-4164-9666-2724363626d4" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/xml</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ns="http://wadl.dev.java.net/2009/02">ns:application</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="116b19c4-7dbc-4fb5-842f-a29ece3c4a42" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request/><con:originalUri>http://localhost/services/rest/validation/services/rest/server-signing/keys</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="certificate" path="/services/rest/server-signing/key/certificate" id="2bfdd2ad-5108-496c-8ee5-7bae259a3813"><con:settings/><con:parameters/><con:method name="Method 1" id="070570ad-555d-4536-a6fe-3cc37de0e70e" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:cer="http://localhost/services/rest/server-signing/key/certificate">cer:Response</con:element></con:representation><con:request name="Request 1" id="86c14302-d88a-476d-b1ae-a5f61bc75f84" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request/><con:originalUri>http://localhost/services/rest/server-signing/key/certificate</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="SHA256" path="/services/rest/server-signing/sign/certificate/SHA256" id="a4b29f7d-cb93-4e48-825e-54831ec4f896"><con:settings/><con:parameters/><con:method name="Method 1" id="7f615f37-e7d8-4fc0-be79-1434a72d7ef9" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>415</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sha2="http://localhost/services/rest/server-signing/sign/certificate/SHA256">sha2:Response</con:element></con:representation><con:request name="Request 1" id="6fe699cd-64db-464d-8f46-c094c3116f66" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{"bytes": "wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro="}</con:request><con:originalUri>http://localhost/services/rest/server-signing/sign/certificate/SHA256</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="ValidateCertificate" path="/services/rest/certificate-validation/validateCertificate" id="5f2a4735-1c67-4420-b681-210881b11193"><con:settings/><con:parameters/><con:method name="ValidateSignature" id="76126e65-876a-45ae-b2cb-949f940c23e6" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature">val:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="c2b0bdab-f911-4774-b27c-386e3b74a2ce" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/getDataToSignMultiple</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="keys" path="/services/rest/server-signing/keys" id="9c6daa74-9fd7-4e32-8902-851cffe110ea"><con:settings/><con:parameters/><con:method name="Method 1" id="3d5dc747-8a7d-4164-9666-2724363626d4" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/xml</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ns="http://wadl.dev.java.net/2009/02">ns:application</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="116b19c4-7dbc-4fb5-842f-a29ece3c4a42" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request/><con:originalUri>http://localhost/services/rest/validation/services/rest/server-signing/keys</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="certificate" path="/services/rest/server-signing/key/certificate" id="2bfdd2ad-5108-496c-8ee5-7bae259a3813"><con:settings/><con:parameters/><con:method name="Method 1" id="070570ad-555d-4536-a6fe-3cc37de0e70e" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:cer="http://localhost/services/rest/server-signing/key/certificate">cer:Response</con:element></con:representation><con:request name="Request 1" id="86c14302-d88a-476d-b1ae-a5f61bc75f84" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request/><con:originalUri>http://localhost/services/rest/server-signing/key/certificate</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="SHA256" path="/services/rest/server-signing/sign/certificate/SHA256" id="a4b29f7d-cb93-4e48-825e-54831ec4f896"><con:settings/><con:parameters/><con:method name="Method 1" id="7f615f37-e7d8-4fc0-be79-1434a72d7ef9" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>415</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sha2="http://localhost/services/rest/server-signing/sign/certificate/SHA256">sha2:Response</con:element></con:representation><con:request name="Request 1" id="6fe699cd-64db-464d-8f46-c094c3116f66" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{"bytes": "wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro="}</con:request><con:originalUri>http://localhost/services/rest/server-signing/sign/certificate/SHA256</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="validateCertificate" path="/services/rest/certificate-validation/validateCertificate" id="5f2a4735-1c67-4420-b681-210881b11193"><con:settings/><con:parameters/><con:method name="ValidateSignature" id="76126e65-876a-45ae-b2cb-949f940c23e6" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature">val:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="c2b0bdab-f911-4774-b27c-386e3b74a2ce" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
   "certificate" : {
     "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
   },
@@ -1336,16 +1336,142 @@
     "digestAlgorithm" : null,
     "name" : "hello.xml"
   } ]
-}</con:request><con:originalUri>http://localhost/services/rest/validation/services/rest/signature/multiple-documents/timestampDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:WsdlInterface" id="194e5a3c-e7a8-4be9-b063-3063c1f5e1ec" wsaVersion="NONE" name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapDocumentSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/one-document?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/one-document?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/one-document?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
+}</con:request><con:originalUri>http://localhost/services/rest/validation/services/rest/signature/multiple-documents/timestampDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToBeCounterSigned" path="/services/rest/signature/one-document/getDataToBeCounterSigned" id="4b22f5c8-ff08-473a-a340-7dccd88e91ca"><con:settings/><con:parameters/><con:method name="getDataToBeCounterSigned" id="70047513-c52e-4462-9361-52e0c5952229" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="673985ee-102c-40d0-823d-ac348831bccd" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+  "parameters" : {
+    "signingCertificate" : {
+      "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
+    },
+    "certificateChain" : [ ],
+    "detachedContents" : null,
+    "asicContainerType" : null,
+    "signatureLevel" : "XAdES_BASELINE_B",
+    "signaturePackaging" : null,
+    "jwsSerializationType" : null,
+    "sigDMechanism" : null,
+    "signatureAlgorithm" : "RSA_SHA256",
+    "digestAlgorithm" : "SHA256",
+    "encryptionAlgorithm" : "RSA",
+    "referenceDigestAlgorithm" : null,
+    "maskGenerationFunction" : null,
+    "contentTimestamps" : null,
+    "contentTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "signatureTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "archiveTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
+    "imageParameters" : null,
+    "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
+    "blevelParams" : {
+      "trustAnchorBPPolicy" : true,
+      "signingDate" : 1604502220910,
+      "claimedSignerRoles" : null,
+      "policyId" : null,
+      "policyQualifier" : null,
+      "policyDescription" : null,
+      "policyDigestAlgorithm" : null,
+      "policyDigestValue" : null,
+      "policySpuri" : null,
+      "commitmentTypeIndications" : null,
+      "signerLocationPostalAddress" : [ ],
+      "signerLocationPostalCode" : null,
+      "signerLocationLocality" : null,
+      "signerLocationStateOrProvince" : null,
+      "signerLocationCountry" : null,
+      "signerLocationStreet" : null
+    }
+  },
+  "signatureDocument" : {
+    "bytes" : "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT5EenR3TlRtUm9PQW02L2xNSThSeW01eFpQekl2TFlEem4vZWJZWWtQc3I0PTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPllBN3NFTnQzTjh1ZkxGTW5LcjM2cjBQcXpNaVkzUTBzKytJR1RFVUMwc3BheFV2MGRIWk0wZC95bjNrcExKTG9Va0k0TTNmbGo1V0duODNrZjA1QnFNMWtoc1g2MUdKemFGVFBHcG03YWtSUUtodm9IMjV5eXFUWVhFU2xCY20wNGl6aUtoTE16WmpVZng0L0IxWkl5c3Y1cElCZ0oycjJvaTZqTG9wOXd3M2dlNGM0WUpvYUsrU1hrNmh5VE5PY044UGpHZTYzV1lPVE5WUFFGdmphOEJud2crYTBiQnV3RCs4TjZmd2lnQ2RXNWEvNERKVWUvSjhNYjcwWkk4UG9Pem5HRGZpK1RQYmlJZVZtQ2JsNW1Vb1VnMlEveFlsdUpmTGgzdUdRQVhLQnZGNDVvRElIUlZlZm5OL0QvV3l0QUNsVVZEb1FTeXdlbW5qUHBxRjhlZz09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlEMURDQ0FyeWdBd0lCQWdJQkNqQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZG5iMjlrTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXhXaGNOTVRnd09ESTJNRGMxTkRNeFdqQlBNUkl3RUFZRFZRUUREQWxuYjI5a0xYVnpaWEl4R1RBWEJnTlZCQW9NRUU1dmQybHVZU0JUYjJ4MWRHbHZibk14RVRBUEJnTlZCQXNNQ0ZCTFNTMVVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxSQ1VJUVpidzNuU2RMcCtCOWN6RUNncFpra1E1eFY0ZzlNLzd3bGc5N29DQ2Y3VUVoOUJBMWQrellqc3p2K0JKMWJKWlBnYW4yMTQ0QXZnc29HSmZiNlVJeVZXNGdrbFVnSWwxYXJVdm9uK1drS25zZUZ1UU9mSnlqU0ZVREl3bnV2cDBoemNKWEhYUm1MZG15aCtuKzZOTUgwb201dFZvU2ZRcnRCVmlDTGVTTVZ6dUQ1RVBqMG1JUmN4OTFwTDM4ZTNGTlRXN05hR1pMZWV6dUZ1Ui9xN3o5M2xMa3ZaNFZBTU5HR0x2SVhPWWVSQlpNeVBocEJaNEwzQThJM0VFbEtXSC8xTHdpaVhUVFNHMXNNNld2TVRWYmYydmJkNDduWlJRQTJtU3BOR2pRb3VPQUVyZmVWVlVxeklDZ2hRQ0hSR09OdVNMRy9IZnFGSGI0aldnMENBd0VBQWFPQnZEQ0J1VEFPQmdOVkhROEJBZjhFQkFNQ0JrQXdnWWNHQ0NzR0FRVUZCd0VCQkhzd2VUQTVCZ2dyQmdFRkJRY3dBWVl0YUhSMGNEb3ZMMlJ6Y3k1dWIzZHBibUV1YkhVdmNHdHBMV1poWTNSdmNua3ZiMk56Y0M5bmIyOWtMV05oTUR3R0NDc0dBUVVGQnpBQ2hqQm9kSFJ3T2k4dlpITnpMbTV2ZDJsdVlTNXNkUzl3YTJrdFptRmpkRzl5ZVM5amNuUXZaMjl2WkMxallTNWpjblF3SFFZRFZSME9CQllFRk4ycEhELzdQZWZtQlQ4b1gyOVpoV3kvT0hKMU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkszVk9MaERJVldLb0ZycmhoV3phZGR0azZYUXRjd1JvTlBWU3NpL2dPcnpzZE03MEEzMXhJVHc3WWZMaHBvVkExeG83b3ZIbGRwTGxocXk5bzV3aDI4MnlDcHFCVUF0Z3JTa0RHb2crSzdDTDZnVXBybFlpWnVHWnJ0ZzJYM2ZIUzJVc3g0WkozdElqNndWZWNERVVxSVNGZkZUMkVzbTBRWFVuZ0lLRk1sOTVYZ210dzJ3eFhiT3pVZURkNERJUHJ2K21XNXBvQVdyNkl0c1YrSDJWUStaTC9rQm53V0hqU1RPYUdGaXNxWFkvYUgvMVB0QlhBKzE1K1lJV2VtSkJTdjNrRGFGek9YQUV0UjlaSThsWU9KYXJuWTdBeS9hTjZiOXVHZmZyYm8vaFZBY0w0V0RkaGtiQk4zbTh3K2c3NkxvQVhOZUVldTA0QS8weExaelVCPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlENmpDQ0F0S2dBd0lCQWdJQkJEQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZHliMjkwTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXdXaGNOTVRnd09ESTJNRGMxTkRNd1dqQk5NUkF3RGdZRFZRUUREQWRuYjI5a0xXTmhNUmt3RndZRFZRUUtEQkJPYjNkcGJtRWdVMjlzZFhScGIyNXpNUkV3RHdZRFZRUUxEQWhRUzBrdFZFVlRWREVMTUFrR0ExVUVCaE1DVEZVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNiYmw1c0tCQ2pTQjhUTWRhY3lteC9XZk9qTVcxZ2lJalZKUlkyOEpiTldrQ1ZtdHpnbWl0Z2hmclBRUGx1ZXUwRFRhbGJEa3JTU3loQ3Z6elBTR1B3Q0ZPYWhGL243aFFhMUYzVWFIU3hUS3JGQzVuT3dkTHp4S1JPM1dqVnRJR1JTWDJrdjFGZlVwUXk1RXl5K3JzZlN6SjU5ZFU1WlpkV3BkYUR1RHhWVnlEZXIzRUl5Q2JHNy81SDlNRDRZdXpOcGVURldtTTZjVVNUMDc5NlhEbGJFeFNUVEdRWEZKQTIrQ0NzeTlEWG5KYThuejBGRThmbWN2UUhlVTZrOVFicHpHak1kM0RXbEU2bm83VWRDWUQxSDA0K3VzQnA1aGhDckFCNjcwTmRvVHJOVG1HTkFGdDRKVDB2aXRqS0hxOUtFSWQ2TGhkY20yVGc5M2REY1dGdEFnTUJBQUdqZ2RRd2dkRXdEZ1lEVlIwUEFRSC9CQVFEQWdlQU1FRUdBMVVkSHdRNk1EZ3dOcUEwb0RLR01HaDBkSEE2THk5a2MzTXVibTkzYVc1aExteDFMM0JyYVMxbVlXTjBiM0o1TDJOeWJDOXliMjkwTFdOaExtTnliREJNQmdnckJnRUZCUWNCQVFSQU1ENHdQQVlJS3dZQkJRVUhNQUtHTUdoMGRIQTZMeTlrYzNNdWJtOTNhVzVoTG14MUwzQnJhUzFtWVdOMGIzSjVMMk55ZEM5eWIyOTBMV05oTG1OeWREQWRCZ05WSFE0RUZnUVUrMnRGcXBOZTNHMjNZUjh5cUJaSWlWV1MzdlV3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBRStOdWQwNVhHT002RkVaSFdUYzgrYm16LzZCMFhRWE41NjRLV0JCaGNoOWk1R2FkanFwU3NldmtuK3RlTHE1bTZDTG8zZTRsWDJkSjdoc1BBdnlhTHFPSXB6ZzQ5VEdkaWIxbk9CMk83NCt5QWhUOHY5Rlp0SDFFQ0hYeFlzdXlTR0lLdmQrTDVJakpUaXMzbGw0dlU4Rkh6eVJsTTlJUW53WlI1MDZqRmNKZUdsT2d5WmgrVUxXblJORUV3cU44RFRGMkQwWG9nWUJzckN4Q0JqMFBwYUpGcnV2RVFxcFV1dVlnMTRSMURKRmFoTHdxVllTT0Q1Z1BobUEwSFI0ejNHRjNqSFN6MGk5alhTVE9zVWNka3ZVSnkwdElPbnVqc1VFa2czSDZXZzNsejhUdzNJYzdWMU5IYitNQzVLNFp2WCs1U1l5dTArZXI3YkZzY0lyWVp3PT08L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48ZHM6T2JqZWN0Pjx4YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcyB4bWxuczp4YWRlcz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiBUYXJnZXQ9IiNpZC1hZmRlNzgyNDM2NDY4ZGQ3NGVlYjE4MWY3Y2UxMTBlMSI+PHhhZGVzOlNpZ25lZFByb3BlcnRpZXMgSWQ9InhhZGVzLWlkLWFmZGU3ODI0MzY0NjhkZDc0ZWViMTgxZjdjZTExMGUxIj48eGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmluZ1RpbWU+MjAxNy0wOS0yOFQxMTowOTowNFo8L3hhZGVzOlNpZ25pbmdUaW1lPjx4YWRlczpTaWduaW5nQ2VydGlmaWNhdGVWMj48eGFkZXM6Q2VydD48eGFkZXM6Q2VydERpZ2VzdD48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48ZHM6RGlnZXN0VmFsdWU+YytWb2hnMGpJY1o0VVFTV2VnbENnMG9HTldzPTwvZHM6RGlnZXN0VmFsdWU+PC94YWRlczpDZXJ0RGlnZXN0Pjx4YWRlczpJc3N1ZXJTZXJpYWxWMj5NRll3VWFSUE1FMHhFREFPQmdOVkJBTU1CMmR2YjJRdFkyRXhHVEFYQmdOVkJBb01FRTV2ZDJsdVlTQlRiMngxZEdsdmJuTXhFVEFQQmdOVkJBc01DRkJMU1MxVVJWTlVNUXN3Q1FZRFZRUUdFd0pNVlFJQkNnPT08L3hhZGVzOklzc3VlclNlcmlhbFYyPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZVYyPjwveGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmVkRGF0YU9iamVjdFByb3BlcnRpZXM+PHhhZGVzOkRhdGFPYmplY3RGb3JtYXQgT2JqZWN0UmVmZXJlbmNlPSIjci1pZC0xIj48eGFkZXM6TWltZVR5cGU+dGV4dC94bWw8L3hhZGVzOk1pbWVUeXBlPjwveGFkZXM6RGF0YU9iamVjdEZvcm1hdD48L3hhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjwveGFkZXM6U2lnbmVkUHJvcGVydGllcz48L3hhZGVzOlF1YWxpZnlpbmdQcm9wZXJ0aWVzPjwvZHM6T2JqZWN0PjwvZHM6U2lnbmF0dXJlPg==",
+    "digestAlgorithm" : null,
+    "name" : "xades-detached.xml"
+  }
+}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="counterSignSignature" path="/services/rest/signature/one-document/counterSignSignature" id="4b22f5c8-ff08-473a-a340-7dccd88e91ca"><con:settings/><con:parameters/><con:method name="counterSignSignature" id="70047513-c52e-4462-9361-52e0c5952229" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="673985ee-102c-40d0-823d-ac348831bccd" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+  "parameters" : {
+    "signingCertificate" : {
+      "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
+    },
+    "certificateChain" : [ ],
+    "detachedContents" : null,
+    "asicContainerType" : null,
+    "signatureLevel" : "XAdES_BASELINE_B",
+    "signaturePackaging" : null,
+    "jwsSerializationType" : null,
+    "sigDMechanism" : null,
+    "signatureAlgorithm" : "RSA_SHA256",
+    "digestAlgorithm" : "SHA256",
+    "encryptionAlgorithm" : "RSA",
+    "referenceDigestAlgorithm" : null,
+    "maskGenerationFunction" : null,
+    "contentTimestamps" : null,
+    "contentTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "signatureTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "archiveTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
+    "imageParameters" : null,
+    "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
+    "blevelParams" : {
+      "trustAnchorBPPolicy" : true,
+      "signingDate" : 1604507069789,
+      "claimedSignerRoles" : null,
+      "policyId" : null,
+      "policyQualifier" : null,
+      "policyDescription" : null,
+      "policyDigestAlgorithm" : null,
+      "policyDigestValue" : null,
+      "policySpuri" : null,
+      "commitmentTypeIndications" : null,
+      "signerLocationPostalAddress" : [ ],
+      "signerLocationPostalCode" : null,
+      "signerLocationLocality" : null,
+      "signerLocationStateOrProvince" : null,
+      "signerLocationCountry" : null,
+      "signerLocationStreet" : null
+    }
+  },
+  "signatureValue" : {
+    "algorithm" : "RSA_SHA256",
+    "value" : "Jk8YxR0w3iW6MGAjhBLaCu/0CVA4aQHka3VuEntHRaY5rhdF/curM3LhcWlqRhhROtV3IBe8+cc9w16wc+s3zogGpQXiWiyTodupKsBOWwv+K4KVAcSLPQJ9YYrF820AlzMLJcghhkJiGJF76JXoK67gZeHQd45+h7Ul4tYcLFSZ2yuxKptEyNzWHHuR+nHxQXGt63J3NQaGeHaT92rEaCIyn+Zy0hrY+NZraseITLrb+V1P28W4+pSxga+LwzX6b1V+ERPdotKptwnnb38MUrWAwsn33uurW2S1NSH5hAgROh4kxeN95mckqvu5R46OSsSPiDXV58wzhwy77mV7UA=="
+  },
+  "signatureDocument" : {
+    "bytes" : "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT5EenR3TlRtUm9PQW02L2xNSThSeW01eFpQekl2TFlEem4vZWJZWWtQc3I0PTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPllBN3NFTnQzTjh1ZkxGTW5LcjM2cjBQcXpNaVkzUTBzKytJR1RFVUMwc3BheFV2MGRIWk0wZC95bjNrcExKTG9Va0k0TTNmbGo1V0duODNrZjA1QnFNMWtoc1g2MUdKemFGVFBHcG03YWtSUUtodm9IMjV5eXFUWVhFU2xCY20wNGl6aUtoTE16WmpVZng0L0IxWkl5c3Y1cElCZ0oycjJvaTZqTG9wOXd3M2dlNGM0WUpvYUsrU1hrNmh5VE5PY044UGpHZTYzV1lPVE5WUFFGdmphOEJud2crYTBiQnV3RCs4TjZmd2lnQ2RXNWEvNERKVWUvSjhNYjcwWkk4UG9Pem5HRGZpK1RQYmlJZVZtQ2JsNW1Vb1VnMlEveFlsdUpmTGgzdUdRQVhLQnZGNDVvRElIUlZlZm5OL0QvV3l0QUNsVVZEb1FTeXdlbW5qUHBxRjhlZz09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlEMURDQ0FyeWdBd0lCQWdJQkNqQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZG5iMjlrTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXhXaGNOTVRnd09ESTJNRGMxTkRNeFdqQlBNUkl3RUFZRFZRUUREQWxuYjI5a0xYVnpaWEl4R1RBWEJnTlZCQW9NRUU1dmQybHVZU0JUYjJ4MWRHbHZibk14RVRBUEJnTlZCQXNNQ0ZCTFNTMVVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxSQ1VJUVpidzNuU2RMcCtCOWN6RUNncFpra1E1eFY0ZzlNLzd3bGc5N29DQ2Y3VUVoOUJBMWQrellqc3p2K0JKMWJKWlBnYW4yMTQ0QXZnc29HSmZiNlVJeVZXNGdrbFVnSWwxYXJVdm9uK1drS25zZUZ1UU9mSnlqU0ZVREl3bnV2cDBoemNKWEhYUm1MZG15aCtuKzZOTUgwb201dFZvU2ZRcnRCVmlDTGVTTVZ6dUQ1RVBqMG1JUmN4OTFwTDM4ZTNGTlRXN05hR1pMZWV6dUZ1Ui9xN3o5M2xMa3ZaNFZBTU5HR0x2SVhPWWVSQlpNeVBocEJaNEwzQThJM0VFbEtXSC8xTHdpaVhUVFNHMXNNNld2TVRWYmYydmJkNDduWlJRQTJtU3BOR2pRb3VPQUVyZmVWVlVxeklDZ2hRQ0hSR09OdVNMRy9IZnFGSGI0aldnMENBd0VBQWFPQnZEQ0J1VEFPQmdOVkhROEJBZjhFQkFNQ0JrQXdnWWNHQ0NzR0FRVUZCd0VCQkhzd2VUQTVCZ2dyQmdFRkJRY3dBWVl0YUhSMGNEb3ZMMlJ6Y3k1dWIzZHBibUV1YkhVdmNHdHBMV1poWTNSdmNua3ZiMk56Y0M5bmIyOWtMV05oTUR3R0NDc0dBUVVGQnpBQ2hqQm9kSFJ3T2k4dlpITnpMbTV2ZDJsdVlTNXNkUzl3YTJrdFptRmpkRzl5ZVM5amNuUXZaMjl2WkMxallTNWpjblF3SFFZRFZSME9CQllFRk4ycEhELzdQZWZtQlQ4b1gyOVpoV3kvT0hKMU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkszVk9MaERJVldLb0ZycmhoV3phZGR0azZYUXRjd1JvTlBWU3NpL2dPcnpzZE03MEEzMXhJVHc3WWZMaHBvVkExeG83b3ZIbGRwTGxocXk5bzV3aDI4MnlDcHFCVUF0Z3JTa0RHb2crSzdDTDZnVXBybFlpWnVHWnJ0ZzJYM2ZIUzJVc3g0WkozdElqNndWZWNERVVxSVNGZkZUMkVzbTBRWFVuZ0lLRk1sOTVYZ210dzJ3eFhiT3pVZURkNERJUHJ2K21XNXBvQVdyNkl0c1YrSDJWUStaTC9rQm53V0hqU1RPYUdGaXNxWFkvYUgvMVB0QlhBKzE1K1lJV2VtSkJTdjNrRGFGek9YQUV0UjlaSThsWU9KYXJuWTdBeS9hTjZiOXVHZmZyYm8vaFZBY0w0V0RkaGtiQk4zbTh3K2c3NkxvQVhOZUVldTA0QS8weExaelVCPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlENmpDQ0F0S2dBd0lCQWdJQkJEQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZHliMjkwTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXdXaGNOTVRnd09ESTJNRGMxTkRNd1dqQk5NUkF3RGdZRFZRUUREQWRuYjI5a0xXTmhNUmt3RndZRFZRUUtEQkJPYjNkcGJtRWdVMjlzZFhScGIyNXpNUkV3RHdZRFZRUUxEQWhRUzBrdFZFVlRWREVMTUFrR0ExVUVCaE1DVEZVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNiYmw1c0tCQ2pTQjhUTWRhY3lteC9XZk9qTVcxZ2lJalZKUlkyOEpiTldrQ1ZtdHpnbWl0Z2hmclBRUGx1ZXUwRFRhbGJEa3JTU3loQ3Z6elBTR1B3Q0ZPYWhGL243aFFhMUYzVWFIU3hUS3JGQzVuT3dkTHp4S1JPM1dqVnRJR1JTWDJrdjFGZlVwUXk1RXl5K3JzZlN6SjU5ZFU1WlpkV3BkYUR1RHhWVnlEZXIzRUl5Q2JHNy81SDlNRDRZdXpOcGVURldtTTZjVVNUMDc5NlhEbGJFeFNUVEdRWEZKQTIrQ0NzeTlEWG5KYThuejBGRThmbWN2UUhlVTZrOVFicHpHak1kM0RXbEU2bm83VWRDWUQxSDA0K3VzQnA1aGhDckFCNjcwTmRvVHJOVG1HTkFGdDRKVDB2aXRqS0hxOUtFSWQ2TGhkY20yVGc5M2REY1dGdEFnTUJBQUdqZ2RRd2dkRXdEZ1lEVlIwUEFRSC9CQVFEQWdlQU1FRUdBMVVkSHdRNk1EZ3dOcUEwb0RLR01HaDBkSEE2THk5a2MzTXVibTkzYVc1aExteDFMM0JyYVMxbVlXTjBiM0o1TDJOeWJDOXliMjkwTFdOaExtTnliREJNQmdnckJnRUZCUWNCQVFSQU1ENHdQQVlJS3dZQkJRVUhNQUtHTUdoMGRIQTZMeTlrYzNNdWJtOTNhVzVoTG14MUwzQnJhUzFtWVdOMGIzSjVMMk55ZEM5eWIyOTBMV05oTG1OeWREQWRCZ05WSFE0RUZnUVUrMnRGcXBOZTNHMjNZUjh5cUJaSWlWV1MzdlV3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBRStOdWQwNVhHT002RkVaSFdUYzgrYm16LzZCMFhRWE41NjRLV0JCaGNoOWk1R2FkanFwU3NldmtuK3RlTHE1bTZDTG8zZTRsWDJkSjdoc1BBdnlhTHFPSXB6ZzQ5VEdkaWIxbk9CMk83NCt5QWhUOHY5Rlp0SDFFQ0hYeFlzdXlTR0lLdmQrTDVJakpUaXMzbGw0dlU4Rkh6eVJsTTlJUW53WlI1MDZqRmNKZUdsT2d5WmgrVUxXblJORUV3cU44RFRGMkQwWG9nWUJzckN4Q0JqMFBwYUpGcnV2RVFxcFV1dVlnMTRSMURKRmFoTHdxVllTT0Q1Z1BobUEwSFI0ejNHRjNqSFN6MGk5alhTVE9zVWNka3ZVSnkwdElPbnVqc1VFa2czSDZXZzNsejhUdzNJYzdWMU5IYitNQzVLNFp2WCs1U1l5dTArZXI3YkZzY0lyWVp3PT08L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48ZHM6T2JqZWN0Pjx4YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcyB4bWxuczp4YWRlcz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiBUYXJnZXQ9IiNpZC1hZmRlNzgyNDM2NDY4ZGQ3NGVlYjE4MWY3Y2UxMTBlMSI+PHhhZGVzOlNpZ25lZFByb3BlcnRpZXMgSWQ9InhhZGVzLWlkLWFmZGU3ODI0MzY0NjhkZDc0ZWViMTgxZjdjZTExMGUxIj48eGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmluZ1RpbWU+MjAxNy0wOS0yOFQxMTowOTowNFo8L3hhZGVzOlNpZ25pbmdUaW1lPjx4YWRlczpTaWduaW5nQ2VydGlmaWNhdGVWMj48eGFkZXM6Q2VydD48eGFkZXM6Q2VydERpZ2VzdD48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48ZHM6RGlnZXN0VmFsdWU+YytWb2hnMGpJY1o0VVFTV2VnbENnMG9HTldzPTwvZHM6RGlnZXN0VmFsdWU+PC94YWRlczpDZXJ0RGlnZXN0Pjx4YWRlczpJc3N1ZXJTZXJpYWxWMj5NRll3VWFSUE1FMHhFREFPQmdOVkJBTU1CMmR2YjJRdFkyRXhHVEFYQmdOVkJBb01FRTV2ZDJsdVlTQlRiMngxZEdsdmJuTXhFVEFQQmdOVkJBc01DRkJMU1MxVVJWTlVNUXN3Q1FZRFZRUUdFd0pNVlFJQkNnPT08L3hhZGVzOklzc3VlclNlcmlhbFYyPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZVYyPjwveGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmVkRGF0YU9iamVjdFByb3BlcnRpZXM+PHhhZGVzOkRhdGFPYmplY3RGb3JtYXQgT2JqZWN0UmVmZXJlbmNlPSIjci1pZC0xIj48eGFkZXM6TWltZVR5cGU+dGV4dC94bWw8L3hhZGVzOk1pbWVUeXBlPjwveGFkZXM6RGF0YU9iamVjdEZvcm1hdD48L3hhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjwveGFkZXM6U2lnbmVkUHJvcGVydGllcz48L3hhZGVzOlF1YWxpZnlpbmdQcm9wZXJ0aWVzPjwvZHM6T2JqZWN0PjwvZHM6U2lnbmF0dXJlPg==",
+    "digestAlgorithm" : null,
+    "name" : "xades-detached.xml"
+  }
+}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:WsdlInterface" id="194e5a3c-e7a8-4be9-b063-3063c1f5e1ec" wsaVersion="NONE" name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapDocumentSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/one-document?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/one-document?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/one-document?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
   <wsdl:import location="http://localhost:8080/services/soap/signature/one-document?wsdl=SoapDocumentSignatureService.wsdl" namespace="http://signature.dss.esig.europa.eu/"></wsdl:import>
   <wsdl:binding name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="ns1:SoapDocumentSignatureService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="extendDocument">
+    <wsdl:operation name="counterSignSignature">
       <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="extendDocument">
+      <wsdl:input name="counterSignSignature">
         <soap:body use="literal"/>
       </wsdl:input>
-      <wsdl:output name="extendDocumentResponse">
+      <wsdl:output name="counterSignSignatureResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
@@ -1358,21 +1484,39 @@
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="getDataToSign">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getDataToSign">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getDataToSignResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="signDocument">
       <soap:operation soapAction="" style="document"/>
       <wsdl:input name="signDocument">
         <soap:body use="literal"/>
       </wsdl:input>
       <wsdl:output name="signDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataToBeCounterSigned">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDataToBeCounterSigned">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDataToBeCounterSignedResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="extendDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="extendDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="extendDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataToSign">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDataToSign">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDataToSignResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
@@ -1385,23 +1529,43 @@
 </wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/signature/one-document?wsdl=SoapDocumentSignatureService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentSignatureService" targetNamespace="http://signature.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://signature.dss.esig.europa.eu/">
   <wsdl:types>
     <xs:schema elementFormDefault="unqualified" targetNamespace="http://signature.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://signature.dss.esig.europa.eu/">
+      <xs:element name="counterSignSignature" type="tns:counterSignSignature"/>
+      <xs:element name="counterSignSignatureResponse" type="tns:counterSignSignatureResponse"/>
       <xs:element name="extendDocument" type="tns:extendDocument"/>
       <xs:element name="extendDocumentResponse" type="tns:extendDocumentResponse"/>
+      <xs:element name="getDataToBeCounterSigned" type="tns:getDataToBeCounterSigned"/>
+      <xs:element name="getDataToBeCounterSignedResponse" type="tns:getDataToBeCounterSignedResponse"/>
       <xs:element name="getDataToSign" type="tns:getDataToSign"/>
       <xs:element name="getDataToSignResponse" type="tns:getDataToSignResponse"/>
       <xs:element name="signDocument" type="tns:signDocument"/>
       <xs:element name="signDocumentResponse" type="tns:signDocumentResponse"/>
       <xs:element name="timestampDocument" type="tns:timestampDocument"/>
       <xs:element name="timestampDocumentResponse" type="tns:timestampDocumentResponse"/>
-      <xs:complexType name="extendDocument">
+      <xs:complexType name="counterSignSignature">
         <xs:sequence>
-          <xs:element minOccurs="0" name="extendDocumentDTO" type="tns:extendDocumentDTO"/>
+          <xs:element minOccurs="0" name="counterSignSignature" type="tns:counterSignSignatureDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="extendDocumentDTO">
+      <xs:complexType name="counterSignSignatureDTO">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractSignDocumentDTO">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="signatureDocument" type="tns:remoteDocument"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType abstract="true" name="abstractSignDocumentDTO">
         <xs:sequence>
           <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
-          <xs:element minOccurs="0" name="toExtendDocument" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValueDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteDocument">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="remoteSignatureParameters">
@@ -1416,9 +1580,13 @@
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="encryptionAlgorithm" type="tns:encryptionAlgorithm"/>
           <xs:element name="generateTBSWithoutCertificate" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="imageParameters" type="tns:remoteSignatureImageParameters"/>
+          <xs:element minOccurs="0" name="jwsSerializationType" type="tns:jwsSerializationType"/>
           <xs:element minOccurs="0" name="maskGenerationFunction" type="tns:maskGenerationFunction"/>
           <xs:element minOccurs="0" name="referenceDigestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="sigDMechanism" type="tns:sigDMechanism"/>
           <xs:element name="signWithExpiredCertificate" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="signatureIdToCounterSign" type="xs:string"/>
           <xs:element minOccurs="0" name="signatureLevel" type="tns:signatureLevel"/>
           <xs:element minOccurs="0" name="signaturePackaging" type="tns:signaturePackaging"/>
           <xs:element minOccurs="0" name="signatureTimestampParameters" type="tns:remoteTimestampParameters"/>
@@ -1427,21 +1595,20 @@
       </xs:complexType>
       <xs:complexType name="remoteTimestampParameters">
         <xs:sequence>
-          <xs:element minOccurs="0" name="asicContainerType" type="tns:aSiCContainerType"/>
           <xs:element minOccurs="0" name="canonicalizationMethod" type="xs:string"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-          <xs:element minOccurs="0" name="signatureForm" type="tns:signatureForm"/>
+          <xs:element minOccurs="0" name="timestampContainerForm" type="tns:timestampContainerForm"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="remoteBLevelParameters">
         <xs:sequence>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="claimedSignerRoles" nillable="true" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndications" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndications" nillable="true" type="tns:commitmentTypeEnum"/>
           <xs:element minOccurs="0" name="policyDescription" type="xs:string"/>
           <xs:element minOccurs="0" name="policyDigestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="policyDigestValue" type="xs:base64Binary"/>
           <xs:element minOccurs="0" name="policyId" type="xs:string"/>
-          <xs:element minOccurs="0" name="policyQualifier" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyQualifier" type="tns:objectIdentifierQualifier"/>
           <xs:element minOccurs="0" name="policySpuri" type="xs:string"/>
           <xs:element minOccurs="0" name="signerLocationCountry" type="xs:string"/>
           <xs:element minOccurs="0" name="signerLocationLocality" type="xs:string"/>
@@ -1472,14 +1639,57 @@
           <xs:element minOccurs="0" name="URI" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="remoteDocument">
+      <xs:complexType name="remoteSignatureImageParameters">
         <xs:sequence>
-          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="alignmentHorizontal" type="tns:visualSignatureAlignmentHorizontal"/>
+          <xs:element minOccurs="0" name="alignmentVertical" type="tns:visualSignatureAlignmentVertical"/>
+          <xs:element minOccurs="0" name="backgroundColor" type="tns:remoteColor"/>
+          <xs:element minOccurs="0" name="dpi" type="xs:int"/>
+          <xs:element minOccurs="0" name="fieldParameters" type="tns:remoteSignatureFieldParameters"/>
+          <xs:element minOccurs="0" name="image" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
+          <xs:element minOccurs="0" name="textParameters" type="tns:remoteSignatureImageTextParameters"/>
+          <xs:element minOccurs="0" name="zoom" type="xs:int"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="extendDocumentResponse">
+      <xs:complexType name="remoteColor">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="alpha" type="xs:int"/>
+          <xs:element minOccurs="0" name="blue" type="xs:int"/>
+          <xs:element minOccurs="0" name="green" type="xs:int"/>
+          <xs:element minOccurs="0" name="red" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteSignatureFieldParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="fieldId" type="xs:string"/>
+          <xs:element minOccurs="0" name="height" type="xs:float"/>
+          <xs:element minOccurs="0" name="originX" type="xs:float"/>
+          <xs:element minOccurs="0" name="originY" type="xs:float"/>
+          <xs:element minOccurs="0" name="page" type="xs:int"/>
+          <xs:element minOccurs="0" name="width" type="xs:float"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteSignatureImageTextParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="backgroundColor" type="tns:remoteColor"/>
+          <xs:element minOccurs="0" name="font" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="padding" type="xs:float"/>
+          <xs:element minOccurs="0" name="signerTextHorizontalAlignment" type="tns:signerTextHorizontalAlignment"/>
+          <xs:element minOccurs="0" name="signerTextPosition" type="tns:signerTextPosition"/>
+          <xs:element minOccurs="0" name="signerTextVerticalAlignment" type="tns:signerTextVerticalAlignment"/>
+          <xs:element minOccurs="0" name="size" type="xs:int"/>
+          <xs:element minOccurs="0" name="text" type="xs:string"/>
+          <xs:element minOccurs="0" name="textColor" type="tns:remoteColor"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signatureValueDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="algorithm" type="tns:signatureAlgorithm"/>
+          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="counterSignSignatureResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
         </xs:sequence>
@@ -1508,35 +1718,6 @@
           <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getDataToSign">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="dataToSignDTO" type="tns:dataToSignOneDocumentDTO"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="dataToSignOneDocumentDTO">
-        <xs:complexContent>
-          <xs:extension base="tns:abstractDataToSignDTO">
-            <xs:sequence>
-              <xs:element minOccurs="0" name="toSignDocument" type="tns:remoteDocument"/>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-      </xs:complexType>
-      <xs:complexType abstract="true" name="abstractDataToSignDTO">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="getDataToSignResponse">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="response" type="tns:toBeSignedDTO"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="toBeSignedDTO">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="signDocument">
         <xs:sequence>
           <xs:element minOccurs="0" name="signDocumentDTO" type="tns:signOneDocumentDTO"/>
@@ -1551,29 +1732,75 @@
           </xs:extension>
         </xs:complexContent>
       </xs:complexType>
-      <xs:complexType abstract="true" name="abstractSignDocumentDTO">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
-          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValueDTO"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="signatureValueDTO">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="algorithm" type="tns:signatureAlgorithm"/>
-          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="signDocumentResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:simpleType name="aSiCContainerType">
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="ASiC_S"/>
-          <xs:enumeration value="ASiC_E"/>
-        </xs:restriction>
-      </xs:simpleType>
+      <xs:complexType name="getDataToBeCounterSigned">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="dataToBeCounterSigned" type="tns:dataToBeCounterSignedDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="dataToBeCounterSignedDTO">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractDataToSignDTO">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="signatureDocument" type="tns:remoteDocument"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType abstract="true" name="abstractDataToSignDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getDataToBeCounterSignedResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:toBeSignedDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="toBeSignedDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="extendDocument">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="extendDocumentDTO" type="tns:extendDocumentDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="extendDocumentDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
+          <xs:element minOccurs="0" name="toExtendDocument" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="extendDocumentResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getDataToSign">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="dataToSignDTO" type="tns:dataToSignOneDocumentDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="dataToSignOneDocumentDTO">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractDataToSignDTO">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="toSignDocument" type="tns:remoteDocument"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="getDataToSignResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:toBeSignedDTO"/>
+        </xs:sequence>
+      </xs:complexType>
       <xs:simpleType name="digestAlgorithm">
         <xs:restriction base="xs:string">
           <xs:enumeration value="SHA1"/>
@@ -1585,18 +1812,42 @@
           <xs:enumeration value="SHA3_256"/>
           <xs:enumeration value="SHA3_384"/>
           <xs:enumeration value="SHA3_512"/>
+          <xs:enumeration value="SHAKE128"/>
+          <xs:enumeration value="SHAKE256"/>
+          <xs:enumeration value="SHAKE256_512"/>
           <xs:enumeration value="RIPEMD160"/>
           <xs:enumeration value="MD2"/>
           <xs:enumeration value="MD5"/>
           <xs:enumeration value="WHIRLPOOL"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:simpleType name="signatureForm">
+      <xs:simpleType name="timestampContainerForm">
         <xs:restriction base="xs:string">
-          <xs:enumeration value="XAdES"/>
-          <xs:enumeration value="CAdES"/>
-          <xs:enumeration value="PAdES"/>
-          <xs:enumeration value="PKCS7"/>
+          <xs:enumeration value="PDF"/>
+          <xs:enumeration value="ASiC_E"/>
+          <xs:enumeration value="ASiC_S"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="aSiCContainerType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ASiC_S"/>
+          <xs:enumeration value="ASiC_E"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="commitmentTypeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ProofOfOrigin"/>
+          <xs:enumeration value="ProofOfReceipt"/>
+          <xs:enumeration value="ProofOfDelivery"/>
+          <xs:enumeration value="ProofOfSender"/>
+          <xs:enumeration value="ProofOfApproval"/>
+          <xs:enumeration value="ProofOfCreation"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="objectIdentifierQualifier">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OID_AS_URI"/>
+          <xs:enumeration value="OID_AS_URN"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="timestampType">
@@ -1616,12 +1867,78 @@
           <xs:enumeration value="DSA"/>
           <xs:enumeration value="ECDSA"/>
           <xs:enumeration value="PLAIN_ECDSA"/>
+          <xs:enumeration value="X25519"/>
+          <xs:enumeration value="X448"/>
+          <xs:enumeration value="ED25519"/>
+          <xs:enumeration value="ED448"/>
           <xs:enumeration value="HMAC"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="visualSignatureAlignmentHorizontal">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="NONE"/>
+          <xs:enumeration value="LEFT"/>
+          <xs:enumeration value="CENTER"/>
+          <xs:enumeration value="RIGHT"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="visualSignatureAlignmentVertical">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="NONE"/>
+          <xs:enumeration value="TOP"/>
+          <xs:enumeration value="MIDDLE"/>
+          <xs:enumeration value="BOTTOM"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="visualSignatureRotation">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="NONE"/>
+          <xs:enumeration value="AUTOMATIC"/>
+          <xs:enumeration value="ROTATE_90"/>
+          <xs:enumeration value="ROTATE_180"/>
+          <xs:enumeration value="ROTATE_270"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signerTextHorizontalAlignment">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="LEFT"/>
+          <xs:enumeration value="CENTER"/>
+          <xs:enumeration value="RIGHT"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signerTextPosition">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="TOP"/>
+          <xs:enumeration value="BOTTOM"/>
+          <xs:enumeration value="RIGHT"/>
+          <xs:enumeration value="LEFT"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signerTextVerticalAlignment">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="TOP"/>
+          <xs:enumeration value="MIDDLE"/>
+          <xs:enumeration value="BOTTOM"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="jwsSerializationType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="COMPACT_SERIALIZATION"/>
+          <xs:enumeration value="JSON_SERIALIZATION"/>
+          <xs:enumeration value="FLATTENED_JSON_SERIALIZATION"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="maskGenerationFunction">
         <xs:restriction base="xs:string">
           <xs:enumeration value="MGF1"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="sigDMechanism">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="HTTP_HEADERS"/>
+          <xs:enumeration value="OBJECT_ID_BY_URI"/>
+          <xs:enumeration value="OBJECT_ID_BY_URI_HASH"/>
+          <xs:enumeration value="NO_SIG_D"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signatureLevel">
@@ -1652,6 +1969,11 @@
           <xs:enumeration value="PKCS7_T"/>
           <xs:enumeration value="PKCS7_LT"/>
           <xs:enumeration value="PKCS7_LTA"/>
+          <xs:enumeration value="JSON_NOT_ETSI"/>
+          <xs:enumeration value="JAdES_BASELINE_B"/>
+          <xs:enumeration value="JAdES_BASELINE_T"/>
+          <xs:enumeration value="JAdES_BASELINE_LT"/>
+          <xs:enumeration value="JAdES_BASELINE_LTA"/>
           <xs:enumeration value="UNKNOWN"/>
         </xs:restriction>
       </xs:simpleType>
@@ -1725,6 +2047,8 @@
           <xs:enumeration value="HMAC_SHA3_384"/>
           <xs:enumeration value="HMAC_SHA3_512"/>
           <xs:enumeration value="HMAC_RIPEMD160"/>
+          <xs:enumeration value="ED25519"/>
+          <xs:enumeration value="ED448"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:schema>
@@ -1735,11 +2059,23 @@
   <wsdl:message name="timestampDocumentResponse">
     <wsdl:part element="ns1:timestampDocumentResponse" name="parameters"></wsdl:part>
   </wsdl:message>
+  <wsdl:message name="counterSignSignature">
+    <wsdl:part element="ns1:counterSignSignature" name="parameters"></wsdl:part>
+  </wsdl:message>
   <wsdl:message name="timestampDocument">
     <wsdl:part element="ns1:timestampDocument" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="signDocument">
     <wsdl:part element="ns1:signDocument" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDataToBeCounterSigned">
+    <wsdl:part element="ns1:getDataToBeCounterSigned" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="counterSignSignatureResponse">
+    <wsdl:part element="ns1:counterSignSignatureResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDataToBeCounterSignedResponse">
+    <wsdl:part element="ns1:getDataToBeCounterSignedResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="extendDocument">
     <wsdl:part element="ns1:extendDocument" name="parameters"></wsdl:part>
@@ -1754,21 +2090,29 @@
     <wsdl:part element="ns1:signDocumentResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:portType name="SoapDocumentSignatureService">
-    <wsdl:operation name="extendDocument">
-      <wsdl:input message="ns1:extendDocument" name="extendDocument"></wsdl:input>
-      <wsdl:output message="ns1:extendDocumentResponse" name="extendDocumentResponse"></wsdl:output>
+    <wsdl:operation name="counterSignSignature">
+      <wsdl:input message="ns1:counterSignSignature" name="counterSignSignature"></wsdl:input>
+      <wsdl:output message="ns1:counterSignSignatureResponse" name="counterSignSignatureResponse"></wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="timestampDocument">
       <wsdl:input message="ns1:timestampDocument" name="timestampDocument"></wsdl:input>
       <wsdl:output message="ns1:timestampDocumentResponse" name="timestampDocumentResponse"></wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="getDataToSign">
-      <wsdl:input message="ns1:getDataToSign" name="getDataToSign"></wsdl:input>
-      <wsdl:output message="ns1:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="signDocument">
       <wsdl:input message="ns1:signDocument" name="signDocument"></wsdl:input>
       <wsdl:output message="ns1:signDocumentResponse" name="signDocumentResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataToBeCounterSigned">
+      <wsdl:input message="ns1:getDataToBeCounterSigned" name="getDataToBeCounterSigned"></wsdl:input>
+      <wsdl:output message="ns1:getDataToBeCounterSignedResponse" name="getDataToBeCounterSignedResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="extendDocument">
+      <wsdl:input message="ns1:extendDocument" name="extendDocument"></wsdl:input>
+      <wsdl:output message="ns1:extendDocumentResponse" name="extendDocumentResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataToSign">
+      <wsdl:input message="ns1:getDataToSign" name="getDataToSign"></wsdl:input>
+      <wsdl:output message="ns1:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
 </wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint></con:endpoints><con:operation id="137c0d2e-b64b-4490-b7e6-de69089bec30" isOneWay="false" action="" name="extendDocument" bindingOperationName="extendDocument" type="Request-Response" outputName="extendDocumentResponse" inputName="extendDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="b88f9871-2df9-4c15-b3f9-062ebdaedef6" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://client.soap.signature.ws.dss.esig.europa.eu/">
@@ -1982,7 +2326,126 @@
          </timestampDocumentDTO>\r
       </sig:timestampDocument>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapDocumentSignatureService/timestampDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="355c802d-b903-4192-b07e-075fc8e3626a" wsaVersion="NONE" name="SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/multiple-documents?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/multiple-documents?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/multiple-documents?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapMultipleDocumentsSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapDocumentSignatureService/timestampDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="ad01b56a-0aba-4014-9f82-5f072efb3bdf" isOneWay="false" action="" name="counterSignSignature" bindingOperationName="counterSignSignature" type="Request-Response" outputName="counterSignSignatureResponse" inputName="counterSignSignature" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="e856bf6d-7042-40f8-a8e4-96d96c2781db" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sig:counterSignSignature>\r
+         <!--Optional:-->\r
+         <counterSignSignature>\r
+            <!--Optional:-->\r
+            <parameters><!--Optional:-->
+               <archiveTimestampParameters><!--Optional:-->
+                  <canonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</canonicalizationMethod>
+                  <!--Optional:-->
+                  <digestAlgorithm>SHA256</digestAlgorithm>
+               </archiveTimestampParameters>
+               <!--Optional:-->
+               <BLevelParams>
+                  <trustAnchorBPPolicy>true</trustAnchorBPPolicy>
+                  <!--Optional:-->
+                  <signingDate>2017-02-03T14:06:14.464Z</signingDate>
+                  <!--Zero or more repetitions:-->
+               </BLevelParams>
+               <!--Optional:-->
+               <contentTimestampParameters><!--Optional:-->
+                  <canonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</canonicalizationMethod>
+                  <!--Optional:-->
+                  <digestAlgorithm>SHA256</digestAlgorithm>
+               </contentTimestampParameters>
+               <!--Optional:-->
+               <digestAlgorithm>SHA256</digestAlgorithm>
+               <!--Optional:-->
+               <encryptionAlgorithm>RSA</encryptionAlgorithm>
+               <signWithExpiredCertificate>false</signWithExpiredCertificate>
+               <!--Optional:-->
+               <signatureLevel>XAdES_BASELINE_B</signatureLevel>
+               <!--Optional:-->
+               <signatureTimestampParameters><!--Optional:-->
+                  <canonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</canonicalizationMethod>
+                  <!--Optional:-->
+                  <digestAlgorithm>SHA256</digestAlgorithm>
+               </signatureTimestampParameters>
+               <!--Optional:-->
+               <signatureIdToCounterSign>id-afde782436468dd74eeb181f7ce110e1</signatureIdToCounterSign>
+               <!--Zero or more repetitions:-->
+               <signingCertificate><!--Optional:-->
+                  <encodedCertificate>MIIC6jCCAdKgAwIBAgIGAVoD9KJEMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwMjAyMTIzMDQ3WhcNMTcwMjI4MDkwMjExWjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJoN1aNtu3mW8KvH8cO8ABCXJeo7v2qbBDIUxmF5NplsoiLavCi+N4JZeLuYMNGt7Kuro5HvFYMtLQQ52eE7NPjdQBHJqbyMa075xyEr8SwwzoGog2NdYrKeluxS8BN7+LJOG9D0liw6L85Tzv7HaFf4ZtAnQflyPX3oeFNnu7FeGqbDe0gA54pKCUMfShHOYcfco/sMN5/zHfNyS28m9dg1vqx94skwo6USjCHSwrpS5OisnKz3S6ICplcCj/QOQTNYMCoTYEygFVqlJSLBl7CRLIEJqUGqqpFQ5wi2lrN5sK3xTlRiLin1ODI9+urPMfudOWjR2X93sJH8XvixN20CAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQAH0jAdHAKfuJ8wd4dDf99lV0jzcsr0LJFurnkTldsr4b/5dWGDW/ezqlHzpR22/ON7fOsBn3Rq0NzgUKg6+FFRlWy7Vzetv6yfNl+Krd1Hk90s7eq3/azXF9a4Ppmt1SnoEYC6XN74WdSZ8F8+m2YGVII5n9bFibduTvAWm6VxItqTjy7f1Fg2S8txtjOhdtX5J3dSvU0A52vGvs8RtYUPE/p9erM35PEyJwApG+BOmjg3liCxoJLzcXVJwRlRmzwK1HUK7ymW/uQHPtvoLaeKgIR7ooe+BT69y5DRWqj85sXsM/f7h04P4htq/6Bu8QoSdfDr8mEgc7e6Sd2CAegP</encodedCertificate>
+               </signingCertificate>
+            </parameters>
+            <!--Optional:-->\r
+            <signatureValue>\r
+               <!--Optional:-->\r
+               <algorithm>RSA_SHA256</algorithm>\r
+               <!--Optional:-->\r
+               <value>Jk8YxR0w3iW6MGAjhBLaCu/0CVA4aQHka3VuEntHRaY5rhdF/curM3LhcWlqRhhROtV3IBe8+cc9w16wc+s3zogGpQXiWiyTodupKsBOWwv+K4KVAcSLPQJ9YYrF820AlzMLJcghhkJiGJF76JXoK67gZeHQd45+h7Ul4tYcLFSZ2yuxKptEyNzWHHuR+nHxQXGt63J3NQaGeHaT92rEaCIyn+Zy0hrY+NZraseITLrb+V1P28W4+pSxga+LwzX6b1V+ERPdotKptwnnb38MUrWAwsn33uurW2S1NSH5hAgROh4kxeN95mckqvu5R46OSsSPiDXV58wzhwy77mV7UA==</value>\r
+            </signatureValue>\r
+            <!--Optional:-->\r
+            <signatureDocument>
+               <!--Optional:-->
+               <bytes>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT5EenR3TlRtUm9PQW02L2xNSThSeW01eFpQekl2TFlEem4vZWJZWWtQc3I0PTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPllBN3NFTnQzTjh1ZkxGTW5LcjM2cjBQcXpNaVkzUTBzKytJR1RFVUMwc3BheFV2MGRIWk0wZC95bjNrcExKTG9Va0k0TTNmbGo1V0duODNrZjA1QnFNMWtoc1g2MUdKemFGVFBHcG03YWtSUUtodm9IMjV5eXFUWVhFU2xCY20wNGl6aUtoTE16WmpVZng0L0IxWkl5c3Y1cElCZ0oycjJvaTZqTG9wOXd3M2dlNGM0WUpvYUsrU1hrNmh5VE5PY044UGpHZTYzV1lPVE5WUFFGdmphOEJud2crYTBiQnV3RCs4TjZmd2lnQ2RXNWEvNERKVWUvSjhNYjcwWkk4UG9Pem5HRGZpK1RQYmlJZVZtQ2JsNW1Vb1VnMlEveFlsdUpmTGgzdUdRQVhLQnZGNDVvRElIUlZlZm5OL0QvV3l0QUNsVVZEb1FTeXdlbW5qUHBxRjhlZz09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlEMURDQ0FyeWdBd0lCQWdJQkNqQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZG5iMjlrTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXhXaGNOTVRnd09ESTJNRGMxTkRNeFdqQlBNUkl3RUFZRFZRUUREQWxuYjI5a0xYVnpaWEl4R1RBWEJnTlZCQW9NRUU1dmQybHVZU0JUYjJ4MWRHbHZibk14RVRBUEJnTlZCQXNNQ0ZCTFNTMVVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxSQ1VJUVpidzNuU2RMcCtCOWN6RUNncFpra1E1eFY0ZzlNLzd3bGc5N29DQ2Y3VUVoOUJBMWQrellqc3p2K0JKMWJKWlBnYW4yMTQ0QXZnc29HSmZiNlVJeVZXNGdrbFVnSWwxYXJVdm9uK1drS25zZUZ1UU9mSnlqU0ZVREl3bnV2cDBoemNKWEhYUm1MZG15aCtuKzZOTUgwb201dFZvU2ZRcnRCVmlDTGVTTVZ6dUQ1RVBqMG1JUmN4OTFwTDM4ZTNGTlRXN05hR1pMZWV6dUZ1Ui9xN3o5M2xMa3ZaNFZBTU5HR0x2SVhPWWVSQlpNeVBocEJaNEwzQThJM0VFbEtXSC8xTHdpaVhUVFNHMXNNNld2TVRWYmYydmJkNDduWlJRQTJtU3BOR2pRb3VPQUVyZmVWVlVxeklDZ2hRQ0hSR09OdVNMRy9IZnFGSGI0aldnMENBd0VBQWFPQnZEQ0J1VEFPQmdOVkhROEJBZjhFQkFNQ0JrQXdnWWNHQ0NzR0FRVUZCd0VCQkhzd2VUQTVCZ2dyQmdFRkJRY3dBWVl0YUhSMGNEb3ZMMlJ6Y3k1dWIzZHBibUV1YkhVdmNHdHBMV1poWTNSdmNua3ZiMk56Y0M5bmIyOWtMV05oTUR3R0NDc0dBUVVGQnpBQ2hqQm9kSFJ3T2k4dlpITnpMbTV2ZDJsdVlTNXNkUzl3YTJrdFptRmpkRzl5ZVM5amNuUXZaMjl2WkMxallTNWpjblF3SFFZRFZSME9CQllFRk4ycEhELzdQZWZtQlQ4b1gyOVpoV3kvT0hKMU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkszVk9MaERJVldLb0ZycmhoV3phZGR0azZYUXRjd1JvTlBWU3NpL2dPcnpzZE03MEEzMXhJVHc3WWZMaHBvVkExeG83b3ZIbGRwTGxocXk5bzV3aDI4MnlDcHFCVUF0Z3JTa0RHb2crSzdDTDZnVXBybFlpWnVHWnJ0ZzJYM2ZIUzJVc3g0WkozdElqNndWZWNERVVxSVNGZkZUMkVzbTBRWFVuZ0lLRk1sOTVYZ210dzJ3eFhiT3pVZURkNERJUHJ2K21XNXBvQVdyNkl0c1YrSDJWUStaTC9rQm53V0hqU1RPYUdGaXNxWFkvYUgvMVB0QlhBKzE1K1lJV2VtSkJTdjNrRGFGek9YQUV0UjlaSThsWU9KYXJuWTdBeS9hTjZiOXVHZmZyYm8vaFZBY0w0V0RkaGtiQk4zbTh3K2c3NkxvQVhOZUVldTA0QS8weExaelVCPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlENmpDQ0F0S2dBd0lCQWdJQkJEQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZHliMjkwTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXdXaGNOTVRnd09ESTJNRGMxTkRNd1dqQk5NUkF3RGdZRFZRUUREQWRuYjI5a0xXTmhNUmt3RndZRFZRUUtEQkJPYjNkcGJtRWdVMjlzZFhScGIyNXpNUkV3RHdZRFZRUUxEQWhRUzBrdFZFVlRWREVMTUFrR0ExVUVCaE1DVEZVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNiYmw1c0tCQ2pTQjhUTWRhY3lteC9XZk9qTVcxZ2lJalZKUlkyOEpiTldrQ1ZtdHpnbWl0Z2hmclBRUGx1ZXUwRFRhbGJEa3JTU3loQ3Z6elBTR1B3Q0ZPYWhGL243aFFhMUYzVWFIU3hUS3JGQzVuT3dkTHp4S1JPM1dqVnRJR1JTWDJrdjFGZlVwUXk1RXl5K3JzZlN6SjU5ZFU1WlpkV3BkYUR1RHhWVnlEZXIzRUl5Q2JHNy81SDlNRDRZdXpOcGVURldtTTZjVVNUMDc5NlhEbGJFeFNUVEdRWEZKQTIrQ0NzeTlEWG5KYThuejBGRThmbWN2UUhlVTZrOVFicHpHak1kM0RXbEU2bm83VWRDWUQxSDA0K3VzQnA1aGhDckFCNjcwTmRvVHJOVG1HTkFGdDRKVDB2aXRqS0hxOUtFSWQ2TGhkY20yVGc5M2REY1dGdEFnTUJBQUdqZ2RRd2dkRXdEZ1lEVlIwUEFRSC9CQVFEQWdlQU1FRUdBMVVkSHdRNk1EZ3dOcUEwb0RLR01HaDBkSEE2THk5a2MzTXVibTkzYVc1aExteDFMM0JyYVMxbVlXTjBiM0o1TDJOeWJDOXliMjkwTFdOaExtTnliREJNQmdnckJnRUZCUWNCQVFSQU1ENHdQQVlJS3dZQkJRVUhNQUtHTUdoMGRIQTZMeTlrYzNNdWJtOTNhVzVoTG14MUwzQnJhUzFtWVdOMGIzSjVMMk55ZEM5eWIyOTBMV05oTG1OeWREQWRCZ05WSFE0RUZnUVUrMnRGcXBOZTNHMjNZUjh5cUJaSWlWV1MzdlV3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBRStOdWQwNVhHT002RkVaSFdUYzgrYm16LzZCMFhRWE41NjRLV0JCaGNoOWk1R2FkanFwU3NldmtuK3RlTHE1bTZDTG8zZTRsWDJkSjdoc1BBdnlhTHFPSXB6ZzQ5VEdkaWIxbk9CMk83NCt5QWhUOHY5Rlp0SDFFQ0hYeFlzdXlTR0lLdmQrTDVJakpUaXMzbGw0dlU4Rkh6eVJsTTlJUW53WlI1MDZqRmNKZUdsT2d5WmgrVUxXblJORUV3cU44RFRGMkQwWG9nWUJzckN4Q0JqMFBwYUpGcnV2RVFxcFV1dVlnMTRSMURKRmFoTHdxVllTT0Q1Z1BobUEwSFI0ejNHRjNqSFN6MGk5alhTVE9zVWNka3ZVSnkwdElPbnVqc1VFa2czSDZXZzNsejhUdzNJYzdWMU5IYitNQzVLNFp2WCs1U1l5dTArZXI3YkZzY0lyWVp3PT08L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48ZHM6T2JqZWN0Pjx4YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcyB4bWxuczp4YWRlcz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiBUYXJnZXQ9IiNpZC1hZmRlNzgyNDM2NDY4ZGQ3NGVlYjE4MWY3Y2UxMTBlMSI+PHhhZGVzOlNpZ25lZFByb3BlcnRpZXMgSWQ9InhhZGVzLWlkLWFmZGU3ODI0MzY0NjhkZDc0ZWViMTgxZjdjZTExMGUxIj48eGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmluZ1RpbWU+MjAxNy0wOS0yOFQxMTowOTowNFo8L3hhZGVzOlNpZ25pbmdUaW1lPjx4YWRlczpTaWduaW5nQ2VydGlmaWNhdGVWMj48eGFkZXM6Q2VydD48eGFkZXM6Q2VydERpZ2VzdD48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48ZHM6RGlnZXN0VmFsdWU+YytWb2hnMGpJY1o0VVFTV2VnbENnMG9HTldzPTwvZHM6RGlnZXN0VmFsdWU+PC94YWRlczpDZXJ0RGlnZXN0Pjx4YWRlczpJc3N1ZXJTZXJpYWxWMj5NRll3VWFSUE1FMHhFREFPQmdOVkJBTU1CMmR2YjJRdFkyRXhHVEFYQmdOVkJBb01FRTV2ZDJsdVlTQlRiMngxZEdsdmJuTXhFVEFQQmdOVkJBc01DRkJMU1MxVVJWTlVNUXN3Q1FZRFZRUUdFd0pNVlFJQkNnPT08L3hhZGVzOklzc3VlclNlcmlhbFYyPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZVYyPjwveGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmVkRGF0YU9iamVjdFByb3BlcnRpZXM+PHhhZGVzOkRhdGFPYmplY3RGb3JtYXQgT2JqZWN0UmVmZXJlbmNlPSIjci1pZC0xIj48eGFkZXM6TWltZVR5cGU+dGV4dC94bWw8L3hhZGVzOk1pbWVUeXBlPjwveGFkZXM6RGF0YU9iamVjdEZvcm1hdD48L3hhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjwveGFkZXM6U2lnbmVkUHJvcGVydGllcz48L3hhZGVzOlF1YWxpZnlpbmdQcm9wZXJ0aWVzPjwvZHM6T2JqZWN0PjwvZHM6U2lnbmF0dXJlPg==</bytes>
+               <!--Optional:-->
+               <name>xades-detached.xml</name>
+            </signatureDocument>
+         </counterSignSignature>\r
+      </sig:counterSignSignature>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapDocumentSignatureService/counterSignSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="0dc18f18-a262-4f9a-9abf-74dc5048eb55" isOneWay="false" action="" name="getDataToBeCounterSigned" bindingOperationName="getDataToBeCounterSigned" type="Request-Response" outputName="getDataToBeCounterSignedResponse" inputName="getDataToBeCounterSigned" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="e157fd47-5e3d-4c15-85f0-c1f1e8d86c01" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/one-document</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sig:getDataToBeCounterSigned>\r
+         <!--Optional:-->\r
+         <dataToBeCounterSigned>\r
+            <!--Optional:-->\r
+            <parameters><!--Optional:-->
+               <archiveTimestampParameters><!--Optional:-->
+                  <canonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</canonicalizationMethod>
+                  <!--Optional:-->
+                  <digestAlgorithm>SHA256</digestAlgorithm>
+               </archiveTimestampParameters>
+               <!--Optional:-->
+               <BLevelParams>
+                  <trustAnchorBPPolicy>true</trustAnchorBPPolicy>
+                  <!--Optional:-->
+                  <signingDate>2017-02-03T14:06:14.464Z</signingDate>
+                  <!--Zero or more repetitions:-->
+               </BLevelParams>
+               <!--Optional:-->
+               <contentTimestampParameters><!--Optional:-->
+                  <canonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</canonicalizationMethod>
+                  <!--Optional:-->
+                  <digestAlgorithm>SHA256</digestAlgorithm>
+               </contentTimestampParameters>
+               <!--Optional:-->
+               <digestAlgorithm>SHA256</digestAlgorithm>
+               <!--Optional:-->
+               <encryptionAlgorithm>RSA</encryptionAlgorithm>
+               <signWithExpiredCertificate>false</signWithExpiredCertificate>
+               <!--Optional:-->
+               <signatureLevel>XAdES_BASELINE_B</signatureLevel>
+               <!--Optional:-->
+               <signatureTimestampParameters><!--Optional:-->
+                  <canonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</canonicalizationMethod>
+                  <!--Optional:-->
+                  <digestAlgorithm>SHA256</digestAlgorithm>
+               </signatureTimestampParameters>
+               <!--Optional:-->
+               <signatureIdToCounterSign>id-afde782436468dd74eeb181f7ce110e1</signatureIdToCounterSign>
+               <!--Zero or more repetitions:-->
+               <signingCertificate><!--Optional:-->
+                  <encodedCertificate>MIIC6jCCAdKgAwIBAgIGAVoD9KJEMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwMjAyMTIzMDQ3WhcNMTcwMjI4MDkwMjExWjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJoN1aNtu3mW8KvH8cO8ABCXJeo7v2qbBDIUxmF5NplsoiLavCi+N4JZeLuYMNGt7Kuro5HvFYMtLQQ52eE7NPjdQBHJqbyMa075xyEr8SwwzoGog2NdYrKeluxS8BN7+LJOG9D0liw6L85Tzv7HaFf4ZtAnQflyPX3oeFNnu7FeGqbDe0gA54pKCUMfShHOYcfco/sMN5/zHfNyS28m9dg1vqx94skwo6USjCHSwrpS5OisnKz3S6ICplcCj/QOQTNYMCoTYEygFVqlJSLBl7CRLIEJqUGqqpFQ5wi2lrN5sK3xTlRiLin1ODI9+urPMfudOWjR2X93sJH8XvixN20CAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQAH0jAdHAKfuJ8wd4dDf99lV0jzcsr0LJFurnkTldsr4b/5dWGDW/ezqlHzpR22/ON7fOsBn3Rq0NzgUKg6+FFRlWy7Vzetv6yfNl+Krd1Hk90s7eq3/azXF9a4Ppmt1SnoEYC6XN74WdSZ8F8+m2YGVII5n9bFibduTvAWm6VxItqTjy7f1Fg2S8txtjOhdtX5J3dSvU0A52vGvs8RtYUPE/p9erM35PEyJwApG+BOmjg3liCxoJLzcXVJwRlRmzwK1HUK7ymW/uQHPtvoLaeKgIR7ooe+BT69y5DRWqj85sXsM/f7h04P4htq/6Bu8QoSdfDr8mEgc7e6Sd2CAegP</encodedCertificate>
+               </signingCertificate>
+            </parameters>
+            <!--Optional:-->\r
+            <signatureDocument>\r
+               <!--Optional:-->\r
+               <bytes>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT5EenR3TlRtUm9PQW02L2xNSThSeW01eFpQekl2TFlEem4vZWJZWWtQc3I0PTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPllBN3NFTnQzTjh1ZkxGTW5LcjM2cjBQcXpNaVkzUTBzKytJR1RFVUMwc3BheFV2MGRIWk0wZC95bjNrcExKTG9Va0k0TTNmbGo1V0duODNrZjA1QnFNMWtoc1g2MUdKemFGVFBHcG03YWtSUUtodm9IMjV5eXFUWVhFU2xCY20wNGl6aUtoTE16WmpVZng0L0IxWkl5c3Y1cElCZ0oycjJvaTZqTG9wOXd3M2dlNGM0WUpvYUsrU1hrNmh5VE5PY044UGpHZTYzV1lPVE5WUFFGdmphOEJud2crYTBiQnV3RCs4TjZmd2lnQ2RXNWEvNERKVWUvSjhNYjcwWkk4UG9Pem5HRGZpK1RQYmlJZVZtQ2JsNW1Vb1VnMlEveFlsdUpmTGgzdUdRQVhLQnZGNDVvRElIUlZlZm5OL0QvV3l0QUNsVVZEb1FTeXdlbW5qUHBxRjhlZz09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlEMURDQ0FyeWdBd0lCQWdJQkNqQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZG5iMjlrTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXhXaGNOTVRnd09ESTJNRGMxTkRNeFdqQlBNUkl3RUFZRFZRUUREQWxuYjI5a0xYVnpaWEl4R1RBWEJnTlZCQW9NRUU1dmQybHVZU0JUYjJ4MWRHbHZibk14RVRBUEJnTlZCQXNNQ0ZCTFNTMVVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxSQ1VJUVpidzNuU2RMcCtCOWN6RUNncFpra1E1eFY0ZzlNLzd3bGc5N29DQ2Y3VUVoOUJBMWQrellqc3p2K0JKMWJKWlBnYW4yMTQ0QXZnc29HSmZiNlVJeVZXNGdrbFVnSWwxYXJVdm9uK1drS25zZUZ1UU9mSnlqU0ZVREl3bnV2cDBoemNKWEhYUm1MZG15aCtuKzZOTUgwb201dFZvU2ZRcnRCVmlDTGVTTVZ6dUQ1RVBqMG1JUmN4OTFwTDM4ZTNGTlRXN05hR1pMZWV6dUZ1Ui9xN3o5M2xMa3ZaNFZBTU5HR0x2SVhPWWVSQlpNeVBocEJaNEwzQThJM0VFbEtXSC8xTHdpaVhUVFNHMXNNNld2TVRWYmYydmJkNDduWlJRQTJtU3BOR2pRb3VPQUVyZmVWVlVxeklDZ2hRQ0hSR09OdVNMRy9IZnFGSGI0aldnMENBd0VBQWFPQnZEQ0J1VEFPQmdOVkhROEJBZjhFQkFNQ0JrQXdnWWNHQ0NzR0FRVUZCd0VCQkhzd2VUQTVCZ2dyQmdFRkJRY3dBWVl0YUhSMGNEb3ZMMlJ6Y3k1dWIzZHBibUV1YkhVdmNHdHBMV1poWTNSdmNua3ZiMk56Y0M5bmIyOWtMV05oTUR3R0NDc0dBUVVGQnpBQ2hqQm9kSFJ3T2k4dlpITnpMbTV2ZDJsdVlTNXNkUzl3YTJrdFptRmpkRzl5ZVM5amNuUXZaMjl2WkMxallTNWpjblF3SFFZRFZSME9CQllFRk4ycEhELzdQZWZtQlQ4b1gyOVpoV3kvT0hKMU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkszVk9MaERJVldLb0ZycmhoV3phZGR0azZYUXRjd1JvTlBWU3NpL2dPcnpzZE03MEEzMXhJVHc3WWZMaHBvVkExeG83b3ZIbGRwTGxocXk5bzV3aDI4MnlDcHFCVUF0Z3JTa0RHb2crSzdDTDZnVXBybFlpWnVHWnJ0ZzJYM2ZIUzJVc3g0WkozdElqNndWZWNERVVxSVNGZkZUMkVzbTBRWFVuZ0lLRk1sOTVYZ210dzJ3eFhiT3pVZURkNERJUHJ2K21XNXBvQVdyNkl0c1YrSDJWUStaTC9rQm53V0hqU1RPYUdGaXNxWFkvYUgvMVB0QlhBKzE1K1lJV2VtSkJTdjNrRGFGek9YQUV0UjlaSThsWU9KYXJuWTdBeS9hTjZiOXVHZmZyYm8vaFZBY0w0V0RkaGtiQk4zbTh3K2c3NkxvQVhOZUVldTA0QS8weExaelVCPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlENmpDQ0F0S2dBd0lCQWdJQkJEQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZHliMjkwTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXdXaGNOTVRnd09ESTJNRGMxTkRNd1dqQk5NUkF3RGdZRFZRUUREQWRuYjI5a0xXTmhNUmt3RndZRFZRUUtEQkJPYjNkcGJtRWdVMjlzZFhScGIyNXpNUkV3RHdZRFZRUUxEQWhRUzBrdFZFVlRWREVMTUFrR0ExVUVCaE1DVEZVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNiYmw1c0tCQ2pTQjhUTWRhY3lteC9XZk9qTVcxZ2lJalZKUlkyOEpiTldrQ1ZtdHpnbWl0Z2hmclBRUGx1ZXUwRFRhbGJEa3JTU3loQ3Z6elBTR1B3Q0ZPYWhGL243aFFhMUYzVWFIU3hUS3JGQzVuT3dkTHp4S1JPM1dqVnRJR1JTWDJrdjFGZlVwUXk1RXl5K3JzZlN6SjU5ZFU1WlpkV3BkYUR1RHhWVnlEZXIzRUl5Q2JHNy81SDlNRDRZdXpOcGVURldtTTZjVVNUMDc5NlhEbGJFeFNUVEdRWEZKQTIrQ0NzeTlEWG5KYThuejBGRThmbWN2UUhlVTZrOVFicHpHak1kM0RXbEU2bm83VWRDWUQxSDA0K3VzQnA1aGhDckFCNjcwTmRvVHJOVG1HTkFGdDRKVDB2aXRqS0hxOUtFSWQ2TGhkY20yVGc5M2REY1dGdEFnTUJBQUdqZ2RRd2dkRXdEZ1lEVlIwUEFRSC9CQVFEQWdlQU1FRUdBMVVkSHdRNk1EZ3dOcUEwb0RLR01HaDBkSEE2THk5a2MzTXVibTkzYVc1aExteDFMM0JyYVMxbVlXTjBiM0o1TDJOeWJDOXliMjkwTFdOaExtTnliREJNQmdnckJnRUZCUWNCQVFSQU1ENHdQQVlJS3dZQkJRVUhNQUtHTUdoMGRIQTZMeTlrYzNNdWJtOTNhVzVoTG14MUwzQnJhUzFtWVdOMGIzSjVMMk55ZEM5eWIyOTBMV05oTG1OeWREQWRCZ05WSFE0RUZnUVUrMnRGcXBOZTNHMjNZUjh5cUJaSWlWV1MzdlV3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBRStOdWQwNVhHT002RkVaSFdUYzgrYm16LzZCMFhRWE41NjRLV0JCaGNoOWk1R2FkanFwU3NldmtuK3RlTHE1bTZDTG8zZTRsWDJkSjdoc1BBdnlhTHFPSXB6ZzQ5VEdkaWIxbk9CMk83NCt5QWhUOHY5Rlp0SDFFQ0hYeFlzdXlTR0lLdmQrTDVJakpUaXMzbGw0dlU4Rkh6eVJsTTlJUW53WlI1MDZqRmNKZUdsT2d5WmgrVUxXblJORUV3cU44RFRGMkQwWG9nWUJzckN4Q0JqMFBwYUpGcnV2RVFxcFV1dVlnMTRSMURKRmFoTHdxVllTT0Q1Z1BobUEwSFI0ejNHRjNqSFN6MGk5alhTVE9zVWNka3ZVSnkwdElPbnVqc1VFa2czSDZXZzNsejhUdzNJYzdWMU5IYitNQzVLNFp2WCs1U1l5dTArZXI3YkZzY0lyWVp3PT08L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48ZHM6T2JqZWN0Pjx4YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcyB4bWxuczp4YWRlcz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiBUYXJnZXQ9IiNpZC1hZmRlNzgyNDM2NDY4ZGQ3NGVlYjE4MWY3Y2UxMTBlMSI+PHhhZGVzOlNpZ25lZFByb3BlcnRpZXMgSWQ9InhhZGVzLWlkLWFmZGU3ODI0MzY0NjhkZDc0ZWViMTgxZjdjZTExMGUxIj48eGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmluZ1RpbWU+MjAxNy0wOS0yOFQxMTowOTowNFo8L3hhZGVzOlNpZ25pbmdUaW1lPjx4YWRlczpTaWduaW5nQ2VydGlmaWNhdGVWMj48eGFkZXM6Q2VydD48eGFkZXM6Q2VydERpZ2VzdD48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48ZHM6RGlnZXN0VmFsdWU+YytWb2hnMGpJY1o0VVFTV2VnbENnMG9HTldzPTwvZHM6RGlnZXN0VmFsdWU+PC94YWRlczpDZXJ0RGlnZXN0Pjx4YWRlczpJc3N1ZXJTZXJpYWxWMj5NRll3VWFSUE1FMHhFREFPQmdOVkJBTU1CMmR2YjJRdFkyRXhHVEFYQmdOVkJBb01FRTV2ZDJsdVlTQlRiMngxZEdsdmJuTXhFVEFQQmdOVkJBc01DRkJMU1MxVVJWTlVNUXN3Q1FZRFZRUUdFd0pNVlFJQkNnPT08L3hhZGVzOklzc3VlclNlcmlhbFYyPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZVYyPjwveGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmVkRGF0YU9iamVjdFByb3BlcnRpZXM+PHhhZGVzOkRhdGFPYmplY3RGb3JtYXQgT2JqZWN0UmVmZXJlbmNlPSIjci1pZC0xIj48eGFkZXM6TWltZVR5cGU+dGV4dC94bWw8L3hhZGVzOk1pbWVUeXBlPjwveGFkZXM6RGF0YU9iamVjdEZvcm1hdD48L3hhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjwveGFkZXM6U2lnbmVkUHJvcGVydGllcz48L3hhZGVzOlF1YWxpZnlpbmdQcm9wZXJ0aWVzPjwvZHM6T2JqZWN0PjwvZHM6U2lnbmF0dXJlPg==</bytes>\r
+               <!--Optional:-->\r
+               <name>xades-detached.xml</name>\r
+            </signatureDocument>\r
+         </dataToBeCounterSigned>\r
+      </sig:getDataToBeCounterSigned>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapDocumentSignatureService/getDataToBeCounterSigned"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="355c802d-b903-4192-b07e-075fc8e3626a" wsaVersion="NONE" name="SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/multiple-documents?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/multiple-documents?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/multiple-documents?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapMultipleDocumentsSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
   <wsdl:import location="http://localhost:8080/services/soap/signature/multiple-documents?wsdl=SoapMultipleDocumentsSignatureService.wsdl" namespace="http://signature.dss.esig.europa.eu/"></wsdl:import>
   <wsdl:binding name="SoapMultipleDocumentsSignatureServiceImplServiceSoapBinding" type="ns1:SoapMultipleDocumentsSignatureService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>

@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -32,17 +27,23 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Provides an abstraction for an Advanced Electronic Signature. This ease the validation process. Every signature
@@ -59,10 +60,14 @@ public interface AdvancedSignature extends Serializable {
 
 	/**
 	 * This method allows to set the signature filename (useful in case of ASiC)
+	 *
+	 * @param signatureFilename {@link String}
 	 */
 	void setSignatureFilename(String signatureFilename);
 
 	/**
+	 * Returns detached contents
+	 *
 	 * @return in the case of the detached signature this is the {@code List} of signed contents.
 	 */
 	List<DSSDocument> getDetachedContents();
@@ -76,48 +81,48 @@ public interface AdvancedSignature extends Serializable {
 	void setDetachedContents(final List<DSSDocument> detachedContents);
 	
 	/**
-	 * @return in case of ASiC signature returns a list of container documents
+	 * Returns container's content
+	 *
+	 * @return in case of ASiC-S signature returns a list of an archive container documents
 	 */
 	List<DSSDocument> getContainerContents();
 	
 	/**
-	 * This method allows to set the container contents in the case of ASiC signature.
+	 * This method allows to set the archive container contents in the case of ASiC-S signature.
 	 *
 	 * @param containerContents
-	 *            {@code List} of {@code DSSDocument} representing the container contents.
+	 *            {@code List} of {@code DSSDocument} representing the archive container contents.
 	 */
 	void setContainerContents(final List<DSSDocument> containerContents);
 
 	/**
-	 * This method allows to set the manifest files in the case of ASiC-E signature.
+	 * This method returns a related {@code ManifestFile} in the case of ASiC-E signature.
 	 *
-	 * @param manifestFiles
-	 *            {@code List} of {@code ManifestFile}s
+	 * @return manifestFile {@link ManifestFile}
 	 */
-	void setManifestFiles(List<ManifestFile> manifestFiles);
+	ManifestFile getManifestFile();
 
 	/**
-	 * @return in case of ASiC-E signature returns a list of {@link DSSDocument}s contained in the related signature manifest
-	 */
-	List<DSSDocument> getManifestedDocuments();
-
-	/**
-	 * @return This method returns the provided signing certificate or {@code null}
-	 */
-	CertificateToken getProvidedSigningCertificateToken();
-
-	/**
-	 * This method allows to provide a signing certificate to be used in the validation process. It can happen in the
-	 * case of a non-AdES signature without the signing certificate
-	 * within the signature.
+	 * This method allows to set a manifest file in the case of ASiC-E signature.
 	 *
-	 * @param certificateToken
-	 *            {@code CertificateToken} representing the signing certificate token.
+	 * @param manifestFile
+	 *            {@code ManifestFile}
 	 */
-	void setProvidedSigningCertificateToken(final CertificateToken certificateToken);
+	void setManifestFile(ManifestFile manifestFile);
+
+	/**
+	 * Set a certificate source which allows to find the signing certificate by kid
+	 * or certificate's digest
+	 * 
+	 * @param signingCertificateSource the certificate source to resolve missing
+	 *                                 signing certificate
+	 */
+	void setSigningCertificateSource(CertificateSource signingCertificateSource);
 
 	/**
 	 * Specifies the format of the signature
+	 *
+	 * @return {@link SignatureForm}
 	 */
 	SignatureForm getSignatureForm();
 
@@ -159,7 +164,7 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Gets a certificate source which contains ALL certificates embedded in the signature.
 	 *
-	 * @return
+	 * @return {@link SignatureCertificateSource}
 	 */
 	SignatureCertificateSource getCertificateSource();
 
@@ -216,9 +221,18 @@ public interface AdvancedSignature extends Serializable {
 	 * from the signature. If the signing certificate is identified then it is cached and the subsequent calls to this
 	 * method will return this cached value. This method never returns null.
 	 *
-	 * @return
+	 * @return {@link CandidatesForSigningCertificate}
 	 */
 	CandidatesForSigningCertificate getCandidatesForSigningCertificate();
+	
+	/**
+	 * This method prepares an offline CertificateVerifier. The instance is used to
+	 * know if all required revocation data are present
+	 * 
+	 * @param certificateVerifier the configured CertificateVerifier with all
+	 *                            external sources
+	 */
+	void prepareOfflineCertificateVerifier(final CertificateVerifier certificateVerifier);
 
 	/**
 	 * This setter allows to indicate the master signature. It means that this is a countersignature.
@@ -229,6 +243,8 @@ public interface AdvancedSignature extends Serializable {
 	void setMasterSignature(final AdvancedSignature masterSignature);
 
 	/**
+	 * Gets master signature
+	 *
 	 * @return {@code AdvancedSignature}
 	 */
 	AdvancedSignature getMasterSignature();
@@ -245,7 +261,7 @@ public interface AdvancedSignature extends Serializable {
 	 * determinate the signing certificate the signature must be
 	 * validated: the method {@code checkSignatureIntegrity} must be called.
 	 *
-	 * @return
+	 * @return {@link CertificateToken}
 	 */
 	CertificateToken getSigningCertificateToken();
 
@@ -258,6 +274,8 @@ public interface AdvancedSignature extends Serializable {
 	void checkSignatureIntegrity();
 
 	/**
+	 * Gets signature's cryptographic validation result
+	 *
 	 * @return SignatureCryptographicVerification with all the information collected during the validation process.
 	 */
 	SignatureCryptographicVerification getSignatureCryptographicVerification();
@@ -267,7 +285,14 @@ public interface AdvancedSignature extends Serializable {
 	 *
 	 * @return {@code SignaturePolicy}
 	 */
-	SignaturePolicy getPolicyId();
+	SignaturePolicy getSignaturePolicy();
+
+	/**
+	 * Returns the Signature Policy Store from the signature
+	 * 
+	 * @return {@code SignaturePolicyStore}
+	 */
+	SignaturePolicyStore getSignaturePolicyStore();
 
 	/**
 	 * Returns information about the place where the signature was generated
@@ -296,16 +321,6 @@ public interface AdvancedSignature extends Serializable {
 	 * @return mime type as {@code String}
 	 */
 	String getMimeType();
-
-	/**
-	 * @return content identifier as {@code String}
-	 */
-	String getContentIdentifier();
-
-	/**
-	 * @return content hints as {@code String}
-	 */
-	String getContentHints();
 
 	/**
 	 * Returns the list of roles of the signer.
@@ -437,12 +452,6 @@ public interface AdvancedSignature extends Serializable {
 	 * @return a value of {@link SignatureLevel}
 	 */
 	SignatureLevel getDataFoundUpToLevel();
-
-	/**
-	 * @return the list of signature levels for this type of signature, in the simple to complete order. Example:
-	 *         B,T,LT,LTA
-	 */
-	SignatureLevel[] getSignatureLevels();
 	
 	/**
 	 * Checks if all certificate chains present in the signature are self-signed
@@ -450,19 +459,44 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	boolean areAllSelfSignedCertificates();
 
+	/**
+	 * This method adds to the {@code ValidationContext} all timestamps to be validated.
+	 *
+	 * @param validationContext
+	 *            {@code ValidationContext} to which the timestamps must be added
+	 */
 	void prepareTimestamps(ValidationContext validationContext);
 
 	/**
-	 * This method allows the structure validation of the signature.
+	 * This method adds to the {@code ValidationContext} all counter signatures embedded into the current signature.
+	 *
+	 * @param validationContext
+	 *            {@code ValidationContext} to which the counter signature content must be added
 	 */
-	void validateStructure();
+	void prepareCounterSignatures(ValidationContext validationContext);
 
-	String getStructureValidationResult();
+	/**
+	 * Returns a message if the structure validation fails
+	 * 
+	 * @return a list of {@link String} error messages if validation fails,
+	 *         an empty list if structural validation succeeds
+	 */
+	List<String> getStructureValidationResult();
 
-	void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector);
-
+	/**
+	 * Runs SignatureScopeFinder
+	 * 
+	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use
+	 */
+	@SuppressWarnings("rawtypes")
 	void findSignatureScope(SignatureScopeFinder signatureScopeFinder);
 
+	/**
+	 * Returns a list of found SignatureScopes NOTE: the method
+	 * {@code findSignatureScope(signatureScopeFinder)} shall be called before
+	 * 
+	 * @return a list of {@link SignatureScope}s
+	 */
 	List<SignatureScope> getSignatureScopes();
 	
 	/**
@@ -488,6 +522,7 @@ public interface AdvancedSignature extends Serializable {
 	
 	/**
 	 * Returns the digital signature value
+	 *
 	 * @return digital signature value byte array
 	 */
 	byte[] getSignatureValue();
@@ -508,31 +543,14 @@ public interface AdvancedSignature extends Serializable {
 	 * @return {@link SignatureDigestReference}
 	 */
 	SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm);
-
-	// ------------------------ CAdES Specifics for TS 119 102-2
-
-	/**
-	 * Returns a digest value incorporated in an attribute "message-digest" in CMS Signed Data
-	 * 
-	 * @return a byte array representing a signed content digest value
-	 */
-	byte[] getMessageDigestValue();
 	
 	/**
-	 * Returns a Set of CertificateIdentifier extracted from a
-	 * SignerInformationStore of CMS Signed Data
+	 * TS 119 102-1 (4.2.8 Data to be signed representation (DTBSR)) :
+	 * The DTBS preparation component shall take the DTBSF and hash it according to 
+	 * the hash algorithm specified in the cryptographic suite.
 	 * 
-	 * @return a Set of {@link CertificateIdentifier}s
+	 * @return {@link Digest} DTBSR, which is then used to create the signature.
 	 */
-	Set<CertificateIdentifier> getSignerInformationStoreInfos();
-
-	// ------------------------ PDF Specifics for TS 119 102-2
-	
-	/**
-	 * Retrieves a PdfRevision (PAdES) related to the current signature
-	 * 
-	 * @return {@link PdfRevision}
-	 */
-	PdfRevision getPdfRevision();
+	Digest getDataToBeSignedRepresentation();
 
 }

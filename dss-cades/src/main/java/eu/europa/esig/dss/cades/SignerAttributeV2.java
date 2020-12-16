@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.cades;
 
-import java.util.Enumeration;
-
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -32,6 +30,8 @@ import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.x509.Attribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Enumeration;
 
 /**
  * Basic support of ETSI EN 319 122-1 V1.1.1 chapter 5.2.6.1
@@ -46,8 +46,16 @@ public class SignerAttributeV2 extends ASN1Object {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignerAttributeV2.class);
 
+	/** Array of signed attributes */
 	private Object[] values;
 
+	/**
+	 * Parses the object and returns instance of {@code SignerAttributeV2},
+	 * null if the object has another type
+	 *
+	 * @param o object representing the {@link SignerAttributeV2}
+	 * @return {@link SignerAttributeV2}
+	 */
 	public static SignerAttributeV2 getInstance(Object o) {
 		if (o instanceof SignerAttributeV2) {
 			return (SignerAttributeV2) o;
@@ -86,16 +94,31 @@ public class SignerAttributeV2 extends ASN1Object {
 		}
 	}
 
+	/**
+	 * Creates a {@code SignerAttributeV2} from an array of {@code claimedAttributes}
+	 *
+	 * @param claimedAttributes array of {@link Attribute}s
+	 */
 	public SignerAttributeV2(Attribute[] claimedAttributes) {
 		this.values = new Object[1];
 		this.values[0] = claimedAttributes;
 	}
 
+	/**
+	 * Creates a {@code SignerAttributeV2} from {@code certifiedAttributes}
+	 *
+	 * @param certifiedAttributes {@link CertifiedAttributesV2}s
+	 */
 	public SignerAttributeV2(CertifiedAttributesV2 certifiedAttributes) {
 		this.values = new Object[1];
 		this.values[0] = certifiedAttributes;
 	}
-	
+
+	/**
+	 * Creates a {@code SignerAttributeV2} from {@code signedAssertions}
+	 *
+	 * @param signedAssertions {@link SignedAssertions}s
+	 */
 	public SignerAttributeV2(SignedAssertions signedAssertions) {
 		this.values = new Object[1];
 		this.values[0] = signedAssertions;
@@ -142,4 +165,5 @@ public class SignerAttributeV2 extends ASN1Object {
 
 		return new DERSequence(v);
 	}
+
 }

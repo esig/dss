@@ -24,6 +24,9 @@ import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 
+/**
+ * Detects an error on TL parsing
+ */
 public class TLParsingErrorDetection implements AlertDetector<TLInfo> {
 	
 	@Override

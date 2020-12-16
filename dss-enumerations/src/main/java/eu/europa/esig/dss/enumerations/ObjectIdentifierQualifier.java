@@ -38,15 +38,15 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum ObjectIdentifierQualifier {
 	
-	/* Identifies object Identifier encoded as URI (e.g. 'http://test/public') */
+	/** Identifies object Identifier encoded as URI (e.g. 'http://test/public') */
 	OID_AS_URI("OIDAsURI"),
 
-	/* Identifies object Identifier encoded as URN (e.g. 'urn:oid:1.2.840.113549.1.9.16.6.3') */
+	/** Identifies object Identifier encoded as URN (e.g. 'urn:oid:1.2.840.113549.1.9.16.6.3') */
 	OID_AS_URN("OIDAsURN");
 	
 	private final String value;
 	
-	private ObjectIdentifierQualifier(String value) {
+	ObjectIdentifierQualifier(String value) {
 		this.value = value;
 	}
 
@@ -71,7 +71,7 @@ public enum ObjectIdentifierQualifier {
                 return c;
             }
         }
-        throw new IllegalArgumentException(v);
+        return null;
     }
 
 }

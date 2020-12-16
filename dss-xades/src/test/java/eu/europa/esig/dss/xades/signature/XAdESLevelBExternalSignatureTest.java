@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.util.Date;
 
@@ -124,6 +126,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 			// Calculate signature
 			SignatureValue signatureValue = getToken().sign(toBeSigned, getSignatureParameters().getDigestAlgorithm(),
 					getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+			assertTrue(service.isValidSignatureValue(toBeSigned, signatureValue, getSigningCert()));
 			externalSignatureResult.setSignatureValue(signatureValue);
 		} catch (Exception e) {
 			LOG.error("Error while simulating external XAdES signature", e);

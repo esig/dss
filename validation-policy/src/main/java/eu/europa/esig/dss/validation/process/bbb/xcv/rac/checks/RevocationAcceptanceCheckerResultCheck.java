@@ -30,12 +30,26 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+/**
+ * Verifies if the RAC result is valid
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class RevocationAcceptanceCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
-	
+
+	/** Revocation Acceptance Checker result */
 	private final XmlRAC racResult;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param racResult {@link XmlRAC}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public RevocationAcceptanceCheckerResultCheck(I18nProvider i18nProvider, T result, XmlRAC racResult, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint);
+		super(i18nProvider, result, constraint, racResult.getId());
 		this.racResult = racResult;
 	}
 
@@ -65,10 +79,10 @@ public class RevocationAcceptanceCheckerResultCheck<T extends XmlConstraintsConc
 	}
 	
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (racResult.getRevocationProductionDate() != null) {
 			String date = ValidationProcessUtils.getFormattedDate(racResult.getRevocationProductionDate());
-			return MessageTag.REVOCATION_ACCEPTANCE_CHECK.setArgs(racResult.getId(), date);
+			return i18nProvider.getMessage(MessageTag.REVOCATION_ACCEPTANCE_CHECK, racResult.getId(), date);
 		}
 		return null;
 	}

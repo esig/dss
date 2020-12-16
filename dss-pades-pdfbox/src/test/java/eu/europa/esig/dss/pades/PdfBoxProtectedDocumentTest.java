@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.pades;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -140,16 +160,16 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 		assertEquals(0, signatureFields.size());
 		
 		SignatureFieldParameters signatureFieldParameters = new SignatureFieldParameters();
-		signatureFieldParameters.setPage(0);
+		signatureFieldParameters.setPage(1);
 		String firstFieldName = "SignatureField1";
-		signatureFieldParameters.setName(firstFieldName);
+		signatureFieldParameters.setFieldId(firstFieldName);
 		document = service.addNewSignatureField(document, signatureFieldParameters, correctProtectionPhrase);
 		
 		signatureFields = service.getAvailableSignatureFields(document, correctProtectionPhrase);
 		assertEquals(1, signatureFields.size());
 
 		String secondFieldName = "SignatureField2";
-		signatureFieldParameters.setName(secondFieldName);
+		signatureFieldParameters.setFieldId(secondFieldName);
 		document = service.addNewSignatureField(document, signatureFieldParameters, correctProtectionPhrase);
 		
 		signatureFields = service.getAvailableSignatureFields(document, correctProtectionPhrase);
@@ -164,7 +184,7 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setPasswordProtection(correctProtectionPhrase);
-		signatureParameters.setSignatureFieldId(firstFieldName);
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(firstFieldName);
 		
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),

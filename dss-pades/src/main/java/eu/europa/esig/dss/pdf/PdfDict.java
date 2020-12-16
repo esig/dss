@@ -29,18 +29,60 @@ import java.util.Date;
  */
 public interface PdfDict {
 
+	/**
+	 * Gets an embedded dictionary by name
+	 *
+	 * @param name {@link String} of a dictionary to extract
+	 * @return {@link PdfDict}
+	 */
 	PdfDict getAsDict(String name);
 
+	/**
+	 * Gets the pdfArray by name
+	 *
+	 * @param name {@link String}
+	 * @return {@link PdfArray}
+	 */
 	PdfArray getAsArray(String name);
 
+	/**
+	 * Gets binaries by dictionary name
+	 *
+	 * @param name {@link String}
+	 * @return byte array
+	 * @throws IOException if an exception occurs
+	 */
 	byte[] getBinariesValue(String name) throws IOException;
 
+	/**
+	 * Lists all encapsulated dictionary names
+	 *
+	 * @return an array of {@link String}s
+	 */
 	String[] list();
 
+	/**
+	 * Gets a string value by property name
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link String} value
+	 */
 	String getStringValue(String name);
 
+	/**
+	 * Gets a name of the dictionary
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link String} value
+	 */
 	String getNameValue(String name);
 
+	/**
+	 * Gets a date
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link String} value
+	 */
 	Date getDateValue(String name);
 
 }

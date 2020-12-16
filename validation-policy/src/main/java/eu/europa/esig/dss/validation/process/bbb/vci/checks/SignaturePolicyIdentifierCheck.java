@@ -31,12 +31,27 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
+/**
+ * Checks if the signature policy identifier is acceptable
+ */
 public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem<XmlVCI> {
 
+	/** The signature to check */
 	private final SignatureWrapper signature;
+
+	/** The constraint */
 	private final MultiValuesConstraint multiValues;
 
-	public SignaturePolicyIdentifierCheck(I18nProvider i18nProvider, XmlVCI result, SignatureWrapper signature, MultiValuesConstraint multiValues) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlVCI}
+	 * @param signature {@link SignatureWrapper}
+	 * @param multiValues {@link MultiValuesConstraint}
+	 */
+	public SignaturePolicyIdentifierCheck(I18nProvider i18nProvider, XmlVCI result, SignatureWrapper signature,
+										  MultiValuesConstraint multiValues) {
 		super(i18nProvider, result, multiValues);
 		this.signature = signature;
 		this.multiValues = multiValues;

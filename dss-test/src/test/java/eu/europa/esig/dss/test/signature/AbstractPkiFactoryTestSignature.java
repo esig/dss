@@ -93,6 +93,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SACommitmentTypeIndicationType;
 import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
@@ -140,6 +141,15 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 
 	protected void checkMimeType(DSSDocument signedDocument) {
 		assertEquals(getExpectedMime(), signedDocument.getMimeType());
+	}
+	
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
+		
+		for (AdvancedSignature signature : signatures) {
+			assertNotNull(signature.getSignatureFilename());
+		}
 	}
 
 	@Override
@@ -278,6 +288,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 					SignatureForm signatureForm = signatureWrapper.getSignatureFormat().getSignatureForm();
 					switch (signatureForm) {
 						case XAdES:
+						case JAdES:
 							uriMatch = indication.equals(commitmentTypeIndication.getUri()) || indication.equals("urn:oid:" + commitmentTypeIndication.getOid());
 							break;
 						case CAdES:
@@ -309,9 +320,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		super.checkClaimedRoles(diagnosticData);
 		
 		List<String> claimedRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
+
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<String> foundClaimedRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getClaimedRoles());
+
+		assertEquals(Utils.collectionSize(claimedRoles), Utils.collectionSize(foundClaimedRoles));
 		if (Utils.isCollectionNotEmpty(claimedRoles)) {
-			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-			List<String> foundClaimedRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getClaimedRoles());
 			assertEquals(claimedRoles, foundClaimedRoles);
 		}
 	}
@@ -321,13 +335,56 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		super.checkSignedAssertions(diagnosticData);
 
 		List<String> signedAssertions = getSignatureParameters().bLevel().getSignedAssertions();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<String> foundSignedAssertionRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getSignedAssertions());
+
+		assertEquals(Utils.collectionSize(signedAssertions), Utils.collectionSize(foundSignedAssertionRoles));
 		if (Utils.isCollectionNotEmpty(signedAssertions)) {
-			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-			List<String> foundSignedAssertionRoles = signatureWrapper.getSignerRoleDetails(signatureWrapper.getSignedAssertions());
 			for (int i = 0; i < signedAssertions.size(); i++) {
 				Document expected = DomUtils.buildDOM(signedAssertions.get(i));
 				Document extracted = DomUtils.buildDOM(foundSignedAssertionRoles.get(i));
 				assertTrue(expected.isEqualNode(extracted));
+			}
+		}
+	}
+
+	@Override
+	protected void checkSignatureProductionPlace(DiagnosticData diagnosticData) {
+		super.checkSignatureProductionPlace(diagnosticData);
+
+		SignerLocation signerLocation = getSignatureParameters().bLevel().getSignerLocation();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(signerLocation != null && !signerLocation.isEmpty(),
+				signatureWrapper.isSignatureProductionPlacePresent());
+
+		if (signerLocation != null) {
+			String country = signerLocation.getCountry();
+			if (Utils.isStringNotEmpty(country)) {
+				assertEquals(country, signatureWrapper.getCountryName());
+			}
+			String locality = signerLocation.getLocality();
+			if (Utils.isStringNotEmpty(locality)) {
+				assertEquals(locality, signatureWrapper.getCity());
+			}
+			List<String> postalAddress = signerLocation.getPostalAddress();
+			if (Utils.isCollectionNotEmpty(postalAddress)) {
+				assertEquals(postalAddress, signatureWrapper.getPostalAddress());
+			}
+			String postalCode = signerLocation.getPostalCode();
+			if (Utils.isStringNotEmpty(postalCode)) {
+				assertEquals(postalCode, signatureWrapper.getPostalCode());
+			}
+			String postOfficeBoxNumber = signerLocation.getPostOfficeBoxNumber();
+			if (Utils.isStringNotEmpty(postOfficeBoxNumber)) {
+				assertEquals(postOfficeBoxNumber, signatureWrapper.getPostOfficeBoxNumber());
+			}
+			String stateOrProvince = signerLocation.getStateOrProvince();
+			if (Utils.isStringNotEmpty(stateOrProvince)) {
+				assertEquals(stateOrProvince, signatureWrapper.getStateOrProvince());
+			}
+			String street = signerLocation.getStreetAddress();
+			if (Utils.isStringNotEmpty(street)) {
+				assertEquals(street, signatureWrapper.getStreetAddress());
 			}
 		}
 	}
@@ -386,6 +443,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			}
 			if (Utils.isStringNotEmpty(signaturePolicy.getSpuri())) {
 				assertEquals(signaturePolicy.getSpuri(), signature.getPolicyUrl());
+			} else if (Utils.isStringNotEmpty(signaturePolicy.getId())) {
+				assertEquals(signaturePolicy.getId(), signature.getPolicyUrl());
 			} else {
 				assertTrue(Utils.isStringEmpty(signature.getPolicyUrl()));
 			}
@@ -467,6 +526,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	
 	@Override
 	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes) {
+		validateETSISignatureAttributes(signatureAttributes, getSignatureParameters());
+	}
+	
+	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes, SerializableSignatureParameters parameters) {
 		super.validateETSISignatureAttributes(signatureAttributes);
 		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
 		for (Object signatureAttributeObj : signatureAttributeObjects) {
@@ -477,25 +540,29 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				if (value instanceof SACommitmentTypeIndicationType) {
 					// TODO multiple value -> multiple tag in signatureattributes ??
 					SACommitmentTypeIndicationType commitment = (SACommitmentTypeIndicationType) value;
-					List<CommitmentType> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
-					List<String> uriList = commitmentTypeIndications.stream().map(CommitmentType::getUri).collect(Collectors.toList());
-					List<String> oidList = commitmentTypeIndications.stream().map(CommitmentType::getOid).collect(Collectors.toList());
-					assertTrue(uriList.contains(commitment.getCommitmentTypeIdentifier()) || oidList.contains(commitment.getCommitmentTypeIdentifier()));
+					validateETSICommitment(commitment, parameters);
 				} else if (value instanceof SASignerRoleType) {
 					SASignerRoleType signerRoles = (SASignerRoleType) value;
-					validateETSISASignerRoleType(signerRoles);
+					validateETSISASignerRoleType(signerRoles, parameters);
 				} else if (value instanceof SASignatureProductionPlaceType) {
 					SASignatureProductionPlaceType productionPlace = (SASignatureProductionPlaceType) value;
-					validateETSISASignatureProductionPlaceType(productionPlace);
+					validateETSISASignatureProductionPlaceType(productionPlace, parameters);
 				}
 			}
 		}
 	}
+	
+	protected void validateETSICommitment(SACommitmentTypeIndicationType commitment, SerializableSignatureParameters parameters) {
+		List<CommitmentType> commitmentTypeIndications = parameters.bLevel().getCommitmentTypeIndications();
+		List<String> uriList = commitmentTypeIndications.stream().map(CommitmentType::getUri).collect(Collectors.toList());
+		List<String> oidList = commitmentTypeIndications.stream().map(CommitmentType::getOid).collect(Collectors.toList());
+		assertTrue(uriList.contains(commitment.getCommitmentTypeIdentifier()) || oidList.contains(commitment.getCommitmentTypeIdentifier()));
+	}
 
-	protected void validateETSISASignerRoleType(SASignerRoleType signerRoles) {
+	protected void validateETSISASignerRoleType(SASignerRoleType signerRoles, SerializableSignatureParameters parameters) {
 		List<SAOneSignerRoleType> roleDetails = signerRoles.getRoleDetails();
 
-		List<String> claimedSignerRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
+		List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
 		if (Utils.isCollectionNotEmpty(claimedSignerRoles)) {
 			for (String claimedToBeFound : claimedSignerRoles) {
 				boolean found = false;
@@ -510,7 +577,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			}
 		}
 
-		List<String> signedAssertions = getSignatureParameters().bLevel().getSignedAssertions();
+		List<String> signedAssertions = parameters.bLevel().getSignedAssertions();
 		if (Utils.isCollectionNotEmpty(signedAssertions)) {
 			for (String signedAssertionToBeFound : signedAssertions) {
 				Document expected = DomUtils.buildDOM(signedAssertionToBeFound);
@@ -529,9 +596,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		}
 	}
 
-	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace) {
+	protected void validateETSISASignatureProductionPlaceType(SASignatureProductionPlaceType productionPlace, SerializableSignatureParameters parameters) {
 		List<String> addressString = productionPlace.getAddressString();
-		SignerLocation signerLocation = getSignatureParameters().bLevel().getSignerLocation();
+		SignerLocation signerLocation = parameters.bLevel().getSignerLocation();
+		if (signerLocation == null) {
+			return;
+		}
 
 		String country = signerLocation.getCountry();
 		if (country != null) {
@@ -541,6 +611,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		if (locality != null) {
 			assertTrue(addressString.contains(locality));
 		}
+		String postOfficeBoxNumber = signerLocation.getPostOfficeBoxNumber();
+		if (postOfficeBoxNumber != null) {
+			assertTrue(addressString.contains(postOfficeBoxNumber));
+		}
 		String postalCode = signerLocation.getPostalCode();
 		if (postalCode != null) {
 			assertTrue(addressString.contains(postalCode));
@@ -549,7 +623,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		if (stateOrProvince != null) {
 			assertTrue(addressString.contains(stateOrProvince));
 		}
-		String street = signerLocation.getStreet();
+		String street = signerLocation.getStreetAddress();
 		if (street != null) {
 			assertTrue(addressString.contains(street));
 		}
@@ -643,6 +717,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		for (String signatureId : signatureIdList) {
+			
+			SignatureWrapper signatureById = diagnosticData.getSignatureById(signatureId);
+			if (signatureById.isCounterSignature()) {
+				continue;
+			}
 
 			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
@@ -679,7 +758,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		}
 	}
 
-	private String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
+	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
 		byte[] byteArray = DSSUtils.toByteArray(doc);
 		if (toBeCanonicalized) {
 			try {

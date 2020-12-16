@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.operator.DigestCalculator;
@@ -32,17 +31,29 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.utils.Utils;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
+/**
+ * Represents a {@code DigestCalculatorProvider} for a message-digest calculation
+ */
 public class CustomMessageDigestCalculatorProvider implements DigestCalculatorProvider {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CustomMessageDigestCalculatorProvider.class);
 
+	/** The used DigestAlgorithm */
 	private final DigestAlgorithm messageDigestAlgo;
+
+	/** The message digest base64 encoded value */
 	private final String messageDigestValueBase64;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param messageDigestAlgo {@link DigestAlgorithm} that has been used to calculate the message-digest value
+	 * @param messageDigestValueBase64 {@link String} base64 encoded message-digest value
+	 */
 	public CustomMessageDigestCalculatorProvider(DigestAlgorithm messageDigestAlgo, String messageDigestValueBase64) {
 		this.messageDigestAlgo = messageDigestAlgo;
 		this.messageDigestValueBase64 = messageDigestValueBase64;

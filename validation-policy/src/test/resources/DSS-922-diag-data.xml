@@ -117,8 +117,8 @@
             <CommonName>MÄNNIK,MARI-LIIS,47101010033</CommonName>
             <CountryName>EE</CountryName>
             <OrganizationName>ESTEID</OrganizationName>
-            <GivenName>MARI-LIIS</GivenName>
             <OrganizationalUnit>digital signature</OrganizationalUnit>
+            <GivenName>MARI-LIIS</GivenName>
             <Surname>MÄNNIK</Surname>
             <Sources>
             	<Source>SIGNATURE</Source>

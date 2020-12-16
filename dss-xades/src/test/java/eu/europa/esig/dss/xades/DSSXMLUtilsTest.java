@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
@@ -54,39 +55,32 @@ public class DSSXMLUtilsTest {
 	}
 
 	@Test
-	public void isOid() {
-		assertFalse(DSSXMLUtils.isOid(null));
-		assertFalse(DSSXMLUtils.isOid(""));
-		assertFalse(DSSXMLUtils.isOid("aurn:oid:1.2.3.4"));
-		assertTrue(DSSXMLUtils.isOid("urn:oid:1.2.3.4"));
-		assertTrue(DSSXMLUtils.isOid("URN:OID:1.2.3.4"));
-	}
-
-	@Test
 	public void validateAgainstXSDWithExternalSourceMissing() throws SAXException, IOException {
 		DSSDocument document = new FileDocument("src/test/resources/ASiCManifest.xml");
-		String exceptionMessage = xadesUtils.validateAgainstXSD(getSource(document), new StreamSource[0]);
-		assertFalse(Utils.isStringEmpty(exceptionMessage));
+		List<String> errorMessages = xadesUtils.validateAgainstXSD(getSource(document), new StreamSource[0]);
+		assertFalse(Utils.isCollectionEmpty(errorMessages));
 	}
 
 	@Test
 	public void validateAgainstXSDWithExternalSourceOK() throws SAXException, IOException {
 		StreamSource streamSource = new StreamSource(DSSXMLUtilsTest.class.getResourceAsStream("/ExternalXSDForAsic.xsd"));
 		DSSDocument document = new FileDocument("src/test/resources/ASiCManifest.xml");
-		String exceptionMessage = xadesUtils.validateAgainstXSD(getSource(document), streamSource);
-		assertTrue(Utils.isStringEmpty(exceptionMessage));
+		List<String> errorMessages = xadesUtils.validateAgainstXSD(getSource(document), streamSource);
+		assertTrue(Utils.isCollectionEmpty(errorMessages));
 	}
 
 	@Test
 	public void validateAgainstXSDvalidMessage() {
 		FileDocument document = new FileDocument("src/test/resources/valid-xades-structure.xml");
-		assertFalse(Utils.isStringNotEmpty(DSSXMLUtils.validateAgainstXSD(XAdES319132Utils.getInstance(), getSource(document))));
+		assertFalse(Utils.isCollectionNotEmpty(
+				DSSXMLUtils.validateAgainstXSD(XAdES319132Utils.getInstance(), getSource(document))));
 	}
 
 	@Test
 	public void validateAgainstXSDInvalidMessage() {
 		FileDocument document = new FileDocument("src/test/resources/invalid-xades-structure.xml");
-		assertTrue(Utils.isStringNotEmpty(DSSXMLUtils.validateAgainstXSD(XAdES319132Utils.getInstance(), getSource(document))));
+		assertTrue(Utils.isCollectionNotEmpty(
+				DSSXMLUtils.validateAgainstXSD(XAdES319132Utils.getInstance(), getSource(document))));
 	}
 
 	public Source getSource(DSSDocument doc) {

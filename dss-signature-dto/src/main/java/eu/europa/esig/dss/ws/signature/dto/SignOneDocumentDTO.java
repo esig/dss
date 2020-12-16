@@ -24,6 +24,8 @@ import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 
+import java.util.Objects;
+
 /**
  * This class is a DTO to transfer required objects to execute signDocument method
  * It's only possible to transfer an object by POST and REST.
@@ -32,21 +34,43 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 @SuppressWarnings("serial")
 public class SignOneDocumentDTO extends AbstractSignDocumentDTO {
 
+	/** Document to be signed */
 	private RemoteDocument toSignDocument;
 
+	/**
+	 * Empty constructor
+	 */
 	public SignOneDocumentDTO() {
 		super(null, null);
 	}
 
-	public SignOneDocumentDTO(RemoteDocument toSignDocument, RemoteSignatureParameters parameters, SignatureValueDTO signatureValue) {
+	/**
+	 * Default constructor
+	 *
+	 * @param toSignDocument {@link RemoteDocument} to be signed
+	 * @param parameters {@link RemoteSignatureParameters}
+	 * @param signatureValue {@link SignatureValueDTO}
+	 */
+	public SignOneDocumentDTO(RemoteDocument toSignDocument, RemoteSignatureParameters parameters,
+							  SignatureValueDTO signatureValue) {
 		super(parameters, signatureValue);
 		this.toSignDocument = toSignDocument;
 	}
 
+	/**
+	 * Gets document to be signed
+	 *
+	 * @return {@link RemoteDocument}
+	 */
 	public RemoteDocument getToSignDocument() {
 		return toSignDocument;
 	}
 
+	/**
+	 * Sets document to be signed
+	 *
+	 * @param toSignDocument {@link RemoteDocument}
+	 */
 	public void setToSignDocument(RemoteDocument toSignDocument) {
 		this.toSignDocument = toSignDocument;
 	}
@@ -54,10 +78,8 @@ public class SignOneDocumentDTO extends AbstractSignDocumentDTO {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((getParameters() == null) ? 0 : getParameters().hashCode());
-		result = (prime * result) + ((getSignatureValue() == null) ? 0 : getSignatureValue().hashCode());
-		result = (prime * result) + ((toSignDocument == null) ? 0 : toSignDocument.hashCode());
+		int result = super.hashCode();
+		result = prime * result + ((toSignDocument == null) ? 0 : toSignDocument.hashCode());
 		return result;
 	}
 
@@ -66,32 +88,14 @@ public class SignOneDocumentDTO extends AbstractSignDocumentDTO {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
+		if (!super.equals(obj)) {
 			return false;
 		}
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		SignOneDocumentDTO other = (SignOneDocumentDTO) obj;
-		if (getParameters() == null) {
-			if (other.getParameters() != null) {
-				return false;
-			}
-		} else if (!getParameters().equals(other.getParameters())) {
-			return false;
-		}
-		if (getSignatureValue() == null) {
-			if (other.getSignatureValue() != null) {
-				return false;
-			}
-		} else if (!getSignatureValue().equals(other.getSignatureValue())) {
-			return false;
-		}
-		if (toSignDocument == null) {
-			if (other.toSignDocument != null) {
-				return false;
-			}
-		} else if (!toSignDocument.equals(other.toSignDocument)) {
+		if (!Objects.equals(toSignDocument, other.toSignDocument)) {
 			return false;
 		}
 		return true;

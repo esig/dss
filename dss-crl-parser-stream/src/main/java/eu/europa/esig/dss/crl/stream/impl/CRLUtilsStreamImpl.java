@@ -20,6 +20,18 @@
  */
 package eu.europa.esig.dss.crl.stream.impl;
 
+import eu.europa.esig.dss.crl.AbstractCRLUtils;
+import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.crl.ICRLUtils;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import org.bouncycastle.asn1.x509.Extension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.x500.X500Principal;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,20 +41,9 @@ import java.security.GeneralSecurityException;
 import java.security.Signature;
 import java.security.cert.X509CRLEntry;
 
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.x509.Extension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.crl.AbstractCRLUtils;
-import eu.europa.esig.dss.crl.CRLBinary;
-import eu.europa.esig.dss.crl.CRLValidity;
-import eu.europa.esig.dss.crl.ICRLUtils;
-import eu.europa.esig.dss.enumerations.KeyUsageBit;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-
+/**
+ * The DSS implementation of {@code ICRLUtils}
+ */
 public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsStreamImpl.class);

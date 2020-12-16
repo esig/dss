@@ -67,7 +67,6 @@ public class ASiCSXAdESLevelBTest extends AbstractASiCSXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		
 		signatureParameters.setContentTimestampParameters(new XAdESTimestampParameters(DigestAlgorithm.SHA512));
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));

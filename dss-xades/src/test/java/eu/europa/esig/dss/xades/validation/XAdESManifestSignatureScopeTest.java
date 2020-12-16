@@ -25,18 +25,26 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.List;
 
+import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -56,6 +64,42 @@ public class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation
 	}
 	
 	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		assertEquals(4, digestMatchers.size());
+		
+		boolean signedPropertiesFound = false;
+		boolean keyInfoFound = false;
+		boolean signaturePropertiesFound = false;
+		boolean manifestFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			switch (digestMatcher.getType()) {
+				case SIGNED_PROPERTIES:
+					signedPropertiesFound = true;
+					break;
+				case KEY_INFO:
+					keyInfoFound = true;
+					break;
+				case SIGNATURE_PROPERTIES:
+					signaturePropertiesFound = true;
+					break;
+				case MANIFEST:
+					manifestFound = true;
+					break;
+				default:
+					fail("Unexpected DigestMatcherType: " + digestMatcher.getType());
+			}
+		}
+		assertTrue(signedPropertiesFound);
+		assertTrue(keyInfoFound);
+		assertTrue(signaturePropertiesFound);
+		assertTrue(manifestFound);
+	}
+	
+	@Override
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		super.checkSignatureScopes(diagnosticData);
 		
@@ -63,11 +107,11 @@ public class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation
 		assertNotNull(signature);
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		assertNotNull(signatureScopes);
-		assertEquals(2, signatureScopes.size());
+		assertEquals(1, signatureScopes.size());
 		
 		List<SignerDataWrapper> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
 		assertNotNull(originalSignerDocuments);
-		assertEquals(2, originalSignerDocuments.size());
+		assertEquals(1, originalSignerDocuments.size());
 	}
 	
 	@Override
@@ -112,6 +156,39 @@ public class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation
 	}
 	
 	@Override
+	protected void verifyDetailedReport(DetailedReport detailedReport) {
+		super.verifyDetailedReport(detailedReport);
+		
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlSAV sav = signatureBBB.getSAV();
+		
+		I18nProvider i18nProvider = new I18nProvider();
+
+		boolean signedPropertiesChecked = false;
+		boolean keyInfoChecked = false;
+		boolean signaturePropertiesChecked = false;
+		boolean manifestChecked = false;
+		for (XmlConstraint constraint : sav.getConstraint()) {
+			String constraintNameString = constraint.getName().getValue();
+			if (constraintNameString.equals(i18nProvider.getMessage(MessageTag.ACCM, MessageTag.ACCM_POS_SIGND_PRT))) {
+				signedPropertiesChecked = true;
+			} else if (constraintNameString.equals(i18nProvider.getMessage(MessageTag.ACCM, MessageTag.ACCM_POS_KEY))) {
+				keyInfoChecked = true;
+			} else if (constraintNameString.equals(i18nProvider.getMessage(MessageTag.ACCM, MessageTag.ACCM_POS_SIGNTR_PRT))) {
+				signaturePropertiesChecked = true;
+			} else if (constraintNameString.equals(i18nProvider.getMessage(MessageTag.ACCM, MessageTag.ACCM_POS_MAN))) {
+				manifestChecked = true;
+			}
+		}
+		
+		assertTrue(signedPropertiesChecked);
+		assertTrue(keyInfoChecked);
+		assertTrue(signaturePropertiesChecked);
+		assertTrue(manifestChecked);
+		
+	}
+	
+	@Override
 	protected void validateETSISignatureValidationObjects(ValidationObjectListType signatureValidationObjects) {
 		super.validateETSISignatureValidationObjects(signatureValidationObjects);
 		
@@ -134,7 +211,7 @@ public class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation
 				timestampCounter++;
 			}
 		}
-		assertEquals(2, signedDataCounter);
+		assertEquals(1, signedDataCounter);
 		assertEquals(1, timestampCounter);
 	}
 

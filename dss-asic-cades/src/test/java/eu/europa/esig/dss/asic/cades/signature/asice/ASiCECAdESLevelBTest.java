@@ -41,9 +41,12 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -126,6 +129,28 @@ public class ASiCECAdESLevelBTest extends AbstractASiCECAdESTestSignature {
 		List<String> entries = manifestFiles.get(0).getEntries();
 		assertNotNull(entries);
 		assertEquals(entries.size(), manifestEntriesCounter);
+	}
+
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		 List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		 assertEquals(1, signatureIdList.size());
+		
+		 SignatureWrapper signature = diagnosticData.getSignatureById(signatureIdList.get(0));
+		 List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		 assertEquals(2, signatureScopes.size());
+		 for (XmlSignatureScope signatureScope : signatureScopes) {
+			 assertEquals(SignatureScopeType.FULL, signatureScope.getScope());
+			 assertNotNull(signatureScope.getName());
+			 assertNotNull(signatureScope.getDescription());
+			 XmlSignerData signerData = signatureScope.getSignerData();
+			 assertNotNull(signerData);
+			 assertNotNull(signerData.getId());
+			 assertNotNull(signerData.getReferencedName());
+			 assertNotNull(signerData.getDigestAlgoAndValue());
+			 assertNotNull(signerData.getDigestAlgoAndValue().getDigestMethod());
+			 assertNotNull(signerData.getDigestAlgoAndValue().getDigestValue());
+		 }
 	}
 
 	@Override

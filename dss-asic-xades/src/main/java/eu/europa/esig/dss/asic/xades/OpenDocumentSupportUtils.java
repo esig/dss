@@ -20,14 +20,18 @@
  */
 package eu.europa.esig.dss.asic.xades;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.model.DSSDocument;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Contains utils for OpenDocument processing
+ */
 public final class OpenDocumentSupportUtils {
 
+	/** Defines the external data directory name */
 	private static final String EXTERNAL_DATA = "external-data/";
 
 	private OpenDocumentSupportUtils() {
@@ -47,7 +51,8 @@ public final class OpenDocumentSupportUtils {
 	 * META-INF/documentsignatures.xml file containing the signature, and any files
 	 * contained in the package whose relative path starts with "external-data/"
 	 * should be omitted.
-	 * 
+	 *
+	 * @param extractResult {@link ASiCExtractResult}
 	 * @return the list of covered documents
 	 */
 	public static List<DSSDocument> getOpenDocumentCoverage(ASiCExtractResult extractResult) {

@@ -23,7 +23,7 @@ package eu.europa.esig.dss;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.FileInputStream;
-import java.util.Date;
+import java.util.Calendar;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -47,24 +47,22 @@ public class DeterministicIdGenerationTest {
 	@RepeatedTest(10)
 	public void testDifferentDeterministicId() throws InterruptedException {
 
-		Date date = new Date();
+		Calendar calendar = Calendar.getInstance();
 
 		SignatureParameters params = new SignatureParameters();
 		params.setSigningCertificate(signingCert);
-		params.bLevel().setSigningDate(date);
+		params.bLevel().setSigningDate(calendar.getTime());
 		String deterministicId1 = params.getDeterministicId();
 
 		params = new SignatureParameters();
-		params.bLevel().setSigningDate(date);
+		params.bLevel().setSigningDate(calendar.getTime());
 		String deterministicId2 = params.getDeterministicId();
 
-		Thread.sleep(1); // 1 millisecond
-
-		Date differentDate = new Date();
+		calendar.add(Calendar.MILLISECOND, 1);
 
 		params = new SignatureParameters();
 		params.setSigningCertificate(signingCert);
-		params.bLevel().setSigningDate(differentDate);
+		params.bLevel().setSigningDate(calendar.getTime());
 		String deterministicId3 = params.getDeterministicId();
 
 		assertNotEquals(deterministicId1, deterministicId2);

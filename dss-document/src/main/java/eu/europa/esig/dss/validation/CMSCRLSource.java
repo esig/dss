@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
-
-import java.io.IOException;
-import java.util.Collection;
-
+import eu.europa.esig.dss.crl.CRLUtils;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -42,13 +42,11 @@ import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.crl.CRLUtils;
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
-import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
+import java.util.Collection;
+
+import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationRefs;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
 /**
  * CRLSource that retrieves information from a {@link CMSSignedData} container.
@@ -59,7 +57,10 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCRLSource.class);
 
+	/** The CMS SignedData */
 	private final transient CMSSignedData cmsSignedData;
+
+	/** Represents unsigned properties */
 	private final transient AttributeTable unsignedAttributes;
 
 	/**
@@ -68,7 +69,7 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 	 * @param cmsSignedData      {@link CMSSignedData}
 	 * @param unsignedAttributes {@link AttributeTable} unsignedAttributes
 	 */
-	public CMSCRLSource(final CMSSignedData cmsSignedData, final AttributeTable unsignedAttributes) {
+	protected CMSCRLSource(final CMSSignedData cmsSignedData, final AttributeTable unsignedAttributes) {
 		this.cmsSignedData = cmsSignedData;
 		this.unsignedAttributes = unsignedAttributes;
 		extract();
@@ -153,7 +154,7 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 	protected void addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
 		try {
 			addBinary(CRLUtils.buildCRLBinary(crlHolder.getEncoded()), origin);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}

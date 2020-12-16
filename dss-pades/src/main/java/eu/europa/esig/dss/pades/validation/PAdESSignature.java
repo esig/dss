@@ -20,17 +20,14 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
@@ -40,12 +37,15 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.PdfRevision;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifier;
-import eu.europa.esig.dss.validation.SignatureProductionPlace;
+import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Implementation of AdvancedSignature for PAdES
@@ -54,9 +54,10 @@ public class PAdESSignature extends CAdESSignature {
 
 	private static final long serialVersionUID = 3818555396958720967L;
 
+	/** Represents the corresponding PDF revision */
 	private final PdfSignatureRevision pdfSignatureRevision;
 
-	// contains a complete list of validating document revisions
+	/** contains a complete list of validating document revisions */
 	private final List<PdfRevision> documentRevisions;
 
 	/**
@@ -120,18 +121,6 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public SignatureProductionPlace getSignatureProductionPlace() {
-		String location = pdfSignatureRevision.getPdfSigDictInfo().getLocation();
-		if (Utils.isStringBlank(location)) {
-			return super.getSignatureProductionPlace();
-		} else {
-			SignatureProductionPlace signatureProductionPlace = new SignatureProductionPlace();
-			signatureProductionPlace.setCountryName(location);
-			return signatureProductionPlace;
-		}
-	}
-
-	@Override
 	public String getContentIdentifier() {
 		return null;
 	}
@@ -148,8 +137,8 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public SignatureIdentifier buildSignatureIdentifier() {
-		return new PAdESSignatureIdentifier(this);
+	protected SignatureIdentifierBuilder getSignatureIdentifierBuilder() {
+		return new PAdESSignatureIdentifierBuilder(this);
 	}
 
 	/**
@@ -199,10 +188,40 @@ public class PAdESSignature extends CAdESSignature {
 		}
 	}
 
+	@Override
+	public boolean hasTProfile() {
+		if (super.hasTProfile()) {
+			return true;
+		}
+		return Utils.isCollectionNotEmpty(getDocumentTimestamps());
+	}
+
+	@Override
+	public boolean hasLTAProfile() {
+		List<TimestampToken> documentTimestamps = getDocumentTimestamps();
+		if (Utils.isCollectionNotEmpty(documentTimestamps)) {
+			for (TimestampToken timestampToken : documentTimestamps) {
+				if (coversLTLevelData(timestampToken)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean coversLTLevelData(TimestampToken timestampToken) {
+		return ArchiveTimestampType.PAdES.equals(timestampToken.getArchiveTimestampType());
+	}
+
 	private boolean hasDSSDictionary() {
 		return getDssDictionary() != null;
 	}
 
+	/**
+	 * Gets the last DSS dictionary for the signature
+	 *
+	 * @return {@link PdfDssDict}
+	 */
 	public PdfDssDict getDssDictionary() {
 		return pdfSignatureRevision.getDssDictionary();
 	}
@@ -215,24 +234,27 @@ public class PAdESSignature extends CAdESSignature {
 		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
 	}
 
-	@Override
-	public SignatureLevel[] getSignatureLevels() {
-		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PKCS7_B, SignatureLevel.PAdES_BASELINE_T,
-				SignatureLevel.PKCS7_T, SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PKCS7_LT, SignatureLevel.PAdES_BASELINE_LTA,
-				SignatureLevel.PKCS7_LTA };
-	}
-
-	@Override
+	/**
+	 * Retrieves a PdfRevision (PAdES) related to the current signature
+	 * 
+	 * @return {@link PdfRevision}
+	 */
 	public PdfSignatureRevision getPdfRevision() {
 		return pdfSignatureRevision;
 	}
 
+	/**
+	 * Gets the {@code PdfSignatureDictionary}
+	 *
+	 * @return {@link PdfSignatureDictionary}
+	 */
 	public PdfSignatureDictionary getPdfSignatureDictionary() {
 		return pdfSignatureRevision.getPdfSigDictInfo();
 	}
 
 	/**
 	 * Name of the related to the signature VRI dictionary
+	 *
 	 * @return related {@link String} VRI dictionary name
 	 */
 	public String getVRIKey() {

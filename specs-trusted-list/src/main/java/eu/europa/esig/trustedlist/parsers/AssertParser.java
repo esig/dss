@@ -22,11 +22,20 @@ package eu.europa.esig.trustedlist.parsers;
 
 import eu.europa.esig.trustedlist.enums.Assert;
 
+/**
+ * {@code Assert} parser
+ */
 public final class AssertParser {
 
 	private AssertParser() {
 	}
 
+	/**
+	 * Parses the string value and returns {@code Assert}
+	 *
+	 * @param v {@link String}
+	 * @return {@link Assert}, null if not able to parse
+	 */
 	public static Assert parse(String v) {
 		if (v != null) {
 			for (Assert a : Assert.values()) {
@@ -38,6 +47,12 @@ public final class AssertParser {
 		return null;
 	}
 
+	/**
+	 * Returns value of the {@code Assert}
+	 *
+	 * @param a {@link Assert}
+	 * @return {@link String} value
+	 */
 	public static String print(Assert a) {
 		if (a != null) {
 			return a.getValue();

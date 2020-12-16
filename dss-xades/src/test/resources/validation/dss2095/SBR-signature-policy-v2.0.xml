@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This file contains the normative SBR signature policy
+  Version 2.0
+  Released by the Dutch SBR Programme
+  Release date Thu Sep 14 09:00:00 2017
+-->
+<sbrsp:SignaturePolicy xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:sbrsp="http://www.nltaxonomie.nl/sbr/signature_policy_schema/v2.0/signature_policy" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.nltaxonomie.nl/sbr/signature_policy_schema/v2.0/signature_policy http://www.nltaxonomie.nl/sbr/signature_policy_schema/v2.0/SBR-signature-policy-schema-v2.0.xsd">
+  <sbrsp:SignPolicyDigestAlg Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+  <ds:Transforms>
+    <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+    <ds:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2">
+      <dsig-xpath:XPath xmlns:dsig-xpath="http://www.w3.org/2002/06/xmldsig-filter2" Filter="subtract">/*/*[local-name()='SignPolicyDigest']</dsig-xpath:XPath>
+    </ds:Transform>
+  </ds:Transforms>
+  <sbrsp:SignPolicyInfo>
+    <sbrsp:SignPolicyIdentifier>
+      <sbrsp:Identifier>urn:sbr:signature-policy:xml:2.0</sbrsp:Identifier>
+      <sbrsp:Description xml:lang="nl">Het SBR ondertekeningsbeleid beschrijft de voorwaarden waaronder elektronische handtekeningen binnen de context van Standard Business Reporting in Nederland worden gebruikt, evenals de voorwaarden wanneer deze handtekeningen als geldig worden beschouwd. In dit kader richt het SBR ondertekeningsbeleid zich op de precieze aard van de verantwoordelijkheid die ondertekenen met zich meebrengt door het expliciteren van de verschillende verplichtingen (‘commitments’) die elektronische handtekeningen beogen.</sbrsp:Description>
+      <sbrsp:Description xml:lang="en">SBR signature policy identifies the conditions under which electronic signatures are used for Standard Business Reporting in the Netherlands, as well as the conditions for confirming the validity of these signatures. In this regard, the SBR signature policy highlights specific signature-related responsibilities by explaining the various commitments that accompany electronic signatures.</sbrsp:Description>
+      <sbrsp:Description xml:lang="de">Die SBR-Unterzeichnungsgrundsätze enthalten die Bedingungen, unter denen elektronische Unterschriften im Kontext von Standard Business Reporting in den Niederlanden verwendet werden, sowie die Bedingungen dafür, dass diese Unterschriften als gültig betrachtet werden. In diesem Rahmen fokussieren sich die SBR-Unterschriftengrundsätze auf die exakte Art der Verantwortung, die das Unterzeichnen bedeutet, indem die unterschiedlichen Verpflichtungen (‘commitments’) explizit aufgeführt werden, die mit elektronischen Unterschriften verbunden sind.</sbrsp:Description>
+      <sbrsp:Description xml:lang="fr">La politique de signature SBR décrit les conditions selon lesquelles les signatures doivent être utilisées dans le contexte du Standard Business Reporting aux Pays-Bas, ainsi que les conditions lorsque ces signatures sont considérées comme valables. Dans ce cadre, la politique de signature SBR est axée sur la nature précise de la responsabilité engendrée par la signature en expliquant les différentes obligations (‘commitments’) auxquelles les signatures électroniques sont soumises.</sbrsp:Description>
+    </sbrsp:SignPolicyIdentifier>
+    <sbrsp:DateOfIssue>2017-11-01</sbrsp:DateOfIssue>
+    <sbrsp:PolicyIssuerName>SBR Programma</sbrsp:PolicyIssuerName>
+    <sbrsp:SignatureValidationPolicy>
+      <sbrsp:SigningPeriod>
+        <sbrsp:NotBefore>2017-11-01</sbrsp:NotBefore>
+      </sbrsp:SigningPeriod>
+      <sbrsp:CommonRules>
+        <sbrsp:SignerAndVerifierRules>
+          <sbrsp:SignerRules>
+            <sbrsp:ExternalSignedObjects>true</sbrsp:ExternalSignedObjects>
+            <sbrsp:MandatedSignedQProperties>
+              <sbrsp:QPropertyID>/Signature/Object/QualifyingProperties/SignedProperties/SignedSignatureProperties/SignaturePolicyIdentifier</sbrsp:QPropertyID>
+              <sbrsp:QPropertyID>/Signature/Object/QualifyingProperties/SignedProperties/SignedDataObjectProperties/CommitmentTypeIndication</sbrsp:QPropertyID>
+              <sbrsp:QPropertyID>/Signature/Object/QualifyingProperties/SignedProperties/SignedDataObjectProperties/DataObjectFormat</sbrsp:QPropertyID>
+            </sbrsp:MandatedSignedQProperties>
+            <sbrsp:MandatedCertificateRef>signerOnly</sbrsp:MandatedCertificateRef>
+            <sbrsp:MandatedCertificateInfo>signerOnly</sbrsp:MandatedCertificateInfo>
+          </sbrsp:SignerRules>
+        </sbrsp:SignerAndVerifierRules>
+        <sbrsp:SigningCertTrustCondition>
+          <sbrsp:SignerRevReq>
+            <sbrsp:EndRevReq>
+              <sbrsp:EnuRevReq>clrcheck</sbrsp:EnuRevReq>
+            </sbrsp:EndRevReq>
+            <sbrsp:CACerts>
+              <sbrsp:EnuRevReq>nocheck</sbrsp:EnuRevReq>
+            </sbrsp:CACerts>
+          </sbrsp:SignerRevReq>
+        </sbrsp:SigningCertTrustCondition>
+        <sbrsp:AlgorithmConstraintSet>
+          <sbrsp:SignerAlgConstraints>
+            <sbrsp:AlgAndLength>
+              <sbrsp:AlgId>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</sbrsp:AlgId>
+              <sbrsp:MinKeyLength>2048</sbrsp:MinKeyLength>
+            </sbrsp:AlgAndLength>
+            <sbrsp:AlgAndLength>
+              <sbrsp:AlgId>http://www.w3.org/2001/04/xmldsig-more#rsa-sha512</sbrsp:AlgId>
+              <sbrsp:MinKeyLength>2048</sbrsp:MinKeyLength>
+            </sbrsp:AlgAndLength>
+          </sbrsp:SignerAlgConstraints>
+        </sbrsp:AlgorithmConstraintSet>
+      </sbrsp:CommonRules>
+      <sbrsp:CommitmentRules>
+        <sbrsp:CommitmentRule>
+          <sbrsp:SelCommitmentTypes>
+            <sbrsp:SelCommitmentType>
+              <sbrsp:RecognizedCommitmentType>
+                <sbrsp:CommitmentIdentifier>
+                  <sbrsp:Identifier>urn:sbr:signature-policy:proof-of-intent-of-practitioner-to-express-an-opinion</sbrsp:Identifier>
+                  <sbrsp:Description xml:lang="nl">Dit type verplichting geeft aan dat de ondertekenaar de integriteit, authenticiteit en onweerlegbaarheid van de afgegeven verklaring erkent en in dit kader bevestigt de afgegeven verklaring uit vrije wil te hebben opgesteld en vrijgegeven.</sbrsp:Description>
+                  <sbrsp:Description xml:lang="en">This type of commitment shows the signatory recognises the integrity, authenticity and irrefutability of the issued report, and also confirms that the report was compiled and issued voluntarily.</sbrsp:Description>
+                  <sbrsp:Description xml:lang="de">Diese Art von Verpflichtung besagt, dass der Unterzeichnende die Integrität, Authentizität und Unwiderlegbarkeit der abgegebenen Erklärung anerkennt und in diesem Rahmen bestätigt, die abgegebene Erklärung aus freiem Willen erstellt und freigegeben zu haben.</sbrsp:Description>
+                  <sbrsp:Description xml:lang="fr">Ce type d'obligation indique que le signataire reconnaît l'intégrité, l’authenticité et l’irréfutabilité de la déclaration et confirme dans ce cadre avoir rédigé et émis la déclaration en question de son plein gré.</sbrsp:Description>
+                </sbrsp:CommitmentIdentifier>
+                <sbrsp:FieldOfApplication xml:lang="nl">Dit type verplichting kan worden toegepast op alle situaties in Nederland binnen de reikwijdte van het SBR ondertekeningsbeleid, waar een verklaring in een digitaal formaat wordt afgegeven door de ondertekenaar.</sbrsp:FieldOfApplication>
+                <sbrsp:FieldOfApplication xml:lang="en">This type of commitment can be applied to all situations in the Netherlands that fall within the scope of SBR signature policy, where the signatory issues the report in digital format.</sbrsp:FieldOfApplication>
+                <sbrsp:FieldOfApplication xml:lang="de">Diese Verpflichtung gilt für alle Situationen in den Niederlanden innerhalb der Reichweite der SBR-Unterzeichnungsgrundsätze, wo eine Erklärung vom Unterzeichnenden in einem digitalen Format abgegeben wird.</sbrsp:FieldOfApplication>
+                <sbrsp:FieldOfApplication xml:lang="fr">Ce type d’obligation peut être imposé aux Pays-Bas dans toutes les situations qui entrent dans le cadre de la politique de signature SBR lorsqu'une déclaration écrite est émise sous forme numérique par le signataire.</sbrsp:FieldOfApplication>
+                <sbrsp:Semantics xml:lang="nl">De betekenis van dit type verplichting is dat de ondertekenaar het volgende bevestigt: een verklaring bij een gerenderd object te hebben afgegeven; deze verklaring te hebben opgesteld en vrijgegeven; dit ook nadrukkelijk op deze wijze heeft beoogd te doen om verantwoordelijkheid te nemen voor de gerenderde inhoud van deze verklaring. De rendering, voor de mens leesbaar gemaakt, dient plaats te vinden volgens de voor het domein van toepassing zijnde presentatieafspraken.</sbrsp:Semantics>
+                <sbrsp:Semantics xml:lang="en">This type of commitment means the signatory has confirmed the following: to have issued a report for a rendered object; to have compiled and issued this report; to have done this in a manner that intended to assume responsibility for the rendered content in the report. Rendering, which is presented in a legible manner, must take place in accordance with performance-related agreements established for the domain in question.</sbrsp:Semantics>
+                <sbrsp:Semantics xml:lang="de">Die Bedeutung dieser Art von Verpflichtung ist, dass der Unterzeichnende das Folgende bestätigt: eine Erklärung bei einem lesbar gemachten Objekt abgegeben zu haben; diese Erklärung erstellt und freigegeben zu haben; dies auch ausdrücklich auf diese Weise zu tun beabsichtigt zu haben, um die Verantwortung für den lesbar gemachten Inhalt dieser Erklärung zu übernehmen. Das Lesbarmachen für den Menschen muss gemäß den für die Domäne geltenden Leistungsvereinbarungen erfolgen.</sbrsp:Semantics>
+                <sbrsp:Semantics xml:lang="fr">Ce type d’obligation signifie que le signataire confirme: qu'il a émis une déclaration pour un objet validé; qu'il a rédigé et émis cette déclaration; que de cette façon, il a également visé formellement à assumer la responsabilité quant au contenu validé de cette déclaration. La validation, rendue lisible à l’homme, doit avoir lieu en vertu des accords de présentation en vigueur dans le domaine.</sbrsp:Semantics>
+              </sbrsp:RecognizedCommitmentType>
+            </sbrsp:SelCommitmentType>
+            <sbrsp:SelCommitmentType>
+              <sbrsp:RecognizedCommitmentType>
+                <sbrsp:CommitmentIdentifier>
+                  <sbrsp:Identifier>urn:sbr:signature-policy:proof-of-intent-of-practitioner-to-add-a-copy-of-the-opinion</sbrsp:Identifier>
+                  <sbrsp:Description xml:lang="nl">Dit type verplichting geeft aan dat de ondertekenaar heeft bevestigd dat dit een kopie is van de afgegeven verklaring. En in dit kader de integriteit, authenticiteit en onweerlegbaarheid van dit afschrift erkent en deze uit vrije wil te hebben opgesteld en vrijgegeven.</sbrsp:Description>
+                  <sbrsp:Description xml:lang="en">In this type of commitment, the signatory confirms that this is a copy of the issued report; that s/he acknowledges its integrity, authenticity and irrefutability and that it has been compiled and issued voluntarily.</sbrsp:Description>
+                  <sbrsp:Description xml:lang="de">Diese Art von Verpflichtung besagt, dass der Unterzeichnende bestätigt hat, dass dies eine Kopie der abgegebenen Erklärung ist. Und in diesem Rahmen die Integrität, Authentizität und Unwiderlegbarkeit dieser Kopie anerkennt und erklärt, diese aus freiem Willen erstellt und freigegeben zu haben.</sbrsp:Description>
+                  <sbrsp:Description xml:lang="fr">Ce type d’obligation indique que le signataire a confirmé qu’il s'agit d'une copie de la déclaration émise. Et qu'il reconnaît dans ce cadre l'intégrité, l’authenticité et l’irréfutabilité de cette copie qu'il a rédigée et émise de son plein gré.</sbrsp:Description>
+                </sbrsp:CommitmentIdentifier>
+                <sbrsp:FieldOfApplication xml:lang="nl">Dit type verplichting kan worden toegepast op alle situaties in Nederland binnen de reikwijdte van het SBR ondertekeningsbeleid, waar een afschrift van een verklaring in een digitaal formaat wordt afgegeven door de ondertekenaar.</sbrsp:FieldOfApplication>
+                <sbrsp:FieldOfApplication xml:lang="en">This type of commitment can be applied to all situations in the Netherlands that fall within the scope of SBR signature policy, where the signatory issues a copy of the report in digital format.</sbrsp:FieldOfApplication>
+                <sbrsp:FieldOfApplication xml:lang="de">Diese Verpflichtung gilt für alle Situationen in den Niederlanden innerhalb der Reichweite der SBR-Unterzeichnungsgrundsätze, wo eine Kopie einer Erklärung in einem digitalen Format vom Unterzeichner abgegeben wird.</sbrsp:FieldOfApplication>
+                <sbrsp:FieldOfApplication xml:lang="fr">Ce type d’obligation peut être imposé aux Pays-Bas dans toutes les situations qui entrent dans le cadre de la politique de signature SBR lorsqu'une copie de déclaration écrite est émise sous forme numérique par le signataire.</sbrsp:FieldOfApplication>
+                <sbrsp:Semantics xml:lang="nl">De betekenis van dit type verplichting is dat de ondertekenaar het volgende bevestigt: een kopie van de verklaring bij een gerenderd object van onderzoek te hebben afgegeven; dit gerenderde object is een afgeleide van het oorspronkelijke object van onderzoek; deze verklaring te hebben opgesteld en vrijgegeven; dit ook nadrukkelijk op deze wijze heeft beoogd te doen om verantwoordelijkheid te nemen voor de inhoud van deze verklaring; dat de gerenderde verklaring ook mag worden bijgevoegd bij een gerenderd object zoals benoemd in de type verplichting voor waarmerken. De rendering, voor de mens leesbaar gemaakt, dient plaats te vinden volgens de voor het domein van toepassing zijnde presentatieafspraken.</sbrsp:Semantics>
+                <sbrsp:Semantics xml:lang="en">This type of commitment means the signatory has confirmed the following: to have issued a copy of the report for a rendered object; this rendered object has been derived from the original audit object; to have compiled and released this report; to have done this in a manner that intended to take responsibility for the contents of the report; that the rendered report can also accompany a rendered object that falls under this type of authentication commitment. Rendering, which is presented in a legible manner, must take place in accordance with performance-related agreements established for the domain in question.</sbrsp:Semantics>
+                <sbrsp:Semantics xml:lang="de">Die Bedeutung dieser Art von Verpflichtung ist, dass der Unterzeichnende das Folgende bestätigt: eine Kopie der Erklärung bei einem lesbar gemachten Objekt der Untersuchung abgegeben zu haben; dieses lesbar gemachte Objekt ist eine Ableitung des ursprünglichen Objekts der Untersuchung; diese Erklärung erstellt und freigegeben zu haben; dies auch ausdrücklich auf diese Weise zu tun beabsichtigt zu haben, um die Verantwortung für den gelieferten Inhalt dieser Erklärung zu übernehmen; dass die lesbar gemachte Erklärung auch einem lesbar gemachten Objekt hinzugefügt werden darf, wie dies beim Typ der Siegelverpflichtung angegeben ist; das Lesbarmachen für den Menschen muss gemäß den für die Domäne geltenden Leistungsvereinbarungen erfolgen.</sbrsp:Semantics>
+                <sbrsp:Semantics xml:lang="fr">Ce type d’obligation signifie que le signataire confirme: qu'il a émis une copie de la déclaration dans un objet validé d'étude ; que cet objet validé est un dérivé de l’objet initial de l’étude; qu'il a rédigé et émis cette déclaration; que de cette façon, il a également visé formellement à assumer la responsabilité quant au contenu de cette déclaration; que la déclaration validée peut également être jointe à un objet validé comme indiqué dans le type d’obligation pour authentification. La validation, rendue lisible à l’homme, doit avoir lieu en vertu des accords de présentation en vigueur dans le domaine.</sbrsp:Semantics>
+              </sbrsp:RecognizedCommitmentType>
+            </sbrsp:SelCommitmentType>
+            <sbrsp:SelCommitmentType>
+              <sbrsp:RecognizedCommitmentType>
+                <sbrsp:CommitmentIdentifier>
+                  <sbrsp:Identifier>urn:sbr:signature-policy:proof-of-integrity-of-the-object-for-which-the-practitioner-expresses-an-opinion</sbrsp:Identifier>
+                  <sbrsp:Description xml:lang="nl">Dit type verplichting geeft aan dat de ondertekenaar het object waar de verklaring betrekking op heeft waarmerkt om de integriteit van het object te waarborgen.</sbrsp:Description>
+                  <sbrsp:Description xml:lang="en">This type of commitment indicates the signatory has authenticated the object to which the report applies in order to safeguard the integrity of the object.</sbrsp:Description>
+                  <sbrsp:Description xml:lang="de">Diese Art von Verpflichtung besagt, dass der Unterzeichnende das Objekt, auf das sich die Erklärung bezieht, beglaubigt, um die Integrität des Objekts zu garantieren.</sbrsp:Description>
+                  <sbrsp:Description xml:lang="fr">Ce type d'obligation indique que le signataire a authentifié l'objet sur lequel porte la déclaration afin de garantir l'intégrité de l'objet.</sbrsp:Description>
+                </sbrsp:CommitmentIdentifier>
+                <sbrsp:FieldOfApplication xml:lang="nl">Dit type verplichting kan worden toegepast op alle situaties in Nederland binnen de reikwijdte van het SBR ondertekeningsbeleid waar ondertekenaars de integriteit willen of moeten waarborgen van een object waar een door hen afgegeven verklaring betrekking op heeft.</sbrsp:FieldOfApplication>
+                <sbrsp:FieldOfApplication xml:lang="en">This type of commitment can be applied to all situations in the Netherlands that fall within the scope of SBR signature policy, where signatories want to or must safeguard the integrity of an object for which they have issued a report.</sbrsp:FieldOfApplication>
+                <sbrsp:FieldOfApplication xml:lang="de">Diese Art von Verpflichtung kann für alle Situationen in den Niederlanden innerhalb der Reichweite der SBR-Unterzeichnungsgrundsätze angewendet werden, wo Unterzeichnende die Integrität eines Objekts garantieren wollen oder müssen, auf das sich eine von ihnen abgegebene Erklärung bezieht.</sbrsp:FieldOfApplication>
+                <sbrsp:FieldOfApplication xml:lang="fr">Ce type d’obligation peut être imposé aux Pays-Bas dans toutes les situations qui entrent dans le cadre de la politique de signature SBR lorsque les signataires veulent ou doivent garantir l'intégrité d'un objet à propos duquel une déclaration a été faite par eux.</sbrsp:FieldOfApplication>
+                <sbrsp:Semantics xml:lang="nl">De betekenis van dit type verplichting is dat de ondertekenaar het volgende bevestigt: dit is het object waarbij de ondertekenaar een verklaring heeft afgegeven zoals benoemd in de type verplichtingen voor het ondertekenen van verklaringen. Door het toepassen van dit type verplichting ontstaat een onweerlegbare relatie tussen het object en de hierbij afgegeven verklaring.</sbrsp:Semantics>
+                <sbrsp:Semantics xml:lang="en">This type of commitment means the signatory has confirmed the following: this is the object for which the signatory has issued a report, as required for such commitment types when signing reports. If this type of commitment is implemented, an irrefutable relationship is created between the object and the issued report.</sbrsp:Semantics>
+                <sbrsp:Semantics xml:lang="de">Die Bedeutung dieser Art von Verpflichtung ist, dass der Unterzeichnende das Folgende bestätigt: dies ist das Objekt, bei dem der Unterzeichnende eine Erklärung abgegeben hat, wie sie beim Typ von Verpflichtungen für das Unterzeichnen von Erklärungen angegeben ist. Durch die Anwendung dieser Art von Verpflichtung entsteht eine unwiderlegbare Beziehung zwischen dem Objekt und der hierbei abgegebenen Erklärung.</sbrsp:Semantics>
+                <sbrsp:Semantics xml:lang="fr">Ce type d’obligation signifie que le signataire confirme qu’il s'agit d'un objet à propos duquel le signataire a émis une déclaration comme visé dans les obligations types pour la signature de déclarations. L'application de ce type d'obligation créée une relation  irréfutable entre l'objet et la déclaration émise à son propos.</sbrsp:Semantics>
+              </sbrsp:RecognizedCommitmentType>
+            </sbrsp:SelCommitmentType>
+          </sbrsp:SelCommitmentTypes>
+        </sbrsp:CommitmentRule>
+      </sbrsp:CommitmentRules>
+    </sbrsp:SignatureValidationPolicy>
+  </sbrsp:SignPolicyInfo>
+  <sbrsp:SignPolicyDigest>sVHhN1eqNH/PZ1B6h//ehyC1OwRQOrz/tJ3ZYaRrBgA=</sbrsp:SignPolicyDigest>
+</sbrsp:SignaturePolicy>

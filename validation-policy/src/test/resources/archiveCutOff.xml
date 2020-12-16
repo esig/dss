@@ -8,9 +8,7 @@
 			<SignatureFilename>MVC.pdf</SignatureFilename>
 			<ClaimedSigningTime>2015-08-28T12:08:07</ClaimedSigningTime>
 			<SignatureFormat>PAdES-BASELINE-T</SignatureFormat>
-			<StructuralValidation>
-				<Valid>true</Valid>
-			</StructuralValidation>
+            <StructuralValidation valid="true" />
 			<DigestMatchers>
 				<DigestMatcher type="MESSAGE_DIGEST">
 					<DigestMethod>SHA256</DigestMethod>
@@ -64,9 +62,7 @@
 			<SignatureFilename>MVC.pdf</SignatureFilename>
 			<ClaimedSigningTime>2015-08-31T14:54:57</ClaimedSigningTime>
 			<SignatureFormat>PAdES-BASELINE-T</SignatureFormat>
-			<StructuralValidation>
-				<Valid>true</Valid>
-			</StructuralValidation>
+            <StructuralValidation valid="true" />
 			<BasicSignature>
 				<EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 				<KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

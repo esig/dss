@@ -24,27 +24,55 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.utils.Utils;
 
+/**
+ * Parameters for a XAdES timestamp creation
+ */
 @SuppressWarnings("serial")
 public class XAdESTimestampParameters extends TimestampParameters {
 
-	private String canonicalizationMethod = DSSXMLUtils.DEFAULT_CANONICALIZATION_METHOD;
-	
+	/** The canonicalization method to use for the message-imprint */
+	private String canonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
+
+	/**
+	 * Empty constructor
+	 */
 	public XAdESTimestampParameters() {
 	}
-	
+
+	/**
+	 * Constructor with digest algorithm
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use for message-imprint digest calculation
+	 */
 	public XAdESTimestampParameters(DigestAlgorithm digestAlgorithm) {
 		super(digestAlgorithm);
 	}
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use for message-imprint digest calculation
+	 * @param canonicalizationMethod {@link String} canonicalization to use for the message-imprint
+	 */
 	public XAdESTimestampParameters(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
 		super(digestAlgorithm);
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
+	/**
+	 * Gets the canonicalization method
+	 *
+	 * @return {@link String}
+	 */
 	public String getCanonicalizationMethod() {
 		return canonicalizationMethod;
 	}
 
+	/**
+	 * Sets the canonicalization method
+	 *
+	 * @param canonicalizationMethod {@link String}
+	 */
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
 		if (Utils.isStringEmpty(canonicalizationMethod)) {
 			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.");

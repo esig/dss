@@ -52,7 +52,7 @@ public class XAdESAttrAuthoritiesTest extends AbstractXAdESTestValidation {
 		
 		for (SignatureWrapper signature : diagnosticData.getAllSignatures()) {
 			List<RelatedCertificateWrapper> attrAuthoritiesCertValues = signature.foundCertificates().
-					getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+					getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES);
 			assertNotNull(attrAuthoritiesCertValues);
 			assertEquals(1, attrAuthoritiesCertValues.size());
 			

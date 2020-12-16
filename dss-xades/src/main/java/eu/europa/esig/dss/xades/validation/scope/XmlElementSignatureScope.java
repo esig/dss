@@ -20,17 +20,24 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.validation.scope.SignatureScopeWithTransformations;
 
+import java.util.List;
+
 /**
- *
+ * XML element signature scope
  */
 public class XmlElementSignatureScope extends SignatureScopeWithTransformations {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param xmlId {@link String} id of the element
+	 * @param transformations a list of {@link String} transform descriptions
+	 * @param digest {@link Digest} of the element
+	 */
 	protected XmlElementSignatureScope(final String xmlId, final List<String> transformations, final Digest digest) {
 		super(xmlId, digest, transformations);
 	}

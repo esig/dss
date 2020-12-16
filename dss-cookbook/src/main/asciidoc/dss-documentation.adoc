@@ -24,9 +24,9 @@ Three main features can be distinguished within the framework :
  
 On a more detailed manner the following concepts and features are addressed in this document:
  
- * Formats of the signed documents: XML, PDF, DOC, TXT, ZIP...;
+ * Formats of the signed documents: XML, JSON, PDF, DOC, TXT, ZIP...;
  * Packaging structures: enveloping, enveloped, detached and internally-detached;
- * Forms of digital signatures: XAdES, CAdES, PAdES and ASiC-S/ASiC-E;
+ * Forms of digital signatures: XAdES, CAdES, PAdES, JAdES and ASiC-S/ASiC-E;
  * Profiles associated to each form of the digital signature;
  * Trust management;
  * Revocation data handling (OCSP and CRL sources);
@@ -77,12 +77,14 @@ Please note that the DSS framework is still under maintenance and new features w
 |HSM			|Hardware Security Modules
 |HTTP			|Hypertext Transfer Protocol
 |I18N			|Internationalization
+|JAdES          |JSON Advanced Electronic Signatures
 |Java EE		|Java Enterprise Edition
 |JavaDoc		|JavaDoc is developed by Sun Microsystems to create API documentation in HTML format from the comments in the source code. JavaDoc is an industrial standard for documenting Java classes.
 |JAXB			|Java Architecture for XML Binding
 |JCA			|Java Cryptographic Architecture
 |JCE			|Java Cryptography Extension
 |JDBC			|Java DataBase Connectivity
+|JWS			|JSON Web Signatures
 |LGPL			|Lesser General Public License
 |LOTL			|List of Trusted List or List of the Lists
 |LSP			|Large Scale Pilot
@@ -140,15 +142,16 @@ Please note that the DSS framework is still under maintenance and new features w
 |[[R02]]	R02	|ESI - CAdES digital signatures													|ETSI EN 319 122 part 1-2	|1.1.1
 |[[R03]]	R03	|ESI - PAdES digital signatures													|ETSI EN 319 142 part 1-2	|1.1.1
 |[[R04]]	R04	|ESI - Associated Signature Containers (ASiC)									|ETSI EN 319 162 part 1-2	|1.1.1
-|[[R05]]	R05	|Document management - Portable document format - Part 1: PDF 1.7				|ISO 32000-1				|1
-|[[R06]]	R06	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
-|[[R07]]	R07	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
-|[[R08]]	R08	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI EN 319 102-1			|1.1.1
-|[[R09]]	R09	|ESI - Signature validation policy for European qualified electronic signatures/seals using trusted lists   |ETSI TS 119 172-4			|draft
-|[[R10]]	R10	|ESI - Trusted Lists															|ETSI TS 119 612		    |2.1.1
-|[[R11]]	R11	|eIDAS Regulation No 910/2014													|910/2014/EU			    |
-|[[R12]]	R12	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.2.1
-|[[R13]]	R13	|ESI - Procedures for using and interpreting EU Member States national trusted lists						|ETSI TS 119 615		    |draft
+|[[R05]]	R05	|ESI - JAdES digital signatures													|ETSI TS 119 182 part 1 	|draft 0.0.6
+|[[R06]]	R06	|Document management - Portable document format - Part 1: PDF 1.7				|ISO 32000-1				|1
+|[[R07]]	R07	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
+|[[R08]]	R08	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
+|[[R09]]	R09	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI EN 319 102-1			|1.1.1
+|[[R10]]	R10	|ESI - Signature validation policy for European qualified electronic signatures/seals using trusted lists   |ETSI TS 119 172-4			|draft
+|[[R11]]	R11	|ESI - Trusted Lists															|ETSI TS 119 612		    |2.1.1
+|[[R12]]	R12	|eIDAS Regulation No 910/2014													|910/2014/EU			    |
+|[[R13]]	R13	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.2.1
+|[[R14]]	R14	|ESI - Procedures for using and interpreting EU Member States national trusted lists						|ETSI TS 119 615		    |draft
 
 |=======================
 
@@ -177,12 +180,12 @@ This section explains the build and usage requirements for https://github.com/es
 
 The latest version of DSS framework has the following minimal requirements:
 
- * Java 9 and higher (tested up to Java 14) for the build is required. For usage Java 8 is a mimimum requirement;
+ * Java 9 and higher (tested up to Java 15) for the build is required. For usage Java 8 is a mimimum requirement;
  * Maven 3.6 and higher;
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
  * Operating system: no specific requirements (tested on Windows and Linux).
  
-NOTE: We strongly recommend to use the latest available version of JDK, in order to have the latest security fixes and cryptographical algorithm updates.
+NOTE: We strongly recommend using the latest available version of JDK, in order to have the latest security fixes and cryptographical algorithm updates.
 
 WARNING: Before processing the build steps, please, ensure you have successfully installed Maven and JVM with a required version.
 
@@ -221,7 +224,7 @@ mvn clean install
 
 NOTE: All listed commands must be executed from the project directory via a Command Line Interface (CLI).
 
-These installation will run all unit tests present in the modules, which can take more than one hour to do the complete build.
+This installation will run all unit tests present in the modules, which can take more than one hour to do the complete build.
 
 In addition to the general build, the framework provides a list of custom profiles, allowing a customized behavior:
 
@@ -255,12 +258,18 @@ DSS contains a bundle of JAXB-based modules, generation Java classes in runtime 
  * dss-simple-report-jaxb;
  * dss-simple-certificate-report-jaxb.
 
+Specific modules with JWS and JAdES specifications exist. These modules allow to validate the generated JSON against the related JSON Schema :
+
+ * specs-jws;
+ * specs-jades.
+
 Also, as it was explained in the previous section, some modules are required to be built completely for a building of their dependent modules when using a quick profile, namely:
 
- * dss-test;
  * dss-utils;
  * dss-crl-parser;
- * dss-pades.
+ * dss-test;
+ * dss-pades;
+ * dss-asic-common.
 
 The modules contain common interfaces, used in other DSS modules, as well as unit tests to ensure the equal behavior between their implementations.
 
@@ -285,7 +294,7 @@ This section explains the build and usage requirements for https://github.com/es
 
 The minimal requirements to build/run DSS Demonstrations:
 
- * Java 8 and higher (tested up to Java 14) is required;
+ * Java 8 and higher (tested up to Java 15) is required;
  * Maven 3.6 and higher (if build required);
  * Tomcat 8.5+ for Java 8 and Tomcat 9+ for Java 9 and higher (for Web-application);
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
@@ -320,7 +329,7 @@ To build the DSS Web Application the following modules are required:
  * dss-demo-webapp;
  * dss-demo-bundle.
  
-After a successfull build, in the directory `/dss-demo-bundle/target/` you will be able to find out two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the container type, the content of both files is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be availble at the address `http://localhost:8080/`.
+After a successful build, in the directory `/dss-demo-bundle/target/` you will be able to find out two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the container type, the content of both files is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be availble at the address `http://localhost:8080/`.
 
 If during TL/LOTL loading you experience problems with some particular Trusted Lists, please refer the chapter <<KeyStore>> for a resolution.
 
@@ -330,10 +339,10 @@ The documentation and javadoc will be copied automatically from built DSS Core a
  * PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
  * Javadoc : `http://localhost:8080/apidocs/index.html`.
 
-In order to build a bundle for JDK 14, the following profile can be used from `dss-demo-bundle` module:
+In order to build a bundle for JDK 15, the following profile can be used from `dss-demo-bundle` module:
 
 ----
-mvn clean install -P java14
+mvn clean install -P java15
 ----
 
 This will create a bundle with Tomcat 9.
@@ -374,6 +383,11 @@ dss-detailed-report-jaxb:: JAXB model of the detailed report.
 dss-simple-report-jaxb:: JAXB model of the simple report.
 dss-simple-certificate-report-jaxb:: JAXB model of the simple report for certificates.
 
+==== JSON validation modules
+
+specs-jws:: JSON Schemas based on the RFC 7515 specifications (not official)
+specs-jades:: ETSI TS 119 182-1 v.0.0.6 JSON Schemas for JAdES
+
 ==== Utils modules
 
 dss-utils:: API with utility methods for String, Collection, I/O,...
@@ -397,6 +411,7 @@ dss-token:: Token definitions and implementations for MS CAPI, PKCS#11, PKCS#12.
 validation-policy:: Business of the signature's validation (ETSI EN 319 102 / TS 119 172-4).
 dss-xades:: Implementation of the XAdES signature, extension and validation.
 dss-cades:: Implementation of the CAdES signature, extension and validation.
+dss-jades:: Implementation of the JAdES signature, extension and validation.
 dss-pades:: Common code which is shared between dss-pades-pdfbox and dss-pades-openpdf.
 dss-pades-pdfbox:: Implementation of the PAdES signature, extension and validation with https://pdfbox.apache.org/[PDFBox].
 dss-pades-openpdf:: Implementation of the PAdES signature, extension and validation with https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)].
@@ -414,9 +429,9 @@ dss-common-remote-converter:: Classes which convert the DTO to DSS Objects.
 dss-signature-dto:: Data Transfer Objects used for signature creation/extension (REST and SOAP).
 dss-signature-remote:: Common classes between dss-signature-rest and dss-signature-soap.
 dss-signature-rest-client:: Client for the REST webservices.
-dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods), counter-sign and extend a signature.
 dss-signature-soap-client:: Client for the SOAP webservices.
-dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
+dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods), counter-sign and extend a signature.
 
 '''
 dss-server-signing-dto:: Data Transfer Objects used for the server signing module (REST and SOAP).
@@ -455,6 +470,7 @@ dss-timestamp-remote-soap:: SOAP webservice to create a timestamp.
 dss-test:: Mocks and util classes for unit tests.
 dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
 
+[[dssUtils]]
 === DSS Utils
 
 The module dss-utils offers an interface with utility methods to operate on String, Collection, I/O,... DSS framework provides two different implementations with the same behaviour : 
@@ -464,6 +480,7 @@ The module dss-utils offers an interface with utility methods to operate on Stri
 
 If your integration include dss-utils, you will need to select an implementation.
 
+[[dssCrlParser]]
 === DSS CRL Parser
 
 DSS contains two ways to parse/validate a CRL and to retrieve revocation data. An alternative to the X509CRL java object was developed to face memory issues in case of large CRLs. The X509CRL object fully loads the CRL in memory and can cause OutOfMemoryError.
@@ -473,6 +490,7 @@ DSS contains two ways to parse/validate a CRL and to retrieve revocation data. A
  
 If your integration require dss-crl-parser, you will need to choose your implementation.
 
+[[dssPades]]
 === DSS PAdES
 
 Since the version 5.4, DSS allows generation/extension/validation PAdES signatures with two different frameworks : PDFBox and OpenPDF (fork of iText). The dss-pades module only contains the common code and requires an underlying implementation : 
@@ -495,7 +513,7 @@ Since the version 5.5, DSS allows switching between two implementations of the f
  * Default Drawer : The original drawer implemented on the PDFBox framework, supports displaying of custom text, images, text+image combination in a signature field. The implementation does not include the provided custom text to the inner PDF structure, instead of it, the drawer creates an image representation of the provided text, which is added to the signature field (i.e. the text is not selectable and not searchable).
  * Native Drawer : Since the version 5.5, DSS includes a new implementation of PDFBox Drawer, that allows a user to add a real custom text, image or combination of text and image to a visible signature field. The native implementation embeds the provided custom text to the inner PDF structure, that makes the text selectable and searchable, and also clearer and smoother in comparison with the original implementation.
 
-By default DSS uses "Default Drawer" as the PDFBox implementation. In order to switch the implementation, that allowed in runtime, you have to set a new instance for PdfObjFactory as following:
+By default, DSS uses "Default Drawer" as the PDFBox implementation. In order to switch the implementation, that allowed in runtime, you have to set a new instance for PdfObjFactory as following:
 
 [source,java,indent=0]
 .Runtime PDF Object Factory changing
@@ -521,20 +539,20 @@ The requirements and build instructions for DSS demonstrations can be found in t
 
 == Signature's profile simplification
 
-The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus we distinguish the following formats: XAdES, CAdES, PAdES and ASIC. To each one of them a specific standard is dedicated. The wide variety of options, settings and versions of the standards makes their interoperability very difficult. This is the main reason for which new standards commonly called "baseline profiles" were published. Their goal is to limit the number of options and variants thereby making possible a better interoperability between different actors.
+The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus we distinguish the following formats: XAdES, CAdES, PAdES, JAdES and ASIC. To each one of them a specific standard is dedicated. The wide variety of options, settings and versions of the standards makes their interoperability very difficult. This is the main reason for which new standards commonly called "baseline profiles" were published. Their goal is to limit the number of options and variants thereby making possible a better interoperability between different actors.
 
 In general can be said that for each format of the digital signature the number of security levels defined in the new standards has been reduced. Below is a comparative table of old and new levels for each format of the signature:
 
-[cols=6]
+[cols=7]
 .Signature supported profiles
 |=======================
-2+|XAdES				  2+|CAdES				  2+|PAdES
-|STANDARD 		|BASELINE	|STANDARD 	|BASELINE 	|STANDARD	|BASELINE
-|XAdES-BES 		.2+^.^|XAdES-B	|CAdES-BES 	.2+^.^|CAdES-B 	|PAdES-BES 	.2+^.^|PAdES-B
-|XAdES-EPES					|CAdES-EPES	 			|PAdES-EPES 
-|XAdES-T 		|XAdES-T	|CAdES-T 	|CAdES-T 	|PAdES-T 	|PAdES-T
-|XAdES-XL 		|XAdES-LT	|CAdES-XL 	|CAdES-LT 	|PAdES-XL 	|PAdES-LT
-|XAdES-A 		|XAdES-LTA	|CAdES-A 	|CAdES-LTA 	|PAdES-LTV 	|PAdES-LTA
+2+|XAdES				  2+|CAdES				  2+|PAdES                              |JAdES
+|STANDARD 		|BASELINE	|STANDARD 	|BASELINE 	|STANDARD	|BASELINE               |BASELINE
+|XAdES-BES 		.2+^.^|XAdES-B	|CAdES-BES 	.2+^.^|CAdES-B 	|PAdES-BES 	.2+^.^|PAdES-B  .2+^.^|JAdES-B
+|XAdES-EPES					|CAdES-EPES	 			|PAdES-EPES                         |
+|XAdES-T 		|XAdES-T	|CAdES-T 	|CAdES-T 	|PAdES-T 	|PAdES-T                |JAdES-T
+|XAdES-XL 		|XAdES-LT	|CAdES-XL 	|CAdES-LT 	|PAdES-XL 	|PAdES-LT               |JAdES-LT
+|XAdES-A 		|XAdES-LTA	|CAdES-A 	|CAdES-LTA 	|PAdES-LTV 	|PAdES-LTA              |JAdES-LTA
 |=======================
 
 Note that the new version (v4) of the DSS framework is compatible with the baseline profiles, it is no longer possible to use the standard profiles for signing purpose. The validation of the signature still takes into account the old profiles.
@@ -547,26 +565,32 @@ Note that the new version (v4) of the DSS framework is compatible with the basel
 Below you can find a table specifying various signature possibilities with available in DSS signature's profiles/formats.
 The vertical column specifies available signature profiles and their extensions. The horizontal row specifies types of documents to be signed with the formats.
 
-[cols="9*^.^"]
 .File formats and Signature types conformance
-|=======================
-  3+|Signature profiles                        |XML   |PDF   |Binary   |Digest   |Multi files   |Parallel signatures
-.10+|XAdES   .4+|Enveloping  |Base64 encoded   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-                             |Embed XML    |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
-                             |Manifest     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
-             .4+|Enveloped   |enveloped transformation   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"]
-                             |based on XPath   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-                             |based on Filter2   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
-              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-              2+|Internally Detached       |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"]
-.2+|CAdES     2+|Enveloping                |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-|PAdES        2+|Enveloped                 |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-.2+|ASiC        |ASiCS       |CAdES/XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-                |ASiCE       |CAdES/XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-|=======================
+[%header,cols="12*^.^"]
+|===
+  3+|Signature profiles                        |XML   |JSON  |PDF   |Binary   |Digest   |Multiple files   |Parallel signatures |Counter signature |Stand-alone timestamp
+.10+|XAdES   .4+|Enveloping  |Base64 encoded   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Embed XML    |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Manifest     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+             .4+|Enveloped   |enveloped transformation   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |based on XPath   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |based on Filter2   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+              2+|Internally Detached       |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+.2+|CAdES     2+|Enveloping                |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+|PAdES        2+|Enveloped                 |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
+.6+|JAdES    .3+|Enveloping  |Compact Serialization   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"]
+                             |Flattened JSON Serialization     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |JSON Serialization    |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+            .3+|Detached     |Compact Serialization   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"]
+                             |Flattened JSON Serialization  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |JSON Serialization    |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+.2+|ASiC        |ASiCS       |CAdES / XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
+                |ASiCE       |CAdES / XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
+|===
 
 [.portrait]
 <<<
@@ -610,7 +634,7 @@ To start, let's take a simple XML document:
 <test>Hello World !</test>
 ----
 
-Since this is an XML document, we will use the XAdES signature and more particularly XAdES-BASELINE-B level, which is the lowest level of protection: just satisfying Directive (cf. <<R06>>) legal requirements for advanced signature. The normal process of signing wants to sign first with the level -B or level-T, and then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level.
+Since this is an XML document, we will use the XAdES signature and more particularly XAdES-BASELINE-B level, which is the lowest level of protection: just satisfying Directive (cf. <<R07>>) legal requirements for advanced signature. The normal process of signing wants to sign first with the level -B or level-T, and then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level.
 When signing data, the resulting signature needs to be linked with the data to which it applies. This can be done either by creating a data set which combines the signature and the data (e.g. by enveloping the data with the signature or including a signature element in the data set) or placing the signature in a separate resource and having some external means for associating the signature with the data. So, we need to define the packaging of the signature, namely ENVELOPED, ENVELOPING, DETACHED or INTERNALLY-DETACHED. More information about supported reference transformations for each signature packaging (except 'Detached'), can be found in the section <<Reference Transformations>>
  
  * *ENVELOPED :* when the signature applies to data that surround the rest of the document;
@@ -734,52 +758,11 @@ The code above produces the following signature :
 .XAdES signature example
 include::_samples/xades-b-properties.adoc[]
 
-===== Handling signature policy
-
-With the new standards the policy handling is linked to -B level. The old -EPES level is not used anymore by the framework. This does not alter the structure of the old signature but only modifies how to control the process of its creation.
-
-The DSS framework allows you to reference a signature policy, which is a set of rules for the creation and validation of an electronic signature. It includes two kinds of text:
- 
- * In a human readable form:
-It can be assessed to meet the requirements of the legal and contractual context in which it is being applied.
-
- * In a machine processable form:
-To facilitate its automatic processing using the electronic rules.
-
-If no signature policy is identified then the signature may be assumed to have been generated or verified without any policy constraints, and hence may be given no specific legal or contractual significance through the context of a signature policy.
-
-The signer may reference the policy either implicitly or explicitly. An implied policy means the signer follows the rules of the policy but the signature does not indicate which policy. It is assumed the choice of policy is clear from the context in which the signature is used and SignaturePolicyIdentifier element will be empty. When the policy is not implied, the signature contains an ObjectIdentier that uniquely identifies the version of the policy in use. The signature also contains a hash of the policy document to make sure that the signer and verifier agree on the contents of the policy document.
-
-This example demonstrates an implicit policy identifier. To implement this alternative you must set SignaturePolicyId to empty string.
-
-[source,java,indent=0]
-.XAdES with implicit policy
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBImplicitPolicyTest.java[tags=demo]
-----
-
-An XML segment will be added to the signature's qualified and signed properties:
-
-include::_samples/xades-implicit-policy.adoc[]
-
-The next example demonstrates an explicit policy identifier. This is obtained by setting -B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID  that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is to the developer to proceed with the calculation using for example java.security.MessageDigest class (rt.jar). It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only. See also chapter 7 for further information.
-
-[source,java,indent=0]
-.XAdES with explicit policy
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBExplicitPolicyTest.java[tags=demo]
-----
-
-The following XML segment will be added to the signature qualified & signed properties (<QualifyingProperties><SignedProperties>):
-
-.XAdES Signature Policy element
-include::_samples/xades-explicit-policy.adoc[]
-
 ==== XAdES-BASELINE-T
 
 XAdES-BASELINE-T is a signature for which there exists a trusted time associated to the signature. It provides the initial steps towards providing long term validity and more specifically it provides a protection against repudiation. This extension of the signature can be created as well during the generation process as validation process. However, the case when these validation data are not added during the generation process should no longer occur. The XAdES-BASELINE-T trusted time indications must be created before the signing certificate has been revoked or expired and close to the time that the XAdES signature was produced. The XAdES-BASELINE-T form must be built on a XAdES-BASELINE-B form. The DSS framework allows extending the old -BES and -EPES profiles to the new BASELINE-T profile, indeed there is no difference in the structure of the signature.
 
-To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R07>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example, we will use the Belgian provider and an instance of OnlineTSPSource (see "TSP Sources" chapter for more details).
+To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R08>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example, we will use the Belgian provider and an instance of OnlineTSPSource (see "TSP Sources" chapter for more details).
 
 [source,java,indent=0]
 .Create a XAdES-Baseline-T with an OnlineTSPSource
@@ -831,9 +814,7 @@ The following XML segment will be added to the signature qualified and unsigned 
 .XAdES Archive Timestamp
 include::_samples/xades-archive-timestamp.adoc[]
 
-=== Various settings
-
-==== Versions support
+=== Versions support
 
 DSS supports the following XAdES formats :
 
@@ -859,7 +840,7 @@ The XAdES Profile, as well as a customizable prefixes can be set with following 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoPrefixes]
 ----
 
-==== Reference Transformations
+=== Reference Transformations
 
 In case of 'Enveloping', 'Enveloped' and 'Internally Detached' signatures, it is possible to apply custom transformations for signing references in order to compute proper digest result. Example of a definition reference transformations, you can find below:
 
@@ -919,44 +900,9 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBW
 
 NOTE: All transformations, except Base64, can be applied only to XML objects.
 
-==== Trust anchor inclusion policy
-
-It is possible to indicate to the framework if the certificate related to the trust anchor should be included to the signature or not. The setter #setTrustAnchorBPPolicy of the BLevelParameters class should be used for this purpose.
-
-This rule applies as follows: when -B level is constructed the trust anchor is not included, when -LT level is constructed the trust anchor is included.
-
-NOTE: When trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when -B level is constructed.
-
 === Multiple signatures
 
 In everyday life, there are many examples where it is necessary to have multiple signatures covering the same document, such as a contract to purchase a vehicle. Independent signatures are parallel signatures where the ordering of the signatures is not important. The computation of these signatures is performed on exactly the same input but using different private keys.
-
-=== The XML Signature Extension (XAdES)
-
-The -B level contains immutable signed properties. Once this level is created, these properties cannot be changed. 
-
-The levels -T/-LT/-LTA add unsigned properties to the signature. This means that the properties of these levels could be added afterwards to any AdES signature. This addition helps to make the signature more resistant to cryptographic attacks on a longer period of time. The extension of the signature is incremental, i.e. when you want to extend the signature to the level -LT the lower level (-T) will also be added. The whole extension process is implemented by reusing components from signature production. To extend a signature we proceed in the same way as in the case of a signature, except that you have to call the function "extendDocument" instead of the "sign" function. Note that when the document is signed with several signatures then they are all extended.
-
-=== XAdES-BASELINE-T
-
-The XAdES-BASELINE-T trusted time indications have to be created before a certificate has been revoked or expired and close to the time that the XAdES signature was produced. It provides a protection against repudiation. The framework adds the timestamp only if there is no timestamp or there is one but the creation of a new extension of the level-T is deliberate (using another TSA). It is not possible to extend a signature which already incorporates higher level as -LT or -LTA. In the theory it would be possible to add another -T level when the signature has already reached level -LT but the framework prevents this operation. Note that if the signed document contains multiple signatures, then all the signatures will be extended to level -T. It is also possible to sign a document directly at level -T. 
-
-Here is an example of creating an extension of type T:
-
-[source,java,indent=0]
-.Extend a XAdES signature
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendSignXmlXadesBToTTest.java[tags=demo]
-----
-
-Here is the result of adding a new extension of type-T to an already existing -T level signature:
-
-.XAdES Unsigned Signature Properties
-include::_samples/xades-extend-t-to-t.adoc[]
-
-=== XAdES-BASELINE-LT and -LTA
-
-For these types of extensions, the procedure to follow is the same as the case of the extension of type T. Please refer to the chapter XAdES Profiles (XAdES) to know specific parameters for each level of signature and which must be positioned.
 
 === XAdES and specific schema version
 
@@ -974,21 +920,58 @@ By default, all XAdES are supported and DSS loads/parses all versions of XAdES. 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/XAdES132OnlyTest.java[tags=demo]
 ----
 
+=== Sign a Trusted List
+
+The standard ETSI TS 119 612 specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization,...). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
+
+[source,java,indent=0]
+.Sign a Trusted List with the TrustedListSignatureParametersBuilder
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignTrustedListTest.java[tags=demo]
+----
+
+== Signature Extension
+
+The -B level contains immutable signed properties. Once this level is created, these properties cannot be changed.
+
+The levels -T/-LT/-LTA add unsigned properties to the signature. This means that the properties of these levels could be added afterwards to any AdES signature. This addition helps to make the signature more resistant to cryptographic attacks on a longer period of time. The extension of the signature is incremental, i.e. when you want to extend the signature to the level -LT the lower level (-T) will also be added. The whole extension process is implemented by reusing components from signature production. To extend a signature we proceed in the same way as in the case of a signature, except that you have to call the function "extendDocument" instead of the "sign" function. Note that when the document is signed with several signatures then they are all extended.
+
+=== BASELINE-T
+
+The AdES-BASELINE-T trusted time indications have to be created before a certificate has been revoked or expired and close to the time that the AdES signature was produced. It provides a protection against repudiation. The framework adds the timestamp only if there is no timestamp or there is one but the creation of a new extension of the level-T is deliberate (using another TSA). It is not possible to extend a signature which already incorporates higher level as -LT or -LTA. In the theory it would be possible to add another -T level when the signature has already reached level -LT but the framework prevents this operation. Note that if the signed document contains multiple signatures, then all the signatures will be extended to level -T. It is also possible to sign a document directly at level -T.
+
+Here is an example of creating an extension of type T:
+
+[source,java,indent=0]
+.Extend a XAdES signature
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendSignXmlXadesBToTTest.java[tags=demo]
+----
+
+Here is the result of adding a new extension of type-T to an already existing -T level signature:
+
+.XAdES Unsigned Signature Properties
+include::_samples/xades-extend-t-to-t.adoc[]
+
+=== BASELINE-LT and -LTA
+
+For these types of extensions, the procedure to follow is the same as the case of the extension of type T. Please refer to the chapter XAdES Profiles to know specific parameters for each level of signature and which must be positioned.
+
 [[signatureValidation]]
-== The signature validation
+== Signature Validation
 
 Generally and following ETSI standard, the validation process of an electronic signature must provide one of these three following statuses: TOTAL-FAILED, TOTAL-PASSED or INDETERMINATE. A TOTAL-PASSED response indicates that the signature has passed verification and it complies with the signature validation policy. A TOTAL_FAILED response indicates that either the signature format is incorrect or that the digital signature value fails the verification. An INDETERMINATE validation response indicates that the format and digital signature verifications have not failed but there is an insufficient information to determine if the electronic signature is valid. For each of the validation checks, the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications.
 
 ===	Validation Process
 
-Since version 4.7 of the DSS framework the validation process is based on the latest ETSI standard <<R08>>. It is driven by the validation policy and allows long term signature validation. It not only verifies the existence of certain data and their validity, but it also checks the temporal dependences between these elements. The signature check is done following basic building blocks. On the simplified diagram below, showing the process of the signature validation, you can follow the relationships between each building block which represents a logic set of checks used in validation process.
+Since version 4.7 of the DSS framework the validation process is based on the latest ETSI standard <<R09>>. It is driven by the validation policy and allows long term signature validation. It not only verifies the existence of certain data and their validity, but it also checks the temporal dependences between these elements. The signature check is done following basic building blocks. On the simplified diagram below, showing the process of the signature validation, you can follow the relationships between each building block which represents a logic set of checks used in validation process.
 
 .Signature Validation Process
 image::sig_validation_process.jpg[]
 
 Note that the current version of the framework during the validation process does not indicate what part of a document was signed. However, in a case of XAdES signature XPath transformations presented in the signature will be applied, in the case of CAdES or PAdES signature the whole document must be signed.
 
-At the end of the validation process four reports are created. They contain the different detail levels concerning the validation result. They provide four kinds of visions for the validation process: macroscopic, microscopic, input data and ETSI Validation report conformant with the standard <<R08>>. For more information about these reports, please refer to "Simple Report" chapter.
+At the end of the validation process four reports are created. They contain the different detail levels concerning the validation result. They provide four kinds of visions for the validation process: macroscopic, microscopic, input data and ETSI Validation report conformant with the standard <<R09>>. For more information about these reports, please refer to "Simple Report" chapter.
 
 Below is the simplest example of the validation of the signature of a document. The first thing to do is instantiating an object named validator, which orchestrates the verification of the different rules. To perform this it is necessary to invoke a static method fromDocument() on the abstract class `SignedDocumentValidator`. This method returns the object in question whose type is chosen dynamically based on the type of source document. 
 
@@ -1004,6 +987,7 @@ NOTE: When using the TrustedListsCertificateSource class, for performance reason
 
 NOTE: In general, the signature must cover the entire document so that the DSS framework can validate it. However, for example in the case of a XAdES signature, some transformations can be applied on the XML document. They can include operations such as canonicalization, encoding/decoding, XSLT, XPath, XML schema validation, or XInclude. XPath transforms permit the signer to derive an XML document that omits portions of the source document. Consequently those excluded portions can change without affecting signature validity. 
 
+[[signedDocumentValidator]]
 ==== SignedDocumentValidator
 
 For execution of the validation process, DSS uses the 'SignedDocumentValidator' class. The DSS framework provides five implementations of validator:
@@ -1011,6 +995,8 @@ For execution of the validation process, DSS uses the 'SignedDocumentValidator' 
  * `XMLDocumentValidator` - validates documents in XML format (XAdES format);
  * `CMSDocumentValidator` - validates documents in CMS format (CAdES format);
  * `PDFDocumentValidator` - validates documents in PDF format (PADES format);
+ * `JWSCompactDocumentValidator` - validates documents with base64url encoded content (JAdES compact format);
+ * `JWSSerializationDocumentValidator` - validates documents in JSON format (JAdES serialization formats);
  * `ASiCContainerWithXAdESValidator` - validates ASiC with XAdES containers;
  * `ASiCContainerWithCAdESValidator` - validates ASiC with CAdES containers;
  * `DetachedTimestampValidator` - validates CMS timestamps provided alone.
@@ -1049,7 +1035,7 @@ The result of the validation process is based on very complex rules. The purpose
 
 ==== Detailed Report
 
-This is a sample of the detailed validation report. Its structure is based on the ETSI standard <<R08>> and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data. Some segments were deleted to make reading easier. They are marked by three dots:
+This is a sample of the detailed validation report. Its structure is based on the ETSI standard <<R09>> and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data. Some segments were deleted to make reading easier. They are marked by three dots:
 
 .Detailed Report 
 include::_samples/detailed-report-example.adoc[]
@@ -1073,7 +1059,7 @@ The following additional elements also can be executed in case of validation in 
 
 Past certificate/signature validation is used when basic validation of a certificate/signature fails at the current time with an INDETERMINATE status such that the provided proofs of existence may help to go to a determined status. The process shall initialize the _best-signature-time_ either to a time indication for a related POE provided, or the current time when this parameter has not been used by the algorithm.
 
- * *Best-signature-time* is an internal variable for the algorithm denoting the earliest time when it can be trusted by the SVA (either because proven by some POE present in the signature or passed by the DA and for this reason assumed to be trusted) that a signature has existed. <<R08>>
+ * *Best-signature-time* is an internal variable for the algorithm denoting the earliest time when it can be trusted by the SVA (either because proven by some POE present in the signature or passed by the DA and for this reason assumed to be trusted) that a signature has existed. <<R09>>
 
 Each block contains a number of rules that are executed sequentially. The rules are driven by the constraints defined in the validation policy. The result of each rule is OK or NOT OK. The process is stopped when the first rule fails. Each block also contains a conclusion. If all rules are met then the conclusion node indicates PASSED. Otherwise FAILED or INDETERMINATE indication is returned depending on the ETSI standard definition. 
 
@@ -1088,13 +1074,14 @@ include::_samples/diagnostic-data-example.adoc[]
 
 ==== ETSI Validation Report
 
-The ETSI Validation Report represents an implementation of TS 119 102-2 (cf. <<R12>>). The report contains a standardized result of an ASiC digital signature validation. It includes the original validation input data, the applied validation policy, as well as the validation result of one or more signature(s) and its(their) constraints.
+The ETSI Validation Report represents an implementation of TS 119 102-2 (cf. <<R13>>). The report contains a standardized result of an ASiC digital signature validation. It includes the original validation input data, the applied validation policy, as well as the validation result of one or more signature(s) and its(their) constraints.
 
 This is an example of the ETSI validation report:
 
 .ETSI Validation Report (TS 119 102-2)
 include::_samples/etsi-validation-report-example.adoc[]
 
+[[validationPolicy]]
 === Customised Validation Policy
 
 The validation process may be driven by a set of constraints that are contained in the XML file constraint.xml.
@@ -1118,15 +1105,15 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlCadesBT
 
 == PAdES signature (PDF)
 
-The standard ISO 32000-1 (cf. <<R05>>) allows defining a file format for portable electronic documents. It is based on PDF 1.7 of Adobe Systems. Concerning the digital signature it supports three operations: 
+The standard ISO 32000-1 (cf. <<R06>>) allows defining a file format for portable electronic documents. It is based on PDF 1.7 of Adobe Systems. Concerning the digital signature it supports three operations: 
 
  * Adding a digital signature to a document,
  * Providing a placeholder field for signatures,
  * Checking signatures for validity.
 
-PAdES defines eight different profiles to be used with advanced electronic signature in the meaning of European Union Directive 1999/93/EC (cf. <<R06>>):
+PAdES defines eight different profiles to be used with advanced electronic signature in the meaning of European Union Directive 1999/93/EC (cf. <<R07>>):
 
- * PAdES Basic - PDF signature as specified in ISO 32000-1 (cf. <<R05>>). The profile is specified in ETSI EN 319 142 (cf. <<R03>>).
+ * PAdES Basic - PDF signature as specified in ISO 32000-1 (cf. <<R06>>). The profile is specified in ETSI EN 319 142 (cf. <<R03>>).
  * PAdES-BES Profile - based upon CAdES-BES as specified in ETSI EN 319 122 (cf. <<R02>>) with the option of a signature time-stamp (CAdES-T).
  * PAdES-EPES profile - based upon CAdES-EPES as specified in ETSI EN 319 122 (cf. <<R02>>). This profile is the same as the PAdES - BES with the addition of a signature policy identifier and optionally a commitment type indication.
  * PAdES-LTV Profile - This profile supports the long term validation of PDF Signatures and can be used in conjunction with the above-mentioned profiles.
@@ -1142,7 +1129,7 @@ Below is an example of code to perform a PAdES-BASELINE-B type signature:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=demo]
 ----
 
-In order too add a timestamp to the signature (PAdES-T or LTA), a TSP source must be provided to the service.
+In order to add a timestamp to the signature (PAdES-T or LTA), a TSP source must be provided to the service.
 
 To create PAdES-BASELINE-B level with additional options: signature policy identifier and optionally a commitment type indication, please observe the following example in code 5.
 
@@ -1277,6 +1264,112 @@ By default, DSS uses a Google font : 'PT Serif Regular' (its physical implementa
 
 NOTE: 'Native PDFBox Drawer' implementation supports only one of the following fonts: SERIF, SANS-SERIF, MONOSPACED, DIALOG and DIALOG_INPUT.
 
+=== Shadow attack detection
+
+"Shadow attack" is a class of attacks on a signed PDF document that constitutes a change of a visual content of a document after the signature has been made. Due to a structure of PDF document, the signature stays cryptographically valid even after the content's modification has been taken place. There are no algorithms to detect the malicious change with 100% guarantee. For more information, please refer to https://pdf-insecurity.org/[the website].
+
+Since v5.8, DSS provides a set of own utils to detect the "shadow attack" on a signed PDF document. The following algorithms have been introduced:
+
+ * `Page amount difference` - the validation tool compares the number of pages between the obtained PDF and signed revision. If the numbers do not match, the validation fail. The validation level can be configured within the <<validationPolicy>> with the constraint `<PdfPageDifference>`.
+ * `Annotations overlap` - DSS checks if any annotation overlaps occurred. The overlapping is potentially dangerous, because some annotations can cover a visual content, e.g. forms and signature fields. The validation level can be configured with the constraint `<PdfAnnotationOverlap>`.
+ * `Visual difference` - DSS verifies the visual difference between the provided document and signed revision, excluding the newly created annotations (between the validating revisions). The validation level can be configured with the constraint `<PdfVisualDifference>`.
+
+== JAdES signature (JWS)
+
+Since v5.8, DSS includes a possibility of creation and validation of JSON Advanced signatures.
+
+JSON format for AdES Signatures (cf. [R05]) represents an extension of JSON Web Signatures (JWS) as specified in https://tools.ietf.org/html/rfc7515[IETF RFC 7515].
+
+WARNING: The implementation is based on a draft of the standard ETSI TS 119 182-1. Some modifications can occur in future releases.
+
+A typical example of a JAdES signature creation is represented below:
+
+[source,java,indent=0]
+.Signing a file with JAdES
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlJadesBTest.java[tags=demo]
+----
+
+The specific parameters for JAdES signature are described in the next sections.
+
+=== JWS Serialization type
+
+A JWS signature can be represented in different forms which are supported by the JAdES as well:
+
+ * `COMPACT_SERIALIZATION` represents a compact, URL-safe serialization. It has no JWS Unprotected Header, therefore only JAdES-BASELINE-B level is possible with the format.
+ * `JSON_SERIALIZATION` represents a JSON object with a collection of signatures inside the `signatures` header that allows a parallel signing. It allows JAdES-BASELINE-T/-LT/-LTA signature extension levels.
+ * `FLATTENED_JSON_SERIALIZATION` represents a JSON object with a single signature container. It allows JAdES-BASELINE-T/-LT/-LTA signature extension levels.
+
+[source,java,indent=0]
+.JWS Serialization type usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlJadesBTest.java[tags=serialization]
+----
+
+=== JAdES Signature Packaging
+
+JAdES signatures allow two types of JWS Payload (signed data) inclusion: `ENVELOPING` and `DETACHED`.
+
+==== Enveloping packaging
+
+With `ENVELOPING` packaging the JWS Payload is enveloped into the JAdES Signature. The type only allows signing one document.
+
+==== Detached packaging
+
+A simple JWS signature allows a `DETACHED` packaging by omitting the JWS Payload in the created signature. For the validation process the detached content shall be provided and it is treated in the same way as attached.
+
+To create a such signature, the parameter `SigDMechanism.NO_SIG_D` shall be set. The solution allows signing of only one document.
+
+The JAdES standard [R05] provides a possibility for signing of multiple documents withing one signature in a detached way.
+
+The following mechanisms are possible:
+
+ * `HTTP_HEADERS` is used to sign an HTTP request. The signature may explicitly sign several HTTP headers (represented by the class `HTTPHeader`), as well as the HTTP message body (see the `HTTPHeaderDigest` class).
+
+[source,java,indent=0]
+.Configuration for signing with detached mechanism HttpHeaders
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignHttpHeadersJadesBTest.java[tags=demo]
+----
+
+ * `OBJECT_ID_BY_URI` can be used for signing of multiple documents. The signed files are dereferenced by URIs and their content is concatenated for generation of the JWS Payload.
+
+ * `OBJECT_ID_BY_URI_HASH` similarly provides a possibility to sign multiple documents, by signing the computed digests of the original documents. The JWS Payload for this format stays empty.
+
+[source,java,indent=0]
+.Configuration for signing with detached mechanism ObjectIdByURIHash
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDocumentsJadesTTest.java[tags=demo]
+----
+
+=== Base64Url encoding
+
+The `Base64Url` represents a Base64 encoded format with URI safe alphabet (see https://tools.ietf.org/html/rfc4648[RFC 4648]).
+
+JAdES signatures (as well as JWS) force some values to be Base64Url-encoded, while provides a possibility to customize the format for some of them.
+
+DSS provides options to configure encoding for the following elements:
+
+ * JWS Payload can be represented as Base64Url encoded octets (by default), as well as can be present in its initial form (with the protected header `b64` set to `false`).
+
+[source,java,indent=0]
+.Use unencoded JWS Payload
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignHttpHeadersJadesBTest.java[tags=unencodedPayload]
+----
+
+ * The components of the unsigned header `etsiU` can occur either as Base64Url encoded strings (by default), or as clear JSON objects.
+
+NOTE: All components inside the `etsiU` header shall be present in the same form (Base64Url encoded or as clear JSON).
+
+WARNING: The current version of DSS does not allow JAdES-BASELINE-LTA level creation for `etsiU` components in their clear JSON representation.
+
+[source,java,indent=0]
+.Represent EtsiU components as clear JSON instances
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDocumentsJadesTTest.java[tags=clearEtsiU]
+----
+
 == ASiC signature (containers)
 
 When creating a digital signature, the user must choose between different packaging elements, namely enveloping, enveloped or detached. This choice is not obvious, because in one case the signature will alter the signed document and in the other case it is possible to lose the association between the signed document and its signature. That's where the standard ETSI EN 319 162 (cf. <<R04>>) offers a standardized use of container forms to establish a common way for associating data objects with advanced signatures or time-stamp tokens.
@@ -1322,6 +1415,101 @@ Please note that you need to pass only few parameters to the service. Other para
 
 It is also possible with the framework DSS to make an extension of an ASiC container to the level XAdES-BASELINE-T or -LT.
 
+== Counter signatures
+
+Since v5.8 DSS allows producing of counter signatures according to the corresponding AdES formats.
+
+NOTE: Counter signature does not provide a Proof Of Existence for a signed signature! Use signature extension / timestamping for this purpose.
+
+The following formats are supported for the counter signature creation:
+
+ * `XAdES` - multiple, nested and extended counter signatures (up to LTA level) are allowed;
+ * `CAdES` - B-level counter signatures are allowed, as well as multiple counter signatures;
+ * `JAdES` - multiple, nested and extended signatures (up to LTA level) are allowed;
+ * `ASiC` - counter signatures are allowed according to the used format (XAdES or CAdES).
+
+In order to create a counter signature, the DSS Identifier (or XML Id for XAdES) of the target signature you want to sign shall be provided within the parameters. The example below represents a counter signature creation:
+
+[source,java,indent=0]
+.Counter signature creation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/CounterSignXadesBTest.java[tags=demo]
+----
+
+== Various parameters
+
+[[signaturePolicy]]
+=== Signature policy
+
+With the new standards the policy handling is linked to -B level. The old -EPES level is not used anymore by the framework. This does not alter the structure of the old signature but only modifies how to control the process of its creation.
+
+The DSS framework allows you to reference a signature policy, which is a set of rules for the creation and validation of an electronic signature. It includes two kinds of text:
+
+* In a human readable form:
+It can be assessed to meet the requirements of the legal and contractual context in which it is being applied.
+
+* In a machine processable form:
+To facilitate its automatic processing using the electronic rules.
+
+If no signature policy is identified then the signature may be assumed to have been generated or verified without any policy constraints, and hence may be given no specific legal or contractual significance through the context of a signature policy.
+
+The signer may reference the policy either implicitly or explicitly. An implied policy means the signer follows the rules of the policy but the signature does not indicate which policy. It is assumed the choice of policy is clear from the context in which the signature is used and SignaturePolicyIdentifier element will be empty. When the policy is not implied, the signature contains an ObjectIdentier that uniquely identifies the version of the policy in use. The signature also contains a hash of the policy document to make sure that the signer and verifier agree on the contents of the policy document.
+
+This example demonstrates an implicit policy identifier. To implement this alternative you must set SignaturePolicyId to empty string.
+
+[source,java,indent=0]
+.XAdES with implicit policy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBImplicitPolicyTest.java[tags=demo]
+----
+
+An XML segment will be added to the signature's qualified and signed properties:
+
+include::_samples/xades-implicit-policy.adoc[]
+
+The next example demonstrates an explicit policy identifier. This is obtained by setting -B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID  that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is to the developer to proceed with the calculation using for example java.security.MessageDigest class (rt.jar). It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only. See also chapter 7 for further information.
+
+[source,java,indent=0]
+.XAdES with explicit policy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBExplicitPolicyTest.java[tags=demo]
+----
+
+The following XML segment will be added to the signature qualified & signed properties (<QualifyingProperties><SignedProperties>):
+
+.XAdES Signature Policy element
+include::_samples/xades-explicit-policy.adoc[]
+
+=== Signature Policy Store
+
+Since v5.8 DSS provides a possibility of incorporation of a Signature Policy Store element as an unsigned property to the existing signature file.
+
+The following signature formats support the Signature Policy Store addition:
+
+* XAdES (as well as ASiC with XAdES);
+* CAdES (as well as ASiC with CAdES);
+* JAdES.
+
+NOTE: Being an unsigned component the Signature Policy Store is not protected by a digital signature, unlike a Signature Policy Identifier incorporated into the signed properties.
+
+Before incorporating of a Signature Policy Store, you need to ensure the target signature contains the matching Signature Policy Identifier element (see ch. <<signaturePolicy>>).
+
+An example of a Signature Policy Store creation is available below:
+
+[source,java,indent=0]
+.Add SignaturePolicyStore
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBExplicitPolicyTest.java[tags=addSPS]
+----
+
+=== Trust anchor inclusion policy
+
+It is possible to indicate to the framework if the certificate related to the trust anchor should be included to the signature or not. The setter #setTrustAnchorBPPolicy of the BLevelParameters class should be used for this purpose.
+
+This rule applies as follows: when -B level is constructed the trust anchor is not included, when -LT level is constructed the trust anchor is included.
+
+NOTE: When trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when -B level is constructed.
+
 == Timestamps
 
 === Timestamp creation
@@ -1339,7 +1527,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/Timestamp
 
 === Timestamp validation
 
-As well as a single timestamp creation, DSS provides a validation service for timestamped documents. The timestamp validation process represents "5.4 Time-stamp validation building block" (cf. <<R08>>). The validation process is identical to <<signatureValidation>> process. An appropriate validator will be selected automatically. In total, DSS supports timestamp-alone validation for the following file formats:
+As well as a single timestamp creation, DSS provides a validation service for timestamped documents. The timestamp validation process represents "5.4 Time-stamp validation building block" (cf. <<R09>>). The validation process is identical to <<signatureValidation>> process. An appropriate validator will be selected automatically. In total, DSS supports timestamp-alone validation for the following file formats:
 
  * Detached CMS timestamp (`DetachedTimestampValidator`) - a detached signed content must be provided (or its digest);
  * PDF document (`PDFDocumentValidator`);
@@ -1357,7 +1545,7 @@ The produced reports use the same structure as for <<signatureValidation>>.
 
 ==== Timestamp qualification
 
-DSS is also able to determine a qualification level of a timestamp, if a relative information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>) (cf. <<R13>>).
+DSS is also able to determine a qualification level of a timestamp, if a relative information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>) (cf. <<R14>>).
 
 Three qualification levels are supported by DSS and can be obtained :
 
@@ -1804,7 +1992,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 == TSP Sources
 
-The Time Stamp Authority by creating time-stamp tokens provides independent and irrefutable proof of time for business transactions, e-documents and digital signatures. The TSA must comply with the IETF RFC 3161 specifications (cf. <<R07>>). A time-stamp is obtained by sending the digest value of the given data and digest algorithm to the Time Stamp Authority. The returned time-stamp is a signed data that contains the digest value, the identity of the TSA, and the time of stamping. This proves that the given data existed before the time of stamping.
+The Time Stamp Authority by creating time-stamp tokens provides independent and irrefutable proof of time for business transactions, e-documents and digital signatures. The TSA must comply with the IETF RFC 3161 specifications (cf. <<R08>>). A time-stamp is obtained by sending the digest value of the given data and digest algorithm to the Time Stamp Authority. The returned time-stamp is a signed data that contains the digest value, the identity of the TSA, and the time of stamping. This proves that the given data existed before the time of stamping.
 The DSS framework proposes TSPSource interface to implement the communication with TSA. The class OnlineTSPSource is the default implementation of TSP using HTTP(S) communication layer.
 The following bit of Java code illustrates how you might use this class:
 
@@ -1845,19 +2033,25 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 
 | XAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] 
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] 
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"]
+
+| JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 
 13+|*RSA-PSS*
 
 | XAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | 
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | 
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |
+
+| JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 
 13+|*ECDSA*
 
 | XAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | | icon:check-circle[role="lime"]
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | 
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |
+
+| JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 
 13+|*Ed25519*
 
@@ -1869,14 +2063,63 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 
 | XAdES | icon:check-circle[role="lime"] | | icon:check-circle[role="lime"] | | | | | | | | |  
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | 
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |
+
+| JAdES | | | | | | | | | | | |
 
 13+|*HMAC*
 
 | XAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | | icon:check-circle[role="lime"] 
 
-| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |  
+| CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |
+
+| JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 |===
+
+== Implementation management with ServiceLoader
+
+DSS incorporates modules that are loaded in the run time based on the chosen configuration and the input data via a https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]. This provides a flexibility for an end-user to work only with selected modules and a possibility to expand DSS with custom implementations.
+
+In order to provide a chosen implementation(s) to ServiceLoader, a file listing all the desired implementations should be created in the resource directory `META-INF/services` with a name matching the implemented interface. When merging sources (e.g. creating a Fat JAR module), the files can be lost/overwritten, and should be configured manually (all the required implementations shall be listed).
+
+NOTE: If a DSS module(s) implementing a required interface(s) is added to your project's dependency list, the implementation shall be loaded automatically.
+
+The following modules are provided with independent implementations:
+
+ * <<dssUtils>>;
+ * <<dssCrlParser>>;
+ * <<dssPades>>.
+ 
+Additionally, DSS is able to choose the required implementation for the following interfaces:
+ 
+ * `DocumentValidationFactory` - checks a provided signed file's format and loads a relevant validator;
+ * `SignaturePolicyValidator` - checks a signature policy file and loads a relevant validator to be able to process the detected format.
+
+WARNING: If no appropriate available implementation is found, an exception will be thrown.
+
+=== Document Validation Factory
+
+This factory is used to create a required instance of a `DocumentValidator` based on the provided file's format (signature or timestamp). An implementation shall process a file format check and load the related <<signedDocumentValidator>> implementation to be used for the file's validation.
+
+The following implementations are present in DSS:
+
+ * CMSDocumentValidatorFactory : loads CMSDocumentValidator, used for a CAdES validation (delivered in dss-cades module);
+ * XMLDocumentValidatorFactory : loads XMLDocumentValidator, used for a XAdES validation (delivered in dss-xades module);
+ * PDFDocumentValidatorFactory : loads PDFDocumentValidator, used for a PAdES validation (delivered in dss-pades module);
+ * JAdESDocumentValidatorFactory : loads JWSCompactDocumentValidator or JWSSerializationDocumentValidator, depending on provided JSON signature type (delivered in dss-jades module);
+ * ASiCContainerWithCAdESValidatorFactory : loads ASiCContainerWithCAdESValidator (delivered in dss-asic-cades module);
+ * ASiCContainerWithXAdESValidatorFactory : loads ASiCContainerWithXAdESValidator (delivered in dss-asic-xades module);
+ * DetachedTimestampValidatorFactory : loads DetachedTimestampValidator, for an indepenedent timestamp validation (delivered in dss-document module).
+
+=== Signature Policy Validator
+
+This interface is used to validate a signature policy reference extracted from a signature. The following implementations are provided:
+
+ * BasicASNSignaturePolicyValidator : validates policy files, which are based on ETSI TR 102 272;
+ * XMLSignaturePolicyValidator : validates XML signature policies supporting transformations;
+ * NonASN1SignaturePolicyValidator : validates a policy by digest computed on an original file's content;
+ * ZeroHashSignaturePolicyValidator : validates a policy if "zero hash" value is defined in a signature (see <<R02>>);
+ * EmptySignaturePolicyValidator : is proceeded if a policy file is not found or not accessible.
 
 == Multi-threading
 
@@ -2050,9 +2293,9 @@ For example, for a French language a file with a name `dss-messages_fr.propertie
 
 DSS offers the possibility to validate a certificate. For a given certificate, the framework builds a certificate path until a known trust anchor (trusted list, keystore,...), validates each found certificate (OCSP / CRL) and determines its European "qualification". 
 
-To determine the certificate qualification, DSS follows the draft standard ETSI TS 119 172-4 (<<R09>>). It analyses the certificate properties (QCStatements, Certificate Policies,...) and applies possible overrules from the related trusted list ("catched" qualifiers from a trust service). More information about qualifiers can be found in the standard ETSI TS 119 612 (<<R10>>).
+To determine the certificate qualification, DSS follows the draft standard ETSI TS 119 172-4 (<<R10>>). It analyses the certificate properties (QCStatements, Certificate Policies,...) and applies possible overrules from the related trusted list ("catched" qualifiers from a trust service). More information about qualifiers can be found in the standard ETSI TS 119 612 (<<R11>>).
 
-DSS always computes the status at 2 different times : certificate issuance and signing/validation time. The certificate qualification can evolve in the time, its status is not immutable (eg: a trust service provider lost its granted status). The eIDAS regulation (<<R11>>) clearly defines these different times in the Article 32 and related Annex I. 
+DSS always computes the status at 2 different times : certificate issuance and signing/validation time. The certificate qualification can evolve in the time, its status is not immutable (eg: a trust service provider lost its granted status). The eIDAS regulation (<<R12>>) clearly defines these different times in the Article 32 and related Annex I. 
 
 [source,java,indent=0]
 .Validate a certificate and retrieve its qualification level
@@ -2070,7 +2313,6 @@ With DSS, that's also possible to validate SSL certificate against the EUMS TL a
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/QWACValidationTest.java[tags=demo]
 ----
 
-
 === Extract the signed data from a signature
 
 DSS is able to retrieve the original data from a valid signature. 
@@ -2087,7 +2329,7 @@ DSS offers REST and SOAP web services. Additionally, we also provide a SOAP-UI p
 
 The different webservices are : 
 
- * Signature webservices (`dss-signature-soap` / `dss-signature-rest`) and their clients : they expose methods to allow signing or extending a signature from a client.
+ * Signature webservices (`dss-signature-soap` / `dss-signature-rest`) and their clients : they expose methods to allow signing and extending or counter-signing a signature from a client.
  * Server-signing webservice (`dss-server-signing-soap` / `dss-server-signing-rest`) and their clients : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
  * Signature validation webservices (`dss-validation-soap` / `dss-validation-rest`) and their clients : they expose methods to allow signature validation, with an optional detached file and an optional validation policy.
  * Certificate validation webservices (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients : they expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
@@ -2152,6 +2394,30 @@ include::_restdocs/timestamp-one-document/1/http-request.adoc[]
 .Response
 include::_restdocs/timestamp-one-document/1/http-response.adoc[]
 
+==== Get data to be counter signed
+
+This method returns the data to be signed in order to create a counter signature. The user should provide a document containing a signature to be counter signed, id of the signature, and other parameters similarly to the method 'getDataToSign()'.
+
+WARNING: The parameters in getDataToBeCounterSigned and counterSignSignature MUST be the same (especially the signing date).
+
+.Request
+include::_restdocs/counter-sign-signature/1/http-request.adoc[]
+
+.Response
+include::_restdocs/counter-sign-signature/1/http-response.adoc[]
+
+==== Counter Sign Signature
+
+This method incorporates a created counter signature to unsigned properties of the master signature with this specified id.
+
+WARNING: The parameters in getDataToBeCounterSigned and counterSignSignature MUST be the same (especially the signing date).
+
+.Request
+include::_restdocs/counter-sign-signature/2/http-request.adoc[]
+
+.Response
+include::_restdocs/counter-sign-signature/2/http-response.adoc[]
+
 === REST server signature service
 
 This service also exposed 4 methods : 
@@ -2174,7 +2440,7 @@ include::_restdocs/get-keys/1/http-response.adoc[]
 
 ==== Get key
 
-This method allows retrieving of key informations for a given alias.
+This method allows retrieving a key information for a given alias.
 
 .Request
 include::_restdocs/get-key/1/http-request.adoc[]

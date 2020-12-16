@@ -20,23 +20,30 @@
  */
 package eu.europa.esig.dss.jaxb;
 
-import java.util.List;
-import java.util.Objects;
+import org.xml.sax.SAXException;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import java.util.List;
+import java.util.Objects;
 
-import org.xml.sax.SAXException;
-
+/**
+ * Builds the objects for dealing with XML
+ */
 public final class XmlDefinerUtils {
 	
 	private static XmlDefinerUtils singleton;
-	
+
+	/** Builds the secure version of {@code TransformerFactory} */
 	private TransformerFactoryBuilder secureTransformerFactoryBuilder = TransformerFactoryBuilder.getSecureTransformerBuilder();
+
+	/** Builds the secure version of {@code SchemaFactory} */
 	private SchemaFactoryBuilder secureSchemaFactoryBuilder = SchemaFactoryBuilder.getSecureSchemaBuilder();
+
+	/** Builds the secure version of {@code Validator} */
 	private ValidatorConfigurator secureValidatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
 	
 	/**
@@ -125,6 +132,15 @@ public final class XmlDefinerUtils {
 	 */
 	public void configure(Validator validator) throws SAXException {
 		secureValidatorConfigurator.configure(validator);
+	}
+
+	/**
+	 * Post-processes the validator after the validation is executed
+	 * 
+	 * @param validator {@link javax.xml.validation.Validator}
+	 */
+	public void postProcess(Validator validator) {
+		secureValidatorConfigurator.postProcess(validator);
 	}
 
 }

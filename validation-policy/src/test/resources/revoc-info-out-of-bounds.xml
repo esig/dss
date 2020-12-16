@@ -7,9 +7,7 @@
             <SignatureFilename>06022bd482fb8a2a.xml</SignatureFilename>
             <ClaimedSigningTime>2018-12-06T00:28:33</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="r-id-1">
                     <DigestMethod>SHA256</DigestMethod>

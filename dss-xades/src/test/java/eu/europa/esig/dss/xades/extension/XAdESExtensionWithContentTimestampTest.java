@@ -74,6 +74,7 @@ public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
 				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);

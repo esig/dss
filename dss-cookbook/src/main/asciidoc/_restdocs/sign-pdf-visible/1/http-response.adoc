@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Wed, 24 Jun 2020 13:48:30 GMT
+Date: Mon, 14 Dec 2020 15:38:57 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -13,9 +13,9 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 312
+Content-Length: 288
 
 {
-  "bytes" : "MYHXMBEGCyqGSIb3DQEJEAIPMQIFADAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMC8GCSqGSIb3DQEJBDEiBCDu479x3ggoLyP0HG0qZDGNu0UhWuz34abT8olcH8dHrjB3BgsqhkiG9w0BCRACLzFoMGYwZDBiBCAC8+vKAWMnQlO8gJ0nSY3UG7AxbX5rBmlgEV3hVVidnDA+MDSkMjAwMRswGQYDVQQDDBJSb290U2VsZlNpZ25lZEZha2UxETAPBgNVBAoMCERTUy10ZXN0AgYu1hTXu1c="
+  "bytes" : "MYHEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwLwYJKoZIhvcNAQkEMSIEIJCZQzeO5FvXDJ9U+6w2cJ9IvUYPwkIY8tduSBJYQ/hVMHcGCyqGSIb3DQEJEAIvMWgwZjBkMGIEIALz68oBYydCU7yAnSdJjdQbsDFtfmsGaWARXeFVWJ2cMD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw=="
 }
 ----

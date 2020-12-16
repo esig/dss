@@ -20,59 +20,104 @@
  */
 package eu.europa.esig.dss.ws.cert.validation.soap.client;
 
-import java.io.Serializable;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import java.io.Serializable;
+
+/**
+ * The DTO representing the SOAP validation response result
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @SuppressWarnings("serial")
 public class WSCertificateReportsDTO implements Serializable {
 
+	/** The DiagnosticData report */
 	@XmlElement(name = "DiagnosticData", namespace = "http://dss.esig.europa.eu/validation/diagnostic")
 	private XmlDiagnosticData diagnosticData;
 
+	/** The Simple Certificate report */
 	@XmlElement(name = "SimpleCertificateReport", namespace = "http://dss.esig.europa.eu/validation/simple-certificate-report")
 	private XmlSimpleCertificateReport simpleCertificateReport;
 
+	/** The Detailed report */
 	@XmlElement(name = "DetailedReport", namespace = "http://dss.esig.europa.eu/validation/detailed-report")
 	private XmlDetailedReport detailedReport;
-	
+
+	/**
+	 * Empty constructor
+	 */
 	public WSCertificateReportsDTO() {
 	}
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param diagnosticData {@link XmlDiagnosticData}
+	 * @param simpleCertificateReport {@link XmlSimpleCertificateReport}
+	 * @param detailedReport {@link XmlDetailedReport}
+	 */
 	public WSCertificateReportsDTO(XmlDiagnosticData diagnosticData, XmlSimpleCertificateReport simpleCertificateReport, 
 			XmlDetailedReport detailedReport) {
 		this.diagnosticData = diagnosticData;
 		this.simpleCertificateReport = simpleCertificateReport;
 		this.detailedReport = detailedReport;
 	}
-	
+
+	/**
+	 * Gets the DiagnosticData report
+	 *
+	 * @return {@link XmlDiagnosticData}
+	 */
 	public XmlDiagnosticData getDiagnosticData() {
 		return diagnosticData;
 	}
 
+	/**
+	 * Sets the DiagnosticData report
+	 *
+	 * @param diagnosticData {@link XmlDiagnosticData}
+	 */
 	public void setDiagnosticData(XmlDiagnosticData diagnosticData) {
 		this.diagnosticData = diagnosticData;
 	}
-	
+
+	/**
+	 * Gets the Simple Certificate report
+	 *
+	 * @return {@link XmlSimpleCertificateReport}
+	 */
 	public XmlSimpleCertificateReport getSimpleCertificateReport() {
 		return simpleCertificateReport;
 	}
-	
+
+	/**
+	 * Sets the Simple Certificate report
+	 *
+	 * @param simpleCertificateReport {@link XmlSimpleCertificateReport}
+	 */
 	public void setSimpleCertificateReport(XmlSimpleCertificateReport simpleCertificateReport) {
 		this.simpleCertificateReport = simpleCertificateReport;
 	}
 
+	/**
+	 * Gets the Detailed report
+	 *
+	 * @return {@link XmlDetailedReport}
+	 */
 	public XmlDetailedReport getDetailedReport() {
 		return detailedReport;
 	}
 
+	/**
+	 * Sets the Detailed report
+	 *
+	 * @param detailedReport {@link XmlDetailedReport}
+	 */
 	public void setDetailedReport(XmlDetailedReport detailedReport) {
 		this.detailedReport = detailedReport;
 	}

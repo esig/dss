@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.Context;
 
+/**
+ * Parses the {@code Context}
+ */
 public final class ContextParser {
 
 	private ContextParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code Context}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link Context}
+	 */
 	public static Context parse(String v) {
 		if (v != null) {
 			return Context.valueOf(v);
@@ -34,6 +43,12 @@ public final class ContextParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link Context}
+	 * @return {@link String}
+	 */
 	public static String print(Context v) {
 		if (v != null) {
 			return v.name();

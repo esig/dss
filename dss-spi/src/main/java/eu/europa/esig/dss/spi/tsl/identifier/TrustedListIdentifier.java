@@ -22,10 +22,18 @@ package eu.europa.esig.dss.spi.tsl.identifier;
 
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 
+/**
+ * The identifier for a TL
+ */
 public class TrustedListIdentifier extends AbstractTLIdentifier {
 
 	private static final long serialVersionUID = -527724241662081489L;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param tlInfo {@link TLInfo}
+	 */
 	public TrustedListIdentifier(TLInfo tlInfo) {
 		super("TL-", tlInfo);
 	}

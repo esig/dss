@@ -22,8 +22,14 @@ package eu.europa.esig.dss.alert;
 
 import eu.europa.esig.dss.alert.handler.SilentHandler;
 
+/**
+ * The class to process a {@code Status} alert silently
+ */
 public class SilentOnStatusAlert extends AbstractStatusAlert {
 
+	/**
+	 * The default constructor
+	 */
 	public SilentOnStatusAlert() {
 		super(new SilentHandler<>());
 	}

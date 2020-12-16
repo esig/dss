@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import java.util.List;
-
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.tsl.identifier.LOTLIdentifier;
 
+import java.util.List;
+
+/**
+ * Computes summary for a List of Trusted Lists processing result
+ *
+ */
 public class LOTLInfo extends TLInfo {
 	
 	private static final long serialVersionUID = -8969562861281744320L;

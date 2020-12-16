@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
@@ -35,28 +36,64 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
  */
 class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters> {
 
+	/** The TSPSource to obtain a timestamp */
 	private final TSPSource tspSource;
+
+	/** The used implementation for processing of a PDF document */
 	private final IPdfObjFactory pdfObjectFactory;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param tspSource {@link TSPSource}
+	 * @param pdfObjectFactory {@link IPdfObjFactory}
+	 */
 	protected PAdESLevelBaselineT(TSPSource tspSource, IPdfObjFactory pdfObjectFactory) {
 		this.tspSource = tspSource;
 		this.pdfObjectFactory = pdfObjectFactory;
 	}
 
 	@Override
-	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) throws DSSException {
+	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) {
+		assertExtensionPossible(document);
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
 		return timestampDocument(document, params.getSignatureTimestampParameters(), params.getPasswordProtection());
 	}
-	
-	protected DSSDocument timestampDocument(final DSSDocument document, final PAdESTimestampParameters timestampParameters, final String pwd) {
+
+	/**
+	 * Timestamp document
+	 *
+	 * @param document {@link DSSDocument} to timestamp
+	 * @param timestampParameters {@link PAdESTimestampParameters}
+	 * @param pwd {@link String} password if required
+	 * @return {@link DSSDocument} timestamped
+	 */
+	protected DSSDocument timestampDocument(final DSSDocument document,
+											final PAdESTimestampParameters timestampParameters, final String pwd) {
 		PAdESTimestampService padesTimestampService = new PAdESTimestampService(tspSource, newPdfSignatureService());
 		timestampParameters.setPasswordProtection(pwd);
 		return padesTimestampService.timestampDocument(document, timestampParameters);
 	}
-	
+
+	/**
+	 * Returns PDF signature service
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
 	protected PDFSignatureService newPdfSignatureService() {
 		return pdfObjectFactory.newSignatureTimestampService();
+	}
+
+	/**
+	 * Checks if the document can be extended
+	 *
+	 * @param document {@link DSSDocument}
+	 */
+	protected void assertExtensionPossible(DSSDocument document) {
+		if (!PAdESUtils.isPDFDocument(document)) {
+			throw new DSSException(String.format("Unable to extend the document with name '%s'. " +
+					"PDF document is expected!", document.getName()));
+		}
 	}
 
 }

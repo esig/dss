@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -33,6 +32,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertificatePathCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
@@ -43,8 +43,11 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
+
+import java.util.Date;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -53,10 +56,21 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidation
  */
 public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<SignatureWrapper> {
 
+	/** The Diagnostic Data */
 	private final DiagnosticData diagnosticData;
 
-	public SignatureAcceptanceValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, 
-			Context context, ValidationPolicy validationPolicy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param currentTime {@link Date} validation time
+	 * @param signature {@link SignatureWrapper}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public SignatureAcceptanceValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, Date currentTime,
+										 SignatureWrapper signature, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, signature, currentTime, context, validationPolicy);
 		this.diagnosticData = diagnosticData;
 	}
@@ -70,6 +84,27 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	protected void initChain() {
 
 		ChainItem<XmlSAV> item = firstItem = structuralValidation();
+		
+		/*
+		 * 5.2.8.4.2.1 Processing signing certificate reference constraint
+		 * 
+		 * If the Signing Certificate Identifier attribute contains references to 
+		 * other certificates in the path, the building block shall check each of 
+		 * the certificates in the certification path against these references.
+		 * 
+		 * When this property contains one or more references to certificates other than 
+		 * those present in the certification path, the building block shall return 
+		 * the indication INDETERMINATE with the sub-indication SIG_CONTRAINTS_FAILURE. 
+		 */
+		item = item.setNextItem(signingCertificateReference());
+		
+		/*
+		 * When one or more certificates in the certification path are not referenced 
+		 * by this property, and the signature policy mandates references to all 
+		 * the certificates in the certification path to be present, the building block shall 
+		 * return the indication INDETERMINATE with the sub-indication SIG_CONTRAINTS_FAILURE. 
+		 */
+		item = item.setNextItem(certificatePath());
 
 		// signing-time
 		item = item.setNextItem(signingTime());
@@ -80,8 +115,10 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		// content-hints
 		item = item.setNextItem(contentHints());
 		
-		// message-digest for CAdES and SignedProperties for XAdES are present
-		item = item.setNextItem(messageDigestOrSignedProperties());
+		// message-digest for CAdES/PAdES and SignedProperties for XAdES are present
+		if (!SignatureForm.JAdES.equals(token.getSignatureFormat().getSignatureForm())) {
+			item = item.setNextItem(messageDigestOrSignedProperties());
+		}
 
 		// TODO content-reference
 
@@ -117,58 +154,68 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		return new StructuralValidationCheck(i18nProvider, result, token, constraint);
 	}
 
+	private ChainItem<XmlSAV> signingCertificateReference() {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint(context);
+		return new SigningCertificateReferenceCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> certificatePath() {
+		LevelConstraint constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint(context);
+		return new CertificatePathCheck(i18nProvider, result, token, constraint);
+	}
+
 	private ChainItem<XmlSAV> signingTime() {
-		LevelConstraint constraint = validationPolicy.getSigningTimeConstraint();
+		LevelConstraint constraint = validationPolicy.getSigningTimeConstraint(context);
 		return new SigningTimeCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentType() {
-		ValueConstraint constraint = validationPolicy.getContentTypeConstraint();
+		ValueConstraint constraint = validationPolicy.getContentTypeConstraint(context);
 		return new ContentTypeCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentHints() {
-		ValueConstraint constraint = validationPolicy.getContentHintsConstraint();
+		ValueConstraint constraint = validationPolicy.getContentHintsConstraint(context);
 		return new ContentHintsCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentIdentifier() {
-		ValueConstraint constraint = validationPolicy.getContentIdentifierConstraint();
+		ValueConstraint constraint = validationPolicy.getContentIdentifierConstraint(context);
 		return new ContentIdentifierCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> messageDigestOrSignedProperties() {
-		LevelConstraint constraint = validationPolicy.getMessageDigestOrSignedPropertiesConstraint();
+		LevelConstraint constraint = validationPolicy.getMessageDigestOrSignedPropertiesConstraint(context);
 		return new MessageDigestOrSignedPropertiesCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> commitmentTypeIndications() {
-		MultiValuesConstraint constraint = validationPolicy.getCommitmentTypeIndicationConstraint();
+		MultiValuesConstraint constraint = validationPolicy.getCommitmentTypeIndicationConstraint(context);
 		return new CommitmentTypeIndicationsCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signerLocation() {
-		LevelConstraint constraint = validationPolicy.getSignerLocationConstraint();
+		LevelConstraint constraint = validationPolicy.getSignerLocationConstraint(context);
 		return new SignerLocationCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentTimestamp() {
-		LevelConstraint constraint = validationPolicy.getContentTimestampConstraint();
+		LevelConstraint constraint = validationPolicy.getContentTimestampConstraint(context);
 		return new ContentTimestampCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> countersignature() {
-		LevelConstraint constraint = validationPolicy.getCounterSignatureConstraint();
+		LevelConstraint constraint = validationPolicy.getCounterSignatureConstraint(context);
 		return new CounterSignatureCheck(i18nProvider, result, diagnosticData, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> claimedRoles() {
-		MultiValuesConstraint constraint = validationPolicy.getClaimedRoleConstraint();
+		MultiValuesConstraint constraint = validationPolicy.getClaimedRoleConstraint(context);
 		return new ClaimedRolesCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> certifiedRoles() {
-		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint();
+		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint(context);
 		return new CertifiedRolesCheck(i18nProvider, result, token, constraint);
 	}
 

@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.utils.guava.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-
 import com.google.common.base.Ascii;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
@@ -42,9 +30,25 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
 import com.google.common.io.Files;
-
 import eu.europa.esig.dss.utils.IUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * Google Guava implementation of Utils
+ */
 public class GoogleGuavaUtils implements IUtils {
 
 	private static final String STRING_EMPTY = "";
@@ -218,6 +222,12 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public boolean isHexEncoded(String hexString) {
+		Objects.requireNonNull(hexString, "String cannot be null");
+		return BaseEncoding.base16().lowerCase().canDecode(Ascii.toLowerCase(hexString));
+	}
+
+	@Override
 	public String toHex(byte[] bytes) {
 		Objects.requireNonNull(bytes, "Bytes cannot be null");
 		return BaseEncoding.base16().encode(bytes).toLowerCase();
@@ -297,6 +307,11 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	public Collection<File> listFiles(File folder, String[] extensions, boolean recursive) {
 		return Lists.newArrayList(Iterables.filter(Files.fileTraverser().depthFirstPostOrder(folder), new FilterByExtensions(extensions)));
+	}
+
+	@Override
+	public <T> List<T> reverseList(List<T> list) {
+		return Lists.reverse(new ArrayList<>(list));
 	}
 
 }

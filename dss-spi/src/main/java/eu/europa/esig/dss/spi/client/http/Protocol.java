@@ -28,6 +28,7 @@ public enum Protocol {
 
 	FILE("file"), HTTP("http"), HTTPS("https"), LDAP("ldap"), FTP("ftp");
 
+	/** Protocol name */
 	private final String name;
 
 	Protocol(final String name) {

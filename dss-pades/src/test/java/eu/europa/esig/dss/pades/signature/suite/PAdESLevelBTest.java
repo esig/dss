@@ -20,15 +20,24 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class PAdESLevelBTest extends AbstractPAdESTestSignature {
@@ -58,8 +67,21 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		// test with wrong provided certificate
-		validator.defineSigningCertificate(getCertificate(ECDSA_USER));
+		CertificateSource signingCertificateSource = new CommonCertificateSource();
+		signingCertificateSource.addCertificate(getCertificate(ECDSA_USER));
+		validator.setSigningCertificateSource(signingCertificateSource);
 		return validator;
+	}
+	
+	@Override
+	protected void checkDTBSR(DiagnosticData diagnosticData) {
+		super.checkDTBSR(diagnosticData);
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		XmlDigestAlgoAndValue dtbsr = signature.getDataToBeSignedRepresentation();
+		
+		ToBeSigned dataToSign = service.getDataToSign(documentToSign, getSignatureParameters());
+		assertArrayEquals(DSSUtils.digest(dtbsr.getDigestMethod(), dataToSign.getBytes()), dtbsr.getDigestValue());
 	}
 
 	@Override

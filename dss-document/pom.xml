@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.7</version>
+		<version>5.8.RC1</version>
 	</parent>
 
 	<artifactId>dss-document</artifactId>
@@ -70,10 +70,12 @@
 <!-- 		<dependency> -->
 <!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
 <!-- 			<artifactId>dss-crl-parser-x509crl</artifactId> -->
+<!-- 			<scope>test</scope> -->
 <!-- 		</dependency> -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-crl-parser-stream</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

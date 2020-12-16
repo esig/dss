@@ -1,0 +1,58 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	
+	"definitions": {
+	
+		"jwk": {
+	    	"type": "object",
+	    	"properties": {
+	    	
+	    		"kty": {
+	    			"type": "string",
+	    			"enum": [ "EC", "RSA", "oct" ]
+	    		},
+	    		
+	    		"use": {
+	    			"type": "string",
+	    			"enum": [ "sig", "enc" ]
+	    		},
+	    		
+	    		"key_ops": {
+	    			"type": "string",
+	    			"enum": [ "sign", "verify", "encrypt", "decrypt", "wrapKey", "unwrapKey", "deriveKey", "deriveBits" ]
+	    		},
+	    		
+	    		"alg": {
+	    			"type": "string"
+	    		},
+	    		
+	    		"kid": {
+	    			"type": "string"
+	    		},
+	    		
+			    "x5u": {
+			    	"type": "string"
+			    },
+			    
+			    "x5c": {
+			    	"type": "array",
+			    	"items": {
+			    		"type": "string", "contentEncoding" : "base64"
+			    	}
+			    },
+			    
+			    "x5t": {
+			    	"type": "string", "contentEncoding" : "base64"
+			    },
+			    
+			    "x5t#S256": {
+			    	"type": "string", "contentEncoding" : "base64"
+			    }
+			    
+	    	},
+	    	"required": [ "kty" ]
+	    }
+		
+	}
+	
+}

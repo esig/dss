@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -34,11 +30,28 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Checks if the certificate's key usage are acceptable
+ */
 public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
+	/** Certificate to check */
 	private final CertificateWrapper certificate;
 
-	public KeyUsageCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, MultiValuesConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param constraint {@link MultiValuesConstraint}
+	 */
+	public KeyUsageCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+						 MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}
@@ -59,8 +72,8 @@ public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		return MessageTag.KEY_USAGE.setArgs(Arrays.toString(certificate.getKeyUsages().toArray()));
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.KEY_USAGE, Arrays.toString(certificate.getKeyUsages().toArray()));
 	}
 
 	@Override

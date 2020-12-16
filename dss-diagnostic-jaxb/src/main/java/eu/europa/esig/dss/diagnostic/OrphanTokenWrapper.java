@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
+
+import java.util.Objects;
 
 public class OrphanTokenWrapper {
 
@@ -46,7 +46,7 @@ public class OrphanTokenWrapper {
 	/**
 	 * Returns base64-encoded byte array of the token
 	 * 
-	 * @return
+	 * @return byte array
 	 */
 	public byte[] getBinaries() {
 		return orphanToken.getBase64Encoded();

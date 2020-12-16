@@ -20,19 +20,27 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import eu.europa.esig.dss.validation.SignatureProperties;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 
-import eu.europa.esig.dss.validation.SignatureProperties;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Represents a list of {@code CAdESAttribute}s
+ */
 public abstract class CAdESSigProperties implements SignatureProperties<CAdESAttribute> {
-	
+
+	/** The CMS AttributeTable */
 	private final AttributeTable attributeTable;
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param attributeTable {@link AttributeTable}
+	 */
 	CAdESSigProperties(AttributeTable attributeTable) {
 		this.attributeTable = attributeTable;
 	}

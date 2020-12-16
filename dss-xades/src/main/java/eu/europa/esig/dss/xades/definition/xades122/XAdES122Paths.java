@@ -28,6 +28,9 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.xades.XAdES122Utils;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
+/**
+ * XAdES 1.2.2 paths
+ */
 public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
@@ -103,6 +106,11 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
 	public String getClaimedRoleV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getSignedAssertionPath() {
 		return null;
 	}
 
@@ -269,6 +277,11 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 		return null;
 	}
 
+	@Override
+	public String getSignaturePolicyStorePath() {
+		return null;
+	}
+
 	// ------------------------------------------------
 
 	@Override
@@ -366,6 +379,11 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	public String getCurrentSignaturePolicyImplied() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_IMPLIED);
 	}
+	
+	@Override
+	public String getCurrentSignaturePolicyTransforms() {
+		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XMLDSigElement.TRANSFORMS);
+	}
 
 	@Override
 	public String getCurrentIssuerSerialIssuerNamePath() {
@@ -443,13 +461,28 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public XSDAbstractUtils getXSDUtils() {
-		return XAdES122Utils.getInstance();
+	public String getCurrentSPDocSpecificationIdentifier() {
+		return null;
 	}
 
 	@Override
-	public String getSignedAssertionPath() {
+	public String getCurrentSPDocSpecificationDescription() {
 		return null;
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDocumentReferenceElements() {
+		return null;
+	}
+
+	@Override
+	public String getCurrentSignaturePolicyDocument() {
+		return null;
+	}
+
+	@Override
+	public XSDAbstractUtils getXSDUtils() {
+		return XAdES122Utils.getInstance();
 	}
 
 }

@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 
 /**
@@ -80,7 +81,7 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * @return the list of all certificates present in the AttrAuthoritiesCertValues
 	 */
 	public List<CertificateToken> getAttrAuthoritiesCertValues() {
-		return getCertificateTokensByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES);
+		return getCertificateTokensByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES);
 	}
 
 	/**
@@ -176,16 +177,19 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	}
 	
 	/**
-	 * Gets an object containing the signing certificate or information indicating why it is impossible to extract it
-	 * from the signature. If the signing certificate is identified then it is cached and the subsequent calls to this
+	 * Gets an object containing the signing certificate or information indicating
+	 * why it is impossible to extract it from the signature. If the signing
+	 * certificate is identified then it is cached and the subsequent calls to this
 	 * method will return this cached value. This method never returns null.
 	 * 
-	 * @param providedSigningCertificateToken {@link CertificateToken} provided by a user (if defined)
+	 * @param signingCertificateSource {@link CertificateSource} which allows to
+	 *                                 resolve the signing certificate from external
+	 *                                 sources
 	 * @return {@link CandidatesForSigningCertificate}
 	 */
-	public CandidatesForSigningCertificate getCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken) {
+	public CandidatesForSigningCertificate getCandidatesForSigningCertificate(CertificateSource signingCertificateSource) {
 		if (candidatesForSigningCertificate == null) {
-			candidatesForSigningCertificate = extractCandidatesForSigningCertificate(providedSigningCertificateToken);
+			candidatesForSigningCertificate = extractCandidatesForSigningCertificate(signingCertificateSource);
 		}
 		return candidatesForSigningCertificate;
 	}
@@ -193,10 +197,11 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	/**
 	 * Extracts candidates to be a signing certificate from the source
 	 * 
-	 * @param providedSigningCertificateToken {@link CertificateToken} provided by a user (if defined)
+	 * @param certificateSource {@link CertificateSource} which allows to resolve
+	 *                            the signing certificate from external sources
 	 * @return {@link CandidatesForSigningCertificate}
 	 */
-	protected abstract CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateToken providedSigningCertificateToken);
+	protected abstract CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateSource certificateSource);
 
 	@Override
 	public CertificateSourceType getCertificateSourceType() {

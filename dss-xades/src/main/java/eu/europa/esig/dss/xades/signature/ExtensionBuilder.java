@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSException;
@@ -34,12 +28,21 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+/**
+ * Builds XAdES signature extension
+ */
 public abstract class ExtensionBuilder extends XAdESBuilder {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ExtensionBuilder.class);
 
-	/*
+	/**
 	 * This object allows to access DOM signature representation using XPATH
 	 */
 	protected XAdESSignature xadesSignature;
@@ -64,14 +67,17 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 */
 	protected Element unsignedSignaturePropertiesDom;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param certificateVerifier {@code CertificateVerifier}
+	 */
 	protected ExtensionBuilder(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 	}
 
 	/**
 	 * Returns or creates (if it does not exist) the UnsignedPropertiesType DOM object.
-	 *
-	 * @throws DSSException
 	 */
 	protected void ensureUnsignedProperties() {
 
@@ -99,8 +105,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 
 	/**
 	 * Returns or creates (if it does not exist) the UnsignedSignaturePropertiesType DOM object.
-	 *
-	 * @throws DSSException
 	 */
 	protected void ensureUnsignedSignatureProperties() {
 		final NodeList unsignedSignaturePropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getUnsignedSignaturePropertiesPath());
@@ -120,8 +124,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 
 	/**
 	 * Returns or create (if it does not exist) the SignedDataObjectProperties DOM object.
-	 *
-	 * @throws DSSException
 	 */
 	protected void ensureSignedDataObjectProperties() {
 		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getSignedDataObjectPropertiesPath());
@@ -131,6 +133,11 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		}
 	}
 
+	/**
+	 * Verifies if the signature is valid. Throws an exception if the signature is invalid.
+	 *
+	 * @param xadesSignature {@link XAdESSignature} to check
+	 */
 	protected void assertSignatureValid(final XAdESSignature xadesSignature) {
 		SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
 		if (!signatureCryptographicVerification.isSignatureIntact()) {
@@ -138,7 +145,14 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
 		}
 	}
-	
+
+	/**
+	 * Indents the {@code nodeToIndent} if pretty-print is enabled
+	 *
+	 * @param nodeToIndent {@link Element} to be indented
+	 * @param oldNode {@link Element} the old node
+	 * @return {@link Element}
+	 */
 	protected Element indentIfPrettyPrint(Element nodeToIndent, Element oldNode) {
 		if (params.isPrettyPrint()) {
 			nodeToIndent = (Element) DSSXMLUtils.indentAndExtend(documentDom, nodeToIndent, oldNode);
@@ -209,6 +223,20 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			}
 		}
 		return xadesNamespace;
+	}
+
+	/**
+	 * Returns a {@code NodeList} of signatures to be extended. Throws an extension if no valid signatures found
+	 *
+	 * @param documentDom {@link Document} with signatures to be extended
+	 * @return {@link NodeList} of signatures
+	 */
+	protected NodeList getSignaturesNodeListToExtend(Document documentDom) {
+		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDom);
+		if (signatureNodeList.getLength() == 0) {
+			throw new DSSException("There is no signature to extend!");
+		}
+		return signatureNodeList;
 	}
 	
 }

@@ -295,4 +295,7 @@
             <Indication>PASSED</Indication>
         </Conclusion>
     </TLAnalysis>
+    <Semantic Key="INDETERMINATE">The available information is insufficient to ascertain the signature to be TOTAL-PASSED or TOTAL-FAILED.</Semantic>
+    <Semantic Key="PASSED">The validation process succeeded</Semantic>
+    <Semantic Key="REVOKED_NO_POE">The signature validation process results into INDETERMINATE because the signing certificate was revoked at the validation date/time. However, the Signature Validation Algorithm cannot ascertain that the signing time lies before or after the revocation time.</Semantic>
 </DetailedReport>

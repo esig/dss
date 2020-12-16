@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.job;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
@@ -59,6 +44,20 @@ import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 import eu.europa.esig.dss.tsl.sync.TrustedListCertificateSourceSynchronizer;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 /**
  * The main class performing the TL/LOTL download / parsing / validation tasks
@@ -68,6 +67,9 @@ public class TLValidationJob {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidationJob.class);
 
+	/**
+	 * Provides methods to manage the asynchronous behaviour
+	 */
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	
 	/**
@@ -130,14 +132,29 @@ public class TLValidationJob {
      */
     private List<Alert<TLInfo>> tlAlerts;
 
+	/**
+	 * Sets the additional TL Sources
+	 *
+	 * @param trustedListSources {@link TLSource}s
+	 */
 	public void setTrustedListSources(TLSource... trustedListSources) {
 		this.trustedListSources = trustedListSources;
 	}
 
+	/**
+	 * Sets the LOTL Sources
+	 *
+	 * @param listOfTrustedListSources {@link LOTLSource}s
+	 */
 	public void setListOfTrustedListSources(LOTLSource... listOfTrustedListSources) {
 		this.listOfTrustedListSources = listOfTrustedListSources;
 	}
 
+	/**
+	 * Sets the execution service to manage the asynchronous behaviour
+	 *
+	 * @param executorService {@link ExecutorService}
+	 */
 	public void setExecutorService(ExecutorService executorService) {
 		if (this.executorService != null && !this.executorService.isShutdown()) {
 			this.executorService.shutdownNow();

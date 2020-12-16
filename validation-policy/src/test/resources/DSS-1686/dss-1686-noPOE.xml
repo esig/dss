@@ -8,9 +8,7 @@
             <SignatureFilename>OJ_L_2013_183_FULL.xml</SignatureFilename>
             <ClaimedSigningTime>2013-07-02T06:03:10</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MANIFEST" name="Signature_1372744990848-Reference-0">
                     <DigestMethod>SHA512</DigestMethod>
@@ -83,7 +81,7 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-BFE8B3E24DC946E83C989B65401FE6B41A8EC7A3C047F7579E01F5EA39D718B1" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-BFE8B3E24DC946E83C989B65401FE6B41A8EC7A3C047F7579E01F5EA39D718B1"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-29F011998FC5576ACA341603C8EA140AAC17BA917CD25F29F09C001D5C2D1CA4">
@@ -806,8 +804,8 @@
             <Locality>LU</Locality>
             <CountryName>ES</CountryName>
             <OrganizationName>PUBLICATIONS OFFICE</OrganizationName>
-            <GivenName>Joaquin</GivenName>
             <OrganizationalUnit>NONE</OrganizationalUnit>
+            <GivenName>Joaquin</GivenName>
             <Surname>Romera Ramirez</Surname>
             <Email>joaquim.romera-ramirez@publications.europa.eu</Email>
             <AuthorityInformationAccessUrls>

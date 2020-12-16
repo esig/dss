@@ -20,6 +20,13 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
+import eu.europa.esig.dss.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,27 +36,32 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
-import eu.europa.esig.dss.model.x509.revocation.Revocation;
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * Represents a revocation sources for a data obtained from an offline source (e.g. signature)
+ *
+ * @param <R> the revocation class type (CRL/OCSP)
+ */
 public abstract class OfflineRevocationSource<R extends Revocation> implements MultipleRevocationSource<R> {
 
 	private static final long serialVersionUID = 8270762277613989997L;
 
-	private final Map<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> binaryOrigins = new HashMap<>();
+	/** The map between revocation token identifiers and corresponding origins */
+	private final Map<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> binaryOrigins = new HashMap<>();
 
+	/** A map between computed {@code RevocationToken}s and their origins */
 	private final Map<RevocationToken<R>, Set<RevocationOrigin>> tokenOrigins = new HashMap<>();
 
+	/** A map between revocation references and their origins */
 	private final Map<RevocationRef<R>, Set<RevocationRefOrigin>> referenceOrigins = new HashMap<>();
 
+	/** The use RevocationTokenRefMatcher */
 	private final RevocationTokenRefMatcher<R> tokenRefMatcher;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param tokenRefMatcher {@link RevocationTokenRefMatcher} used to match tokens and their corresponding references
+	 */
 	protected OfflineRevocationSource(RevocationTokenRefMatcher<R> tokenRefMatcher) {
 		Objects.requireNonNull(tokenRefMatcher);
 		this.tokenRefMatcher = tokenRefMatcher;
@@ -61,7 +73,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * @param binary the binary token to be added
 	 * @param origin the origin where the token has been found
 	 */
-	public void addBinary(EncapsulatedRevocationTokenIdentifier binary, RevocationOrigin origin) {
+	public void addBinary(EncapsulatedRevocationTokenIdentifier<R> binary, RevocationOrigin origin) {
 		Objects.requireNonNull(binary, "The binary is null");
 		Objects.requireNonNull(origin, "The origin is null");
 		binaryOrigins.computeIfAbsent(binary, k -> new HashSet<>()).add(origin);
@@ -85,8 +97,9 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * @param token the token to be added
 	 * @param binary the binary where the token has been extracted
 	 */
-	public void addRevocation(RevocationToken<R> token, EncapsulatedRevocationTokenIdentifier binary) {
+	public void addRevocation(RevocationToken<R> token, EncapsulatedRevocationTokenIdentifier<R> binary) {
 		Objects.requireNonNull(token, "The token is null");
+		
 		Objects.requireNonNull(binary, "The origin is null");
 		Set<RevocationOrigin> origins = binaryOrigins.get(binary);
 		if (origins == null) {
@@ -114,7 +127,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * 
 	 * @return a Set of {@code EncapsulatedRevocationTokenIdentifier}
 	 */
-	public Set<EncapsulatedRevocationTokenIdentifier> getAllRevocationBinaries() {
+	public Set<EncapsulatedRevocationTokenIdentifier<R>> getAllRevocationBinaries() {
 		return binaryOrigins.keySet();
 	}
 
@@ -124,7 +137,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * @return a Map of {@code EncapsulatedRevocationTokenIdentifier} with their
 	 *         origins
 	 */
-	public Map<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> getAllRevocationBinariesWithOrigins() {
+	public Map<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> getAllRevocationBinariesWithOrigins() {
 		return binaryOrigins;
 	}
 
@@ -182,7 +195,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * 
 	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
 	 */
-	public List<EncapsulatedRevocationTokenIdentifier> getCMSSignedDataRevocationBinaries() {
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getCMSSignedDataRevocationBinaries() {
 		return getBinariesByOrigin(RevocationOrigin.CMS_SIGNED_DATA);
 	}
 
@@ -242,7 +255,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * 
 	 * @return list of {@code RevocationToken}s
 	 */
-	public List<EncapsulatedRevocationTokenIdentifier> getDSSDictionaryBinaries() {
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getDSSDictionaryBinaries() {
 		return getBinariesByOrigin(RevocationOrigin.DSS_DICTIONARY);
 	}
 
@@ -266,7 +279,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * 
 	 * @return list of {@code RevocationToken}s
 	 */
-	public List<EncapsulatedRevocationTokenIdentifier> getVRIDictionaryBinaries() {
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getVRIDictionaryBinaries() {
 		return getBinariesByOrigin(RevocationOrigin.VRI_DICTIONARY);
 	}
 
@@ -336,10 +349,12 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * Retrieves a Map of orphan {@code RevocationRef} with their
 	 * {@code RevocationRefOrigin}s for a given
 	 * {@code EncapsulatedRevocationTokenIdentifier}
-	 * 
+	 *
+	 * @param identifier {@link EncapsulatedRevocationTokenIdentifier}
 	 * @return a Map of orphan references with their origins
 	 */
-	public Map<RevocationRef<R>, Set<RevocationRefOrigin>> findRefsAndOriginsForBinary(EncapsulatedRevocationTokenIdentifier identifier) {
+	public Map<RevocationRef<R>, Set<RevocationRefOrigin>> findRefsAndOriginsForBinary(
+			EncapsulatedRevocationTokenIdentifier<R> identifier) {
 		Map<RevocationRef<R>, Set<RevocationRefOrigin>> result = new HashMap<>();
 		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : referenceOrigins.entrySet()) {
 			RevocationRef<R> currentReference = entry.getKey();
@@ -352,31 +367,15 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 
 	/**
 	 * Returns the linked {@code EncapsulatedRevocationTokenIdentifier} for a given
-	 * {@code RevocationToken}
-	 * 
-	 * @param token the {@code RevocationToken} to find
-	 * @return the related {@code EncapsulatedRevocationTokenIdentifier}
-	 */
-	private EncapsulatedRevocationTokenIdentifier findBinaryForToken(RevocationToken<R> token) {
-		for (EncapsulatedRevocationTokenIdentifier binary : binaryOrigins.keySet()) {
-			if (binary.isMatch(new Digest(DigestAlgorithm.SHA256, token.getDigest(DigestAlgorithm.SHA256)))) {
-				return binary;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the linked {@code EncapsulatedRevocationTokenIdentifier} for a given
 	 * {@code RevocationRef}
 	 * 
 	 * @param ref the {@code RevocationRef} to find
 	 * @return the related {@code EncapsulatedRevocationTokenIdentifier}
 	 */
-	public EncapsulatedRevocationTokenIdentifier findBinaryForReference(RevocationRef<R> ref) {
-		for (RevocationToken<R> token : tokenOrigins.keySet()) {
-			if (tokenRefMatcher.match(token, ref)) {
-				return findBinaryForToken(token);
+	public EncapsulatedRevocationTokenIdentifier<R> findBinaryForReference(RevocationRef<R> ref) {
+		for (EncapsulatedRevocationTokenIdentifier<R> binary : binaryOrigins.keySet()) {
+			if (tokenRefMatcher.match(binary, ref)) {
+				return binary;
 			}
 		}
 		return null;
@@ -421,10 +420,10 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * 
 	 * @return a Set of Token Identifiers which are referenced
 	 */
-	public Set<EncapsulatedRevocationTokenIdentifier> getAllReferencedRevocationBinaries() {
-		Set<EncapsulatedRevocationTokenIdentifier> result = new HashSet<>();
+	public Set<EncapsulatedRevocationTokenIdentifier<R>> getAllReferencedRevocationBinaries() {
+		Set<EncapsulatedRevocationTokenIdentifier<R>> result = new HashSet<>();
 		for (RevocationRef<R> reference : referenceOrigins.keySet()) {
-			for (EncapsulatedRevocationTokenIdentifier identifier : binaryOrigins.keySet()) {
+			for (EncapsulatedRevocationTokenIdentifier<R> identifier : binaryOrigins.keySet()) {
 				if (tokenRefMatcher.match(identifier, reference)) {
 					result.add(identifier);
 				}
@@ -450,9 +449,9 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 * 
 	 * @return a list of {@code EncapsulatedRevocationTokenIdentifier}
 	 */
-	private List<EncapsulatedRevocationTokenIdentifier> getBinariesByOrigin(RevocationOrigin origin) {
-		List<EncapsulatedRevocationTokenIdentifier> result = new ArrayList<>();
-		for (Entry<EncapsulatedRevocationTokenIdentifier, Set<RevocationOrigin>> entry : binaryOrigins.entrySet()) {
+	private List<EncapsulatedRevocationTokenIdentifier<R>> getBinariesByOrigin(RevocationOrigin origin) {
+		List<EncapsulatedRevocationTokenIdentifier<R>> result = new ArrayList<>();
+		for (Entry<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> entry : binaryOrigins.entrySet()) {
 			Set<RevocationOrigin> currentOrigins = entry.getValue();
 			if (Utils.isCollectionNotEmpty(currentOrigins) && currentOrigins.contains(origin)) {
 				result.add(entry.getKey());

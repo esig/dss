@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * The interface represent an OID-based property with a description
+ */
 public interface OidDescription extends OidBasedEnum {
 
 	/**

@@ -22,6 +22,9 @@ package eu.europa.esig.dss.pades.exception;
 
 import eu.europa.esig.dss.model.DSSException;
 
+/**
+ * Throwed if an invalid password has been provided
+ */
 public class InvalidPasswordException extends DSSException {
 
 	private static final long serialVersionUID = -624171256740572085L;

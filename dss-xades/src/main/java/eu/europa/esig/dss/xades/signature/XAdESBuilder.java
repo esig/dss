@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
@@ -45,7 +32,6 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -60,17 +46,33 @@ import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
-import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
-import eu.europa.esig.dss.xades.reference.DSSTransform;
+import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Builds a XAdES signature
+ */
 public abstract class XAdESBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESBuilder.class);
 
+	/** The attribute used for timestamp includes */
 	public static final String REFERENCED_DATA = "referencedData";
-	public static final String SIGNATURE = "Signature";
+
+	/** The qualifying properties target */
 	public static final String TARGET = "Target";
+
+	/** The URI attribute */
 	public static final String URI = "URI";
 
 	/**
@@ -79,7 +81,7 @@ public abstract class XAdESBuilder {
 	 */
 	protected XAdESPaths xadesPaths;
 
-	/*
+	/**
 	 * This variable is a reference to the set of parameters relating to the structure and process of the creation or
 	 * extension of the electronic signature.
 	 */
@@ -101,7 +103,7 @@ public abstract class XAdESBuilder {
 	 * @param certificateVerifier
 	 *            {@code CertificateVerifier}
 	 */
-	public XAdESBuilder(final CertificateVerifier certificateVerifier) {
+	protected XAdESBuilder(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
 	
@@ -135,63 +137,22 @@ public abstract class XAdESBuilder {
 	 *
 	 * @param parentDom
 	 *            the parent element
-	 * @param dssReference
-	 *            the current reference to incorporate
 	 * @param digestAlgorithm
 	 *            the digest algorithm to be used
 	 * @param originalDocument
 	 *            the document to be digested
 	 */
-	protected void incorporateDigestValue(final Element parentDom, DSSReference dssReference, final DigestAlgorithm digestAlgorithm,
+	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm,
 			final DSSDocument originalDocument) {
 
 		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
 
-		String base64EncodedDigestBytes = null;
-		if (params.isManifestSignature()) {
-			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
-			Document doc = DomUtils.buildDOM(originalDocument);
-			
-			byte[] bytes = dssTransform.getBytesAfterTranformation(doc, dssReference.getUri());
-			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
-		} else if (params.isEmbedXML()) {
-			DSSTransform dssTransform = getUniqueCanonicalizationTransform(dssReference);
-
-			Document doc = DomUtils.buildDOM(originalDocument);
-			Element root = doc.getDocumentElement();
-
-			Document doc2 = DomUtils.buildDOM();
-			final Element dom = DomUtils.createElementNS(doc2, getXmldsigNamespace(), XMLDSigElement.OBJECT);
-			final Element dom2 = DomUtils.createElementNS(doc2, getXmldsigNamespace(), XMLDSigElement.OBJECT);
-			doc2.appendChild(dom2);
-			dom2.appendChild(dom);
-			dom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), dssReference.getUri().substring(1));
-
-			Node adopted = doc2.adoptNode(root);
-			dom.appendChild(adopted);
-
-			byte[] bytes = dssTransform.getBytesAfterTranformation(dom, dssReference.getUri());
-			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
-		} else {
-			base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
-		}
-
+		String base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
+		
 		LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
 		digestValueDom.appendChild(textNode);
 		parentDom.appendChild(digestValueDom);
-	}
-
-	private DSSTransform getUniqueCanonicalizationTransform(DSSReference dssReference) {
-		List<DSSTransform> transforms = dssReference.getTransforms();
-		if (Utils.collectionSize(transforms) != 1) {
-			throw new DSSException("Only one transformation is supported");
-		}
-		DSSTransform dssTransform = transforms.get(0);
-		if (!(dssTransform instanceof CanonicalizationTransform)) {
-			throw new DSSException("Only canonicalization transform is allowed in the given use case");
-		}
-		return dssTransform;
 	}
 
 	/**
@@ -266,6 +227,7 @@ public abstract class XAdESBuilder {
 	 *            the parent element
 	 * @param certificate
 	 *            the certificate to be added
+	 * @return {@link Element}
 	 */
 	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
 		final Element certDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCert());
@@ -286,6 +248,12 @@ public abstract class XAdESBuilder {
 		return certDom;
 	}
 
+	/**
+	 * Incorporates IssuerSerial element
+	 *
+	 * @param parentDom {@link Element}
+	 * @param certificate {@link CertificateToken} to get issuer for
+	 */
 	protected void incorporateIssuerV1(final Element parentDom, final CertificateToken certificate) {
 		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerial());
 
@@ -301,6 +269,12 @@ public abstract class XAdESBuilder {
 		DomUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
 	}
 
+	/**
+	 * Incorporates IssuerSerialV2 element
+	 *
+	 * @param parentDom {@link Element}
+	 * @param certificate {@link CertificateToken} to get issuer for
+	 */
 	protected void incorporateIssuerV2(final Element parentDom, final CertificateToken certificate) {
 		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerialV2());
 
@@ -328,14 +302,25 @@ public abstract class XAdESBuilder {
 	}
 	
 	/**
+	 * Returns params.referenceDigestAlgorithm if exists, params.digestAlgorithm otherwise
+	 *
+	 * @param params {@link XAdESSignatureParameters}
+	 * @return {@link DigestAlgorithm}
+	 */
+	protected DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
+		return params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+	}
+	
+	/**
 	 * Creates {@link DSSDocument} from the current documentDom
+	 *
 	 * @return {@link DSSDocument}
 	 */
 	protected DSSDocument createXmlDocument() {
 		byte[] bytes;
 		if (Operation.SIGNING.equals(params.getContext().getOperationKind()) && params.isPrettyPrint()) {
 			alignNodes();
-			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignatures(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
+			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignature(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
 		} else {
 			bytes = DSSXMLUtils.serializeNode(documentDom);
 		}
@@ -346,46 +331,38 @@ public abstract class XAdESBuilder {
 	
 	protected abstract void alignNodes();
 	
-
 	/**
-	 * This method returns the current used XMLDSig namespace. Try to determine from the signature, from the parameters or the default value
+	 * This method returns the current used XMLDSig namespace
+	 *
+	 * @return {@link DSSNamespace}
 	 */
 	protected DSSNamespace getXmldsigNamespace() {
-		DSSNamespace xmldsigNamespace = params.getXmldsigNamespace();
-		if (xmldsigNamespace == null) {
-			LOG.warn("Current XMLDSig namespace not found in the parameters (use the default XMLDSig)");
-			xmldsigNamespace = XAdESNamespaces.XMLDSIG;
-
-		}
-		return xmldsigNamespace;
+		return params.getXmldsigNamespace();
 	}
 
 	/**
-	 * This method returns the current used XAdES namespace. Try to determine from the signature, from the parameters or the default value
+	 * This method returns the current used XAdES namespace
+	 *
+	 * @return {@link DSSNamespace}
 	 */
 	protected DSSNamespace getXadesNamespace() {
-		DSSNamespace xadesNamespace = params.getXadesNamespace();
-		if (xadesNamespace == null) {
-			LOG.warn("Current XAdES namespace not found in the parameters (use the default XAdES 1.3.2)");
-			xadesNamespace = XAdESNamespaces.XADES_132;
-
-		}
-		return xadesNamespace;
+		return params.getXadesNamespace();
 	}
 
 	/**
-	 * This method returns the current used XAdES 1.4.1 namespace. Try to determine from the signature, from the parameters or the default value
+	 * This method returns the current used XAdES 1.4.1 namespace
+	 *
+	 * @return {@link DSSNamespace}
 	 */
 	protected DSSNamespace getXades141Namespace() {
-		DSSNamespace xades141Namespace = params.getXades141Namespace();
-		if (xades141Namespace == null) {
-			LOG.warn("Current XAdES 1.4.1 namespace not found in the parameters (use the default XAdES 1.4.1)");
-			xades141Namespace = XAdESNamespaces.XADES_141;
-
-		}
-		return xades141Namespace;
+		return params.getXades141Namespace();
 	}
-	
+
+	/**
+	 * Gets a relevant class containing the list of elements
+	 *
+	 * @return {@link XAdESElement} implementation
+	 */
 	protected XAdESElement getCurrentXAdESElements() {
 		String xadesURI = getXadesNamespace().getUri();
 		if (XAdESNamespaces.XADES_132.getUri().equals(xadesURI)) {
@@ -398,6 +375,11 @@ public abstract class XAdESBuilder {
 		throw new DSSException("Unsupported URI : " + xadesURI);
 	}
 
+	/**
+	 * Gets a relevant class containing the list of paths
+	 *
+	 * @return {@link XAdESPaths} implementation
+	 */
 	protected XAdESPaths getCurrentXAdESPaths() {
 		String xadesURI = getXadesNamespace().getUri();
 		if (Utils.areStringsEqual(XAdESNamespaces.XADES_132.getUri(), xadesURI)) {

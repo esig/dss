@@ -148,6 +148,7 @@
 					<xs:element name="CommitmentTypeIndications" type="CommitmentTypeIndications" minOccurs="0" />
 					<xs:element name="SignerRole" type="SignerRole" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
+					<xs:element name="SignaturePolicyStore" type="SignaturePolicyStore" minOccurs="0" />
 					<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" /> <!-- CAdES -->
 					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" /> <!-- PAdES -->
 					
@@ -178,6 +179,7 @@
 					</xs:element>
 					
 					<xs:element name="SignatureDigestReference" type="SignatureDigestReference" />
+					<xs:element name="DataToBeSignedRepresentation" type="DigestAlgoAndValue" minOccurs="0" />
 					<xs:element name="SignatureValue" type="xs:base64Binary" minOccurs="0" />
 					
 				</xs:sequence>
@@ -190,11 +192,13 @@
 	
 	<xs:complexType name="SignatureProductionPlace">
 		<xs:sequence>
-			<xs:element name="Address" type="xs:string" minOccurs="0" />
+			<xs:element name="PostalAddress" type="xs:string" minOccurs="0" maxOccurs="unbounded" /> <!-- Used in CAdES -->
 			<xs:element name="City" type="xs:string" minOccurs="0" />
 			<xs:element name="StateOrProvince" type="xs:string" minOccurs="0" />
+			<xs:element name="PostOfficeBoxNumber" type="xs:string" minOccurs="0" />
 			<xs:element name="PostalCode" type="xs:string" minOccurs="0" />
 			<xs:element name="CountryName" type="xs:string" minOccurs="0" />
+			<xs:element name="StreetAddress" type="xs:string" minOccurs="0" /> <!-- Used in XAdES and JAdES -->
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -207,6 +211,7 @@
 			<xs:element name="ZeroHash" type="xs:boolean" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="Asn1Processable" type="xs:boolean" minOccurs="0" />
+			<xs:element name="Transformations" type="Transformations" minOccurs="0" />
 			<xs:element name="Identified" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Status" type="xs:boolean" minOccurs="0" />
 			<xs:element name="ProcessingError" type="xs:string" minOccurs="0" />
@@ -215,10 +220,20 @@
 		</xs:sequence>
 	</xs:complexType>
 	
+	<xs:complexType name="SignaturePolicyStore">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:string" />
+			<xs:element name="Description" type="xs:string" minOccurs="0" />
+			<xs:element name="DocumentationReferences" type="DocumentationReferences" minOccurs="0" />
+			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
 	<xs:complexType name="PDFRevision">
 		<xs:sequence>
 			<xs:element name="SignatureFieldName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
+			<xs:element name="ModificationDetection" type="ModificationDetection" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -229,6 +244,7 @@
 			<xs:element name="Filter" type="xs:string" minOccurs="0" />
 			<xs:element name="SubFilter" type="xs:string" minOccurs="0" />
 			<xs:element name="ContactInfo" type="xs:string" minOccurs="0" />
+			<xs:element name="Location" type="xs:string" minOccurs="0" />
 			<xs:element name="Reason" type="xs:string" minOccurs="0" />
 			<xs:element name="SignatureByteRange" minOccurs="0" >
 				<xs:simpleType>
@@ -236,6 +252,18 @@
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ModificationDetection">
+		<xs:sequence>
+			<xs:element name="AnnotationOverlap" type="Modification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="VisualDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="PageDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Modification">
+		<xs:attribute name="Page" type="xs:integer" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="Certificate">
@@ -252,8 +280,9 @@
 					<xs:element name="CountryName" type="xs:string" minOccurs="0"/>
 					<xs:element name="OrganizationIdentifier" type="xs:string" minOccurs="0"/>
 					<xs:element name="OrganizationName" type="xs:string" minOccurs="0"/>
-					<xs:element name="GivenName" type="xs:string" minOccurs="0"/>
 					<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
+					<xs:element name="Title" type="xs:string" minOccurs="0"/>
+					<xs:element name="GivenName" type="xs:string" minOccurs="0"/>
 					<xs:element name="Surname" type="xs:string" minOccurs="0"/>
 					<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
 					<xs:element name="Email" type="xs:string" minOccurs="0"/>
@@ -348,6 +377,7 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
+					<xs:element name="QCLimitValue" type="QCLimitValue" minOccurs="0" />
 					<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
 								
 					<xs:element name="TrustedServiceProviders" minOccurs="0">
@@ -396,6 +426,14 @@
 			<xs:element name="ncaId" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="QCLimitValue">
+		<xs:sequence>
+			<xs:element name="currency" type="xs:string" />
+			<xs:element name="amount" type="xs:int" />
+			<xs:element name="exponent" type="xs:int" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="PSD2Role">
 		<xs:sequence>
@@ -425,15 +463,15 @@
 			<xs:element name="Scope" type="ScopeType" />
 			<xs:element name="Name" type="xs:string" minOccurs="0" />
 			<xs:element name="Description" type="xs:string" />
-			<xs:element name="Transformations" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Transformation" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="Transformations" type="Transformations" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="SignerData" type="xs:IDREF" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="Transformations">
+		<xs:sequence>
+			<xs:element name="Transformation" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:simpleType name="SignatureFormat" final="restriction">
@@ -464,6 +502,11 @@
 			<xs:enumeration value="PKCS7-T" />
 			<xs:enumeration value="PKCS7-LT" />
 			<xs:enumeration value="PKCS7-LTA" />
+			<xs:enumeration value="JSON-NOT-ETSI" />
+			<xs:enumeration value="JAdES-BASELINE-B" />
+			<xs:enumeration value="JAdES-BASELINE-T" />
+			<xs:enumeration value="JAdES-BASELINE-LT" />
+			<xs:enumeration value="JAdES-BASELINE-LTA" />
 			<xs:enumeration value="UNKNOWN" />
 		</xs:restriction>
 	</xs:simpleType>
@@ -474,14 +517,15 @@
 			<xs:enumeration value="PARTIAL" />
 			<xs:enumeration value="DIGEST" />
 			<xs:enumeration value="ARCHIVED" />
+			<xs:enumeration value="COUNTER_SIGNATURE" />
 		</xs:restriction>
 	</xs:simpleType>
 	
 	<xs:complexType name="StructuralValidation">
 		<xs:sequence>
-			<xs:element name="Valid" type="xs:boolean" minOccurs="0" />
-			<xs:element name="Message" type="xs:string" minOccurs="0" />
+			<xs:element name="Message" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
+		<xs:attribute name="valid" type="xs:boolean" />
 	</xs:complexType>
 	
 	<xs:complexType name="BasicSignature">
@@ -597,6 +641,7 @@
 				</xs:sequence>
 				<xs:attribute name="type" type="DigestMatcherType" use="required" />
 				<xs:attribute name="name" type="xs:string" use="optional"/>
+				<xs:attribute name="duplicated" type="xs:boolean" use="optional" default="false" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -618,12 +663,18 @@
 			<xs:enumeration value="MANIFEST" />
 			<xs:enumeration value="MANIFEST_ENTRY" />
 			<xs:enumeration value="SIGNED_PROPERTIES" />
+			<xs:enumeration value="SIGNATURE_PROPERTIES" />
+			<xs:enumeration value="COUNTER_SIGNATURE" />
 			<xs:enumeration value="XPOINTER" />
 			
 			<!-- CAdES -->
 			<xs:enumeration value="MESSAGE_DIGEST" />
 			<!-- Digest from decrypted content SignatureValue (CAdES/PAdES) -->
 			<xs:enumeration value="CONTENT_DIGEST" />
+			
+			<!-- JAdES -->
+			<xs:enumeration value="JWS_SIGNING_INPUT_DIGEST" />
+			<xs:enumeration value="SIG_D_ENTRY" />
 			
 			<!-- TIMESTAMP -->
 			<xs:enumeration value="MESSAGE_IMPRINT" />
@@ -705,7 +756,7 @@
 			<xs:enumeration value="KEY_INFO" />
 			<xs:enumeration value="SIGNED_DATA" />
 			<xs:enumeration value="CERTIFICATE_VALUES" />
-			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
+			<xs:enumeration value="ATTR_AUTHORITIES_CERT_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />
@@ -723,7 +774,6 @@
 	
 	<xs:complexType name="FoundTimestamp">
 		<xs:attribute name="Timestamp" type="xs:IDREF" use="required" />
-		<xs:attribute name="Location" type="TimestampLocation" use="optional" />
 	</xs:complexType>
 	
 	<xs:complexType name="Timestamp">
@@ -764,14 +814,7 @@
 			<xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP" />
 			<xs:enumeration value="VALIDATION_DATA_TIMESTAMP" />
 			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
-		</xs:restriction>
-	</xs:simpleType>
-	
-	<xs:simpleType name="TimestampLocation" final="restriction">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="XAdES" />
-			<xs:enumeration value="CAdES" />
-			<xs:enumeration value="DOC_TIMESTAMP" />
+			<xs:enumeration value="DOCUMENT_TIMESTAMP" /> <!-- PDF Timestamp -->
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -783,6 +826,7 @@
 			<xs:enumeration value="CAdES_V2" />
 			<xs:enumeration value="CAdES_V3" />
 			<xs:enumeration value="CAdES_DETACHED" />
+			<xs:enumeration value="JAdES" />
 			<xs:enumeration value="PAdES" />
 		</xs:restriction>
 	</xs:simpleType>

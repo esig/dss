@@ -22,6 +22,9 @@ package eu.europa.esig.dss.validation.process;
 
 import eu.europa.esig.dss.enumerations.UriBasedEnum;
 
+/**
+ * Definition of signature Basic Building Blocks
+ */
 public enum BasicBuildingBlockDefinition implements UriBasedEnum {
 
 	FORMAT_CHECKING("urn:cef:dss:bbb:formatChecking"),

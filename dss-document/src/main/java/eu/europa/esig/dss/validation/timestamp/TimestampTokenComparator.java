@@ -40,6 +40,14 @@ public class TimestampTokenComparator implements Comparator<TimestampToken>, Ser
 			TimestampType tst2Type = tst2.getTimeStampType();
 			result = tst1Type.compare(tst2Type);
 		}
+		
+		if (result == 0) {
+			if (isCoveredByTimestamp(tst1, tst2)) {
+				result = -1;
+			} else if (isCoveredByTimestamp(tst2, tst1)) {
+				result = 1;
+			}
+		}
 
 		if (result == 0) {
 			List<TimestampedReference> tst1References = tst1.getTimestampedReferences();
@@ -54,6 +62,16 @@ public class TimestampTokenComparator implements Comparator<TimestampToken>, Ser
 		}
 		
 		return result;
+	}
+	
+	private boolean isCoveredByTimestamp(TimestampToken tst1, TimestampToken tst2) {
+		List<TimestampedReference> tst2References = tst2.getTimestampedReferences();
+		for (TimestampedReference timestampedReference : tst2References) {
+			if (tst1.getDSSIdAsString().equals(timestampedReference.getObjectId())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

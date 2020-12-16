@@ -20,31 +20,46 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheck;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.validation.process.Chain;
+import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageImprintCryptographicCheck;
 
-public class MessageImprintDigestAlgorithmValidation extends DigestAlgorithmAcceptanceValidation {
+import java.util.Date;
 
-	public MessageImprintDigestAlgorithmValidation(I18nProvider i18nProvider, Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
-		super(i18nProvider, currentTime, timestamp.getMessageImprint().getDigestMethod(), validationPolicy, Context.TIMESTAMP);
+/**
+ *
+ */
+public class MessageImprintDigestAlgorithmValidation extends Chain<XmlSAV> {
+
+	protected final DigestAlgorithm digestAlgorithm;
+	protected final Date currentTime;
+	protected final CryptographicConstraint constraint;
+
+	public MessageImprintDigestAlgorithmValidation(I18nProvider i18nProvider, Date currentTime,
+			DigestAlgorithm digestAlgorithm, CryptographicConstraint constraint) {
+		super(i18nProvider, new XmlSAV());
+		this.digestAlgorithm = digestAlgorithm;
+		this.currentTime = currentTime;
+		this.constraint = constraint;
 	}
-	
+
 	@Override
-	protected ChainItem<XmlSAV> digestCryptographic() {
-		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new DigestCryptographicCheck(i18nProvider, result, digestAlgorithm, currentTime, constraint) {
-			@Override
-			protected MessageTag getMessageTag() { return MessageTag.BBB_SAV_TSP_IMSDAV; }
-		};
+	protected MessageTag getTitle() {
+		return MessageTag.DAAV;
+	}
+
+	@Override
+	protected void initChain() {
+		firstItem = messageImprintCryptographic();
+	}
+
+	protected ChainItem<XmlSAV> messageImprintCryptographic() {
+		return new MessageImprintCryptographicCheck(i18nProvider, digestAlgorithm, result, currentTime, constraint);
 	}
 
 }

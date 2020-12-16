@@ -20,20 +20,14 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
+import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
@@ -48,16 +42,24 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.DSSReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * XAdES implementation of DocumentSignatureService
  */
 public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> 
-					implements MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
+					implements MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters>,
+					CounterSignatureService<XAdESCounterSignatureParameters> {
 
 	static {
 		SantuarioInitializer.init();
-
 		XAdESNamespaces.registerNamespaces();
 	}
 
@@ -86,12 +88,12 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		if (tspSource == null) {
 			throw new DSSException("A TSPSource is required !");
 		}
-		AllDataObjectsTimeStampBuilder builder = new AllDataObjectsTimeStampBuilder(tspSource, parameters.getContentTimestampParameters());
+		AllDataObjectsTimeStampBuilder builder = new AllDataObjectsTimeStampBuilder(tspSource, parameters);
 		return builder.build(toSignDocuments);
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters) throws DSSException {
+	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters) {
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		
@@ -107,30 +109,19 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) throws DSSException {
-		assertMultiDocumentsAllowed(parameters);
-		DSSDocument firstDoc = toSignDocuments.get(0);
-		XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
-		List<DSSReference> references = xadesSignatureBuilder.createReferencesForDocuments(toSignDocuments);
-		parameters.setReferences(references);
-		return getDataToSign(firstDoc, parameters);
-	}
+	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
-	/**
-	 * Only DETACHED and ENVELOPING signatures are allowed
-	 * 
-	 * @param parameters
-	 */
-	private void assertMultiDocumentsAllowed(XAdESSignatureParameters parameters) {
-		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
-		if (signaturePackaging == null || SignaturePackaging.ENVELOPED == signaturePackaging) {
-			throw new DSSException("Not supported operation (only DETACHED or ENVELOPING are allowed)");
-		}
+		assertMultiDocumentsAllowed(parameters);
+		assertDocumentsValid(toSignDocuments);
+		parameters.setDetachedContents(toSignDocuments);
+		return getDataToSign(toSignDocuments.get(0), parameters);
 	}
 
 	@Override
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final XAdESSignatureParameters parameters, SignatureValue signatureValue)
-			throws DSSException {
+	{
 		Objects.requireNonNull(toSignDocument, "toSignDocument is not defined!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
@@ -145,7 +136,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		} else {
 			profile = new XAdESLevelBaselineB(certificateVerifier);
 		}
-		final DSSDocument signedDoc = profile.signDocument(toSignDocument, parameters, signatureValue.getValue());
+		
+		DSSDocument result = profile.signDocument(toSignDocument, parameters, signatureValue.getValue());
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
@@ -153,32 +145,32 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 				detachedContents.add(toSignDocument);
 				parameters.setDetachedContents(detachedContents);
 			}
-			final DSSDocument dssExtendedDocument = extension.extendSignatures(signedDoc, parameters);
-			// The deterministic id is reset between two consecutive signing operations. It prevents having two
-			// signatures with the same Id within the same document.
-			parameters.reinitDeterministicId();
-			dssExtendedDocument.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
-			return dssExtendedDocument;
+			result = extension.extendSignatures(result, parameters);
 		}
 
+		// The deterministic id is reset between two consecutive signing operations. It prevents having two
+		// signatures with the same Id within the same document.
 		parameters.reinitDeterministicId();
-		signedDoc.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
-		return signedDoc;
+		result.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+		return result;
 	}
 
 	@Override
-	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters, SignatureValue signatureValue) throws DSSException {
+	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters,
+			SignatureValue signatureValue) {
+		Objects.requireNonNull(toSignDocuments, "toSignDocuments is not defined!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
+
 		assertMultiDocumentsAllowed(parameters);
-		DSSDocument firstDoc = toSignDocuments.get(0);
-		XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
-		List<DSSReference> references = xadesSignatureBuilder.createReferencesForDocuments(toSignDocuments);
-		parameters.setReferences(references);
+		assertDocumentsValid(toSignDocuments);
 		parameters.setDetachedContents(toSignDocuments);
-		return signDocument(firstDoc, parameters, signatureValue);
+		return signDocument(toSignDocuments.get(0), parameters, signatureValue);
 	}
 
 	@Override
-	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final XAdESSignatureParameters parameters) throws DSSException {
+	public DSSDocument extendDocument(final DSSDocument toExtendDocument, final XAdESSignatureParameters parameters) {
 		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
@@ -201,8 +193,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	/**
 	 * The choice of profile according to the passed parameter.
 	 *
-	 * @param parameters
-	 * @return
+	 * @param parameters {@link XAdESSignatureParameters}
+	 * @return {@link SignatureExtension}
 	 */
 	private SignatureExtension<XAdESSignatureParameters> getExtensionProfile(final XAdESSignatureParameters parameters) {
 		switch (parameters.getSignatureLevel()) {
@@ -238,6 +230,101 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			return extensionLTA;
 		default:
 			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
+		}
+	}
+
+	/**
+	 * Only DETACHED and ENVELOPING signatures are allowed
+	 * 
+	 * @param parameters {@link XAdESSignatureParameters}
+	 */
+	private void assertMultiDocumentsAllowed(XAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");
+		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
+		if (signaturePackaging == null || SignaturePackaging.ENVELOPED == signaturePackaging) {
+			throw new DSSException("Not supported operation (only DETACHED or ENVELOPING are allowed)");
+		}
+	}
+
+	private void assertDocumentsValid(List<DSSDocument> toSignDocuments) {
+		List<String> documentNames = new ArrayList<>();
+		for (DSSDocument document : toSignDocuments) {
+			if (toSignDocuments.size() > 1 && Utils.isStringBlank(document.getName())) {
+				throw new DSSException("All documents in the list to be signed shall have names!");
+			}
+			if (documentNames.contains(document.getName())) {
+				throw new DSSException(String.format("The documents to be signed shall have different names! "
+						+ "The name '%s' appears multiple times.", document.getName()));
+			}
+			documentNames.add(document.getName());
+		}
+	}
+
+	/**
+	 * Incorporates a Signature Policy Store as an unsigned property into the XAdES Signature
+	 * 
+	 * @param document             {@link DSSDocument} containing a XAdES Signature
+	 *                             to add a SignaturePolicyStore to
+	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+	 * @return {@link DSSDocument} XAdESSignature with an incorporated SignaturePolicyStore
+	 */
+	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
+		Objects.requireNonNull(document, "The document cannot be null");
+		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
+		
+		SignaturePolicyStoreBuilder builder = new SignaturePolicyStoreBuilder(certificateVerifier);
+		DSSDocument signatureWithPolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
+		signatureWithPolicyStore.setName(getFinalFileName(document, SigningOperation.ADD_SIG_POLICY_STORE));
+		signatureWithPolicyStore.setMimeType(document.getMimeType());
+		return signatureWithPolicyStore;
+	}
+
+	@Override
+	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		verifyAndSetCounterSignatureParameters(parameters);
+		
+		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
+		final DSSDocument signatureValue = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
+		
+		DSSReference counterSignatureReference = counterSignatureBuilder.buildCounterSignatureDSSReference(signatureDocument, parameters);
+		parameters.setReferences(Collections.singletonList(counterSignatureReference));
+		
+		return getDataToSign(signatureValue, parameters);
+	}
+
+	@Override
+	public DSSDocument counterSignSignature(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters,
+			SignatureValue signatureValue) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
+		verifyAndSetCounterSignatureParameters(parameters);
+
+		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
+		final DSSDocument signatureValueToSign = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
+		parameters.setDetachedContents(Arrays.asList(signatureValueToSign));
+
+		DSSReference counterSignatureReference = counterSignatureBuilder.buildCounterSignatureDSSReference(signatureDocument, parameters);
+		parameters.setReferences(Collections.singletonList(counterSignatureReference));
+		
+		final DSSDocument counterSignature = signDocument(signatureValueToSign, parameters, signatureValue);
+		final DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
+		
+		parameters.reinitDeterministicId();
+		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
+		counterSigned.setMimeType(signatureDocument.getMimeType());
+		
+		return counterSigned;
+	}
+	
+	private void verifyAndSetCounterSignatureParameters(XAdESCounterSignatureParameters parameters) {
+		if (parameters.getSignaturePackaging() == null) {
+			parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		} else if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			throw new IllegalArgumentException(String.format("The SignaturePackaging '%s' is not supported by XAdES Counter Signature!", 
+					parameters.getSignaturePackaging()));
 		}
 	}
 

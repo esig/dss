@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
-import java.io.IOException;
-import java.util.List;
-
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
+import eu.europa.esig.dss.utils.Utils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -31,20 +33,29 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.utils.Utils;
+import java.io.IOException;
+import java.util.List;
 
-public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDrawer {
+/**
+ * The abstract implementation of PDFBox signature drawer
+ */
+public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDrawer, SignatureFieldBoxBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPdfBoxSignatureDrawer.class);
 
+	/** The CMYK color profile */
 	private static final String CMYK_PROFILE_NAME = "cmyk";
+
+	/** The RGB color profile */
 	private static final String RGB_PROFILE_NAME = "rgb";
 
+	/** Visual signature parameters */
 	protected SignatureImageParameters parameters;
+
+	/** The PDF document */
 	protected PDDocument document;
+
+	/** Contains options of the visual signature */
 	protected SignatureOptions signatureOptions;
 
 	@Override
@@ -57,13 +68,14 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	}
 	
 	private void assertSignatureParamatersAreValid(SignatureImageParameters parameters) {
-		if (parameters == null || parameters.getImage() == null && parameters.getTextParameters() == null) {
+		if (parameters == null || parameters.getImage() == null && parameters.getTextParameters().isEmpty()) {
 			throw new DSSException("Neither image nor text parameters are defined!");
 		}
 	}
 	
 	/**
-	 * Method to check if the target image's colro space is present in the document's catalog
+	 * Method to check if the target image's color space is present in the document's catalog
+	 * 
 	 * @param pdDocument {@link PDDocument} to check color profiles in
 	 * @param image {@link DSSDocument} image
 	 * @throws IOException in case of image reading error
@@ -88,6 +100,7 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	
 	/**
 	 * Returns color space name for the provided image
+	 * 
 	 * @param image {@link DSSDocument} to get color space name for
 	 * @return {@link String} color space name
 	 * @throws IOException in case of image reading error

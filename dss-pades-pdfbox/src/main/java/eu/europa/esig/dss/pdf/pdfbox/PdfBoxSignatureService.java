@@ -20,23 +20,32 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.pades.PAdESCommonParameters;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
+import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
+import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PDFServiceMode;
+import eu.europa.esig.dss.pdf.PdfDocumentReader;
+import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
+import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.utils.Utils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -59,36 +68,32 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.pades.CertificationPermission;
-import eu.europa.esig.dss.pades.PAdESCommonParameters;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.SignatureFieldParameters;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
-import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
-import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
-import eu.europa.esig.dss.pdf.PAdESConstants;
-import eu.europa.esig.dss.pdf.PDFServiceMode;
-import eu.europa.esig.dss.pdf.PdfDocumentReader;
-import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
-import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
-import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
-import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.utils.Utils;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
+/**
+ * Implementation of PDFSignatureService using PDFBox
+ *
+ */
 public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
-	
+
+	/** Used to generate encrypted content for protected documents */
 	private SecureRandomProvider secureRandomProvider;
 
 	/**
@@ -169,7 +174,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
 			final PAdESCommonParameters parameters) {
-		
 		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -203,16 +207,27 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				return signatureBytes;
 			}
 		};
-
-		final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
+		
+		SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
+		final PDSignature pdSignature = createSignatureDictionary(pdDocument, parameters);
+		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, fieldParameters);
+		if (pdSignatureField != null) {
+			setSignatureToField(pdSignatureField, pdSignature);
+		}
+		
 		try (SignatureOptions options = new SignatureOptions()) {
 			options.setPreferredSignatureSize(parameters.getContentSize());
 
 			SignatureImageParameters imageParameters = parameters.getImageParameters();
-			if (imageParameters != null && signatureDrawerFactory != null) {
-				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory
-						.getSignatureDrawer(imageParameters);
+			if (!imageParameters.isEmpty()) {
+				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) loadSignatureDrawer(imageParameters);
 				signatureDrawer.init(imageParameters, pdDocument, options);
+				
+				if (pdSignatureField == null) {
+					// check signature field position only for new annotations
+					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new PdfBoxDocumentReader(pdDocument), fieldParameters);
+				}
+				
 				signatureDrawer.draw();
 			}
 
@@ -230,16 +245,39 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			throw new DSSException(e);
 		}
 	}
-
-	private PDSignature createSignatureDictionary(final PAdESCommonParameters parameters, PDDocument pdDocument) {
-
-		PDSignature signature;
-		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(parameters.getFieldId())) {
-			signature = findExistingSignature(pdDocument, parameters.getFieldId());
-		} else {
-			signature = new PDSignature();
+	
+	private PDSignatureField findExistingSignatureField(final PDDocument pdDocument, final SignatureFieldParameters fieldParameters) {
+		String targetFieldId = fieldParameters.getFieldId();
+		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(targetFieldId)) {
+			PDAcroForm acroForm = pdDocument.getDocumentCatalog().getAcroForm();
+			if (acroForm != null) {
+				PDSignatureField signatureField = (PDSignatureField) acroForm.getField(targetFieldId);
+				if (signatureField != null) {
+					PDSignature signature = signatureField.getSignature();
+					if (signature != null) {
+						throw new DSSException(
+								"The signature field '" + targetFieldId + "' can not be signed since its already signed.");
+					}
+					return signatureField;
+				}
+			}
+			throw new DSSException("The signature field '" + targetFieldId + "' does not exist.");
 		}
+		return null;
+	}
 
+	/**
+	 * Creates a new signature dictionary
+	 *
+	 * Note for developers: keep protected! See https://github.com/esig/dss/pull/138
+	 *
+	 * @param pdDocument {@link PDDocument}
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return {@link PDSignature}
+	 */
+	protected PDSignature createSignatureDictionary(final PDDocument pdDocument, final PAdESCommonParameters parameters) {
+		final PDSignature signature = new PDSignature();
+		
 		COSName currentType = COSName.getPDFName(getType());
 		signature.setType(currentType);
 
@@ -285,27 +323,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			cal.setTime(signingDate);
 			signature.setSignDate(cal);
 		}
-
+		
 		return signature;
 	}
 
-	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
-		PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
-		if (acroForm != null) {
-			PDSignatureField signatureField = (PDSignatureField) acroForm.getField(sigFieldName);
-			if (signatureField != null) {
-				PDSignature signature = signatureField.getSignature();
-				if (signature == null) {
-					signature = new PDSignature();
-					signatureField.getCOSObject().setItem(COSName.V, signature);
-					return signature;
-				} else {
-					throw new DSSException(
-							"The signature field '" + sigFieldName + "' can not be signed since its already signed.");
-				}
-			}
-		}
-		throw new DSSException("The signature field '" + sigFieldName + "' does not exist.");
+	private void setSignatureToField(final PDSignatureField pdSignatureField, final  PDSignature pdSignature) {
+		pdSignatureField.getCOSObject().setItem(COSName.V, pdSignature);
 	}
 
 	private boolean containsFilledSignature(PDDocument pdDocument) {
@@ -362,7 +385,15 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		permsDict.setNeedToBeUpdated(true);
 	}
 
-	public void checkEncryptedAndSaveIncrementally(PDDocument pdDocument, OutputStream outputStream, PAdESCommonParameters parameters) {
+	/**
+	 * Checks if the document is encrypted and saves incrementally to {@code outputStream}
+	 *
+	 * @param pdDocument {@link PDDocument} to check and save
+	 * @param outputStream {@link OutputStream} to save the content to
+	 * @param parameters {@link PAdESCommonParameters}
+	 */
+	public void checkEncryptedAndSaveIncrementally(PDDocument pdDocument, OutputStream outputStream,
+												   PAdESCommonParameters parameters) {
 		try {
 			if (pdDocument.isEncrypted()) {
 				SecureRandom secureRandom = getSecureRandomProvider(parameters).getSecureRandom();
@@ -373,7 +404,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			throw new DSSException(e);
 		}
 	}
-	
+
+	/**
+	 * Saves the document incrementally
+	 *
+	 * @param pdDocument {@link PDDocument} to save
+	 * @param outputStream {@link OutputStream} to save incremental update to
+	 */
 	public void saveDocumentIncrementally(PDDocument pdDocument, OutputStream outputStream) {
 		try {
 			pdDocument.saveIncremental(outputStream);
@@ -527,21 +564,24 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		} catch (InvalidPasswordException e) {
 			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		} catch (Exception e) {
-			throw new DSSException("Unable to determine signature fields", e);
+			throw new DSSException(String.format("Unable to determine signature fields. Reason : %s", e.getMessage()), e);
 		}
 		return result;
 	}
 
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String pwd) {
-		
 		checkDocumentPermissions(document, pwd);
 		
 		try (InputStream is = document.openStream();
 				PDDocument pdfDoc = PDDocument.load(is, pwd);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-			PDPage page = pdfDoc.getPage(parameters.getPage());
+			if (pdfDoc.getPages().getCount() < parameters.getPage()) {
+				throw new DSSException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
+			}
+			
+			PdfBoxDocumentReader pdfBoxDocumentReader = new PdfBoxDocumentReader(pdfDoc);
 
 			PDDocumentCatalog catalog = pdfDoc.getDocumentCatalog();
 			catalog.getCOSObject().setNeedToBeUpdated(true);
@@ -559,13 +599,18 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 
 			PDSignatureField signatureField = new PDSignatureField(acroForm);
-			if (Utils.isStringNotBlank(parameters.getName())) {
-				signatureField.setPartialName(parameters.getName());
+			if (Utils.isStringNotBlank(parameters.getFieldId())) {
+				signatureField.setPartialName(parameters.getFieldId());
 			}
 
+			AnnotationBox annotationBox = checkVisibleSignatureFieldBoxPosition(pdfBoxDocumentReader, parameters);
+			
+			// start counting from TOP of the page
+			PDRectangle rect = new PDRectangle(annotationBox.getMinX(), annotationBox.getMinY(),
+					annotationBox.getWidth(), annotationBox.getHeight());
+
+			PDPage page = pdfBoxDocumentReader.getPDPage(parameters.getPage());
 			PDAnnotationWidget widget = signatureField.getWidgets().get(0);
-			PDRectangle rect = new PDRectangle(parameters.getOriginX(), parameters.getOriginY(), parameters.getWidth(),
-					parameters.getHeight());
 			widget.setRectangle(rect);
 			widget.setPage(page);
 			page.getAnnotations().add(widget);
@@ -580,8 +625,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			return new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
 
-		} catch (Exception e) {
-			throw new DSSException("Unable to add a new signature fields", e);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to add a new signature field. Reason : %s", e.getMessage()), e);
 		}
 	}
 

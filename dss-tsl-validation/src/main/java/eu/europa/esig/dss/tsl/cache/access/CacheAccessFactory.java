@@ -25,35 +25,71 @@ import eu.europa.esig.dss.tsl.cache.DownloadCache;
 import eu.europa.esig.dss.tsl.cache.ParsingCache;
 import eu.europa.esig.dss.tsl.cache.ValidationCache;
 
+/**
+ * Builds the classes to deal with the cache
+ */
 public final class CacheAccessFactory {
 
-	/* Global Cache */
+	/** Global download Cache */
 	private final DownloadCache downloadCache;
+
+	/** Global parsing Cache */
 	private final ParsingCache parsingCache;
+
+	/** Global validation Cache */
 	private final ValidationCache validationCache;
 
+	/**
+	 * Default constructor
+	 */
 	public CacheAccessFactory() {
 		downloadCache = new DownloadCache();
 		parsingCache = new ParsingCache();
 		validationCache = new ValidationCache();
 	}
 
+	/**
+	 * Loads a class to deal with a cache by the {@code key} records
+	 *
+	 * @param key {@link CacheKey} to use
+	 * @return {@link CacheAccessByKey}
+	 */
 	public CacheAccessByKey getCacheAccess(CacheKey key) {
 		return new CacheAccessByKey(key, downloadCache, parsingCache, validationCache);
 	}
 
+	/**
+	 * Loads a class for TL updates
+	 *
+	 * @return {@link TLChangesCacheAccess}
+	 */
 	public TLChangesCacheAccess getTLChangesCacheAccess() {
 		return new TLChangesCacheAccess(downloadCache, parsingCache, validationCache);
 	}
 
+	/**
+	 * Loads a read-only cache access
+	 *
+	 * @return {@link ReadOnlyCacheAccess}
+	 */
 	public ReadOnlyCacheAccess getReadOnlyCacheAccess() {
 		return new ReadOnlyCacheAccess(downloadCache, parsingCache, validationCache);
 	}
 
+	/**
+	 * Loads a cache access to synchronize records
+	 *
+	 * @return {@link SynchronizerCacheAccess}
+	 */
 	public SynchronizerCacheAccess getSynchronizerCacheAccess() {
 		return new SynchronizerCacheAccess(downloadCache, parsingCache, validationCache);
 	}
 
+	/**
+	 * Loads a cache access to load the information about the current cache state
+	 *
+	 * @return {@link DebugCacheAccess}
+	 */
 	public DebugCacheAccess getDebugCacheAccess() {
 		return new DebugCacheAccess(downloadCache, parsingCache, validationCache);
 	}

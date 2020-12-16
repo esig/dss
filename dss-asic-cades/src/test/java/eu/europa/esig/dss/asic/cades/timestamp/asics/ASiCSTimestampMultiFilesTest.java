@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.timestamp.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -56,6 +44,17 @@ import eu.europa.esig.validationreport.jaxb.ValidationConstraintsEvaluationRepor
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValidation {
 
@@ -90,6 +89,9 @@ public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureIntact());
 			assertTrue(timestamp.isSignatureValid());
+
+			assertEquals(1, timestamp.getDigestMatchers().size());
+			assertEquals(1, timestamp.getTimestampedSignedData().size());
 		}
 
 		timestampParameters = new ASiCWithCAdESTimestampParameters();
@@ -108,12 +110,25 @@ public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 		assertEquals(0, diagnosticData.getSignatureIdList().size());
 		assertEquals(2, diagnosticData.getTimestampIdList().size());
 
+		boolean firstTstFound = false;
+		boolean secondTstFound = false;
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 			assertTrue(timestamp.isMessageImprintDataFound());
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureIntact());
 			assertTrue(timestamp.isSignatureValid());
+
+			if (timestamp.getDigestMatchers().size() == 1) {
+				assertEquals(1, timestamp.getTimestampedSignedData().size());
+				firstTstFound = true;
+			} else if (timestamp.getDigestMatchers().size() == 3) {
+				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getName());
+				assertEquals(3, timestamp.getTimestampedSignedData().size());
+				secondTstFound = true;
+			}
 		}
+		assertTrue(firstTstFound);
+		assertTrue(secondTstFound);
 
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReportJaxb);
@@ -154,7 +169,7 @@ public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
 		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
-		assertEquals("Unsupported file type", exception.getMessage());
+		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);

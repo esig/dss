@@ -20,25 +20,27 @@
  */
 package eu.europa.esig.dss.cades.validation.scope;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
+import eu.europa.esig.dss.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Finds {@code SignatureScope}s for a CAdES signature
+ */
 public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdESSignature> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignatureScopeFinder.class);
@@ -50,34 +52,52 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
         	ReferenceValidation reference = referenceValidations.iterator().next(); // only one Reference is allowed in CAdES
         	if (reference.isIntact()) {
                 DSSDocument originalDocument = getOriginalDocument(cadesSignature);
-                return getSignatureScopeFromOriginalDocument(originalDocument);
-        	} else {
+                return getSignatureScopeFromOriginalDocument(cadesSignature, originalDocument);
+        	} else if (reference.isFound()) {
                 return getSignatureScopeFromReferenceValidation(reference);
         	}
         }
     	return Collections.emptyList();
     }
-    
-    protected List<SignatureScope> getSignatureScopeFromOriginalDocument(DSSDocument originalDocument) {
+
+    /**
+     * Returns a list of {@code SignatureScope}s from the signed document
+     *
+     * @param cadesSignature {@link CAdESSignature}
+     * @param originalDocument {@link DSSDocument}
+     * @return a list of {@link SignatureScope}s
+     */
+    protected List<SignatureScope> getSignatureScopeFromOriginalDocument(final CAdESSignature cadesSignature,
+                                                                         final DSSDocument originalDocument) {
         List<SignatureScope> result = new ArrayList<>();
         if (originalDocument == null) {
         	return result;
         }
         
         String fileName = originalDocument.getName();
-        if (originalDocument instanceof DigestDocument) {
+        if (cadesSignature.isCounterSignature()) {
+    		return Collections.singletonList(new CounterSignatureScope(cadesSignature.getMasterSignature().getId(), 
+    				getDigest(originalDocument) ));
+    		
+        } else if (originalDocument instanceof DigestDocument) {
         	DigestDocument digestDocument = (DigestDocument) originalDocument;
             result.add(new DigestSignatureScope(fileName != null ? fileName : "Digest document", 
             		digestDocument.getExistingDigest()));
             
         } else {
 			result.add(new FullSignatureScope(fileName != null ? fileName : "Full document", 
-					DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
+					getDigest(originalDocument)));
         }
         
         return result;
     }
-    
+
+    /**
+     * Gets a list of {@code SignatureScope}s from a {@code ReferenceValidation}
+     *
+     * @param reference {@link ReferenceValidation} to get SignatureScope from
+     * @return a list of {@link SignatureScope}s
+     */
     protected List<SignatureScope> getSignatureScopeFromReferenceValidation(ReferenceValidation reference) {
         List<SignatureScope> result = new ArrayList<>();
 		result.add(new FullSignatureScope("Full document", reference.getDigest()));

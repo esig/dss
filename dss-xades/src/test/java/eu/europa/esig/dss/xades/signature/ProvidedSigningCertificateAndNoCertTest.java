@@ -40,6 +40,8 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -92,7 +94,9 @@ public class ProvidedSigningCertificateAndNoCertTest extends AbstractXAdESTestSi
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		validator.defineSigningCertificate(getSigningCert());
+		CertificateSource signingCertificateSource = new CommonCertificateSource();
+		signingCertificateSource.addCertificate(getSigningCert());
+		validator.setSigningCertificateSource(signingCertificateSource);
 		return validator;
 	}
 

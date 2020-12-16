@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.manifest;
 
-import java.util.List;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.definition.ASiCAttribute;
 import eu.europa.esig.dss.asic.common.definition.ASiCElement;
@@ -32,6 +27,10 @@ import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * This class is used to generate the ASiCArchiveManifest.xml content (ASiC-E)
@@ -60,31 +59,60 @@ import eu.europa.esig.dss.model.MimeType;
  */
 public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilder {
 
+	/** The list of signature documents */
 	private final List<DSSDocument> signatures;
-	private final List<DSSDocument> timestamps;
-	private final List<DSSDocument> documents;
-	private final List<DSSDocument> manifests;
-	private final DSSDocument lastArchiveManifest; // "root" archive manifest
-	private final DigestAlgorithm digestAlgorithm;
-	private final String timestampUri;
 
-	public ASiCEWithCAdESArchiveManifestBuilder(List<DSSDocument> signatures, List<DSSDocument> timestamps, List<DSSDocument> documents, 
-			List<DSSDocument> manifests, DSSDocument lastArchiveManifets, DigestAlgorithm digestAlgorithm, String timestampUri) {
+	/** The list of timestamp documents */
+	private final List<DSSDocument> timestamps;
+
+	/** The list of signed documents */
+	private final List<DSSDocument> signedFiles;
+
+	/** The list of manifests */
+	private final List<DSSDocument> manifests;
+
+	/** The "ASiCArchiveManifest.xml" document (root manifest) */
+	private final DSSDocument lastArchiveManifest;
+
+	/** The DigestAlgorithm to use for reference digests computation */
+	private final DigestAlgorithm digestAlgorithm;
+
+	/** The name of the timestamp document */
+	private final String timestampFileUri;
+
+	/**
+	 * The default constructor
+	 *
+	 * @param signatures a list of {@link DSSDocument} signatures
+	 * @param timestamps a list of {@link DSSDocument} timestamps
+	 * @param signedFiles a list of {@link DSSDocument} signed files
+	 * @param manifests a list of {@link DSSDocument} manifests
+	 * @param lastArchiveManifets {@link DSSDocument} the last archive manifest "ASiCArchiveManifest.xml"
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use for digest calculation
+	 * @param timestampFileUri {@link String} the name of the timestamp to add
+	 */
+	public ASiCEWithCAdESArchiveManifestBuilder(List<DSSDocument> signatures, List<DSSDocument> timestamps, List<DSSDocument> signedFiles,
+			List<DSSDocument> manifests, DSSDocument lastArchiveManifets, DigestAlgorithm digestAlgorithm, String timestampFileUri) {
 		this.signatures = signatures;
 		this.timestamps = timestamps;
-		this.documents = documents;
+		this.signedFiles = signedFiles;
 		this.manifests = manifests;
 		this.lastArchiveManifest = lastArchiveManifets;
 		this.digestAlgorithm = digestAlgorithm;
-		this.timestampUri = timestampUri;
+		this.timestampFileUri = timestampFileUri;
 	}
 
+	/**
+	 * Builds the ArchiveManifest and returns the Document Node
+	 *
+	 * @return {@link Document} archive manifest
+	 */
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
 		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCNamespace.NS, ASiCElement.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
-		addSigReference(documentDom, asicManifestDom, timestampUri, MimeType.TST);
+		addSigReference(documentDom, asicManifestDom, timestampFileUri, MimeType.TST);
 
 		for (DSSDocument signature : signatures) {
 			addDataObjectReference(documentDom, asicManifestDom, signature, digestAlgorithm);
@@ -102,7 +130,7 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 			addDataObjectReferenceForRootArchiveManifest(documentDom, asicManifestDom, lastArchiveManifest, digestAlgorithm);
 		}
 
-		for (DSSDocument document : documents) {
+		for (DSSDocument document : signedFiles) {
 			addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
 		}
 

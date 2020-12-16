@@ -20,26 +20,35 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.math.BigInteger;
-
-import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.w3c.dom.Element;
 
+import java.math.BigInteger;
+
+/**
+ * Utils for a XAdES CertificateRef extraction
+ */
 public final class XAdESCertificateRefExtractionUtils {
 
 	private XAdESCertificateRefExtractionUtils() {
 	}
 
+	/**
+	 * Extracts a {@code CertificateRef} from a V1 {@code certRefElement}
+	 *
+	 * @param certRefElement {@link Element} V1 certRef element
+	 * @param xadesPaths {@link XAdESPaths}
+	 * @return {@link CertificateRef}
+	 */
 	public static CertificateRef createCertificateRefFromV1(Element certRefElement, XAdESPaths xadesPaths) {
 		if (certRefElement != null) {
 			Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
@@ -53,6 +62,13 @@ public final class XAdESCertificateRefExtractionUtils {
 		return null;
 	}
 
+	/**
+	 * Extracts a {@code CertificateRef} from a V2 {@code certRefElement}
+	 *
+	 * @param certRefElement {@link Element} V2 certRef element
+	 * @param xadesPaths {@link XAdESPaths}
+	 * @return {@link CertificateRef}
+	 */
 	public static CertificateRef createCertificateRefFromV2(Element certRefElement, XAdESPaths xadesPaths) {
 		if (certRefElement != null) {
 			Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
@@ -77,7 +93,7 @@ public final class XAdESCertificateRefExtractionUtils {
 		final Element serialNumberEl = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialSerialNumberPath());
 		if (serialNumberEl != null) {
 			final String serialNumberText = serialNumberEl.getTextContent();
-			certificateIdentifier.setSerialNumber(new BigInteger(serialNumberText.trim()));
+			certificateIdentifier.setSerialNumber(new BigInteger(Utils.trim(serialNumberText)));
 		}
 
 		return certificateIdentifier;

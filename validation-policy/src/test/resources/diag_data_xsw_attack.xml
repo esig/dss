@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>XSW-enveloped-fake-content-two-same-id.xml</DocumentName>
+    <ValidationDate>2020-10-19T13:43:30</ValidationDate>
+    <Signatures>
+        <Signature Id="S-1770BA6ACBB6FC400380EF43ED51AFF4E6945B32810BDFC85D94010D3C088AB7">
+            <DAIdentifier>Signature-865906529</DAIdentifier>
+            <SignatureFilename>XSW-enveloped-fake-content-two-same-id.xml</SignatureFilename>
+            <ClaimedSigningTime>2018-07-20T08:00:00</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true" />
+            <DigestMatchers>
+                <DigestMatcher type="REFERENCE" name="id-LockItSignatureReference-1x365793516" duplicated="true">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>Xw4TKNDi1+bcDJvFQxVz9MMmmtyfqaB+oXd29yX7rCc=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>false</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" name="#SignedProperties-1814812070">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>aZfjg/Az9sVSGnRQ4LIkBhSWDOD0oe86OmWkxBE9n7c=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-0796255FE3B787B9A40A1C356DC00DB11A529EDEEEAF154E4CC6968D6C2B0CD1"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-0796255FE3B787B9A40A1C356DC00DB11A529EDEEEAF154E4CC6968D6C2B0CD1"/>
+            </CertificateChain>
+            <MimeType>text/xml</MimeType>
+            <SignatureProductionPlace>
+                <City>Bratislava</City>
+                <CountryName>SK SLOVAKIA</CountryName>
+            </SignatureProductionPlace>
+            <CommitmentTypeIndications/>
+            <Policy>
+                <Id>IMPLICIT_POLICY</Id>
+                <ZeroHash>false</ZeroHash>
+                <Asn1Processable>false</Asn1Processable>
+                <Identified>false</Identified>
+                <Status>false</Status>
+                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+            </Policy>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-0796255FE3B787B9A40A1C356DC00DB11A529EDEEEAF154E4CC6968D6C2B0CD1">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MHcwcaRvMG0xCzAJBgNVBAYTAlNLMRMwEQYDVQQHEwpCcmF0aXNsYXZhMSIwIAYDVQQKExlOYXJvZG55IGJlenBlY25vc3RueSB1cmFkMQ4wDAYDVQQLEwVTSUJFUDEVMBMGA1UEAxMMS0NBIE5CVSBTUiAzAgIHcg==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>B5YlX+O3h7mkChw1bcANsRpSnt7urxVOTMaWjWwrDNE=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes/>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CC6/fkCgfD+n42kiaFE6KFh6YLt/cySnLOsRoMNThvo=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>IAlMtNDJAwTK+byHZVmQxQraraLqVjZQ3iDEXir2RRY=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>AyPgBQ6zXlVCbt5gXBR8kGHSIUkmRtqxelnfUD0qD6DM5TWW9KiaHBGBQJSZu1Qo27Z3RvA8TcigD831/9olBfI1DU0S9AUp+nfzSXLQQJEPhTydrUzlGYiwar5qhk6wfo23AXBQLMcwjgBpzpMgWid6kuHtijeZfRgZEssBVxO6R9W2UsJ+amK2Y8B16MW6jkWZuy5d0ylCz30sVpEX3NlNHBi/g/eA9dFVNQ5HKyRrNSUZxfpcMHu18HNwUKJLAI6D+i9175uutzwjY/JWhfMkVoLSTt7gZe4mtt5G/gbSAw7XDTTP7OW9M4NlDcl/iTXTmKfHd8fcEVMLK3nYXg==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-0796255FE3B787B9A40A1C356DC00DB11A529EDEEEAF154E4CC6968D6C2B0CD1">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130e4e5452534b203336303631373031,cn=tl and signature policy list 2,ou=cis operation division,o=national security authority,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130e4e5452534b203336303631373031,CN=TL and Signature Policy List 2,OU=CIS Operation division,O=NATIONAL SECURITY AUTHORITY,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>1906</SerialNumber>
+            <SubjectSerialNumber>NTRSK 36061701</SubjectSerialNumber>
+            <CommonName>TL and Signature Policy List 2</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>NATIONAL SECURITY AUTHORITY</OrganizationName>
+            <OrganizationalUnit>CIS Operation division</OrganizationalUnit>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>podatelna@nbusr.sk</subjectAlternativeName>
+                <subjectAlternativeName>http://www.nbusr.sk/en/electronic-signature/signature-policies.1.html</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</aiaUrl>
+                <aiaUrl>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
+                <aiaUrl>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>TRUSTED_STORE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2019-06-06T12:11:15</NotAfter>
+            <NotBefore>2016-06-06T12:13:37</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-9ABEDC446B4659236AEE9A198224FF5BA1993ECEEBAD9008AF1EEBF1F48A0E29</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="tslSigning">0.4.0.2231.3.0</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                <certificatePolicy>1.3.158.36061701.0.0.1.10.5.0.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>B5YlX+O3h7mkChw1bcANsRpSnt7urxVOTMaWjWwrDNE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations/>
+    <UsedTimestamps/>
+    <OriginalDocuments/>
+    <TrustedLists/>
+</DiagnosticData>

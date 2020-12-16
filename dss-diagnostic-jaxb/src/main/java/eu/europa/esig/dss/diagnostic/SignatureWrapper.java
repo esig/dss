@@ -20,33 +20,35 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampType;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 public class SignatureWrapper extends AbstractTokenProxy {
 
@@ -121,15 +123,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isStructuralValidationValid() {
-		return (signature.getStructuralValidation() != null) && signature.getStructuralValidation().isValid();
+		return signature.getStructuralValidation() != null && signature.getStructuralValidation().isValid();
 	}
 
-	public String getStructuralValidationMessage() {
+	public List<String> getStructuralValidationMessages() {
 		XmlStructuralValidation structuralValidation = signature.getStructuralValidation();
 		if (structuralValidation != null) {
-			return structuralValidation.getMessage();
+			return structuralValidation.getMessages();
 		}
-		return "";
+		return Collections.emptyList();
 	}
 
 	public Date getClaimedSigningTime() {
@@ -163,6 +165,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public XmlSignatureDigestReference getSignatureDigestReference() {
 		return signature.getSignatureDigestReference();
 	}
+	
+	public XmlDigestAlgoAndValue getDataToBeSignedRepresentation() {
+		return signature.getDataToBeSignedRepresentation();
+	}
 
 	public List<TimestampWrapper> getTimestampList() {
 		List<TimestampWrapper> tsps = new ArrayList<>();
@@ -183,26 +189,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return result;
 	}
-	
-	public List<TimestampWrapper> getTimestampListByLocation(TimestampLocation timestampLocation) {
-		List<TimestampWrapper> tsps = new ArrayList<>();
-		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
-		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
-			if (xmlFoundTimestamp.getLocation() != null && 
-					xmlFoundTimestamp.getLocation().name().equals(timestampLocation.name())) {
-				tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
-			}
-		}
-		return tsps;
-	}
 
 	public boolean isSignatureProductionPlacePresent() {
 		return signature.getSignatureProductionPlace() != null;
 	}
 
-	public String getAddress() {
+	public String getStreetAddress() {
 		if (isSignatureProductionPlacePresent()) {
-			return signature.getSignatureProductionPlace().getAddress();
+			return signature.getSignatureProductionPlace().getStreetAddress();
 		}
 		return null;
 	}
@@ -221,6 +215,13 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	public String getPostOfficeBoxNumber() {
+		if (isSignatureProductionPlacePresent()) {
+			return signature.getSignatureProductionPlace().getPostOfficeBoxNumber();
+		}
+		return null;
+	}
+
 	public String getPostalCode() {
 		if (isSignatureProductionPlacePresent()) {
 			return signature.getSignatureProductionPlace().getPostalCode();
@@ -233,6 +234,13 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			return signature.getSignatureProductionPlace().getStateOrProvince();
 		}
 		return null;
+	}
+
+	public List<String> getPostalAddress() {
+		if (isSignatureProductionPlacePresent()) {
+			return signature.getSignatureProductionPlace().getPostalAddress();
+		}
+		return Collections.emptyList();
 	}
 
 	public SignatureLevel getSignatureFormat() {
@@ -261,12 +269,61 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return "";
 	}
 
-	public boolean isZeroHashPolicy() {
+	public boolean isPolicyZeroHash() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
 			return policy.isZeroHash() != null && policy.isZeroHash();
 		}
 		return false;
+	}
+
+	public XmlDigestAlgoAndValue getPolicyDigestAlgoAndValue() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.getDigestAlgoAndValue();
+		}
+		return null;
+	}
+	
+	/**
+	 * Checks if a SignaturePolicyStore unsigned property is present
+	 * 
+	 * @return TRUE if SignaturePolicyStore is present, FALSE otherwise
+	 */
+	public boolean isPolicyStorePresent() {
+		return signature.getSignaturePolicyStore() != null;
+	}
+	
+	public String getPolicyStoreId() {
+		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
+		if (policyStore != null) {
+			return policyStore.getId();
+		}
+		return null;
+	}
+	
+	public String getPolicyStoreDescription() {
+		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
+		if (policyStore != null) {
+			return policyStore.getDescription();
+		}
+		return null;
+	}
+	
+	public XmlDigestAlgoAndValue getPolicyStoreDigestAlgoAndValue() {
+		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
+		if (policyStore != null) {
+			return policyStore.getDigestAlgoAndValue();
+		}
+		return null;
+	}
+	
+	public List<String> getPolicyStoreDocumentationReferences() {
+		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
+		if (policyStore != null) {
+			return policyStore.getDocumentationReferences();
+		}
+		return null;
 	}
 
 	public boolean isBLevelTechnicallyValid() {
@@ -280,7 +337,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public boolean isXLevelTechnicallyValid() {
 		List<TimestampWrapper> timestamps = getTimestampLevelX();
-		return isTimestampValid(timestamps);
+		return isAtLeastOneTimestampValid(timestamps);
 	}
 
 	public List<TimestampWrapper> getTimestampLevelX() {
@@ -290,13 +347,19 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isThereALevel() {
-		List<TimestampWrapper> timestampList = getArchiveTimestamps();
-		return timestampList != null && timestampList.size() > 0;
+		List<TimestampWrapper> timestamps = getALevelTimestamps();
+		return timestamps != null && timestamps.size() > 0;
 	}
 
 	public boolean isALevelTechnicallyValid() {
-		List<TimestampWrapper> timestampList = getArchiveTimestamps();
-		return isTimestampValid(timestampList);
+		List<TimestampWrapper> timestamps = getALevelTimestamps();
+		return isAtLeastOneTimestampValid(timestamps);
+	}
+
+	public List<TimestampWrapper> getALevelTimestamps() {
+		List<TimestampWrapper> timestamps = new ArrayList<>(getArchiveTimestamps());
+		timestamps.addAll(getDocumentTimestamps(true));
+		return timestamps;
 	}
 
 	public List<TimestampWrapper> getArchiveTimestamps() {
@@ -304,13 +367,19 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isThereTLevel() {
-		List<TimestampWrapper> timestamps = getSignatureTimestamps();
+		List<TimestampWrapper> timestamps = getTLevelTimestamps();
 		return timestamps != null && timestamps.size() > 0;
 	}
 
 	public boolean isTLevelTechnicallyValid() {
-		List<TimestampWrapper> timestampList = getSignatureTimestamps();
-		return isTimestampValid(timestampList);
+		List<TimestampWrapper> timestamps = getTLevelTimestamps();
+		return isAtLeastOneTimestampValid(timestamps);
+	}
+
+	public List<TimestampWrapper> getTLevelTimestamps() {
+		List<TimestampWrapper> timestamps = new ArrayList<>(getSignatureTimestamps());
+		timestamps.addAll(getDocumentTimestamps());
+		return timestamps;
 	}
 
 	public List<TimestampWrapper> getContentTimestamps() {
@@ -334,13 +403,33 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP);
 	}
 
-	private boolean isTimestampValid(List<TimestampWrapper> timestampList) {
-		for (final TimestampWrapper timestamp : timestampList) {
-			final boolean signatureValid = timestamp.isSignatureValid();
-			final XmlDigestMatcher messageImprint = timestamp.getMessageImprint();
-			final boolean messageImprintIntact = messageImprint.isDataFound() && messageImprint.isDataIntact();
-			if (signatureValid && messageImprintIntact) {
-				return true;
+	public List<TimestampWrapper> getDocumentTimestamps() {
+		return getTimestampListByType(TimestampType.DOCUMENT_TIMESTAMP);
+	}
+
+	private List<TimestampWrapper> getDocumentTimestamps(boolean coversLTLevel) {
+		List<TimestampWrapper> timestampWrappers = new ArrayList<>();
+		for (TimestampWrapper timestampWrapper : getDocumentTimestamps()) {
+			if (coversLTLevel == coversLTLevel(timestampWrapper)) {
+				timestampWrappers.add(timestampWrapper);
+			}
+		}
+		return  timestampWrappers;
+	}
+
+	private boolean coversLTLevel(TimestampWrapper timestampWrapper) {
+		return ArchiveTimestampType.PAdES.equals(timestampWrapper.getArchiveTimestampType());
+	}
+
+	private boolean isAtLeastOneTimestampValid(List<TimestampWrapper> timestampList) {
+		if (timestampList != null && !timestampList.isEmpty()) {
+			for (final TimestampWrapper timestamp : timestampList) {
+				final boolean signatureValid = timestamp.isSignatureValid();
+				final XmlDigestMatcher messageImprint = timestamp.getMessageImprint();
+				final boolean messageImprintIntact = messageImprint.isDataFound() && messageImprint.isDataIntact();
+				if (signatureValid && messageImprintIntact) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -436,24 +525,26 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Checks if a SignaturePolicyIdentifier is present
+	 * 
+	 * @return TRUE if a SignaturePolicyIdentifier is found, FALSE otherwise
+	 */
 	public boolean isPolicyPresent() {
 		return signature.getPolicy() != null;
 	}
 
+	/**
+	 * Returns an error string occurred during a SignaturePolicy proceeding, when applicable
+	 * 
+	 * @return {@link String} representing a policy validation error message, empty when no errors found
+	 */
 	public String getPolicyProcessingError() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
 			return policy.getProcessingError();
 		}
 		return "";
-	}
-
-	public boolean getPolicyStatus() {
-		XmlPolicy policy = signature.getPolicy();
-		if (policy != null) {
-			return policy.isStatus();
-		}
-		return false;
 	}
 	
 	/**
@@ -476,6 +567,20 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null && policy.getDocumentationReferences() != null) {
 			return policy.getDocumentationReferences();
+		}
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * Returns a list of Policy transformations
+	 * NOTE: used only for XAdES signatures
+	 * 
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getPolicyTransforms() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null && policy.getTransformations() != null) {
+			return policy.getTransformations();
 		}
 		return Collections.emptyList();
 	}
@@ -519,6 +624,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return false;
 	}
+
+	public boolean isPolicyDigestAlgorithmsEqual() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.isDigestAlgorithmsEqual() != null && policy.isDigestAlgorithmsEqual();
+		}
+		return false;
+	}
 	
 	/**
 	 * Returns a PAdES-specific PDF Revision info
@@ -528,6 +641,46 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 */
 	public XmlPDFRevision getPDFRevision() {
 		return signature.getPDFRevision();
+	}
+	
+	/**
+	 * Checks if any visual modifications detected in the PDF
+	 * 
+	 * @return TRUE if modifications detected in a PDF, FALSE otherwise
+	 */
+	public boolean arePdfModificationsDetected() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		return arePdfModificationsDetected(pdfRevision);
+	}
+	
+	/**
+	 * Returns a list of PDF annotation overlap concerned pages
+	 * 
+	 * @return a list of page numbers
+	 */
+	public List<BigInteger> getPdfAnnotationsOverlapConcernedPages() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		return getPdfAnnotationsOverlapConcernedPages(pdfRevision);
+	}
+
+	/**
+	 * Returns a list of PDF visual difference concerned pages
+	 * 
+	 * @return a list of page numbers
+	 */
+	public List<BigInteger> getPdfVisualDifferenceConcernedPages() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		return getPdfVisualDifferenceConcernedPages(pdfRevision);
+	}
+
+	/**
+	 * Returns a list of pages missing/added to the final revision in a comparison with a signed one
+	 * 
+	 * @return a list of page numbers
+	 */
+	public List<BigInteger> getPdfPageDifferenceConcernedPages() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		return getPdfPageDifferenceConcernedPages(pdfRevision);
 	}
 	
 	/**
@@ -601,6 +754,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
 			return pdfRevision.getPDFSignatureDictionary().getContactInfo();
+		}
+		return null;
+	}
+
+	public String getLocation() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getLocation();
 		}
 		return null;
 	}

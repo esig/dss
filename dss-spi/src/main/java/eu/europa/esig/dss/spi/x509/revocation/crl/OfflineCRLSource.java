@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
@@ -37,6 +28,14 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * This class if a basic skeleton that is able to retrieve needed CRL data from
@@ -47,6 +46,9 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
+	/**
+	 * The default constructor
+	 */
 	protected OfflineCRLSource() {
 		super(new CRLTokenRefMatcher());
 	}
@@ -57,10 +59,10 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 		Objects.requireNonNull(issuerToken, "The issuer of the certificate to be verified cannot be null");
 
 		List<RevocationToken<CRL>> result = new ArrayList<>();
-		final Set<EncapsulatedRevocationTokenIdentifier> collectedBinaries = getAllRevocationBinaries();
+		final Set<EncapsulatedRevocationTokenIdentifier<CRL>> collectedBinaries = getAllRevocationBinaries();
 		LOG.trace("--> OfflineCRLSource queried for {} contains: {} element(s).", certificateToken.getDSSIdAsString(), collectedBinaries.size());
 
-		for (EncapsulatedRevocationTokenIdentifier binary : collectedBinaries) {
+		for (EncapsulatedRevocationTokenIdentifier<CRL> binary : collectedBinaries) {
 			CRLBinary crlBinary = (CRLBinary) binary;
 			try {
 				CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerToken);

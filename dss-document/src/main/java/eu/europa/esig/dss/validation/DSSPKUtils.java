@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.security.PublicKey;
-import java.security.interfaces.DSAPublicKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.interfaces.RSAPublicKey;
-
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.jcajce.interfaces.EdDSAPublicKey;
 import org.bouncycastle.jcajce.interfaces.XDHPublicKey;
 import org.bouncycastle.jce.provider.JCEECPublicKey;
@@ -32,10 +30,14 @@ import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.utils.Utils;
+import java.security.PublicKey;
+import java.security.interfaces.DSAPublicKey;
+import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.RSAPublicKey;
 
+/**
+ * Utils to retrieve public key size
+ */
 public final class DSSPKUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSPKUtils.class);
@@ -47,7 +49,7 @@ public final class DSSPKUtils {
 	 * This method returns a key length used to sign this token.
 	 *
 	 * @param token
-	 *            the token (certificate, crl,...) to be checked
+	 *            {@link Token} (certificate, crl,...) to be checked
 	 * @return the used key size to sign the given token
 	 */
 	public static String getPublicKeySize(Token token) {
@@ -68,7 +70,7 @@ public final class DSSPKUtils {
 	 * This method returns the public key size extracted from public key infrastructure.
 	 *
 	 * @param publicKey
-	 *            the public key
+	 *            {@link PublicKey}
 	 * @return the key length
 	 */
 	public static int getPublicKeySize(final PublicKey publicKey) {

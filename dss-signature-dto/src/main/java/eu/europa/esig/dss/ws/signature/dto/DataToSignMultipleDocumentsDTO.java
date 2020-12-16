@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.ws.signature.dto;
 
-import java.io.Serializable;
-import java.util.List;
-
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is a DTO to transfer required objects to execute getDataToSign method
@@ -32,23 +32,43 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
  * It's impossible to transfer big objects by GET (url size limitation)
  */
 @SuppressWarnings("serial")
-public class DataToSignMultipleDocumentsDTO extends AbstractDataToSignDTO implements Serializable {
+public class DataToSignMultipleDocumentsDTO extends AbstractDataToSignDTO {
 
+	/** A list of documents to be signed */
 	private List<RemoteDocument> toSignDocuments;
 
+	/**
+	 * Empty constructor
+	 */
 	public DataToSignMultipleDocumentsDTO() {
 		super(null);
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param toSignDocuments a list of {@link RemoteDocument}s to be signed
+	 * @param parameters {@link RemoteSignatureParameters}
+	 */
 	public DataToSignMultipleDocumentsDTO(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters parameters) {
 		super(parameters);
 		this.toSignDocuments = toSignDocuments;
 	}
 
+	/**
+	 * Gets a list of documents to be signed
+	 *
+	 * @return a list of {@link RemoteDocument}s
+	 */
 	public List<RemoteDocument> getToSignDocuments() {
 		return toSignDocuments;
 	}
 
+	/**
+	 * Sets a list of documents to be signed
+	 *
+	 * @param toSignDocuments a list of {@link RemoteDocument}s
+	 */
 	public void setToSignDocuments(List<RemoteDocument> toSignDocuments) {
 		this.toSignDocuments = toSignDocuments;
 	}
@@ -61,9 +81,8 @@ public class DataToSignMultipleDocumentsDTO extends AbstractDataToSignDTO implem
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((getParameters() == null) ? 0 : getParameters().hashCode());
-		result = (prime * result) + ((toSignDocuments == null) ? 0 : toSignDocuments.hashCode());
+		int result = super.hashCode();
+		result = prime * result + ((toSignDocuments == null) ? 0 : toSignDocuments.hashCode());
 		return result;
 	}
 
@@ -72,25 +91,14 @@ public class DataToSignMultipleDocumentsDTO extends AbstractDataToSignDTO implem
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
+		if (!super.equals(obj)) {
 			return false;
 		}
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		DataToSignMultipleDocumentsDTO other = (DataToSignMultipleDocumentsDTO) obj;
-		if (getParameters() == null) {
-			if (other.getParameters() != null) {
-				return false;
-			}
-		} else if (!getParameters().equals(other.getParameters())) {
-			return false;
-		}
-		if (toSignDocuments == null) {
-			if (other.toSignDocuments != null) {
-				return false;
-			}
-		} else if (!toSignDocuments.equals(other.toSignDocuments)) {
+		if (!Objects.equals(toSignDocuments, other.toSignDocuments)) {
 			return false;
 		}
 		return true;

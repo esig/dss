@@ -20,28 +20,52 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.spi.tsl.InfoRecord;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 
+import java.util.Date;
+
+/**
+ * The abstract cache DTO
+ */
 public class AbstractCacheDTO implements InfoRecord {
 
 	private static final long serialVersionUID = -8787039602635778771L;
-	
+
+	/** The state of the record */
 	private CacheStateEnum cacheState;
+
+	/** The last time of the state change */
 	private Date lastStateTransitionTime;
+
+	/** The last time of a successful synchronization */
 	private Date lastSuccessSynchronizationTime;
 
+	/** The exception message */
 	private String exceptionMessage;
+
+	/** The exception stack trace */
 	private String exceptionStackTrace;
+
+	/** The first time of the exception occurrence */
 	private Date exceptionFirstOccurrenceTime;
+
+	/** The last time of the exception occurrence */
 	private Date exceptionLastOccurrenceTime;
-	
+
+	/** Defines if the result exists */
 	private boolean resultExist;
 
+	/**
+	 * Empty constructor
+	 */
 	public AbstractCacheDTO() {}
-	
+
+	/**
+	 * Copies the cache DTO
+	 *
+	 * @param cacheDTO {@link AbstractCacheDTO} to copy
+	 */
 	public AbstractCacheDTO(AbstractCacheDTO cacheDTO) {
 		this.cacheState = cacheDTO.cacheState;
 		this.lastStateTransitionTime = cacheDTO.lastStateTransitionTime;
@@ -52,11 +76,21 @@ public class AbstractCacheDTO implements InfoRecord {
 		this.exceptionLastOccurrenceTime = cacheDTO.exceptionLastOccurrenceTime;
 		this.resultExist = cacheDTO.resultExist;
 	}
-	
+
+	/**
+	 * Gets the state of the cache
+	 *
+	 * @return {@link CacheStateEnum}
+	 */
 	public CacheStateEnum getCacheState() {
 		return cacheState;
 	}
-	
+
+	/**
+	 * Sets the cache state
+	 *
+	 * @param cacheState {@link CacheStateEnum}
+	 */
 	public void setCacheState(CacheStateEnum cacheState) {
 		this.cacheState = cacheState;
 	}
@@ -65,7 +99,12 @@ public class AbstractCacheDTO implements InfoRecord {
 	public Date getLastStateTransitionTime() {
 		return lastStateTransitionTime;
 	}
-	
+
+	/**
+	 * Sets the last time of the state change
+	 *
+	 * @param lastStateTransitionTime {@link Date}
+	 */
 	public void setLastStateTransitionTime(Date lastStateTransitionTime) {
 		this.lastStateTransitionTime = lastStateTransitionTime;
 	}
@@ -75,6 +114,11 @@ public class AbstractCacheDTO implements InfoRecord {
 		return lastSuccessSynchronizationTime;
 	}
 
+	/**
+	 * Sets the last time of a successful synchronization
+	 *
+	 * @param lastSuccessSynchronizationTime {@link Date}
+	 */
 	public void setLastSuccessSynchronizationTime(Date lastSuccessSynchronizationTime) {
 		this.lastSuccessSynchronizationTime = lastSuccessSynchronizationTime;
 	}
@@ -83,7 +127,12 @@ public class AbstractCacheDTO implements InfoRecord {
 	public String getExceptionMessage() {
 		return exceptionMessage;
 	}
-	
+
+	/**
+	 * Sets the exception message
+	 *
+	 * @param exceptionMessage {@link String}
+	 */
 	public void setExceptionMessage(String exceptionMessage) {
 		this.exceptionMessage = exceptionMessage;
 	}
@@ -92,7 +141,12 @@ public class AbstractCacheDTO implements InfoRecord {
 	public String getExceptionStackTrace() {
 		return exceptionStackTrace;
 	}
-	
+
+	/**
+	 * Sets the exception stack trace
+	 *
+	 * @param exceptionStackTrace {@link String}
+	 */
 	public void setExceptionStackTrace(String exceptionStackTrace) {
 		this.exceptionStackTrace = exceptionStackTrace;
 	}
@@ -101,7 +155,12 @@ public class AbstractCacheDTO implements InfoRecord {
 	public Date getExceptionFirstOccurrenceTime() {
 		return exceptionFirstOccurrenceTime;
 	}
-	
+
+	/**
+	 * Sets the first time of a the exception occurrence
+	 *
+	 * @param exceptionFirstOccurrenceTime {@link Date}
+	 */
 	public void setExceptionFirstOccurrenceTime(Date exceptionFirstOccurrenceTime) {
 		this.exceptionFirstOccurrenceTime = exceptionFirstOccurrenceTime;
 	}
@@ -110,7 +169,12 @@ public class AbstractCacheDTO implements InfoRecord {
 	public Date getExceptionLastOccurrenceTime() {
 		return exceptionLastOccurrenceTime;
 	}
-	
+
+	/**
+	 * Sets the last time of a the exception occurrence
+	 *
+	 * @param exceptionLastOccurrenceTime {@link Date}
+	 */
 	public void setExceptionLastOccurrenceTime(Date exceptionLastOccurrenceTime) {
 		this.exceptionLastOccurrenceTime = exceptionLastOccurrenceTime;
 	}
@@ -120,6 +184,11 @@ public class AbstractCacheDTO implements InfoRecord {
 		return resultExist;
 	}
 
+	/**
+	 * Sets if the cache result exists
+	 *
+	 * @param resultExist if the cache result exists
+	 */
 	public void setResultExist(boolean resultExist) {
 		this.resultExist = resultExist;
 	}

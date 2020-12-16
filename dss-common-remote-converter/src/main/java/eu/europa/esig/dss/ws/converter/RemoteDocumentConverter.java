@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.ws.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -32,11 +29,23 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Contains utils to convert {@code DSSDocument} to {@code RemoteDocument} and vice versa
+ */
 public class RemoteDocumentConverter {
 
 	private RemoteDocumentConverter() {
 	}
 
+	/**
+	 * Converts the given list of {@code remoteDocuments} to a list of {@code DSSDocument}s
+	 *
+	 * @param remoteDocuments list of {@link RemoteDocument}s
+	 * @return list of {@link DSSDocument}s
+	 */
 	public static List<DSSDocument> toDSSDocuments(List<RemoteDocument> remoteDocuments) {
 		if (Utils.isCollectionNotEmpty(remoteDocuments)) {
 			List<DSSDocument> dssDocuments = new ArrayList<>();
@@ -51,6 +60,12 @@ public class RemoteDocumentConverter {
 		return null;
 	}
 
+	/**
+	 * Converts the given {@code RemoteDocument} to a {@code DSSDocument}
+	 *
+	 * @param remoteDocument {@link RemoteDocument} to convert
+	 * @return {@link DSSDocument}
+	 */
 	public static DSSDocument toDSSDocument(RemoteDocument remoteDocument) {
 		if (remoteDocument == null || Utils.isArrayEmpty(remoteDocument.getBytes())) {
 			return null;
@@ -64,6 +79,12 @@ public class RemoteDocumentConverter {
 		}
 	}
 
+	/**
+	 * Converts the given list of {@code originalDocuments} to a list of {@code RemoteDocument}s
+	 *
+	 * @param originalDocuments list of {@link DSSDocument}s
+	 * @return list of {@link RemoteDocument}s
+	 */
 	public static List<RemoteDocument> toRemoteDocuments(List<DSSDocument> originalDocuments) {
 		List<RemoteDocument> results = new ArrayList<>();
 		for (DSSDocument originalDocument : originalDocuments) {
@@ -75,6 +96,12 @@ public class RemoteDocumentConverter {
 		return results;
 	}
 
+	/**
+	 * Converts the given {@code DSSDocument} to a {@code RemoteDocument}
+	 *
+	 * @param originalDocument {@link DSSDocument} to convert
+	 * @return {@link RemoteDocument}
+	 */
 	public static RemoteDocument toRemoteDocument(DSSDocument originalDocument) {
 		if (originalDocument == null) {
 			return null;

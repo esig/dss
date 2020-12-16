@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.signature;
 
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXBElement;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificateChain;
@@ -70,7 +59,6 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
@@ -78,7 +66,6 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.enumerations.TimestampLocation;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.utils.Utils;
@@ -141,19 +128,51 @@ import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 import eu.europa.esig.xmldsig.jaxb.DigestMethodType;
 import eu.europa.esig.xmldsig.jaxb.SignatureValueType;
 
+import javax.xml.bind.JAXBElement;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+/**
+ * Builds the ETSI Validation report
+ */
 public class ETSIValidationReportBuilder {
 
+	/** The objet factory to use */
 	private final ObjectFactory objectFactory = new ObjectFactory();
+
+	/** The validation time */
 	private final Date currentTime;
+
+	/** The diagnostic data */
 	private final DiagnosticData diagnosticData;
+
+	 /** The detailed report */
 	private final DetailedReport detailedReport;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param currentTime {@link Date} validation time
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param detailedReport {@link DetailedReport}
+	 */
 	public ETSIValidationReportBuilder(Date currentTime, DiagnosticData diagnosticData, DetailedReport detailedReport) {
 		this.currentTime = currentTime;
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 	}
 
+	/**
+	 * Builds {@code ValidationReportType}
+	 *
+	 * @return {@link ValidationReportType}
+	 */
 	public ValidationReportType build() {
 		ValidationReportType result = objectFactory.createValidationReportType();
 
@@ -583,10 +602,10 @@ public class ETSIValidationReportBuilder {
 	private ValidationStatusType getSignatureValidationStatus(SignatureWrapper signature) {
 		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
 
-		Indication indication = detailedReport.getHighestIndication(signature.getId());
+		Indication indication = detailedReport.getFinalIndication(signature.getId());
 		if (indication != null) {
-			fillIndication(validationStatus, indication);
-			SubIndication subIndication = detailedReport.getHighestSubIndication(signature.getId());
+			validationStatus.setMainIndication(indication);
+			SubIndication subIndication = detailedReport.getFinalSubIndication(signature.getId());
 			if (subIndication != null) {
 				validationStatus.getSubIndication().add(subIndication);
 			}
@@ -594,22 +613,6 @@ public class ETSIValidationReportBuilder {
 
 		addValidationReportData(validationStatus, signature);
 		return validationStatus;
-	}
-
-	private void fillIndication(ValidationStatusType validationStatus, Indication indication) {
-		switch (indication) {
-		case PASSED:
-			validationStatus.setMainIndication(Indication.TOTAL_PASSED);
-			break;
-		case FAILED:
-			validationStatus.setMainIndication(Indication.TOTAL_FAILED);
-			break;
-		case INDETERMINATE:
-			validationStatus.setMainIndication(Indication.INDETERMINATE);
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported indication : " + indication);
-		}
 	}
 
 	private ValidationStatusType getValidationStatus(AbstractTokenProxy token) {
@@ -729,25 +732,19 @@ public class ETSIValidationReportBuilder {
 		sigId.setDAIdentifier(sigWrapper.getDAIdentifier());
 		sigId.setDocHashOnly(sigWrapper.isDocHashOnly());
 		sigId.setHashOnly(sigWrapper.isHashOnly());
-		sigId.setDigestAlgAndValue(getDTBSRDigestAlgAndValue(sigWrapper.getDigestMatchers()));
+		sigId.setDigestAlgAndValue(getDTBSRDigestAlgAndValue(sigWrapper));
 		SignatureValueType sigValue = new SignatureValueType();
 		sigValue.setValue(sigWrapper.getSignatureValue());
 		sigId.setSignatureValue(sigValue);
 		return sigId;
 	}
 	
-	private DigestAlgAndValueType getDTBSRDigestAlgAndValue(List<XmlDigestMatcher> digestMatchers) {
-		XmlDigestMatcher digestMatcher = null;
-		if (Utils.isCollectionNotEmpty(digestMatchers)) {
-			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-				if ( (digestMatcher == null || DigestMatcherType.SIGNED_PROPERTIES.equals(xmlDigestMatcher.getType()) || 
-						DigestMatcherType.CONTENT_DIGEST.equals(xmlDigestMatcher.getType()) ) &&
-						xmlDigestMatcher.getDigestMethod() != null && Utils.isArrayNotEmpty(xmlDigestMatcher.getDigestValue())) {
-					digestMatcher = xmlDigestMatcher;
-				}
-			}
+	private DigestAlgAndValueType getDTBSRDigestAlgAndValue(SignatureWrapper sigWrapper) {
+		XmlDigestAlgoAndValue dtbsr = sigWrapper.getDataToBeSignedRepresentation();
+		if (dtbsr != null) {
+			return getDigestAlgAndValueType(sigWrapper.getDataToBeSignedRepresentation());
 		}
-		return digestMatcher == null ? null : getDigestAlgAndValueType(digestMatcher.getDigestMethod(), digestMatcher.getDigestValue());
+		return null;
 	}
 	
 	private void getSignersDocuments(SignatureValidationReportType signatureValidationReport, SignatureWrapper sigWrapper) {
@@ -818,7 +815,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="VRI" type="{http://uri.etsi.org/19102/v1.2.1#}SAVRIType"/&gt;
 		addVRI(sigAttributes, sigWrapper);
 		// &lt;element name="DocTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
-		addTimestampsByLocation(sigAttributes, sigWrapper, TimestampLocation.DOC_TIMESTAMP);
+		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.DOCUMENT_TIMESTAMP);
 		// &lt;element name="Reason" type="{http://uri.etsi.org/19102/v1.2.1#}SAReasonType"/&gt;
 		addReason(sigAttributes, sigWrapper);
 		// &lt;element name="Name" type="{http://uri.etsi.org/19102/v1.2.1#}SANameType"/&gt;
@@ -836,8 +833,8 @@ public class ETSIValidationReportBuilder {
 
 	private void addAttrAuthoritiesCertValues(SignatureAttributesType sigAttributes, FoundCertificatesProxy foundCertificates) {
 		List<String> certIds = new ArrayList<>();
-		certIds.addAll(getRelatedCertsIds(foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES)));
-		certIds.addAll(getOrphanCertsIds(foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTORITIES_CERT_VALUES)));
+		certIds.addAll(getRelatedCertsIds(foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)));
+		certIds.addAll(getOrphanCertsIds(foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)));
 		if (Utils.isCollectionNotEmpty(certIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeAttrAuthoritiesCertValues(buildTokenList(certIds)));
@@ -1087,10 +1084,6 @@ public class ETSIValidationReportBuilder {
 
 	private void addTimestampsByType(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampType timestampType) {
 		List<TimestampWrapper> timestampListByType = sigWrapper.getTimestampListByType(timestampType);
-		// remove document timestamps (they will be present in DocTimeStamp element)
-		List<TimestampWrapper> docTimestamps = sigWrapper.getTimestampListByLocation(TimestampLocation.DOC_TIMESTAMP);
-		timestampListByType.removeAll(docTimestamps);
-
 		boolean isSigned = sigWrapper.isBLevelTechnicallyValid() && timestampType.isContentTimestamp();
 
 		for (TimestampWrapper timestampWrapper : timestampListByType) {
@@ -1100,14 +1093,6 @@ public class ETSIValidationReportBuilder {
 				wrap.getValue().setSigned(isSigned);
 			}
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(wrap);
-		}
-	}
-
-	private void addTimestampsByLocation(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampLocation timestampLocation) {
-		List<TimestampWrapper> timestampListByType = sigWrapper.getTimestampListByLocation(timestampLocation);
-		for (TimestampWrapper timestampWrapper : timestampListByType) {
-			SATimestampType timestamp = getSATimestampType(timestampWrapper);
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(wrap(timestampLocation, timestamp));
 		}
 	}
 	
@@ -1133,17 +1118,10 @@ public class ETSIValidationReportBuilder {
 				return objectFactory.createSignatureAttributesTypeSigAndRefsTimeStamp(timestamp);
 			case ARCHIVE_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeArchiveTimeStamp(timestamp);
-			default:
-			throw new IllegalArgumentException("Unsupported timestamp type " + timestampType);
-		}
-	}
-
-	private JAXBElement<SATimestampType> wrap(TimestampLocation timestampLocation, SATimestampType timestamp) {
-		switch (timestampLocation) {
-			case DOC_TIMESTAMP:
+			case DOCUMENT_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeDocTimeStamp(timestamp);
 			default:
-			throw new IllegalArgumentException("Unsupported timestamp type " + timestampLocation);
+			throw new IllegalArgumentException("Unsupported timestamp type " + timestampType);
 		}
 	}
 	
@@ -1217,36 +1195,70 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addProductionPlace(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		if (sigWrapper.isSignatureProductionPlacePresent()) {
-			final String address = sigWrapper.getAddress();
+		SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
+
+		/**
+		 * A.9.5 PAdES
+		 * 
+		 * For PAdES signatures as specified in ETSI EN 319 142-1 [i.3] and ETSI EN 319
+		 * 142-2 [i.4], clause 5 this component shall have the contents of the Location
+		 * entry in the Signature PDF dictionary.
+		 */
+		if (sigWrapper.getPDFRevision() != null) {
+			final String location = sigWrapper.getLocation();
+			if (Utils.isStringNotEmpty(location)) {
+				sigProductionPlace.getAddressString().add(location);
+			} else {
+				return;
+			}
+			/**
+			 * XAdES, CAdES, JAdES
+			 */
+		} else if (sigWrapper.isSignatureProductionPlacePresent()) {
+			final List<String> postalAddress = sigWrapper.getPostalAddress();
+			final String streetAddress = sigWrapper.getStreetAddress();
 			final String city = sigWrapper.getCity();
 			final String stateOrProvince = sigWrapper.getStateOrProvince();
+			final String postOfficeBoxNumber = sigWrapper.getPostOfficeBoxNumber();
 			final String postalCode = sigWrapper.getPostalCode();
 			final String countryName = sigWrapper.getCountryName();
 
-			if (Utils.areAllStringsEmpty(address, city, stateOrProvince, postalCode, countryName)) { 
+			if (Utils.isCollectionEmpty(postalAddress) && 
+					Utils.areAllStringsEmpty(streetAddress, city, stateOrProvince, 
+							postOfficeBoxNumber, postalCode, countryName)) {
 				return;
 			}
-			SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
-			if (Utils.isStringNotEmpty(address)) {
-				sigProductionPlace.getAddressString().add(address);
-			}
-			if (Utils.isStringNotEmpty(city)) {
-				sigProductionPlace.getAddressString().add(city);
+
+			if (Utils.isStringNotEmpty(countryName)) {
+				sigProductionPlace.getAddressString().add(countryName);
 			}
 			if (Utils.isStringNotEmpty(stateOrProvince)) {
 				sigProductionPlace.getAddressString().add(stateOrProvince);
 			}
+			if (Utils.isStringNotEmpty(city)) {
+				sigProductionPlace.getAddressString().add(city);
+			}
+			if (Utils.isStringNotEmpty(streetAddress)) {
+				sigProductionPlace.getAddressString().add(streetAddress);
+			}
+			if (Utils.isCollectionNotEmpty(postalAddress)) {
+				sigProductionPlace.getAddressString().addAll(postalAddress);
+			}
 			if (Utils.isStringNotEmpty(postalCode)) {
 				sigProductionPlace.getAddressString().add(postalCode);
 			}
-			if (Utils.isStringNotEmpty(countryName)) {
-				sigProductionPlace.getAddressString().add(countryName);
+			if (Utils.isStringNotEmpty(postOfficeBoxNumber)) {
+				sigProductionPlace.getAddressString().add(postOfficeBoxNumber);
 			}
-			setSignedIfValid(sigWrapper, sigProductionPlace);
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeSignatureProductionPlace(sigProductionPlace));
+
+		} else {
+			return;
+
 		}
+
+		setSignedIfValid(sigWrapper, sigProductionPlace);
+		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+				.add(objectFactory.createSignatureAttributesTypeSignatureProductionPlace(sigProductionPlace));
 	}
 
 	private void addFilter(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {

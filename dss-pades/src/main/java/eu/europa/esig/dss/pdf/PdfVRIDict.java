@@ -23,10 +23,20 @@ package eu.europa.esig.dss.pdf;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents a VRI dictionary
+ */
 public class PdfVRIDict extends AbstractPdfDssDict {
 
+	/** The VRI dictionary key (SHA-1 value of a signature) */
 	private final String name;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String} VRI dictionary key
+	 * @param vriDict {@link PdfDict} the dictionary
+	 */
 	public PdfVRIDict(String name, PdfDict vriDict) {
 		super(vriDict);
 		this.name = name;

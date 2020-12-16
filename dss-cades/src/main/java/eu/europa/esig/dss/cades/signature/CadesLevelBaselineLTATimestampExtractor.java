@@ -20,19 +20,14 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
-import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -56,14 +51,18 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
 /**
  * Extracts the necessary information to compute the CAdES Archive Timestamp V3.
@@ -143,8 +142,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	/**
 	 * get the atsHash index for verification of the provided token.
 	 *
-	 * @param signerInformation
-	 * @param timestampToken
+	 * @param signerInformation {@link SignerInformation}
+	 * @param timestampToken {@link TimestampToken}
 	 * @return a re-built ats-hash-index
 	 */
 	public Attribute getVerifiedAtsHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) {
@@ -371,36 +370,37 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	}
 
 	/**
-	 * The field unsignedAttrsHashIndex is a sequence of octet strings. Each one contains the hash value of one
-	 * instance of Attribute within unsignedAttrs field of the SignerInfo. A hash value for every instance of
-	 * Attribute, as present at the time when the corresponding archive time-stamp is requested, shall be included in
-	 * unsignedAttrsHashIndex. No other hash values shall be included in this field.
+	 * The field unsignedAttrsHashIndex is a sequence of octet strings. Each one
+	 * contains the hash value of one instance of Attribute within unsignedAttrs
+	 * field of the SignerInfo. A hash value for every instance of Attribute, as
+	 * present at the time when the corresponding archive time-stamp is requested,
+	 * shall be included in unsignedAttrsHashIndex. No other hash values shall be
+	 * included in this field.
 	 *
-	 * We check that every hash attribute found in the timestamp token is found if the signerInformation.
+	 * We check that every hash attribute found in the timestamp token is found if
+	 * the signerInformation.
 	 *
-	 * If there is more unsigned attributes in the signerInformation than present in the hash attributes list
-	 * (and there is at least the archiveTimestampAttributeV3), we don't report any error nor which attributes are
-	 * signed by the timestamp.
-	 * If there is some attributes that are not present or altered in the signerInformation, we just return some empty
-	 * sequence to make
-	 * sure that the timestamped data will not match. We do not report which attributes hash are present if any.
+	 * If there is more unsigned attributes in the signerInformation than present in
+	 * the hash attributes list (and there is at least the
+	 * archiveTimestampAttributeV3), we don't report any error nor which attributes
+	 * are signed by the timestamp. If there is some attributes that are not present
+	 * or altered in the signerInformation, we just return some empty sequence to
+	 * make sure that the timestamped data will not match. We do not report which
+	 * attributes hash are present if any.
 	 *
-	 * If there is not attribute at all in the archive timestamp hash index, that would means we didn't check anything.
+	 * If there is not attribute at all in the archive timestamp hash index, that
+	 * would means we didn't check anything.
 	 *
-	 * @param signerInformation
-	 * @param timestampHashIndex
-	 * @return
+	 * @param signerInformation  {@link SignerInformation}
+	 * @param timestampHashIndex {@link ASN1Sequence}
+	 * @return {@link ASN1Sequence} unsignedAttributesHashes
 	 */
-	@SuppressWarnings("unchecked")
 	private ASN1Sequence getVerifiedUnsignedAttributesHashIndex(SignerInformation signerInformation, final ASN1Sequence timestampHashIndex, 
 			ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 		
 		final ASN1Sequence unsignedAttributesHashes = DSSASN1Utils.getUnsignedAttributesHashIndex(timestampHashIndex);
+		final List<DEROctetString> timestampUnsignedAttributesHashesList = DSSASN1Utils.getDEROctetStrings(unsignedAttributesHashes);
 		
-		final List<DEROctetString> timestampUnsignedAttributesHashesList = new ArrayList<>();
-		if (unsignedAttributesHashes != null) {
-			timestampUnsignedAttributesHashesList.addAll(Collections.list(unsignedAttributesHashes.getObjects()));
-		}
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		final ASN1EncodableVector asn1EncodableVector = unsignedAttributes.toASN1EncodableVector();
 		for (int i = 0; i < asn1EncodableVector.size(); i++) {
@@ -433,8 +433,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			for (byte[] bytes : octets) {
 				final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, bytes);
 				derOctetStrings.add(new DEROctetString(digest));
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Digest string [{}] has been added to the hash table", Utils.toHex(digest));
+				if (LOG.isTraceEnabled()) {
+					LOG.trace("Digest string [{}] has been added to the hash table", Utils.toHex(digest));
 				}
 			}
 			return derOctetStrings;

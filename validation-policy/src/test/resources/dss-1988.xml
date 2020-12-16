@@ -8,9 +8,7 @@
             <SignatureFilename>xades-SHA1-lt.xml</SignatureFilename>
             <ClaimedSigningTime>2020-02-11T21:34:43</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="OBJECT" name="r-id-5f2a9c86dac78fc7aa5031fc3b345f97-1">
                     <DigestMethod>SHA1</DigestMethod>
@@ -76,7 +74,7 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-C2EA8EEBDBF8DEAFA6616DB871B0F06673C7BCC41A0DAE1D93E7FF31A063FFAB" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-C2EA8EEBDBF8DEAFA6616DB871B0F06673C7BCC41A0DAE1D93E7FF31A063FFAB"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-3120C9281162CB7D523C66B8D82245A5F3E6CBF2E692D07BB03B3107BF14D960">

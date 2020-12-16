@@ -20,26 +20,21 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
+import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampContainerForm;
+import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
@@ -48,42 +43,90 @@ import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
+/**
+ * The remote signature service implementation
+ */
 @SuppressWarnings("serial")
 public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl
 		implements RemoteDocumentSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteDocumentSignatureServiceImpl.class);
 
-	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> xadesService;
+	/** XAdES signature service */
+	private XAdESService xadesService;
 
-	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> cadesService;
+	/** CAdES signature service */
+	private CAdESService cadesService;
 
-	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> padesService;
+	/** PAdES signature service */
+	private PAdESService padesService;
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService;
+	/** JAdES signature service */
+	private JAdESService jadesService;
 
-	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService;
+	/** ASiC with XAdES signature service */
+	private ASiCWithXAdESService asicWithXAdESService;
 
-	public void setXadesService(DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> xadesService) {
+	/** ASiC with CAdES signature service */
+	private ASiCWithCAdESService asicWithCAdESService;
+
+	/**
+	 * Sets the XAdES signature service
+	 *
+	 * @param xadesService {@link XAdESService}
+	 */
+	public void setXadesService(XAdESService xadesService) {
 		this.xadesService = xadesService;
 	}
 
-	public void setCadesService(DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> cadesService) {
+	/**
+	 * Sets the CAdES signature service
+	 *
+	 * @param cadesService {@link CAdESService}
+	 */
+	public void setCadesService(CAdESService cadesService) {
 		this.cadesService = cadesService;
 	}
 
-	public void setPadesService(DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> padesService) {
+	/**
+	 * Sets the PAdES signature service
+	 *
+	 * @param padesService {@link PAdESService}
+	 */
+	public void setPadesService(PAdESService padesService) {
 		this.padesService = padesService;
 	}
 
-	public void setAsicWithXAdESService(DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService) {
+	/**
+	 * Sets the JAdES signature service
+	 *
+	 * @param jadesService {@link JAdESService}
+	 */
+	public void setJadesService(JAdESService jadesService) {
+		this.jadesService = jadesService;
+	}
+
+	/**
+	 * Sets the ASiC with XAdES signature service
+	 *
+	 * @param asicWithXAdESService {@link ASiCWithXAdESService}
+	 */
+	public void setAsicWithXAdESService(ASiCWithXAdESService asicWithXAdESService) {
 		this.asicWithXAdESService = asicWithXAdESService;
 	}
 
-	public void setAsicWithCAdESService(DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> asicWithCAdESService) {
+	/**
+	 * Sets the ASiC with CAdES signature service
+	 *
+	 * @param asicWithCAdESService {@link ASiCWithCAdESService}
+	 */
+	public void setAsicWithCAdESService(ASiCWithCAdESService asicWithCAdESService) {
 		this.asicWithCAdESService = asicWithCAdESService;
 	}
 
@@ -106,9 +149,38 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 					return cadesService;
 				case PAdES:
 					return padesService;
+				case JAdES:
+					return jadesService;
 				default:
 					throw new DSSException("Unrecognized format " + signatureForm);
 				}
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private CounterSignatureService getServiceForCounterSignature(SignatureForm signatureForm, ASiCContainerType asicContainerType) {
+		if (asicContainerType != null) {
+			switch (signatureForm) {
+				case XAdES:
+					return asicWithXAdESService;
+				case CAdES:
+					return asicWithCAdESService;
+				default:
+					throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+				}
+		} else {
+			switch (signatureForm) {
+				case XAdES:
+					return xadesService;
+				case CAdES:
+					return cadesService;
+				case PAdES:
+					throw new DSSException(String.format("The Counter Signature is not supported with %s", signatureForm));
+				case JAdES:
+					return jadesService;
+				default:
+					throw new DSSException("Unrecognized format " + signatureForm);
+			}
 		}
 	}
 
@@ -187,6 +259,41 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 		DSSDocument timestampedDocument = service.timestamp(dssDocument, parameters);
 		LOG.info("Timestamp document is finished");
 		return RemoteDocumentConverter.toRemoteDocument(timestampedDocument);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public ToBeSignedDTO getDataToBeCounterSigned(RemoteDocument signatureDocument,
+			RemoteSignatureParameters remoteParameters) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument must be defined!");
+		Objects.requireNonNull(remoteParameters, "remoteParameters must be defined!");
+		Objects.requireNonNull(remoteParameters.getSignatureLevel(), "signatureLevel must be defined!");
+		LOG.info("GetDataToCounterSign in process...");
+		SerializableCounterSignatureParameters counterSignatureParameters = createCounterSignatureParameters(remoteParameters);
+		CounterSignatureService counterSignatureService = getServiceForCounterSignature(
+				remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType());
+		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(signatureDocument);
+		ToBeSigned dataToSign = counterSignatureService.getDataToBeCounterSigned(dssDocument, counterSignatureParameters);
+		LOG.info("GetDataToCounterSign is finished");
+		return DTOConverter.toToBeSignedDTO(dataToSign);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public RemoteDocument counterSignSignature(RemoteDocument signatureDocument, RemoteSignatureParameters remoteParameters,
+			SignatureValueDTO signatureValueDTO) {
+		Objects.requireNonNull(signatureDocument, "signatureDocument must be defined!");
+		Objects.requireNonNull(remoteParameters, "remoteParameters must be defined!");
+		Objects.requireNonNull(remoteParameters.getSignatureLevel(), "signatureLevel must be defined!");
+		LOG.info("CounterSignDocument in process...");
+		SerializableCounterSignatureParameters parameters = createCounterSignatureParameters(remoteParameters);
+		CounterSignatureService counterSignatureService = getServiceForCounterSignature(
+				remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType());
+		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(signatureDocument);
+		DSSDocument signDocument = counterSignatureService.counterSignSignature(dssDocument, parameters,
+				toSignatureValue(signatureValueDTO));
+		LOG.info("CounterSignDocument is finished");
+		return RemoteDocumentConverter.toRemoteDocument(signDocument);
 	}
 
 }

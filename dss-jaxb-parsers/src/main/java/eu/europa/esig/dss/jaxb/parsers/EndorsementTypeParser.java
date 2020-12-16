@@ -22,11 +22,20 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.enumerations.EndorsementType;
 
+/**
+ * Parses the {@code EndorsementType}
+ */
 public class EndorsementTypeParser {
 
 	private EndorsementTypeParser() {
 	}
 
+	/**
+	 * Parses the value and returns {@code EndorsementType}
+	 *
+	 * @param v {@link String} to parse
+	 * @return {@link EndorsementType}
+	 */
 	public static EndorsementType parse(String v) {
 		if (v != null) {
 			return EndorsementType.fromString(v);
@@ -34,6 +43,12 @@ public class EndorsementTypeParser {
 		return null;
 	}
 
+	/**
+	 * Gets a text name of the value
+	 *
+	 * @param v {@link EndorsementType}
+	 * @return {@link String}
+	 */
 	public static String print(EndorsementType v) {
 		if (v != null) {
 			return v.getValue();

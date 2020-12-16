@@ -28,20 +28,36 @@ import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 
+/**
+ * The class prevents reading of other records but the one with defined key
+ */
 public class ReadOnlyCacheAccessByKey {
 
-	/* Key of the CacheEntry */
+	/** Key of the CacheEntry */
 	protected final CacheKey key;
 
-	/* Global Cache */
+	/** Global download Cache */
 	protected final DownloadCache downloadCache;
+
+	/** Global parsing Cache */
 	protected final ParsingCache parsingCache;
+
+	/** Global validation Cache */
 	protected final ValidationCache validationCache;
 
+	/** Reads a cache by the given key */
 	private final ReadOnlyCacheAccess readOnlyCacheAccess;
 
-	public ReadOnlyCacheAccessByKey(final CacheKey key, final DownloadCache downloadCache, final ParsingCache parsingCache,
-			final ValidationCache validationCache) {
+	/**
+	 * Default constructor
+	 *
+	 * @param key {@link CacheKey} to read
+	 * @param downloadCache {@link DownloadCache}
+	 * @param parsingCache {@link ParsingCache}
+	 * @param validationCache {@link ValidationCache}
+	 */
+	public ReadOnlyCacheAccessByKey(final CacheKey key, final DownloadCache downloadCache,
+									final ParsingCache parsingCache, final ValidationCache validationCache) {
 		this.key = key;
 		this.downloadCache = downloadCache;
 		this.parsingCache = parsingCache;

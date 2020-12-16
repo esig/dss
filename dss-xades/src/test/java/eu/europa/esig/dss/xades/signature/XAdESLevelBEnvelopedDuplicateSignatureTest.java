@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -82,28 +83,32 @@ public class XAdESLevelBEnvelopedDuplicateSignatureTest extends PKIFactoryAccess
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
-		assertEquals(1, signatures.size());
-		assertTrue(signatures.get(0).isSignatureDuplicated());
+		assertEquals(2, signatures.size());
+		assertNotEquals(signatures.get(0).getId(), signatures.get(1).getId());
 		
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		for (SignatureWrapper signatureWrapper : signatures) {
 		
-		DetailedReport detailedReport = reports.getDetailedReport();
-		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
-		assertNotNull(signatureBBB);
-		
-		XmlFC fc = signatureBBB.getFC();
-		assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
-		assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
-		boolean signatureDuplicatedCheckExecuted = false;
-		for (XmlConstraint constraint : fc.getConstraint()) {
-			if (MessageTag.BBB_FC_ISD.name().equals(constraint.getName().getNameId())) {
-				assertEquals(i18nProvider.getMessage(MessageTag.BBB_FC_ISD_ANS), constraint.getError().getValue());
-				signatureDuplicatedCheckExecuted = true;
+			SimpleReport simpleReport = reports.getSimpleReport();
+			assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(signatureWrapper.getId()));
+			assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(signatureWrapper.getId()));
+			
+			DetailedReport detailedReport = reports.getDetailedReport();
+			XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(signatureWrapper.getId());
+			assertNotNull(signatureBBB);
+			
+			XmlFC fc = signatureBBB.getFC();
+			assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
+			assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
+			boolean signatureDuplicatedCheckExecuted = false;
+			for (XmlConstraint constraint : fc.getConstraint()) {
+				if (MessageTag.BBB_FC_ISD.name().equals(constraint.getName().getNameId())) {
+					assertEquals(i18nProvider.getMessage(MessageTag.BBB_FC_ISD_ANS), constraint.getError().getValue());
+					signatureDuplicatedCheckExecuted = true;
+				}
 			}
+			assertTrue(signatureDuplicatedCheckExecuted);
+		
 		}
-		assertTrue(signatureDuplicatedCheckExecuted);
 		
 	}
 

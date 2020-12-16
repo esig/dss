@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.asice;
 
-import eu.europa.esig.dss.asic.xades.extension.AbstractASiCwithXAdESTestExtension;
+import eu.europa.esig.dss.asic.xades.extension.AbstractASiCWithXAdESTestExtension;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractASiCwithXAdESTestExtension {
+public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractASiCWithXAdESTestExtension {
 
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {

@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.ws.cert.validation.dto;
 
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.ws.dto.RemoteCertificate;
+
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
-import eu.europa.esig.dss.ws.dto.RemoteCertificate;
-
+/**
+ * The DTO representing the certificate validation request
+ */
 public class CertificateToValidateDTO {
 	
 	/**
@@ -52,59 +55,122 @@ public class CertificateToValidateDTO {
 	 * 
 	 * NONE by default
 	 */
-	private TokenExtractionStategy tokenExtractionStategy = TokenExtractionStategy.NONE;
+	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
 
+	/**
+	 * The empty constructor
+	 */
 	public CertificateToValidateDTO() {
 	}
-	
+
+	/**
+	 * The constructor with a certificate to be validated
+	 *
+	 * @param certificate {@link RemoteCertificate} to be validated
+	 */
 	public CertificateToValidateDTO(RemoteCertificate certificate) {
 		this(certificate, null, null);
 	}
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param certificate {@link RemoteCertificate} to be validated
+	 * @param certificateChain a list of {@link RemoteCertificate}s representing the certificate chain
+	 * @param validationTime {@link Date} the validation time
+	 */
 	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain, Date validationTime) {
 		this.certificate = certificate;
 		this.certificateChain = certificateChain;
 		this.validationTime = validationTime;
 	}
-	
+
+	/**
+	 * The default constructor with a token extraction strategy
+	 *
+	 * @param certificate {@link RemoteCertificate} to be validated
+	 * @param certificateChain a list of {@link RemoteCertificate}s representing the certificate chain
+	 * @param validationTime {@link Date} the validation time
+	 * @param tokenExtractionStrategy {@link TokenExtractionStrategy} for the DiagnosticData report
+	 */
 	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain,
-			Date validationTime, TokenExtractionStategy tokenExtractionStategy) {
+			Date validationTime, TokenExtractionStrategy tokenExtractionStrategy) {
 		this.certificate = certificate;
 		this.certificateChain = certificateChain;
 		this.validationTime = validationTime;
-		this.tokenExtractionStategy = tokenExtractionStategy;
+		this.tokenExtractionStrategy = tokenExtractionStrategy;
 	}
 
+	/**
+	 * Gets the certificate to be validated
+	 *
+	 * @return {@link RemoteCertificate}
+	 */
 	public RemoteCertificate getCertificate() {
 		return certificate;
 	}
-	
+
+	/**
+	 * Sets the certificate to be validated
+	 *
+	 * @param certificate {@link RemoteCertificate}
+	 */
 	public void setCertificate(RemoteCertificate certificate) {
 		this.certificate = certificate;
 	}
-	
+
+	/**
+	 * Gets the certificate chain for the certificate to be validated
+	 *
+	 * @return a list of {@link RemoteCertificate}s representing the certificate chain
+	 */
 	public List<RemoteCertificate> getCertificateChain() {
 		return certificateChain;
 	}
-	
+
+	/**
+	 * Sets the certificate chain for the certificate to be validated
+	 *
+	 * @param certificateChain  list of {@link RemoteCertificate}s representing the certificate chain
+	 */
 	public void setCertificateChain(List<RemoteCertificate> certificateChain) {
 		this.certificateChain = certificateChain;
 	}
-	
+
+	/**
+	 * Gets the validation time
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getValidationTime() {
 		return validationTime;
 	}
-	
+
+	/**
+	 * Sets the validation time
+	 *
+	 * @param validationTime {@link Date}
+	 */
 	public void setValidationTime(Date validationTime) {
 		this.validationTime = validationTime;
 	}
 
-	public TokenExtractionStategy getTokenExtractionStategy() {
-		return tokenExtractionStategy;
+	/**
+	 * Gets the token extraction strategy
+	 *
+	 * @return {@link TokenExtractionStrategy}
+	 */
+	public TokenExtractionStrategy getTokenExtractionStrategy() {
+		return tokenExtractionStrategy;
 	}
 
-	public void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy) {
-		this.tokenExtractionStategy = tokenExtractionStategy;
+	/**
+	 * Sets the token extraction strategy for DiagnosticData
+	 *
+	 * @param tokenExtractionStrategy {@link TokenExtractionStrategy}
+	 */
+	public void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
+		this.tokenExtractionStrategy = tokenExtractionStrategy;
 	}
 
 }

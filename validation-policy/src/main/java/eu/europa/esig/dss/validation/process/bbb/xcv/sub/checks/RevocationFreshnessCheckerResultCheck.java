@@ -20,24 +20,37 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Checks if the revocation freshness checker's result is valid
+ */
 public class RevocationFreshnessCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** RFC result */
 	private final XmlRFC rfcResult;
 
-	public RevocationFreshnessCheckerResultCheck(I18nProvider i18nProvider, T result, XmlRFC rfcResult, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint);
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param rfcResult {@link XmlRFC}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public RevocationFreshnessCheckerResultCheck(I18nProvider i18nProvider, T result, XmlRFC rfcResult,
+												 LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, rfcResult.getId());
 		this.rfcResult = rfcResult;
 	}
 
@@ -69,6 +82,14 @@ public class RevocationFreshnessCheckerResultCheck<T extends XmlConstraintsConcl
 	@Override
 	protected List<XmlName> getPreviousErrors() {
 		return rfcResult.getConclusion().getErrors();
+	}
+	
+	@Override
+	protected String buildAdditionalInfo() {
+		if (rfcResult.getId() != null) {
+			return i18nProvider.getMessage(MessageTag.REVOCATION_ID, rfcResult.getId());
+		}
+		return null;
 	}
 
 }

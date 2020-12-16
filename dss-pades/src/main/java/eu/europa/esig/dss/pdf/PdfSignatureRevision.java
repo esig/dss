@@ -20,15 +20,21 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+
 import java.util.List;
 
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
-
+/**
+ * Represents a PDF revision for an electronic signature
+ */
 public class PdfSignatureRevision extends PdfCMSRevision {
-	
+
+	/** The corresponding DSS dictionary */
 	private final PdfDssDict dssDictionarySource;
 
 	/**
+	 * Default constructor
+	 *
 	 * @param signatureDictionary
 	 *            pdf signature dictionary wrapper
 	 * @param dssDictionary
@@ -46,6 +52,11 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 		this.dssDictionarySource = dssDictionary;
 	}
 
+	/**
+	 * Gets the DSS dictionary
+	 *
+	 * @return {@link PdfDssDict}
+	 */
 	public PdfDssDict getDssDictionary() {
 		return dssDictionarySource;
 	}

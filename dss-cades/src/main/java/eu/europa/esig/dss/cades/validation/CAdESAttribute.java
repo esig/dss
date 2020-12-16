@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ISignatureAttribute;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -34,22 +34,31 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ISignatureAttribute;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Represents a CAdES attribute, part of AttributeTable
+ */
 public class CAdESAttribute implements ISignatureAttribute {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESAttribute.class);
-	
+
+	/** The Attribute value */
 	private final Attribute attribute;
-	
+
+	/**
+	 * The default constructor
+	 *
+	 * @param attribute {@link Attribute}
+	 */
 	CAdESAttribute(Attribute attribute) {
 		this.attribute = attribute;
 	}
 
 	/**
 	 * Returns object identifier
+	 *
 	 * @return {@link ASN1ObjectIdentifier}
 	 */
 	public ASN1ObjectIdentifier getASN1Oid() {
@@ -57,7 +66,17 @@ public class CAdESAttribute implements ISignatureAttribute {
 	}
 	
 	/**
+	 * Returns attribute values set
+	 * 
+	 * @return {@link ASN1Set}
+	 */
+	public ASN1Set getAttrValues() {
+		return attribute.getAttrValues();
+	}
+	
+	/**
 	 * Returns a list of {@link ASN1Primitive} values found in the attribute
+	 *
 	 * @return list of {@link ASN1Primitive}
 	 */
 	private List<ASN1Primitive> getASN1Primitives() {
@@ -75,6 +94,7 @@ public class CAdESAttribute implements ISignatureAttribute {
 	
 	/**
 	 * Returns the inner {@link ASN1Primitive} object
+	 *
 	 * @return {@link ASN1Primitive} object
 	 */
 	public ASN1Primitive getASN1Primitive() {
@@ -90,10 +110,20 @@ public class CAdESAttribute implements ISignatureAttribute {
 
 	/**
 	 * Returns the inner {@link ASN1Encodable} object
+	 *
 	 * @return {@link ASN1Sequence} object
 	 */
 	public ASN1Encodable getASN1Object() {
 		return attribute.getAttrValues().getObjectAt(0);
+	}
+
+	/**
+	 * Checks if the given CAdESAttribute is a timestamp token
+	 * 
+	 * @return TRUE if the attribute is a timestamp, FALSE otherwise
+	 */
+	public boolean isTimeStampToken() {
+		return DSSASN1Utils.getTimestampOids().contains(getASN1Oid());
 	}
 
 	/**
@@ -102,12 +132,16 @@ public class CAdESAttribute implements ISignatureAttribute {
 	 * @return a {@link TimeStampToken} or null
 	 */
 	public TimeStampToken toTimeStampToken() {
-		try {
-			return DSSASN1Utils.getTimeStampToken(attribute);
-		} catch (Exception e) {
-			LOG.warn("Unable to build a timestamp token from the attribute [{}] : {}", this, e.getMessage());
-			return null;
+		if (isTimeStampToken()) {
+			try {
+				return DSSASN1Utils.getTimeStampToken(attribute);
+			} catch (Exception e) {
+				LOG.warn("Unable to build a timestamp token from the attribute [{}] : {}", this, e.getMessage());
+			}
+		} else {
+			LOG.warn("The given attribute [{}] is not a timestamp! Unable to build a TimeStampToken.", this);
 		}
+		return null;
 	}
 	
 	@Override

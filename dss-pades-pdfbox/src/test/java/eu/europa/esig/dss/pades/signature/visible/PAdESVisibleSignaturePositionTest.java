@@ -48,16 +48,15 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PdfScreenshotUtils;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 
 @Tag("slow")
-public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
+public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 
 	private static final Color TRANSPARENT = new Color(0, 0, 0, 0.25f);
 	private static final int DPI = 144;
@@ -72,9 +71,13 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	 */
 	private static final int CHECK_RESOLUTION = 1;
 
+	private String testName;
 	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
+	private DSSDocument documentToSign;
+	
 	private DSSDocument signitureImage;
+	
 	/**
 	 * PDF-s rotated by pdftk on Ubuntu (<a href="https://packages.ubuntu.com/search?keywords=pdftk">pdftk Ubuntu
 	 * packages</a>)<br>
@@ -169,13 +172,14 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		// check minolta scanner
 		signatureImageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
 		checkImageSimilarityPdf("minoltaScan", "check_sun.pdf");
+		
 		/**
 		 * sun.pdf and sun90.pdf not equal, when convert it to image (two scanning and the scanner can not scan equal
 		 * twice).
 		 * So we need the similarity of the sun.pdf and sun90.pdf.
 		 * After the signing the visual signature does not have to change the similarity.
 		 */
-		float sunSimilarity = PdfScreenshotUtils.checkImageSimilarity(pdfToBufferedImage(signablePdfs.get("minoltaScan").openStream()),
+		float sunSimilarity = checkImageSimilarity(pdfToBufferedImage(signablePdfs.get("minoltaScan").openStream()),
 				pdfToBufferedImage(signablePdfs.get("minoltaScan90").openStream()), CHECK_RESOLUTION) - 0.015f;
 		checkImageSimilarityPdf("minoltaScan90", "check_sun.pdf", sunSimilarity);
 	}
@@ -193,8 +197,10 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		signatureImageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png"), "signature-pen.png"));
 		signatureParameters.setImageParameters(signatureImageParameters);
 		
-		signatureImageParameters.setWidth(300);
-		signatureImageParameters.setHeight(200);
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setWidth(300);
+		fieldParameters.setHeight(200);
+		signatureImageParameters.setFieldParameters(fieldParameters);
 
 		signatureImageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
 		checkImageSimilarityPdf("rotate90", "rotate90_top-left-signed.pdf");
@@ -215,13 +221,11 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	@Test
 	public void rotateTest() throws Exception {
 		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
-
 		signatureImageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
-		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-		DSSDocument defaultSigned = sign(signablePdfs.get("minoltaScan90"));
-		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-		DSSDocument nativeSigned = sign(signablePdfs.get("minoltaScan90"));
-		compareVisualSimilarity(defaultSigned, nativeSigned, SIMILARITY_LIMIT);
+		
+		documentToSign = signablePdfs.get("minoltaScan90");
+		testName = documentToSign.getName();
+		drawAndCompareVisually();
 	}
 
 	@Test
@@ -237,7 +241,6 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 					signatureImageParameters.setAlignmentVertical(vertical);
 					String[] pdfs = new String[] { "normal", "90", "180", "270" };
 					for (String pdf : pdfs) {
-						service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 						DSSDocument defaultSigned = sign(signablePdfs.get(pdf));
 						// defaultSigned.save("target/default_" + rotation + "_" + horizontal + "_" + vertical + "_" + pdf + ".pdf");
 						service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
@@ -268,13 +271,11 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 			 */
 	
 			SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
-	
 			signatureImageParameters.setRotation(VisualSignatureRotation.NONE);
-			service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-			DSSDocument defaultSigned = sign(signablePdfs.get("minoltaScan"));
-			service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-			DSSDocument nativeSigned = sign(signablePdfs.get("minoltaScan"));
-			compareVisualSimilarity(defaultSigned, nativeSigned, SIMILARITY_LIMIT);
+			
+			documentToSign = signablePdfs.get("minoltaScan");
+			testName = "rotateSunTest";
+			drawAndCompareVisually();
 		}
 		
 	}
@@ -296,13 +297,11 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 			 */
 	
 			SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
-	
 			signatureImageParameters.setRotation(VisualSignatureRotation.NONE);
-			service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-			DSSDocument defaultSigned = sign(signablePdfs.get("minoltaScan90"));
-			service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-			DSSDocument nativeSigned = sign(signablePdfs.get("minoltaScan90"));
-			compareVisualSimilarity(defaultSigned, nativeSigned, SIMILARITY_LIMIT);
+			
+			documentToSign = signablePdfs.get("minoltaScan90");
+			testName = "rotateSun90TestNONE";
+			drawAndCompareVisually();
 	
 			/**
 			 * minolta scanner rotated pdf and rotation automatic (in pdf view the rotated and normal pdf seem equal)
@@ -312,13 +311,11 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 			 * it will be same as with sun.pdf (not rotated) and rotation none
 			 */
 			signatureImageParameters = createSignatureImageParameters();
-	
 			signatureImageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
-			service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-			defaultSigned = sign(signablePdfs.get("minoltaScan90"));
-			service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-			nativeSigned = sign(signablePdfs.get("minoltaScan90"));
-			compareVisualSimilarity(defaultSigned, nativeSigned, SIMILARITY_LIMIT);
+			
+			documentToSign = signablePdfs.get("minoltaScan90");
+			testName = "rotateSun90TestAUTOMATIC";
+			drawAndCompareVisually();
 	
 			/**
 			 * minolta scanner normal(not rotated) pdf and rotation none.
@@ -328,12 +325,11 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 			 * it will be same as with sun.pdf (not rotated) and rotation none
 			 */
 			signatureImageParameters = createSignatureImageParameters();
-	
 			signatureImageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
-			service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-			defaultSigned = sign(signablePdfs.get("minoltaScan"));
-			service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-			nativeSigned = sign(signablePdfs.get("minoltaScan"));
+			
+			documentToSign = signablePdfs.get("minoltaScan");
+			testName = "rotateSunTestAUTOMATIC";
+			drawAndCompareVisually();
 		}
 		
 	}
@@ -350,21 +346,21 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		}
 	}
 
-	private void checkImageSimilarityPdf(String samplePdf, String checkPdf, float similarity) throws IOException {
-		DSSDocument document = sign(signablePdfs.get(samplePdf));
-		// document.save("target/test_" + samplePdf + "-" + checkPdf);
-		compareVisualSimilarity(document, new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/check/" + checkPdf)), similarity);
-	}
-	
-	private void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2, float similarity) throws IOException {
-		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream();
-				PDDocument pdDoc1 = PDDocument.load(is1); PDDocument pdDoc2 = PDDocument.load(is2);) {
-			PdfScreenshotUtils.checkPdfSimilarity(pdDoc1, pdDoc2, similarity);
-		}
-	}
-
 	private void checkImageSimilarityPdf(String samplePdf, String checkPdf) throws IOException {
 		checkImageSimilarityPdf(samplePdf, checkPdf, SIMILARITY_LIMIT);
+	}
+
+	private void checkImageSimilarityPdf(String samplePdf, String checkPdf, float similaritylevel) throws IOException {
+		testName = samplePdf + "_" + checkPdf;
+		documentToSign = signablePdfs.get(samplePdf);
+
+		getService().setPdfObjFactory(new PdfBoxDefaultObjectFactory());
+		DSSDocument defaultDrawerPdf = sign(getTestName() + "_default");
+		getService().setPdfObjFactory(new PdfBoxNativeObjectFactory());
+		DSSDocument nativeDrawerPdf = sign(getTestName() + "_native");
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf, similaritylevel);
+		
+		compareVisualSimilarity(nativeDrawerPdf, new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/check/" + checkPdf)), similaritylevel);
 	}
 
 	private SignatureImageParameters createSignatureImageParameters() throws Exception {
@@ -380,8 +376,12 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		textParameters.setFont(font);
 		imageParameters.setTextParameters(textParameters);
 		imageParameters.setBackgroundColor(TRANSPARENT);
-		imageParameters.setxAxis(10);
-		imageParameters.setyAxis(20);
+		
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(10);
+		fieldParameters.setOriginY(20);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		signatureParameters.bLevel().setSigningDate(new Date());
 
@@ -400,5 +400,25 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
+	}
+
+	@Override
+	protected String getTestName() {
+		return testName;
+	}
+
+	@Override
+	protected PAdESService getService() {
+		return service;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
+
+	@Override
+	protected PAdESSignatureParameters getSignatureParameters() {
+		return signatureParameters;
 	}
 }

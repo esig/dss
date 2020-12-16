@@ -34,6 +34,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
 public class CAdESDetachedTstV2NoFileTest extends AbstractCAdESTestValidation {
 
@@ -74,6 +76,16 @@ public class CAdESDetachedTstV2NoFileTest extends AbstractCAdESTestValidation {
 			}
 		}
 		assertEquals(1, v2ArchiveTsts);
+	}
+	
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		assertTrue(Utils.isCollectionEmpty(diagnosticData.getOriginalSignerDocuments()));
+	}
+	
+	@Override
+	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+		assertTrue(Utils.isCollectionEmpty(signersDocuments));
 	}
 
 }

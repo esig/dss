@@ -20,18 +20,15 @@
  */
 package eu.europa.esig.dss.validation.executor.signature;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusionWithProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSemantic;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
@@ -42,7 +39,10 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -52,17 +52,56 @@ import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSign
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
 import eu.europa.esig.dss.validation.process.vpftsp.ValidationProcessForTimeStamp;
+import eu.europa.esig.dss.validation.reports.DSSReportException;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Builds a DetailedReport for a signature validation
+ */
 public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
+	/** The target highest validation level */
 	private final ValidationLevel validationLevel;
 
+	/** Defines if the semantics information shall be included */
+	private final boolean includeSemantics;
+
+	/** Set of all used Indications (used for semantics) */
+	private Set<Indication> allIndications = new HashSet<>();
+
+	/** Set of all used SubIndications (used for semantics) */
+	private Set<SubIndication> allSubIndications = new HashSet<>();
+
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentTime {@link Date} validation time
+	 * @param policy {@link ValidationPolicy}
+	 * @param validationLevel {@link ValidationLevel} the target highest level
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param includeSemantics defines if the smeantics shall be included
+	 */
 	public DetailedReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy, 
-			ValidationLevel validationLevel, DiagnosticData diagnosticData) {
+			ValidationLevel validationLevel, DiagnosticData diagnosticData, boolean includeSemantics) {
 		super(i18nProvider, currentTime, policy, diagnosticData);
 		this.validationLevel = validationLevel;
+		this.includeSemantics = includeSemantics;
 	}
 
+	/**
+	 * Builds the {@code XmlDetailedReport}
+	 *
+	 * @return {@link XmlDetailedReport}
+	 */
 	XmlDetailedReport build() {
 		XmlDetailedReport detailedReport = init();
 		
@@ -110,6 +149,8 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				}
 
 			}
+			
+			signatureAnalysis.setConclusion(getFinalConclusion(validation));
 
 			detailedReport.getSignatureOrTimestampOrCertificate().add(signatureAnalysis);
 		}
@@ -122,6 +163,11 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 				detailedReport.getSignatureOrTimestampOrCertificate().add(buildXmlTimestamp(timestamp, bbbs, tlAnalysis));
 			}
+		}
+		
+		if (includeSemantics) {
+			collectIndications(detailedReport);
+			addSemantics(detailedReport);
 		}
 
 		return detailedReport;
@@ -199,6 +245,107 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			throw new IllegalArgumentException("Unsupported validation level " + validationLevel);
 		}
 		return bbbs;
+	}
+	
+	private XmlConclusion getFinalConclusion(XmlConstraintsConclusion constraintConclusion) {
+		XmlConclusion xmlConclusion = new XmlConclusion();
+		Indication indication = getFinalIndication(constraintConclusion.getConclusion().getIndication());
+		xmlConclusion.setIndication(indication);
+		SubIndication subIndication = constraintConclusion.getConclusion().getSubIndication();
+		xmlConclusion.setSubIndication(subIndication);
+		return xmlConclusion;
+	}
+	
+	private Indication getFinalIndication(Indication highestIndication) {
+		switch (highestIndication) {
+			case PASSED:
+				return Indication.TOTAL_PASSED;
+			case INDETERMINATE:
+				return Indication.INDETERMINATE;
+			case FAILED:
+				return Indication.TOTAL_FAILED;
+			default:
+				throw new DSSReportException(String.format("The Indication '%s' is not supported!", highestIndication));
+		}
+	}
+	
+	private void collectIndications(XmlDetailedReport detailedReport) {
+		
+		for (Serializable xmlObject : detailedReport.getSignatureOrTimestampOrCertificate()) {
+			if (xmlObject instanceof XmlSignature) {
+				XmlSignature xmlSignature = (XmlSignature) xmlObject;
+				collectIndications(xmlSignature.getConclusion());
+				collectIndications(xmlSignature.getValidationProcessBasicSignature());
+				collectIndications(xmlSignature.getValidationProcessLongTermData());
+				collectIndications(xmlSignature.getValidationProcessArchivalData());
+				for (XmlTimestamp xmlTimestamp : xmlSignature.getTimestamp()) {
+					collectIndications(xmlTimestamp.getValidationProcessTimestamp());
+				}
+			} else if (xmlObject instanceof XmlTimestamp) {
+				XmlTimestamp xmlTimestamp = (XmlTimestamp) xmlObject;
+				collectIndications(xmlTimestamp.getValidationProcessTimestamp());
+			}
+		}
+		
+		for (XmlBasicBuildingBlocks bbb : detailedReport.getBasicBuildingBlocks()) {
+			collectIndications(bbb.getFC());
+			collectIndications(bbb.getISC());
+			collectIndications(bbb.getVCI());
+			collectIndications(bbb.getXCV());
+			if (bbb.getXCV() != null) {
+				for (XmlSubXCV subXCV : bbb.getXCV().getSubXCV()) {
+					collectIndications(subXCV);
+					collectIndications(subXCV.getRFC());
+					for (XmlRAC rac : subXCV.getRAC()) {
+						collectIndications(rac);
+					}
+				}
+			}
+			collectIndications(bbb.getCV());
+			collectIndications(bbb.getSAV());
+			collectIndications(bbb.getPSV());
+			collectIndications(bbb.getPCV());
+			collectIndications(bbb.getVTS());
+		}
+		
+	}
+	
+	private void collectIndications(XmlConstraintsConclusion xmlConstraintsConclusion) {
+		if (xmlConstraintsConclusion != null) {
+			collectIndications(xmlConstraintsConclusion.getConclusion());
+		}
+	}
+	
+	private void collectIndications(XmlConclusion xmlConclusion) {
+		if (xmlConclusion != null) {
+			Indication indication = xmlConclusion.getIndication();
+			if (indication != null) {
+				allIndications.add(xmlConclusion.getIndication());
+				
+				SubIndication subIndication = xmlConclusion.getSubIndication();
+				if (subIndication != null) {
+					allSubIndications.add(subIndication);
+				}
+			}
+		}
+	}
+
+	private void addSemantics(XmlDetailedReport detailedReport) {
+		
+		for (Indication indication : allIndications) {
+			XmlSemantic semantic = new XmlSemantic();
+			semantic.setKey(indication.name());
+			semantic.setValue(i18nProvider.getMessage(MessageTag.getSemantic(indication.name())));
+			detailedReport.getSemantic().add(semantic);
+		}
+
+		for (SubIndication subIndication : allSubIndications) {
+			XmlSemantic semantic = new XmlSemantic();
+			semantic.setKey(subIndication.name());
+			semantic.setValue(i18nProvider.getMessage(MessageTag.getSemantic(subIndication.name())));
+			detailedReport.getSemantic().add(semantic);
+		}
+
 	}
 
 }

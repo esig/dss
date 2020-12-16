@@ -4,7 +4,7 @@ POST /services/rest/signature/one-document/getDataToSign HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 2975
+Content-Length: 3080
 
 {
   "parameters" : {
@@ -16,6 +16,8 @@ Content-Length: 2975
     "asicContainerType" : null,
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : "ENVELOPING",
+    "jwsSerializationType" : null,
+    "sigDMechanism" : null,
     "signatureAlgorithm" : "RSA_SHA256",
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : "RSA",
@@ -40,9 +42,10 @@ Content-Length: 2975
     "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
+    "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1593006511083,
+      "signingDate" : 1607960338233,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

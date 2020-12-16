@@ -20,53 +20,71 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESCommonParameters;
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.SigningOperation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * A class to generate a DataToSign with ASiC-E with CAdES from an existing archive
+ */
 public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCEWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
-	private final SigningOperation operation;
+	/** The list of signed documents */
 	private final List<DSSDocument> signedDocuments;
-	private final List<DSSDocument> existingSignatures;
-	private final List<DSSDocument> existingManifests;
-	private final List<DSSDocument> existingArchiveManifests;
-	private final List<DSSDocument> existingTimestamps;
-	private final ASiCWithCAdESCommonParameters parameters;
 
+	/** The list of signature documents */
+	private final List<DSSDocument> embeddedSignatures;
+
+	/** The list of manifest documents */
+	private final List<DSSDocument> embeddedManifests;
+
+	/** The list of archive manifest documents */
+	private final List<DSSDocument> embeddedArchiveManifests;
+
+	/** The list of timestamp documents */
+	private final List<DSSDocument> embeddedTimestamps;
+
+	/** The cached to be signed document */
 	private DSSDocument toBeSigned;
 
-	public DataToSignASiCEWithCAdESFromArchive(SigningOperation operation, final ASiCExtractResult extractionResult,
-			final ASiCWithCAdESCommonParameters parameters) {
-		this.operation = operation;
+	/**
+	 * The default constructor
+	 *
+	 * @param operation {@link SigningOperation} to perform
+	 * @param extractionResult {@link ASiCExtractResult} of an ASiC container to sign
+	 * @param parameters {@link ASiCWithCAdESCommonParameters}
+	 */
+	public DataToSignASiCEWithCAdESFromArchive(final SigningOperation operation,
+											   final ASiCExtractResult extractionResult,
+											   final ASiCWithCAdESCommonParameters parameters) {
+		super(operation, parameters);
 		this.signedDocuments = extractionResult.getSignedDocuments();
-		this.existingSignatures = extractionResult.getSignatureDocuments();
-		this.existingManifests = extractionResult.getManifestDocuments();
-		this.existingArchiveManifests = extractionResult.getArchiveManifestDocuments();
-		this.existingTimestamps = extractionResult.getTimestampDocuments();
-		this.parameters = parameters;
+		this.embeddedSignatures = extractionResult.getSignatureDocuments();
+		this.embeddedManifests = extractionResult.getManifestDocuments();
+		this.embeddedArchiveManifests = extractionResult.getArchiveManifestDocuments();
+		this.embeddedTimestamps = extractionResult.getTimestampDocuments();
 	}
 
 	@Override
 	public String getSignatureFilename() {
-		return getSignatureFileName(parameters.aSiC(), existingSignatures);
+		return getSignatureFileName(embeddedSignatures);
 	}
 
 	@Override
 	public String getTimestampFilename() {
-		return getTimestampFileName(existingTimestamps);
+		return getTimestampFileName(embeddedTimestamps);
 	}
 
 	@Override
 	public DSSDocument getToBeSigned() {
 		if (toBeSigned == null) {
-			toBeSigned = getASiCManifest(operation, signedDocuments, existingSignatures, existingTimestamps, existingManifests, parameters);
+			toBeSigned = getASiCManifest(signedDocuments, embeddedSignatures, embeddedTimestamps, embeddedManifests);
 		}
 		return toBeSigned;
 	}
@@ -83,24 +101,24 @@ public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCE
 
 	@Override
 	public List<DSSDocument> getManifestFiles() {
-		List<DSSDocument> manifests = new ArrayList<>(existingManifests);
+		List<DSSDocument> manifests = new ArrayList<>(embeddedManifests);
 		manifests.add(getToBeSigned());
 		return manifests;
 	}
 
 	@Override
 	public List<DSSDocument> getSignatures() {
-		return existingSignatures;
+		return embeddedSignatures;
 	}
 
 	@Override
 	public List<DSSDocument> getArchiveManifestFiles() {
-		return existingArchiveManifests;
+		return embeddedArchiveManifests;
 	}
 
 	@Override
 	public List<DSSDocument> getTimestamps() {
-		return existingTimestamps;
+		return embeddedTimestamps;
 	}
 
 }

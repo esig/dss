@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.tsl.function.LOTLSigningCertificatesAnnouncementSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.PivotSchemeInformationURI;
@@ -39,13 +31,30 @@ import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSLSchemeInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+/**
+ * Parses a LOTL and returns {@code LOTLParsingResult}
+ */
 public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOTLParsingResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LOTLParsingTask.class);
 
+	/** The LOTLSource to parse */
 	private final LOTLSource lotlSource;
 
+	/**
+	 * The default constructor
+	 *
+	 * @param document {@link DSSDocument} LOTL document to parse
+	 * @param lotlSource {@link LOTLSource}
+	 */
 	public LOTLParsingTask(DSSDocument document, LOTLSource lotlSource) {
 		super(document);
 		Objects.requireNonNull(lotlSource, "The LOTLSource is null");

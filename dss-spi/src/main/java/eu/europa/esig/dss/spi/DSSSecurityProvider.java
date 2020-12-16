@@ -20,21 +20,30 @@
  */
 package eu.europa.esig.dss.spi;
 
-import java.security.Provider;
-
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.Provider;
+
+/**
+ * The default security provider
+ */
 public final class DSSSecurityProvider {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSSecurityProvider.class);
 
 	private DSSSecurityProvider() {
 	}
-	
-	private static Provider securityProvider; 
-	
+
+	/** Provider */
+	private static Provider securityProvider;
+
+	/**
+	 * Gets the provider
+	 *
+	 * @return {@link Provider}
+	 */
 	public static Provider getSecurityProvider() {
 		if (securityProvider == null) {
 			securityProvider = new BouncyCastleProvider();
@@ -43,10 +52,20 @@ public final class DSSSecurityProvider {
 		return securityProvider;
 	}
 
+	/**
+	 * Gets the security provider name
+	 *
+	 * @return {@link String}
+	 */
 	public static String getSecurityProviderName() {
 		return getSecurityProvider().getName();
 	}
 
+	/**
+	 * Sets the security provider
+	 *
+	 * @param provider {@link Provider}
+	 */
 	public static void setSecurityProvider(Provider provider) {
 		LOG.debug("DSSSecurityProvider initialized with {}", provider.getClass());
 		DSSSecurityProvider.securityProvider = provider;

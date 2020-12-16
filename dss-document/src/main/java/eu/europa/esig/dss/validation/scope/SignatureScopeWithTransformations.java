@@ -20,25 +20,47 @@
  */
 package eu.europa.esig.dss.validation.scope;
 
-import java.util.List;
-
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.List;
+
+/**
+ * The signature scope with the performed transforms
+ */
 public abstract class SignatureScopeWithTransformations extends SignatureScope {
 
+	/** List of transform definitions */
 	private final List<String> transformations;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String} document name
+	 * @param digest {@link Digest} digest document
+	 * @param transformations list of {@link String} transform definitions
+	 */
 	protected SignatureScopeWithTransformations(final String name, final Digest digest, final List<String> transformations) {
 		super(name, digest);
 		this.transformations = transformations;
 	}
-	
+
+	/**
+	 * Adds a description to the signature scope
+	 *
+	 * @param description {@link String} to add
+	 * @return {@link String}
+	 */
 	protected String addTransformationDescription(String description) {
 		description += " with transformations.";
 		return description;
 	}
-	
+
+	/**
+	 * Checks if the list of transforms is not empty
+	 *
+	 * @return TRUE if transforms are not empty, FALSE otherwise
+	 */
 	protected boolean isTransformationsNotEmpty() {
 		return Utils.isCollectionNotEmpty(transformations);
 	}

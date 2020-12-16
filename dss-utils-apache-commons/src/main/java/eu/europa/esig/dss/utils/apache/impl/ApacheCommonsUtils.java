@@ -20,16 +20,7 @@
  */
 package eu.europa.esig.dss.utils.apache.impl;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-
+import eu.europa.esig.dss.utils.IUtils;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -42,8 +33,22 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import eu.europa.esig.dss.utils.IUtils;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
+/**
+ * Apache Commons implementation of Utils
+ */
 public class ApacheCommonsUtils implements IUtils {
 
 	@Override
@@ -170,6 +175,17 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
+	public boolean isHexEncoded(String hexString) {
+		Objects.requireNonNull(hexString, "String cannot be null");
+		try {
+			Hex.decodeHex(hexString);
+			return true;
+		} catch (DecoderException e) {
+			return false;
+		}
+	}
+
+	@Override
 	public String toHex(byte[] bytes) {
 		Objects.requireNonNull(bytes, "Bytes cannot be null");
 		return Hex.encodeHexString(bytes);
@@ -250,6 +266,13 @@ public class ApacheCommonsUtils implements IUtils {
 	@Override
 	public Collection<File> listFiles(File folder, String[] extensions, boolean recursive) {
 		return FileUtils.listFiles(folder, extensions, recursive);
+	}
+
+	@Override
+	public <T> List<T> reverseList(List<T> list) {
+		List<T> reverse = new ArrayList<>(list);
+		Collections.reverse(reverse);
+		return reverse;
 	}
 
 }

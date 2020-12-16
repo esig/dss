@@ -23,8 +23,9 @@ package eu.europa.esig.dss.pdf;
 import java.util.List;
 import java.util.Objects;
 
-import eu.europa.esig.dss.validation.PdfRevision;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
+import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 
 /**
  * This class represents an LT-level PDF revision containing a DSS dictionary
@@ -57,6 +58,12 @@ public class PdfDocDssRevision implements PdfRevision {
 	@Override
 	public List<String> getFieldNames() {
 		// not applicable for DSS revision
+		return null;
+	}
+
+	@Override
+	public PdfModificationDetection getModificationDetection() {
+		// not applicable
 		return null;
 	}
 

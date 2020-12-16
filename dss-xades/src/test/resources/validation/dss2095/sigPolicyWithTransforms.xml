@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature">
+  <ds:SignedInfo>
+    <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:CanonicalizationMethod>
+    <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"></ds:SignatureMethod>
+    <ds:Reference Id="report_ref" URI="jaarrekening.xbrl">
+      <ds:Transforms>
+        <ds:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2">
+		  <XPath xmlns="http://www.w3.org/2002/06/xmldsig-filter2" Filter="subtract">//*[starts-with(local-name(),'DocumentAdoption') or local-name()='EmailAddressContact']</XPath>
+        </ds:Transform>
+        <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></ds:Transform>
+      </ds:Transforms>
+      <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></ds:DigestMethod>
+      <ds:DigestValue>/4DWYdJDq3r+lbGC+gO1qQ+lsV90I+OGt0o1B0lOmcE=</ds:DigestValue>
+    </ds:Reference>
+    <ds:Reference Id="assurance_ref" URI="accountantsverklaring.xbrl">
+      <ds:Transforms>
+        <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></ds:Transform>
+      </ds:Transforms>
+      <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></ds:DigestMethod>
+      <ds:DigestValue>KGCSX4xAQp3TFVlC41S+4/5oKgEV2EAjkuv5OcweBiw=</ds:DigestValue>
+    </ds:Reference>
+    <ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-123">
+      <ds:Transforms>
+        <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:Transform>
+      </ds:Transforms>
+      <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></ds:DigestMethod>
+      <ds:DigestValue>rA6T+7aqNUmqIKGW44a7dg1rEzOOzde2nvbhTP/zoDA=</ds:DigestValue>
+    </ds:Reference>
+  </ds:SignedInfo>
+  <ds:SignatureValue>K/4iNPZivkB+ZxVWz/H0Yb8Dset6LgN9rlATUlumswx+SAlRLypvGFTxo61n8H4CzHuAS+uIEEKK
+6i+RXRCthMs+t9x801MYC+DczL5Q3u6/R6UDa+Uad4n8nNlu2V8ViBopl2V4LJxkuLVhV4Iqzpp0
+bPJsA3m3sVSmmE1AK0IVIGbL0HP9Mrmp7eyypmjGWNAxPDGqrhKWTniVrHizn8qQ13A7ezSItp1c
+oKBDIlL0gJ1oa769q7FdaodedfgO057zSolEk6Y3fqcmblMXW+N1UmoD+R9lLuumbfLw57ge11OG
+LJL6rH+C9PfVlZHZajvrVwG1qQZHu+jyOg2D5w==</ds:SignatureValue>
+  <ds:KeyInfo>
+    <ds:X509Data>
+      <ds:X509Certificate>MIIE4TCCA8mgAwIBAgIDEAANMA0GCSqGSIb3DQEBCwUAMIIBAjELMAkGA1UEBhMCTkwxFjAUBgNV
+BAgMDU5vb3JkIEhvbGxhbmQxEjAQBgNVBAcMCVRoZSBIYWd1ZTEYMBYGA1UECgwPdGVzdCBBdVNQ
+Lm5sIENBMRUwEwYDVQQLDAxJbm9sb2d5IEIuVi4xGDAWBgNVBAMMD3Rlc3QgQXVTUC5ubCBDQTEh
+MB8GCSqGSIb3DQEJARYSc3VwcG9ydEBpbm9sb2d5Lm5sMR0wGwYDVQQFExQwMDAwMDAwMTAwMDAw
+MDAwMDAwMDE6MDgGA1UECQwxUHJpbnNlcyBDYXRoYXJpbmEtQW1hbGlhc3RyYWF0IDUgMjQ5NiBY
+RCBEZW4gSGFhZzAeFw0xNzEwMTYxMTUwMDdaFw0xODEwMTYxMTUwMDdaMIHPMQswCQYDVQQGEwJO
+TDEWMBQGA1UECAwNTm9vcmQgSG9sbGFuZDEYMBYGA1UECgwPdGVzdCBBdVNQLm5sIENBMRUwEwYD
+VQQLDAxJbm9sb2d5IEIuVi4xGDAWBgNVBAMMD3Rlc3QgQXVTUC5ubCBDQTEhMB8GCSqGSIb3DQEJ
+ARYSc3VwcG9ydEBpbm9sb2d5Lm5sMR0wGwYDVQQFExQwMDAwMDAwMTAwMDAwMDAwMDAwMDEbMBkG
+A1UEDAwSUmVnaXN0ZXJhY2NvdW50YW50MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+0lwBULrBs1c0Uv8d+tihqSZAYwA+4jrEKP2pPpHR3WXu8KWr3zcwSlglqLe9+2HDN21gvLUaJHoT
+h57UCUXLbUxssQI/esla4HnK4AzJ/GDR4aPw4kmO87jDEOYF9UjawootzZtOROfxHV4vNeqhDl8j
+CnDfOn9IrhuK1flaw/NdePxCVZVs4VSio2NEqcpZxEOzusaflyHfhgg3q0Q4bkrHiLZh7l3F6hJB
+8TvJmRjlD0zPwRQntAqU/S+FBF6vcDjdn3JooLSoInwjOhTZbOiSANzSCNXlsDYqxNjL2FzthY4+
+8PqIPR1WvXhtFHH72mXC3Mxn0lL0ubvhxxW6FwIDAQABo4GPMIGMMAkGA1UdEwQCMAAwLAYJYIZI
+AYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1UdDgQWBBRv4Mb5zBdR
+X/oDyQjukes2Twh7PDAiBgNVHSMBAf8EGDAWgBQHZ/mjeIm8PwIZ2tDwAcgC1YznTTAOBgNVHQ8B
+Af8EBAMCBkAwDQYJKoZIhvcNAQELBQADggEBAJpjdVyF/SUw4eioOwNcn6U0qKHPVzQy2nV5tzr1
+p/H3cjTl5VjogJ7lD3eWjI08PZvfGLHASLl1txJ+1yf0JCErpzB5486GpqdaxygWmz7he563Vsp/
+/Zpmvmu+CK1CcNp/X/RiXFxZo0Zxtw+SJJZETp2TfMktQlDJfvZTmzK7nXpZ8ZhX4H6u5qFYQs8M
+CKhd1nZtStTrlwA55ulju3brl8xGUAwcwSSL8j42bS0rDYrSIVGzQW3bWXEks9XUDxmcPNraGvOK
+y2/U+bWSDqAQammjGHIKZnMT3Z0XbF0ynskoV1xUBWfvILubQm/tsA0kW0RT8XBNcK3XDbUMAA0=</ds:X509Certificate>
+    </ds:X509Data>
+  </ds:KeyInfo>
+  <ds:Object>
+    <xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:xadesv141="http://uri.etsi.org/01903/v1.4.1#" Target="#Signature">
+      <xades:SignedProperties Id="SignedProperties-123">
+        <xades:SignedSignatureProperties>
+          <xades:SigningTime>2016-12-30T16:14:10.159Z</xades:SigningTime>
+          <xades:SigningCertificate>
+            <xades:Cert>
+              <xades:CertDigest>
+                <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></ds:DigestMethod>
+                <ds:DigestValue>guX5weUgJGz04ZJup0i6CVlZcrE2ekIvisR1cqDaX/s=</ds:DigestValue>
+              </xades:CertDigest>
+              <xades:IssuerSerial>
+                <ds:X509IssuerName>/C=NL/ST=Noord Holland/O=test AuSP.nl CA/OU=Inology B.V./CN=test AuSP.nl CA/emailAddress=support@inology.nl/serialNumber=00000001000000000000/title=Registeraccountant</ds:X509IssuerName>
+                <ds:X509SerialNumber>1048589</ds:X509SerialNumber>
+              </xades:IssuerSerial>
+            </xades:Cert>
+          </xades:SigningCertificate>
+          <xades:SignaturePolicyIdentifier>
+            <xades:SignaturePolicyId>
+              <xades:SigPolicyId>
+                <xades:Identifier>urn:sbr:signature-policy:xml:2.0</xades:Identifier>
+              </xades:SigPolicyId>
+              <ds:Transforms>
+                <ds:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2">
+                  <XPath xmlns="http://www.w3.org/2002/06/xmldsig-filter2" Filter="subtract">/*/*[local-name()='SignPolicyDigest']</XPath>
+                </ds:Transform>
+                <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></ds:Transform>
+              </ds:Transforms>
+              <xades:SigPolicyHash>
+                <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></ds:DigestMethod>
+                <ds:DigestValue>sVHhN1eqNH/PZ1B6h//ehyC1OwRQOrz/tJ3ZYaRrBgA=</ds:DigestValue>
+              </xades:SigPolicyHash>
+              <xades:SigPolicyQualifiers>
+                <xades:SigPolicyQualifier>
+                  <xades:SPURI>http://www.nltaxonomie.nl/sbr/signature_policy_schema/v2.0/SBR-signature-policy-v2.0.xml</xades:SPURI>
+                </xades:SigPolicyQualifier>
+              </xades:SigPolicyQualifiers>
+            </xades:SignaturePolicyId>
+          </xades:SignaturePolicyIdentifier>
+        </xades:SignedSignatureProperties>
+        <xades:SignedDataObjectProperties>
+          <xades:DataObjectFormat ObjectReference="#report_ref">
+            <xades:Description>jaarrekening.xbrl</xades:Description>
+            <xades:ObjectIdentifier>
+              <xades:Identifier>jaarrekening.xbrl</xades:Identifier>
+            </xades:ObjectIdentifier>
+            <xades:MimeType>text/xml</xades:MimeType>
+            <xades:Encoding>UTF-8</xades:Encoding>
+          </xades:DataObjectFormat>
+          <xades:DataObjectFormat ObjectReference="#assurance_ref">
+            <xades:Description>accountantsverklaring.xbrl</xades:Description>
+            <xades:ObjectIdentifier>
+              <xades:Identifier>accountantsverklaring.xbrl</xades:Identifier>
+            </xades:ObjectIdentifier>
+            <xades:MimeType>text/xml</xades:MimeType>
+            <xades:Encoding>UTF-8</xades:Encoding>
+          </xades:DataObjectFormat>
+          <xades:CommitmentTypeIndication>
+            <xades:CommitmentTypeId>
+              <xades:Identifier>urn:sbr:signature-policy:proof-of-integrity-of-the-object-for-which-the-practitioner-expresses-an-opinion</xades:Identifier>
+            </xades:CommitmentTypeId>
+            <xades:ObjectReference>#report_ref</xades:ObjectReference>
+          </xades:CommitmentTypeIndication>
+          <xades:CommitmentTypeIndication>
+            <xades:CommitmentTypeId>
+              <xades:Identifier>urn:sbr:signature-policy:proof-of-intent-of-practitioner-to-express-an-opinion</xades:Identifier>
+            </xades:CommitmentTypeId>
+            <xades:ObjectReference>#assurance_ref</xades:ObjectReference>
+          </xades:CommitmentTypeIndication>
+        </xades:SignedDataObjectProperties>
+      </xades:SignedProperties>
+    </xades:QualifyingProperties>
+  </ds:Object>
+</ds:Signature>

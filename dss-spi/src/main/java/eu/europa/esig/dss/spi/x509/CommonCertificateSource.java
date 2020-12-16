@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
@@ -48,6 +49,8 @@ public class CommonCertificateSource implements CertificateSource {
 	private static final long serialVersionUID = -5031898106342793626L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateSource.class);
+	
+	protected final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
 
 	/**
 	 * Map of entries, the key is a hash of the public key.
@@ -192,6 +195,32 @@ public class CommonCertificateSource implements CertificateSource {
 			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
 				// run over all entries to compare with the SN too
 				if (certificateIdentifier.isRelatedToCertificate(certificateToken)) {
+					result.add(certificateToken);
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public Set<CertificateToken> getByCertificateDigest(Digest digest) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
+			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
+				if (Arrays.equals(digest.getValue(), certificateToken.getDigest(digest.getAlgorithm()))) {
+					result.add(certificateToken);
+				}
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public Set<CertificateToken> findTokensFromCertRef(CertificateRef certificateRef) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
+			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
+				if (certificateMatcher.match(certificateToken, certificateRef)) {
 					result.add(certificateToken);
 				}
 			}

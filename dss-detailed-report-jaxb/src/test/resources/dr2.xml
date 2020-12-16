@@ -171,6 +171,10 @@
                 </Conclusion>
             </ValidationCertificateQualification>
         </ValidationSignatureQualification>
+        <Conclusion>
+            <Indication>TOTAL_FAILED</Indication>
+            <SubIndication>HASH_FAILURE</SubIndication>
+        </Conclusion>
     </Signature>
     <BasicBuildingBlocks Id="R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3" Type="REVOCATION">
         <ISC Title="Identification of the Signing Certificate">
@@ -327,6 +331,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -404,6 +409,7 @@
                 <KeyLength>4096</KeyLength>
                 <Secure>true</Secure>
                 <NotAfter>2025-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -683,6 +689,7 @@
                 <KeyLength>2048</KeyLength>
                 <Secure>false</Secure>
                 <NotAfter>2008-12-31T23:00:00</NotAfter>
+                <ConcernedMaterial>S-B076879EC80E7D31F8B4ABECDFB4B646AF9AF30843BA2C44B4261243CC8D4542</ConcernedMaterial>
             </CryptographicInfo>
         </SAV>
         <CertificateChain>
@@ -745,4 +752,10 @@
             <Indication>PASSED</Indication>
         </Conclusion>
     </TLAnalysis>
+    <Semantic Key="TOTAL_FAILED">The signature validation process results into TOTAL-FAILED because the format-check failed, cryptographic checks of the signature failed (including checks of hashes of individual data objects that have been signed indirectly) or it has been proven that the signing certificate was invalid at the time of generation of the signature.</Semantic>
+	<Semantic Key="INDETERMINATE">The available information is insufficient to ascertain the signature to be TOTAL-PASSED or TOTAL-FAILED.</Semantic>
+    <Semantic Key="PASSED">The validation process succeeded</Semantic>
+    <Semantic Key="FAILED">The validation process failed</Semantic>
+    <Semantic Key="HASH_FAILURE">The signature validation process results into TOTAL-FAILED because at least one hash of a signed data object(s) that has been included in the signing process does not match the corresponding hash value in the signature.</Semantic>
+	<Semantic Key="CRYPTO_CONSTRAINTS_FAILURE_NO_POE">The signature validation process results into INDETERMINATE because at least one of the algorithms that have been used in objects (e.g. the signature value, a certificate, etc.) involved in validating the signature, or the size of a key used with such an algorithm, is below the required cryptographic security level, and there is no proof that this material was produced before the time up to which this algorithm/key was considered secure.</Semantic>
 </DetailedReport>

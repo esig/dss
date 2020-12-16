@@ -4,7 +4,7 @@ POST /services/rest/signature/one-document/signDocument HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 4480
+Content-Length: 4585
 
 {
   "parameters" : {
@@ -18,6 +18,8 @@ Content-Length: 4480
     "asicContainerType" : null,
     "signatureLevel" : "CAdES_BASELINE_B",
     "signaturePackaging" : "DETACHED",
+    "jwsSerializationType" : null,
+    "sigDMechanism" : null,
     "signatureAlgorithm" : "RSA_SHA256",
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : "RSA",
@@ -42,9 +44,10 @@ Content-Length: 4480
     "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
+    "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1593006512053,
+      "signingDate" : 1607960339007,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
@@ -63,7 +66,7 @@ Content-Length: 4480
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "XykhVVHMLJawKDTGgy/2kZDD1+ax1sDczmrrsdAEE8yDNPb/l1M4BodZ1WbIuHHJQkJVP8VAohmBRDBuJf/Jnb7rxoWpbkZoncoFIoedCOx7b699xRqEDbFCCfumyRXP7QIiNPHcwfL2Hhkf/lBYWjzxjUlN6/QOgio0kVBysMT66J2uGhDn/AzibjpCSNBK04h9mh1rJhm2v55FnXgCgd6kHVa5DefYbHvlEwhO2JTOhoKfFNpLrssDoP6szjxD1PCg1SQGaTxksklkkWhS/e2R308mIxoiyiuX8s+kxKUc0NrMQjcfawYTndsQjjiINGD/MaOJa2bqgCo9aSkarA=="
+    "value" : "Fw/ulQqfxRgcEmZI6yTNDSOe7hebRuUPoJetZLmjcD+YZOcbYwsbqGtr9p2jnteVnZssNMLz4IlNkqaE4Y1B0hpgDYeST5dylxxlgntRYuADvuZroUmPmkMDxWwJusqxYVa/o9LRHJup8VcSVeqUCZZ8JuFtkTLYUiYvGsj5BqyPijOBS8PGuxycmLq23ijB7mR9kA8wGuP4F4P69T8sgYwk00mudn+zFRVwTAm0Ao8ChPCKJrp7r0zFsCJ2EI14qQYk1xzIbTZq5Z/QS4bHB4YKX0hVieZO/Mw4hi4dw6wguf1BneKiJwwMe4Y0wbc2MNL63NRQ7cYcWqcjOki32g=="
   },
   "toSignDocument" : {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",

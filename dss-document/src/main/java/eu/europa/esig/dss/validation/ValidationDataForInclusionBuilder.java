@@ -20,23 +20,24 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Class to build a ValidationDataForInclusion from a signature ValidationContext
@@ -45,13 +46,21 @@ import eu.europa.esig.dss.utils.Utils;
 public class ValidationDataForInclusionBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationDataForInclusionBuilder.class);
-	
+
+	/** The ValidationContext to access and validation certificate chains */
 	private final ValidationContext validationContext;
+
+	/** The merged certificate source */
 	private final ListCertificateSource completeCertificateSource;
 
+	/** The certificate tokens to be excluded from the inclusion */
 	private Collection<CertificateToken> excludeCertificateTokens;
-	private Collection<EncapsulatedRevocationTokenIdentifier> excludeCRLs;
-	private Collection<EncapsulatedRevocationTokenIdentifier> excludeOCSPs;
+
+	/** The CRL tokens to be excluded from the inclusion */
+	private Collection<EncapsulatedRevocationTokenIdentifier<CRL>> excludeCRLs;
+
+	/** The OCSP tokens to be excluded from the inclusion */
+	private Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> excludeOCSPs;
 	
 	/**
 	 * The default constructor
@@ -81,7 +90,7 @@ public class ValidationDataForInclusionBuilder {
 	 * @param excludeCRLs a collection of {@link EncapsulatedRevocationTokenIdentifier}s to be excluded from the inclusion list
 	 * @return {@link ValidationDataForInclusionBuilder}
 	 */
-	public ValidationDataForInclusionBuilder excludeCRLs(Collection<EncapsulatedRevocationTokenIdentifier> excludeCRLs) {
+	public ValidationDataForInclusionBuilder excludeCRLs(Collection<EncapsulatedRevocationTokenIdentifier<CRL>> excludeCRLs) {
 		this.excludeCRLs = excludeCRLs;
 		return this;
 	}
@@ -92,7 +101,7 @@ public class ValidationDataForInclusionBuilder {
 	 * @param excludeOCSPs a collection of {@link EncapsulatedRevocationTokenIdentifier}s to be excluded from the inclusion list
 	 * @return {@link ValidationDataForInclusionBuilder}
 	 */
-	public ValidationDataForInclusionBuilder excludeOCSPs(Collection<EncapsulatedRevocationTokenIdentifier> excludeOCSPs) {
+	public ValidationDataForInclusionBuilder excludeOCSPs(Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> excludeOCSPs) {
 		this.excludeOCSPs = excludeOCSPs;
 		return this;
 	}

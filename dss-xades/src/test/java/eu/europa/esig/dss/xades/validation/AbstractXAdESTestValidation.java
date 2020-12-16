@@ -20,10 +20,25 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public abstract class AbstractXAdESTestValidation extends AbstractDocumentTestValidation<XAdESSignatureParameters, XAdESTimestampParameters> {
+
+	@Override
+	protected void checkSignatureDigestReference(DiagnosticData diagnosticData) {
+		super.checkSignatureDigestReference(diagnosticData);
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			XmlSignatureDigestReference signatureDigestReference = signatureWrapper.getSignatureDigestReference();
+			assertNotNull(signatureDigestReference);
+			assertNotNull(signatureDigestReference.getCanonicalizationMethod());
+		}
+	}
 
 }

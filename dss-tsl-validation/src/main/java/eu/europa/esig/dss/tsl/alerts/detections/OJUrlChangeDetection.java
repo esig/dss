@@ -28,10 +28,19 @@ import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
 
+/**
+ * Detects a change of the OJ URL change
+ */
 public class OJUrlChangeDetection implements AlertDetector<LOTLInfo> {
 
+	/** The LOTL source */
 	private final LOTLSource lotlSource;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param lotlSource {@link LOTLSource}
+	 */
 	public OJUrlChangeDetection(LOTLSource lotlSource) {
 		this.lotlSource = lotlSource;
 	}

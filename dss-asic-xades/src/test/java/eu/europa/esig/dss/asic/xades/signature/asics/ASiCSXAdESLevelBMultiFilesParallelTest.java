@@ -121,7 +121,11 @@ public class ASiCSXAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		assertEquals(0, manifestDocuments.size());
 
 		List<DSSDocument> signedDocuments = result.getSignedDocuments();
-		assertEquals(1, signedDocuments.size()); // package.Zip
+		assertEquals(1, signedDocuments.size());
+		assertEquals("package.zip", signedDocuments.get(0).getName());
+
+		List<DSSDocument> containerDocuments = result.getContainerDocuments();
+		assertEquals(2, containerDocuments.size());
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();
 

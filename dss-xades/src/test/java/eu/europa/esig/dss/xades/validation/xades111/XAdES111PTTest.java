@@ -86,4 +86,19 @@ public class XAdES111PTTest extends AbstractXAdESTestValidation {
 		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 
+	@Override
+	protected void checkStructureValidation(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertFalse(signatureWrapper.isStructuralValidationValid());
+		assertEquals(2, signatureWrapper.getStructuralValidationMessages().size());
+		
+		boolean crlValuesOrderErrorFound = false;
+		for (String error : signatureWrapper.getStructuralValidationMessages()) {
+			if (error.contains("\"http://uri.etsi.org/01903/v1.3.2#\":CRLValues")) {
+				crlValuesOrderErrorFound = true;
+			}
+		}
+		assertTrue(crlValuesOrderErrorFound);
+	}
+
 }

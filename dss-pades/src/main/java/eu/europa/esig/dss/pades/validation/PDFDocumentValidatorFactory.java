@@ -24,6 +24,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+/**
+ * Loads a relevant validator for a PDF document
+ */
 public class PDFDocumentValidatorFactory implements DocumentValidatorFactory {
 
 	@Override

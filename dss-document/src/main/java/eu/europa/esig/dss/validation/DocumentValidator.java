@@ -20,21 +20,22 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
-
-import eu.europa.esig.dss.enumerations.TokenExtractionStategy;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
-import eu.europa.esig.dss.validation.executor.ValidationLevel;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 /**
  * This is the interface to be used when implementing different signature validators.
@@ -68,9 +69,9 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * This method allows to set the token extraction strategy to follow in the
 	 * diagnostic data generation.
 	 * 
-	 * @param tokenExtractionStategy the {@link TokenExtractionStategy}
+	 * @param tokenExtractionStrategy the {@link TokenExtractionStrategy}
 	 */
-	void setTokenExtractionStategy(TokenExtractionStategy tokenExtractionStategy);
+	void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy);
 	
 	/**
 	 * This method allows to enable/disable the semantics inclusion in the reports
@@ -99,7 +100,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	void setDetachedContents(final List<DSSDocument> detachedContent);
 
 	/**
-	 * Sets the {@code List} of {@code DSSDocument} containing the original container content for ASiC signatures.
+	 * Sets the {@code List} of {@code DSSDocument} containing the original container content for ASiC-S signatures.
 	 *
 	 * @param archiveContents
 	 *            the {@code List} of {@code DSSDocument} to set
@@ -107,19 +108,30 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	void setContainerContents(final List<DSSDocument> archiveContents);
 
 	/**
-	 * Sets the {@code List} of {@code ManifestFile}s found in the signature file.
+	 * Sets a related {@code ManifestFile} to the document to be validated.
 	 *
-	 * @param manifestFiles
-	 *            the {@code List} of {@code ManifestFile} to set
+	 * @param manifestFile
+	 *            a {@code ManifestFile} to set
 	 */
-	void setManifestFiles(final List<ManifestFile> manifestFiles);
+	void setManifestFile(final ManifestFile manifestFile);
 
 	/**
-	 * This method allows to define the signing certificate. It is useful in the case of non AdES signatures.
+	 * This method allows to define the signing certificate. It is useful in the
+	 * case of non AdES signatures.
 	 *
-	 * @param x509Certificate
+	 * @param x509Certificate {@link CertificateToken}
+	 * @deprecated use {@link #setSigningCertificateSource(CertificateSource)}
 	 */
+	@Deprecated
 	void defineSigningCertificate(final CertificateToken x509Certificate);
+
+	/**
+	 * Set a certificate source which allows to find the signing certificate by kid
+	 * or certificate's digest
+	 * 
+	 * @param certificateSource the certificate source
+	 */
+	void setSigningCertificateSource(CertificateSource certificateSource);
 
 	/**
 	 * This method allows to specify the validation level (Basic / Timestamp /
@@ -140,7 +152,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	/**
 	 * This method allows to set a provider for Signature policies
 	 * 
-	 * @param signaturePolicyProvider
+	 * @param signaturePolicyProvider {@link SignaturePolicyProvider}
 	 */
 	void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider);
 
@@ -156,7 +168,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * are retrieved from this location. If null or empty the
 	 * default file is used.
 	 *
-	 * @param validationPolicyURL
+	 * @param validationPolicyURL {@link URL}
 	 * @return {@code Reports}: diagnostic data, detailed report and simple report
 	 */
 	Reports validateDocument(final URL validationPolicyURL);
@@ -197,7 +209,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *
 	 * @param validationPolicyJaxb
 	 *            {@code ConstraintsParameters}
-	 * @return
+	 * @return {@link Reports}
 	 */
 	Reports validateDocument(final ConstraintsParameters validationPolicyJaxb);
 
@@ -207,7 +219,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *
 	 * @param validationPolicy
 	 *            {@code ValidationPolicy}
-	 * @return
+	 * @return {@link Reports}
 	 */
 	Reports validateDocument(final ValidationPolicy validationPolicy);
 
@@ -216,6 +228,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *
 	 * @param signatureId
 	 *            the DSS ID of the signature to extract original signer data for
+	 * @return list of {@link DSSDocument}s
 	 */
 	List<DSSDocument> getOriginalDocuments(final String signatureId);
 
@@ -224,6 +237,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *
 	 * @param advancedSignature
 	 *            {@link AdvancedSignature} to find signer documents for
+	 * @return list of {@link DSSDocument}s
 	 */
 	List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature);
 	
@@ -256,6 +270,11 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 */
 	void processSignaturesValidation(List<AdvancedSignature> allSignatureList);
 
+	/**
+	 * Finds SignatureScopes for a list of signatures
+	 *
+	 * @param currentValidatorSignatures a list of {@link AdvancedSignature}s
+	 */
 	void findSignatureScopes(List<AdvancedSignature> currentValidatorSignatures);
 
 }

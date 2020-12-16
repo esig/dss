@@ -24,8 +24,16 @@ import eu.europa.esig.dss.alert.detector.StatusDetector;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.status.Status;
 
+/**
+ * The abstract alert class to define a handler for the {@code Status} processing
+ */
 public abstract class AbstractStatusAlert extends AbstractAlert<Status> implements StatusAlert {
 
+	/**
+	 * The default constructor
+	 *
+	 * @param handler {@link AlertHandler} to process the {@link Status}
+	 */
 	protected AbstractStatusAlert(AlertHandler<Status> handler) {
 		super(new StatusDetector(), handler);
 	}

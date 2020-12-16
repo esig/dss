@@ -20,6 +20,31 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.PdfAnnotation;
+import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfDocumentReader;
+import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
+import eu.europa.esig.dss.pdf.SingleDssDict;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ByteRange;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,77 +53,107 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.pdf.PdfDict;
-import eu.europa.esig.dss.pdf.PdfDocumentReader;
-import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
-import eu.europa.esig.dss.pdf.SingleDssDict;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ByteRange;
-import eu.europa.esig.dss.validation.PdfSignatureDictionary;
-
+/**
+ * The PDFBox implementation of {@code PdfDocumentReader}
+ */
 public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxDocumentReader.class);
-	
+
+	/** The PDF document */
 	private DSSDocument dssDocument;
-	
+
+	/** The PDFBox implementation of the document */
 	private final PDDocument pdDocument;
-	
+
 	/**
 	 * Default constructor of the PDFBox implementation of the Reader
 	 * 
 	 * @param dssDocument {@link DSSDocument} to read
-	 * @throws IOException if an exception occurs
-	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or invalid for a protected document
+	 * @throws IOException                                                 if an
+	 *                                                                     exception
+	 *                                                                     occurs
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the
+	 *                                                                     password
+	 *                                                                     is not
+	 *                                                                     provided
+	 *                                                                     or
+	 *                                                                     invalid
+	 *                                                                     for a
+	 *                                                                     protected
+	 *                                                                     document
 	 */
-	public PdfBoxDocumentReader(DSSDocument dssDocument) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
+	public PdfBoxDocumentReader(DSSDocument dssDocument)
+			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		this(dssDocument, null);
 	}
-	
+
 	/**
 	 * The PDFBox implementation of the Reader
 	 * 
-	 * @param dssDocument {@link DSSDocument} to read
-	 * @param passwordProtection {@link String} a password to open a protected document
-	 * @throws IOException if an exception occurs
-	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or invalid for a protected document
+	 * @param dssDocument        {@link DSSDocument} to read
+	 * @param passwordProtection {@link String} a password to open a protected
+	 *                           document
+	 * @throws IOException                                                 if an
+	 *                                                                     exception
+	 *                                                                     occurs
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the
+	 *                                                                     password
+	 *                                                                     is not
+	 *                                                                     provided
+	 *                                                                     or
+	 *                                                                     invalid
+	 *                                                                     for a
+	 *                                                                     protected
+	 *                                                                     document
 	 */
-	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
+	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection)
+			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
 		this.dssDocument = dssDocument;
 		try (InputStream is = dssDocument.openStream()) {
 			this.pdDocument = PDDocument.load(is, passwordProtection);
 		} catch (InvalidPasswordException e) {
-            throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
+			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		}
 	}
 
 	/**
 	 * The PDFBox implementation of the Reader
 	 * 
-	 * @param binaries a byte array of a PDF to read
-	 * @param passwordProtection {@link String} a password to open a protected document
-	 * @throws IOException if an exception occurs
-	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or invalid for a protected document
+	 * @param binaries           a byte array of a PDF to read
+	 * @param passwordProtection {@link String} a password to open a protected
+	 *                           document
+	 * @throws IOException                                                 if an
+	 *                                                                     exception
+	 *                                                                     occurs
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the
+	 *                                                                     password
+	 *                                                                     is not
+	 *                                                                     provided
+	 *                                                                     or
+	 *                                                                     invalid
+	 *                                                                     for a
+	 *                                                                     protected
+	 *                                                                     document
 	 */
-	public PdfBoxDocumentReader(byte[] binaries, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
+	public PdfBoxDocumentReader(byte[] binaries, String passwordProtection)
+			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		Objects.requireNonNull(binaries, "The document binaries must be defined!");
 		try {
 			this.pdDocument = PDDocument.load(binaries, passwordProtection);
 		} catch (InvalidPasswordException e) {
-            throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
+			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		}
+	}
+
+	/**
+	 * The constructor to directly instantiate the {@code PdfBoxDocumentReader}
+	 * 
+	 * @param pdDocument {@link PDDocument}
+	 */
+	public PdfBoxDocumentReader(final PDDocument pdDocument) {
+		this.pdDocument = pdDocument;
 	}
 
 	@Override
@@ -161,8 +216,9 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		try (InputStream is = dssDocument.openStream()) {
 			long originalBytesLength = Utils.getInputStreamSize(is);
 			// /ByteRange [0 575649 632483 10206]
-			long beforeSignatureLength = (long)byteRange.getFirstPartEnd() - byteRange.getFirstPartStart();
-			long expectedCMSLength = (long)byteRange.getSecondPartStart() - byteRange.getFirstPartEnd() - byteRange.getFirstPartStart();
+			long beforeSignatureLength = (long) byteRange.getFirstPartEnd() - byteRange.getFirstPartStart();
+			long expectedCMSLength = (long) byteRange.getSecondPartStart() - byteRange.getFirstPartEnd()
+					- byteRange.getFirstPartStart();
 			long afterSignatureLength = byteRange.getSecondPartEnd();
 			long totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
 
@@ -176,6 +232,87 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	@Override
 	public void close() throws IOException {
 		pdDocument.close();
+	}
+
+	@Override
+	public int getNumberOfPages() {
+		return pdDocument.getNumberOfPages();
+	}
+
+	@Override
+	public AnnotationBox getPageBox(int page) {
+		PDPage pdPage = getPDPage(page);
+		PDRectangle mediaBox = pdPage.getMediaBox();
+		return new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(), mediaBox.getUpperRightX(),
+				mediaBox.getUpperRightY());
+	}
+
+	@Override
+	public List<PdfAnnotation> getPdfAnnotations(int page) throws IOException {
+		List<PdfAnnotation> annotations = new ArrayList<>();
+		List<PDAnnotation> pdAnnotations = getPageAnnotations(page);
+		for (PDAnnotation pdAnnotation : pdAnnotations) {
+			PdfAnnotation pdfAnnotation = toPdfAnnotation(pdAnnotation);
+			if (pdfAnnotation != null) {
+				annotations.add(pdfAnnotation);
+			}
+		}
+		return annotations;
+	}
+
+	private List<PDAnnotation> getPageAnnotations(int page) throws IOException {
+		PDPage pdPage = getPDPage(page);
+		return pdPage.getAnnotations();
+	}
+
+	/**
+	 * Returns a {@code PDPage}
+	 * 
+	 * @param page number
+	 * @return {@link PDPage}
+	 */
+	public PDPage getPDPage(int page) {
+		return pdDocument.getPage(page - ImageUtils.DEFAULT_FIRST_PAGE);
+	}
+
+	private PdfAnnotation toPdfAnnotation(PDAnnotation pdAnnotation) {
+		PDRectangle pdRect = pdAnnotation.getRectangle();
+		if (pdRect != null) {
+			AnnotationBox annotationBox = new AnnotationBox(pdRect.getLowerLeftX(), pdRect.getLowerLeftY(),
+					pdRect.getUpperRightX(), pdRect.getUpperRightY());
+			PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
+			pdfAnnotation.setName(getSignatureFieldName(pdAnnotation));
+			pdfAnnotation.setSigned(isSigned(pdAnnotation));
+			return pdfAnnotation;
+		}
+		return null;
+	}
+
+	private String getSignatureFieldName(PDAnnotation pdAnnotation) {
+		return pdAnnotation.getCOSObject().getString(COSName.T);
+	}
+
+	private boolean isSigned(PDAnnotation pdAnnotation) {
+		COSObject sigDicObject = pdAnnotation.getCOSObject().getCOSObject(COSName.V);
+		return sigDicObject != null;
+	}
+
+	@Override
+	public BufferedImage generateImageScreenshot(int page) throws IOException {
+		return PdfBoxUtils.generateBufferedImageScreenshot(pdDocument, page);
+	}
+
+	@Override
+	public BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> annotations)
+			throws IOException {
+		List<PDAnnotation> pdAnnotations = getPageAnnotations(page);
+		for (PDAnnotation pdAnnotation : pdAnnotations) {
+			PdfAnnotation pdfAnnotation = toPdfAnnotation(pdAnnotation);
+			if (annotations.contains(pdfAnnotation)) {
+				pdAnnotation.setHidden(true);
+			}
+		}
+		return generateImageScreenshot(page);
 	}
 
 }

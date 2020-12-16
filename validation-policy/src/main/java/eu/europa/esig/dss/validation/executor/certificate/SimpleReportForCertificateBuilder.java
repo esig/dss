@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.certificate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
@@ -42,20 +36,50 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSubject;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlTrustAnchor;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Builds a SimpleReport for a certificate validation
+ */
 public class SimpleReportForCertificateBuilder {
 
+	/** The diagnostic data */
 	private final DiagnosticData diagnosticData;
+
+	/** The detailed report */
 	private final DetailedReport detailedReport;
+
+	/** The validation time */
 	private final Date currentTime;
+
+	/** The id of a certificate to be validated */
 	private final String certificateId;
 
-	public SimpleReportForCertificateBuilder(DiagnosticData diagnosticData, DetailedReport detailedReport, Date currentTime, String certificateId) {
+	/**
+	 * Default constructor
+	 *
+	 * @param diagnosticData {@link DiagnosticData}
+	 * @param detailedReport {@link DetailedReport}
+	 * @param currentTime {@link Date} validation time
+	 * @param certificateId {@link String} if od certificate to be valdiated
+	 */
+	public SimpleReportForCertificateBuilder(DiagnosticData diagnosticData, DetailedReport detailedReport,
+											 Date currentTime, String certificateId) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 		this.currentTime = currentTime;
 		this.certificateId = certificateId;
 	}
 
+	/**
+	 * Builds {@code XmlSimpleCertificateReport}
+	 *
+	 * @return {@link XmlSimpleCertificateReport}
+	 */
 	public XmlSimpleCertificateReport build() {
 		XmlSimpleCertificateReport simpleReport = new XmlSimpleCertificateReport();
 		simpleReport.setValidationTime(currentTime);

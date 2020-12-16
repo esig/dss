@@ -20,11 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.cv;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
@@ -36,11 +32,12 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.cv.checks.AllFilesSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
+
+import java.util.List;
 
 /**
  * 5.2.7 Cryptographic verification
@@ -48,15 +45,26 @@ import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
  */
 public class CryptographicVerification extends Chain<XmlCV> {
 
-	private final DiagnosticData diagnosticData;
+	/** The token to verify */
 	private final TokenProxy token;
 
+	/** The validation policy */
 	private final ValidationPolicy validationPolicy;
+
+	/** The validation context */
 	private final Context context;
 
-	public CryptographicVerification(I18nProvider i18nProvider, DiagnosticData diagnosticData, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param token {@link TokenProxy}
+	 * @param context {@link Context}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public CryptographicVerification(I18nProvider i18nProvider, TokenProxy token, Context context,
+									 ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlCV());
-		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
@@ -73,13 +81,12 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		ChainItem<XmlCV> item = null;
 
 		/*
-		 * 5.2.7.4 Processing
-		 * The first and second steps as well as the Data To Be Signed depend on the signature type. The technical
-		 * details on how to do this correctly are out of scope for the present document. See ETSI EN 319 122-1 [i.2],
-		 * ETSI EN 319
-		 * 122-2 [i.3], ETSI EN 319 132-1 [i.4], ETSI EN 319 132-2 [i.5], ETSI EN 319 142-1 [i.6], ETSI EN 319 142-2
-		 * [i.7] and IETF
-		 * RFC 3852 [i.8] for details.
+		 * 5.2.7.4 Processing The first and second steps as well as 
+		 * the Data To Be Signed depend on the signature type. The technical details 
+		 * on how to do this correctly are out of scope for the present document. 
+		 * See ETSI EN 319 122-1 [i.2], ETSI EN 319 122-2 [i.3], ETSI EN 319 132-1 [i.4], 
+		 * ETSI EN 319 132-2 [i.5], ETSI EN 319 142-1 [i.6], ETSI EN 319 142-2 [i.7] 
+		 * and IETF RFC 3852 [i.8] for details.
 		 */
 
 		List<XmlDigestMatcher> digestMatchers = token.getDigestMatchers();
@@ -107,9 +114,8 @@ public class CryptographicVerification extends Chain<XmlCV> {
 			}
 		}
 
-
 		// If we are verifying a signature based on Manifest, check if at least one
-		// entry is validated
+		// entry is found
 		if (containsManifest(digestMatchers)) {
 			ChainItem<XmlCV> manifestEntryExistence = manifestEntryExistence(digestMatchers);
 			if (item == null) {
@@ -134,11 +140,7 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		} else {
 			item = item.setNextItem(signatureIntact);
 		}
-
-		/* ASiC Container */
-		if (diagnosticData.isContainerInfoPresent() && Context.SIGNATURE == context) {
-			item = item.setNextItem(allFilesSignedCheck());
-		}
+		
 	}
 
 	private boolean containsManifest(List<XmlDigestMatcher> digestMatchers) {
@@ -168,11 +170,6 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	private ChainItem<XmlCV> signatureIntact() {
 		LevelConstraint constraint = validationPolicy.getSignatureIntactConstraint(context);
 		return new SignatureIntactCheck<>(i18nProvider, result, token, context, constraint);
-	}
-
-	private ChainItem<XmlCV> allFilesSignedCheck() {
-		LevelConstraint constraint = validationPolicy.getAllFilesSignedConstraint();
-		return new AllFilesSignedCheck(i18nProvider, result, (SignatureWrapper) token, diagnosticData.getContainerInfo(), constraint);
 	}
 
 }

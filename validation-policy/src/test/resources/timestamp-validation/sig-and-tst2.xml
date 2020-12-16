@@ -8,9 +8,7 @@
             <SignatureFilename>OJ_L_2019_209_FULL.xml</SignatureFilename>
             <ClaimedSigningTime>2019-08-09T12:05:44</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MANIFEST" name="Signature_1565352344457-Reference-0">
                     <DigestMethod>SHA512</DigestMethod>
@@ -214,8 +212,8 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-7CB7821492410914A7674572ACB951F2C0845C9065016B32409FC6082B234B0F" Location="XAdES"/>
-                <FoundTimestamp Timestamp="T-1D96A8573F56CF4550DC6310B5CA16300D432310432796F58C515751C27FF5A6" Location="XAdES"/>
+                <FoundTimestamp Timestamp="T-7CB7821492410914A7674572ACB951F2C0845C9065016B32409FC6082B234B0F"/>
+                <FoundTimestamp Timestamp="T-1D96A8573F56CF4550DC6310B5CA16300D432310432796F58C515751C27FF5A6"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-C874D16A18DBDEAE45F82DA264A3B9AE1E65104773BB5E6E7B971A6D4256098E">
@@ -476,8 +474,8 @@
             <Locality>LU</Locality>
             <CountryName>RO</CountryName>
             <OrganizationName>PUBLICATIONS OFFICE</OrganizationName>
-            <GivenName>Alina-Ileana</GivenName>
             <OrganizationalUnit>NONE</OrganizationalUnit>
+            <GivenName>Alina-Ileana</GivenName>
             <Surname>CIOROIU</Surname>
             <Email>Alina-Ileana.Cioroiu@publications.europa.eu</Email>
             <AuthorityInformationAccessUrls>

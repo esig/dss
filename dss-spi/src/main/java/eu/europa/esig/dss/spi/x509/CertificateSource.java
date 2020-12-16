@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
@@ -94,6 +95,14 @@ public interface CertificateSource extends Serializable {
 	Set<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier);
 
 	/**
+	 * This method returns the Set of certificates with the {@code Digest}
+	 * 
+	 * @param digest the certificate digest to be found
+	 * @return the found certificates or an empty Set
+	 */
+	Set<CertificateToken> getByCertificateDigest(Digest digest);
+
+	/**
 	 * This method returns a Set of {@code CertificateToken} with the given
 	 * {@code PublicKey}
 	 * 
@@ -110,6 +119,14 @@ public interface CertificateSource extends Serializable {
 	 * @return a Set of CertificateToken which have the given ski
 	 */
 	Set<CertificateToken> getBySki(byte[] ski);
+
+	/**
+	 * Returns Set of {@link CertificateToken}s for the provided {@link CertificateRef}
+	 * 
+	 * @param certificateRef a {@link CertificateRef}
+	 * @return Set of {@link CertificateToken}s
+	 */
+	Set<CertificateToken> findTokensFromCertRef(CertificateRef certificateRef);
 
 	List<CertificateSourceEntity> getEntities();
 

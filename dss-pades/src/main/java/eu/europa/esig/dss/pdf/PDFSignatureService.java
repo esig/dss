@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
-import eu.europa.esig.dss.validation.PdfRevision;
+import eu.europa.esig.dss.pades.validation.PdfRevision;
+
+import java.util.List;
 
 /**
  * The usage of this interface permits the user to choose the underlying PDF library used to create PDF signatures.
@@ -42,8 +41,6 @@ public interface PDFSignatureService {
 	 * @param parameters
 	 *            the signature/timestamp parameters
 	 * @return the digest value
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
 
@@ -56,8 +53,7 @@ public interface PDFSignatureService {
 	 *            the signature value
 	 * @param parameters
 	 *            the signature/timestamp parameters
-	 * @throws DSSException
-	 *             if an error occurred
+	 * @return {@link DSSDocument}
 	 */
 	DSSDocument sign(final DSSDocument pdfData, final byte[] signatureValue, final PAdESCommonParameters parameters);
 
@@ -81,9 +77,6 @@ public interface PDFSignatureService {
 	 * @param callbacks
 	 *            the callbacks to retrieve the revocation data,...
 	 * @return the pdf document with the added dss dictionary
-	 * 
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks);
 
@@ -97,9 +90,6 @@ public interface PDFSignatureService {
 	 * @param pwd
 	 *            the password protection used to create the encrypted document
 	 * @return the pdf document with the added dss dictionary
-	 * 
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
 	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, final String pwd);
 

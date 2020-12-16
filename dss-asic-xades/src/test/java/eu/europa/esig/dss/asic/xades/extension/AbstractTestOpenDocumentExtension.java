@@ -24,29 +24,24 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
@@ -104,18 +99,23 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {
 		// Sign
+		ASiCWithXAdESSignatureParameters signatureParameters = getSignatureParameters();
+		ASiCWithXAdESService service = getSignatureServiceToSign();
+
+		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
+				getPrivateKeyEntry());
+		return service.signDocument(doc, signatureParameters, signatureValue);
+	}
+
+	@Override
+	protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
 		signatureParameters.aSiC().setContainerType(getContainerType());
-
-		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getUsedTSPSourceAtSignatureTime());
-
-		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		return service.signDocument(doc, signatureParameters, signatureValue);
+		return signatureParameters;
 	}
 
 	@Override
@@ -129,7 +129,14 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 	protected abstract ASiCContainerType getContainerType();
 
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getSignatureServiceToExtend() {
+	protected ASiCWithXAdESService getSignatureServiceToSign() {
+		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
+		return service;
+	}
+
+	@Override
+	protected ASiCWithXAdESService getSignatureServiceToExtend() {
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;
@@ -140,8 +147,8 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 		// We check that all original files are present in the extended archive.
 		// (signature are not renamed,...)
 
-		List<String> filenames = getFilesNames(signedDocument);
-		List<String> extendedFilenames = getFilesNames(extendedDocument);
+		List<String> filenames = ZipUtils.getInstance().extractEntryNames(signedDocument);
+		List<String> extendedFilenames = ZipUtils.getInstance().extractEntryNames(extendedDocument);
 
 		for (String name : extendedFilenames) {
 			assertTrue(filenames.contains(name));
@@ -150,19 +157,6 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 		for (String name : filenames) {
 			assertTrue(extendedFilenames.contains(name));
 		}
-	}
-
-	private List<String> getFilesNames(DSSDocument doc) {
-		List<String> filenames = new ArrayList<>();
-		try (InputStream is = doc.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
-			ZipEntry entry;
-			while ((entry = ASiCUtils.getNextValidEntry(zis)) != null) {
-				filenames.add(entry.getName());
-			}
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
-		return filenames;
 	}
 	
 	@Override

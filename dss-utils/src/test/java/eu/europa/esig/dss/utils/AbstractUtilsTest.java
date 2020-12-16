@@ -20,13 +20,8 @@
  */
 package eu.europa.esig.dss.utils;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -40,13 +35,20 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractUtilsTest {
 	
@@ -187,6 +189,7 @@ public abstract class AbstractUtilsTest {
 	@Test
 	public void endsWithIgnoreCase() {
 		assertTrue(Utils.endsWithIgnoreCase("hello", "lo"));
+		assertTrue(Utils.endsWithIgnoreCase("hello", "LO"));
 		assertFalse(Utils.endsWithIgnoreCase("hello", null));
 		assertFalse(Utils.endsWithIgnoreCase(null, "lo"));
 		assertFalse(Utils.endsWithIgnoreCase("hello", "la"));
@@ -323,6 +326,21 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
+	public void isHexEncodedTest() {
+		assertTrue(Utils.isHexEncoded(""));
+		assertTrue(Utils.isHexEncoded("5361736861"));
+		assertTrue(Utils.isHexEncoded("30187F47A8D9AE9D3D12942CE996C3BF746E4F4F"));
+		assertTrue(Utils.isHexEncoded("7761726774655c657761723435684e554948672a264833345033"));
+		assertFalse(Utils.isHexEncoded("\n536 1736 \n861"));
+		assertFalse(Utils.isHexEncoded("5361736861=="));
+		assertFalse(Utils.isHexEncoded("AQIDBAU"));
+		assertFalse(Utils.isHexEncoded("AQIDBAU=="));
+		assertFalse(Utils.isHexEncoded("1.3.5"));
+		assertFalse(Utils.isHexEncoded("AS.DF,GH/JK"));
+		assertThrows(NullPointerException.class, () -> Utils.isHexEncoded(null));
+	}
+
+	@Test
 	public void toHexNull() {
 		assertThrows(NullPointerException.class, () -> Utils.toHex(null));
 	}
@@ -357,6 +375,7 @@ public abstract class AbstractUtilsTest {
 		assertTrue(Utils.isBase64Encoded("\nAQI\nD BA\tU=\n"));
 		assertFalse(Utils.isBase64Encoded("1.3.5"));
 		assertFalse(Utils.isBase64Encoded("AS.DF,GH/JK"));
+		assertThrows(NullPointerException.class, () -> Utils.isBase64Encoded(null));
 	}
 	
 	@Test
@@ -471,6 +490,20 @@ public abstract class AbstractUtilsTest {
 		assertThrows(FileNotFoundException.class, () -> {
 			Utils.cleanDirectory(new File("wrong"));	
 		});
+	}
+
+	@Test
+	public void reverseListTest() {
+		List<String> stringsList = Arrays.asList("a", "b", "c");
+		assertEquals(Arrays.asList("c", "b", "a"), Utils.reverseList(stringsList));
+
+		List<Integer> intList = Arrays.asList(1, 2, 3, null);
+		assertEquals(Arrays.asList(null, 3, 2, 1), Utils.reverseList(intList));
+
+		List<Object> emptyList = Collections.emptyList();
+		assertEquals(0, Utils.reverseList(emptyList).size());
+
+		assertThrows(Exception.class, () -> Utils.reverseList(null));
 	}
 
 }

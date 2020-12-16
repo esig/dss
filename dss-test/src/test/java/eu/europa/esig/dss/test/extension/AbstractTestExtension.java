@@ -51,6 +51,8 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 
 	protected abstract SignatureLevel getFinalSignatureLevel();
 
+	protected abstract DocumentSignatureService<SP, TP> getSignatureServiceToSign();
+
 	protected abstract DocumentSignatureService<SP, TP> getSignatureServiceToExtend();
 
 	protected abstract TSPSource getUsedTSPSourceAtSignatureTime();
@@ -126,6 +128,8 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 		return extendedDocument;
 	}
 
+	protected abstract SP getSignatureParameters();
+
 	protected abstract SP getExtensionParameters();
 
 	protected void checkOriginalLevel(DiagnosticData diagnosticData) {
@@ -140,5 +144,13 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
         assertTrue(diagnosticData.isThereTLevel(diagnosticData.getFirstSignatureId()));
         assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
     }
+
+	protected void onDocumentSigned(DSSDocument signedDocument) {
+		// do nothing by default
+	}
+
+	protected void onDocumentExtended(DSSDocument extendedDocument) {
+		// do nothing by default
+	}
 
 }

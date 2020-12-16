@@ -29,11 +29,26 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
+/**
+ * Checks if the certificate's signature is valid
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class CertificateSignatureValidCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Certificate to check */
 	private final CertificateWrapper certificate;
 
-	public CertificateSignatureValidCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public CertificateSignatureValidCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
+										  LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}

@@ -20,6 +20,12 @@
  */
 package eu.europa.esig.dss;
 
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,18 +35,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * Reorders a certificate collection to the corresponding certificate chain
+ */
 public class CertificateReorderer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateReorderer.class);
 
+	/** The signing certificate (the last certificate in the chain) */
 	private final CertificateToken signingCertificate;
+
+	/** The collection of certificates */
 	private final Collection<CertificateToken> certificateChain;
 
 	/**
@@ -48,7 +53,7 @@ public class CertificateReorderer {
 	 * the signing certificate
 	 * 
 	 * @param certificateChain
-	 *                         a collection of certificates
+	 *                         a collection of {@link CertificateToken}s
 	 */
 	public CertificateReorderer(Collection<CertificateToken> certificateChain) {
 		this(null, certificateChain);
@@ -58,9 +63,9 @@ public class CertificateReorderer {
 	 * Constructor which takes a potential signing certificate and a certificate chain
 	 * 
 	 * @param signingCertificate
-	 *            the potential signing certificate
+	 *            {@link CertificateToken} the potential signing certificate
 	 * @param certificateChain
-	 *            the certificate chain
+	 *            a collection of {@link CertificateToken}s
 	 */
 	public CertificateReorderer(CertificateToken signingCertificate, Collection<CertificateToken> certificateChain) {
 		this.signingCertificate = signingCertificate;
@@ -70,7 +75,7 @@ public class CertificateReorderer {
 	/**
 	 * This method is used to order the certificates (signing certificate, CA1, CA2 and Root)
 	 * 
-	 * @return a list of ordered certificates
+	 * @return a list of ordered {@link CertificateToken}s
 	 */
 	public List<CertificateToken> getOrderedCertificates() {
 
@@ -170,7 +175,7 @@ public class CertificateReorderer {
 			if (identifiedSigningCerts.contains(signingCertificate)) {
 				selectedSigningCert = signingCertificate;
 			} else {
-				throw new DSSException("No pertinent paramaters");
+				throw new DSSException("Unable to determine a signing certificate : No pertinent input parameters");
 			}
 		}
 		return selectedSigningCert;
@@ -203,10 +208,14 @@ public class CertificateReorderer {
 	 * This method is used to identify the signing certificates (the certificate
 	 * which didn't sign any other certificate)
 	 * 
-	 * @param certificates
+	 * @param certificates a collection of {@link CertificateToken}s
 	 * @return the identified signing certificates
 	 */
 	private List<CertificateToken> getSigningCertificates(List<CertificateToken> certificates) {
+		if (Utils.isCollectionEmpty(certificates)) {
+			throw new DSSException("No signing certificate found");
+		}
+		
 		List<CertificateToken> potentialSigners = new ArrayList<>();
 		for (CertificateToken signer : certificates) {
 			boolean isSigner = false;
@@ -224,7 +233,7 @@ public class CertificateReorderer {
 		}
 
 		if (Utils.isCollectionEmpty(potentialSigners)) {
-			throw new DSSException("No signing certificate found");
+			throw new DSSException("The certificate chain contains only bridge certificates");
 		}
 
 		return potentialSigners;

@@ -20,6 +20,21 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
+import eu.europa.esig.dss.pdf.PdfCMSRevision;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ByteRange;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,28 +42,27 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
-import eu.europa.esig.dss.pdf.PdfCMSRevision;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ByteRange;
-import eu.europa.esig.dss.validation.PdfRevision;
-
+/**
+ * Utils for dealing with PAdES
+ */
 public final class PAdESUtils {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESUtils.class);
-	
+
+	/**
+	 * Defines a number of a first page in a document
+	 */
+	public static final int DEFAULT_FIRST_PAGE = 1;
+
+	/** The starting bytes of a PDF document */
+	private static final byte[] PDF_PREAMBLE = new byte[]{'%', 'P', 'D', 'F', '-'};
+
+	private PAdESUtils() {
+	}
+
 	/**
 	 * Returns the original signed content for the {@code padesSignature}
+	 * 
 	 * @param padesSignature {@link PAdESSignature}
 	 * @return {@link InMemoryDocument}
 	 */
@@ -58,26 +72,45 @@ public final class PAdESUtils {
 			// data before adding the signature value
 			DSSDocument dataToBeSigned = coveredOriginalFile.get(0);
 			ByteRange signatureByteRange = padesSignature.getPdfRevision().getByteRange();
-			DSSDocument firstByteRangePart = DSSUtils.splitDocument(dataToBeSigned, signatureByteRange.getFirstPartStart(), signatureByteRange.getFirstPartEnd());
-			return retrieveLastPDFRevision(firstByteRangePart);
+			DSSDocument firstByteRangePart = DSSUtils.splitDocument(dataToBeSigned,
+					signatureByteRange.getFirstPartStart(), signatureByteRange.getFirstPartEnd());
+			return retrieveCompletePDFRevision(firstByteRangePart);
 		}
 		return null;
 	}
 
 	/**
 	 * Returns the original signed content for the {@code pdfRevision}
+	 * 
 	 * @param pdfRevision {@link PdfRevision}
 	 * @return {@link InMemoryDocument}
 	 */
 	public static InMemoryDocument getOriginalPDF(final PdfCMSRevision pdfRevision) {
 		byte[] signedDocumentBytes = pdfRevision.getRevisionCoveredBytes();
 		ByteRange signatureByteRange = pdfRevision.getByteRange();
-		DSSDocument firstByteRangePart = DSSUtils.splitDocument(
-				new InMemoryDocument(signedDocumentBytes), signatureByteRange.getFirstPartStart(), signatureByteRange.getFirstPartEnd());
-		return retrieveLastPDFRevision(firstByteRangePart);
+		return retrievePreviousPDFRevision(new InMemoryDocument(signedDocumentBytes), signatureByteRange);
 	}
 
-	private static InMemoryDocument retrieveLastPDFRevision(DSSDocument firstByteRangePart) {
+	/**
+	 * Retrieves the PDF document up to the previous PDF Revision, an empty document if such revision is not found
+	 *
+	 * @param document {@link DSSDocument} the original document
+	 * @param byteRange {@link ByteRange} representing the signed revision, to get the previous covered PDF for
+	 * @return {@link InMemoryDocument} the PDF document up to the signed revision
+	 */
+	public static InMemoryDocument retrievePreviousPDFRevision(DSSDocument document, ByteRange byteRange) {
+		DSSDocument firstByteRangePart = DSSUtils.splitDocument(document,
+				byteRange.getFirstPartStart(), byteRange.getFirstPartEnd());
+		return retrieveCompletePDFRevision(firstByteRangePart);
+	}
+
+	/**
+	 * Returns the PDF document up to the last complete PDF revision (up to the "%%EOF" string)
+	 *
+	 * @param firstByteRangePart {@link DSSDocument} the document to get last revision for
+	 * @return {@link InMemoryDocument}
+	 */
+	private static InMemoryDocument retrieveCompletePDFRevision(DSSDocument firstByteRangePart) {
 		final byte[] eof = new byte[] { '%', '%', 'E', 'O', 'F' };
 		try (InputStream is = firstByteRangePart.openStream();
 				BufferedInputStream bis = new BufferedInputStream(is);
@@ -87,20 +120,20 @@ public final class PAdESUtils {
 			ByteArrayOutputStream tempRevision = new ByteArrayOutputStream();
 			int b;
 			while ((b = bis.read()) != -1) {
-				
+
 				tempLine.write(b);
 				byte[] stringBytes = tempLine.toByteArray();
-				
+
 				if (Arrays.equals(stringBytes, eof)) {
 					tempLine.close();
 					tempLine = new ByteArrayOutputStream();
-					
+
 					tempRevision.write(stringBytes);
 					int c = bis.read();
 					// if \n
 					if (c == 0x0a) {
 						tempRevision.write(c);
-					} 
+					}
 					// if \r
 					else if (c == 0x0d) {
 						int d = bis.read();
@@ -123,7 +156,7 @@ public final class PAdESUtils {
 					tempLine.close();
 					tempLine = new ByteArrayOutputStream();
 				}
-				
+
 			}
 			tempLine.close();
 			tempRevision.close();
@@ -135,12 +168,13 @@ public final class PAdESUtils {
 			throw new DSSException("Unable to retrieve the last revision", e);
 		}
 	}
-	
+
 	/**
 	 * Returns a signed content according to the provided byteRange
 	 * 
 	 * @param dssDocument {@link DSSDocument} to extract the content from
-	 * @param byteRange {@link ByteRange} indicating which content range should be extracted
+	 * @param byteRange   {@link ByteRange} indicating which content range should be
+	 *                    extracted
 	 * @return extracted content
 	 * @throws IOException in case if an exception occurs
 	 */
@@ -151,32 +185,30 @@ public final class PAdESUtils {
 		int startSigValueContent = byteRange.getFirstPartEnd();
 		int endSigValueContent = byteRange.getSecondPartStart();
 		int endValue = byteRange.getSecondPartEnd();
-		
+
 		byte[] signedContentByteArray = new byte[startSigValueContent + endValue];
-		
+
 		try (InputStream is = dssDocument.openStream()) {
-			
+
 			DSSUtils.skipAvailableBytes(is, beginning);
 			DSSUtils.readAvailableBytes(is, signedContentByteArray, 0, startSigValueContent);
-			DSSUtils.skipAvailableBytes(is, (long)endSigValueContent - startSigValueContent - beginning);
+			DSSUtils.skipAvailableBytes(is, (long) endSigValueContent - startSigValueContent - beginning);
 			DSSUtils.readAvailableBytes(is, signedContentByteArray, startSigValueContent, endValue);
-			
+
 		} catch (IllegalStateException e) {
 			LOG.error("Cannot extract signed content. Reason : {}", e.getMessage());
 		}
-		
+
 		return signedContentByteArray;
 	}
-	
 
 	/**
 	 * Returns {@link RevocationInfoArchival} from the given encodable
 	 * 
-	 * @param encodable
-	 *                  the encoded data to be parsed
-	 * @return an instance of RevocationValues or null if the parsing failled
+	 * @param encodable the encoded data to be parsed
+	 * @return an instance of RevocationValues or null if the parsing failed
 	 */
-	public static RevocationInfoArchival getRevocationInfoArchivals(ASN1Encodable encodable) {
+	public static RevocationInfoArchival getRevocationInfoArchival(ASN1Encodable encodable) {
 		if (encodable != null) {
 			try {
 				return RevocationInfoArchival.getInstance(encodable);
@@ -185,6 +217,16 @@ public final class PAdESUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if the given {@code DSSDocument} represents a PDF document
+	 *
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the document is a PDF, FALSE otherwise
+	 */
+	public static boolean isPDFDocument(DSSDocument document) {
+		return DSSUtils.compareFirstBytes(document, PDF_PREAMBLE);
 	}
 
 }

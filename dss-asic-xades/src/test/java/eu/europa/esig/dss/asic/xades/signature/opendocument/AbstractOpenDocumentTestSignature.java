@@ -69,7 +69,7 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 	
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void init(DSSDocument fileToTest) {
+	public void test(DSSDocument fileToTest) {
 		this.fileToTest = fileToTest;
 
 		super.signAndVerify();

@@ -22,6 +22,9 @@ package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 
+/**
+ * Loads the relevant visual signature drawer for the IText (OpenPDF) implementation
+ */
 public interface ITextSignatureDrawerFactory extends SignatureDrawerFactory {
 
 }

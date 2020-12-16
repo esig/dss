@@ -20,6 +20,17 @@
  */
 package eu.europa.esig.dss.token;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
@@ -27,20 +38,8 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.PSSParameterSpec;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-
 /**
- *
+ * The abstract implementation of a remote token connection
  */
 public abstract class AbstractSignatureTokenConnection implements SignatureTokenConnection {
 
@@ -118,11 +117,24 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		signature.update(bytes);
 		return signature.sign();
 	}
-	
+
+	/**
+	 * Returns the {@code java.security.Signature} instance for the given {@code javaSignatureAlgorithm}
+	 *
+	 * @param javaSignatureAlgorithm {@link String} representing the Java name of a signature algorithm
+	 * @return {@link Signature}
+	 * @throws NoSuchAlgorithmException if the algorithm is not found
+	 */
 	protected Signature getSignatureInstance(final String javaSignatureAlgorithm) throws NoSuchAlgorithmException {
 		return Signature.getInstance(javaSignatureAlgorithm);
 	}
 
+	/**
+	 * Creates {@code java.security.spec.AlgorithmParameterSpec} for the given {@code digestAlgo}
+	 *
+	 * @param digestAlgo {@link DigestAlgorithm}
+	 * @return {@link AlgorithmParameterSpec}
+	 */
 	protected AlgorithmParameterSpec createPSSParam(DigestAlgorithm digestAlgo) {
 		String digestJavaName = digestAlgo.getJavaName();
 		return new PSSParameterSpec(digestJavaName, "MGF1", new MGF1ParameterSpec(digestJavaName), digestAlgo.getSaltLength(), 1);

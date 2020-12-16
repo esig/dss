@@ -97,8 +97,8 @@ public class CAdESWithPemEncodedCrlTest extends AbstractCAdESTestSignature {
 		assertEquals(1, signatures.size());
 		AdvancedSignature advancedSignature = signatures.get(0);
 		OfflineRevocationSource<CRL> crlSource = advancedSignature.getCRLSource();
-		Set<EncapsulatedRevocationTokenIdentifier> allRevocationBinaries = crlSource.getAllRevocationBinaries();
-		for (EncapsulatedRevocationTokenIdentifier identifier : allRevocationBinaries) {
+		Set<EncapsulatedRevocationTokenIdentifier<CRL>> allRevocationBinaries = crlSource.getAllRevocationBinaries();
+		for (EncapsulatedRevocationTokenIdentifier<CRL> identifier : allRevocationBinaries) {
 			assertTrue(isDerEncoded(identifier.getBinaries()));
 		}
 	}

@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
@@ -40,10 +41,12 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 public class POEComparatorTest {
 	
 	@Test
-	public void test() throws Exception {
+	public void test() {
 		POEComparator comparator = new POEComparator();
 		
-		Date currentTime = new Date();
+		Calendar calendar = Calendar.getInstance();
+
+		Date currentTime = calendar.getTime();
 		POE currentTimePoe = new POE(currentTime);
 		
 		XmlTimestamp xmlTimestamp = new XmlTimestamp();
@@ -60,9 +63,8 @@ public class POEComparatorTest {
 		TimestampWrapper secondTimestamp = new TimestampWrapper(xmlTimestamp2);
 		assertTrue(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));
 		
-		Thread.sleep(10); // to be sure in different Date()
-		
-		xmlTimestamp.setProductionTime(new Date());
+		calendar.add(Calendar.SECOND, 1);
+		xmlTimestamp.setProductionTime(calendar.getTime());
 		assertFalse(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));
 		assertTrue(comparator.before(new POE(secondTimestamp), new POE(firstTimestamp)));
 		

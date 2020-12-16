@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.pdf;
 
+/**
+ * Defines the executing PDF service modes
+ */
 public enum PDFServiceMode {
 	
 	CONTENT_TIMESTAMP,
@@ -28,6 +31,6 @@ public enum PDFServiceMode {
 
 	SIGNATURE_TIMESTAMP,
 
-	ARCHIVE_TIMESTAMP;
+	ARCHIVE_TIMESTAMP
 
 }

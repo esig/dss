@@ -22,6 +22,9 @@ package eu.europa.esig.dss.pades.exception;
 
 import eu.europa.esig.dss.model.DSSException;
 
+/**
+ * Throwed when the document is protected
+ */
 public class ProtectedDocumentException extends DSSException {
 
 	private static final long serialVersionUID = 7616019266734940111L;

@@ -7,9 +7,7 @@
             <SignatureFilename>screenshot2.png.cades-server-detached.extended.sig</SignatureFilename>
             <ClaimedSigningTime>2019-05-03T18:26:31</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-LTA</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
+            <StructuralValidation valid="true" />
             <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
                     <DigestMethod>SHA256</DigestMethod>
@@ -92,8 +90,8 @@
                 </RelatedRevocation>
             </FoundRevocations>
             <FoundTimestamps>
-                <FoundTimestamp Timestamp="T-896227D85AA1FFAB933AD4DFBBB680C47DD25666C403C214FA23860A5480BAD0" Location="CAdES"/>
-                <FoundTimestamp Timestamp="T-1DBCF009DC8DF0A0DF8877749F377D8B37EBC6D7865F1F77FD01EFF1EBB836AA" Location="CAdES"/>
+                <FoundTimestamp Timestamp="T-896227D85AA1FFAB933AD4DFBBB680C47DD25666C403C214FA23860A5480BAD0"/>
+                <FoundTimestamp Timestamp="T-1DBCF009DC8DF0A0DF8877749F377D8B37EBC6D7865F1F77FD01EFF1EBB836AA"/>
             </FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope SignerData="D-0283B5CA2B6FFABE8D14592F9D09FC8F5B4CDDCD2E90AF29C32F58E6D792EF62">

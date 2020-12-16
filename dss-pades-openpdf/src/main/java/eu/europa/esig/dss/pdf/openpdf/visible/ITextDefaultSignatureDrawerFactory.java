@@ -25,6 +25,9 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 
+/**
+ * Default implementation for IText (OpenPDF) to load a relevant visual signature drawer
+ */
 public class ITextDefaultSignatureDrawerFactory implements ITextSignatureDrawerFactory {
 
 	@Override
@@ -32,11 +35,11 @@ public class ITextDefaultSignatureDrawerFactory implements ITextSignatureDrawerF
 		final DSSDocument image = imageParameters.getImage();
 		final SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 
-		if ((image == null) && (textParameters != null)) {
+		if ((image == null) && !textParameters.isEmpty()) {
 			return new TextOnlySignatureDrawer();
-		} else if ((image != null) && (textParameters == null)) {
+		} else if ((image != null) && textParameters.isEmpty()) {
 			return new ImageOnlySignatureDrawer();
-		} else if (image == null && textParameters == null) {
+		} else if (image == null && textParameters.isEmpty()) {
 			throw new DSSException("Neither image nor text parameters are defined!");
 		} else {
 			// Custom drawer(s) can be injected with a new Factory and a custom instance of

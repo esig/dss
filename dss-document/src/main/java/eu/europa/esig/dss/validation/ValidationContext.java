@@ -20,20 +20,28 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * This interface allows the implementation of the validators for: certificates, timestamps and revocation data.
  */
 public interface ValidationContext {
+
+	/**
+	 * This method initializes the {@code ValidationContext} by retrieving the relevant data
+	 * from {@code certificateVerifier}
+	 *
+	 * @param certificateVerifier {@link CertificateVerifier}
+	 */
+	void initialize(final CertificateVerifier certificateVerifier);
 
 	/**
 	 * This function sets the validation time.
@@ -43,8 +51,11 @@ public interface ValidationContext {
 	 */
 	void setCurrentTime(final Date currentTime);
 
-	void initialize(final CertificateVerifier certificateVerifier);
-
+	/**
+	 * Gets the current validation time.
+	 *
+	 * @return {@link Date}
+	 */
 	Date getCurrentTime();
 
 	/**

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +28,9 @@ import java.util.List;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -208,6 +212,57 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	public abstract byte[] getBinaries();
+	
+	protected boolean arePdfModificationsDetected(XmlPDFRevision pdfRevision) {
+		if (pdfRevision != null) {
+			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
+			if (modificationDetection != null) {
+				return modificationDetection.getAnnotationOverlap().size() != 0 || modificationDetection.getVisualDifference().size() != 0;
+			}
+		}
+		return false;
+	}
+	
+	protected List<BigInteger> getPdfAnnotationsOverlapConcernedPages(XmlPDFRevision pdfRevision) {
+		if (pdfRevision != null) {
+			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
+			if (modificationDetection != null) {
+				List<XmlModification> annotationOverlap = modificationDetection.getAnnotationOverlap();
+				return getConcernedPages(annotationOverlap);
+			}
+		}
+		return Collections.emptyList();
+	}
+	
+	protected List<BigInteger> getPdfVisualDifferenceConcernedPages(XmlPDFRevision pdfRevision) {
+		if (pdfRevision != null) {
+			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
+			if (modificationDetection != null) {
+				List<XmlModification> visualDifference = modificationDetection.getVisualDifference();
+				return getConcernedPages(visualDifference);
+			}
+		}
+		return Collections.emptyList();
+	}
+	
+	protected List<BigInteger> getPdfPageDifferenceConcernedPages(XmlPDFRevision pdfRevision) {
+		if (pdfRevision != null) {
+			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
+			if (modificationDetection != null) {
+				List<XmlModification> pageDifference = modificationDetection.getPageDifference();
+				return getConcernedPages(pageDifference);
+			}
+		}
+		return Collections.emptyList();
+	}
+	
+	private List<BigInteger> getConcernedPages(List<XmlModification> xmlModifications) {
+		List<BigInteger> pages = new ArrayList<>();
+		for (XmlModification modification : xmlModifications) {
+			pages.add(modification.getPage());
+		}
+		return pages;
+	}
 	
 	@Override
 	public String toString() {

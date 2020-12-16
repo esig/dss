@@ -32,15 +32,28 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo.JoinedPseudoStrategy;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo.PseudoStrategy;
 
+/**
+ * Checks if the certificate's pseudo usage is acceptable
+ */
 public class PseudoUsageCheck extends ChainItem<XmlSubXCV> {
 
+	/** Certificate to check */
 	private final CertificateWrapper certificate;
 
+	/** The used pseudo */
 	private String pseudo;
 
-	public PseudoUsageCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlSubXCV}
+	 * @param certificate {@link CertificateWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public PseudoUsageCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+							LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
 		this.certificate = certificate;
 	}
 
@@ -52,9 +65,9 @@ public class PseudoUsageCheck extends ChainItem<XmlSubXCV> {
 	}
 
 	@Override
-	protected MessageTag getAdditionalInfo() {
+	protected String buildAdditionalInfo() {
 		if (Utils.isStringNotEmpty(pseudo)) {
-			return MessageTag.PSEUDO.setArgs(pseudo);
+			return i18nProvider.getMessage(MessageTag.PSEUDO, pseudo);
 		}
 		return null;
 	}

@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -112,7 +115,10 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 
 		DSSDocument signedDocument = sign(service, documentToSign);
 		
-		Thread.sleep(1000);
+		// wait one second
+		Calendar nextSecond = Calendar.getInstance();
+		nextSecond.add(Calendar.SECOND, 1);
+		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
 		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);

@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 public class EncapsulatedRevocationTokenIdentifierTest {
 
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void test() {
 		EncapsulatedRevocationTokenIdentifier id1 = new EncapsulatedRevocationTokenIdentifier(new byte[] { 1, 2, 3 });
 		EncapsulatedRevocationTokenIdentifier id2 = new EncapsulatedRevocationTokenIdentifier(new byte[] { 1, 2, 3 });
@@ -50,6 +51,7 @@ public class EncapsulatedRevocationTokenIdentifierTest {
 	}
 
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void assertNPE() {
 		assertThrows(NullPointerException.class, () -> new EncapsulatedRevocationTokenIdentifier(null));
 	}

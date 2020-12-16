@@ -50,7 +50,7 @@ public class ASiCeTimestampingTest extends PKIFactoryAccess {
 		
 		// TODO : implement the extension support
 		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(doc, extendParams));
-		assertEquals("Unsupported file type", exception.getMessage());
+		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 		
 	}
 

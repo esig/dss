@@ -20,28 +20,38 @@
  */
 package eu.europa.esig.asic.manifest;
 
-import java.util.List;
+import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.List;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
-import eu.europa.esig.xmldsig.XmlDSigUtils;
-import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
-
+/**
+ * Contains utils for dealing with ASiC Manifest
+ */
 public final class ASiCManifestUtils extends XSDAbstractUtils {
-	
+
+	/** The ASiC Manifest XSD schema path */
 	public static final String ASIC_MANIFEST = "/xsd/en_31916201v010101.xsd";
-	
+
+	/** Singleton */
 	private static ASiCManifestUtils singleton;
 
+	/** JAXBContext */
 	private JAXBContext jc;
 
 	private ASiCManifestUtils() {
 	}
-	
+
+	/**
+	 * Returns the instance of {@code ASiCManifestUtils}
+	 *
+	 * @return {@link ASiCManifestUtils}
+	 */
 	public static ASiCManifestUtils getInstance() {
 		if (singleton == null) {
 			singleton = new ASiCManifestUtils();
@@ -63,4 +73,5 @@ public final class ASiCManifestUtils extends XSDAbstractUtils {
 		xsdSources.add(new StreamSource(ASiCManifestUtils.class.getResourceAsStream(ASIC_MANIFEST)));
 		return xsdSources;
 	}
+
 }

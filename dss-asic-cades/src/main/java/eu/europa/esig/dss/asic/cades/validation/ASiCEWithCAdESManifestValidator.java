@@ -20,26 +20,37 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * This class validates a manifest
+ */
 public class ASiCEWithCAdESManifestValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestValidator.class);
 
+	/** Manifest to validate */
 	private final ManifestFile manifest;
+
+	/** A list of documents covered by the manifest */
 	private final List<DSSDocument> signedDocuments;
 
-	public ASiCEWithCAdESManifestValidator(ManifestFile manifest, List<DSSDocument> signedDocuments) {
+	/**
+	 * The default constructor
+	 *
+	 * @param manifest {@link ManifestFile}
+	 * @param signedDocuments a list of {@link DSSDocument}s
+	 */
+	public ASiCEWithCAdESManifestValidator(final ManifestFile manifest, final List<DSSDocument> signedDocuments) {
 		Objects.requireNonNull(manifest, "ManifestFile must be defined!");
 		this.manifest = manifest;
 		this.signedDocuments = signedDocuments;

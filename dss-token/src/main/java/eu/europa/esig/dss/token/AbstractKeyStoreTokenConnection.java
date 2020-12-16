@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.token;
 
+import eu.europa.esig.dss.model.DSSException;
+
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStore.Entry;
@@ -29,12 +31,23 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import eu.europa.esig.dss.model.DSSException;
-
+/**
+ * The keyStore token connection
+ */
 public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureTokenConnection {
 
+	/**
+	 * Gets the key store
+	 *
+	 * @return {@link KeyStore}
+	 */
 	abstract KeyStore getKeyStore() throws DSSException;
 
+	/**
+	 * Gets the password protection
+	 *
+	 * @return {@link PasswordProtection}
+	 */
 	abstract PasswordProtection getKeyProtectionParameter();
 
 	@Override

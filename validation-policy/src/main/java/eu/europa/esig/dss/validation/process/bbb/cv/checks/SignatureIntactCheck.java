@@ -30,11 +30,28 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks if the signature value is intact
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class SignatureIntactCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Token to check */
 	private final TokenProxy token;
+
+	/** The validation context */
 	private final Context context;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param token {@link TokenProxy}
+	 * @param context {@link Context}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public SignatureIntactCheck(I18nProvider i18nProvider, T result, TokenProxy token, Context context, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.token = token;
@@ -74,10 +91,10 @@ public class SignatureIntactCheck<T extends XmlConstraintsConclusion> extends Ch
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.SIG_CRYPTO_FAILURE;
 	}
-	
+
 	@Override
-	protected MessageTag getAdditionalInfo() {
-		return MessageTag.TOKEN_ID.setArgs(token.getId());
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.TOKEN_ID, token.getId());
 	}
 
 }

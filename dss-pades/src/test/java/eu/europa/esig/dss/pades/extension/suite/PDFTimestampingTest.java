@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -46,6 +37,14 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PDFTimestampingTest extends PKIFactoryAccess {
 	
@@ -84,7 +83,7 @@ public class PDFTimestampingTest extends PKIFactoryAccess {
 		assertEquals(1, diagnosticData.getTimestampList().size());
 		
 		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
-		assertEquals(TimestampType.CONTENT_TIMESTAMP, timestampWrapper.getType());
+		assertEquals(TimestampType.DOCUMENT_TIMESTAMP, timestampWrapper.getType());
 		
 		CertificateWrapper signingCertificate = timestampWrapper.getSigningCertificate();
 		assertNotNull(signingCertificate);

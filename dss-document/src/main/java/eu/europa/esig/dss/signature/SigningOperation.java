@@ -20,12 +20,20 @@
  */
 package eu.europa.esig.dss.signature;
 
+/**
+ * Defines the performing signature operation
+ */
 public enum SigningOperation {
 
 	/**
 	 * Signature creation
 	 */
 	SIGN,
+	
+	/**
+	 * Counter signature creation
+	 */
+	COUNTER_SIGN,
 
 	/**
 	 * Timestamp creation
@@ -36,6 +44,11 @@ public enum SigningOperation {
 	 * Extension process (eg : signature basic (B-P-B) to signature with timestamp
 	 * (B-P-T))
 	 */
-	EXTEND;
+	EXTEND,
+	
+	/**
+	 * The signature policy store addition
+	 */
+	ADD_SIG_POLICY_STORE;
 
 }

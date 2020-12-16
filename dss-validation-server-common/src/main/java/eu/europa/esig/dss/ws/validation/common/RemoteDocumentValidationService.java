@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.ws.validation.common;
 
-import java.io.ByteArrayInputStream;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -39,17 +33,37 @@ import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.util.List;
+
+/**
+ * The remote validation service
+ */
 public class RemoteDocumentValidationService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteDocumentValidationService.class);
 
+	/** The certificate verifier to use */
 	private CertificateVerifier verifier;
 
+	/**
+	 * Sets the certificate verifier
+	 *
+	 * @param verifier {@link CertificateVerifier}
+	 */
 	public void setVerifier(CertificateVerifier verifier) {
 		this.verifier = verifier;
 	}
 
+	/**
+	 * Validates the document
+	 *
+	 * @param dataToValidate {@link DataToValidateDTO} the request
+	 * @return {@link WSReportsDTO} response
+	 */
 	public WSReportsDTO validateDocument(DataToValidateDTO dataToValidate) {
 		LOG.info("ValidateDocument in process...");
 		SignedDocumentValidator validator = initValidator(dataToValidate);
@@ -68,6 +82,12 @@ public class RemoteDocumentValidationService {
 		return reportsDTO;
 	}
 
+	/**
+	 * Gets the original documents
+	 *
+	 * @param dataToValidate {@link DataToValidateDTO} request
+	 * @return a list of {@link RemoteDocument}s
+	 */
 	public List<RemoteDocument> getOriginalDocuments(DataToValidateDTO dataToValidate) {
 		LOG.info("GetOriginalDocuments in process...");
 		SignedDocumentValidator validator = initValidator(dataToValidate);
@@ -103,8 +123,8 @@ public class RemoteDocumentValidationService {
 		}
 		signedDocValidator.setCertificateVerifier(verifier);
 		// If null, uses default (NONE)
-		if (dataToValidate.getTokenExtractionStategy() != null) {
-			signedDocValidator.setTokenExtractionStategy(dataToValidate.getTokenExtractionStategy());
+		if (dataToValidate.getTokenExtractionStrategy() != null) {
+			signedDocValidator.setTokenExtractionStrategy(dataToValidate.getTokenExtractionStrategy());
 		}
 		return signedDocValidator;
 	}

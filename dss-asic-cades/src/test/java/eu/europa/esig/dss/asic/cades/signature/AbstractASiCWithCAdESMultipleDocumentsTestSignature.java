@@ -28,16 +28,17 @@ import java.util.Arrays;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
+import eu.europa.esig.dss.asic.common.signature.AbstractASiCMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public abstract class AbstractASiCWithCAdESMultipleDocumentsTestSignature extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
+public abstract class AbstractASiCWithCAdESMultipleDocumentsTestSignature extends
+		AbstractASiCMultipleDocumentsTestSignature<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
 
 	@Override
 	protected void checkContainerInfo(DiagnosticData diagnosticData) {
