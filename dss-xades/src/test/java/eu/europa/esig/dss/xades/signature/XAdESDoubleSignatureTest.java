@@ -108,17 +108,15 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		List<DSSDocument> originals = validator.getOriginalDocuments(signatureIdList.get(0));
 		assertEquals(1, originals.size());
 		DSSDocument original = originals.get(0);
-		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(toBeSigned)));
-		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(original)));
+		String firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(toBeSigned)));
+		String secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(original)));
 		assertEquals(firstDocument, secondDocument);
 
 		originals = validator.getOriginalDocuments(signatureIdList.get(1));
 		assertEquals(1, originals.size());
 		original = originals.get(0);
-		canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-		firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(toBeSigned)));
-		secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(original)));
+		firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(toBeSigned)));
+		secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(original)));
 		assertEquals(firstDocument, secondDocument);
 		
 	}

@@ -238,7 +238,7 @@ public class ManifestValidator {
 		try {
 			XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(nodeToTransform);
 			for (Transform transform : transforms) {
-				xmlSignatureInput = transform.performTransform(xmlSignatureInput);
+				xmlSignatureInput = transform.performTransform(xmlSignatureInput, true);
 			}
 			return xmlSignatureInput.getBytes();
 		} catch (Exception e) {

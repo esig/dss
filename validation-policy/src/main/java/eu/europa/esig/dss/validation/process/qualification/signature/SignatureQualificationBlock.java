@@ -175,7 +175,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 				// (f) the electronic signature was created by a qualified electronic signature creation device;
 				item = item.setNextItem(qscdAtSigningTime(qualificationAtSigningTime));
 	
-				// (g) the integrity of thesigned data has not been compromised;
+				// (g) the integrity of the signed data has not been compromised;
 				// covered in isAdES
 				
 			}
