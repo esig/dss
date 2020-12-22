@@ -53,6 +53,9 @@ public class XAdESAttribute implements ISignatureAttribute {
 	/** The tag name of the element */
 	private String localName;
 
+	/** Identifies the instance */
+	private XAdESAttributeIdentifier identifier;
+
 	/**
 	 * Default constructor
 	 *
@@ -133,7 +136,7 @@ public class XAdESAttribute implements ISignatureAttribute {
 	}
 	
 	/**
-	 * Returns a list of {@link TimestampInclude}d refereces in case of IndividualDataObjectsTimestamp,
+	 * Returns a list of {@link TimestampInclude}d references in case of IndividualDataObjectsTimestamp,
 	 * NULL if does not contain any includes
 	 *
 	 * @return list of {@link TimestampInclude}s in case of IndividualDataObjectsTimestamp, NULL otherwise
@@ -157,12 +160,15 @@ public class XAdESAttribute implements ISignatureAttribute {
 	}
 
 	/**
-	 * Gets element's hashCode (used for timestamp message-imprint calculation)
+	 * Gets the attribute identifier
 	 *
-	 * @return hashcode
+	 * @return {@link XAdESAttributeIdentifier}
 	 */
-	public int getElementHashCode() {
-		return element.hashCode();
+	public XAdESAttributeIdentifier getIdentifier() {
+		if (identifier == null) {
+			identifier = XAdESAttributeIdentifier.build(element);
+		}
+		return identifier;
 	}
 	
 	@Override

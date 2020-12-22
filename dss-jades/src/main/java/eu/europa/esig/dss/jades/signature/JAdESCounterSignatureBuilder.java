@@ -103,10 +103,9 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 					jwsJsonSerializationObject.getJWSSerializationType());
 
 			Object cSig = getCSig(generator.generate(), jwsJsonSerializationObject.getJWSSerializationType());
-			masterCSigAttribute.overwriteValue(cSig);
-
-			JAdESEtsiUHeader etsiUHeader = masterSignature.getEtsiUHeader();
-			etsiUHeader.replaceComponent(masterCSigAttribute);
+			EtsiUComponent updatedCSigAttribute = EtsiUComponent.build(JAdESHeaderParameterNames.C_SIG, cSig,
+					masterCSigAttribute.isBase64UrlEncoded(), masterCSigAttribute.getIdentifier());
+			replaceCSigComponent(jadesSignature, updatedCSigAttribute);
 
 			updateMasterSignatureRecursively(masterSignature);
 		}
@@ -131,6 +130,14 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 						jwsSerializationType));
 		}
 		return cSig;
+	}
+
+	private void replaceCSigComponent(JAdESSignature jadesSignature, EtsiUComponent cSigAttribute) {
+		JAdESSignature masterSignature = (JAdESSignature) jadesSignature.getMasterSignature();
+		JAdESEtsiUHeader etsiUHeader = masterSignature.getEtsiUHeader();
+		etsiUHeader.replaceComponent(cSigAttribute);
+
+		jadesSignature.setMasterCSigComponent(cSigAttribute);
 	}
 	
 	private AdvancedSignature extractSignatureById(JWSJsonSerializationObject jwsJsonSerializationObject,

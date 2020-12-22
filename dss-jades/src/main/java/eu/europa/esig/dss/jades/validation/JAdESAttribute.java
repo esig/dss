@@ -33,6 +33,9 @@ public class JAdESAttribute implements ISignatureAttribute {
 	/** The component's value */
 	protected Object value;
 
+	/** Identifies the instance */
+	protected JAdESAttributeIdentifier identifier;
+
 	/**
 	 * Default constructor
 	 *
@@ -60,6 +63,18 @@ public class JAdESAttribute implements ISignatureAttribute {
 	 */
 	public Object getValue() {
 		return value;
+	}
+
+	/**
+	 * Gets the attribute identifier
+	 *
+	 * @return {@link JAdESAttributeIdentifier}
+	 */
+	public JAdESAttributeIdentifier getIdentifier() {
+		if (identifier == null) {
+			identifier = JAdESAttributeIdentifier.build(name, value);
+		}
+		return identifier;
 	}
 	
 }

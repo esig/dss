@@ -63,18 +63,15 @@ public class JAdESEtsiUHeader implements SignatureProperties<EtsiUComponent> {
 	public List<EtsiUComponent> getAttributes() {
 		if (components == null) {
 			components = new ArrayList<>();
-			List<Object> etsiUContent = DSSJsonUtils.getEtsiU(jws); // unmodifiable copy
+			List<Object> etsiUContent = DSSJsonUtils.getEtsiU(jws);
 			if (Utils.isCollectionNotEmpty(etsiUContent)) {
 				for (int ii = 0; ii < etsiUContent.size(); ii++) {
 					Object item = etsiUContent.get(ii);
-					Map<String, Object> map = DSSJsonUtils.parseEtsiUComponent(item);
-					if (map != null) {
-						// increment a hashCode because equal Strings compute the same hashCode
-						Map.Entry<String, Object> mapEntry = map.entrySet().iterator().next();
-						EtsiUComponent etsiUComponent = new EtsiUComponent(
-								item, mapEntry.getKey(), mapEntry.getValue(), ii);
+					EtsiUComponent etsiUComponent = EtsiUComponent.build(item, ii);
+					if (etsiUComponent != null) {
 						components.add(etsiUComponent);
 					}
+					// else : unable to create, skip
 				}
 			}
 		}
@@ -151,8 +148,10 @@ public class JAdESEtsiUHeader implements SignatureProperties<EtsiUComponent> {
 		List<Object> etsiU = getEtsiUToEdit();
 		ListIterator<Object> iterator = etsiU.listIterator();
 		while (iterator.hasNext()) {
+			int position = iterator.nextIndex();
 			Object item = iterator.next();
-			if (attribute.hashCode() == item.hashCode()) {
+			EtsiUComponent currentComponent = EtsiUComponent.build(item, position);
+			if (attribute.getIdentifier().equals(currentComponent.getIdentifier())) {
 				iterator.set(attribute.getComponent());
 				break;
 			}
