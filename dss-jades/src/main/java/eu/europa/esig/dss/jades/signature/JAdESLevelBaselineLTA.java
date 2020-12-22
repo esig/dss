@@ -71,12 +71,12 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		if (jadesSignature.hasLTAProfile()) {
 			// must be executed before data removing
 			final ValidationContext validationContext = jadesSignature.getSignatureValidationContext(certificateVerifier);
-			etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.TST_VD);
+			etsiUHeader.removeLastComponent(JAdESHeaderParameterNames.TST_VD);
 			
 			final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature, validationContext);
 			if (!validationDataForInclusion.isEmpty()) {
 				JsonObject tstVd = getTstVd(validationDataForInclusion);
-				etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.TST_VD, tstVd,
+				etsiUHeader.addComponent(JAdESHeaderParameterNames.TST_VD, tstVd,
 						params.isBase64UrlEncodedEtsiUComponents());
 			}
 		}
@@ -84,7 +84,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		TimestampBinary timestampBinary = getArchiveTimestamp(jadesSignature, params);
 		JsonObject arcTst = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary),
 				params.getArchiveTimestampParameters().getCanonicalizationMethod());
-		etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.ARC_TST, arcTst,
+		etsiUHeader.addComponent(JAdESHeaderParameterNames.ARC_TST, arcTst,
 				params.isBase64UrlEncodedEtsiUComponents());
 		
 	}

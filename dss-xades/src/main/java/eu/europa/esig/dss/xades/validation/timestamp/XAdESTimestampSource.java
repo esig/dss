@@ -272,7 +272,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			final Element encapsulatedTimeStamp = (Element) encapsulatedTimestamps.item(ii);
 			TimestampToken timestampToken = createTimestampToken(encapsulatedTimeStamp, timestampType, references);
 			if (timestampToken != null) {
-				timestampToken.setHashCode(signatureAttribute.getElementHashCode());
+				timestampToken.setAttributeIdentifier(signatureAttribute.getIdentifier());
 				timestampToken.setCanonicalizationMethod(signatureAttribute.getTimestampCanonicalizationMethod());
 				timestampToken.setTimestampIncludes(signatureAttribute.getTimestampIncludedReferences());
 				result.add(timestampToken);

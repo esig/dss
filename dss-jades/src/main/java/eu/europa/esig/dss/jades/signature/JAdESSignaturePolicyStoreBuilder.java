@@ -107,7 +107,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 				sigPolicyStoreParams.put(JAdESHeaderParameterNames.SP_DSPEC, oidObject);
 
 				JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-				etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.SIG_PST,
+				etsiUHeader.addComponent(JAdESHeaderParameterNames.SIG_PST,
 						sigPolicyStoreParams, base64UrlInstance);
 
 			} else {

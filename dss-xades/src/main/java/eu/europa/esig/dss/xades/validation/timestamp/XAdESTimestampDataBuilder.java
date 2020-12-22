@@ -35,6 +35,8 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
+import eu.europa.esig.dss.xades.validation.XAdESAttribute;
+import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
@@ -325,8 +327,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 			/**
 			 * 2) Take all the ds:Reference elements in their order of appearance within ds:SignedInfo referencing
-			 * whatever the signer wants to sign including
-			 * the SignedProperties element. Process each one as indicated below:<br>
+			 * whatever the signer wants to sign including the SignedProperties element.
+			 * Process each one as indicated below:<br>
 			 * - Process the retrieved ds:Reference element according to the reference processing model of XMLDSIG.<br>
 			 * - If the result is a XML node set, canonicalize it. If ds:Canonicalization is present, the algorithm
 			 * indicated by this element is used. If not,
@@ -345,8 +347,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 			/**
 			 * 3) Take the following XMLDSIG elements in the order they are listed below, canonicalize each one and
-			 * concatenate each resulting octet stream to
-			 * the final octet stream:<br>
+			 * concatenate each resulting octet stream to the final octet stream:<br>
 			 * - The ds:SignedInfo element.<br>
 			 * - The ds:SignatureValue element.<br>
 			 * - The ds:KeyInfo element, if present.
@@ -356,10 +357,9 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			writeCanonicalizedValue(XMLDSigPaths.KEY_INFO_PATH, canonicalizationMethod, buffer);
 			/**
 			 * 4) Take the unsigned signature properties that appear before the current xadesv141:ArchiveTimeStamp in
-			 * the order they appear within the
-			 * xades:UnsignedSignatureProperties, canonicalize each one and concatenate each resulting octet stream to
-			 * the final octet stream. While
-			 * concatenating the following rules apply:
+			 * the order they appear within the xades:UnsignedSignatureProperties, canonicalize each one and
+			 * concatenate each resulting octet stream to the final octet stream.
+			 * While concatenating the following rules apply:
 			 */
 			final Element unsignedSignaturePropertiesDom = getUnsignedSignaturePropertiesDom();
 			if (unsignedSignaturePropertiesDom == null) {
@@ -427,41 +427,38 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
         return DomUtils.getElement(recreatedSignature, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 	
-	private void writeTimestampedUnsignedProperties(final Element unsignedSignaturePropertiesDom, TimestampToken timestampToken, 
+	private void writeTimestampedUnsignedProperties(final Element unsignedSignaturePropertiesDom, TimestampToken timestampToken,
 			String canonicalizationMethod, ByteArrayOutputStream buffer) throws IOException {
 		
-		final NodeList unsignedProperties;
+		final Element unsignedProperties;
 		if (timestampToken == null) {
 			// timestamp creation
-			unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy().getChildNodes();
+			unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy();
 		} else {
-			unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
+			unsignedProperties = unsignedSignaturePropertiesDom;
 		}
-		
-		for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 
-			final Node node = unsignedProperties.item(ii);
-			if (node.getNodeType() != Node.ELEMENT_NODE) {
-				// This can happened when there is a blank line between tags.
-				continue;
-			}
-			final String localName = node.getLocalName();
-			// In the SD-DSS implementation when validating the signature
-			// the framework will not add missing data. To do so the
-			// signature must be extended.
-			// if (localName.equals("CertificateValues")) {
+		XAdESUnsignedSigProperties xadesUnsignedSigProperties = new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
+		for (XAdESAttribute xadesAttribute : xadesUnsignedSigProperties.getAttributes()) {
+
+			/*
+			 * In the SD-DSS implementation when validating the signature
+			 * the framework will not add missing data.
+			 * To do so the signature must be extended.
+			 */
+			// if (xadesAttribute.getName().equals("CertificateValues")) {
 			/*
 			 * - The xades:CertificateValues property MUST be added if it is not already present and the ds:KeyInfo
 			 * element does not contain the full set of
 			 * certificates used to validate the electronic signature.
 			 */
-			// } else if (localName.equals("RevocationValues")) {
+			// } else if (xadesAttribute.getName().equals("RevocationValues")) {
 			/*
 			 * - The xades:RevocationValues property MUST be added if it is not already present and the ds:KeyInfo
 			 * element does not contain the revocation
 			 * information that has to be shipped with the electronic signature
 			 */
-			// } else if (localName.equals("AttrAuthoritiesCertValues")) {
+			// } else if (xadesAttribute.getName().equals("AttrAuthoritiesCertValues")) {
 			/*
 			 * - The xades:AttrAuthoritiesCertValues property MUST be added if not already present and the following
 			 * conditions are true: there exist an
@@ -469,7 +466,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * validation do not appear in CertificateValues.
 			 * Its content will satisfy with the rules specified in clause 7.6.3.
 			 */
-			// } else if (localName.equals("AttributeRevocationValues")) {
+			// } else if (xadesAttribute.getName().equals("AttributeRevocationValues")) {
 			/*
 			 * - The xades:AttributeRevocationValues property MUST be added if not already present and there the
 			 * following conditions are true: there exist
@@ -478,14 +475,13 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * satisfy with the rules specified in clause 7.6.4.
 			 */
 			// } else
-			if (XAdES132Element.ARCHIVE_TIMESTAMP.isSameTagName(localName) && timestampToken != null) {
+			if (XAdES132Element.ARCHIVE_TIMESTAMP.isSameTagName(xadesAttribute.getName()) && timestampToken != null) {
 				// skip the octets extraction when the current timestamp is found (validation)
-				int hashCode = unsignedSignaturePropertiesDom.getChildNodes().item(ii).hashCode();
-				if (timestampToken.getHashCode() == hashCode) {
+				if (timestampToken.getAttributeIdentifier().equals(xadesAttribute.getIdentifier())) {
 					break;
 				}
 				
-			// } else if (XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(localName)) {
+			// } else if (XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(xadesAttribute.getName())) {
 			/*
 			 * ETSI TS 101 903 V1.4.2 (2010-12) 8.1 The new XAdESv141:TimeStampValidationData element ../.. This
 			 * element is specified to serve as an
@@ -493,16 +489,16 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * tokens embedded within any of the
 			 * different time-stamp containers defined in the present document. ../.. 8.1.1 Use of URI attribute
 			 * ../.. a new
-			 * xadesv141:TimeStampValidationData element SHALL be created containing the missing validation data
+			 * xades141:TimeStampValidationData element SHALL be created containing the missing validation data
 			 * information and it SHALL be added as a
 			 * child of UnsignedSignatureProperties elements immediately after the respective time-stamp
 			 * certificateToken container element.
 			 */
 			}
 			
-			byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
+			byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, xadesAttribute.getElement());
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("{}: Canonicalization: {} : \n{}", localName, canonicalizationMethod,
+				LOG.trace("{}: Canonicalization: {} : \n{}", xadesAttribute.getName(), canonicalizationMethod,
 						new String(canonicalizedValue));
 			}
 			buffer.write(canonicalizedValue);
@@ -512,7 +508,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	/**
 	 * This method returns the list of ds:Object elements for the current signature element.
 	 *
-	 * @return
+	 * @return {@link NodeList}
 	 */
 	private NodeList getObjects() {
 		return DomUtils.getNodeList(signature, XMLDSigPaths.OBJECT_PATH);
@@ -529,13 +525,12 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			}
 			if (!xades141) {
 				/**
-				 * !!! ETSI TS 101 903 V1.3.2 (2006-03) 5) Take any ds:Object element in the signature that is not
-				 * referenced by any ds:Reference within
+				 * !!! ETSI TS 101 903 V1.3.2 (2006-03)
+				 * 5) Take any ds:Object element in the signature that is not referenced by any ds:Reference within
 				 * ds:SignedInfo, except that one containing the QualifyingProperties element. Canonicalize each one
-				 * and concatenate each resulting octet
-				 * stream to the final octet stream. If ds:Canonicalization is present, the algorithm indicated by
-				 * this element is used. If not, the
-				 * standard canonicalization method specified by XMLDSIG is used.
+				 * and concatenate each resulting octet tream to the final octet stream.
+				 * If ds:Canonicalization is present, the algorithm indicated by this element is used.
+				 * If not, the standard canonicalization method specified by XMLDSIG is used.
 				 */
 				final NamedNodeMap attributes = node.getAttributes();
 				final int length = attributes.getLength();
