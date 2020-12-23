@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
 public final class TypeStrategyFactory {
 
@@ -38,12 +38,12 @@ public final class TypeStrategyFactory {
 		}
 	}
 
-	public static TypeStrategy createTypeFromTL(TrustedServiceWrapper trustedService, QualifiedStatus qualified, TypeStrategy typeInCert) {
+	public static TypeStrategy createTypeFromTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified, TypeStrategy typeInCert) {
 		return new TypeByTL(trustedService, qualified, typeInCert);
 	}
 
 	public static TypeStrategy createTypeFromCertAndTL(CertificateWrapper signingCertificate, TrustedServiceWrapper caQcTrustedService,
-			QualifiedStatus qualified) {
+			CertificateQualifiedStatus qualified) {
 		TypeStrategy typeFromCert = createTypeFromCert(signingCertificate);
 		return createTypeFromTL(caQcTrustedService, qualified, typeFromCert);
 	}

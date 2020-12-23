@@ -24,7 +24,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.GrantedServiceFilter;
 
@@ -39,14 +39,14 @@ class QualificationByTL implements QualificationStrategy {
 	}
 
 	@Override
-	public QualifiedStatus getQualifiedStatus() {
+	public CertificateQualifiedStatus getQualifiedStatus() {
 		if (trustedService == null) {
-			return QualifiedStatus.NOT_QC;
+			return CertificateQualifiedStatus.NOT_QC;
 		} else {
 
 			GrantedServiceFilter grantedFilter = new GrantedServiceFilter();
 			if (!grantedFilter.isAcceptable(trustedService)) {
-				return QualifiedStatus.NOT_QC;
+				return CertificateQualifiedStatus.NOT_QC;
 			}
 
 			List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
@@ -54,11 +54,11 @@ class QualificationByTL implements QualificationStrategy {
 			// If overrules
 			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
 				if (ServiceQualification.isNotQualified(capturedQualifiers)) {
-					return QualifiedStatus.NOT_QC;
+					return CertificateQualifiedStatus.NOT_QC;
 				}
 
 				if (ServiceQualification.isQcStatement(capturedQualifiers)) {
-					return QualifiedStatus.QC;
+					return CertificateQualifiedStatus.QC;
 				}
 			}
 
