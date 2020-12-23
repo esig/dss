@@ -28,14 +28,14 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
+import eu.europa.esig.dss.enumerations.CertificateType;
 
 public class ForEsigCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	private final Type type;
+	private final CertificateType type;
 	private final ValidationTime validationTime;
 
-	public ForEsigCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, Type type, 
+	public ForEsigCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, CertificateType type,
 			ValidationTime validationTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
@@ -45,7 +45,7 @@ public class ForEsigCheck extends ChainItem<XmlValidationCertificateQualificatio
 
 	@Override
 	protected boolean process() {
-		return Type.ESIGN == type;
+		return CertificateType.ESIGN == type;
 	}
 
 	@Override

@@ -18,20 +18,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.qualification.certificate;
+package eu.europa.esig.dss.enumerations;
 
-public enum Type {
+public enum QSCDStatus {
 
-	/* For electronic signature */
-	ESIGN,
+	QSCD,
 
-	/* For electronic seal */
-	ESEAL,
+	NOT_QSCD;
 
-	/* For Web authentication */
-	WSA,
-
-	/* Unknown */
-	UNKNOWN;
+	public static boolean isQSCD(QSCDStatus status) {
+		return QSCD == status;
+	}
 
 }

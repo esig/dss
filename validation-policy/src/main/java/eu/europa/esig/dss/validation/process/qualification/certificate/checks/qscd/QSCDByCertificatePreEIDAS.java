@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.q
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
 
 class QSCDByCertificatePreEIDAS implements QSCDStrategy {
 

@@ -20,16 +20,13 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
+import eu.europa.esig.dss.enumerations.CertificateType;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -55,6 +52,12 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.ty
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategyFactory;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificateQualification> {
 
@@ -177,12 +180,12 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 		// 9. QC?
 		QualificationStrategy qcStrategy = QualificationStrategyFactory.createQualificationFromCertAndTL(signingCertificate, selectedTrustService);
-		QualifiedStatus qualifiedStatus = qcStrategy.getQualifiedStatus();
+		CertificateQualifiedStatus qualifiedStatus = qcStrategy.getQualifiedStatus();
 		item = item.setNextItem(isQualified(qualifiedStatus));
 
 		// 10. Type?
 		TypeStrategy typeStrategy = TypeStrategyFactory.createTypeFromCertAndTL(signingCertificate, selectedTrustService, qualifiedStatus);
-		Type type = typeStrategy.getType();
+		CertificateType type = typeStrategy.getType();
 		item = item.setNextItem(isForEsig(type));
 
 		// 11. QSCD ?
@@ -235,11 +238,11 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		return new TrustedCertificateMatchTrustServiceCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> isQualified(QualifiedStatus qualifiedStatus) {
+	private ChainItem<XmlValidationCertificateQualification> isQualified(CertificateQualifiedStatus qualifiedStatus) {
 		return new QualifiedCheck(i18nProvider, result, qualifiedStatus, validationTime, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> isForEsig(Type type) {
+	private ChainItem<XmlValidationCertificateQualification> isForEsig(CertificateType type) {
 		return new ForEsigCheck(i18nProvider, result, type, validationTime, getWarnLevelConstraint());
 	}
 

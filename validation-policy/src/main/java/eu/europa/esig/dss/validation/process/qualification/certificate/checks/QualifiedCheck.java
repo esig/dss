@@ -28,14 +28,14 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
 public class QualifiedCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	private final QualifiedStatus qualifiedStatus;
+	private final CertificateQualifiedStatus qualifiedStatus;
 	private final ValidationTime validationTime;
 
-	public QualifiedCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, QualifiedStatus qualifiedStatus, 
+	public QualifiedCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, CertificateQualifiedStatus qualifiedStatus,
 			ValidationTime validationTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
@@ -45,7 +45,7 @@ public class QualifiedCheck extends ChainItem<XmlValidationCertificateQualificat
 
 	@Override
 	protected boolean process() {
-		return QualifiedStatus.isQC(qualifiedStatus);
+		return CertificateQualifiedStatus.isQC(qualifiedStatus);
 	}
 
 	@Override

@@ -18,9 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.qualification.certificate;
+package eu.europa.esig.dss.enumerations;
 
-public enum QualifiedStatus {
+public enum CertificateQualifiedStatus {
 
 	/* Qualified */
 	QC("Qualified"),
@@ -30,7 +30,7 @@ public enum QualifiedStatus {
 
 	private final String label;
 
-	QualifiedStatus(String label) {
+	CertificateQualifiedStatus(String label) {
 		this.label = label;
 	}
 
@@ -38,7 +38,7 @@ public enum QualifiedStatus {
 		return label;
 	}
 
-	public static boolean isQC(QualifiedStatus status) {
+	public static boolean isQC(CertificateQualifiedStatus status) {
 		return QC == status;
 	}
 

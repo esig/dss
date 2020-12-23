@@ -32,13 +32,15 @@ public enum CertificateQualification {
 	 * Qualified Certificate for Electronic Signatures with private key on QSCD
 	 */
 	QCERT_FOR_ESIG_QSCD("QC for eSig with QSCD",
-			"Qualified Certificate for Electronic Signatures with private key on QSCD", true, true, true),
+			"Qualified Certificate for Electronic Signatures with private key on QSCD",
+			CertificateQualifiedStatus.QC, CertificateType.ESIGN, QSCDStatus.QSCD),
 
 	/**
 	 * Qualified Certificate for Electronic Seals with private key on QSCD
 	 */
 	QCERT_FOR_ESEAL_QSCD("QC for eSeal with QSCD",
-			"Qualified Certificate for Electronic Seals with private key on QSCD", true, false, true),
+			"Qualified Certificate for Electronic Seals with private key on QSCD",
+			CertificateQualifiedStatus.QC, CertificateType.ESEAL, QSCDStatus.QSCD),
 
 	// QCERT_FOR_WSA_QSCD non sense
 
@@ -47,39 +49,46 @@ public enum CertificateQualification {
 	/**
 	 * Qualified Certificate for Electronic Signatures
 	 */
-	QCERT_FOR_ESIG("QC for eSig", "Qualified Certificate for Electronic Signatures", true, true, false),
+	QCERT_FOR_ESIG("QC for eSig", "Qualified Certificate for Electronic Signatures",
+			CertificateQualifiedStatus.QC, CertificateType.ESIGN, QSCDStatus.NOT_QSCD),
 
 	/**
 	 * Qualified Certificate for Electronic Seals
 	 */
-	QCERT_FOR_ESEAL("QC for eSeal", "Qualified Certificate for Electronic Seals", true, false, false),
+	QCERT_FOR_ESEAL("QC for eSeal", "Qualified Certificate for Electronic Seals",
+			CertificateQualifiedStatus.QC, CertificateType.ESEAL, QSCDStatus.NOT_QSCD),
 
 	/**
 	 * Qualified Certificate for Web Site Authentications
 	 */
-	QCERT_FOR_WSA("QC for WSA", "Qualified Certificate for Web Site Authentications", true, false, false),
+	QCERT_FOR_WSA("QC for WSA", "Qualified Certificate for Web Site Authentications",
+			CertificateQualifiedStatus.QC, CertificateType.WSA, QSCDStatus.NOT_QSCD),
 
 	// --------------------------------------------------------
 
 	/**
 	 * Certificate for Electronic Signatures
 	 */
-	CERT_FOR_ESIG("Cert for eSig", "Certificate for Electronic Signatures", false, true, false),
+	CERT_FOR_ESIG("Cert for eSig", "Certificate for Electronic Signatures",
+			CertificateQualifiedStatus.NOT_QC, CertificateType.ESIGN, QSCDStatus.NOT_QSCD),
 
 	/**
 	 * Certificate for Electronic Seals
 	 */
-	CERT_FOR_ESEAL("Cert for eSeal", "Certificate for Electronic Seals", false, false, false),
+	CERT_FOR_ESEAL("Cert for eSeal", "Certificate for Electronic Seals",
+			CertificateQualifiedStatus.NOT_QC, CertificateType.ESEAL, QSCDStatus.NOT_QSCD),
 
 	/**
 	 * Certificate for Web Site Authentications
 	 */
-	CERT_FOR_WSA("Cert for WSA", "Certificate for Web Site Authentications", false, false, false),
+	CERT_FOR_WSA("Cert for WSA", "Certificate for Web Site Authentications",
+			CertificateQualifiedStatus.NOT_QC, CertificateType.WSA, QSCDStatus.NOT_QSCD),
 
 	/**
 	 * Not Applicable
 	 */
-	NA("N/A", "Not applicable", false, false, false);
+	NA("N/A", "Not applicable",
+			CertificateQualifiedStatus.NOT_QC, CertificateType.UNKNOWN, QSCDStatus.NOT_QSCD);
 
 	private static class Registry {
 
@@ -96,16 +105,17 @@ public enum CertificateQualification {
 
 	private final String readable;
 	private final String label;
-	private final boolean qc;
-	private final boolean forEsig;
-	private final boolean qscd;
+	private final CertificateQualifiedStatus qualifiedStatus;
+	private final CertificateType type;
+	private final QSCDStatus qscdStatus;
 
-	CertificateQualification(String readable, String label, boolean qc, boolean forEsig, boolean qscd) {
+	CertificateQualification(String readable, String label, CertificateQualifiedStatus qualifiedStatus,
+							 CertificateType type, QSCDStatus qscdStatus) {
 		this.readable = readable;
 		this.label = label;
-		this.qc = qc;
-		this.forEsig = forEsig;
-		this.qscd = qscd;
+		this.qualifiedStatus = qualifiedStatus;
+		this.type = type;
+		this.qscdStatus = qscdStatus;
 	}
 
 	/**
@@ -160,7 +170,16 @@ public enum CertificateQualification {
 	 * @return TRUE if it is a qualified certificate, FALSE otherwise
 	 */
 	public boolean isQc() {
-		return qc;
+		return CertificateQualifiedStatus.isQC(qualifiedStatus);
+	}
+
+	/**
+	 * Returns the type of an electronic signature the certificate can be used for
+	 *
+	 * @return {@link CertificateType}
+	 */
+	public CertificateType getType() {
+		return type;
 	}
 
 	/**
@@ -169,7 +188,16 @@ public enum CertificateQualification {
 	 * @return TRUE if it is an eSig certificate, FALSE otherwise
 	 */
 	public boolean isForEsig() {
-		return forEsig;
+		return CertificateType.ESIGN.equals(type);
+	}
+
+	/**
+	 * Returns if the certificate can be used for an electronic seal
+	 *
+	 * @return TRUE if it is an eSeal certificate, FALSE otherwise
+	 */
+	public boolean isForEseal() {
+		return CertificateType.ESEAL.equals(type);
 	}
 
 	/**
@@ -178,7 +206,7 @@ public enum CertificateQualification {
 	 * @return TRUE if the certificate os QSCD, FALSE otherwise
 	 */
 	public boolean isQscd() {
-		return qscd;
+		return QSCDStatus.isQSCD(qscdStatus);
 	}
 
 }
