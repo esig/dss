@@ -400,8 +400,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				pdDocument.getEncryption().getSecurityHandler().setCustomSecureRandom(secureRandom);
 			}
 			saveDocumentIncrementally(pdDocument, outputStream);
-		} catch (Exception e) {
-			throw new DSSException(e);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to save a document. Reason : %s", e.getMessage()), e);
 		}
 	}
 
