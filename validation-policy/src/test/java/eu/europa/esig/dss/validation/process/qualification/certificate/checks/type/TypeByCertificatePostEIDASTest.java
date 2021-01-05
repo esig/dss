@@ -32,7 +32,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.QCStatement;
-import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
+import eu.europa.esig.dss.enumerations.CertificateType;
 
 public class TypeByCertificatePostEIDASTest {
 
@@ -41,7 +41,7 @@ public class TypeByCertificatePostEIDASTest {
 		CertificateWrapper cert = getCertificate(QCStatement.QCT_ESIGN);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
-		assertEquals(Type.ESIGN, strategy.getType());
+		assertEquals(CertificateType.ESIGN, strategy.getType());
 	}
 
 	@Test
@@ -49,7 +49,7 @@ public class TypeByCertificatePostEIDASTest {
 		CertificateWrapper cert = getCertificate();
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
-		assertEquals(Type.ESIGN, strategy.getType());
+		assertEquals(CertificateType.ESIGN, strategy.getType());
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class TypeByCertificatePostEIDASTest {
 		CertificateWrapper cert = getCertificate(QCStatement.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
-		assertEquals(Type.ESEAL, strategy.getType());
+		assertEquals(CertificateType.ESEAL, strategy.getType());
 	}
 
 	@Test
@@ -65,7 +65,7 @@ public class TypeByCertificatePostEIDASTest {
 		CertificateWrapper cert = getCertificate(QCStatement.QCT_WEB);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
-		assertEquals(Type.WSA, strategy.getType());
+		assertEquals(CertificateType.WSA, strategy.getType());
 	}
 
 	// MUST be overruled
@@ -74,7 +74,7 @@ public class TypeByCertificatePostEIDASTest {
 		CertificateWrapper cert = getCertificate(QCStatement.QCT_ESIGN, QCStatement.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
-		assertEquals(Type.UNKNOWN, strategy.getType());
+		assertEquals(CertificateType.UNKNOWN, strategy.getType());
 	}
 	
 	private CertificateWrapper getCertificate(OidDescription... qcTypesOids) {

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
 
-import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
+import eu.europa.esig.dss.enumerations.CertificateType;
 
 public interface TypeStrategy {
 
-	Type getType();
+	CertificateType getType();
 
 }

@@ -40,7 +40,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
 public class QualifiedTest {
 
@@ -214,12 +214,12 @@ public class QualifiedTest {
 
 	private void notQC(CertificateWrapper signingCertificate) {
 		QualificationStrategy strategy = QualificationStrategyFactory.createQualificationFromCert(signingCertificate);
-		assertFalse(QualifiedStatus.isQC(strategy.getQualifiedStatus()));
+		assertFalse(CertificateQualifiedStatus.isQC(strategy.getQualifiedStatus()));
 	}
 
 	private void qc(CertificateWrapper signingCertificate) {
 		QualificationStrategy strategy = QualificationStrategyFactory.createQualificationFromCert(signingCertificate);
-		assertTrue(QualifiedStatus.isQC(strategy.getQualifiedStatus()));
+		assertTrue(CertificateQualifiedStatus.isQC(strategy.getQualifiedStatus()));
 	}
 
 }

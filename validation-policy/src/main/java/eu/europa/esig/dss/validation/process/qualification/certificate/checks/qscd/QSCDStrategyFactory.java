@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.q
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
 public final class QSCDStrategyFactory {
 
@@ -38,12 +38,12 @@ public final class QSCDStrategyFactory {
 		}
 	}
 
-	public static QSCDStrategy createQSCDFromTL(TrustedServiceWrapper trustedService, QualifiedStatus qualified, QSCDStrategy qscdFromCertificate) {
+	public static QSCDStrategy createQSCDFromTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified, QSCDStrategy qscdFromCertificate) {
 		return new QSCDByTL(trustedService, qualified, qscdFromCertificate);
 	}
 
 	public static QSCDStrategy createQSCDFromCertAndTL(CertificateWrapper signingCertificate, TrustedServiceWrapper caQcTrustedService,
-			QualifiedStatus qualified) {
+			CertificateQualifiedStatus qualified) {
 		QSCDStrategy qscdFromCert = createQSCDFromCert(signingCertificate);
 		return createQSCDFromTL(caQcTrustedService, qualified, qscdFromCert);
 	}

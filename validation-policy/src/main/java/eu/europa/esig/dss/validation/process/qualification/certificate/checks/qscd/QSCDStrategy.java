@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd;
 
-import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
 
 public interface QSCDStrategy {
 

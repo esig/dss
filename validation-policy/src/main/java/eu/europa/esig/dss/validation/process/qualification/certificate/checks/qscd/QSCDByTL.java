@@ -20,21 +20,21 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+
+import java.util.List;
 
 class QSCDByTL implements QSCDStrategy {
 
 	private final TrustedServiceWrapper trustedService;
-	private final QualifiedStatus qualified;
+	private final CertificateQualifiedStatus qualified;
 	private final QSCDStrategy qscdFromCertificate;
 
-	public QSCDByTL(TrustedServiceWrapper trustedService, QualifiedStatus qualified, QSCDStrategy qscdFromCertificate) {
+	public QSCDByTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified, QSCDStrategy qscdFromCertificate) {
 		this.trustedService = trustedService;
 		this.qualified = qualified;
 		this.qscdFromCertificate = qscdFromCertificate;
@@ -42,7 +42,7 @@ class QSCDByTL implements QSCDStrategy {
 
 	@Override
 	public QSCDStatus getQSCDStatus() {
-		if (trustedService == null || !QualifiedStatus.isQC(qualified)) {
+		if (trustedService == null || !CertificateQualifiedStatus.isQC(qualified)) {
 			return QSCDStatus.NOT_QSCD;
 		} else {
 

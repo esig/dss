@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.signature;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusionWithProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
@@ -34,7 +28,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualificatio
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
+import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -43,6 +40,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationAtTimeBlock;
+import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationMatrix;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableListOfTrustedListsCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
@@ -55,6 +53,12 @@ import eu.europa.esig.dss.validation.process.qualification.signature.checks.Trus
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQualification> {
 
 	private final XmlConclusion etsi319102Conclusion;
@@ -62,6 +66,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	private final CertificateWrapper signingCertificate;
 	private final List<XmlTLAnalysis> tlAnalysis;
 
+	private CertificateQualification qualificationAtIssuanceTime;
 	private CertificateQualification qualificationAtSigningTime;
 
 	public SignatureQualificationBlock(I18nProvider i18nProvider, String signatureId, XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
@@ -139,7 +144,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 						signingCertificate, caqcServices);
 				XmlValidationCertificateQualification certQualAtIssuanceResult = certQualAtIssuanceBlock.execute();
 				result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
-				CertificateQualification qualificationAtIssuance = certQualAtIssuanceResult.getCertificateQualification();
+				qualificationAtIssuanceTime = certQualAtIssuanceResult.getCertificateQualification();
 	
 				CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.BEST_SIGNATURE_TIME, bestSignatureTime,
 						signingCertificate, caqcServices);
@@ -156,7 +161,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	
 				// (b) the qualified certificate
 				// 1. was issued by a qualified trust service provider
-				item = item.setNextItem(qualifiedCertificateAtIssuance(qualificationAtIssuance));
+				item = item.setNextItem(qualifiedCertificateAtIssuance(qualificationAtIssuanceTime));
 	
 				// 2. was valid at the time of signing;
 				// covered in isAdES
@@ -175,7 +180,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 				// (f) the electronic signature was created by a qualified electronic signature creation device;
 				item = item.setNextItem(qscdAtSigningTime(qualificationAtSigningTime));
 	
-				// (g) the integrity of thesigned data has not been compromised;
+				// (g) the integrity of the signed data has not been compromised;
 				// covered in isAdES
 				
 			}
@@ -202,11 +207,38 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	private void determineFinalQualification() {
 		SignatureQualification sigQualif = SignatureQualification.NA;
 
-		if (etsi319102Conclusion != null && qualificationAtSigningTime != null) {
-			sigQualif = SigQualificationMatrix.getSignatureQualification(etsi319102Conclusion.getIndication(), qualificationAtSigningTime);
+		if (etsi319102Conclusion != null && qualificationAtIssuanceTime != null && qualificationAtSigningTime != null) {
+			CertificateQualification finalCertQualification = getFinalCertQualification(qualificationAtIssuanceTime, qualificationAtSigningTime);
+			sigQualif = SigQualificationMatrix.getSignatureQualification(etsi319102Conclusion.getIndication(), finalCertQualification);
 		}
 
 		result.setSignatureQualification(sigQualif);
+	}
+
+	private CertificateQualification getFinalCertQualification(
+			CertificateQualification certQualAtIssuanceTime, CertificateQualification certQualAtSigningTime) {
+		CertificateQualifiedStatus qualStatus = getFinalCertQualStatus(certQualAtIssuanceTime, certQualAtSigningTime);
+		CertificateType type = getFinalCertificateType(certQualAtIssuanceTime, certQualAtSigningTime);
+		QSCDStatus qscd = getFinalQSCDStatus(certQualAtSigningTime);
+		return CertQualificationMatrix.getCertQualification(qualStatus, type, qscd);
+	}
+
+	private CertificateQualifiedStatus getFinalCertQualStatus(
+			CertificateQualification certQualAtIssuanceTime, CertificateQualification certQualAtSigningTime) {
+		return certQualAtIssuanceTime.isQc() && certQualAtSigningTime.isQc() ?
+				CertificateQualifiedStatus.QC : CertificateQualifiedStatus.NOT_QC;
+	}
+
+	private CertificateType getFinalCertificateType(
+			CertificateQualification certQualAtIssuanceTime, CertificateQualification certQualAtSigningTime) {
+		if (certQualAtIssuanceTime.getType() == certQualAtSigningTime.getType()) {
+			return certQualAtSigningTime.getType();
+		}
+		return CertificateType.UNKNOWN;
+	}
+
+	private QSCDStatus getFinalQSCDStatus(CertificateQualification certQualAtSigningTime) {
+		return certQualAtSigningTime.isQscd() ? QSCDStatus.QSCD : QSCDStatus.NOT_QSCD;
 	}
 
 	private void setIndication() {
