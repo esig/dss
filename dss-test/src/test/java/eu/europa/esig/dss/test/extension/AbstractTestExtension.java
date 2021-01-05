@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
+import eu.europa.esig.dss.model.FileDocument;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -43,7 +44,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 public abstract class AbstractTestExtension<SP extends SerializableSignatureParameters, 
 				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
 
-	protected abstract DSSDocument getOriginalDocument();
+	protected abstract FileDocument getOriginalDocument();
 
 	protected abstract DSSDocument getSignedDocument(DSSDocument originalDoc);
 
@@ -61,7 +62,7 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 
 	@Test
 	public void extendAndVerify() throws Exception {
-		DSSDocument originalDocument = getOriginalDocument();
+		FileDocument originalDocument = getOriginalDocument();
 
 		DSSDocument signedDocument = getSignedDocument(originalDocument);
 
@@ -106,7 +107,7 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 		assertFalse(fileToBeDeleted.exists());
 	}
 
-	protected void deleteOriginalFile(DSSDocument originalDocument) {
+	protected void deleteOriginalFile(FileDocument originalDocument) {
 		File fileToBeDeleted = new File(originalDocument.getAbsolutePath());
 		assertTrue(fileToBeDeleted.exists());
 		assertTrue(fileToBeDeleted.delete(), "Cannot delete original document (IO error)");

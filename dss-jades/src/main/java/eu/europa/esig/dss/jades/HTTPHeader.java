@@ -98,12 +98,6 @@ public class HTTPHeader implements DSSDocument {
 	}
 
 	@Override
-	public String getAbsolutePath() {
-		// not applicable
-		return null;
-	}
-
-	@Override
 	public MimeType getMimeType() {
 		// not applicable
 		return null;

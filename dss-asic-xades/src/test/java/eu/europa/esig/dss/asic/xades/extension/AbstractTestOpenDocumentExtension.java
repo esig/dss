@@ -49,7 +49,7 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExtension<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 
-	protected DSSDocument fileToTest;
+	protected FileDocument fileToTest;
 	
 	private static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/opendocument");
@@ -65,7 +65,7 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 	
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void init(DSSDocument fileToTest) throws Exception {
+	public void init(FileDocument fileToTest) throws Exception {
 		this.fileToTest = fileToTest;
 
 		super.extendAndVerify();
@@ -86,7 +86,7 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 	}
 
 	@Override
-	protected DSSDocument getOriginalDocument() {
+	protected FileDocument getOriginalDocument() {
 		return fileToTest;
 	}
 
@@ -160,7 +160,7 @@ public abstract class AbstractTestOpenDocumentExtension extends AbstractTestExte
 	}
 	
 	@Override
-	protected void deleteOriginalFile(DSSDocument originalDocument) {
+	protected void deleteOriginalFile(FileDocument originalDocument) {
 		//Skip step
 	}
 

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.xades.extension.opendocument;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import eu.europa.esig.dss.model.FileDocument;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -57,7 +58,7 @@ public class OpenDocumentExtensionLTToLTAWithFailTimestampTest extends AbstractT
 	@Override
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void init(DSSDocument fileToTest) throws Exception {
+	public void init(FileDocument fileToTest) throws Exception {
 		assertThrows(DSSException.class, () -> super.init(fileToTest));
 	}
 

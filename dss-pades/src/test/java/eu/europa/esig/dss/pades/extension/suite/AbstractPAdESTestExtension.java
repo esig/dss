@@ -77,7 +77,7 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 	}
 
 	@Override
-	protected DSSDocument getOriginalDocument() {
+	protected FileDocument getOriginalDocument() {
 		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".pdf");
 		try (FileOutputStream fos = new FileOutputStream(originalDoc); InputStream is = AbstractPAdESTestExtension.class.getResourceAsStream("/sample.pdf")) {
 			Utils.copy(is, fos);
