@@ -71,10 +71,8 @@ import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.utils.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -816,21 +814,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			
 		}
 	}
-	
-	private void extractReferences() {
-		references = new ArrayList<>();
-		final XMLSignature currentSantuarioSignature = getSantuarioSignature();
-		final SignedInfo signedInfo = currentSantuarioSignature.getSignedInfo();
-		final int numberOfReferences = signedInfo.getLength();
-		for (int ii = 0; ii < numberOfReferences; ii++) {
-			try {
-				final Reference reference = signedInfo.item(ii);
-				references.add(reference);
-			} catch (XMLSecurityException e) {
-				LOG.warn("Unable to retrieve reference #{} : {}", ii, e.getMessage());
-			}
-		}
-	}
 
 	@Override
 	public List<ReferenceValidation> getReferenceValidations() {
@@ -849,30 +832,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				
 				try {
 					
-					final Digest digest = new Digest();
-					digest.setValue(reference.getDigestValue());
-					digest.setAlgorithm(
-							DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
+					final Digest digest = DSSXMLUtils.getReferenceDigest(reference);
 					validation.setDigest(digest);
 
-					try {
-						found = reference.getContentsBeforeTransformation() != null;
-					} catch (ReferenceNotInitializedException e) {
-						if (LOG.isDebugEnabled()) {
-							LOG.debug(String.format("Cannot get the pointed bytes by a reference with uri='%s'. Reason : [%s]", 
-									reference.getURI(), e.getMessage()));
-						}
-						// continue, exception will be catched later
-					}
+					found = DSSXMLUtils.isAbleToDeReferenceContent(reference);
 					
 					final String uri = validation.getUri();
 
-					boolean isDuplicated = false;
-					// empty URI means enveloped signature
-					if (Utils.isStringNotEmpty(uri)) {
-						isDuplicated = !XMLUtils.protectAgainstWrappingAttack(
-								currentSantuarioSignature.getDocument(), DomUtils.getId(uri));
-					}
+					boolean isDuplicated = DSSXMLUtils.isReferencedContentAmbiguous(
+							signatureElement.getOwnerDocument(), uri);
 					validation.setDuplicated(isDuplicated);
 					
 					boolean isElementReference = DomUtils.isElementReference(uri);
@@ -903,10 +871,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						
 					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
-						Node manifestNode = getManifestById(uri);
-						found = found && (disableXSWProtection || (manifestNode != null));
-						if (manifestNode != null) {
-							validation.getDependentValidations().addAll(getManifestReferences(manifestNode));
+						Element manifestElement = getManifestById(uri);
+						found = found && (disableXSWProtection || (manifestElement != null));
+						if (manifestElement != null) {
+							validation.getDependentValidations().addAll(getManifestReferences(manifestElement));
 						}
 						
 					}
@@ -967,7 +935,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			LOG.warn("DigestAlgorithm is not found! Unable to compute DTBSR.");
 			return null;
 		}
-		final Element signedInfo = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNED_INFO_PATH);
+		final Element signedInfo = getSignedInfo();
 		if (signedInfo == null) {
 			LOG.warn("SignedInfo element is not found! Unable to compute DTBSR.");
 			return null;
@@ -980,14 +948,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		byte[] canonicalizedSignedInfo = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, signedInfo);
 		return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, canonicalizedSignedInfo));
 	}
+
+	private Element getSignedInfo() {
+		return DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNED_INFO_PATH);
+	}
 	
 	/**
 	 * Returns a list of all references contained in the given manifest
-	 * @param manifestNode {@link Node} to get references from
+	 * @param manifestElement {@link Element} to get references from
 	 * @return list of {@link ReferenceValidation} objects
 	 */
-	public List<ReferenceValidation> getManifestReferences(Node manifestNode) {
-		ManifestValidator mv = new ManifestValidator(signatureElement, manifestNode, detachedContents);
+	private List<ReferenceValidation> getManifestReferences(Element manifestElement) {
+		ManifestValidator mv = new ManifestValidator(manifestElement, detachedContents);
 		return mv.validate();
 	}
 
@@ -1025,12 +997,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets ds:Manifest by its Id
 	 *
 	 * @param id {@link String} manifest Id
-	 * @return {@link Node}
+	 * @return {@link Element} Manifest
 	 */
-	public Node getManifestById(String id) {
+	public Element getManifestById(String id) {
 		if (Utils.isStringNotBlank(id)) {
 			String manifestById = XMLDSigPaths.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(id);
-			return DomUtils.getNode(signatureElement, manifestById);
+			return DomUtils.getElement(signatureElement, manifestById);
 		}
 		return null;
 	}
@@ -1066,36 +1038,32 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private void initDetachedSignatureResolvers(List<DSSDocument> detachedContents) {
-		List<DigestAlgorithm> usedReferenceDigestAlgos = getUsedReferenceDigestAlgos();
-		for (DigestAlgorithm digestAlgorithm : usedReferenceDigestAlgos) {
-			santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
-		}
-	}
-	
-	private List<DigestAlgorithm> getUsedReferenceDigestAlgos() {
-		List<DigestAlgorithm> digestAlgorithms = new ArrayList<>();
-		NodeList referenceNodeList = DSSXMLUtils.getReferenceNodeList(signatureElement);
-		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
-			Element referenceElement = (Element) referenceNodeList.item(ii);
-			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
-			if (digest != null) {
-				digestAlgorithms.add(digest.getAlgorithm());
+		Element signedInfo = getSignedInfo();
+		if (signedInfo != null) {
+			XMLSignature santuarioSignature = getSantuarioSignature();
+			List<DigestAlgorithm> usedReferenceDigestAlgos = DSSXMLUtils.getReferenceDigestAlgos(signedInfo);
+			for (DigestAlgorithm digestAlgorithm : usedReferenceDigestAlgos) {
+				santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
 			}
 		}
-		return digestAlgorithms;
 	}
 	
 	/**
 	 * Used for a counter signature extension only
 	 */
 	private void initCounterSignatureResolver(List<DSSDocument> detachedContents) {
-		for (String type : getUsedReferenceTypes()) {
-			if (xadesPaths.getCounterSignatureUri().equals(type)) {
-				for (DSSDocument document : detachedContents) {
-					// only one SignatureValue document shall be provided
-					if (isDetachedSignatureValueDocument(document)) {
-						santuarioSignature.addResourceResolver(new CounterSignatureResolver(document));
-						break;
+		Element signedInfo = getSignedInfo();
+		if (signedInfo != null) {
+			XMLSignature santuarioSignature = getSantuarioSignature();
+			List<String> types = DSSXMLUtils.getReferenceTypes(signedInfo);
+			for (String type : types) {
+				if (xadesPaths.getCounterSignatureUri().equals(type)) {
+					for (DSSDocument document : detachedContents) {
+						// only one SignatureValue document shall be provided
+						if (isDetachedSignatureValueDocument(document)) {
+							santuarioSignature.addResourceResolver(new CounterSignatureResolver(document));
+							break;
+						}
 					}
 				}
 			}
@@ -1113,19 +1081,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			// continue
 		}
 		return false;
-	}
-	
-	private List<String> getUsedReferenceTypes() {
-		List<String> referenceTypes = new ArrayList<>();
-		NodeList referenceNodeList = DSSXMLUtils.getReferenceNodeList(signatureElement);
-		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
-			Element referenceElement = (Element) referenceNodeList.item(ii);
-			String type = referenceElement.getAttribute(XMLDSigAttribute.TYPE.getAttributeName());
-			if (Utils.isStringNotEmpty(type)) {
-				referenceTypes.add(type);
-			}
-		}
-		return referenceTypes;
 	}
 
 	/**
@@ -1323,7 +1278,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public List<Reference> getReferences() {
 		if (references == null) {
-			extractReferences();
+			XMLSignature santuarioSignature = getSantuarioSignature();
+			SignedInfo signedInfo = santuarioSignature.getSignedInfo();
+			return DSSXMLUtils.extractReferences(signedInfo);
 		}
 		return references;
 	}

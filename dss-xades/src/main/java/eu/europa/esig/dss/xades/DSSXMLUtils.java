@@ -46,10 +46,12 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -71,6 +73,7 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -1097,6 +1100,122 @@ public final class DSSXMLUtils {
 	 */
 	public static byte[] applyTransforms(final DSSDocument document, final List<DSSTransform> transforms) {
 		return applyTransforms(DomUtils.buildDOM(document), transforms);
+	}
+
+	/**
+	 * Returns a list of {@code DigestAlgorithm} for all references containing inside
+	 * the provided {@code referenceContainer}
+	 *
+	 * @param referenceContainer {@link Element} containing the ds:Reference elements
+	 * @return a list of {@link DigestAlgorithm}s
+	 */
+	public static List<DigestAlgorithm> getReferenceDigestAlgos(Element referenceContainer) {
+		List<DigestAlgorithm> digestAlgorithms = new ArrayList<>();
+		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPaths.REFERENCE_PATH);
+		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
+			Element referenceElement = (Element) referenceNodeList.item(ii);
+			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
+			if (digest != null) {
+				digestAlgorithms.add(digest.getAlgorithm());
+			}
+		}
+		return digestAlgorithms;
+	}
+
+	/**
+	 * Returns a list of reference types
+	 *
+	 * @param referenceContainer {@link Element} containing the ds:Reference elements
+	 * @return a list of {@link String} reference types
+	 */
+	public static List<String> getReferenceTypes(Element referenceContainer) {
+		List<String> referenceTypes = new ArrayList<>();
+		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPaths.REFERENCE_PATH);
+		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
+			Element referenceElement = (Element) referenceNodeList.item(ii);
+			String type = referenceElement.getAttribute(XMLDSigAttribute.TYPE.getAttributeName());
+			if (Utils.isStringNotEmpty(type)) {
+				referenceTypes.add(type);
+			}
+		}
+		return referenceTypes;
+	}
+
+	/**
+	 * Extracts a list of {@code Reference}s from the given {@code Manifest} object
+	 *
+	 * NOTE: can be used also for a {@code SignedInfo} element
+	 *
+	 * @param manifest {@link Manifest}
+	 * @return a list of {@link Reference}s
+	 */
+	public static List<Reference> extractReferences(Manifest manifest) {
+		List<Reference> references = new ArrayList<>();
+		final int numberOfReferences = manifest.getLength();
+		for (int ii = 0; ii < numberOfReferences; ii++) {
+			try {
+				final Reference reference = manifest.item(ii);
+				references.add(reference);
+			} catch (XMLSecurityException e) {
+				LOG.warn("Unable to retrieve reference #{} : {}", ii, e.getMessage());
+			}
+		}
+		return references;
+	}
+
+	/**
+	 * Returns the {@code Digest} extracted from the provided {@code reference}
+	 *
+	 * @param reference {@link Reference}
+	 * @return {@link Digest}
+	 */
+	public static Digest getReferenceDigest(Reference reference) {
+		try {
+			final Digest digest = new Digest();
+			digest.setValue(reference.getDigestValue());
+			digest.setAlgorithm(
+					DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
+			return digest;
+		} catch (XMLSecurityException e) {
+			LOG.warn("Unable to extract Digest from a reference with Id [{}] : {}",
+					reference.getId(), e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * Checks if the original reference document content can be obtained (de-referenced)
+	 *
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the de-referencing is succeeds, FALSE otherwise
+	 */
+	public static boolean isAbleToDeReferenceContent(Reference reference) {
+		try {
+			return reference.getContentsBeforeTransformation() != null;
+
+		} catch (ReferenceNotInitializedException e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(String.format(
+						"Cannot get the pointed bytes by a reference with uri='%s'. Reason : [%s]",
+						reference.getURI(), e.getMessage()));
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * Checks if the reference with the {@code uri} occurs multiple times in the {@code document}
+	 *
+	 * @param document {@link Document} to be checked for a wrapping attack
+	 * @param uri {@link String} the referenced uri to be verified
+	 * @return TRUE if the reference is ambiguous (duplicated), FALSE otherwise
+	 */
+	public static boolean isReferencedContentAmbiguous(Document document, String uri) {
+		if (Utils.isStringNotEmpty(uri)) {
+			return !XMLUtils.protectAgainstWrappingAttack(document, DomUtils.getId(uri));
+		}
+		// empty URI means enveloped signature (unambiguous)
+		return false;
 	}
 
 }
