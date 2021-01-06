@@ -22,19 +22,14 @@ package eu.europa.esig.dss.spi;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.RoleOfPspOid;
-import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.QCLimitValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.PSD2QcType;
-import eu.europa.esig.dss.spi.x509.RoleOfPSP;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -86,11 +81,6 @@ import org.bouncycastle.asn1.x509.PolicyQualifierInfo;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
-import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
-import org.bouncycastle.asn1.x509.qualified.MonetaryValue;
-import org.bouncycastle.asn1.x509.qualified.QCStatement;
-import org.bouncycastle.asn1.x509.qualified.RFC3739QCObjectIdentifiers;
-import org.bouncycastle.asn1.x509.qualified.SemanticsInformation;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
@@ -158,12 +148,6 @@ public final class DSSASN1Utils {
 		timestampOids.add(id_aa_ets_escTimeStamp);
 		timestampOids.add(id_aa_signatureTimeStampToken);
 	}
-
-	/** The QC type statement OID */
-	private static final String QC_TYPE_STATEMENT_OID = "0.4.0.1862.1.6";
-
-	/** The QC legislation OID */
-	private static final String QC_LEGISLATION_OID = "0.4.0.1862.1.7";
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -591,106 +575,6 @@ public final class DSSASN1Utils {
 			}
 		}
 		return certificatePolicies;
-	}
-
-	/**
-	 * Get the list of all QCStatement Ids that are present in the certificate.
-	 * (As per ETSI EN 319 412-5 V2.1.1)
-	 * 
-	 * @param certToken
-	 *            the certificate
-	 * @return the list of QC Statements oids
-	 */
-	public static List<String> getQCStatementsIdList(final CertificateToken certToken) {
-		final List<String> extensionIdList = new ArrayList<>();
-		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
-		if (Utils.isArrayNotEmpty(qcStatement)) {
-			try {
-				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
-				// Sequence of QCStatement
-				for (int ii = 0; ii < seq.size(); ii++) {
-					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
-					extensionIdList.add(statement.getStatementId().getId());
-				}
-			} catch (Exception e) {
-				LOG.warn("Unable to parse the qCStatements extension '{}' : {}", Utils.toBase64(qcStatement), e.getMessage(), e);
-			}
-		}
-		return extensionIdList;
-	}
-
-	/**
-	 * Get the list of all QCType Ids that are present in the certificate.
-	 * (As per ETSI EN 319 412-5 V2.1.1)
-	 * 
-	 * @param certToken
-	 *            the certificate
-	 * @return the list of QCTypes oids
-	 */
-	public static List<String> getQCTypesIdList(final CertificateToken certToken) {
-		final List<String> qcTypesIdList = new ArrayList<>();
-		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
-		if (Utils.isArrayNotEmpty(qcStatement)) {
-			try {
-				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
-				// Sequence of QCStatement
-				for (int ii = 0; ii < seq.size(); ii++) {
-					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
-					if (QC_TYPE_STATEMENT_OID.equals(statement.getStatementId().getId())) {
-						final ASN1Encodable qcTypeInfo1 = statement.getStatementInfo();
-						if (qcTypeInfo1 instanceof ASN1Sequence) {
-							final ASN1Sequence qcTypeInfo = (ASN1Sequence) qcTypeInfo1;
-							for (int jj = 0; jj < qcTypeInfo.size(); jj++) {
-								final ASN1Encodable e1 = qcTypeInfo.getObjectAt(jj);
-								if (e1 instanceof ASN1ObjectIdentifier) {
-									final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) e1;
-									qcTypesIdList.add(oid.getId());
-								} else {
-									LOG.warn("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but {}",
-											e1.getClass().getName());
-								}
-							}
-						} else {
-							LOG.warn("QcTypes not an ASN1Sequence, but {}", qcTypeInfo1.getClass().getName());
-						}
-					}
-				}
-			} catch (Exception e) {
-				LOG.warn("Unable to parse the qCStatements extension '{}' : {}", Utils.toBase64(qcStatement), e.getMessage(), e);
-			}
-		}
-
-		return qcTypesIdList;
-	}
-
-	/**
-	 * Retrieves a list of QC Legislation statements from the given certificate token
-	 *
-	 * @param certToken {@link CertificateToken}
-	 * @return a list of QC Legislation statements
-	 */
-	public static List<String> getQCLegislations(CertificateToken certToken) {
-		final List<String> result = new ArrayList<>();
-		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
-		if (Utils.isArrayNotEmpty(qcStatement)) {
-			try {
-				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
-				// Sequence of QCStatement
-				for (int ii = 0; ii < seq.size(); ii++) {
-					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
-					if (QC_LEGISLATION_OID.equals(statement.getStatementId().getId())) {
-						ASN1Sequence sequenceLegislation = ASN1Sequence.getInstance(statement.getStatementInfo());
-						for (int jj = 0; jj < sequenceLegislation.size(); jj++) {
-							result.add(getString(sequenceLegislation.getObjectAt(jj)));
-						}
-						
-					}
-				}
-			} catch (Exception e) {
-				LOG.warn("Unable to parse the qCStatements extension '{}' : {}", Utils.toBase64(qcStatement), e.getMessage(), e);
-			}
-		}
-		return result;
 	}
 
 	/**
@@ -1658,75 +1542,6 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method extract the PSD2 QcStatement informations for a given certificate
-	 * 
-	 * @param certToken the certificate
-	 * @return an instance of {@code PSD2QcType} or null
-	 */
-	public static PSD2QcType getPSD2QcStatement(CertificateToken certToken) {
-		PSD2QcType result = null;
-		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
-		if (Utils.isArrayNotEmpty(qcStatement)) {
-			try {
-				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
-				for (int i = 0; i < seq.size(); i++) {
-					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(i));
-					if (OID.psd2_qcStatement.equals(statement.getStatementId())) {
-						result = new PSD2QcType();
-						ASN1Sequence psd2Seq = ASN1Sequence.getInstance(statement.getStatementInfo());
-						ASN1Sequence rolesSeq = ASN1Sequence.getInstance(psd2Seq.getObjectAt(0));
-
-						List<RoleOfPSP> rolesOfPSP = new ArrayList<>();
-						for (int ii = 0; ii < rolesSeq.size(); ii++) {
-							ASN1Sequence oneRoleSeq = ASN1Sequence.getInstance(rolesSeq.getObjectAt(ii));
-							RoleOfPSP roleOfPSP = new RoleOfPSP();
-							ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) oneRoleSeq.getObjectAt(0);
-							roleOfPSP.setPspOid(RoleOfPspOid.fromOid(oid.getId()));
-							roleOfPSP.setPspName(getString(oneRoleSeq.getObjectAt(1)));
-							rolesOfPSP.add(roleOfPSP);
-						}
-						result.setRolesOfPSP(rolesOfPSP);
-						result.setNcaName(getString(psd2Seq.getObjectAt(1)));
-						result.setNcaId(getString(psd2Seq.getObjectAt(2)));
-					}
-				}
-			} catch (Exception e) {
-				LOG.warn("Unable to read QCStatement", e);
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * This method extracts the QcStatement regarding limits on the value of transactions for a given certificate
-	 *
-	 * @param certToken the certificate
-	 * @return an instance of {@code QCLimitValue} or null
-	 */
-	public static QCLimitValue getQcLimitValue(CertificateToken certToken) {
-		QCLimitValue result = null;
-		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
-		if (Utils.isArrayNotEmpty(qcStatement)) {
-			try {
-				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
-				for (int i = 0; i < seq.size(); i++) { 
-					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(i));
-					if (ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.equals(statement.getStatementId())) {
-						MonetaryValue monetaryValue = MonetaryValue.getInstance(statement.getStatementInfo());
-						result = new QCLimitValue();
-						result.setCurrency(monetaryValue.getCurrency().getAlphabetic());
-						result.setAmount(monetaryValue.getAmount().intValue());
-						result.setExponent(monetaryValue.getExponent().intValue());
-					}
-				}
-			} catch (Exception e) {
-				LOG.warn("Unable to read QCStatement", e);
-			}
-		}
-		return result;
-	}
-
-	/**
 	 * Returns a list of subject alternative names
 	 *
 	 * @param certToken {@link CertificateToken}
@@ -1755,33 +1570,6 @@ public final class DSSASN1Utils {
 		return result;
 	}
 
-	/**
-	 * Extracts the {@code SemanticsIdentifier} from the certificate token
-	 *
-	 * @param certToken {@link CertificateToken}
-	 * @return {@link SemanticsIdentifier}
-	 */
-	public static SemanticsIdentifier getSemanticsIdentifier(CertificateToken certToken) {
-		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
-		if (Utils.isArrayNotEmpty(qcStatement)) {
-			try {
-				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
-				for (int i = 0; i < seq.size(); i++) {
-					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(i));
-					if (RFC3739QCObjectIdentifiers.id_qcs_pkixQCSyntax_v2.equals(statement.getStatementId())) {
-						SemanticsInformation semanticsInfo = SemanticsInformation.getInstance(statement.getStatementInfo());
-						if (semanticsInfo != null && semanticsInfo.getSemanticsIdentifier() != null) {
-							return SemanticsIdentifier.fromOid(semanticsInfo.getSemanticsIdentifier().getId());
-						}
-					}
-				}
-			} catch (Exception e) {
-				LOG.warn("Unable to extract the SemanticsIdentifier", e);
-			}
-		}
-		return null;
-	}
-	
 	/**
 	 * Converts the ANS.1 binary signature value to the concatenated R || S format
 	 * 

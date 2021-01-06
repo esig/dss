@@ -24,6 +24,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.QCStatement;
+import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.utils.Utils;
 
 public final class QCTypeIdentifiers {
@@ -32,25 +33,21 @@ public final class QCTypeIdentifiers {
 	}
 
 	public static boolean isQCTypeEsign(CertificateWrapper certificate) {
-		return hasQCTypeOID(certificate, QCStatement.QCT_ESIGN);
+		return hasQCTypeOID(certificate, QCType.QCT_ESIGN);
 	}
 
 	public static boolean isQCTypeEseal(CertificateWrapper certificate) {
-		return hasQCTypeOID(certificate, QCStatement.QCT_ESEAL);
+		return hasQCTypeOID(certificate, QCType.QCT_ESEAL);
 	}
 
 	public static boolean isQCTypeWeb(CertificateWrapper certificate) {
-		return hasQCTypeOID(certificate, QCStatement.QCT_WEB);
+		return hasQCTypeOID(certificate, QCType.QCT_WEB);
 	}
 
-	private static boolean hasQCTypeOID(CertificateWrapper certificate, QCStatement... qcStatements) {
+	private static boolean hasQCTypeOID(CertificateWrapper certificate, QCType qcType) {
 		List<String> qcTypes = certificate.getQCTypes();
 		if (Utils.isCollectionNotEmpty(qcTypes)) {
-			for (QCStatement qcStatement : qcStatements) {
-				if (qcTypes.contains(qcStatement.getOid())) {
-					return true;
-				}
-			}
+			return qcTypes.contains(qcType.getOid());
 		}
 		return false;
 	}
