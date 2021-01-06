@@ -23,7 +23,9 @@ package eu.europa.esig.dss.xades;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.AbstractPaths;
 import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -60,6 +62,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.OutputKeys;
@@ -1216,6 +1219,71 @@ public final class DSSXMLUtils {
 		}
 		// empty URI means enveloped signature (unambiguous)
 		return false;
+	}
+
+	/**
+	 * Incorporates a ds:Transforms element into the given parent {@code element}
+	 *
+	 * @param parentElement {@link Element} to incorporate ds:Transforms into
+	 * @param transforms a list of {@link DSSTransform}s to be incorporated
+	 * @param namespace {@link DSSNamespace} to use
+	 */
+	public static void incorporateTransforms(final Element parentElement, List<DSSTransform> transforms, DSSNamespace namespace) {
+		if (Utils.isCollectionNotEmpty(transforms)) {
+			Document documentDom = parentElement.getOwnerDocument();
+			final Element transformsDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.TRANSFORMS);
+			parentElement.appendChild(transformsDom);
+			for (final DSSTransform dssTransform : transforms) {
+				dssTransform.createTransform(documentDom, transformsDom);
+			}
+		}
+	}
+
+	/**
+	 * This method creates the ds:DigestMethod DOM object
+	 *
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentElement
+	 *             {@link Element}the parent element
+	 * @param digestAlgorithm
+	 *            {@link DigestAlgorithm} the digest algorithm
+	 * @param namespace
+	 *            {@link DSSNamespace} to use
+	 */
+	public static void incorporateDigestMethod(final Element parentElement, DigestAlgorithm digestAlgorithm, DSSNamespace namespace) {
+		Document documentDom = parentElement.getOwnerDocument();
+		final Element digestMethodDom = DomUtils.addElement(documentDom, parentElement, namespace, XMLDSigElement.DIGEST_METHOD);
+		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
+	}
+
+	/**
+	 * This method creates the ds:DigestValue DOM object.
+	 *
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            {@link Element} the parent element
+	 * @param base64EncodedDigestBytes
+	 *            {@link String} representing a base64-encoded Digest value
+	 * @param namespace
+	 *            {@link DSSNamespace}
+	 */
+	public static void incorporateDigestValue(final Element parentDom, String base64EncodedDigestBytes, DSSNamespace namespace) {
+		Document documentDom = parentDom.getOwnerDocument();
+		final Element digestValueDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.DIGEST_VALUE);
+
+		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
+		digestValueDom.appendChild(textNode);
+		parentDom.appendChild(digestValueDom);
 	}
 
 }

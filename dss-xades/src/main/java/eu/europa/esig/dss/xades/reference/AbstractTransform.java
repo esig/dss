@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 import java.util.Objects;
 
 /**
- * The abstract implementation of a transfrom
+ * The abstract implementation of a transform
  */
 public abstract class AbstractTransform implements DSSTransform {
 

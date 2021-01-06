@@ -34,6 +34,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;
@@ -112,7 +113,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				final Element digestAlgAndValueDom = DomUtils.addElement(documentDom, crlRefDom, getXadesNamespace(), getCurrentXAdESElements().getElementDigestAlgAndValue());
 				// TODO: to be added as field to eu.europa.esig.dss.AbstractSignatureParameters.
 				DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
-				incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
+				DSSXMLUtils.incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm, getXmldsigNamespace());
 
 				incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, revocationToken);
 
@@ -214,7 +215,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 							getXadesNamespace(), getCurrentXAdESElements().getElementDigestAlgAndValue());
 					// TODO: to be added as field to eu.europa.esig.dss.AbstractSignatureParameters.
 					DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
-					incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
+					DSSXMLUtils.incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm, getXmldsigNamespace());
 
 					incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, revocationToken);
 				}
