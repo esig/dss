@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateType;
+import eu.europa.esig.dss.enumerations.OidDescription;
+import eu.europa.esig.dss.enumerations.QCType;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.enumerations.QCType;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
-import eu.europa.esig.dss.enumerations.OidDescription;
-import eu.europa.esig.dss.enumerations.QCStatement;
-import eu.europa.esig.dss.enumerations.CertificateType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TypeByCertificatePostEIDASTest {
 
@@ -87,7 +86,9 @@ public class TypeByCertificatePostEIDASTest {
 			xmlOID.setDescription(qcTypeOid.getDescription());
 			oids.add(xmlOID);
 		}
-		xmlCertificate.setQCTypes(oids);
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setQcTypes(oids);
+		xmlCertificate.setQcStatements(xmlQcStatements);
 		return new CertificateWrapper(xmlCertificate);
 	}
 

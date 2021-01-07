@@ -23,7 +23,6 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -45,9 +44,9 @@ public final class QCTypeIdentifiers {
 	}
 
 	private static boolean hasQCTypeOID(CertificateWrapper certificate, QCType qcType) {
-		List<String> qcTypes = certificate.getQCTypes();
+		List<QCType> qcTypes = certificate.getQCTypes();
 		if (Utils.isCollectionNotEmpty(qcTypes)) {
-			return qcTypes.contains(qcType.getOid());
+			return qcTypes.contains(qcType);
 		}
 		return false;
 	}

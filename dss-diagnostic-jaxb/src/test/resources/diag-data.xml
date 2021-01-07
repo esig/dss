@@ -149,8 +149,6 @@
                 <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_ocsp_snca.pdf">1.3.158.36061701.0.1.5</certificatePolicy>
                 <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -325,11 +323,6 @@
                 <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
                 <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_snca.pdf">1.3.158.36061701.0.1.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -478,8 +471,6 @@
                 <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
                 <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_tsa_snca.pdf">1.3.158.36061701.0.1.4</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -654,8 +645,6 @@
                 <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_ocsp_snca.pdf">1.3.158.36061701.0.1.5</certificatePolicy>
                 <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -824,8 +813,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -923,8 +910,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>

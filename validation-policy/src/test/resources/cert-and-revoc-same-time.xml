@@ -117,8 +117,6 @@
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -171,8 +169,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-1A35582BB3410D7E6787C26BD22161C52A1F4CFC361FD99950B5E081D23A1EAE">
@@ -229,8 +225,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-52DA9EFFCCDC7A28999F8CA1871DC6094AA94D01B5AB36BEA1DAE0C6AA7D7AC5">
@@ -288,8 +282,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-1A35582BB3410D7E6787C26BD22161C52A1F4CFC361FD99950B5E081D23A1EAE">
@@ -343,8 +335,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>

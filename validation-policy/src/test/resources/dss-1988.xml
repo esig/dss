@@ -146,11 +146,10 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="https://www.firmaprofesional.com/cps">1.3.6.1.4.1.13177.10.1.40.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid>1.3.6.1.5.5.7.11.2</qcStatementOid>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -282,8 +281,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -403,8 +400,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -501,8 +496,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">1.3.6.1.4.1.13177.10.1.4.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -586,8 +579,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -639,8 +630,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.izenpe.com/cps">1.3.6.1.4.1.14777.3.3</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>

@@ -38,7 +38,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Role;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPdsLocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcQSSD;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
@@ -53,6 +57,7 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.OidDescription;
+import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RoleOfPspOid;
@@ -61,15 +66,20 @@ import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.x509.QCLimitValue;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.PSD2QcType;
+import eu.europa.esig.dss.model.x509.PdsLocation;
+import eu.europa.esig.dss.model.x509.QCLimitValue;
+import eu.europa.esig.dss.model.x509.QcStatements;
+import eu.europa.esig.dss.model.x509.RoleOfPSP;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.TokenComparator;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.QcStatementUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
 import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
@@ -90,9 +100,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.model.x509.PSD2QcType;
 import eu.europa.esig.dss.spi.x509.ResponderId;
-import eu.europa.esig.dss.model.x509.RoleOfPSP;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -550,7 +558,7 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	protected <R extends Revocation> List<XmlRevocationRef> getXmlRevocationRefs(String tokenId,
-			Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {
+																				 Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {
 		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<>();
 		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : refsAndOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
@@ -817,7 +825,7 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	protected XmlFoundCertificates getXmlFoundCertificates(Identifier tokenIdentifier,
-			TokenCertificateSource certificateSource) {
+														   TokenCertificateSource certificateSource) {
 		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
 		xmlFoundCertificates.getRelatedCertificates()
 				.addAll(getXmlRelatedCertificates(certificateSource));
@@ -931,7 +939,7 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	private List<XmlOrphanCertificate> getOrphanCertificates(TokenCertificateSource certificateSource,
-			CertificateToken signingCertificate) {
+															 CertificateToken signingCertificate) {
 		List<XmlOrphanCertificate> orphanCertificates = new ArrayList<>();
 
 		// Orphan Certificate References
@@ -1090,15 +1098,14 @@ public abstract class DiagnosticDataBuilder {
 
 		xmlCert.setIdPkixOcspNoCheck(DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken));
 
-		xmlCert.setPSD2Info(getPSD2Info(certToken));
-		xmlCert.setQCLimitValue(getQCLimitValue(certToken));
+		QcStatements qcStatements = QcStatementUtils.getQcStatements(certToken);
+		if (qcStatements != null) {
+			xmlCert.setQcStatements(getXmlQcStatements(qcStatements));
+		}
 
 		xmlCert.setBasicSignature(getXmlBasicSignature(certToken));
 
-		xmlCert.setQCStatementIds(getXmlOids(DSSASN1Utils.getQCStatementsIdList(certToken)));
-		xmlCert.setQCTypes(getXmlOids(DSSASN1Utils.getQCTypesIdList(certToken)));
 		xmlCert.setCertificatePolicies(getXmlCertificatePolicies(DSSASN1Utils.getCertificatePolicies(certToken)));
-		xmlCert.setSemanticsIdentifier(getXmlOid(DSSASN1Utils.getSemanticsIdentifier(certToken)));
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
 		xmlCert.setTrusted(trustedCertSources.isTrusted(certToken));
@@ -1113,6 +1120,57 @@ public abstract class DiagnosticDataBuilder {
 		return xmlCert;
 	}
 
+	private XmlQcStatements getXmlQcStatements(QcStatements qcStatements) {
+		XmlQcStatements result = new XmlQcStatements();
+		result.setQcCompliance(getXmlQcCompliance(qcStatements.isQcCompliance()));
+		result.setQcQSSD(getXmlQcQSSD(qcStatements.isQcQSSD()));
+		if (qcStatements.getQcEuRetentionPeriod() != null) {
+			result.setQcEuRetentionPeriod(qcStatements.getQcEuRetentionPeriod());
+		}
+		if (qcStatements.getQcLimitValue() != null) {
+			result.setQcLimitValue(getQCLimitValue(qcStatements.getQcLimitValue()));
+		}
+		if (Utils.isCollectionNotEmpty(qcStatements.getQcTypes())) {
+			result.setQcTypes(getXmlQcTypes(qcStatements.getQcTypes()));
+		}
+		if (Utils.isCollectionNotEmpty(qcStatements.getQcEuPDS())) {
+			result.setQcEuPDS(getXmlQcEuPSD(qcStatements.getQcEuPDS()));
+		}
+		if (qcStatements.getQcSemanticsIdentifier() != null) {
+			result.setSemanticsIdentifier(getXmlOid(qcStatements.getQcSemanticsIdentifier()));
+		}
+		if (Utils.isCollectionNotEmpty(qcStatements.getQcLegislationCountryCodes())) {
+			result.setQcCClegislation(qcStatements.getQcLegislationCountryCodes());
+		}
+		if (qcStatements.getPsd2QcType() != null) {
+			result.setPSD2Info(getPSD2Info(qcStatements.getPsd2QcType()));
+		}
+		return result;
+	}
+
+	protected List<XmlPdsLocation> getXmlQcEuPSD(List<PdsLocation> qcEuPDS) {
+		List<XmlPdsLocation> result = new ArrayList<>();
+		for (PdsLocation pdsLocation : qcEuPDS) {
+			XmlPdsLocation xmlPdsLocation = new XmlPdsLocation();
+			xmlPdsLocation.setLang(pdsLocation.getLanguage());
+			xmlPdsLocation.setValue(pdsLocation.getUrl());
+			result.add(xmlPdsLocation);
+		}
+		return result;
+	}
+
+	protected XmlQcQSSD getXmlQcQSSD(boolean present) {
+		XmlQcQSSD xmlQcQSSD = new XmlQcQSSD();
+		xmlQcQSSD.setPresent(present);
+		return xmlQcQSSD;
+	}
+
+	protected XmlQcCompliance getXmlQcCompliance(boolean present) {
+		XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
+		xmlQcCompliance.setPresent(present);
+		return xmlQcCompliance;
+	}
+
 	private XmlOID getXmlOid(OidDescription oidDescription) {
 		if (oidDescription == null) {
 			return null;
@@ -1123,37 +1181,29 @@ public abstract class DiagnosticDataBuilder {
 		return xmlOID;
 	}
 
-	private XmlPSD2Info getPSD2Info(CertificateToken certToken) {
-		PSD2QcType psd2QcStatement = DSSASN1Utils.getPSD2QcStatement(certToken);
-		if (psd2QcStatement != null) {
-			XmlPSD2Info xmlInfo = new XmlPSD2Info();
-			xmlInfo.setNcaId(psd2QcStatement.getNcaId());
-			xmlInfo.setNcaName(psd2QcStatement.getNcaName());
-			List<RoleOfPSP> rolesOfPSP = psd2QcStatement.getRolesOfPSP();
-			List<XmlPSD2Role> psd2Roles = new ArrayList<>();
-			for (RoleOfPSP roleOfPSP : rolesOfPSP) {
-				XmlPSD2Role xmlRole = new XmlPSD2Role();
-				RoleOfPspOid role = roleOfPSP.getPspOid();
-				xmlRole.setPspOid(getXmlOid(role));
-				xmlRole.setPspName(roleOfPSP.getPspName());
-				psd2Roles.add(xmlRole);
-			}
-			xmlInfo.setPSD2Roles(psd2Roles);
-			return xmlInfo;
+	private XmlPSD2Info getPSD2Info(PSD2QcType psd2QcStatement) {
+		XmlPSD2Info xmlInfo = new XmlPSD2Info();
+		xmlInfo.setNcaId(psd2QcStatement.getNcaId());
+		xmlInfo.setNcaName(psd2QcStatement.getNcaName());
+		List<RoleOfPSP> rolesOfPSP = psd2QcStatement.getRolesOfPSP();
+		List<XmlPSD2Role> psd2Roles = new ArrayList<>();
+		for (RoleOfPSP roleOfPSP : rolesOfPSP) {
+			XmlPSD2Role xmlRole = new XmlPSD2Role();
+			RoleOfPspOid role = roleOfPSP.getPspOid();
+			xmlRole.setPspOid(getXmlOid(role));
+			xmlRole.setPspName(roleOfPSP.getPspName());
+			psd2Roles.add(xmlRole);
 		}
-		return null;
+		xmlInfo.setPSD2Roles(psd2Roles);
+		return xmlInfo;
 	}
 
-	private XmlQCLimitValue getQCLimitValue(CertificateToken certToken) {
-		QCLimitValue qcLimitValue = DSSASN1Utils.getQcLimitValue(certToken);
-		if (qcLimitValue != null) {
-			XmlQCLimitValue xmlQCLimitValue = new XmlQCLimitValue();
-			xmlQCLimitValue.setCurrency(qcLimitValue.getCurrency());
-			xmlQCLimitValue.setAmount(qcLimitValue.getAmount());
-			xmlQCLimitValue.setExponent(qcLimitValue.getExponent());
-			return xmlQCLimitValue;
-		}
-		return null;
+	private XmlQCLimitValue getQCLimitValue(QCLimitValue qcLimitValue) {
+		XmlQCLimitValue xmlQCLimitValue = new XmlQCLimitValue();
+		xmlQCLimitValue.setCurrency(qcLimitValue.getCurrency());
+		xmlQCLimitValue.setAmount(qcLimitValue.getAmount());
+		xmlQCLimitValue.setExponent(qcLimitValue.getExponent());
+		return xmlQCLimitValue;
 	}
 
 	private List<CertificateSourceType> getXmlCertificateSources(final CertificateToken token) {
@@ -1190,6 +1240,19 @@ public abstract class DiagnosticDataBuilder {
 			xmlCP.setDescription(OidRepository.getDescription(cp.getOid()));
 			xmlCP.setCpsUrl(DSSUtils.removeControlCharacters(cp.getCpsUrl()));
 			result.add(xmlCP);
+		}
+		return result;
+	}
+
+	private List<XmlOID> getXmlQcTypes(List<QCType> qcTypes) {
+		List<XmlOID> result = new ArrayList<>();
+		if (Utils.isCollectionNotEmpty(qcTypes)) {
+			for (QCType qcType : qcTypes) {
+				XmlOID xmlOID = new XmlOID();
+				xmlOID.setValue(qcType.getOid());
+				xmlOID.setDescription(qcType.getDescription());
+				result.add(xmlOID);
+			}
 		}
 		return result;
 	}
@@ -1285,7 +1348,7 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	private List<XmlTrustedService> buildXmlTrustedServices(List<TrustProperties> trustPropertiesList,
-			CertificateToken certToken, CertificateToken trustedCert) {
+															CertificateToken certToken, CertificateToken trustedCert) {
 		List<XmlTrustedService> result = new ArrayList<>();
 
 		for (TrustProperties trustProperties : trustPropertiesList) {

@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -45,7 +32,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -70,6 +56,18 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.ValidationReportFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class UnmarshallingTester {
 
@@ -361,7 +359,6 @@ public class UnmarshallingTester {
 			assertEquals(unmarshalledCert.getAuthorityInformationAccessUrls().size(), originalCert.getAuthorityInformationAccessUrls().size());
 			assertEquals(unmarshalledCert.getCertificateRevocationData().size(), originalCert.getCertificateRevocationData().size());
 			assertEquals(unmarshalledCert.getExtendedKeyUsages().size(), originalCert.getExtendedKeyUsages().size());
-			assertEquals(unmarshalledCert.getQCStatementIds().size(), originalCert.getQCStatementIds().size());
 			assertEquals(unmarshalledCert.getTrustedServices().size(), originalCert.getTrustedServices().size());
 			assertEquals(unmarshalledCert.getTrustServiceProviders().size(), originalCert.getTrustServiceProviders().size());
 

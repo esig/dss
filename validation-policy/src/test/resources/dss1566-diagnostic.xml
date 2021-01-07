@@ -54,8 +54,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -111,8 +109,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -174,15 +170,13 @@
                 <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
                 <certificatePolicy cpsUrl="http://www.disig.sk/_pdf/cp_svk_eid.pdf">1.3.158.35975946.0.0.1.1.9</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
-                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes>
-                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
-            </QCTypes>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcQSSD present="true"/>
+                                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+            </QcStatements>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>

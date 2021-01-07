@@ -344,18 +344,17 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
-					
-					<xs:element name="PSD2Info" type="PSD2Info" minOccurs="0" />
-					
+
+
 					<xs:element name="IdPkixOcspNoCheck" type="xs:boolean" minOccurs="0" />
-		
+
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-		
+
 					<xs:element name="Trusted" type="xs:boolean" />
 					<xs:element name="SelfSigned" type="xs:boolean" />
-					
+
 					<xs:element name="CertificatePolicies" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
@@ -363,23 +362,9 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
-					<xs:element name="QCStatementIds" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="qcStatementOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="QCTypes" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="qcTypeOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="QCLimitValue" type="QCLimitValue" minOccurs="0" />
-					<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
-								
+
+					<xs:element name="QcStatements" type="QcStatements" minOccurs="0" />
+
 					<xs:element name="TrustedServiceProviders" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
@@ -403,6 +388,54 @@
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="QcStatements">
+		<xs:sequence>
+			<xs:element name="QcCompliance" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="present" type="xs:boolean" use="required" />
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="QcLimitValue" type="QCLimitValue" minOccurs="0" />
+			<xs:element name="QcEuRetentionPeriod" type="xs:int" minOccurs="0" />
+			<xs:element name="QcQSSD" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="present" type="xs:boolean" use="required" />
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="QcEuPDS" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="PdsLocation" type="PdsLocation" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="QcTypes" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="QcType" type="OID" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="QcCClegislation" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CountryName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
+			<xs:element name="PSD2Info" type="PSD2Info" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="PdsLocation">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="lang" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 	
 	<xs:complexType name="OID">

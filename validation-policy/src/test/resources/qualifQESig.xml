@@ -107,8 +107,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.56.9.1.1.5</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -187,8 +185,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.56.9.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -271,11 +267,10 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.56.10.1.1.2.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcQSSD present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -362,8 +357,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.56.10.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -436,8 +429,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -504,8 +495,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.56.10.1.1.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -585,8 +574,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>

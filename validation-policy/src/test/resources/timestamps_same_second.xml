@@ -93,9 +93,7 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.56.9.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds />
-            <QCTypes />
-            <TrustedServiceProviders />
+                        <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>n5dERjvhNxR1Tho77PmMCMwgXkqzICj04oMMShsndbg=</DigestValue>
@@ -138,9 +136,7 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.56.9.1.1.5</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds />
-            <QCTypes />
-            <TrustedServiceProviders />
+                        <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
 	                <Status>GOOD</Status>
@@ -188,10 +184,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.2.203.27112489.1.10.3.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid>0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes />
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -238,10 +233,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.2.203.27112489.1.10.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid>0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes />
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84">
@@ -412,7 +406,6 @@
 		            <FoundRevocations/>
   	                 <TimestampedObjects>
 					   	<TimestampedObject Category="SIGNATURE" Token="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
-
 		   				<TimestampedObject Category="TIMESTAMP" Token="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" />
 		   				
 					   	<TimestampedObject Category="CERTIFICATE" Token="C-DF09A37F5DD288207B0FF4E96D551DE65CC403336CE6A25BCBF6C0D847BD2E74" />
@@ -451,7 +444,6 @@
 		            <FoundRevocations/>
 	                 <TimestampedObjects>
 					   	<TimestampedObject Category="SIGNATURE" Token="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
-
 		   				<TimestampedObject Category="TIMESTAMP" Token="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" />
 		   				<TimestampedObject Category="TIMESTAMP" Token="T-1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" />
 		   				<TimestampedObject Category="TIMESTAMP" Token="T-C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" />
@@ -492,7 +484,6 @@
 		            <FoundRevocations/>
 	                 <TimestampedObjects>
 					   	<TimestampedObject Category="SIGNATURE" Token="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
-
 		   				<TimestampedObject Category="TIMESTAMP" Token="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" />
 		   				<TimestampedObject Category="TIMESTAMP" Token="T-1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" />
 		   				<TimestampedObject Category="TIMESTAMP" Token="T-C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" />

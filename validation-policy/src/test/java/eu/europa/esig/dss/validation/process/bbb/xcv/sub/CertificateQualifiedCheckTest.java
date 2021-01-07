@@ -20,26 +20,25 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
-import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CertificateQualifiedCheckTest extends AbstractTestCheck {
 
@@ -50,11 +49,11 @@ public class CertificateQualifiedCheckTest extends AbstractTestCheck {
 
 		XmlCertificate xc = new XmlCertificate();
 
-		List<XmlOID> qcStatementIds = new ArrayList<>();
-		XmlOID oid = new XmlOID();
-		oid.setValue(QCStatement.QC_COMPLIANCE.getOid());
-		qcStatementIds.add(oid);
-		xc.setQCStatementIds(qcStatementIds);
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
+		xmlQcCompliance.setPresent(true);
+		xmlQcStatements.setQcCompliance(xmlQcCompliance);
+		xc.setQcStatements(xmlQcStatements);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateQualifiedCheck cqc = new CertificateQualifiedCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);

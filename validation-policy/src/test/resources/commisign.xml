@@ -104,8 +104,6 @@
             <certificatePolicy Description="normalized-certificate-policy">0.4.0.2042.1.1</certificatePolicy>
             <certificatePolicy cpsUrl="https://hide.eu/info/cp/">1.3.130.2.1.1</certificatePolicy>
          </CertificatePolicies>
-         <QCStatementIds/>
-         <QCTypes/>
          <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
 				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
@@ -165,8 +163,6 @@
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
          <CertificatePolicies/>
-         <QCStatementIds/>
-         <QCTypes/>
          <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
 				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
@@ -225,8 +221,6 @@
          <CertificatePolicies>
             <certificatePolicy>2.5.29.32.0</certificatePolicy>
          </CertificatePolicies>
-         <QCStatementIds/>
-         <QCTypes/>
          <TrustedServiceProviders/>
          <Revocations/>
          <DigestAlgoAndValue>
@@ -282,8 +276,6 @@
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
          <CertificatePolicies/>
-         <QCStatementIds/>
-         <QCTypes/>
          <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
 				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>

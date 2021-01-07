@@ -574,11 +574,6 @@
 					<xsd:documentation>Checks if the certificate policy id is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="QCStatementIds" type="MultiValuesConstraint" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate qc statement is in the acceptable values list</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="Qualification" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is declared as qualified (no TL overrule)</xsd:documentation>

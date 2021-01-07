@@ -214,8 +214,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://publicacao.certificadodigital.com.br/repositorio/dpc/declaracao-rfb.pdf">2.16.76.1.2.3.10</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -264,8 +262,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://acraiz.icpbrasil.gov.br/DPCacraiz.pdf">2.16.76.1.1.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -329,8 +325,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc/AC_Certisign_Tempo/DPC_AC_Certisign_Tempo.pdf">2.16.76.1.2.303.6</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -387,8 +381,6 @@
                 <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.3.10</certificatePolicy>
                 <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.4.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -441,8 +433,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.76.1.1.5</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -496,8 +486,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -550,8 +538,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.76.1.1.8</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -606,8 +592,6 @@
                 <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc">2.16.76.1.2.303.6</certificatePolicy>
                 <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc">2.16.76.1.2.304.5</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>

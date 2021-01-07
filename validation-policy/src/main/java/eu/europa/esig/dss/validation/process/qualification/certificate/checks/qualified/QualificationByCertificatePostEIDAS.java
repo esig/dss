@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
 class QualificationByCertificatePostEIDAS implements QualificationStrategy {
@@ -34,7 +33,7 @@ class QualificationByCertificatePostEIDAS implements QualificationStrategy {
 
 	@Override
 	public CertificateQualifiedStatus getQualifiedStatus() {
-		if (QCStatementPolicyIdentifiers.isQCCompliant(signingCertificate)) {
+		if (signingCertificate.isQcCompliance()) {
 			return CertificateQualifiedStatus.QC;
 		} else {
 			return CertificateQualifiedStatus.NOT_QC;

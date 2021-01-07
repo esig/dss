@@ -39,8 +39,6 @@
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
@@ -107,13 +105,12 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes>
-                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
-            </QCTypes>
+            <QcStatements>
+                <QcQSSD present="true"/>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>

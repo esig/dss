@@ -29,7 +29,6 @@ import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
 
 /**
  * Checks if the certificate is supported by QSCD
@@ -61,7 +60,7 @@ public class CertificateSupportedByQSCDCheck extends ChainItem<XmlSubXCV> {
 		boolean policyIdSupportedByQSCD = CertificatePolicyIdentifiers.isSupportedByQSCD(certificate);
 
 		// checks in QC statement extension
-		boolean qcStatementSupportedByQSCD = QCStatementPolicyIdentifiers.isSupportedByQSCD(certificate);
+		boolean qcStatementSupportedByQSCD = certificate.isSupportedByQSCD();
 
 		return policyIdSupportedByQSCD || qcStatementSupportedByQSCD;
 	}

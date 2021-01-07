@@ -49,7 +49,6 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssue
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotOnHoldCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQCStatementIdsCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotRevokedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
@@ -154,8 +153,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(notSelfSigned(currentCertificate, subContext));
 
 		item = item.setNextItem(certificatePolicyIds(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateQCStatementIds(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
 
@@ -360,11 +357,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> certificatePolicyIds(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificatePolicyIdsConstraint(context, subContext);
 		return new CertificatePolicyIdsCheck(i18nProvider, result, certificate, constraint);
-	}
-
-	private ChainItem<XmlSubXCV> certificateQCStatementIds(CertificateWrapper certificate, SubContext subContext) {
-		MultiValuesConstraint constraint = validationPolicy.getCertificateQCStatementIdsConstraint(context, subContext);
-		return new CertificateQCStatementIdsCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {
