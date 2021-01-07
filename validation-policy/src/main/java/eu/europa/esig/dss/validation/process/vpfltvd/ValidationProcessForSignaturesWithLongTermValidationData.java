@@ -173,7 +173,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
 		
-		/* RevocatioN BBBs analysis */
+		/* Revocation BBBs analysis */
 		Map<CertificateRevocationWrapper, SubContext> revocationDataToUse = new LinkedHashMap<>();
 		
 		for (CertificateWrapper certificateWrapper : currentSignature.getCertificateChain()) {
@@ -243,7 +243,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		XmlConclusion bsConclusion = basicSignatureValidation.getConclusion();
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && 
 				(SubIndication.REVOKED_NO_POE.equals(bsConclusion.getSubIndication()) || SubIndication.REVOKED_CA_NO_POE.equals(bsConclusion.getSubIndication()))) {
-			item = revocationDateAfterBestSignatureDateValidation(item, revocationDataToUse, bestSignatureTime.getTime(), bsConclusion.getSubIndication());
+			item = revocationDateAfterBestSignatureTimeValidation(item, revocationDataToUse, bestSignatureTime.getTime(), bsConclusion.getSubIndication());
 		}
 
 		/*
@@ -483,7 +483,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		};
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> revocationDateAfterBestSignatureDateValidation(
+	private ChainItem<XmlValidationProcessLongTermData> revocationDateAfterBestSignatureTimeValidation(
 			ChainItem<XmlValidationProcessLongTermData> item, Map<CertificateRevocationWrapper, SubContext> revocationDataMap, 
 			Date bestSignatureTime, SubIndication subIndication) {
 		
