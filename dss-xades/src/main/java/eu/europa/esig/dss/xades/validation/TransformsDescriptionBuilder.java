@@ -80,10 +80,10 @@ public class TransformsDescriptionBuilder {
 	public List<String> build() {
 		List<String> transformsList = new ArrayList<>();
 		if (transforms != null) {
-			NodeList transfromChildNodes = transforms.getChildNodes();
-			if (transfromChildNodes != null && transfromChildNodes.getLength() > 0) {
-				for (int i = 0; i < transfromChildNodes.getLength(); i++) {
-					Node transformation = transfromChildNodes.item(i);
+			NodeList transformChildNodes = transforms.getChildNodes();
+			if (transformChildNodes != null && transformChildNodes.getLength() > 0) {
+				for (int i = 0; i < transformChildNodes.getLength(); i++) {
+					Node transformation = transformChildNodes.item(i);
 					if (Node.ELEMENT_NODE == transformation.getNodeType()) {
 						transformsList.add(buildTransformationName(transformation));
 					}
@@ -95,7 +95,7 @@ public class TransformsDescriptionBuilder {
 
 	/**
 	 * Returns a complete description string for the given transformation node
-	 * @param transformation {@link Node} containing a signle reference transformation information
+	 * @param transformation {@link Node} containing a single reference transformation information
 	 * @return transformation description name
 	 */
 	private String buildTransformationName(Node transformation) {

@@ -51,8 +51,8 @@ import eu.europa.esig.dss.xades.SignatureBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.reference.DSSReference;
-import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,8 +107,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected Element signedSignaturePropertiesDom;
 	protected Element signedDataObjectPropertiesDom;
 	protected Element unsignedSignaturePropertiesDom;
-	
-	protected ReferenceBuilder referenceBuilder;
 
 	/**
 	 * id-suffixes for DOM elements
@@ -165,7 +163,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		this.params = params;
 		this.document = document;
 		this.deterministicId = params.getDeterministicId();
-		this.referenceBuilder = new ReferenceBuilder(params);
 		
 		setCanonicalizationMethods(params);
 	}
@@ -265,15 +262,22 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void ensureConfigurationValidity() {
 		checkSignaturePackagingValidity();
 
+		ReferenceBuilder referenceBuilder = initReferenceBuilder();
 		final List<DSSReference> references = params.getReferences();
 		if (Utils.isCollectionEmpty(references)) {
-			final List<DSSReference> defaultReferences = createDefaultReferences();
+			final List<DSSReference> defaultReferences = referenceBuilder.build();
 			// The SignatureParameters object is updated with the default references
 			// in order to ensure validity on next steps
 			params.setReferences(defaultReferences);
 		} else {
 			referenceBuilder.checkReferencesValidity();
 		}
+	}
+
+	private ReferenceBuilder initReferenceBuilder() {
+		List<DSSDocument> detachedContent = Utils.isCollectionNotEmpty(params.getDetachedContents()) ?
+				params.getDetachedContents() : Arrays.asList(document);
+		return new ReferenceBuilder(detachedContent, params);
 	}
 	
 	private void checkSignaturePackagingValidity() {
@@ -379,10 +383,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * This method creates the ds:Reference elements in the signature.
 	 */
 	private void incorporateReferences() {
-		final List<DSSReference> references = params.getReferences();
-		for (final DSSReference reference : references) {
-			incorporateReference(reference);
-		}
+		ReferenceProcessor referenceProcessor = new ReferenceProcessor(params);
+		referenceProcessor.incorporateReferences(signedInfoDom, params.getReferences(), getXmldsigNamespace());
 	}
 
 	/**
@@ -562,12 +564,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		transform.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signedPropertiesCanonicalizationMethod);
 
 		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
-		incorporateDigestMethod(reference, digestAlgorithm);
+		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
 
 		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedPropertiesCanonicalizationMethod, getNodeToCanonicalize(signedPropertiesDom));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method  --> {}", signedPropertiesCanonicalizationMethod);
-			LOG.trace("Canonicalised REF_2      --> {}", new String(canonicalizedBytes));
+			LOG.trace("Canonicalized REF_2      --> {}", new String(canonicalizedBytes));
 		}
 
 		incorporateDigestValueOfReference(reference, digestAlgorithm, canonicalizedBytes);
@@ -605,65 +607,21 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		transform.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), keyInfoCanonicalizationMethod);
 		
 		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
-		incorporateDigestMethod(reference, digestAlgorithm);
+		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
 		
 		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(keyInfoCanonicalizationMethod, getNodeToCanonicalize(keyInfoDom));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method   --> {}", keyInfoCanonicalizationMethod);
-			LOG.trace("Canonicalised REF_KeyInfo --> {}", new String(canonicalizedBytes));
+			LOG.trace("Canonicalized REF_KeyInfo --> {}", new String(canonicalizedBytes));
 		}
 
 		incorporateDigestValueOfReference(reference, digestAlgorithm, canonicalizedBytes);
 		
 	}
-
+	
 	/**
-	 * This method incorporates a reference within the signedInfoDom
+	 * Creates the ds:DigestValue DOM object for the given {@code canonicalizedBytes}
 	 *
-	 * @param dssReference
-	 *            the {@code DSSReference}
-	 */
-	private void incorporateReference(final DSSReference dssReference) {
-
-		final Element referenceDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.REFERENCE);
-		signedInfoDom.appendChild(referenceDom);		
-		if (dssReference.getId() != null) {
-			referenceDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), dssReference.getId());
-		}
-		final String uri = dssReference.getUri();
-		if (uri != null) {
-			referenceDom.setAttribute(XMLDSigAttribute.URI.getAttributeName(), uri);
-		}
-		final String referenceType = dssReference.getType();
-		if (referenceType != null) {
-			referenceDom.setAttribute(XMLDSigAttribute.TYPE.getAttributeName(), referenceType);
-		}
-		
-		// Detached signature may not have transformations
-		if (Utils.isCollectionNotEmpty(dssReference.getTransforms())) {
-			incorporateTransforms(referenceDom, dssReference.getTransforms());
-		}
-		
-		final DigestAlgorithm digestAlgorithm = dssReference.getDigestMethodAlgorithm();
-		incorporateDigestMethod(referenceDom, digestAlgorithm);
-
-		final DSSDocument documentAfterTranformations = referenceBuilder.getReferenceOutput(dssReference);
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Reference canonicalization method  --> {}", signedInfoCanonicalizationMethod);
-		}
-		incorporateDigestValue(referenceDom, digestAlgorithm, documentAfterTranformations);
-	}
-	
-	private void incorporateTransforms(final Element parentElement, final List<DSSTransform> transforms) {
-		final Element transformsDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.TRANSFORMS);
-		parentElement.appendChild(transformsDom);
-		for (final DSSTransform dssTransform : transforms) {
-			dssTransform.createTransform(documentDom, transformsDom);
-		}
-	}
-	
-	/**
-	 * Creates the ds:DigectValue DOM object for the given {@code canonicalizedBytes}
 	 * @param referenceDom - the parent element to append new DOM element to
 	 * @param digestAlgorithm - {@link DigestAlgorithm} to use
 	 * @param canonicalizedBytes - canonicalized byte array of the relevant reference DOM to hash
@@ -676,19 +634,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
 		digestValueDom.appendChild(textNode);
 		referenceDom.appendChild(digestValueDom);
-	}
-
-	/**
-	 * When the user does not want to create its own references (only when signing one contents) the default one are
-	 * created.
-	 *
-	 * @return {@code List} of {@code DSSReference}
-	 */
-	private List<DSSReference> createDefaultReferences() {
-		if (Utils.isCollectionNotEmpty(params.getDetachedContents())) {
-			return referenceBuilder.build(params.getDetachedContents());
-		}
-		return referenceBuilder.build(Arrays.asList(document));
 	}
 
 	/**
@@ -783,16 +728,14 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 				if (signaturePolicy instanceof XmlPolicyWithTransforms) {
 					XmlPolicyWithTransforms xmlPolicy = (XmlPolicyWithTransforms) signaturePolicy;
-					if (Utils.isCollectionNotEmpty(xmlPolicy.getTransforms())) {
-						incorporateTransforms(signaturePolicyIdDom, xmlPolicy.getTransforms());
-					}
+					DSSXMLUtils.incorporateTransforms(signaturePolicyIdDom, xmlPolicy.getTransforms(), getXmldsigNamespace());
 				}
 
 				if (signaturePolicy.getDigestAlgorithm() != null && signaturePolicy.getDigestValue() != null) {
 					final Element sigPolicyHashDom = DomUtils.addElement(documentDom, signaturePolicyIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyHash());
 
 					final DigestAlgorithm digestAlgorithm = signaturePolicy.getDigestAlgorithm();
-					incorporateDigestMethod(sigPolicyHashDom, digestAlgorithm);
+					DSSXMLUtils.incorporateDigestMethod(sigPolicyHashDom, digestAlgorithm, getXmldsigNamespace());
 
 					final byte[] hashValue = signaturePolicy.getDigestValue();
 					final String bas64EncodedHashValue = Utils.toBase64(hashValue);
