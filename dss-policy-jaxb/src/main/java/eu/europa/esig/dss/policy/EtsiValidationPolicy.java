@@ -644,15 +644,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext) {
-		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getQCStatementIds();
-		}
-		return null;
-	}
-
-	@Override
 	public LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {

@@ -124,14 +124,13 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes>
-                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
-            </QCTypes>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcQSSD present="true"/>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-EBECEB08E8A5E37F0D537BBB7FD96EBE6548B87017CF65A5A8826FCBFA852FFD" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
                     <TSPNames>
@@ -217,8 +216,6 @@
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-EBECEB08E8A5E37F0D537BBB7FD96EBE6548B87017CF65A5A8826FCBFA852FFD" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
                     <TSPNames>

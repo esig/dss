@@ -150,8 +150,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://pks.telesec.de/cps">1.3.6.1.4.1.7879.13.27</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-7BB859CB9EB7F767827B99BF5EB441D24AEEA96B7948F9BE15CAD37E073BDE8F">
@@ -212,8 +210,6 @@
             <CertificatePolicies>
                 <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-AEB1958FE4517F52D8488F4E7DBE4A82E2DE0ADFE01B7BF11DEE0B53BFE12C55">
@@ -274,12 +270,10 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://pks.telesec.de/cps" Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcQSSD present="true"/>
+                            </QcStatements>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-883A3DDA88FB4A296DE0BCD4531EF6C105F62B530247224295BF1D8E0961F0B3">
@@ -332,8 +326,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -384,8 +376,6 @@
             <CertificatePolicies>
                 <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -440,8 +430,6 @@
             <CertificatePolicies>
                 <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -498,8 +486,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://pks.telesec.de/cps">1.3.6.1.4.1.7879.13.27</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -556,8 +542,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://pks.telesec.de/cps">1.3.6.1.4.1.7879.13.27</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-6779870BA341124B5BE084F2970A492D798C29882F8F5832637FE237D3F095A0">

@@ -159,10 +159,9 @@
 			<CertificatePolicies>
 				<certificatePolicy>1.3.6.1.4.1.15819.5.1.3.1</certificatePolicy>
 			</CertificatePolicies>
-			<QCStatementIds>
-				<qcStatementOid Description="qc-compliant">0.4.0.1862.1.1</qcStatementOid>
-			</QCStatementIds>
-			<QCTypes />
+			<QcStatements>
+				<QcCompliance present="true"/>
+			</QcStatements>
 			<TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
 					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -253,9 +252,7 @@
 			<CertificatePolicies>
 				<certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
 			</CertificatePolicies>
-			<QCStatementIds />
-			<QCTypes />
-			<TrustedServiceProviders>
+						<TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
 					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
@@ -351,9 +348,7 @@
 			<CertificatePolicies>
 				<certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
 			</CertificatePolicies>
-			<QCStatementIds />
-			<QCTypes />
-			<TrustedServiceProviders>
+						<TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
 					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
@@ -451,9 +446,7 @@
 			<CertificatePolicies>
 				<certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
 			</CertificatePolicies>
-			<QCStatementIds />
-			<QCTypes />
-			<TrustedServiceProviders>
+						<TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
 					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
@@ -555,9 +548,7 @@
 			<CertificatePolicies>
 				<certificatePolicy>1.3.6.1.4.1.15819.5.1.3.2</certificatePolicy>
 			</CertificatePolicies>
-			<QCStatementIds />
-			<QCTypes />
-			<TrustedServiceProviders>
+						<TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
 					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
@@ -651,9 +642,7 @@
 			</CertificateChain>
 			<Trusted>false</Trusted>
 			<SelfSigned>false</SelfSigned>
-			<QCStatementIds />
-			<QCTypes />
-			<TrustedServiceProviders>
+						<TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
 					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
@@ -717,9 +706,7 @@
 			</BasicSignature>
 			<Trusted>true</Trusted>
 			<SelfSigned>true</SelfSigned>
-			<QCStatementIds />
-			<QCTypes />
-			<TrustedServiceProviders>
+						<TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
 					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
@@ -792,9 +779,7 @@
 			<CertificatePolicies>
 				<certificatePolicy>2.5.29.32.0</certificatePolicy>
 			</CertificatePolicies>
-			<QCStatementIds />
-			<QCTypes />
-			<TrustedServiceProviders>
+						<TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
 					<TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2048226043</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>

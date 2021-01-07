@@ -56,8 +56,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -227,8 +225,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -329,8 +325,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Base64Encoded>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</Base64Encoded>
         </Certificate>

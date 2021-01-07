@@ -93,9 +93,7 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.56.9.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds />
-            <QCTypes />
-            <TrustedServiceProviders />
+                        <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>n5dERjvhNxR1Tho77PmMCMwgXkqzICj04oMMShsndbg=</DigestValue>
@@ -138,9 +136,7 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.56.9.1.1.5</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds />
-            <QCTypes />
-            <TrustedServiceProviders />
+                        <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
 	                <Status>GOOD</Status>
@@ -188,10 +184,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.2.203.27112489.1.10.3.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid>0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes />
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -238,10 +233,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.2.203.27112489.1.10.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid>0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes />
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-854DE5E0440BBCA79F5F458FC1CE9A2B02B8691F70A3DC143FACC3A326AFADDB">

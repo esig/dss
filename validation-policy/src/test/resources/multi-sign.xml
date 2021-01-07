@@ -323,8 +323,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
@@ -392,8 +390,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <Base64Encoded>MIIDujCCAqKgAwIBAgIIBRchbrVWi6EwDQYJKoZIhvcNAQELBQAwXzELMAkGA1UEBhMCUEwxHjAcBgNVBAoMFUVOSUdNQSBTT0kgU3AuIHogby5vLjEwMC4GA1UEAwwnQ2VuQ2VydCBDZW50cnVtIENlcnR5ZmlrYXTDs3cgRmlybW93eWNoMB4XDTE2MDgyNDE0NDcwNFoXDTE4MDgyNDE0NDcwNFowPTELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF01pbmlzdGVyc3R3byBDeWZyeXphY2ppMQwwCgYDVQQDDANQWjMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDV2Mt1nzPu8W2eN6eT2GVWh3HPXCqopQJVag+3nN0H8TOQCg8s6sVlHnqA117e/xUiOd1c8jgKOsDYixKb7eO3S2Bm+UyBX5jh1K5pGw362VVEfDs0kpQ5DRTm/eBGsT+98CGS9sIrvZujg9iRLVmyOWbx7Mj3iPAsfDqwnJAUQe3SURkN2uVq/OFCCem5SQEkl5sXLunPLmsZAlQmIvjo1e2sArw3XOL07TzEGD9Wgmg+uh+CXLwLPAbdIPuoEGx9pmVFeoMmDhSN1QwwiV3kZM57BvufmntWhXEbbUXX8DN6JzVTk7SC1+lR9be8opa2JwzyugrgZDu8qPmsj/QFAgMBAAGjgZswgZgwDgYDVR0PAQH/BAQDAgZAMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUbXBJHtX51FFd7dGblde1mdERGjswHQYDVR0OBBYEFMG6bAQisupd5Zp8LubkPlZ4he9qMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly93d3cuY2VuY2VydC5wbC9jcmwvQ0NmaXJtb3d5LmNybDANBgkqhkiG9w0BAQsFAAOCAQEAbUq6RgY3//2ozVKQ6J1yE05z6E2gvw7QSvwI002Ee6Np7pGvwkR4kSd4yJzSFuFv5zUYq9zaFGCYpCvIpTwHGJpoa9oxvYe8KNxaDiGkqiVU2SVEXX2GrVF/qqJmqMre4NxBr04fhWCKro135fESmv0kvjDYNWzDqUgy9AbIC4VQ46KOwuxBDlnj1KbYn4EJoQG+2ZhQMcuUbM1qY3/FlY+M/60c2FQvgIo6u9J5/Ew7YFPpczWjLetK9PKLvfQfPQBU/sszQ6rXRKxyoaEwbzQjhQ8W5SlyUwePay1lAtlzJIo5x7NN/NB1+S/vr71HLq3/mFoOgCNdFDVdGD8XUw==</Base64Encoded>
@@ -441,11 +437,6 @@
             <CertificatePolicies>
                 <certificatePolicy>1.2.616.1.113560.10.1.1.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid>0.4.0.1862.1.2</qcStatementOid>
-                <qcStatementOid>1.2.616.1.101.3.1.1.2</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>

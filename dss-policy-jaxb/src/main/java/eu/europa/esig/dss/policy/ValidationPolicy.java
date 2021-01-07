@@ -779,16 +779,6 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
 
 	/**
-	 * Returns CertificateQCStatementIds constraint if present in the policy, null otherwise
-	 *
-	 * @param context {@link Context}
-	 * @param subContext {@link SubContext}
-	 * @return {@code MultiValuesConstraint} if CertificateQCStatementIds element is present
-	 *                                 in the constraint file, null otherwise.
-	 */
-	MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext);
-
-	/**
 	 * Returns CertificateIssuedToNaturalPerson constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}
