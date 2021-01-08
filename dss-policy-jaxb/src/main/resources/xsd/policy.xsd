@@ -584,6 +584,11 @@
 					<xsd:documentation>Checks if the certificate is declared as QSCD (no TL overrule)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="QcLegislationCountryCodes" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the country or set of countries under the legislation of which the certificate is issued as qualified (no TL overrule). Shall be empty for EU qualified certificates.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="IssuedToNaturalPerson" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is issued for a natural person (no TL overrule)</xsd:documentation>

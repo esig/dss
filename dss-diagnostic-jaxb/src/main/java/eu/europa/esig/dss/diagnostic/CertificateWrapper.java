@@ -339,6 +339,13 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return result;
 	}
 
+	public List<String> getQcLegislationCountryCodes() {
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getQcCClegislation() != null) {
+			return certificate.getQcStatements().getQcCClegislation();
+		}
+		return Collections.emptyList();
+	}
+
 	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {
 		List<String> result = new ArrayList<>();
 		if (xmlOids != null) {

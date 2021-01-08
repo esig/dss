@@ -20,28 +20,30 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.GregorianCalendar;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
-
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
-
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
+import java.io.File;
+import java.io.IOException;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CertificateValidatorTest {
 
@@ -130,7 +132,27 @@ public class CertificateValidatorTest {
 		assertNotNull(certificateWrapper.getPSD2Info().getNcaName());
 		assertNotNull(certificateWrapper.getPSD2Info().getRoleOfPSPNames());
 		assertNotNull(certificateWrapper.getPSD2Info().getRoleOfPSPOids());
+	}
 
+	@Test
+	public void qcStatementsTest() {
+		CertificateValidator cv = CertificateValidator
+				.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/john_doe_tc.crt")));
+		cv.setCertificateVerifier(new CommonCertificateVerifier());
+		CertificateReports reports = cv.validate();
+		reports.print();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		assertEquals(3, usedCertificates.size());
+
+		CertificateWrapper certificateWrapper = usedCertificates.get(0);
+		assertTrue(certificateWrapper.isQcCompliance());
+		assertFalse(certificateWrapper.isSupportedByQSCD());
+		assertEquals(1, certificateWrapper.getQCTypes().size());
+		assertEquals(QCType.QCT_ESIGN, certificateWrapper.getQCTypes().iterator().next());
+		assertEquals(1, certificateWrapper.getQcLegislationCountryCodes().size());
+		assertEquals("TC", certificateWrapper.getQcLegislationCountryCodes().iterator().next());
 	}
 
 }

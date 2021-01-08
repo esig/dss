@@ -80,11 +80,7 @@ public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConcl
 		if (Utils.isCollectionNotEmpty(values)) {
 			if (Utils.isCollectionNotEmpty(constraint.getId())) {
 				for (String value : values) {
-					for (String expected : constraint.getId()) {
-						if (expected.equals(value)) {
-							return true;
-						}
-					}
+					return processValueCheck(value);
 				}
 			}
 		}

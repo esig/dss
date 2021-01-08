@@ -443,6 +443,19 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Indicates the country or set of countries under the legislation of which the certificate is issued as a
+	 * qualified certificate is present.
+	 *
+	 * NOTE: in order to verify the EU compliance, the value shall be empty (no QcCCLegislation is allowed)
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} the country or set of countries under the legislation of which
+	 * 		the certificate is issued as a qualified certificate
+	 */
+	MultiValuesConstraint getCertificateQcCCLegislationConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Indicates if the end user certificate used in validating the signature is issued to a legal person.
 	 *
 	 * @param context {@link Context}

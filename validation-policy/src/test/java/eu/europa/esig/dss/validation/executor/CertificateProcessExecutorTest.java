@@ -20,25 +20,10 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
@@ -51,15 +36,30 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 
@@ -510,7 +510,93 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		exception = assertThrows(IllegalArgumentException.class, () -> executor.execute());
 		assertEquals("The certificate with the given Id 'certId' has not been found in DiagnosticData", exception.getMessage());
 	}
-	
+
+	@Test
+	public void certificateWithQcCClegislationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/cert-validation/cert_with_qcCClegislation.xml"));
+		assertNotNull(diagnosticData);
+
+		String certId = "C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC";
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setCertificateId(certId);
+
+		CertificateReports reports = executor.execute();
+
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));
+		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+	}
+
+	@Test
+	public void certificateWithQcCClegislationFailPolicyTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/cert-validation/cert_with_qcCClegislation.xml"));
+		assertNotNull(diagnosticData);
+
+		String certId = "C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC";
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+		certificateConstraints.setQcLegislationCountryCodes(constraint);
+
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setCertificateId(certId);
+
+		CertificateReports reports = executor.execute();
+
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certId));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getCertificateSubIndication(certId));
+		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+	}
+
+	@Test
+	public void certificateWithQcCClegislationCustomPolicyTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/cert-validation/cert_with_qcCClegislation.xml"));
+		assertNotNull(diagnosticData);
+
+		String certId = "C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC";
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.getId().add("TC");
+		constraint.setLevel(Level.FAIL);
+		certificateConstraints.setQcLegislationCountryCodes(constraint);
+
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setCertificateId(certId);
+
+		CertificateReports reports = executor.execute();
+
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));
+		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+	}
+
 	private void checkReports(CertificateReports reports) {
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticData());

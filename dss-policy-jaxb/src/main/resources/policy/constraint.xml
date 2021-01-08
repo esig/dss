@@ -72,6 +72,7 @@
 				<NotSelfSigned Level="WARN" />
 <!-- 				<Qualification Level="WARN" /> -->
 <!-- 				<SupportedByQSCD Level="WARN" /> -->
+<!-- 				<QcLegislationCountryCodes Level="WARN" /> -->
 <!-- 				<IssuedToNaturalPerson Level="INFORM" /> -->
 <!-- 				<IssuedToLegalPerson Level="INFORM" /> -->
 				<UsePseudonym Level="INFORM" />

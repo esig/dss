@@ -49,6 +49,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssue
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotOnHoldCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcCCLegislationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotRevokedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
@@ -157,6 +158,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateSupportedByQSCD(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQcCCLegislation(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
 
@@ -374,6 +377,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> certificateSupportedByQSCD(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSupportedByQSCDConstraint(context, subContext);
 		return new CertificateSupportedByQSCDCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateQcCCLegislation(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateQcCCLegislationConstraint(context, subContext);
+		return new CertificateQcCCLegislationCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateIssuedToLegalPerson(CertificateWrapper certificate, SubContext subContext) {
