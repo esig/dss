@@ -140,7 +140,6 @@ public class CertificateValidatorTest {
 				.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/john_doe_tc.crt")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
 		CertificateReports reports = cv.validate();
-		reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();

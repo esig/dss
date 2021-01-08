@@ -148,4 +148,26 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
     }
 
+    @Test
+    public void nonEUMixedOrderTest() throws Exception {
+        MultiValuesConstraint constraint = new MultiValuesConstraint();
+        constraint.getId().addAll(Arrays.asList("AU", "BR", "CR", "US"));
+        constraint.setLevel(Level.FAIL);
+
+        XmlCertificate xc = new XmlCertificate();
+
+        XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setQcCClegislation(Arrays.asList("BR", "CR", "FR"));
+        xc.setQcStatements(xmlQcStatements);
+
+        XmlSubXCV result = new XmlSubXCV();
+        CertificateQcCCLegislationCheck cqcclc = new CertificateQcCCLegislationCheck(
+                i18nProvider, result, new CertificateWrapper(xc), constraint);
+        cqcclc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+    }
+
 }

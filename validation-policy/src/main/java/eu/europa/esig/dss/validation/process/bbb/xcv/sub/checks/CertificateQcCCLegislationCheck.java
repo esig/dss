@@ -10,8 +10,6 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
-import java.util.List;
-
 /**
  * Checks if the country code or set of country codes defined in QcCCLegislation is supported by the policy
  */
@@ -40,16 +38,7 @@ public class CertificateQcCCLegislationCheck extends AbstractMultiValuesCheckIte
 
     @Override
     protected boolean process() {
-        List<String> countryCodes = certificate.getQcLegislationCountryCodes();
-        if (Utils.isCollectionEmpty(constraint.getId())) {
-            if (Utils.isCollectionEmpty(countryCodes)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return processValuesCheck(countryCodes);
-        }
+        return processValuesCheck(certificate.getQcLegislationCountryCodes());
     }
 
     @Override
