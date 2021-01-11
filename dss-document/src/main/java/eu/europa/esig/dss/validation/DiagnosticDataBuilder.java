@@ -38,7 +38,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Role;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPdsLocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcQSSD;
@@ -1148,10 +1147,10 @@ public abstract class DiagnosticDataBuilder {
 		return result;
 	}
 
-	protected List<XmlPdsLocation> getXmlQcEuPSD(List<PdsLocation> qcEuPDS) {
-		List<XmlPdsLocation> result = new ArrayList<>();
+	protected List<XmlLangAndValue> getXmlQcEuPSD(List<PdsLocation> qcEuPDS) {
+		List<XmlLangAndValue> result = new ArrayList<>();
 		for (PdsLocation pdsLocation : qcEuPDS) {
-			XmlPdsLocation xmlPdsLocation = new XmlPdsLocation();
+			XmlLangAndValue xmlPdsLocation = new XmlLangAndValue();
 			xmlPdsLocation.setLang(pdsLocation.getLanguage());
 			xmlPdsLocation.setValue(pdsLocation.getUrl());
 			result.add(xmlPdsLocation);

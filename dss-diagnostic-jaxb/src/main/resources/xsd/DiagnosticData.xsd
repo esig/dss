@@ -407,7 +407,7 @@
 			<xs:element name="QcEuPDS" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="PdsLocation" type="PdsLocation" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="PdsLocation" type="LangAndValue" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -430,14 +430,6 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="PdsLocation">
-		<xs:simpleContent>
-			<xs:extension base="xs:string">
-				<xs:attribute name="lang" type="xs:string" />
-			</xs:extension>
-		</xs:simpleContent>
-	</xs:complexType>
-	
 	<xs:complexType name="OID">
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
