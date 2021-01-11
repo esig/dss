@@ -87,8 +87,12 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected String buildAdditionalInfo() {
-		String referenceName = Utils.isStringNotBlank(digestMatcher.getName()) ? digestMatcher.getName() : digestMatcher.getType().name();
-		return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);
+		if (!DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
+			String referenceName = Utils.isStringNotBlank(digestMatcher.getName()) ?
+					digestMatcher.getName() : digestMatcher.getType().name();
+			return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);
+		}
+		return null;
 	}
 
 }

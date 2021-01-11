@@ -3033,6 +3033,42 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		boolean refFoundCheckFound = false;
+		boolean refIntactCheckFound = false;
+		boolean messageImprintFoundCheckFound = false;
+		boolean messageImprintIntactCheckFound = false;
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		for (XmlConstraint constraint : sigBBB.getCV().getConstraint()) {
+			if (MessageTag.BBB_CV_IRDOF.getId().equals(constraint.getName().getNameId())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				assertNotNull(constraint.getAdditionalInfo());
+				refFoundCheckFound = true;
+			} else if (MessageTag.BBB_CV_IRDOI.getId().equals(constraint.getName().getNameId())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				assertNotNull(constraint.getAdditionalInfo());
+				refIntactCheckFound = true;
+			}
+		}
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		assertEquals(1, timestampIds.size());
+		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(timestampIds.get(0));
+		for (XmlConstraint constraint : tstBBB.getCV().getConstraint()) {
+			if (MessageTag.BBB_CV_TSP_IRDOF.getId().equals(constraint.getName().getNameId())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				assertNull(constraint.getAdditionalInfo());
+				messageImprintFoundCheckFound = true;
+			} else if (MessageTag.BBB_CV_TSP_IRDOI.getId().equals(constraint.getName().getNameId())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				assertNull(constraint.getAdditionalInfo());
+				messageImprintIntactCheckFound = true;
+			}
+		}
+		assertTrue(refFoundCheckFound);
+		assertTrue(refIntactCheckFound);
+		assertTrue(messageImprintFoundCheckFound);
+		assertTrue(messageImprintIntactCheckFound);
 	}
 	
 	@Test
