@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.process.qualification.signature.checks.Acce
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AdESAcceptableCheck;
-import eu.europa.esig.dss.validation.process.qualification.signature.checks.ForeSignatureAtSigningTimeCheck;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.CertificateTypeAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QSCDCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtSigningTimeCheck;
@@ -156,8 +156,11 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 				// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
 				// electronic signature complying with Annex I;
 				item = item.setNextItem(qualifiedCertificateAtSigningTime(qualificationAtSigningTime));
-	
-				item = item.setNextItem(foreSignatureAtSigningTime(qualificationAtSigningTime));
+
+				// NOTE: Article 40:
+				// Articles 32, 33 and 34 shall apply mutatis mutandis to the validation and preservation of
+				// qualified electronic seals.
+				item = item.setNextItem(certificateTypeAtSigningTime(qualificationAtSigningTime));
 	
 				// (b) the qualified certificate
 				// 1. was issued by a qualified trust service provider
@@ -278,8 +281,8 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		return new QualifiedCertificateAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationSignatureQualification> foreSignatureAtSigningTime(CertificateQualification qualificationAtSigningTime) {
-		return new ForeSignatureAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelConstraint());
+	private ChainItem<XmlValidationSignatureQualification> certificateTypeAtSigningTime(CertificateQualification qualificationAtSigningTime) {
+		return new CertificateTypeAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> qualifiedCertificateAtIssuance(CertificateQualification qualificationAtIssuance) {

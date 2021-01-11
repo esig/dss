@@ -34,6 +34,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -3747,6 +3748,19 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+
+		boolean certTypeCheckProcessed = false;
+		for (XmlConstraint constraint : validationSignQual.getConstraint()) {
+			if (MessageTag.QUAL_CERT_TYPE_AT_ST.getId().equals(constraint.getName().getNameId())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				certTypeCheckProcessed = true;
+			}
+		}
+		assertTrue(certTypeCheckProcessed);
 	}
 
 	@Test
@@ -3795,6 +3809,20 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureQualification.NA, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+
+		boolean certTypeCheckProcessed = false;
+		for (XmlConstraint constraint : validationSignQual.getConstraint()) {
+			if (MessageTag.QUAL_CERT_TYPE_AT_ST.getId().equals(constraint.getName().getNameId())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.QUAL_CERT_TYPE_AT_ST_ANS.getId(), constraint.getWarning().getNameId());
+				certTypeCheckProcessed = true;
+			}
+		}
+		assertTrue(certTypeCheckProcessed);
 	}
 
 	@Test

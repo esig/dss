@@ -23,15 +23,36 @@ package eu.europa.esig.dss.enumerations;
 public enum CertificateType {
 
 	/* For electronic signature */
-	ESIGN,
+	ESIGN("eSig"),
 
 	/* For electronic seal */
-	ESEAL,
+	ESEAL("eSeal"),
 
 	/* For Web authentication */
-	WSA,
+	WSA("WSA"),
 
 	/* Unknown */
-	UNKNOWN;
+	UNKNOWN("unknown");
+
+	/** Represents a user-friendly string */
+	private String label;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param label {@link String}
+	 */
+	CertificateType(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * Gets the user-friendly label
+	 *
+	 * @return {@link String}
+	 */
+	public String getLabel() {
+		return label;
+	}
 
 }

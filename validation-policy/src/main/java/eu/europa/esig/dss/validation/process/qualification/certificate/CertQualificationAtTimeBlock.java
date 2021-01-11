@@ -36,7 +36,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CaQcCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateIssuedByConsistentTrustServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateTypeCoverageCheck;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.ForEsigCheck;
+import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateTypeCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.IsAbleToSelectOneTrustService;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.IsQualificationConflictDetected;
@@ -186,7 +186,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		// 10. Type?
 		TypeStrategy typeStrategy = TypeStrategyFactory.createTypeFromCertAndTL(signingCertificate, selectedTrustService, qualifiedStatus);
 		CertificateType type = typeStrategy.getType();
-		item = item.setNextItem(isForEsig(type));
+		item = item.setNextItem(certificateType(type));
 
 		// 11. QSCD ?
 		QSCDStrategy qscdStrategy = QSCDStrategyFactory.createQSCDFromCertAndTL(signingCertificate, selectedTrustService, qualifiedStatus);
@@ -242,8 +242,8 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		return new QualifiedCheck(i18nProvider, result, qualifiedStatus, validationTime, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> isForEsig(CertificateType type) {
-		return new ForEsigCheck(i18nProvider, result, type, validationTime, getWarnLevelConstraint());
+	private ChainItem<XmlValidationCertificateQualification> certificateType(CertificateType type) {
+		return new CertificateTypeCheck(i18nProvider, result, type, validationTime, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQscd(QSCDStatus qscdStatus) {
