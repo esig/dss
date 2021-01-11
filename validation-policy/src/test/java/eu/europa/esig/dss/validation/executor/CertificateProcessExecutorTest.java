@@ -20,36 +20,26 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -60,10 +50,32 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateRepor
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateProcessExecutorTest.class);
+
+	private static I18nProvider i18nProvider;
+
+	@BeforeAll
+	public static void init() {
+		i18nProvider = new I18nProvider(Locale.getDefault());
+	}
 
 	@Test
 	public void deRevoked() throws Exception {
@@ -256,14 +268,14 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
-		
+
 		ValidationPolicy defaultPolicy = loadDefaultPolicy();
 		EIDAS eidasConstraints = defaultPolicy.getEIDASConstraints();
 		LevelConstraint levelConstraint = new LevelConstraint();
 		levelConstraint.setLevel(Level.FAIL);
 		eidasConstraints.setTLWellSigned(levelConstraint);
 		executor.setValidationPolicy(defaultPolicy);
-		
+
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		CertificateReports reports = executor.execute();
@@ -315,6 +327,26 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_WSA, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_WSA, simpleReport.getQualificationAtValidationTime());
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlCertificate certificate = detailedReport.getXmlCertificateById(certificateId);
+		List<XmlValidationCertificateQualification> validationCertQual = certificate.getValidationCertificateQualification();
+		assertEquals(2, validationCertQual.size());
+
+		for (XmlValidationCertificateQualification certQual : validationCertQual) {
+			boolean certTypeCheckExecuted = false;
+			for (XmlConstraint constraint : certQual.getConstraint()) {
+				if (MessageTag.QUAL_CERT_TYPE_AT_CC.getId().equals(constraint.getName().getNameId()) ||
+						MessageTag.QUAL_CERT_TYPE_AT_VT.getId().equals(constraint.getName().getNameId())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					assertEquals(i18nProvider.getMessage(MessageTag.CERTIFICATE_TYPE, CertificateType.WSA.getLabel()),
+							constraint.getAdditionalInfo());
+					certTypeCheckExecuted = true;
+				}
+			}
+			assertTrue(certTypeCheckExecuted);
+		}
+
 	}
 
 	@Test

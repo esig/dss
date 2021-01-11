@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.signature.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -29,12 +30,16 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
-public class ForeSignatureAtSigningTimeCheck extends ChainItem<XmlValidationSignatureQualification> {
+/**
+ * Checks if the certificate type has been successfully identified at best signing time
+ */
+public class CertificateTypeAtSigningTimeCheck extends ChainItem<XmlValidationSignatureQualification> {
 
+	/** The Certificate Qualification to be checked */
 	private final CertificateQualification certificateQualification;
 
-	public ForeSignatureAtSigningTimeCheck(I18nProvider i18nProvider, XmlValidationSignatureQualification result, 
-			CertificateQualification certificateQualification, LevelConstraint constraint) {
+	public CertificateTypeAtSigningTimeCheck(I18nProvider i18nProvider, XmlValidationSignatureQualification result,
+											 CertificateQualification certificateQualification, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.certificateQualification = certificateQualification;
@@ -42,17 +47,17 @@ public class ForeSignatureAtSigningTimeCheck extends ChainItem<XmlValidationSign
 
 	@Override
 	protected boolean process() {
-		return certificateQualification.isForEsig();
+		return CertificateType.UNKNOWN != certificateQualification.getType();
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_FOR_SIGN_AT_ST;
+		return MessageTag.QUAL_CERT_TYPE_AT_ST;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_FOR_SIGN_AT_ST_ANS;
+		return MessageTag.QUAL_CERT_TYPE_AT_ST_ANS;
 	}
 
 	@Override
