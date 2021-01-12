@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -13,20 +11,14 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.DSSObject;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
 import org.junit.jupiter.api.BeforeEach;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.util.Arrays;
@@ -78,28 +70,21 @@ public class XAdESEnvelopedLevelBWithManifestTest extends AbstractXAdESTestSigna
 
         signatureParameters.setReferences(Arrays.asList(manifestReference));
 
+        DSSObject object = new DSSObject();
+        object.setContent(manifest);
+        signatureParameters.setObjects(Arrays.asList(object));
+
         service = new XAdESService(getOfflineCertificateVerifier());
     }
 
     @Override
     protected DSSDocument sign() {
         DSSDocument signedDocument = super.sign();
-        Document documentDom = DomUtils.buildDOM(signedDocument);
-        NodeList signatures = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDom.getDocumentElement());
-        Element signatureElement = (Element) signatures.item(0);
 
-        final Element objectDom = DomUtils.createElementNS(documentDom, XAdESNamespaces.XMLDSIG, XMLDSigElement.OBJECT);
-        signatureElement.appendChild(objectDom);
+        // in order to extract original document correctly
+        documentToSign = manifest;
 
-        Document manifestDocument = DomUtils.buildDOM(manifest);
-        Node manifestNode = manifestDocument.getDocumentElement();
-
-        manifestNode = documentDom.importNode(manifestNode, true);
-        objectDom.appendChild(manifestNode);
-
-        documentToSign = manifest; // in order to verify extracted original documents correctly
-
-        return new InMemoryDocument(DSSXMLUtils.serializeNode(documentDom), signedDocument.getName());
+        return signedDocument;
     }
 
     @Override

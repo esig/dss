@@ -46,6 +46,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.xades.DSSObject;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SignatureBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -201,7 +202,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		incorporateKeyInfo();
 
-		incorporateObject();
+		incorporateObjects();
 
 		/**
 		 * We create <ds:Reference> segment only now, because we need first to define the SignedProperties segment to
@@ -499,7 +500,28 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	}
 
 	/**
-	 * This method incorporates the ds:Object tag
+	 * This method incorporates the ds:Object tags
+	 *
+	 * <pre>
+	 * 	{@code
+	 * 		<ds:Object>
+	 * 			...
+	 * 		</ds:Object>
+	 * 		<ds:Object>
+	 * 			...
+	 * 		</ds:Object>
+	 * }
+	 * </pre>
+	 *
+	 */
+	protected void incorporateObjects() {
+		incorporateQualifyingProperties();
+		incorporateSignedObjects();
+		incorporateCustomObjects();
+	}
+
+	/**
+	 * This method incorporates the ds:Object with xades:QualifyingProperties element
 	 *
 	 * <pre>
 	 * 	{@code
@@ -514,12 +536,16 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 *
 	 */
-	protected void incorporateObject() {
+	protected void incorporateQualifyingProperties() {
 		if (Utils.isArrayNotEmpty(params.getSignedAdESObject())) {
 			LOG.debug("Incorporating signed XAdES Object from parameter");
-			Node signedObjectDom = DomUtils.buildDOM(params.getSignedAdESObject()).getDocumentElement();
-			signedObjectDom = documentDom.importNode(signedObjectDom, true);
-			signatureDom.appendChild(signedObjectDom);
+			if (DomUtils.isDOM(params.getSignedAdESObject())) {
+				Node signedObjectDom = DomUtils.buildDOM(params.getSignedAdESObject()).getDocumentElement();
+				signedObjectDom = documentDom.importNode(signedObjectDom, true);
+				signatureDom.appendChild(signedObjectDom);
+			} else {
+				throw new IllegalArgumentException("The signed AdES Object shall represent an XML!");
+			}
 			return;
 		}
 
@@ -531,6 +557,65 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		qualifyingPropertiesDom.setAttribute(TARGET, "#" + deterministicId);
 
 		incorporateSignedProperties();
+	}
+
+	/**
+	 * Incorporates the list of signed ds:Object elements (used for Enveloping packaging)
+	 */
+	protected void incorporateSignedObjects() {
+		// do nothing by default
+	}
+
+	/**
+	 * Incorporates a list of custom ds:Object elements within the ds:Signature element
+	 */
+	protected void incorporateCustomObjects() {
+		if (Utils.isCollectionNotEmpty(params.getObjects())) {
+			for (DSSObject object : params.getObjects()) {
+				incorporateObject(object);
+			}
+		}
+	}
+
+	/**
+	 * Incorporates the given {@code object} within the ds:Signature
+	 *
+	 * @param object {@link DSSObject} to incorporate
+	 */
+	protected void incorporateObject(DSSObject object) {
+		if (object.getContent() == null) {
+			throw new IllegalArgumentException("The content shall be defined inside DSSObject element! " +
+					"Incorporation is not possible.");
+		}
+
+		// incorporate ds:Object dom
+		final Element objectDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.OBJECT);
+		signatureDom.appendChild(objectDom);
+
+		// incorporate content
+		if (DomUtils.isDOM(object.getContent())) {
+			Node objectContentDom = DomUtils.buildDOM(object.getContent()).getDocumentElement();
+			objectContentDom = documentDom.importNode(objectContentDom, true);
+			objectDom.appendChild(objectContentDom);
+		} else {
+			Node textNode = documentDom.createTextNode(new String(DSSUtils.toByteArray(object.getContent())));
+			objectDom.appendChild(textNode);
+		}
+
+		// incorporate Id attribute
+		if (Utils.isStringNotBlank(object.getId())) {
+			objectDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), object.getId());
+		}
+
+		// incorporate MimeType attribute
+		if (object.getMimeType() != null) {
+			objectDom.setAttribute(XMLDSigAttribute.MIME_TYPE.getAttributeName(), object.getMimeType().getMimeTypeString());
+		}
+
+		// incorporate Encoding attribute
+		if (Utils.isStringNotBlank(object.getEncodingAlgorithm())) {
+			objectDom.setAttribute(XMLDSigAttribute.ENCODING.getAttributeName(), object.getEncodingAlgorithm());
+		}
 
 	}
 
