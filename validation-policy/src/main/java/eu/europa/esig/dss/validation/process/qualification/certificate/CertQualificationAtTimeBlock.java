@@ -122,15 +122,19 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		TrustedServiceFilter filterByDate = TrustedServicesFilterFactory.createFilterByDate(date);
 		List<TrustedServiceWrapper> caqcServicesAtTime = filterByDate.filter(caqcServices);
 
+		// 2. Filter by cert type (current type or overruled)
+		TrustedServiceFilter filterByCertificateType = TrustedServicesFilterFactory.createFilterByCertificateType(signingCertificate);
+		caqcServicesAtTime = filterByCertificateType.filter(caqcServicesAtTime);
+
 		ChainItem<XmlValidationCertificateQualification> item = firstItem = item = hasCaQc(caqcServicesAtTime);
 
-		// 2. Run consistency checks to get warnings
+		// 3. Run consistency checks to get warnings
 		for (TrustedServiceWrapper trustedService : caqcServicesAtTime) {
 			item = item.setNextItem(serviceConsistency(trustedService));
 		}
 
 		if (caqcServicesAtTime.size() > 1) {
-			// 3. Simulate with all CA/QC (granted + withdrawn) to detect conflict
+			// 4. Simulate with all CA/QC (granted + withdrawn) to detect conflict
 			Set<CertificateQualification> results = new HashSet<>();
 			for (TrustedServiceWrapper trustedService : caqcServicesAtTime) {
 				CertificateQualificationCalculation calculator = new CertificateQualificationCalculation(signingCertificate, trustedService);
@@ -145,22 +149,17 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			}
 		}
 
-		// 4. Filter by Granted
+		// 5. Filter by Granted
 		TrustedServiceFilter filterByGranted = TrustedServicesFilterFactory.createFilterByGranted();
 		caqcServicesAtTime = filterByGranted.filter(caqcServicesAtTime);
 
 		item = item.setNextItem(hasGrantedStatus(caqcServicesAtTime));
 
-		// 5. Filter inconsistent trust services
+		// 6. Filter inconsistent trust services
 		TrustedServiceFilter filterConsistent = TrustedServicesFilterFactory.createConsistentServiceFilter();
 		caqcServicesAtTime = filterConsistent.filter(caqcServicesAtTime);
 
 		item = item.setNextItem(hasConsistentTrustService(caqcServicesAtTime));
-
-		// 6. Filter by certificate type (ASi or overruled)
-		TrustedServiceFilter filterByCertificateType = TrustedServicesFilterFactory
-				.createFilterByCertificateType(signingCertificate);
-		caqcServicesAtTime = filterByCertificateType.filter(caqcServicesAtTime);
 
 		item = item.setNextItem(hasCertificateTypeCoverage(caqcServicesAtTime));
 

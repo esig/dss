@@ -453,9 +453,32 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(
-				CertificateQualification.NA,
+				CertificateQualification.QCERT_FOR_ESIG,
 				simpleReport.getQualificationAtCertificateIssuance());
-		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
+		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+	}
+
+	@Test
+	public void multipleSDIMultipleASi() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/cert-validation/multiple-sdi-different-asi.xml"));
+		assertNotNull(diagnosticData);
+
+		String certificateId = "C-484C30774593119D17D59F32D6AC0B06A82AB8003FF9AA1B98555D92B3FB790E";
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setCertificateId(certificateId);
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		CertificateReports reports = executor.execute();
+		checkReports(reports);
+
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(
+				CertificateQualification.QCERT_FOR_ESIG_QSCD,
+				simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test
