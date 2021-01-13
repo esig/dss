@@ -20,20 +20,11 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.List;
-import java.util.Locale;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -49,6 +40,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.ListAlgo;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
 	
@@ -199,10 +200,10 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		result = signatureConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA1, 0); // some other algorithm is changed
 		assertEquals(Indication.TOTAL_PASSED, result);
 		
-		result = signatureConstraintAcceptableEncriptionAlgorithmIsNotDefined(ALGORITHM_RSA, 0);
+		result = signatureConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_RSA, 0);
 		assertEquals(Indication.INDETERMINATE, result);
 		
-		result = signatureConstraintAcceptableEncriptionAlgorithmIsNotDefined(ALGORITHM_DSA, 0); // some other algorithm is changed
+		result = signatureConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_DSA, 0); // some other algorithm is changed
 		assertEquals(Indication.TOTAL_PASSED, result);
 		
 		result = signatureConstraintLargeMiniPublicKeySize(ALGORITHM_RSA);
@@ -405,6 +406,59 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
 	}
+
+	@Test
+	public void signatureWithContentTstsNoExpirationDateTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA1);
+
+		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
+
+		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
+		CryptographicConstraint cryptographic = constraintsParameters.getCryptographic();
+		AlgoExpirationDate algoExpirationDate = cryptographic.getAlgoExpirationDate();
+		Iterator<Algo> iterator = algoExpirationDate.getAlgo().iterator();
+		while (iterator.hasNext()) {
+			Algo algo = iterator.next();
+			if ("SHA1".equals(algo.getValue())) {
+				iterator.remove();
+				break;
+			}
+		}
+
+		setValidationPolicy(constraintsParameters);
+		SimpleReport simpleReport = createSimpleReport();
+
+		// TODO: to be changed, see DSS-2345
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void noAlgoExpirationDateTest() throws Exception {
+		initializeExecutor("src/test/resources/universign.xml");
+		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
+
+		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
+		CryptographicConstraint cryptographic = constraintsParameters.getCryptographic();
+		AlgoExpirationDate algoExpirationDate = cryptographic.getAlgoExpirationDate();
+		Iterator<Algo> iterator = algoExpirationDate.getAlgo().iterator();
+		while (iterator.hasNext()) {
+			Algo algo = iterator.next();
+			if ("SHA256".equals(algo.getValue())) {
+				iterator.remove();
+				break;
+			}
+		}
+
+		setValidationPolicy(constraintsParameters);
+		SimpleReport simpleReport = createSimpleReport();
+
+		// TODO: to be changed, see DSS-2345
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
 	
 	private Indication defaultConstraintValidationDateIsBeforeExpirationDateTest(String algorithm, Integer keySize) throws Exception {
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
@@ -535,7 +589,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		return simpleReport.getIndication(simpleReport.getFirstSignatureId());
 	}
 	
-	private Indication signatureConstraintAcceptableEncriptionAlgorithmIsNotDefined(String algorithm, Integer keySize) throws Exception {
+	private Indication signatureConstraintAcceptableEncryptionAlgorithmIsNotDefined(String algorithm, Integer keySize) throws Exception {
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint sigCryptographicConstraint = getSignatureCryptographicConstraint(constraintsParameters);
 		ListAlgo listAlgo = sigCryptographicConstraint.getAcceptableEncryptionAlgo();
