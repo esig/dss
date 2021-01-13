@@ -94,12 +94,12 @@ public class CryptographicInformationBuilder {
 	}
 	
 	private CryptographicInformationBuilder(DigestAlgorithm digestAlgorithm, EncryptionAlgorithm encryptionAlgorithm, MaskGenerationFunction maskGenerationFunction,
-			String keyLength, String objectDecription, XmlConclusion conclusion, CryptographicConstraint constraint) {
+			String keyLength, String objectDescription, XmlConclusion conclusion, CryptographicConstraint constraint) {
 		this.digestAlgorithm = digestAlgorithm;
 		this.encryptionAlgorithm = encryptionAlgorithm;
 		this.maskGenerationFunction = maskGenerationFunction;
 		this.keyLength = keyLength;
-		this.objectDescription =objectDecription;
+		this.objectDescription = objectDescription;
 		
 		this.conclusion = conclusion;
 		this.constraint = constraint;

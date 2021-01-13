@@ -332,7 +332,8 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
 
 			SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBBs.getId());
-			if (currentSignature != null && isSignatureValueConcernedByFailure(currentSignature, cryptographicInfo) 
+			if (currentSignature != null && cryptographicInfo != null
+					&& isSignatureValueConcernedByFailure(currentSignature, cryptographicInfo)
 					&& isThereValidContentTimestampAfterDate(currentSignature, cryptographicInfo.getNotAfter())) {
 				indication = Indication.INDETERMINATE;
 				subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE;
@@ -360,7 +361,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 
 	private boolean isThereValidContentTimestampAfterDate(SignatureWrapper currentSignature, Date date) {
 		List<TimestampWrapper> contentTimestamps = currentSignature.getContentTimestamps();
-		if (Utils.isCollectionNotEmpty(contentTimestamps)) {
+		if (Utils.isCollectionNotEmpty(contentTimestamps) && date != null) {
 			for (TimestampWrapper timestamp : contentTimestamps) {
 				if (isValidTimestamp(timestamp)) {
 					Date tspProductionTime = timestamp.getProductionTime();

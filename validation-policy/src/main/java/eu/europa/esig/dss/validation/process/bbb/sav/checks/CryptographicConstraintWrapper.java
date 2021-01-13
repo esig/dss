@@ -158,7 +158,7 @@ public class CryptographicConstraintWrapper {
 			SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
 	
 			for (Algo algo : expirations.getAlgo()) {
-				if(algo.getValue().equals(digestAlgoToSearch)) {
+				if (algo.getValue().equals(digestAlgoToSearch)) {
 					String expirationDate = algo.getDate();
 					try {
 						return dateFormat.parse(expirationDate);

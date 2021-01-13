@@ -224,16 +224,14 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
                 Date cryptoNotAfterDate = null;
                 
                 XmlSAV certificateSAV = getCertificateCryptographicAcceptanceResult(certificate, controlTime);
-                if (!isValidConclusion(certificateSAV.getConclusion())) {
-                    if (certificateSAV.getCryptographicInfo() != null && certificateSAV.getCryptographicInfo().getNotAfter() != null) {
-                        cryptoNotAfterDate = certificateSAV.getCryptographicInfo().getNotAfter();
-                    }
+				if (!isValidConclusion(certificateSAV.getConclusion())) {
+					cryptoNotAfterDate = getCryptographicAlgorithmExpirationDateOrNull(certificateSAV);
                 }
                 XmlSAV revocationSAV = getRevocationCryptographicAcceptanceResult(latestCompliantRevocation, controlTime);
                 if (!isValidConclusion(revocationSAV.getConclusion())) {
-                    if (revocationSAV.getCryptographicInfo() != null && revocationSAV.getCryptographicInfo().getNotAfter() != null &&
-                            cryptoNotAfterDate == null || revocationSAV.getCryptographicInfo().getNotAfter().before(cryptoNotAfterDate)) {
-                        cryptoNotAfterDate = revocationSAV.getCryptographicInfo().getNotAfter();
+					Date revCryptoNotAfter = getCryptographicAlgorithmExpirationDateOrNull(revocationSAV);
+                    if (cryptoNotAfterDate == null || revCryptoNotAfter.before(cryptoNotAfterDate)) {
+                        cryptoNotAfterDate = revCryptoNotAfter;
                     }
                 }
                 
@@ -266,6 +264,13 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, revocationData, controlTime, context, SubContext.SIGNING_CERT, policy);
 		XmlRFC execute = rfc.execute();
 		return execute != null && execute.getConclusion() != null && Indication.PASSED.equals(execute.getConclusion().getIndication());
+	}
+
+	private Date getCryptographicAlgorithmExpirationDateOrNull(XmlSAV sav) {
+		if (sav.getCryptographicInfo() != null) {
+			return sav.getCryptographicInfo().getNotAfter();
+		}
+		return null;
 	}
 
 	private ChainItem<XmlVTS> satisfyingRevocationDataExists(RevocationWrapper revocationData) {
