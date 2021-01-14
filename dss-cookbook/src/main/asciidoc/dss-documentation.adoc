@@ -1082,9 +1082,71 @@ This is an example of the ETSI validation report:
 include::_samples/etsi-validation-report-example.adoc[]
 
 [[validationPolicy]]
-=== Customised Validation Policy
+=== Validation Policy
 
-The validation process may be driven by a set of constraints that are contained in the XML file constraint.xml.
+The validation process may be driven by a set of constraints that are contained in the XML policy file.
+
+In order to run a validation process with a custom validation policy, an XML file shall be created in compliance with the https://github.com/esig/dss/blob/master/dss-policy-jaxb/src/main/resources/xsd/policy.xsd[policy.xsd] schema and passed to the relevant `DocumentValidator` as shown below.
+
+[source,java,indent=0]
+.Custom validation policy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicy]
+----
+
+==== XML policy structure
+
+The validation policy allows to define different behavior for various validating token types or signature formats. The following groups are considered:
+
+ * `ContainerConstraints` - defines rules for processing of ASiC containers validation;
+ * `SignatureConstraints` - defines rules for signature basic building blocks processing and the related certificate chain;
+ * `CounterSignatureConstraints` - allows to define custom rules for counter signature processing;
+ * `Timestamp` - defines rules for timestamp validation;
+ * `Revocation` - defines rules for revocation data validation;
+ * `Cryptographic` - defines common rules for cryptographic validation of used algorithms. The general constraints are used when no cryptographic constraints are defined for a particular token type;
+ * `Model` - defines the way of a certificate chain processing;
+ * `eIDAS` - defines rules for validation of Trusted Lists.
+
+==== Constraints
+
+Each constraint defined in the policy forces an execution of a relevant check in the validation process.
+
+NOTE: If a constraint is missing in the policy - the check is not processed.
+
+The following constraint types are supported:
+
+ * `LevelConstraint` - a simple constraint type with a defined processing `Level`;
+ * `MultiValuesConstraint` - allows to define a set of accepted values relatively to the using constraint.
+
+==== Level
+
+The `Level` attribute of a constraint defines a validation process behavior in case of a check failure. While used, the following behaviors apply in case of a check failure:
+
+ * `FAIL` - brakes the validation process and returns the relevant indication;
+ * `WARN` - continues the validation process and returns a warning message to the validation process output;
+ * `INFORM` - continues the validation process and returns an information message to the validation process output;
+ * `IGNORE` - processes the check in a silent mode (equivalent to a not defined constraint).
+
+==== Multi Values Constraint
+
+When using the `MultiValuesConstraint`, a list of acceptable values shall be defined in the list of `<Id>...</Id>` elements, one for each accepted value. While doing, the following rules apply:
+
+ * Empty list of values  -> accept only empty values for the item in question, fails otherwise;
+ * `"*"` constraint value -> accepts all values, reject empty list of values;
+ * Custom values -> accepts only item values matching the constraint.
+
+==== Cryptographic constraints
+
+Cryptographic constraints define a list of acceptable cryptographic algorithms and their expiration dates when needed. The following settings are possible:
+
+ * `AcceptableEncryptionAlgo` - defines a list of acceptable encryption algorithms. All tokens and signatures using other algorithms will be rejected.
+ * `MiniPublicKeySize` - defines the minimal allowed public key size to be used with the defined encryption algorithms. An algorithm with a key size less than the defined one will be rejected. The minimal key size if required to be defined for an encryption algorithm, otherwise all used key sizes will be rejected.
+ * `AcceptableDigestAlgo` - defines a list of acceptable digest algorithms. All tokens and signatures using other algorithms will be rejected.
+ * `AlgoExpirationDate` - defines expiration dates for the algorithms. The algorithm is rejected when it is used after the defined date. If the algorithm expiration date is not defined, or set to null, the algorithm is treated as reliable for an unlimited time.
+
+==== The default XML policy
+
+The default XML validation policy is present below.
 
 .constraint.xml (default policy is provided in dss-policy-jaxb module)
 include::_samples/constraint.adoc[]

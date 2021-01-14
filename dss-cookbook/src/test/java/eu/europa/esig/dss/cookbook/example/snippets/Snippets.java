@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -38,8 +33,15 @@ import eu.europa.esig.dss.token.JKSSignatureToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+
+import java.io.File;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 public class Snippets {
 
@@ -105,6 +107,10 @@ public class Snippets {
 		// A target Locale must be defined for the validator
 		validator.setLocale(Locale.FRENCH); // for French language
 		// end::i18n[]
+
+		// tag::validationPolicy[]
+		Reports reports = validator.validateDocument(new File("/path/to/validation/policy.xml"));
+		// end::validationPolicy[]
 
 	}
 
