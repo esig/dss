@@ -25,10 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
-
-import java.util.List;
 
 /**
  * Check if DigestAlgorithm is acceptable
@@ -55,14 +52,7 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 
 	@Override
 	protected boolean process() {
-		String algoToFind = digestAlgo == null ? Utils.EMPTY_STRING : digestAlgo.getName();
-		List<String> supportedDigestAlgorithms = constraintWrapper.getSupportedDigestAlgorithms();
-		if (Utils.isCollectionNotEmpty(supportedDigestAlgorithms)) {
-			if (!supportedDigestAlgorithms.contains(algoToFind)) {
-				return false;
-			}
-		}
-		return true;
+		return constraintWrapper.isDigestAlgorithmReliable(digestAlgo);
 	}
 	
 	@Override

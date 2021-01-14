@@ -33,27 +33,12 @@ import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 
-import java.util.Date;
-
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. This
  * is the base class used to implement a
  * specific validation policy
  */
 public interface ValidationPolicy {
-
-	/**
-	 * This function returns the algorithm expiration date extracted from the 'constraint.xml' file. If the TAG
-	 * AlgoExpirationDate is not present within the
-	 * constraints {@code null} is returned.
-	 *
-	 * @param algorithm
-	 *            algorithm (SHA1, SHA256, RSA2048...) to be checked
-	 * @param context {@link Context}
-	 * @param subContext {@link SubContext}
-	 * @return expiration date or null
-	 */
-	Date getAlgorithmExpirationDate(String algorithm, Context context, SubContext subContext);
 
 	/**
 	 * Indicates if the signature policy should be checked. If AcceptablePolicies element is absent within the

@@ -27,7 +27,6 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
@@ -110,12 +109,24 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	}
 
 	/**
-	 * Gets if the expiration dates are available in the policy
+	 * Gets if the expiration date if defined for the given {@code digestAlgorithm}
 	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to check expiration date for
 	 * @return TRUE if expiration constrains are defines, FALSE otherwise
 	 */
-	protected boolean isExpirationDateAvailable() {
-		return Utils.isMapNotEmpty(constraintWrapper.getExpirationTimes());
+	protected boolean isExpirationDateAvailable(DigestAlgorithm digestAlgorithm) {
+		return constraintWrapper.getExpirationDate(digestAlgorithm) != null;
+	}
+
+	/**
+	 * Gets if the expiration date if defined for the given {@code encryptionAlgorithm} and {@code keyLength}
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm} to check expiration date for
+	 * @param keyLength {@link String} used to sign the token
+	 * @return TRUE if expiration constrains are defines, FALSE otherwise
+	 */
+	protected boolean isExpirationDateAvailable(EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
+		return constraintWrapper.getExpirationDate(encryptionAlgorithm, keyLength) != null;
 	}
 
 	/**
