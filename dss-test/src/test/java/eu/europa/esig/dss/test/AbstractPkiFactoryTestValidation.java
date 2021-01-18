@@ -29,6 +29,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
@@ -1688,6 +1689,35 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertTrue(Utils.isStringNotBlank(sw.toString()));
 		} catch (Exception e) {
 			String message = "Unable to generate the pdf detailed report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		/* Diagnostic Data SVG */
+		DiagnosticDataFacade diagnosticDataFacade = DiagnosticDataFacade.newFacade();
+
+		String marshalledDiagnosticData = null;
+		try {
+			marshalledDiagnosticData = diagnosticDataFacade.marshall(reports.getDiagnosticDataJaxb(), true);
+			assertNotNull(marshalledDiagnosticData);
+		} catch (Exception e) {
+			String message = "Unable to marshall the diagnostic data";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try {
+			assertNotNull(diagnosticDataFacade.generateSVG(marshalledDiagnosticData));
+		} catch (Exception e) {
+			String message = "Unable to generate the SVG for diagnostic data from the string source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try {
+			assertNotNull(diagnosticDataFacade.generateSVG(reports.getDiagnosticDataJaxb()));
+		} catch (Exception e) {
+			String message = "Unable to generate the SVG for diagnostic data from the jaxb source";
 			LOG.error(message, e);
 			fail(message);
 		}

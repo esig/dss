@@ -275,17 +275,6 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 		return descriptions;
 	}
-
-	@Override
-	public List<DSSDocument> getOriginalDocuments(String signatureId) {
-		List<AdvancedSignature> signatures = getSignatures();
-		for (AdvancedSignature signature : signatures) {
-			if (signature.getId().equals(signatureId)) {
-				return getOriginalDocuments(signature);
-			}
-		}
-		return Collections.emptyList();
-	}
 	
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {

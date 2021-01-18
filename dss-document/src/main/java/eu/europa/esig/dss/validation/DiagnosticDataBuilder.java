@@ -155,6 +155,9 @@ public abstract class DiagnosticDataBuilder {
 	/** The digest algorithm to use for digest computation */
 	protected DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
+	/** Generates ids for the tokens */
+	protected TokenIdentifierProvider identifierProvider = new OriginalIdentifierProvider();
+
 	/** The cached map of certificates */
 	protected Map<String, XmlCertificate> xmlCertsMap = new HashMap<>();
 
@@ -256,6 +259,17 @@ public abstract class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder tokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
 		this.tokenExtractionStrategy = tokenExtractionStrategy;
+		return this;
+	}
+
+	/**
+	 * This method allows to set the {@link TokenIdentifierProvider} for identifiers generation
+	 *
+	 * @param identifierProvider {@link TokenIdentifierProvider} to use
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder tokenIdentifierProvider(TokenIdentifierProvider identifierProvider) {
+		this.identifierProvider = identifierProvider;
 		return this;
 	}
 
@@ -457,14 +471,14 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	private XmlTrustedList getXmlTrustedList(TLInfo tlInfo) {
-		String id = tlInfo.getIdentifier().asXmlId();
+		String id = tlInfo.getDSSIdAsString();
 		XmlTrustedList result = xmlTrustedListsMap.get(id);
 		if (result == null) {
 			result = new XmlTrustedList();
 			if (tlInfo instanceof LOTLInfo) {
 				result.setLOTL(true);
 			}
-			result.setId(id);
+			result.setId(identifierProvider.getIdAsString(tlInfo));
 			result.setUrl(tlInfo.getUrl());
 			ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
 			if (parsingCacheInfo != null) {
@@ -512,7 +526,7 @@ public abstract class DiagnosticDataBuilder {
 	protected XmlRevocation buildDetachedXmlRevocation(RevocationToken<Revocation> revocationToken) {
 
 		final XmlRevocation xmlRevocation = new XmlRevocation();
-		xmlRevocation.setId(revocationToken.getDSSIdAsString());
+		xmlRevocation.setId(identifierProvider.getIdAsString(revocationToken));
 
 		if (revocationToken.isInternal()) {
 			xmlRevocation.setOrigin(RevocationOrigin.INPUT_DOCUMENT);
@@ -970,7 +984,7 @@ public abstract class DiagnosticDataBuilder {
 
 	private XmlOrphanCertificateToken createXmlOrphanCertificateToken(CertificateRef orphanCertificateRef) {
 		XmlOrphanCertificateToken orphanToken = new XmlOrphanCertificateToken();
-		orphanToken.setId(orphanCertificateRef.getDSSIdAsString());
+		orphanToken.setId(identifierProvider.getIdAsString(orphanCertificateRef));
 		if (orphanCertificateRef.getCertDigest() != null) {
 			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(orphanCertificateRef.getCertDigest()));
 		}
@@ -1045,7 +1059,7 @@ public abstract class DiagnosticDataBuilder {
 
 	protected XmlCertificate buildDetachedXmlCertificate(CertificateToken certToken) {
 		final XmlCertificate xmlCert = new XmlCertificate();
-		xmlCert.setId(certToken.getDSSIdAsString());
+		xmlCert.setId(identifierProvider.getIdAsString(certToken));
 
 		X500PrincipalHelper subject = certToken.getSubject();
 		xmlCert.getSubjectDistinguishedName()

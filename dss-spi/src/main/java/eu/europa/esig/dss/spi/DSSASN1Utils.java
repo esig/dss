@@ -1105,13 +1105,23 @@ public final class DSSASN1Utils {
 	 * @return {@link String}
 	 */
 	public static String getHumanReadableName(CertificateToken cert) {
-		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME,
+		return getHumanReadableName(cert.getSubject());
+	}
+
+	/**
+	 * Extracts the pretty printed name from the {@code X500PrincipalHelper}
+	 *
+	 * @param x500PrincipalHelper {@link X500PrincipalHelper}
+	 * @return {@link String}
+	 */
+	public static String getHumanReadableName(X500PrincipalHelper x500PrincipalHelper) {
+		return firstNotNull(x500PrincipalHelper, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME,
 				BCStyle.PSEUDONYM, BCStyle.O, BCStyle.OU);
 	}
 
-	private static String firstNotNull(CertificateToken cert, ASN1ObjectIdentifier... oids) {
+	private static String firstNotNull(X500PrincipalHelper x500PrincipalHelper, ASN1ObjectIdentifier... oids) {
 		for (ASN1ObjectIdentifier oid : oids) {
-			String value = extractAttributeFromX500Principal(oid, cert.getSubject());
+			String value = extractAttributeFromX500Principal(oid, x500PrincipalHelper);
 			if (value != null) {
 				return value;
 			}

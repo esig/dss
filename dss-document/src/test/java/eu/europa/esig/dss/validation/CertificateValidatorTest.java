@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
@@ -152,6 +154,32 @@ public class CertificateValidatorTest {
 		assertEquals(QCType.QCT_ESIGN, certificateWrapper.getQCTypes().iterator().next());
 		assertEquals(1, certificateWrapper.getQcLegislationCountryCodes().size());
 		assertEquals("TC", certificateWrapper.getQcLegislationCountryCodes().iterator().next());
+	}
+
+	@Test
+	public void userFriendlyIdentifierProviderTest() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer"));
+		CertificateValidator cv = CertificateValidator.fromCertificate(certificate);
+		cv.setCertificateVerifier(new CommonCertificateVerifier());
+		cv.setTokenIdentifierProvider(new UserFriendlyIdentifierProvider());
+
+		CertificateReports reports = cv.validate();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+		assertEquals(3, diagnosticData.getUsedCertificates().size());
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			assertTrue(certificateWrapper.getId().contains("CERTIFICATE"));
+			assertTrue(certificateWrapper.getId().contains(
+					DSSUtils.replaceAllNonAlphanumericCharacters(certificateWrapper.getCommonName(), "-")));
+			assertTrue(certificateWrapper.getId().contains(
+					DSSUtils.formatDateWithCustomFormat(certificateWrapper.getNotBefore(), "yyyyMMdd-hhmm")));
+
+			assertTrue(simpleReport.getCertificateIds().contains(certificateWrapper.getId()));
+		}
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertNotNull(detailedReport.getXmlCertificateById(new UserFriendlyIdentifierProvider().getIdAsString(certificate)));
 	}
 
 }

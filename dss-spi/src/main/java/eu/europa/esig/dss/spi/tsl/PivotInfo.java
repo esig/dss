@@ -83,7 +83,7 @@ public class PivotInfo extends LOTLInfo {
 	}
 	
 	@Override
-	public Identifier getIdentifier() {
+	protected Identifier buildIdentifier() {
 		return new PivotIdentifier(this);
 	}
 

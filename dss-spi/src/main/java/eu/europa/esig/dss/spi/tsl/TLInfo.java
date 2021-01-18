@@ -46,9 +46,13 @@ public class TLInfo implements Serializable {
 
 	/** The validation result record */
 	private final ValidationInfoRecord validationCacheInfo;
+
+	/** Cached Identifier instance */
+	private Identifier identifier;
 	
 	/**
 	 * The default constructor
+	 *
 	 * @param downloadCacheInfo {@link DownloadInfoRecord} a download cache result
 	 * @param parsingCacheInfo {@link ParsingInfoRecord} a parsing cache result
 	 * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
@@ -64,6 +68,7 @@ public class TLInfo implements Serializable {
 	
 	/**
 	 * Returns Download Cache Info
+	 *
 	 * @return {@link DownloadInfoRecord}
 	 */
 	public DownloadInfoRecord getDownloadCacheInfo() {
@@ -72,6 +77,7 @@ public class TLInfo implements Serializable {
 	
 	/**
 	 * Returns Parsing Cache Info
+	 *
 	 * @return {@link ParsingInfoRecord}
 	 */
 	public ParsingInfoRecord getParsingCacheInfo() {
@@ -80,6 +86,7 @@ public class TLInfo implements Serializable {
 	
 	/**
 	 * Returns Validation Cache Info
+	 *
 	 * @return {@link ValidationInfoRecord}
 	 */
 	public ValidationInfoRecord getValidationCacheInfo() {
@@ -88,6 +95,7 @@ public class TLInfo implements Serializable {
 	
 	/**
 	 * Returns a URL that was used to download the remote file
+	 *
 	 * @return {@link String} url
 	 */
 	public String getUrl() {
@@ -96,10 +104,32 @@ public class TLInfo implements Serializable {
 	
 	/**
 	 * Returns the TL id
+	 *
 	 * @return {@link String} id
 	 */
 	public Identifier getIdentifier() {
+		if (identifier == null) {
+			identifier = buildIdentifier();
+		}
+		return identifier;
+	}
+
+	/**
+	 * Builds the identifier
+	 *
+	 * @return {@link Identifier}
+	 */
+	protected Identifier buildIdentifier() {
 		return new TrustedListIdentifier(this);
+	}
+
+	/**
+	 * Returns the String representation of the identifier
+	 *
+	 * @return {@link String}
+	 */
+	public String getDSSIdAsString() {
+		return getIdentifier().asXmlId();
 	}
 
 }

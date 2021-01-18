@@ -52,7 +52,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -312,18 +311,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
             documentRevisions = pdfSignatureService.getRevisions(document, passwordProtection);
         }
         return documentRevisions;
-    }
-
-    @Override
-    public List<DSSDocument> getOriginalDocuments(String signatureId) {
-        Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-        List<AdvancedSignature> signatures = getSignatures();
-        for (AdvancedSignature signature : signatures) {
-            if (signature.getId().equals(signatureId)) {
-                return getOriginalDocuments(signature);
-            }
-        }
-        return Collections.emptyList();
     }
 
     @Override

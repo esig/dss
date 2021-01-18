@@ -322,7 +322,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	private XmlSignerData getXmlSignerData(SignatureScope signatureScope) {
 		XmlSignerData xmlSignedData = new XmlSignerData();
-		xmlSignedData.setId(signatureScope.getDSSIdAsString());
+		xmlSignedData.setId(identifierProvider.getIdAsString(signatureScope));
 		xmlSignedData.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(signatureScope.getDigest()));
 		xmlSignedData.setReferencedName(signatureScope.getName());
 		return xmlSignedData;
@@ -421,7 +421,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		XmlSignature xmlSignature = new XmlSignature();
 		xmlSignature.setSignatureFilename(removeSpecialCharsForXml(signature.getSignatureFilename()));
 
-		xmlSignature.setId(signature.getId());
+		xmlSignature.setId(identifierProvider.getIdAsString(signature));
 		xmlSignature.setDAIdentifier(signature.getDAIdentifier());
 		xmlSignature.setClaimedSigningTime(signature.getSigningTime());
 		xmlSignature.setStructuralValidation(getXmlStructuralValidation(signature));
@@ -745,8 +745,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	protected <R extends Revocation> XmlOrphanRevocationToken createOrphanTokenFromRevocationIdentifier(
 			EncapsulatedRevocationTokenIdentifier<R> revocationIdentifier) {
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
-		String tokenId = revocationIdentifier.asXmlId();
-		orphanToken.setId(tokenId);
+		orphanToken.setId(identifierProvider.getIdAsString(revocationIdentifier));
 		if (tokenExtractionStrategy.isRevocationData()) {
 			orphanToken.setBase64Encoded(revocationIdentifier.getBinaries());
 		} else {
@@ -758,7 +757,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		} else {
 			orphanToken.setType(RevocationType.OCSP);
 		}
-		xmlOrphanRevocationTokensMap.put(tokenId, orphanToken);
+		xmlOrphanRevocationTokensMap.put(revocationIdentifier.asXmlId(), orphanToken);
 		return orphanToken;
 	}
 
@@ -767,7 +766,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
 
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
-		orphanToken.setId(ref.getDSSIdAsString());
+		orphanToken.setId(identifierProvider.getIdAsString(ref));
 		if (ref.getDigest() != null) {
 			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
 		}
@@ -825,7 +824,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 		final XmlTimestamp xmlTimestampToken = new XmlTimestamp();
 
-		xmlTimestampToken.setId(timestampToken.getDSSIdAsString());
+		xmlTimestampToken.setId(identifierProvider.getIdAsString(timestampToken));
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
 		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType()); // property is defined only
 																								// for archival

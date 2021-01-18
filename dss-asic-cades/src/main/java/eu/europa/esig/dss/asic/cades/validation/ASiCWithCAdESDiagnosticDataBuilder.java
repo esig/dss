@@ -32,7 +32,10 @@ public class ASiCWithCAdESDiagnosticDataBuilder extends ASiCContainerDiagnosticD
 
 	@Override
 	public XmlSignature buildDetachedXmlSignature(AdvancedSignature signature) {
-		return new CAdESDiagnosticDataBuilder().buildDetachedXmlSignature(signature);
+		CAdESDiagnosticDataBuilder cadesDiagnosticDataBuilder = new CAdESDiagnosticDataBuilder();
+		cadesDiagnosticDataBuilder.tokenExtractionStrategy(tokenExtractionStrategy)
+				.tokenIdentifierProvider(identifierProvider);
+		return cadesDiagnosticDataBuilder.buildDetachedXmlSignature(signature);
 	}
 
 }

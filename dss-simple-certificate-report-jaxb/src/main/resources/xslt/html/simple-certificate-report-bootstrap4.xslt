@@ -28,6 +28,7 @@
 
     <xsl:template match="dss:ChainItem">
     
+		<xsl:variable name="idCert" select="dss:id" />
      	<xsl:variable name="indicationText" select="dss:Indication/text()"/>
         <xsl:variable name="indicationCssClass">
         	<xsl:choose>
@@ -43,13 +44,15 @@
     		<xsl:attribute name="class">card mb-3</xsl:attribute>
     		<div>
     			<xsl:attribute name="class">card-header bg-<xsl:value-of select="$indicationCssClass" /> text-white</xsl:attribute>
-	    		<xsl:attribute name="data-target">#collapseCert-<xsl:value-of select="dss:id"/></xsl:attribute>
+	    		<xsl:attribute name="data-target">#collapseCert-<xsl:value-of select="$idCert"/></xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
     			Certificate
+
+				<xsl:value-of select="$idCert" />
 	        </div>
     		<div>
     			<xsl:attribute name="class">card-body collapse in</xsl:attribute>
-	        	<xsl:attribute name="id">collapseCert-<xsl:value-of select="dss:id"/></xsl:attribute>
+	        	<xsl:attribute name="id">collapseCert-<xsl:value-of select="$idCert"/></xsl:attribute>
 	        	
 	        	<xsl:if test="dss:qualificationAtIssuance or dss:qualificationAtValidation">
 		        	<dl>

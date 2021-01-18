@@ -25,7 +25,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Validation of CMS document
@@ -129,35 +127,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			}
 		}
 		return signatures;
-	}
-
-	@Override
-	public List<DSSDocument> getOriginalDocuments(final String signatureId) {
-		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-
-		List<DSSDocument> results = new ArrayList<>();
-
-		for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
-			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-			cadesSignature.setSignatureFilename(document.getName());
-			cadesSignature.setDetachedContents(detachedContents);
-			cadesSignature.setSigningCertificateSource(signingCertificateSource);
-			if (Utils.areStringsEqual(cadesSignature.getId(), signatureId) || isCounterSignature(cadesSignature, signatureId)) {
-				results.add(cadesSignature.getOriginalDocument());
-			}
-		}
-		return results;
-	}
-	
-	private boolean isCounterSignature(final CAdESSignature masterSignature, final String signatureId) {
-		for (final SignerInformation counterSignerInformation : masterSignature.getCounterSignatureStore()) {
-			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
-			countersignature.setMasterSignature(masterSignature);
-			if (Utils.areStringsEqual(countersignature.getId(), signatureId) || isCounterSignature(countersignature, signatureId)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Override

@@ -96,7 +96,7 @@ public class LOTLInfo extends TLInfo {
 	}
 	
 	@Override
-	public Identifier getIdentifier() {
+	protected Identifier buildIdentifier() {
 		return new LOTLIdentifier(this);
 	}
 

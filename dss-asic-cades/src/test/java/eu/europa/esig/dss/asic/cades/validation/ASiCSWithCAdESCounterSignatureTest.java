@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCSWithCAdESCounterSignatureTest extends AbstractASiCWithCAdESTestValidation {
 
@@ -58,11 +58,7 @@ public class ASiCSWithCAdESCounterSignatureTest extends AbstractASiCWithCAdESTes
 			assertEquals(1, validator.getOriginalDocuments(advancedSignature).size());
 		}
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			if (signatureWrapper.isCounterSignature()) {
-				assertEquals(0, validator.getOriginalDocuments(signatureWrapper.getId()).size());
-			} else {
-				assertEquals(1, validator.getOriginalDocuments(signatureWrapper.getId()).size());
-			}
+			assertEquals(1, validator.getOriginalDocuments(signatureWrapper.getId()).size());
 		}
 	}
 
