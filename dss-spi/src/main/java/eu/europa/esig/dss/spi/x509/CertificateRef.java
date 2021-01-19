@@ -20,13 +20,14 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 
-public class CertificateRef implements Serializable {
+import java.io.Serializable;
+
+public class CertificateRef implements IdentifierBasedObject, Serializable {
 
 	private static final long serialVersionUID = -325165164194282066L;
 	
@@ -74,6 +75,7 @@ public class CertificateRef implements Serializable {
 	 * Returns the certificate reference identifier
 	 * @return {@link Identifier}
 	 */
+	@Override
 	public Identifier getDSSId() {
 		if (identifier == null) {
 			identifier = new CertificateRefIdentifier(this);

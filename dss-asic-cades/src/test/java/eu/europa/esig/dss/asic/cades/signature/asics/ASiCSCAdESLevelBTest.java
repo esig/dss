@@ -125,7 +125,7 @@ public class ASiCSCAdESLevelBTest extends AbstractASiCSCAdESTestSignature {
 		assertTrue(signature.getId().contains("SIGNATURE"));
 		assertTrue(signature.getId().contains(signature.getSigningCertificate().getCommonName()));
 		assertTrue(signature.getId().contains(
-				DSSUtils.formatDateWithCustomFormat(signature.getClaimedSigningTime(), "yyyyMMdd-hhmm")));
+				DSSUtils.formatDateWithCustomFormat(signature.getClaimedSigningTime(), "yyyyMMdd-HHmm")));
 	}
 
 	@Override

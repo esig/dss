@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi.tsl;
 
 import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.spi.tsl.identifier.TrustedListIdentifier;
 
 import java.io.Serializable;
@@ -29,7 +30,7 @@ import java.io.Serializable;
  * Computes summary for a single Trusted List processing result
  *
  */
-public class TLInfo implements Serializable {
+public class TLInfo implements IdentifierBasedObject, Serializable {
 	
 	private static final long serialVersionUID = -1505115221927652721L;
 
@@ -107,7 +108,7 @@ public class TLInfo implements Serializable {
 	 *
 	 * @return {@link String} id
 	 */
-	public Identifier getIdentifier() {
+	public Identifier getDSSId() {
 		if (identifier == null) {
 			identifier = buildIdentifier();
 		}
@@ -129,7 +130,7 @@ public class TLInfo implements Serializable {
 	 * @return {@link String}
 	 */
 	public String getDSSIdAsString() {
-		return getIdentifier().asXmlId();
+		return getDSSId().asXmlId();
 	}
 
 }

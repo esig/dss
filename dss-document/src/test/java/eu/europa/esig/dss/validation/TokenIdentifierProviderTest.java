@@ -30,24 +30,24 @@ public class TokenIdentifierProviderTest {
     @Test
     public void userFriendlyIdentifierProviderTest() {
         UserFriendlyIdentifierProvider userFriendlyIdentifierProvider = new UserFriendlyIdentifierProvider();
-        String id = userFriendlyIdentifierProvider.getIdAsString(certificate);
+        String id = userFriendlyIdentifierProvider.getIdAsStringForToken(certificate);
         assertTrue(id.contains("CERTIFICATE"));
         assertTrue(id.contains(DSSUtils.replaceAllNonAlphanumericCharacters(DSSASN1Utils.getSubjectCommonName(certificate), "-")));
-        assertTrue(id.contains(DSSUtils.formatDateWithCustomFormat(certificate.getNotBefore(), "yyyyMMdd-hhmm")));
+        assertTrue(id.contains(DSSUtils.formatDateWithCustomFormat(certificate.getNotBefore(), "yyyyMMdd-HHmm")));
 
         userFriendlyIdentifierProvider.setCertificatePrefix("CERT");
-        id = userFriendlyIdentifierProvider.getIdAsString(certificate);
+        id = userFriendlyIdentifierProvider.getIdAsStringForToken(certificate);
         assertTrue(id.contains("CERT"));
         assertFalse(id.contains("CERTIFICATE"));
         assertTrue(id.contains(DSSUtils.replaceAllNonAlphanumericCharacters(DSSASN1Utils.getSubjectCommonName(certificate), "-")));
-        assertTrue(id.contains(DSSUtils.formatDateWithCustomFormat(certificate.getNotBefore(), "yyyyMMdd-hhmm")));
+        assertTrue(id.contains(DSSUtils.formatDateWithCustomFormat(certificate.getNotBefore(), "yyyyMMdd-HHmm")));
 
         userFriendlyIdentifierProvider.setDateFormat("yyyy-MM-dd");
-        id = userFriendlyIdentifierProvider.getIdAsString(certificate);
+        id = userFriendlyIdentifierProvider.getIdAsStringForToken(certificate);
         assertTrue(id.contains("CERT"));
         assertTrue(id.contains(DSSUtils.replaceAllNonAlphanumericCharacters(DSSASN1Utils.getSubjectCommonName(certificate), "-")));
         assertTrue(id.contains(DSSUtils.formatDateWithCustomFormat(certificate.getNotBefore(), "yyyy-MM-dd")));
-        assertFalse(id.contains(DSSUtils.formatDateWithCustomFormat(certificate.getNotBefore(), "yyyyMMdd-hhmm")));
+        assertFalse(id.contains(DSSUtils.formatDateWithCustomFormat(certificate.getNotBefore(), "yyyyMMdd-HHmm")));
     }
 
 }

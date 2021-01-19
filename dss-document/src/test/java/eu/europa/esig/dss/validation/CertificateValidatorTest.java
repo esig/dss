@@ -173,13 +173,19 @@ public class CertificateValidatorTest {
 			assertTrue(certificateWrapper.getId().contains(
 					DSSUtils.replaceAllNonAlphanumericCharacters(certificateWrapper.getCommonName(), "-")));
 			assertTrue(certificateWrapper.getId().contains(
-					DSSUtils.formatDateWithCustomFormat(certificateWrapper.getNotBefore(), "yyyyMMdd-hhmm")));
+					DSSUtils.formatDateWithCustomFormat(certificateWrapper.getNotBefore(), "yyyyMMdd-HHmm")));
 
 			assertTrue(simpleReport.getCertificateIds().contains(certificateWrapper.getId()));
 		}
 
+		String certId = new UserFriendlyIdentifierProvider().getIdAsStringForToken(certificate);
+		assertFalse(certId.endsWith(
+				DSSUtils.formatDateWithCustomFormat(certificate.getNotBefore(), "yyyyMMdd-hhmm")));
+		assertTrue(certId.endsWith(
+				DSSUtils.formatDateWithCustomFormat(certificate.getNotBefore(), "yyyyMMdd-HHmm")));
+
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertNotNull(detailedReport.getXmlCertificateById(new UserFriendlyIdentifierProvider().getIdAsString(certificate)));
+		assertNotNull(detailedReport.getXmlCertificateById(certId));
 	}
 
 }

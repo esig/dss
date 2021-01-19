@@ -20,16 +20,17 @@
  */
 package eu.europa.esig.dss.validation.scope;
 
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.validation.DataIdentifier;
+
+import java.util.List;
 
 /**
  * This class describes the scope of the signature
  */
-public abstract class SignatureScope {
+public abstract class SignatureScope implements IdentifierBasedObject {
 
 	/**
 	 * The name of the item on which this signature scope applies

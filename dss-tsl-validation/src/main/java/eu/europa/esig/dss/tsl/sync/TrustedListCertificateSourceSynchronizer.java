@@ -227,9 +227,9 @@ public class TrustedListCertificateSourceSynchronizer {
 	private TrustProperties getTrustProperties(LOTLInfo relatedLOTL, TLInfo tlInfo, TrustServiceProvider detached,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions) {
 		if (relatedLOTL == null) {
-			return new TrustProperties(tlInfo.getIdentifier(), detached, statusAndInformationExtensions);
+			return new TrustProperties(tlInfo.getDSSId(), detached, statusAndInformationExtensions);
 		}
-		return new TrustProperties(relatedLOTL.getIdentifier(), tlInfo.getIdentifier(), detached, statusAndInformationExtensions);
+		return new TrustProperties(relatedLOTL.getDSSId(), tlInfo.getDSSId(), detached, statusAndInformationExtensions);
 	}
 
 }

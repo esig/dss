@@ -3,6 +3,8 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
@@ -21,7 +23,8 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.x500.X500Principal;
 import java.util.Date;
@@ -41,6 +44,8 @@ import java.util.stream.Collectors;
  */
 public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UserFriendlyIdentifierProvider.class);
+
     /** String is used to separate different parts of the identifier */
     private static final String STRING_DELIMITER = "_";
 
@@ -48,7 +53,10 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     private static final String NAME_REPLACEMENT = "-";
 
     /** String used when token's signing certificate is not identified */
-    private static final String UNKNOWN_SIGNER = "unknownSigner";
+    private static final String UNKNOWN_SIGNER = "UNKNOWN-SIGNER";
+
+    /** String used when token's signing certificate does not have a human-readable name */
+    private static final String UNNAMED_SIGNER = "UNNAMED-SIGNER";
 
     /**
      * Represents a map for processed tokens between the original DSS hash-based Id
@@ -84,7 +92,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     private String pivotPrefix = "PIVOT";
 
     /** The date format to be used for a token identifier creation */
-    private String dateFormat = "yyyyMMdd-hhmm";
+    private String dateFormat = "yyyyMMdd-HHmm";
 
     /**
      * Sets the prefix to be used for signature identifiers
@@ -194,7 +202,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     /**
      * Sets the dataFormat to be used for identifiers creation
      *
-     * Default = "yyyyMMdd-hhmm"
+     * Default = "yyyyMMdd-HHmm"
      *
      * @param dateFormat {@link String} the target date format
      */
@@ -204,19 +212,87 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     }
 
     @Override
-    public String getIdAsString(AdvancedSignature signature) {
-        return createIdString(signaturePrefix, signature.getSigningCertificateToken().getSubject(),
-                signature.getSigningTime(), signature.getId());
+    public String getIdAsString(IdentifierBasedObject object) {
+        Objects.requireNonNull(object, "The object cannot be null!");
+
+        String cachedIdentifier = getCachedIdentifier(object);
+        if (Utils.isStringNotEmpty(cachedIdentifier)) {
+            return cachedIdentifier;
+
+        } else if (object instanceof AdvancedSignature) {
+            return getIdAsStringForSignature((AdvancedSignature) object);
+
+        } else if (object instanceof Token) {
+            return getIdAsStringForToken((Token) object);
+
+        } else if (object instanceof SignatureScope) {
+            return getIdAsStringForSignatureScope((SignatureScope) object);
+
+        } else if (object instanceof TLInfo) {
+            return getIdAsStringForTL((TLInfo) object);
+
+        } else if (object instanceof CertificateRef) {
+            return getIdAsStringForCertRef((CertificateRef) object);
+
+        } else if (object instanceof RevocationRef) {
+            return getIdAsStringForRevRef((RevocationRef) object);
+
+        } else if (object instanceof EncapsulatedRevocationTokenIdentifier) {
+            return getIdAsStringForRevTokenIdentifier((EncapsulatedRevocationTokenIdentifier) object);
+
+        }
+        LOG.warn("The class '{}' is not supported! Return the original identifier for the object.", object.getClass());
+        return object.getDSSId().asXmlId();
     }
 
-    @Override
-    public String getIdAsString(Token token) {
-        return createIdString(getTokenPrefix(token), getTokenSubject(token),
-                token.getCreationDate(), token.getDSSIdAsString());
+    private String getCachedIdentifier(IdentifierBasedObject object) {
+        Identifier identifier = object.getDSSId();
+        if (identifier == null) {
+            throw new IllegalArgumentException(String.format(
+                    "The returned Identifier cannot be null for the object of class '%s'!", object.getClass()));
+        }
+        String originalIdentifier = identifier.asXmlId();
+        String value = tokenIdsMap.get(originalIdentifier);
+        if (value != null) {
+            LOG.trace("The identifier for the token with Id '{}' has been found in the map. Returning the value...",
+                    originalIdentifier);
+            return value;
+        } else {
+            LOG.trace("Computing the user-friendly identifier for the token with Id '{}'...", originalIdentifier);
+        }
+        return null;
     }
 
-    @Override
-    public String getIdAsString(SignatureScope signatureScope) {
+    /**
+     * Gets a {@code String} identifier for a given {@code AdvancedSignature}
+     *
+     * @param signature {@link AdvancedSignature} to get String id for
+     * @return {@link String}
+     */
+    protected String getIdAsStringForSignature(AdvancedSignature signature) {
+        X500PrincipalHelper subject = signature.getSigningCertificateToken() != null ?
+                signature.getSigningCertificateToken().getSubject() : null;
+        return createIdString(signaturePrefix, subject, signature.getSigningTime(), signature.getId());
+    }
+
+    /**
+     * Gets a {@code String} identifier for a given {@code Token}
+     *
+     * @param token {@link Token} to get String id for
+     * @return {@link String}
+     */
+    protected String getIdAsStringForToken(Token token) {
+        return createIdString(getTokenPrefix(token), getTokenSubject(token), token.getCreationDate(),
+                token.getDSSIdAsString());
+    }
+
+    /**
+     * Gets a {@code String} identifier for a given {@code SignatureScope}
+     *
+     * @param signatureScope {@link SignatureScope} to get String id for
+     * @return {@link String}
+     */
+    protected String getIdAsStringForSignatureScope(SignatureScope signatureScope) {
         StringBuilder stringBuilder = new StringBuilder(signedDataPrefix);
         stringBuilder.append(STRING_DELIMITER);
         if (Utils.isStringNotBlank(signatureScope.getName())) {
@@ -227,8 +303,13 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         return generateId(stringBuilder, signatureScope.getDSSIdAsString());
     }
 
-    @Override
-    public String getIdAsString(TLInfo tlInfo) {
+    /**
+     * Gets a {@code String} identifier for a given {@code TLInfo}
+     *
+     * @param tlInfo {@link TLInfo} to get String id for
+     * @return {@link String}
+     */
+    protected String getIdAsStringForTL(TLInfo tlInfo) {
         StringBuilder stringBuilder = new StringBuilder(getTlPrefix(tlInfo));
         if (tlInfo.getParsingCacheInfo() != null &&
                 Utils.isStringNotBlank(tlInfo.getParsingCacheInfo().getTerritory())) {
@@ -243,8 +324,13 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         return generateId(stringBuilder, tlInfo.getDSSIdAsString());
     }
 
-    @Override
-    public String getIdAsString(CertificateRef certificateRef) {
+    /**
+     * Gets a {@code String} identifier for a given {@code CertificateRef}
+     *
+     * @param certificateRef {@link CertificateRef} to get String id for
+     * @return {@link String}
+     */
+    protected String getIdAsStringForCertRef(CertificateRef certificateRef) {
         StringBuilder stringBuilder = new StringBuilder(certificatePrefix);
         stringBuilder.append(STRING_DELIMITER);
         stringBuilder.append(certificateRef.getOrigin().toString());
@@ -252,7 +338,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
             stringBuilder.append(STRING_DELIMITER);
             X500PrincipalHelper x500PrincipalHelper = new X500PrincipalHelper(
                     certificateRef.getResponderId().getX500Principal());
-            stringBuilder.append(getCommonName(x500PrincipalHelper));
+            stringBuilder.append(getHumanReadableName(x500PrincipalHelper));
         } else if (certificateRef.getCertificateIdentifier() != null &&
                 certificateRef.getCertificateIdentifier().getSerialNumber() != null) {
             stringBuilder.append(STRING_DELIMITER);
@@ -264,16 +350,26 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         return generateId(stringBuilder, certificateRef.getDSSIdAsString());
     }
 
-    @Override
-    public String getIdAsString(RevocationRef<?> revocationRef) {
+    /**
+     * Gets a {@code String} identifier for a given {@code RevocationRef}
+     *
+     * @param revocationRef {@link RevocationRef} to get String id for
+     * @return {@link String}
+     */
+    protected String getIdAsStringForRevRef(RevocationRef<?> revocationRef) {
         StringBuilder stringBuilder = new StringBuilder(getRevocationRefPrefix(revocationRef));
         stringBuilder.append(STRING_DELIMITER);
         stringBuilder.append(revocationRef.getDigest().getHexValue());
         return generateId(stringBuilder, revocationRef.getDSSIdAsString());
     }
 
-    @Override
-    public String getIdAsString(EncapsulatedRevocationTokenIdentifier<?> revocationIdentifier) {
+    /**
+     * Gets a {@code String} identifier for a given {@code EncapsulatedRevocationTokenIdentifier}
+     *
+     * @param revocationIdentifier {@link EncapsulatedRevocationTokenIdentifier} to get String id for
+     * @return {@link String}
+     */
+    protected String getIdAsStringForRevTokenIdentifier(EncapsulatedRevocationTokenIdentifier<?> revocationIdentifier) {
         StringBuilder stringBuilder = new StringBuilder(getRevocationIdentifierPrefix(revocationIdentifier));
         stringBuilder.append(STRING_DELIMITER);
         stringBuilder.append(Utils.toHex(revocationIdentifier.getDigestValue(DigestAlgorithm.SHA256)));
@@ -284,7 +380,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         StringBuilder stringBuilder = new StringBuilder(prefix);
         stringBuilder.append(STRING_DELIMITER);
         if (subject != null) {
-            stringBuilder.append(getCommonName(subject));
+            stringBuilder.append(getHumanReadableName(subject));
         } else {
             stringBuilder.append(UNKNOWN_SIGNER);
         }
@@ -295,12 +391,12 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         return generateId(stringBuilder, dssId);
     }
 
-    private String getCommonName(X500PrincipalHelper subject) {
-        String commonName = DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, subject);
-        if (Utils.isStringNotEmpty(commonName)) {
-            return getUserFriendlyString(commonName);
+    private String getHumanReadableName(X500PrincipalHelper subject) {
+        String name = DSSASN1Utils.getHumanReadableName(subject);
+        if (Utils.isStringNotEmpty(name)) {
+            return getUserFriendlyString(name);
         }
-        return null;
+        return UNNAMED_SIGNER;
     }
 
     private String generateId(StringBuilder stringBuilder, String dssId) {

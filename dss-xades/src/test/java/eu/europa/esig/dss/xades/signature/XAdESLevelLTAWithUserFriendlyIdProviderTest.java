@@ -71,14 +71,14 @@ public class XAdESLevelLTAWithUserFriendlyIdProviderTest extends AbstractXAdESTe
         assertTrue(signature.getId().contains("SIGNATURE"));
         assertTrue(signature.getId().contains(signature.getSigningCertificate().getCommonName()));
         assertTrue(signature.getId().contains(
-                DSSUtils.formatDateWithCustomFormat(signature.getClaimedSigningTime(), "yyyyMMdd-hhmm")));
+                DSSUtils.formatDateWithCustomFormat(signature.getClaimedSigningTime(), "yyyyMMdd-HHmm")));
 
         assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getUsedCertificates()));
         for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
             assertTrue(certificateWrapper.getId().contains("CERTIFICATE"));
             assertTrue(certificateWrapper.getId().contains(certificateWrapper.getCommonName()));
             assertTrue(certificateWrapper.getId().contains(
-                    DSSUtils.formatDateWithCustomFormat(certificateWrapper.getNotBefore(), "yyyyMMdd-hhmm")));
+                    DSSUtils.formatDateWithCustomFormat(certificateWrapper.getNotBefore(), "yyyyMMdd-HHmm")));
         }
 
         assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getAllRevocationData()));
@@ -93,7 +93,7 @@ public class XAdESLevelLTAWithUserFriendlyIdProviderTest extends AbstractXAdESTe
             }
             assertTrue(revocationWrapper.getId().contains(revocationWrapper.getSigningCertificate().getCommonName()));
             assertTrue(revocationWrapper.getId().contains(
-                    DSSUtils.formatDateWithCustomFormat(revocationWrapper.getProductionDate(), "yyyyMMdd-hhmm")));
+                    DSSUtils.formatDateWithCustomFormat(revocationWrapper.getProductionDate(), "yyyyMMdd-HHmm")));
         }
 
         assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getTimestampList()));
@@ -101,7 +101,7 @@ public class XAdESLevelLTAWithUserFriendlyIdProviderTest extends AbstractXAdESTe
             assertTrue(timestampWrapper.getId().contains("TIMESTAMP"));
             assertTrue(timestampWrapper.getId().contains(timestampWrapper.getSigningCertificate().getCommonName()));
             assertTrue(timestampWrapper.getId().contains(
-                    DSSUtils.formatDateWithCustomFormat(timestampWrapper.getProductionTime(), "yyyyMMdd-hhmm")));
+                    DSSUtils.formatDateWithCustomFormat(timestampWrapper.getProductionTime(), "yyyyMMdd-HHmm")));
         }
 
         assertTrue(Utils.isCollectionNotEmpty(advancedSignature.getSignatureScopes()));

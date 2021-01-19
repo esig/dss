@@ -20,14 +20,15 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.utils.Utils;
 
-public abstract class RevocationRef<R extends Revocation> implements Serializable {
+import java.io.Serializable;
+
+public abstract class RevocationRef<R extends Revocation> implements IdentifierBasedObject, Serializable {
 
 	private static final long serialVersionUID = 7313118727647264457L;
 
