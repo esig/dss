@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.DSS2049;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -45,6 +37,13 @@ import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.validation.executor.AbstractTestValidationExecutor;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DSS2049CertQualTest extends AbstractTestValidationExecutor {
 	
@@ -137,17 +136,17 @@ public class DSS2049CertQualTest extends AbstractTestValidationExecutor {
 		boolean isTLValid = false;
 		boolean acceptableFound = false;
 		for (XmlConstraint constraint : constraints) {
-			if (MessageTag.QUAL_LIST_OF_TRUSTED_LISTS_ACCEPT.name().equals(constraint.getName().getNameId())) {
+			if (MessageTag.QUAL_LIST_OF_TRUSTED_LISTS_ACCEPT.name().equals(constraint.getName().getKey())) {
 				++lotlsProcessed;
 				if (XmlStatus.OK.equals(constraint.getStatus())) {
 					isLOTLValid = true;
 				}
-			} else if (MessageTag.QUAL_TRUSTED_LIST_ACCEPT.name().equals(constraint.getName().getNameId())) {
+			} else if (MessageTag.QUAL_TRUSTED_LIST_ACCEPT.name().equals(constraint.getName().getKey())) {
 				++tlsProcessed;
 				if (XmlStatus.OK.equals(constraint.getStatus())) {
 					isTLValid = true;
 				}
-			} else if (MessageTag.QUAL_VALID_TRUSTED_LIST_PRESENT.name().equals(constraint.getName().getNameId())) {
+			} else if (MessageTag.QUAL_VALID_TRUSTED_LIST_PRESENT.name().equals(constraint.getName().getKey())) {
 				if (XmlStatus.OK.equals(constraint.getStatus())) {
 					acceptableFound = true;
 				}

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -666,31 +666,31 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	private void checkErrorMessagePresence(String message) {
 		Reports reports = createReports();
 		SimpleReport simpleReport = reports.getSimpleReport();
-		checkErrorMessagePresence(simpleReport, message);
+		checkWarningMessagePresence(simpleReport, message);
 	}
 
-	private void checkErrorMessagePresence(SimpleReport simpleReport, String message) {
-		assertTrue(simpleReport.getWarnings(simpleReport.getFirstSignatureId()).contains(message));
+	private void checkWarningMessagePresence(SimpleReport simpleReport, String message) {
+		assertTrue(checkMessageValuePresence(simpleReport.getWarnings(simpleReport.getFirstSignatureId()), message));
 	}
 	
 	private void checkBasicSignatureErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
-		List<XmlName> errors = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId()).getConclusion().getErrors();
+		List<XmlMessage> errors = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId()).getConclusion().getErrors();
 		assertTrue(!present ^ xmlListContainsMessage(errors, messageKey));
 	}
 	
 	private void checkRevocationErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
-		List<XmlName> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0)).getSAV().getConclusion().getErrors();
+		List<XmlMessage> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0)).getSAV().getConclusion().getErrors();
 		assertTrue(!present ^ xmlListContainsMessage(listErrors, messageKey));
 	}
 	
 	private void checkTimestampErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
-		List<XmlName> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getTimestampIds().get(0)).getSAV().getConclusion().getErrors();
+		List<XmlMessage> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getTimestampIds().get(0)).getSAV().getConclusion().getErrors();
 		assertTrue(!present ^ xmlListContainsMessage(listErrors, messageKey));
 	}
 	
-	private boolean xmlListContainsMessage(List<XmlName> list, MessageTag messageKey) {
-		for (XmlName name : list) {
-			if (messageKey.name().equals(name.getNameId())) {
+	private boolean xmlListContainsMessage(List<XmlMessage> list, MessageTag messageKey) {
+		for (XmlMessage name : list) {
+			if (messageKey.name().equals(name.getKey())) {
 				return true;
 			}
 		}

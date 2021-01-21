@@ -18,7 +18,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-jaxb-parsers</artifactId>
+			<artifactId>dss-jaxb-common</artifactId>
 		</dependency>
 	
 		<dependency>

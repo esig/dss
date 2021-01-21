@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -47,7 +47,7 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 	private SubIndication ltvSubIndication;
 
 	/** LTV errors */
-	private List<XmlName> ltvErrors;
+	private List<XmlMessage> ltvErrors;
 
 	/**
 	 * Default constructor
@@ -89,7 +89,7 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 	}
 
 	@Override
-	protected List<XmlName> getPreviousErrors() {
+	protected List<XmlMessage> getPreviousErrors() {
 		return ltvErrors;
 	}
 

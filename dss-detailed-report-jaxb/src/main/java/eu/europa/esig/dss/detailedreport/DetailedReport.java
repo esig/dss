@@ -42,13 +42,13 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
+import eu.europa.esig.dss.jaxb.Message;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * This class represents the detailed report built during the validation process. It contains information on each
@@ -707,33 +707,33 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Returns a set of error messages for a signature with id
+	 * Returns a set of error messages for a signature or token with id
 	 *
-	 * @param signatureId {@link String}
-	 * @return a set of {@link String} error messages
+	 * @param tokenId {@link String}
+	 * @return a list of error {@link Message}s
 	 */
-    public Set<String> getErrors(String signatureId) {
-    	return getMessageCollector().getErrors(signatureId);
+    public List<Message> getErrors(String tokenId) {
+    	return getMessageCollector().getErrors(tokenId);
     }
 
 	/**
-	 * Returns a set of warning messages for a signature with id
+	 * Returns a set of warning messages for a signature or token with id
 	 *
-	 * @param signatureId {@link String}
-	 * @return a set of {@link String} warning messages
+	 * @param tokenId {@link String}
+	 * @return a list of warning {@link Message}s
 	 */
-    public Set<String> getWarnings(String signatureId) {
-    	return getMessageCollector().getWarnings(signatureId);
+    public List<Message> getWarnings(String tokenId) {
+    	return getMessageCollector().getWarnings(tokenId);
     }
 
 	/**
-	 * Returns a set of info messages for a signature with id
+	 * Returns a set of info messages for a signature or token with id
 	 *
-	 * @param signatureId {@link String}
-	 * @return a set of {@link String} info messages
+	 * @param tokenId {@link String}
+	 * @return a list of info {@link Message}s
 	 */
-    public Set<String> getInfos(String signatureId) {
-    	return getMessageCollector().getInfos(signatureId);
+    public List<Message> getInfos(String tokenId) {
+    	return getMessageCollector().getInfos(tokenId);
     }
 
 }

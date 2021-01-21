@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -79,7 +79,7 @@ public class CheckSubXCVResult extends ChainItem<XmlXCV> {
 	}
 
 	@Override
-	protected List<XmlName> getPreviousErrors() {
+	protected List<XmlMessage> getPreviousErrors() {
 		return subResult.getConclusion().getErrors();
 	}
 

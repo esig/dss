@@ -84,6 +84,7 @@
 	
 		<module>dss-enumerations</module>
 		<module>dss-alert</module>
+		<module>dss-jaxb-common</module>
 		<module>dss-jaxb-parsers</module>
 	
 		<module>specs-xmldsig</module>
@@ -164,7 +165,7 @@
 		<module>dss-cookbook</module>
 		
 		<module>dss-jacoco-coverage</module>
-  </modules>
+    </modules>
 
 	<build>
 		<plugins>
@@ -788,6 +789,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-alert</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-jaxb-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
@@ -189,11 +189,11 @@ public class BasicBuildingBlocks {
 
 		if (Utils.isCollectionNotEmpty(constraints)) {
 			for (XmlConstraint constraint : constraints) {
-				XmlName info = constraint.getInfo();
+				XmlMessage info = constraint.getInfo();
 				if (info != null) {
 					finalConclusion.getInfos().add(info);
 				}
-				XmlName warning = constraint.getWarning();
+				XmlMessage warning = constraint.getWarning();
 				if (warning != null) {
 					finalConclusion.getWarnings().add(warning);
 				}

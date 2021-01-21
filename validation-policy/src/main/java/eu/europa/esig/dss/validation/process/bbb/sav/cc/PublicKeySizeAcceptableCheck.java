@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -77,13 +77,13 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	}
 	
 	@Override
-	protected XmlName buildConstraintMessage() {
-		return buildXmlName(MessageTag.ASCCM_APKSA, encryptionAlgo, keySize);
+	protected XmlMessage buildConstraintMessage() {
+		return buildXmlMessage(MessageTag.ASCCM_APKSA, encryptionAlgo, keySize);
 	}
 	
 	@Override
-	protected XmlName buildErrorMessage() {
-		return buildXmlName(MessageTag.ASCCM_APKSA_ANS, encryptionAlgo, keySize, position);
+	protected XmlMessage buildErrorMessage() {
+		return buildXmlMessage(MessageTag.ASCCM_APKSA_ANS, encryptionAlgo, keySize, position);
 	}
 
 }

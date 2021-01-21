@@ -20,21 +20,8 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.jaxb.Message;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -42,6 +29,21 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SignedDocumentValidatorTest {
 
@@ -105,12 +107,13 @@ public class SignedDocumentValidatorTest {
 		ResourceBundle bundle = ResourceBundle.getBundle("dss-messages", locale);
 		Set<String> messageValues = getValues(bundle);
 		
-		Set<String> errors = detailedReport.getErrors(detailedReport.getFirstSignatureId());
-		for (String error : errors) {
-			assertTrue(messageValues.contains(error));
+		List<Message> errors = detailedReport.getErrors(detailedReport.getFirstSignatureId());
+		for (Message error : errors) {
+			assertTrue(messageValues.contains(error.getValue()));
 		}
+		List<String> messages = errors.stream().map(m -> m.getValue()).collect(Collectors.toList());
 		if (expectedErrorMessage != null) {
-			assertTrue(errors.contains(expectedErrorMessage));
+			assertTrue(messages.contains(expectedErrorMessage));
 		}
 	}
 	

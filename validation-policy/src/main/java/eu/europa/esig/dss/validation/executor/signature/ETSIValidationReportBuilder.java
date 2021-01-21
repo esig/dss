@@ -334,7 +334,7 @@ public class ETSIValidationReportBuilder {
 		if (signingCertificateXCV != null) {
 			List<XmlConstraint> constraints = signingCertificateXCV.getConstraint();
 			for (XmlConstraint xmlConstraint : constraints) {
-				if ("BBB_XCV_PSEUDO_USE".equals(xmlConstraint.getName().getNameId())) {
+				if ("BBB_XCV_PSEUDO_USE".equals(xmlConstraint.getName().getKey())) {
 					XmlStatus status = xmlConstraint.getStatus();
 					return status;
 				}

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -49,7 +49,7 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 	private SubIndication bbbSubIndication;
 
 	/** The validation errors */
-	private List<XmlName> bbbErrors;
+	private List<XmlMessage> bbbErrors;
 
 	/**
 	 * Default constructor
@@ -100,7 +100,7 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 	}
 
 	@Override
-	protected List<XmlName> getPreviousErrors() {
+	protected List<XmlMessage> getPreviousErrors() {
 		return bbbErrors;
 	}
 

@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.jaxb;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import javax.xml.transform.TransformerConfigurationException;
 
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class XmlDefinerUtilsTest {
 

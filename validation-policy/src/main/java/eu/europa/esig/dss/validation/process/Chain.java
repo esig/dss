@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -191,15 +191,15 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 		
 		List<XmlConstraint> constraints = result.getConstraint();
 		for (XmlConstraint xmlConstraint : constraints) {
-			XmlName error = xmlConstraint.getError();
+			XmlMessage error = xmlConstraint.getError();
 			if (error != null) {
 				conclusion.getErrors().add(error);
 			}
-			XmlName warning = xmlConstraint.getWarning();
+			XmlMessage warning = xmlConstraint.getWarning();
 			if (warning != null) {
 				conclusion.getWarnings().add(warning);
 			}
-			XmlName info = xmlConstraint.getInfo();
+			XmlMessage info = xmlConstraint.getInfo();
 			if (info != null) {
 				conclusion.getInfos().add(info);
 			}

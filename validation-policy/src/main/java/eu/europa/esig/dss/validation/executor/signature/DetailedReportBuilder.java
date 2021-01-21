@@ -75,10 +75,10 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	private final boolean includeSemantics;
 
 	/** Set of all used Indications (used for semantics) */
-	private Set<Indication> allIndications = new HashSet<>();
+	private final Set<Indication> allIndications = new HashSet<>();
 
 	/** Set of all used SubIndications (used for semantics) */
-	private Set<SubIndication> allSubIndications = new HashSet<>();
+	private final Set<SubIndication> allSubIndications = new HashSet<>();
 
 	/**
 	 * Default constructor

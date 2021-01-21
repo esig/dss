@@ -23,7 +23,6 @@ package eu.europa.esig.dss.validation.executor.signature;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -37,9 +36,11 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.jaxb.Message;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSemantic;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
@@ -53,10 +54,12 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
@@ -76,10 +79,10 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	private int validSignatureCount = 0;
 
 	/** Set of all used Indications (used for semantics) */
-	private Set<Indication> finalIndications = new HashSet<>();
+	private final Set<Indication> finalIndications = new HashSet<>();
 
 	/** Set of all used SubIndications (used for semantics) */
-	private Set<SubIndication> finalSubIndications = new HashSet<>();
+	private final Set<SubIndication> finalSubIndications = new HashSet<>();
 
 	/** The POE set */
 	private POEExtraction poe;
@@ -192,9 +195,9 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			xmlSignature.setSignedBy(getReadableCertificateName(signingCertificate.getId()));
 		}
 
-		xmlSignature.getErrors().addAll(detailedReport.getErrors(signatureId));
-		xmlSignature.getWarnings().addAll(detailedReport.getWarnings(signatureId));
-		xmlSignature.getInfos().addAll(detailedReport.getInfos(signatureId));
+		xmlSignature.getErrors().addAll(convert(detailedReport.getErrors(signatureId)));
+		xmlSignature.getWarnings().addAll(convert(detailedReport.getWarnings(signatureId)));
+		xmlSignature.getInfos().addAll(convert(detailedReport.getInfos(signatureId)));
 
 		if (container) {
 			xmlSignature.setFilename(signature.getSignatureFilename());
@@ -218,6 +221,15 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 		xmlSignature.setCertificateChain(getCertChain(signatureId));
 		return xmlSignature;
+	}
+
+	private List<XmlMessage> convert(Collection<Message> messages) {
+		return messages.stream().map(m -> {
+				XmlMessage xmlMessage = new XmlMessage();
+				xmlMessage.setKey(m.getKey());
+				xmlMessage.setValue(m.getValue());
+				return xmlMessage;
+			}).collect(Collectors.toList());
 	}
 
 	private XmlCertificateChain getCertChain(String tokenId) {
@@ -303,9 +315,9 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 				finalSubIndications.add(subIndication);
 			}
 			
-			xmlTimestamp.getErrors().addAll(toStrings(bbbConclusion.getErrors()));
-			xmlTimestamp.getWarnings().addAll(toStrings(bbbConclusion.getWarnings()));
-			xmlTimestamp.getInfos().addAll(toStrings(bbbConclusion.getInfos()));
+			xmlTimestamp.getErrors().addAll(convert(detailedReport.getErrors(timestampWrapper.getId())));
+			xmlTimestamp.getWarnings().addAll(convert(detailedReport.getErrors(timestampWrapper.getId())));
+			xmlTimestamp.getInfos().addAll(convert(detailedReport.getErrors(timestampWrapper.getId())));
 		}
 
 		TimestampQualification timestampQualification = detailedReport.getTimestampQualification(timestampWrapper.getId());
@@ -325,16 +337,6 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			return signingCertificate.getReadableCertificateName();
 		}
 		return Utils.EMPTY_STRING;
-	}
-
-	private List<String> toStrings(List<XmlName> xmlNames) {
-		List<String> strings = new ArrayList<>();
-		if (Utils.isCollectionNotEmpty(xmlNames)) {
-			for (XmlName name : xmlNames) {
-				strings.add(name.getValue());
-			}
-		}
-		return strings;
 	}
 
 	private void determineExtensionPeriod(XmlSignature xmlSignature) {
