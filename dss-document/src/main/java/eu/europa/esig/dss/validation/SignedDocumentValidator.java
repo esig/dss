@@ -266,11 +266,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		this.tokenExtractionStrategy = tokenExtractionStrategy;
 	}
 
-	/**
-	 * Sets the TokenIdentifierProvider
-	 *
-	 * @param identifierProvider {@link TokenIdentifierProvider}
-	 */
+	@Override
 	public void setTokenIdentifierProvider(TokenIdentifierProvider identifierProvider) {
 		Objects.requireNonNull(identifierProvider);
 		this.identifierProvider = identifierProvider;
