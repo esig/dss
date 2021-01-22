@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -166,6 +167,13 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVResult) {
 		return new CheckSubXCVResult(i18nProvider, result, subXCVResult, getFailLevelConstraint());
+	}
+
+	@Override
+	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		for (XmlSubXCV subXCV : result.getSubXCV()) {
+			collectAllMessages(conclusion, subXCV.getConclusion());
+		}
 	}
 	
 }

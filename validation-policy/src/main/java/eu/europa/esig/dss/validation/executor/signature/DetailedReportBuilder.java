@@ -126,14 +126,14 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 			if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
 				attachedTimestamps.addAll(signature.getTimestampIdsList());
-				signatureAnalysis.getTimestamp().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
+				signatureAnalysis.getTimestamps().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
 			} else if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
 				attachedTimestamps.addAll(signature.getTimestampIdsList());
-				signatureAnalysis.getTimestamp().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
+				signatureAnalysis.getTimestamps().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
 				validation = executeLongTermValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
 				attachedTimestamps.addAll(signature.getTimestampIdsList());
-				signatureAnalysis.getTimestamp().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
+				signatureAnalysis.getTimestamps().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
 				executeLongTermValidation(signatureAnalysis, signature, bbbs);
 				validation = executeArchiveValidation(signatureAnalysis, signature, bbbs);
 			}
@@ -278,7 +278,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				collectIndications(xmlSignature.getValidationProcessBasicSignature());
 				collectIndications(xmlSignature.getValidationProcessLongTermData());
 				collectIndications(xmlSignature.getValidationProcessArchivalData());
-				for (XmlTimestamp xmlTimestamp : xmlSignature.getTimestamp()) {
+				for (XmlTimestamp xmlTimestamp : xmlSignature.getTimestamps()) {
 					collectIndications(xmlTimestamp.getValidationProcessTimestamp());
 				}
 			} else if (xmlObject instanceof XmlTimestamp) {

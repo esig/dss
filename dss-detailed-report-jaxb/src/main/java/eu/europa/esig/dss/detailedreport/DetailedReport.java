@@ -452,7 +452,7 @@ public class DetailedReport {
 
 		List<XmlSignature> signatures = getSignatures();
 		for (XmlSignature xmlSignature : signatures) {
-			List<XmlTimestamp> timestamps = xmlSignature.getTimestamp();
+			List<XmlTimestamp> timestamps = xmlSignature.getTimestamps();
 			for (XmlTimestamp xmlTimestamp : timestamps) {
 				if (xmlTimestamp.getId().equals(timestampId)) {
 					return xmlTimestamp;
@@ -707,7 +707,7 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Returns a set of error messages for a signature or token with id
+	 * Returns a list of error messages for a token or token with id
 	 *
 	 * @param tokenId {@link String}
 	 * @return a list of error {@link Message}s
@@ -717,7 +717,7 @@ public class DetailedReport {
     }
 
 	/**
-	 * Returns a set of warning messages for a signature or token with id
+	 * Returns a list of warning messages for a token or token with id
 	 *
 	 * @param tokenId {@link String}
 	 * @return a list of warning {@link Message}s
@@ -727,7 +727,7 @@ public class DetailedReport {
     }
 
 	/**
-	 * Returns a set of info messages for a signature or token with id
+	 * Returns a list of info messages for a token or token with id
 	 *
 	 * @param tokenId {@link String}
 	 * @return a list of info {@link Message}s
@@ -735,5 +735,35 @@ public class DetailedReport {
     public List<Message> getInfos(String tokenId) {
     	return getMessageCollector().getInfos(tokenId);
     }
+
+	/**
+	 * Returns a list of qualification validation errors for a token with the given id
+	 *
+	 * @param tokenId {@link String} id of a token to get qualification errors for
+	 * @return a list of {@link Message}s
+	 */
+	public List<Message> getQualificationErrors(String tokenId) {
+		return getMessageCollector().getQualificationErrors(tokenId);
+	}
+
+	/**
+	 * Returns a list of qualification validation warnings for a token with the given id
+	 *
+	 * @param tokenId {@link String} id of a token to get qualification warnings for
+	 * @return a list of {@link Message}s
+	 */
+	public List<Message> getQualificationWarnings(String tokenId) {
+		return getMessageCollector().getQualificationWarnings(tokenId);
+	}
+
+	/**
+	 * Returns a list of qualification validation infos for a token with the given id
+	 *
+	 * @param tokenId {@link String} id of a token to get qualification infos for
+	 * @return a list of {@link Message}s
+	 */
+	public List<Message> getQualificationInfos(String tokenId) {
+		return getMessageCollector().getQualificationInfos(tokenId);
+	}
 
 }

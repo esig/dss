@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -239,6 +240,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		xmlConstraint.setName(buildConstraintMessage());
 		xmlConstraint.setStatus(status);
 		xmlConstraint.setId(bbbId);
+		xmlConstraint.setBlockType(getBlockType());
 
 		if (XmlStatus.NOT_OK.equals(status)) {
 			xmlConstraint.setError(buildErrorMessage());
@@ -270,6 +272,16 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 */
 	protected XmlMessage buildConstraintMessage() {
 		return buildXmlMessage(getMessageTag());
+	}
+
+	/**
+	 * Returns the validating block type (used for validation result of RAC, RFC, etc.)
+	 *
+	 * @return {@link XmlBlockType}
+	 */
+	protected XmlBlockType getBlockType() {
+		// by default
+		return null;
 	}
 
 	/**

@@ -195,9 +195,13 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			xmlSignature.setSignedBy(getReadableCertificateName(signingCertificate.getId()));
 		}
 
+		// TODO : temporary solution to collect validation and qualification messages in bulk
 		xmlSignature.getErrors().addAll(convert(detailedReport.getErrors(signatureId)));
+		xmlSignature.getErrors().addAll(convert(detailedReport.getQualificationErrors(signatureId)));
 		xmlSignature.getWarnings().addAll(convert(detailedReport.getWarnings(signatureId)));
+		xmlSignature.getWarnings().addAll(convert(detailedReport.getQualificationWarnings(signatureId)));
 		xmlSignature.getInfos().addAll(convert(detailedReport.getInfos(signatureId)));
+		xmlSignature.getInfos().addAll(convert(detailedReport.getQualificationInfos(signatureId)));
 
 		if (container) {
 			xmlSignature.setFilename(signature.getSignatureFilename());
@@ -315,9 +319,13 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 				finalSubIndications.add(subIndication);
 			}
 			
+			// TODO : temporary solution to collect validation and qualification messages in bulk
 			xmlTimestamp.getErrors().addAll(convert(detailedReport.getErrors(timestampWrapper.getId())));
-			xmlTimestamp.getWarnings().addAll(convert(detailedReport.getErrors(timestampWrapper.getId())));
-			xmlTimestamp.getInfos().addAll(convert(detailedReport.getErrors(timestampWrapper.getId())));
+			xmlTimestamp.getErrors().addAll(convert(detailedReport.getQualificationErrors(timestampWrapper.getId())));
+			xmlTimestamp.getWarnings().addAll(convert(detailedReport.getWarnings(timestampWrapper.getId())));
+			xmlTimestamp.getWarnings().addAll(convert(detailedReport.getQualificationWarnings(timestampWrapper.getId())));
+			xmlTimestamp.getInfos().addAll(convert(detailedReport.getInfos(timestampWrapper.getId())));
+			xmlTimestamp.getInfos().addAll(convert(detailedReport.getQualificationInfos(timestampWrapper.getId())));
 		}
 
 		TimestampQualification timestampQualification = detailedReport.getTimestampQualification(timestampWrapper.getId());

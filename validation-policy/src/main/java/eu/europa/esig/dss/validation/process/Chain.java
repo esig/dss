@@ -94,6 +94,7 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 			result.setConclusion(conclusion);
 		}
 
+		collectMessages();
 		addAdditionalInfo();
 
 		return result;
@@ -183,27 +184,65 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	}
 
 	/**
-	 * Collects all messages
+	 * Collects all required messages
 	 */
-	protected void collectErrorsWarnsInfos() {
+	private void collectMessages() {
 		XmlConclusion conclusion = result.getConclusion();
-		conclusion.getErrors().clear(); // avoid duplicates
 		
 		List<XmlConstraint> constraints = result.getConstraint();
-		for (XmlConstraint xmlConstraint : constraints) {
-			XmlMessage error = xmlConstraint.getError();
-			if (error != null) {
-				conclusion.getErrors().add(error);
-			}
-			XmlMessage warning = xmlConstraint.getWarning();
-			if (warning != null) {
-				conclusion.getWarnings().add(warning);
-			}
-			XmlMessage info = xmlConstraint.getInfo();
-			if (info != null) {
-				conclusion.getInfos().add(info);
-			}
+		for (XmlConstraint constraint : constraints) {
+			collectMessages(conclusion, constraint);
 		}
+		collectAdditionalMessages(conclusion);
+	}
+
+	/**
+	 * Collects required messages from {@code xmlConstraint} to the given {@code conclusion}
+	 *
+	 * NOTE: bye default the only one error is already collected in the chain (no more possible),
+	 *       therefore no need to collect it again
+	 *
+	 * @param conclusion {@link XmlConclusion} to fill up
+	 * @param constraint {@link XmlConstraint} to extract messages from
+	 */
+	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+		XmlMessage warning = constraint.getWarning();
+		if (warning != null) {
+			conclusion.getWarnings().add(warning);
+		}
+		XmlMessage info = constraint.getInfo();
+		if (info != null) {
+			conclusion.getInfos().add(info);
+		}
+	}
+
+	/**
+	 * Fills all messages from {@code conclusionToFillFrom} into {@code conclusionToFill}
+	 *
+	 * @param conclusionToFill {@link XmlConclusion} to be filled
+	 * @param conclusionToFillFrom {@link XmlConclusion} to fill from
+	 */
+	protected void collectAllMessages(XmlConclusion conclusionToFill, XmlConclusion conclusionToFillFrom) {
+		List<XmlMessage> errors = conclusionToFillFrom.getErrors();
+		if (errors != null) {
+			conclusionToFill.getErrors().addAll(errors);
+		}
+		List<XmlMessage> warnings = conclusionToFillFrom.getWarnings();
+		if (warnings != null) {
+			conclusionToFill.getWarnings().addAll(warnings);
+		}
+		List<XmlMessage> infos = conclusionToFillFrom.getInfos();
+		if (infos != null) {
+			conclusionToFill.getInfos().addAll(infos);
+		}
+	}
+
+	/**
+	 * The method allows to fill up additional messages into the conclusion
+	 *
+	 * @param conclusion {@link XmlConclusion} to fill up
+	 */
+	protected void collectAdditionalMessages(XmlConclusion conclusion) {
 	}
 
 }

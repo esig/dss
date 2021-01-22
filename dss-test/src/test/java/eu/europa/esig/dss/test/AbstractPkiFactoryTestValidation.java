@@ -1058,7 +1058,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			
 			XmlSignature xmlSignature = detailedReport.getXmlSignatureById(sigId);
 			assertNotNull(xmlSignature);
-			List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> xmlTimestamps = xmlSignature.getTimestamp();
+			List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> xmlTimestamps = xmlSignature.getTimestamps();
 			if (Utils.isCollectionNotEmpty(xmlTimestamps)) {
 				for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : xmlTimestamps) {
 					Indication timestampIndication = detailedReport.getTimestampValidationIndication(xmlTimestamp.getId());

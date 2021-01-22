@@ -183,7 +183,7 @@ public class DSS2049Test extends AbstractTestValidationExecutor {
 		List<XmlConstraint> constraints = validationSignatureQualification.getConstraint();
 		assertConstraintsValid(constraints, assertLOTLValid, assertSigTLValid, assertLOTLValid && assertSigTLValid);
 		
-		List<XmlTimestamp> timestamps = xmlSignature.getTimestamp();
+		List<XmlTimestamp> timestamps = xmlSignature.getTimestamps();
 		assertEquals(1, timestamps.size());
 		XmlTimestamp xmlTimestamp = timestamps.get(0);
 		

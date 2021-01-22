@@ -22,7 +22,6 @@ package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -31,8 +30,6 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
-
-import java.util.List;
 
 /**
  * Checks if the signature's basic validation result is acceptable
@@ -47,9 +44,6 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 
 	/** The validation SubIndication */
 	private SubIndication bbbSubIndication;
-
-	/** The validation errors */
-	private List<XmlMessage> bbbErrors;
 
 	/**
 	 * Default constructor
@@ -72,7 +66,6 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 			XmlConclusion basicSignatureConclusion = basicSignatureValidation.getConclusion();
 			bbbIndication = basicSignatureConclusion.getIndication();
 			bbbSubIndication = basicSignatureConclusion.getSubIndication();
-			bbbErrors = basicSignatureConclusion.getErrors();
 
 			return ValidationProcessUtils.isAllowedBasicSignatureValidation(basicSignatureConclusion);
 		}
@@ -97,11 +90,6 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return bbbSubIndication;
-	}
-
-	@Override
-	protected List<XmlMessage> getPreviousErrors() {
-		return bbbErrors;
 	}
 
 }

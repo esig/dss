@@ -107,7 +107,7 @@ public class SignedDocumentValidatorTest {
 		ResourceBundle bundle = ResourceBundle.getBundle("dss-messages", locale);
 		Set<String> messageValues = getValues(bundle);
 		
-		List<Message> errors = detailedReport.getErrors(detailedReport.getFirstSignatureId());
+		List<Message> errors = detailedReport.getQualificationErrors(detailedReport.getFirstSignatureId());
 		for (Message error : errors) {
 			assertTrue(messageValues.contains(error.getValue()));
 		}

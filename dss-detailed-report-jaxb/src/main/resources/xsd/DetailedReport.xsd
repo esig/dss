@@ -299,6 +299,7 @@
 			<xs:element name="AdditionalInfo" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="optional" /> <!-- In case of constraint with a BBB -->
+		<xs:attribute name="BlockType" type="BlockType" use="optional" /> <!-- Defines type of validating chain result (e.g. RAC, RFC, etc.) -->
 	</xs:complexType>
 
 	<xs:complexType name="Conclusion">
@@ -318,6 +319,17 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+
+	<xs:simpleType name="BlockType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SIG_BBB" />
+			<xs:enumeration value="REV_BBB" />
+			<xs:enumeration value="RAC" />
+			<xs:enumeration value="RFC" />
+			<xs:enumeration value="SUB_XCV" />
+			<xs:enumeration value="REV_CC" />
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:simpleType name="Status" final="restriction">
 		<xs:restriction base="xs:string">

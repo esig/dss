@@ -172,10 +172,5 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	protected ChainItem<XmlCC> publicKeySizeAcceptable() {
 		return new PublicKeySizeAcceptableCheck(i18nProvider, encryptionAlgorithm, keyLengthUsedToSignThisToken, result, position, constraintWrapper);
 	}
-	
-	@Override
-	protected void addAdditionalInfo() {
-		collectErrorsWarnsInfos();
-	}
 
 }

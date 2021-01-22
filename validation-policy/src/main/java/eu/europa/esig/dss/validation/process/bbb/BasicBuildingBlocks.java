@@ -23,11 +23,9 @@ package eu.europa.esig.dss.validation.process.bbb;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
@@ -179,26 +177,13 @@ public class BasicBuildingBlocks {
 		XmlConclusion finalConclusion = result.getConclusion();
 
 		XmlConclusion currentConclusion = constraintsAndConclusion.getConclusion();
-		List<XmlConstraint> constraints = constraintsAndConclusion.getConstraint();
-
 		if (!Indication.PASSED.equals(currentConclusion.getIndication())) {
 			finalConclusion.setIndication(currentConclusion.getIndication());
 			finalConclusion.setSubIndication(currentConclusion.getSubIndication());
 			finalConclusion.getErrors().addAll(currentConclusion.getErrors());
 		}
-
-		if (Utils.isCollectionNotEmpty(constraints)) {
-			for (XmlConstraint constraint : constraints) {
-				XmlMessage info = constraint.getInfo();
-				if (info != null) {
-					finalConclusion.getInfos().add(info);
-				}
-				XmlMessage warning = constraint.getWarning();
-				if (warning != null) {
-					finalConclusion.getWarnings().add(warning);
-				}
-			}
-		}
+		finalConclusion.getWarnings().addAll(currentConclusion.getWarnings());
+		finalConclusion.getInfos().addAll(currentConclusion.getInfos());
 	}
 
 	private XmlFC executeFormatChecking() {
