@@ -29,10 +29,15 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
@@ -42,8 +47,14 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
+import org.jose4j.json.JsonUtil;
+import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -51,9 +62,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation {
 
+	private static final DSSDocument signedDocument = new FileDocument("src/test/resources/validation/jades-with-sigAndRefsTst-with-dot.json");
+
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/jades-with-sigAndRefsTst-with-dot.json");
+		return signedDocument;
 	}
 	
 	@Override
@@ -130,10 +143,9 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		
 		FoundCertificatesProxy foundCertificates = signature.foundCertificates();
 		assertEquals(2, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-		assertEquals(3, foundCertificates
-				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
-		assertEquals(1, foundCertificates
-				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+		assertEquals(3, foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+		assertEquals(1, foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size() +
+				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
 		
 		FoundRevocationsProxy foundRevocations = signature.foundRevocations();
 		assertEquals(0, foundRevocations.getRelatedRevocationData().size());
@@ -163,15 +175,18 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 				assertEquals(1, timestampWrapper.getTimestampedTimestamps().size());
 				assertEquals(2, timestampWrapper.getTimestampedOrphanRevocations().size());
 				if (!firstSigAndRfsTstFound) {
-					assertEquals(4, timestampWrapper.getTimestampedCertificates().size());
+					assertEquals(4, timestampWrapper.getTimestampedCertificates().size() +
+							timestampWrapper.getTimestampedOrphanCertificates().size());
 					firstSigAndRfsTstFound = true;
 				} else {
-					assertEquals(5, timestampWrapper.getTimestampedCertificates().size());
+					assertEquals(5, timestampWrapper.getTimestampedCertificates().size() +
+							timestampWrapper.getTimestampedOrphanCertificates().size());
 					secondSigAndRfsTstFound = true;
 				}
 				
 			} else if (TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP.equals(timestampWrapper.getType())) {
-				assertEquals(4, timestampWrapper.getTimestampedCertificates().size());
+				assertEquals(4, timestampWrapper.getTimestampedCertificates().size() +
+						timestampWrapper.getTimestampedOrphanCertificates().size());
 				assertEquals(2, timestampWrapper.getTimestampedOrphanRevocations().size());
 				rfsTstFound = true;
 			}
@@ -185,6 +200,129 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
+	}
+
+	@Test
+	public void validateStructure() throws Exception {
+
+		assertTrue(DSSJsonUtils.isJsonDocument(signedDocument));
+
+		Map<String, Object> rootStructure = JsonUtil.parseJson(new String(DSSUtils.toByteArray(signedDocument)));
+
+		String firstEntryName = rootStructure.keySet().iterator().next();
+		assertEquals(JWSConstants.PAYLOAD, firstEntryName);
+
+		String payload = (String) rootStructure.get(firstEntryName);
+		assertNotNull(payload);
+		assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(payload)));
+
+		String header = (String) rootStructure.get(JWSConstants.PROTECTED);
+		assertNotNull(header);
+		assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(header)));
+
+		String signatureValue = (String) rootStructure.get(JWSConstants.SIGNATURE);
+		assertNotNull(signatureValue);
+		assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(signatureValue)));
+
+		Map<String, Object> unprotected = (Map<String, Object>) rootStructure.get(JWSConstants.HEADER);
+		assertTrue(Utils.isMapNotEmpty(unprotected));
+
+		List<Object> unsignedProperties = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+
+		int sigRTstCounter = 0;
+		int rfsTstCounter = 0;
+
+		Object sigTstObject = null;
+		Object xRefsObject = null;
+		Object rRefsObject = null;
+		Object axRefsObject = null;
+
+		for (Object property : unsignedProperties) {
+			Map<?, ?> map = DSSJsonUtils.parseEtsiUComponent(property);
+			Map<?, ?> sigTst = (Map<?, ?>) map.get(JAdESHeaderParameterNames.SIG_TST);
+			if (sigTst != null) {
+				sigTstObject = property;
+			}
+			List<?> xRefs = (List<?>) map.get(JAdESHeaderParameterNames.X_REFS);
+			if (xRefs != null) {
+				xRefsObject = property;
+			}
+			Map<?, ?> rRefs = (Map<?, ?>) map.get(JAdESHeaderParameterNames.R_REFS);
+			if (rRefs != null) {
+				rRefsObject = property;
+			}
+			List<?> axRefs = (List<?>) map.get(JAdESHeaderParameterNames.AX_REFS);
+			if (axRefs != null) {
+				axRefsObject = property;
+			}
+			Map<?, ?> sigRTst = (Map<?, ?>) map.get(JAdESHeaderParameterNames.SIG_R_TST);
+			if (sigRTst != null) {
+				++sigRTstCounter;
+				DSSDocument timestamp = getTimestamp(sigRTst);
+
+				StringBuilder messageImprintBuilder = new StringBuilder();
+				messageImprintBuilder.append(signatureValue);
+				messageImprintBuilder.append(".");
+				messageImprintBuilder.append(getObjectsConcatenation(sigTstObject, xRefsObject, rRefsObject, axRefsObject));
+				String messageImprint = messageImprintBuilder.toString();
+
+				validateTimestamp(timestamp, new InMemoryDocument(messageImprint.getBytes()));
+			}
+			Map<?, ?> rfsTst = (Map<?, ?>) map.get(JAdESHeaderParameterNames.RFS_TST);
+			if (rfsTst != null) {
+				++rfsTstCounter;
+				DSSDocument timestamp = getTimestamp(rfsTst);
+
+				StringBuilder messageImprintBuilder = new StringBuilder();
+				messageImprintBuilder.append(getObjectsConcatenation(xRefsObject, rRefsObject, axRefsObject));
+				String messageImprint = messageImprintBuilder.toString();
+
+				validateTimestamp(timestamp, new InMemoryDocument(messageImprint.getBytes()));
+			}
+		}
+
+		assertEquals(2, sigRTstCounter);
+		assertEquals(1, rfsTstCounter);
+
+	}
+
+	private DSSDocument getTimestamp(Map<?, ?> etsiUPropertyValue) {
+		List<?> tstTokens = (List<?>) etsiUPropertyValue.get(JAdESHeaderParameterNames.TST_TOKENS);
+		assertEquals(1, tstTokens.size());
+
+		Map<?, ?> tstToken = (Map<?, ?>) tstTokens.get(0);
+		String tstValue = (String) tstToken.get(JAdESHeaderParameterNames.VAL);
+		assertNotNull(tstValue);
+		assertTrue(Utils.isBase64Encoded(tstValue));
+
+		return new InMemoryDocument(Utils.fromBase64(tstValue));
+	}
+
+	private String getObjectsConcatenation(Object... properties) {
+		StringBuilder stringBuilder = new StringBuilder();
+		for (Object property : properties) {
+			if (property != null) {
+				stringBuilder.append((String) property);
+			}
+		}
+		return stringBuilder.toString();
+	}
+
+	private void validateTimestamp(DSSDocument timestamp, DSSDocument messageImprint) {
+		SignedDocumentValidator tstValidator = DetachedTimestampValidator.fromDocument(timestamp);
+		tstValidator.setCertificateVerifier(getOfflineCertificateVerifier());
+		tstValidator.setDetachedContents(Arrays.asList(messageImprint));
+
+		Reports reports = tstValidator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertEquals(0, diagnosticData.getSignatures().size());
+		assertEquals(1, diagnosticData.getTimestampList().size());
+
+		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
+		assertTrue(timestampWrapper.isMessageImprintDataFound());
+		assertTrue(timestampWrapper.isMessageImprintDataIntact());
+		assertTrue(timestampWrapper.isSignatureIntact());
+		assertTrue(timestampWrapper.isSignatureValid());
 	}
 
 }

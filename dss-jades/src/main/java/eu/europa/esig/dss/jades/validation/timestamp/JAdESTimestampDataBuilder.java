@@ -207,7 +207,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			return new InMemoryDocument(messageImprint);
 			
 		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message imprint");
+			throw new DSSException("An error occurred during building of a message-imprint!");
 		}
 		
 	}
@@ -273,7 +273,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			return new InMemoryDocument(messageImprint);
 			
 		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message imprint");
+			throw new DSSException("An error occurred during building of a message-imprint!");
 		}
 		
 	}
@@ -401,7 +401,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			
 			
 		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message imprint");
+			throw new DSSException("An error occurred during building of a message-imprint!");
 		}
 	}
 
