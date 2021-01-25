@@ -401,12 +401,7 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Timestamp Validation Data
 	 */
-	public static final String TST_VD = "tstVd";
-
-	/**
-	 * Shows if TST Validation Data covers a JWS Payload or not
-	 */
-	public static final String ON_JWSP = "onJWSP";
+	public static final String TST_VD = "tstVD";
 
 	/**
 	 * Archive TimeStamp
