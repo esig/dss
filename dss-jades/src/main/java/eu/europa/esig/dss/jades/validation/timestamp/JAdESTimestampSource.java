@@ -368,6 +368,15 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		}
 		return Collections.emptyList();
 	}
+
+	/**
+	 * Returns the message-imprint data for a SignatureTimestamp (BASE64URL(JWS Signature Value))
+	 *
+	 * @return byte array representing a message-imprint
+	 */
+	public byte[] getSignatureTimestampData() {
+		return getTimestampDataBuilder().getSignatureTimestampData();
+	}
 	
 	/**
 	 * Returns concatenated data for an ArchiveTimestamp

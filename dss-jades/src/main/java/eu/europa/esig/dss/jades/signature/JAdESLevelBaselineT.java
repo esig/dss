@@ -111,7 +111,9 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 
 			JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
-			byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, jadesSignature.getSignatureValue());
+
+			byte[] messageImprint = jadesSignature.getTimestampSource().getSignatureTimestampData();
+			byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, messageImprint);
 			TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
 			
 			JsonObject tstContainer = DSSJsonUtils.getTstContainer(Collections.singletonList(timeStampResponse), null);
