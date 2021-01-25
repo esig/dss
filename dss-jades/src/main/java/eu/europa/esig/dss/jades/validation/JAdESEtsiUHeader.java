@@ -104,20 +104,44 @@ public class JAdESEtsiUHeader implements SignatureProperties<EtsiUComponent> {
 	}
 
 	/**
-	 * Removes the last 'etsiU' item with the given {@code headerName}
-	 * 
+	 * Removes the 'etsiU' components with the given {@code headerName}
+	 *
 	 * @param jws        {@link JWS} to modify
 	 * @param headerName of the 'etsiU' entry to remove
 	 */
-	public void removeLastComponent(final JWS jws, String headerName) {
+	public void removeComponent(JWS jws, String headerName) {
 		List<Object> etsiU = getEtsiUToEdit(jws);
-		ListIterator<Object> iterator = etsiU.listIterator(etsiU.size());
-		while (iterator.hasPrevious()) {
-			Object object = iterator.previous();
-			Map<String, Object> etsiUComponent = DSSJsonUtils.parseEtsiUComponent(object);
-			if (etsiUComponent != null && etsiUComponent.containsKey(headerName)) {
-				iterator.remove();
+		if (Utils.isCollectionNotEmpty(etsiU)) {
+			ListIterator<Object> iterator = getBackwardIterator(etsiU);
+			while (iterator.hasPrevious()) {
+				removeLastIfMatches(iterator, headerName);
 			}
+		}
+	}
+
+	/**
+	 * Removes the last 'etsiU' item if the name matches to the given {@code headerName}
+	 *
+	 * @param jws        {@link JWS} to modify
+	 * @param headerName of the 'etsiU' entry to remove
+	 */
+	public void removeLastComponent(JWS jws, String headerName) {
+		List<Object> etsiU = getEtsiUToEdit(jws);
+		if (Utils.isCollectionNotEmpty(etsiU)) {
+			ListIterator<Object> iterator = getBackwardIterator(etsiU);
+			removeLastIfMatches(iterator, headerName);
+		}
+	}
+
+	private ListIterator<Object> getBackwardIterator(List<Object> etsiU) {
+		return etsiU.listIterator(etsiU.size());
+	}
+
+	private void removeLastIfMatches(ListIterator<?> iterator, String headerName) {
+		Object object = iterator.previous();
+		Map<String, Object> etsiUComponent = DSSJsonUtils.parseEtsiUComponent(object);
+		if (etsiUComponent != null && etsiUComponent.containsKey(headerName)) {
+			iterator.remove();
 		}
 	}
 

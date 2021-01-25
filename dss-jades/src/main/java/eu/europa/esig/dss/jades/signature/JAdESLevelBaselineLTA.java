@@ -71,7 +71,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		if (jadesSignature.hasLTAProfile()) {
 			// must be executed before data removing
 			final ValidationContext validationContext = jadesSignature.getSignatureValidationContext(certificateVerifier);
-			etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.TST_VD);
+			removeLastTimestampValidationData(jadesSignature, etsiUHeader);
 			
 			final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature, validationContext);
 			if (!validationDataForInclusion.isEmpty()) {
@@ -87,6 +87,12 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.ARC_TST, arcTst,
 				params.isBase64UrlEncodedEtsiUComponents());
 		
+	}
+
+	private void removeLastTimestampValidationData(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
+		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.TST_VD);
+		jadesSignature.resetCertificateSource();
+		jadesSignature.resetRevocationSources();
 	}
 
 	private JsonObject getTstVd(final ValidationDataForInclusion validationDataForInclusion) {

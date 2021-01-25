@@ -103,12 +103,12 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	private void removeOldCertificateValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
-		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS);
+		etsiUHeader.removeComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS);
 		jadesSignature.resetCertificateSource();
 	}
 
 	private void removeOldRevocationValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
-		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS);
+		etsiUHeader.removeComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS);
 		jadesSignature.resetRevocationSources();
 	}
 
