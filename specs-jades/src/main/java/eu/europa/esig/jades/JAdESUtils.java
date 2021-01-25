@@ -48,7 +48,7 @@ public final class JAdESUtils extends AbstractJWSUtils {
 	private static final String RFC_SUBDIRECTORY = "rfcs/";
 
 	/** The RFC 7797 schema of definitions */
-	private static final String RFC7797_SCHEMA_LOCATION = "/schema/rfc7797.json";
+	private static final String RFC7797_SCHEMA_LOCATION = "/schema/rfcs/rfc7797.json";
 
 	/** The RFC 7797 schema name URI */
 	private static final String RFC7797_SCHEMA_URI = "rfc7797.json";
