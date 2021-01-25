@@ -30,6 +30,9 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -83,6 +86,11 @@ public class JAdESWithValidationDataTstsInvalidTest extends AbstractJAdESTestVal
         FoundRevocationsProxy foundRevocations = signature.foundRevocations();
         assertEquals(0, foundRevocations.getRelatedRevocationData().size());
         assertEquals(2, foundRevocations.getOrphanRevocationRefs().size());
+    }
+
+    @Override
+    protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+        // skip
     }
 
 }
