@@ -360,9 +360,14 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * 5) The value of the JAdES Signature Value, base64url encoded.
 			 */
 			baos.write(getBase64UrlEncodedSignatureValue());
+
+			/*
+			 * 6) The character '.'.
+			 */
+			baos.write('.');
 			
 			/*
-			 * 6) If the elements of the etsiU array appear as the base64url encodings of
+			 * 7) If the elements of the etsiU array appear as the base64url encodings of
 			 * the unsigned components, then proceed as specified in clause 5.3.6.3.1.1 of
 			 * the present document. If the elements of the etsiU array appear as clear
 			 * instances of unsigned components, then proceed as specified in clause
