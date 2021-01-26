@@ -83,7 +83,7 @@
 			    "jwk": {
 			    	"$ref": "rfc7517.json#/definitions/jwk"
 			    },
-			    
+			    			 
 			    "kid": {
 			    	"type": "string"
 			    },
