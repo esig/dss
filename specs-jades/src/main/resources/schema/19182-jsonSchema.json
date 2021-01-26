@@ -448,7 +448,7 @@
 				"arRefs": {"$ref": "#/definitions/arRefs"},
 				"sigRTst": {"$ref": "#/definitions/sigRTst"},
 				"rfsTst": {"$ref": "#/definitions/rfsTst"},
-				"cSig": {"$ref": "rfc7515.json#/definitions/jws"}
+				"cSig": {"$ref": "rfcs/rfc7515.json#/definitions/jws"}
 			},
 			"minProperties": 1,
 			"maxProperties": 1

@@ -25,6 +25,7 @@ import eu.europa.esig.jws.JWSUtils;
 import org.json.JSONObject;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,22 +34,24 @@ import java.util.Map;
 public final class JAdESUtils extends AbstractJWSUtils {
 
 	/** The JAdES schema of definitions */
-	private static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/esi001982-draft07_v006.json";
+	private static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/19182-jsonSchema.json";
 
 	/** The JAdES schema name URI */
-	private static final String JAdES_SCHEMA_DEFINITIONS_URI = "esi001982-draft07_v006.json";
+	private static final String JAdES_SCHEMA_DEFINITIONS_URI = "19182-jsonSchema.json";
+
+	/** The protected header schema for a JAdES signature */
+	private static final String JAdES_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/19182-protected-jsonSchema.json";
+
+	/** The unprotected header schema for a JAdES signature */
+	private static final String JAdES_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/19182-unprotected-jsonSchema.json";
+
+	private static final String RFC_SUBDIRECTORY = "rfcs/";
 
 	/** The RFC 7797 schema of definitions */
-	private static final String RFC7797_SCHEMA_LOCATION = "/schema/rfc7797.json";
+	private static final String RFC7797_SCHEMA_LOCATION = "/schema/rfcs/rfc7797.json";
 
 	/** The RFC 7797 schema name URI */
 	private static final String RFC7797_SCHEMA_URI = "rfc7797.json";
-
-	/** The protected header schema for a JAdES signature */
-	private static final String JAdES_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-protected-draft07_v005.json";
-
-	/** The unprotected header schema for a JAdES signature */
-	private static final String JAdES_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/esi001982-unprotected-draft07_v006.json";
 
 	/** Map of used definition schemas */
 	private Map<URI, JSONObject> definitions;
@@ -107,11 +110,17 @@ public final class JAdESUtils extends AbstractJWSUtils {
 	 */
 	public Map<URI, JSONObject> getJAdESDefinitions() {
 		if (definitions == null) {
-			definitions = JWSUtils.getInstance().getRFCDefinitions();
+			definitions = new HashMap<>();
 			definitions.put(URI.create(JAdES_SCHEMA_DEFINITIONS_URI),
 					parseJson(JAdESUtils.class.getResourceAsStream(JAdES_SCHEMA_DEFINITIONS_LOCATION)));
-			definitions.put(URI.create(RFC7797_SCHEMA_URI),
+
+			Map<URI, JSONObject> rfcDefinitions = JWSUtils.getInstance().getRFCDefinitions();
+			for (URI uri : rfcDefinitions.keySet()) {
+				definitions.put(URI.create(RFC_SUBDIRECTORY + uri.toString()), rfcDefinitions.get(uri));
+			}
+			definitions.put(URI.create(RFC_SUBDIRECTORY + RFC7797_SCHEMA_URI),
 					parseJson(JAdESUtils.class.getResourceAsStream(RFC7797_SCHEMA_LOCATION)));
+
 		}
 		return definitions;
 	}
