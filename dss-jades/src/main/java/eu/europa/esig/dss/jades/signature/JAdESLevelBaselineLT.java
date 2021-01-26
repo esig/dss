@@ -90,25 +90,23 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
 		if (Utils.isCollectionNotEmpty(certificateValuesToAdd)) {
 			JSONArray xVals = getXVals(certificateValuesToAdd);
-			etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS, xVals,
-					params.isBase64UrlEncodedEtsiUComponents());
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.X_VALS, xVals, params.isBase64UrlEncodedEtsiUComponents());
 		}
 		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
 		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 		if (Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
 			JsonObject rVals = getRVals(crlsToAdd, ocspsToAdd);
-			etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS, rVals,
-					params.isBase64UrlEncodedEtsiUComponents());
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.R_VALS, rVals, params.isBase64UrlEncodedEtsiUComponents());
 		}
 	}
 
 	private void removeOldCertificateValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
-		etsiUHeader.removeComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS);
+		etsiUHeader.removeComponent(JAdESHeaderParameterNames.X_VALS);
 		jadesSignature.resetCertificateSource();
 	}
 
 	private void removeOldRevocationValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
-		etsiUHeader.removeComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS);
+		etsiUHeader.removeComponent(JAdESHeaderParameterNames.R_VALS);
 		jadesSignature.resetRevocationSources();
 	}
 

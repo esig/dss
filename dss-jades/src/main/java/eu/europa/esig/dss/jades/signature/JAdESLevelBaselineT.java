@@ -119,7 +119,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 			JsonObject tstContainer = DSSJsonUtils.getTstContainer(Collections.singletonList(timeStampResponse), null);
 
 			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-			etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.SIG_TST, tstContainer,
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.SIG_TST, tstContainer,
 					params.isBase64UrlEncodedEtsiUComponents());
 		}
 	}
