@@ -280,7 +280,8 @@ public class CMSSignedDataBuilder {
 			cmsSignedDataGenerator.addCRLs(crlsStore);
 			cmsSignedDataGenerator.addOtherRevocationInfo(id_pkix_ocsp_basic, otherRevocationInfoFormatStoreBasic);
 			cmsSignedDataGenerator.addOtherRevocationInfo(id_ri_ocsp_response, otherRevocationInfoFormatStoreOcsp);
-			final boolean encapsulate = cmsSignedData.getSignedContent() != null;
+
+			final boolean encapsulate = !CMSUtils.isDetachedSignature(cmsSignedData);
 			if (!encapsulate) {
 				// CAdES can only sign one document
 				final DSSDocument doc = detachedContents.get(0);
