@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.UUID;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
@@ -40,12 +31,24 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.bouncycastle.cms.CMSSignedData;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<CAdESSignatureParameters, CAdESTimestampParameters> {
 
@@ -70,6 +73,26 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 		return new FileDocument(originalDoc);
 	}
 	
+	@Override
+	protected void onDocumentSigned(DSSDocument signedDocument) {
+		super.onDocumentSigned(signedDocument);
+		checkSignaturePackaging(signedDocument);
+	}
+
+	@Override
+	protected void onDocumentExtended(DSSDocument extendedDocument) {
+		super.onDocumentExtended(extendedDocument);
+		checkSignaturePackaging(extendedDocument);
+	}
+
+	protected void checkSignaturePackaging(DSSDocument document) {
+		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(document);
+		assertEquals(SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging()),
+				cmsSignedData.isDetachedSignature());
+		assertEquals(SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging()),
+				cmsSignedData.getSignedContent() == null);
+	}
+
 	@Override
 	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
