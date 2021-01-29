@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.Message;
+import eu.europa.esig.dss.jaxb.common.Message;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;

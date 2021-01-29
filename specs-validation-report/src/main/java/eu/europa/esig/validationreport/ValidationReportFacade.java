@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.validationreport;
 
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import org.xml.sax.SAXException;
 

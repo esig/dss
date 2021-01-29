@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.policy;
 
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
 import eu.europa.esig.dss.policy.jaxb.ObjectFactory;
 import org.xml.sax.SAXException;
 

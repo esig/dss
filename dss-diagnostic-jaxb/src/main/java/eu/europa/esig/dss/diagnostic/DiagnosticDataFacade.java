@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.diagnostic;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;

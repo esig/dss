@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.simplecertificatereport;
 
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import org.xml.sax.SAXException;
 

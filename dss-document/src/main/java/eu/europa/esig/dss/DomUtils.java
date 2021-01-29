@@ -23,7 +23,7 @@ package eu.europa.esig.dss;
 import eu.europa.esig.dss.definition.DSSAttribute;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;

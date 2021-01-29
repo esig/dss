@@ -18,36 +18,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.jaxb.exception;
+package eu.europa.esig.dss.jaxb.common;
 
-import java.util.Collections;
-import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
-public class XSDValidationException extends RuntimeException {
+import javax.xml.transform.TransformerConfigurationException;
 
-	private static final long serialVersionUID = 4928003472348809475L;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-	private final List<String> exceptionMessages;
+public class XmlDefinerUtilsTest {
 
-	public XSDValidationException(List<String> exceptionMessages) {
-		super();
-		this.exceptionMessages = exceptionMessages;
+	@Test
+	public void getSecureSchemaFactory() throws SAXException {
+		assertNotNull(XmlDefinerUtils.getInstance().getSecureSchemaFactory());
 	}
 
-	public List<String> getAllMessages() {
-		if (exceptionMessages == null) {
-			return Collections.emptyList();
-		}
-		return exceptionMessages;
-	}
-
-	@Override
-	public String getMessage() {
-		List<String> allMessages = getAllMessages();
-		if (allMessages != null && allMessages.size() > 0) {
-			return allMessages.toString();
-		}
-		return null;
+	@Test
+	public void getSecureTransformerFactory() throws TransformerConfigurationException {
+		assertNotNull(XmlDefinerUtils.getInstance().getSecureTransformerFactory());
 	}
 
 }

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb;
+package eu.europa.esig.dss.jaxb.common;
 
 import java.util.Objects;
 

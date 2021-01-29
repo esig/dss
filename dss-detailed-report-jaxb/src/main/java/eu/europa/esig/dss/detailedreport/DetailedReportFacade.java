@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.detailedreport;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
