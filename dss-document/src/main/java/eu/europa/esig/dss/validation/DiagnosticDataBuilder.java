@@ -1046,7 +1046,7 @@ public abstract class DiagnosticDataBuilder {
 			xmlBasicSignatureType
 					.setMaskGenerationFunctionUsedToSignThisToken(signatureAlgorithm.getMaskGenerationFunction());
 		}
-		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(DSSPKUtils.getPublicKeySize(token));
+		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(DSSPKUtils.getStringPublicKeySize(token));
 
 		SignatureValidity signatureValidity = token.getSignatureValidity();
 		if (SignatureValidity.NOT_EVALUATED != signatureValidity) {

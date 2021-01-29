@@ -2391,7 +2391,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		ValidationPolicy defaultPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
-		List<Algo> algos = defaultPolicy.getCryptographic().getAlgoExpirationDate().getAlgo();
+		List<Algo> algos = defaultPolicy.getCryptographic().getAlgoExpirationDate().getAlgos();
 		for (Algo algo : algos) {
 			if ("SHA1".equals(algo.getValue())) {
 				algo.setDate("2014");

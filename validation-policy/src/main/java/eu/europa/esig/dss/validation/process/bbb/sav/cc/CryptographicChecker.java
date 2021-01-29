@@ -52,14 +52,11 @@ public class CryptographicChecker extends AbstractCryptographicChecker {
 	@Override
 	protected void initChain() {
 		
-		// Check if there are any expiration dates
-		boolean expirationCheckRequired = isExpirationDateAvailable();
-		
 		ChainItem<XmlCC> item = firstItem = encryptionAlgorithmReliable();
 		
 		item = item.setNextItem(digestAlgorithmReliable());
 		
-		if (expirationCheckRequired) {
+		if (isExpirationDateAvailable(digestAlgorithm)) {
 			item = item.setNextItem(digestAlgorithmOnValidationTime());
 		}
 		
@@ -67,7 +64,7 @@ public class CryptographicChecker extends AbstractCryptographicChecker {
 		
 		item = item.setNextItem(publicKeySizeAcceptable());
 		
-		if (expirationCheckRequired) {
+		if (isExpirationDateAvailable(encryptionAlgorithm, keyLengthUsedToSignThisToken)) {
 			item = item.setNextItem(encryptionAlgorithmOnValidationTime());
 		}
 		

@@ -519,10 +519,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private XmlBasicSignature getXmlBasicSignature(AdvancedSignature signature, PublicKey signingCertificatePublicKey) {
 		XmlBasicSignature xmlBasicSignature = new XmlBasicSignature();
 		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(signature.getEncryptionAlgorithm());
-
-		final int keyLength = signingCertificatePublicKey == null ? 0
-				: DSSPKUtils.getPublicKeySize(signingCertificatePublicKey);
-		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
+		xmlBasicSignature.setKeyLengthUsedToSignThisToken(DSSPKUtils.getStringPublicKeySize(signingCertificatePublicKey));
 		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(signature.getDigestAlgorithm());
 		xmlBasicSignature.setMaskGenerationFunctionUsedToSignThisToken(signature.getMaskGenerationFunction());
 

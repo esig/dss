@@ -48,7 +48,7 @@
 			</xsd:element>
 			<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Global constraints about cryptograhic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
+					<xsd:documentation>Global constraints about cryptographic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Model" type="ModelConstraint" minOccurs="0">

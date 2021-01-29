@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.Algo;
@@ -36,6 +29,12 @@ import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 	
@@ -45,16 +44,14 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		SimpleReport simpleReport = null;
-		
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		setValidationPolicy(constraintsParameters);
-		simpleReport = createSimpleReport();
+		SimpleReport simpleReport = createSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		
 		CertificateConstraints signingCertificateConstraints = getSigningCertificateConstraints(constraintsParameters);
 		CryptographicConstraint signingCertCryptographicConstraint = signingCertificateConstraints.getCryptographic();
-		List<Algo> listEncryptionAlgo = signingCertCryptographicConstraint.getAcceptableDigestAlgo().getAlgo();
+		List<Algo> listEncryptionAlgo = signingCertCryptographicConstraint.getAcceptableDigestAlgo().getAlgos();
 		removeAlgo(listEncryptionAlgo, ALGORITHM_SHA256, 0);
 		
 		signingCertificateConstraints.setCryptographic(signingCertCryptographicConstraint);
@@ -72,11 +69,9 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		SimpleReport simpleReport = null;
-		
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		setValidationPolicy(constraintsParameters);
-		simpleReport = createSimpleReport();
+		SimpleReport simpleReport = createSimpleReport();
 		// good case
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		
@@ -95,11 +90,9 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 		initializeExecutor("src/test/resources/passed_out_of_bounds_with_timestamps.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		SimpleReport simpleReport = null;
-		
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		setValidationPolicy(constraintsParameters);
-		simpleReport = createSimpleReport();
+		SimpleReport simpleReport = createSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		
 		TimestampConstraints timestampConstraints = constraintsParameters.getTimestamp();
@@ -107,9 +100,9 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 		CertificateConstraints signCertConstraints = basicSignatureConstraints.getSigningCertificate();
 		CryptographicConstraint cryptographicConstraint = signCertConstraints.getCryptographic();
 		
-		List<Algo> listEncryptionAlgo = cryptographicConstraint.getAcceptableEncryptionAlgo().getAlgo();
+		List<Algo> listEncryptionAlgo = cryptographicConstraint.getAcceptableEncryptionAlgo().getAlgos();
 		removeAlgo(listEncryptionAlgo, ALGORITHM_RSA, 0);
-		List<Algo> listHashAlgo = cryptographicConstraint.getAcceptableDigestAlgo().getAlgo();
+		List<Algo> listHashAlgo = cryptographicConstraint.getAcceptableDigestAlgo().getAlgos();
 		removeAlgo(listHashAlgo, ALGORITHM_SHA256, 0);
 		
 		signCertConstraints.setCryptographic(cryptographicConstraint);

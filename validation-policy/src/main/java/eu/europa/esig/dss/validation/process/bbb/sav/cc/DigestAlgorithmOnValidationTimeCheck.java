@@ -25,7 +25,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
 import java.util.Date;
@@ -40,9 +39,6 @@ public class DigestAlgorithmOnValidationTimeCheck extends AbstractCryptographicC
 
 	/** The validation date */
 	private final Date validationDate;
-
-	/** The error message if occurred */
-	private MessageTag errorMessage;
 
 	/**
 	 * Default constructor
@@ -64,16 +60,8 @@ public class DigestAlgorithmOnValidationTimeCheck extends AbstractCryptographicC
 
 	@Override
 	protected boolean process() {
-		String algoToFind = digestAlgo == null ? Utils.EMPTY_STRING : digestAlgo.getName();		
-		Date expirationDate = constraintWrapper.getDigestAlgorithmExpirationDate(algoToFind);
-		if (expirationDate == null) {
-			errorMessage = MessageTag.ASCCM_AR_ANS_AEDND;
-			return false;
-		} else if (expirationDate.before(validationDate)) {
-			errorMessage = MessageTag.ASCCM_AR_ANS_ANR;
-			return false;
-		}
-		return true;
+		Date expirationDate = constraintWrapper.getExpirationDate(digestAlgo);
+		return expirationDate == null || !expirationDate.before(validationDate);
 	}
 	
 	@Override
@@ -83,7 +71,7 @@ public class DigestAlgorithmOnValidationTimeCheck extends AbstractCryptographicC
 	
 	@Override
 	protected XmlMessage buildErrorMessage() {
-		return buildXmlMessage(errorMessage, digestAlgo, position);
+		return buildXmlMessage(MessageTag.ASCCM_AR_ANS_ANR, digestAlgo, position);
 	}
 
 }

@@ -42,7 +42,7 @@ import java.util.TimeZone;
  */
 public class ValidationProcessUtils {
 
-	/** The Validaiton policy date format */
+	/** The Validation policy date format */
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	
 	/**
@@ -173,7 +173,7 @@ public class ValidationProcessUtils {
 	}
 	
 	/**
-	 * Returns crypto possition MessageTag for the given XmlDigestMatcher
+	 * Returns crypto position MessageTag for the given XmlDigestMatcher
 	 * 
 	 * @param digestMatcher {@link XmlDigestMatcher} to get crypto position for
 	 * @return {@link MessageTag} position
