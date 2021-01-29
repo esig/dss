@@ -29,7 +29,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.enumerations.Indication;
-import eu.europa.esig.dss.jaxb.common.Message;
+import eu.europa.esig.dss.jaxb.object.Message;
 
 import java.util.ArrayList;
 import java.util.Collection;

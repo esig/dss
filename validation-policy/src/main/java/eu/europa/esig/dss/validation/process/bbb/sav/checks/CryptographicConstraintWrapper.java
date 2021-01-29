@@ -63,6 +63,7 @@ public class CryptographicConstraintWrapper {
 	/**
 	 * Checks if the given {@link EncryptionAlgorithm} is reliable (acceptable)
 	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm} to check
 	 * @return TRUE if the algorithm is reliable, FALSE otherwise
 	 */
 	public boolean isEncryptionAlgorithmReliable(EncryptionAlgorithm encryptionAlgorithm) {
@@ -82,6 +83,7 @@ public class CryptographicConstraintWrapper {
 	/**
 	 * Checks if the given {@link DigestAlgorithm} is reliable (acceptable)
 	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to check
 	 * @return TRUE if the algorithm is reliable, FALSE otherwise
 	 */
 	public boolean isDigestAlgorithmReliable(DigestAlgorithm digestAlgorithm) {

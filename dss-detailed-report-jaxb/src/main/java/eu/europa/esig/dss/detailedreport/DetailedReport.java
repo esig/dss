@@ -42,7 +42,7 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
-import eu.europa.esig.dss.jaxb.common.Message;
+import eu.europa.esig.dss.jaxb.object.Message;
 
 import java.io.Serializable;
 import java.util.ArrayList;
