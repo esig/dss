@@ -329,7 +329,7 @@ public final class DSSXMLUtils {
 				Element sigChild = (Element) childNode;
 				String idAttribute = getIDIdentifier(sigChild);
 				if (noIndentObjectIds.contains(idAttribute)) {
-					Node nodeToReplace = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+					Node nodeToReplace = DomUtils.getElementById(indentedSignature, idAttribute);
 					Node importedNode = indentedSignature.getOwnerDocument().importNode(sigChild, true);
 					indentedSignature.replaceChild(importedNode, nodeToReplace);
 				}
@@ -370,7 +370,7 @@ public final class DSSXMLUtils {
 				Node indentedSignature = getIndentedNode(signature);
 				Node indentedXmlNode;
 				if (idAttribute != null) {
-					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+					indentedXmlNode = DomUtils.getElementById(indentedSignature, idAttribute);
 				} else {
 					indentedXmlNode = DomUtils.getNode(indentedSignature, pathAllFromCurrentPosition);
 				}

@@ -20,22 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.apache.xml.security.signature.Reference;
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -59,6 +43,20 @@ import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import org.apache.xml.security.signature.Reference;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	
@@ -124,7 +122,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		String originalBase64 = Utils.toBase64(DSSUtils.toByteArray(image));
 		assertTrue(Utils.isStringNotBlank(originalBase64));
 		Document documentDom = DomUtils.buildDOM(signedDocument);
-		Element objectElement = DomUtils.getElement(documentDom, ".//*" + DomUtils.getXPathByIdAttribute(imageFileName));
+		Element objectElement = DomUtils.getElementById(documentDom, imageFileName);
 		assertNotNull(objectElement);
 		assertEquals(originalBase64, objectElement.getTextContent());
 		

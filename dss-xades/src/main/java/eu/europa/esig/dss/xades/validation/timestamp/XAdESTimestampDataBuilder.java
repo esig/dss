@@ -423,7 +423,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
          */
         final byte[] canonicalizedDoc = DSSXMLUtils.serializeNode(signature.getOwnerDocument());
         Document recreatedDocument = DomUtils.buildDOM(canonicalizedDoc);
-        Element recreatedSignature = DomUtils.getElement(recreatedDocument, ".//*" + DomUtils.getXPathByIdAttribute(DSSXMLUtils.getIDIdentifier(signature)));
+        Element recreatedSignature = DomUtils.getElementById(recreatedDocument, DSSXMLUtils.getIDIdentifier(signature));
         return DomUtils.getElement(recreatedSignature, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 	

@@ -20,20 +20,17 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import org.w3c.dom.Document;
 
 /**
  * This class handles the specifics of the enveloped XML signature
  *
  */
-class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
+class EnvelopedSignatureBuilder extends XPathPlacementSignatureBuilder {
 
 	/**
 	 * The default constructor for EnvelopedSignatureBuilder. The enveloped signature uses by default the exclusive
@@ -45,6 +42,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	 * @param document
 	 *            The original document to sign.
 	 * @param certificateVerifier
+	 *            {@link CertificateVerifier}
 	 */
 	public EnvelopedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
 		super(params, document, certificateVerifier);
@@ -57,46 +55,6 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	@Override
 	protected Document buildRootDocumentDom() {
 		return DomUtils.buildDOM(document);
-	}
-
-	@Override
-	protected Node getParentNodeOfSignature() {
-		final String xPathLocationString = params.getXPathLocationString();
-		if (Utils.isStringNotEmpty(xPathLocationString)) {
-			return DomUtils.getElement(documentDom, xPathLocationString);
-		}
-		return documentDom.getDocumentElement();
-	}
-	
-	@Override
-	protected void incorporateSignatureDom(Node parentNodeOfSignature) {
-	    if (params.getXPathElementPlacement() == null || Utils.isStringEmpty(params.getXPathLocationString())) {
-	    	super.incorporateSignatureDom(parentNodeOfSignature);
-	    	return;
-	    }
-
-	    switch (params.getXPathElementPlacement()) {
-		    case XPathAfter:
-			    // root element referenced by XPath
-			    if (parentNodeOfSignature.isEqualNode(documentDom.getDocumentElement())) { 
-				    // append signature at end of document
-				    parentNodeOfSignature.appendChild(signatureDom);
-				    
-			    } else {
-				    // insert signature before next sibling or as last child
-				    // if no sibling exists
-				    Node parent = parentNodeOfSignature.getParentNode();
-				    parent.insertBefore(signatureDom, parentNodeOfSignature.getNextSibling());
-			    }
-
-			    break;
-		    case XPathFirstChildOf:
-			    parentNodeOfSignature.insertBefore(signatureDom, parentNodeOfSignature.getFirstChild());
-			    break;
-		    default:
-			    parentNodeOfSignature.appendChild(signatureDom);
-			    break;
-	    }
 	}
 
 }
