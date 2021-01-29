@@ -341,8 +341,8 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		for (XmlValidationCertificateQualification certQual : validationCertQual) {
 			boolean certTypeCheckExecuted = false;
 			for (XmlConstraint constraint : certQual.getConstraint()) {
-				if (MessageTag.QUAL_CERT_TYPE_AT_CC.getId().equals(constraint.getName().getNameId()) ||
-						MessageTag.QUAL_CERT_TYPE_AT_VT.getId().equals(constraint.getName().getNameId())) {
+				if (MessageTag.QUAL_CERT_TYPE_AT_CC.getId().equals(constraint.getName().getKey()) ||
+						MessageTag.QUAL_CERT_TYPE_AT_VT.getId().equals(constraint.getName().getKey())) {
 					assertEquals(XmlStatus.OK, constraint.getStatus());
 					assertEquals(i18nProvider.getMessage(MessageTag.CERTIFICATE_TYPE, CertificateType.WSA.getLabel()),
 							constraint.getAdditionalInfo());
@@ -634,9 +634,9 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		assertNotNull(subXCV);
 		assertEquals(2, subXCV.size());
 		for (XmlConstraint xmlConstraint : subXCV.get(0).getConstraint()) {
-			if (MessageTag.BBB_XCV_CMDCDCQCCLCEC.getId().equals(xmlConstraint.getName().getNameId())) {
+			if (MessageTag.BBB_XCV_CMDCDCQCCLCEC.getId().equals(xmlConstraint.getName().getKey())) {
 				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-				assertEquals(MessageTag.BBB_XCV_CMDCDCQCCLCEC_ANS_EU.getId(), xmlConstraint.getError().getNameId());
+				assertEquals(MessageTag.BBB_XCV_CMDCDCQCCLCEC_ANS_EU.getId(), xmlConstraint.getError().getKey());
 				qcCClegislationForEUErrorFound = true;
 			}
 		}
@@ -717,9 +717,9 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		assertNotNull(subXCV);
 		assertEquals(2, subXCV.size());
 		for (XmlConstraint xmlConstraint : subXCV.get(0).getConstraint()) {
-			if (MessageTag.BBB_XCV_CMDCDCQCCLCEC.getId().equals(xmlConstraint.getName().getNameId())) {
+			if (MessageTag.BBB_XCV_CMDCDCQCCLCEC.getId().equals(xmlConstraint.getName().getKey())) {
 				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-				assertEquals(MessageTag.BBB_XCV_CMDCDCQCCLCEC_ANS.getId(), xmlConstraint.getError().getNameId());
+				assertEquals(MessageTag.BBB_XCV_CMDCDCQCCLCEC_ANS.getId(), xmlConstraint.getError().getKey());
 				qcCClegislationForEUErrorFound = true;
 			}
 		}

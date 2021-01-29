@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
@@ -111,7 +111,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		XmlBasicBuildingBlocks tokenBBB = bbbs.get(token.getId());
 		final Indication currentTimeIndication = tokenBBB.getConclusion().getIndication();
 		final SubIndication currentTimeSubIndication = tokenBBB.getConclusion().getSubIndication();
-		final List<XmlName> currentTimeErrors = tokenBBB.getConclusion().getErrors();
+		final List<XmlMessage> currentTimeErrors = tokenBBB.getConclusion().getErrors();
 
 		PastCertificateValidation pcv = new PastCertificateValidation(i18nProvider, token, tokenBBB, poe, currentTime, policy, context);
 		XmlPCV pcvResult = pcv.execute();
@@ -204,7 +204,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	}
 
 	private ChainItem<XmlPSV> currentTimeIndicationCheck(Indication currentTimeIndication, SubIndication currentTimeSubIndication,
-			List<XmlName> currentTimeErrors) {
+			List<XmlMessage> currentTimeErrors) {
 		return new CurrentTimeIndicationCheck(i18nProvider, result, currentTimeIndication, currentTimeSubIndication, currentTimeErrors, getFailLevelConstraint());
 	}
 

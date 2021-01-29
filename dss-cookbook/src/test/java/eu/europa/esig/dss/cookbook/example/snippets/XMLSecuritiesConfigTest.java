@@ -30,8 +30,8 @@ import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
-import eu.europa.esig.dss.jaxb.TransformerFactoryBuilder;
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.common.TransformerFactoryBuilder;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
 
 public class XMLSecuritiesConfigTest {
 	

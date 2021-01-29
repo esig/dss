@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.trustedlist;
 
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 import org.xml.sax.SAXException;
 

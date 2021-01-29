@@ -20,16 +20,13 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.timestamp;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -46,14 +43,38 @@ import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.QTST
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+/**
+ * The class performs a qualification verification for a timestamp
+ */
 public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQualification> {
 
+	/** The timestamp to be validated */
 	private final TimestampWrapper timestamp;
+
+	/** The list of all TL analyses */
 	private final List<XmlTLAnalysis> tlAnalysis;
 
+	/** The list of related LOTL/TL analyses */
+	private final List<XmlTLAnalysis> relatedTLAnalyses = new ArrayList<>();
+
+	/** The determined timestamp qualification */
 	private TimestampQualification tstQualif = TimestampQualification.NA;
 
-	public TimestampQualificationBlock(I18nProvider i18nProvider, TimestampWrapper timestamp, List<XmlTLAnalysis> tlAnalysis) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param timestamp {@link TimestampWrapper} qualification of which will be verified
+	 * @param tlAnalysis a list of performed {@link XmlTLAnalysis}
+	 */
+	public TimestampQualificationBlock(I18nProvider i18nProvider, TimestampWrapper timestamp,
+									   List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlValidationTimestampQualification());
 		this.timestamp = timestamp;
 		this.tlAnalysis = tlAnalysis;
@@ -81,6 +102,8 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 			for (String lotlURL : listOfTrustedListUrls) {
 				XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlURL);
 				if (lotlAnalysis != null) {
+					relatedTLAnalyses.add(lotlAnalysis);
+
 					AcceptableListOfTrustedListsCheck<XmlValidationTimestampQualification> acceptableLOTL = isAcceptableLOTL(lotlAnalysis);
 					item = item.setNextItem(acceptableLOTL);
 					if (acceptableLOTL.process()) {
@@ -99,6 +122,8 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 				for (String tlURL : trustedListUrls) {
 					XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
 					if (currentTL != null) {
+						relatedTLAnalyses.add(currentTL);
+
 						AcceptableTrustedListCheck<XmlValidationTimestampQualification> acceptableTL = isAcceptableTL(currentTL);
 						item = item.setNextItem(acceptableTL);
 						if (acceptableTL.process()) {
@@ -144,15 +169,6 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 
 	}
 
-	@Override
-	protected void addAdditionalInfo() {
-		determineFinalQualification();
-	}
-
-	private void determineFinalQualification() {
-		result.setTimestampQualification(tstQualif);
-	}
-
 	private XmlTLAnalysis getTlAnalysis(String url) {
 		for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
 			if (Utils.areStringsEqual(url, xmlTLAnalysis.getURL())) {
@@ -160,6 +176,36 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 			}
 		}
 		return null;
+	}
+
+	@Override
+	protected void addAdditionalInfo() {
+		setIndication();
+		determineFinalQualification();
+	}
+
+	private void setIndication() {
+		XmlConclusion conclusion = result.getConclusion();
+		if (conclusion != null) {
+			if (Utils.isCollectionNotEmpty(conclusion.getErrors())) {
+				conclusion.setIndication(Indication.FAILED);
+			} else if (Utils.isCollectionNotEmpty(conclusion.getWarnings())) {
+				conclusion.setIndication(Indication.INDETERMINATE);
+			} else {
+				conclusion.setIndication(Indication.PASSED);
+			}
+		}
+	}
+
+	private void determineFinalQualification() {
+		result.setTimestampQualification(tstQualif);
+	}
+
+	@Override
+	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		for (XmlTLAnalysis tlAnalysis : relatedTLAnalyses) {
+			collectAllMessages(conclusion, tlAnalysis.getConclusion());
+		}
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> isTrustedListReachedForCertificateChain(CertificateWrapper signingCertificate) {

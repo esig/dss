@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -82,16 +82,16 @@ public class EncryptionAlgorithmOnValidationTimeCheck extends AbstractCryptograp
 	}
 	
 	@Override
-	protected XmlName buildConstraintMessage() {
-		return buildXmlName(MessageTag.ASCCM_AR, encryptionAlgo);
+	protected XmlMessage buildConstraintMessage() {
+		return buildXmlMessage(MessageTag.ASCCM_AR, encryptionAlgo);
 	}
 	
 	@Override
-	protected XmlName buildErrorMessage() {
+	protected XmlMessage buildErrorMessage() {
 		if (MessageTag.ASCCM_AR_ANS_AKSNR.equals(errorMessage)) {
-			return buildXmlName(errorMessage, encryptionAlgo, keySize, position);
+			return buildXmlMessage(errorMessage, encryptionAlgo, keySize, position);
 		} else {
-			return buildXmlName(errorMessage, encryptionAlgo, position);
+			return buildXmlMessage(errorMessage, encryptionAlgo, position);
 		}
 	}
 

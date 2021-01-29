@@ -76,32 +76,32 @@ public class QSCDTest {
 
 	@Test
 	public void testPreEmpty() {
-		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<OidDescription> emptyList(), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPreEIDAS(Collections.emptyList(), Collections.emptyList());
 		notQSCD(signingCertificate);
 	}
 
 	@Test
 	public void testPreQSCDStatement() {
-		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatement.QC_SSCD), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatement.QC_SSCD), Collections.emptyList());
 		qscd(signingCertificate);
 	}
 
 	@Test
 	public void testPreUnknownStatement() {
-		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatement.QC_LIMIT_VALUE), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatement.QC_LIMIT_VALUE), Collections.emptyList());
 		notQSCD(signingCertificate);
 	}
 
 	@Test
 	public void testPreQSCDPolicyId() {
-		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<OidDescription> emptyList(),
+		CertificateWrapper signingCertificate = createPreEIDAS(Collections.emptyList(),
 				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		qscd(signingCertificate);
 	}
 
 	@Test
 	public void testPreUnknownPolicyId() {
-		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<OidDescription> emptyList(), Arrays.asList(UNKNOWN_OID));
+		CertificateWrapper signingCertificate = createPreEIDAS(Collections.emptyList(), Arrays.asList(UNKNOWN_OID));
 		notQSCD(signingCertificate);
 	}
 
@@ -109,32 +109,32 @@ public class QSCDTest {
 
 	@Test
 	public void testPostEmpty() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<OidDescription> emptyList(), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPostEIDAS(Collections.emptyList(), Collections.emptyList());
 		notQSCD(signingCertificate);
 	}
 
 	@Test
 	public void testPostQSCDStatement() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_SSCD), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_SSCD), Collections.emptyList());
 		qscd(signingCertificate);
 	}
 
 	@Test
 	public void testPostUnknownStatement() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_LIMIT_VALUE), Collections.<String> emptyList());
+		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_LIMIT_VALUE), Collections.emptyList());
 		notQSCD(signingCertificate);
 	}
 
 	@Test
 	public void testPostQSCDPolicyId() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<OidDescription> emptyList(),
+		CertificateWrapper signingCertificate = createPostEIDAS(Collections.emptyList(),
 				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		notQSCD(signingCertificate);
 	}
 
 	@Test
 	public void testPostUnknownPolicyId() {
-		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<OidDescription> emptyList(), Arrays.asList(UNKNOWN_OID));
+		CertificateWrapper signingCertificate = createPostEIDAS(Collections.emptyList(), Arrays.asList(UNKNOWN_OID));
 		notQSCD(signingCertificate);
 	}
 
@@ -186,7 +186,7 @@ public class QSCDTest {
 	}
 
 	private CertificateWrapper createPreEIDAS(List<OidDescription> qcStatementIds, List<String> certificatePolicyIds) {
-		return createPreEIDAS(qcStatementIds, certificatePolicyIds, Collections.<QCType> emptyList());
+		return createPreEIDAS(qcStatementIds, certificatePolicyIds, Collections.emptyList());
 	}
 
 	private CertificateWrapper createPreEIDAS(List<OidDescription> qcStatementIds, List<String> certificatePolicyIds, List<QCType> qcTypes) {
@@ -211,7 +211,7 @@ public class QSCDTest {
 	}
 
 	private CertificateWrapper createPostEIDAS(List<OidDescription> qcStatementIds, List<String> certificatePolicyIds) {
-		return createPostEIDAS(qcStatementIds, certificatePolicyIds, Collections.<QCType> emptyList());
+		return createPostEIDAS(qcStatementIds, certificatePolicyIds, Collections.emptyList());
 	}
 
 	private CertificateWrapper createPostEIDAS(List<OidDescription> qcStatementIds, List<String> certificatePolicyIds, List<QCType> qcTypes) {

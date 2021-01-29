@@ -46,11 +46,19 @@
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
-			<xs:element name="Errors" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Warnings" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Infos" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Errors" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Warnings" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Infos" type="Message" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" /> <!-- Must be a String type in order to avoid conflict with DetailedReport in REST/SOAP webServices -->
+	</xs:complexType>
+
+	<xs:complexType name="Message">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Key" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 	
 	<xs:complexType name="Signature">

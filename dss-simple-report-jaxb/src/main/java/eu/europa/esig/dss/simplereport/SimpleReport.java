@@ -25,16 +25,20 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
+import eu.europa.esig.dss.jaxb.common.Message;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlToken;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A SimpleReport holder to fetch values from a JAXB SimpleReport.
@@ -214,10 +218,10 @@ public class SimpleReport {
 	 *            the token id
 	 * @return the linked information
 	 */
-	public List<String> getInfo(final String tokenId) {
+	public List<Message> getInfo(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null) {
-			return token.getInfos();
+			return convert(token.getInfos());
 		}
 		return Collections.emptyList();
 	}
@@ -229,10 +233,10 @@ public class SimpleReport {
 	 *            the token id
 	 * @return the linked errors
 	 */
-	public List<String> getErrors(final String tokenId) {
+	public List<Message> getErrors(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null) {
-			return token.getErrors();
+			return convert(token.getErrors());
 		}
 		return Collections.emptyList();
 	}
@@ -244,10 +248,24 @@ public class SimpleReport {
 	 *            the token id
 	 * @return the linked warnings
 	 */
-	public List<String> getWarnings(final String tokenId) {
+	public List<Message> getWarnings(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null) {
-			return token.getWarnings();
+			return convert(token.getWarnings());
+		}
+		return Collections.emptyList();
+	}
+
+	private Message convert(XmlMessage v) {
+		if (v != null) {
+			return new Message(v.getKey(), v.getValue());
+		}
+		return null;
+	}
+
+	private List<Message> convert(Collection<XmlMessage> messages) {
+		if (messages != null) {
+			return messages.stream().map(m -> convert(m)).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
 	}

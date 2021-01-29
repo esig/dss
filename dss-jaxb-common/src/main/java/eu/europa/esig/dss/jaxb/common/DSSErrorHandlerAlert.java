@@ -18,12 +18,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.jaxb;
+package eu.europa.esig.dss.jaxb.common;
 
 import eu.europa.esig.dss.alert.AbstractAlert;
 import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
-import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
+import eu.europa.esig.dss.jaxb.common.exception.XSDValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;

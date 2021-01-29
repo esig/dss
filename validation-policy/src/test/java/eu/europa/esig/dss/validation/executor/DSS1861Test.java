@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
@@ -49,6 +39,15 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1861Test extends AbstractTestValidationExecutor {
 	
@@ -92,7 +91,7 @@ public class DSS1861Test extends AbstractTestValidationExecutor {
 		
 		boolean timestampCoherenceOrderCheckFound = false;
 		for (XmlConstraint constraint : constraints) {
-			if (MessageTag.TSV_ASTPTCT.getId().equals(constraint.getName().getNameId())) {
+			if (MessageTag.TSV_ASTPTCT.getId().equals(constraint.getName().getKey())) {
 				timestampCoherenceOrderCheckFound = XmlStatus.OK.equals(constraint.getStatus());
 			}
 		}
@@ -125,7 +124,7 @@ public class DSS1861Test extends AbstractTestValidationExecutor {
 		
 		boolean timestampCoherenceOrderCheckFound = false;
 		for (XmlConstraint constraint : constraints) {
-			if (MessageTag.TSV_ASTPTCT.getId().equals(constraint.getName().getNameId())) {
+			if (MessageTag.TSV_ASTPTCT.getId().equals(constraint.getName().getKey())) {
 				timestampCoherenceOrderCheckFound = XmlStatus.NOT_OK.equals(constraint.getStatus());
 			}
 		}

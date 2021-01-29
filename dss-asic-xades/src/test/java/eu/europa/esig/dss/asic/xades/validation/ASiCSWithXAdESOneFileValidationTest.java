@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -43,6 +38,11 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ASiCSWithXAdESOneFileValidationTest extends AbstractASiCWithXAdESTestValidation {
 
@@ -103,9 +103,9 @@ public class ASiCSWithXAdESOneFileValidationTest extends AbstractASiCWithXAdESTe
 		assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
 		
 		for (XmlConstraint xmlConstraint : fc.getConstraint()) {
-			if (MessageTag.BBB_FC_ISFP_ASICS.getId().equals(xmlConstraint.getName().getNameId())) {
+			if (MessageTag.BBB_FC_ISFP_ASICS.getId().equals(xmlConstraint.getName().getKey())) {
 				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-				assertEquals(MessageTag.BBB_FC_ISFP_ASICS_ANS.getId(), xmlConstraint.getError().getNameId());
+				assertEquals(MessageTag.BBB_FC_ISFP_ASICS_ANS.getId(), xmlConstraint.getError().getKey());
 			} else {
 				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
 			}

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.simplereport;
 
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import org.xml.sax.SAXException;
 

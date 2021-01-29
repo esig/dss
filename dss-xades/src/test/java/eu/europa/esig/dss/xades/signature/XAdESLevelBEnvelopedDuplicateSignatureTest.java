@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -51,6 +41,15 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBEnvelopedDuplicateSignatureTest extends PKIFactoryAccess {
 	
@@ -101,7 +100,7 @@ public class XAdESLevelBEnvelopedDuplicateSignatureTest extends PKIFactoryAccess
 			assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
 			boolean signatureDuplicatedCheckExecuted = false;
 			for (XmlConstraint constraint : fc.getConstraint()) {
-				if (MessageTag.BBB_FC_ISD.name().equals(constraint.getName().getNameId())) {
+				if (MessageTag.BBB_FC_ISD.name().equals(constraint.getName().getKey())) {
 					assertEquals(i18nProvider.getMessage(MessageTag.BBB_FC_ISD_ANS), constraint.getError().getValue());
 					signatureDuplicatedCheckExecuted = true;
 				}

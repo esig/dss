@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -72,9 +73,14 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 	 */
 	public RevocationConsistentCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate, 
 			RevocationWrapper revocationData, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint);
+		super(i18nProvider, result, constraint, revocationData.getId());
 		this.certificate = certificate;
 		this.revocationData = revocationData;
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.REV_CC;
 	}
 
 	@Override

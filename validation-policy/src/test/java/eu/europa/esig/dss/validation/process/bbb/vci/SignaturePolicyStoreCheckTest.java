@@ -44,7 +44,7 @@ public class SignaturePolicyStoreCheckTest extends AbstractTestCheck {
 		XmlSignaturePolicyStore signaturePolicyStore = new XmlSignaturePolicyStore();
 
 		XmlSignature sig = new XmlSignature();
-		sig.setSignaturePolicyStore(signaturePolicyStore);;
+		sig.setSignaturePolicyStore(signaturePolicyStore);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
