@@ -20,34 +20,6 @@
  */
 package eu.europa.esig.dss.test.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
@@ -100,6 +72,32 @@ import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
 import eu.europa.esig.validationreport.jaxb.SASignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSignatureParameters, 
 				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
@@ -530,7 +528,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	}
 	
 	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes, SerializableSignatureParameters parameters) {
+		assertNotNull(signatureAttributes);
 		super.validateETSISignatureAttributes(signatureAttributes);
+
 		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
 		for (Object signatureAttributeObj : signatureAttributeObjects) {
 			if (signatureAttributeObj instanceof JAXBElement) {

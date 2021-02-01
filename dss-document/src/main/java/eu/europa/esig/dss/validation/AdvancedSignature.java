@@ -331,7 +331,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	List<SignerRole> getSignerRoles();
 
 	/**
-	 * Returns the list of embeded signed assertions.
+	 * Returns the list of embedded signed assertions.
 	 *
 	 * @return list of the assertions s
 	 */
