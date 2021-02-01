@@ -380,6 +380,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkTimestamps(diagnosticData);
 		checkSignatureScopes(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
+		checkMimeType(diagnosticData);
 		checkCommitmentTypeIndications(diagnosticData);
 		checkClaimedRoles(diagnosticData);
 		checkSignedAssertions(diagnosticData);
@@ -824,6 +825,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 	}
 
+	protected void checkMimeType(DiagnosticData diagnosticData) {
+		// not implemented by default
+	}
+
 	protected void checkCommitmentTypeIndications(DiagnosticData diagnosticData) {
 		// not implemented by default
 	}
@@ -1190,7 +1195,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						validateETSIACertIDListType(certIdList);
 					} else if (value instanceof SADataObjectFormatType) {
 						SADataObjectFormatType dataObjectFormatType = (SADataObjectFormatType) value;
-						assertTrue((dataObjectFormatType.getContentType() != null) || (dataObjectFormatType.getMimeType() != null));
+						validateETSIDataObjectFormatType(dataObjectFormatType);
 					} else if (value instanceof SATimestampType) {
 						SATimestampType timestamp = (SATimestampType) value;
 						assertNotNull(timestamp.getAttributeObject());
@@ -1288,6 +1293,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertNotNull(saCertIDType.getDigestValue());
 			assertNotNull(saCertIDType.getX509IssuerSerial());
 		}
+	}
+
+	protected void validateETSIDataObjectFormatType(SADataObjectFormatType dataObjectFormat) {
+		assertTrue((dataObjectFormat.getContentType() != null) || (dataObjectFormat.getMimeType() != null));
 	}
 
 	protected void validateETSIRevIDListType(SARevIDListType revIdList) {
