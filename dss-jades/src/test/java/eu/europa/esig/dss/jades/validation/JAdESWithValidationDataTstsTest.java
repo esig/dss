@@ -49,9 +49,13 @@ import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
+import eu.europa.esig.validationreport.jaxb.SACertIDListType;
+import eu.europa.esig.validationreport.jaxb.SARevIDListType;
+import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import org.jose4j.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.bind.JAXBElement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -323,6 +327,54 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		assertTrue(timestampWrapper.isMessageImprintDataIntact());
 		assertTrue(timestampWrapper.isSignatureIntact());
 		assertTrue(timestampWrapper.isSignatureValid());
+	}
+
+	@Override
+	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes) {
+		super.validateETSISignatureAttributes(signatureAttributes);
+
+		boolean signCertRefFound = false;
+		boolean completeCertRefFound = false;
+		boolean completeRevocRefFound = false;
+		boolean attributeCertRefFound = false;
+
+		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+		for (Object signatureAttributeObj : signatureAttributeObjects) {
+			if (signatureAttributeObj instanceof JAXBElement) {
+				JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
+				String xmlElementName = jaxbElement.getName().getLocalPart();
+				if ("SigningCertificate".equals(xmlElementName)) {
+					SACertIDListType certIdList = (SACertIDListType) jaxbElement.getValue();
+					assertTrue(certIdList.isSigned());
+					assertEquals(1, certIdList.getAttributeObject().size());
+					assertEquals(1, certIdList.getAttributeObject().get(0).getVOReference().size());
+					signCertRefFound = true;
+				}
+				if ("CompleteCertificateRefs".equals(xmlElementName)) {
+					SACertIDListType certIdList = (SACertIDListType) jaxbElement.getValue();
+					assertEquals(1, certIdList.getAttributeObject().size());
+					assertEquals(3, certIdList.getAttributeObject().get(0).getVOReference().size());
+					completeCertRefFound = true;
+				}
+				if ("CompleteRevocationRefs".equals(xmlElementName)) {
+					SARevIDListType revIdList = (SARevIDListType) jaxbElement.getValue();
+					assertEquals(0, revIdList.getAttributeObject().size());
+					assertEquals(2, revIdList.getCRLIDOrOCSPID().size());
+					completeRevocRefFound = true;
+				}
+				if ("AttributeCertificateRefs".equals(xmlElementName)) {
+					SACertIDListType certIdList = (SACertIDListType) jaxbElement.getValue();
+					assertEquals(0, certIdList.getAttributeObject().size());
+					assertEquals(1, certIdList.getCertID().size());
+					attributeCertRefFound = true;
+				}
+			}
+		}
+		assertTrue(signCertRefFound);
+		assertTrue(completeCertRefFound);
+		assertTrue(completeRevocRefFound);
+		assertTrue(attributeCertRefFound);
+
 	}
 
 }
