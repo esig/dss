@@ -201,7 +201,7 @@ public class JAdESLevelBaselineB {
 		
 		DigestAlgorithm signingCertificateDigestMethod = parameters.getSigningCertificateDigestMethod();
 		if (DigestAlgorithm.SHA256.equals(signingCertificateDigestMethod)) {
-			incorporateSiginingCertificateSha256Thumbprint(signingCertificate);
+			incorporateSigningCertificateSha256Thumbprint(signingCertificate);
 		} else {
 			incorporateSigningCertificateOtherDigestReference(signingCertificate, signingCertificateDigestMethod);
 		}
@@ -212,7 +212,7 @@ public class JAdESLevelBaselineB {
 	 *
 	 * @param signingCertificate {@link CertificateToken}
 	 */
-	protected void incorporateSiginingCertificateSha256Thumbprint(CertificateToken signingCertificate) {
+	protected void incorporateSigningCertificateSha256Thumbprint(CertificateToken signingCertificate) {
 		String x5tS256 = X509Util.x5tS256(signingCertificate.getCertificate());
 		addHeader(HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT, x5tS256);
 	}

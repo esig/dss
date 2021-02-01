@@ -297,7 +297,16 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getMimeType() {
-		return jws.getHeaders().getStringHeaderValue(HeaderParameterNames.TYPE);
+		/*
+		 * RFC 7515 :
+		 * A recipient using the media type value MUST treat it as if
+		 * "application/" were prepended to any "typ" value not containing a '/'.
+		 */
+		String typeValue = jws.getHeaders().getStringHeaderValue(HeaderParameterNames.TYPE);
+		if (Utils.isStringNotEmpty(typeValue) && !typeValue.contains("/")) {
+			return DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX + typeValue;
+		}
+		return typeValue;
 	}
 
 	@Override

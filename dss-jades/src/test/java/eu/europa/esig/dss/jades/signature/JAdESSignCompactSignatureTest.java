@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -28,13 +29,17 @@ import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESSignCompactSignatureTest extends AbstractJAdESTestSignature {
 
@@ -76,6 +81,29 @@ public class JAdESSignCompactSignatureTest extends AbstractJAdESTestSignature {
     @Override
     protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
         assertEquals(2, diagnosticData.getSignatures().size());
+    }
+
+    @Override
+    protected void checkMimeType(DiagnosticData diagnosticData) {
+        boolean joseTypeSigFound = false;
+        boolean joseJsonTypeSigFound = false;
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            MimeType mimeType = MimeType.fromMimeTypeString(signatureWrapper.getMimeType());
+            if (MimeType.JOSE.equals(mimeType)) {
+                joseTypeSigFound = true;
+            } else if (MimeType.JOSE_JSON.equals(mimeType)) {
+                joseJsonTypeSigFound = true;
+            }
+        }
+        assertTrue(joseTypeSigFound);
+        assertTrue(joseJsonTypeSigFound);
+    }
+
+    @Override
+    protected void validateETSIDataObjectFormatType(SADataObjectFormatType dataObjectFormat) {
+        assertNotNull(dataObjectFormat.getMimeType());
+        MimeType mimeType = MimeType.fromMimeTypeString(dataObjectFormat.getMimeType());
+        assertTrue(MimeType.JOSE.equals(mimeType) || MimeType.JOSE_JSON.equals(mimeType));
     }
 
     @Override
