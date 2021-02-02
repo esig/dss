@@ -67,6 +67,9 @@ public enum DigestMatcherType {
 	/** JAdES Detached entry */
 	SIG_D_ENTRY,
 
+	/** Defines the signature value of a master signature signed by a counter signature */
+	COUNTER_SIGNED_SIGNATURE_VALUE,
+
 	/** Timestamp */
 	MESSAGE_IMPRINT
 

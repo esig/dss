@@ -22,7 +22,6 @@ package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -301,15 +300,40 @@ public class JAdESLevelBaselineB {
 	protected void incorporateB64() {
 		// incorporate only with FALSE value
 		if (!parameters.isBase64UrlEncodedPayload()) {
-			byte[] payloadBytes = getPayloadBytes();
-			// see RFC 7797 (only for compact format not detached payload shall be uri-safe)
-			if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) &&
-					JWSSerializationType.COMPACT_SERIALIZATION.equals(parameters.getJwsSerializationType()) &&
-					Utils.isArrayNotEmpty(payloadBytes) && !DSSJsonUtils.isUrlSafePayload(new String(payloadBytes))) {
-				throw new DSSException("The payload contains not URL-safe characters! "
-						+ "With Unencoded Payload ('b64' = false) only ASCII characters in ranges %x20-2D and %x2F-7E are allowed!");
-			}
+			assertPayloadEncodingValid();
 			addHeader(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, false);
+		}
+	}
+
+	private void assertPayloadEncodingValid() {
+		byte[] payloadBytes = getPayloadBytes();
+		// see RFC 7797 (only for compact format not detached payload shall be uri-safe)
+		if (!parameters.isBase64UrlEncodedPayload() && !SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())
+				&& Utils.isArrayNotEmpty(payloadBytes)) {
+
+			switch (parameters.getJwsSerializationType()) {
+				/*
+				 * RFC 7797 ch. "5. Unencoded Payload Content Restrictions"
+				 */
+				case COMPACT_SERIALIZATION:
+					if (!DSSJsonUtils.isUrlSafePayload(new String(payloadBytes))) {
+						throw new DSSException("The payload contains not URL-safe characters! " +
+								"With Unencoded Payload ('b64' = false) only ASCII characters in ranges " +
+								"%x20-2D and %x2F-7E are allowed for a COMPACT_SERIALIZATION!");
+					}
+					break;
+				case FLATTENED_JSON_SERIALIZATION:
+				case JSON_SERIALIZATION:
+					if (!DSSJsonUtils.isUtf8(payloadBytes)) {
+						throw new DSSException("The payload contains not valid content! " +
+								"With Unencoded Payload ('b64' = false) only UTF-8 characters are allowed!");
+					}
+					break;
+				default:
+					throw new DSSException(String.format("The JWSSerializationType '%s' is not supported!",
+							parameters.getJwsSerializationType()));
+			}
+
 		}
 	}
 	

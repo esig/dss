@@ -20,24 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.jose4j.json.JsonUtil;
-import org.jose4j.jwx.HeaderParameterNames;
-import org.jose4j.lang.JoseException;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
@@ -68,6 +50,24 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.jwx.HeaderParameterNames;
+import org.jose4j.lang.JoseException;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatureTest {
 
@@ -138,7 +138,12 @@ public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatu
 		assertNotNull(counterJWS);
 		assertNotNull(counterJWS.getEncodedHeader());
 		assertNotNull(counterJWS.getSignatureValue());
-		assertTrue(Utils.isArrayEmpty(counterJWS.getUnverifiedPayloadBytes()));
+		assertTrue(Utils.isArrayNotEmpty(counterJWS.getUnverifiedPayloadBytes()));
+
+		assertTrue(Arrays.equals(jws.getSignatureValue(), counterJWS.getUnverifiedPayloadBytes()));
+		assertEquals(jws.getEncodedSignature(), counterJWS.getEncodedPayload());
+
+		assertFalse(counterJWS.isRfc7797UnencodedPayload());
 
 		try {
 			String jsonString = new String(DSSJsonUtils.fromBase64Url(counterJWS.getEncodedHeader()));

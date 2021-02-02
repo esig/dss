@@ -204,6 +204,8 @@ public class ValidationProcessUtils {
 			return MessageTag.ACCM_POS_JWS;
 		case SIG_D_ENTRY:
 			return MessageTag.ACCM_POS_SIG_D_ENT;
+		case COUNTER_SIGNED_SIGNATURE_VALUE:
+			return MessageTag.ACCM_POS_CSIG_VAL;
 		case MESSAGE_IMPRINT:
 			return MessageTag.ACCM_POS_MESS_IMP;
 		default:
