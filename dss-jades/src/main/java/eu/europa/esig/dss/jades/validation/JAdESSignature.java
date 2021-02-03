@@ -933,12 +933,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				referenceValidation.setIntact(true);
 			}
 
-			DigestAlgorithm digestAlgorithm = getDigestAlgorithm();
-			if (digestAlgorithm != null) {
-				Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, signatureValue));
-				referenceValidation.setDigest(digest);
-			}
-
 		}
 
 		return referenceValidation;

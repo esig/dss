@@ -56,6 +56,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -147,11 +148,25 @@ public abstract class AbstractJAdESCounterSignatureTest extends AbstractCounterS
 				}
 				assertTrue(digestMatcher.isDataFound());
 				assertTrue(digestMatcher.isDataIntact());
-				assertNotNull(digestMatcher.getDigestMethod());
-				assertTrue(Utils.isArrayNotEmpty(digestMatcher.getDigestValue()));
 			}
 			assertTrue(jwsSignatureInputFound);
 			assertTrue(counterSignedSignatureValueFound);
+		}
+	}
+
+	@Override
+	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+				if (DigestMatcherType.JWS_SIGNING_INPUT_DIGEST.equals(digestMatcher.getType()) ||
+						DigestMatcherType.SIG_D_ENTRY.equals(digestMatcher.getType())) {
+					assertNotNull(digestMatcher.getDigestMethod());
+					assertNotNull(digestMatcher.getDigestValue());
+				} else if (DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(digestMatcher.getType())) {
+					assertNull(digestMatcher.getDigestMethod());
+					assertNull(digestMatcher.getDigestValue());
+				}
+			}
 		}
 	}
 

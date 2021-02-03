@@ -59,19 +59,25 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		if (DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
-			return MessageTag.BBB_CV_TSP_IRDOI;
-		} else {
-			return MessageTag.BBB_CV_IRDOI;
+		switch (digestMatcher.getType()) {
+			case MESSAGE_IMPRINT:
+				return MessageTag.BBB_CV_TSP_IRDOI;
+			case COUNTER_SIGNED_SIGNATURE_VALUE:
+				return MessageTag.BBB_CV_CS_CSPS;
+			default:
+				return MessageTag.BBB_CV_IRDOI;
 		}
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		if (DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
-			return MessageTag.BBB_CV_TSP_IRDOI_ANS;
-		} else {
-			return MessageTag.BBB_CV_IRDOI_ANS;
+		switch (digestMatcher.getType()) {
+			case MESSAGE_IMPRINT:
+				return MessageTag.BBB_CV_TSP_IRDOI_ANS;
+			case COUNTER_SIGNED_SIGNATURE_VALUE:
+				return MessageTag.BBB_CV_CS_CSPS_ANS;
+			default:
+				return MessageTag.BBB_CV_IRDOI_ANS;
 		}
 	}
 
@@ -87,7 +93,8 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected String buildAdditionalInfo() {
-		if (!DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
+		if (!DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType()) &&
+				!DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(digestMatcher.getType())) {
 			String referenceName = Utils.isStringNotBlank(digestMatcher.getName()) ?
 					digestMatcher.getName() : digestMatcher.getType().name();
 			return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);

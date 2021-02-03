@@ -20,13 +20,10 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
@@ -34,6 +31,13 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJAdESTestValidation extends AbstractDocumentTestValidation<JAdESSignatureParameters, JAdESTimestampParameters> {
 	
@@ -56,6 +60,24 @@ public abstract class AbstractJAdESTestValidation extends AbstractDocumentTestVa
 			
 			assertNotNull(signatureIdentifier.getSignatureValue());
 			assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+		}
+	}
+
+	@Override
+	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+				if (DigestMatcherType.JWS_SIGNING_INPUT_DIGEST.equals(digestMatcher.getType()) ||
+						DigestMatcherType.SIG_D_ENTRY.equals(digestMatcher.getType())) {
+					assertNotNull(digestMatcher.getDigestMethod());
+					assertNotNull(digestMatcher.getDigestValue());
+				} else if (DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(digestMatcher.getType())) {
+					assertNull(digestMatcher.getDigestMethod());
+					assertNull(digestMatcher.getDigestValue());
+				} else {
+					fail(String.format("Unexpected DigestMatcherType reached : %s", digestMatcher.getType()));
+				}
+			}
 		}
 	}
 
