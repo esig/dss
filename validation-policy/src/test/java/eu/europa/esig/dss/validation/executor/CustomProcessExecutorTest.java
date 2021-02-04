@@ -4232,6 +4232,111 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void brokenRevocationDataTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_with_broken_revocation.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+		assertTrue(checkMessageValuePresence(simpleReport.getErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_IARDPFC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+
+		XmlSubXCV subXCV = subXCVs.get(0);
+		assertEquals(Indication.INDETERMINATE, subXCV.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, subXCV.getConclusion().getSubIndication());
+		assertEquals(2, subXCV.getConclusion().getErrors().size());
+		assertTrue(checkMessageValuePresence(convert(subXCV.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+		assertTrue(checkMessageValuePresence(convert(subXCV.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_IARDPFC_ANS)));
+
+		List<XmlRAC> racs = subXCV.getRAC();
+		assertEquals(1, racs.size());
+
+		XmlRAC rac = racs.get(0);
+		assertEquals(Indication.FAILED, rac.getConclusion().getIndication());
+		assertEquals(SubIndication.SIG_CRYPTO_FAILURE, rac.getConclusion().getSubIndication());
+		assertEquals(1, rac.getConclusion().getErrors().size());
+		assertTrue(checkMessageValuePresence(convert(rac.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+
+		XmlRFC rfc = subXCV.getRFC();
+		assertEquals(Indication.INDETERMINATE, rfc.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, rfc.getConclusion().getSubIndication());
+		assertEquals(1, rfc.getConclusion().getErrors().size());
+		assertTrue(checkMessageValuePresence(convert(rfc.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_IARDPFC_ANS)));
+	}
+
+	@Test
+	public void brokenRevocationDataWithWarnSigIntactTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_with_broken_revocation.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+		BasicSignatureConstraints basicSignatureConstraints = revocationConstraints.getBasicSignatureConstraints();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.WARN);
+		basicSignatureConstraints.setSignatureIntact(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+
+		XmlSubXCV subXCV = subXCVs.get(0);
+		assertEquals(Indication.PASSED, subXCV.getConclusion().getIndication());
+		assertTrue(checkMessageValuePresence(convert(subXCV.getConclusion().getWarnings()),
+				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+
+		List<XmlRAC> racs = subXCV.getRAC();
+		assertEquals(1, racs.size());
+
+		XmlRAC rac = racs.get(0);
+		assertEquals(Indication.PASSED, rac.getConclusion().getIndication());
+		assertTrue(checkMessageValuePresence(convert(subXCV.getConclusion().getWarnings()),
+				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+	}
+
+	@Test
 	public void diagDataNotNull() throws Exception {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(null);

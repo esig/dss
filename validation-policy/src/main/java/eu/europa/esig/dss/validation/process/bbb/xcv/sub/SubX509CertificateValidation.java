@@ -407,6 +407,12 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		if (!XmlBlockType.RAC.equals(constraint.getBlockType()) || !ValidationProcessUtils.isValidRACFound(result)) {
 			super.collectMessages(conclusion, constraint);
 		}
+		if (XmlBlockType.RFC.equals(constraint.getBlockType())) {
+			XmlRFC rfc = result.getRFC();
+			for (XmlConstraint rfcConstrain : rfc.getConstraint()) {
+				super.collectMessages(conclusion, rfcConstrain);
+			}
+		}
 	}
 
 	@Override
@@ -415,7 +421,28 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			for (XmlRAC rac : result.getRAC()) {
 				super.collectAllMessages(conclusion, rac.getConclusion());
 			}
+		} else {
+			// collect additional messages for the valid RAC
+			XmlRAC rac = getValidRAC();
+			if (rac != null) {
+				super.collectAllMessages(conclusion, rac.getConclusion());
+			}
 		}
+	}
+
+	private XmlRAC getValidRAC() {
+		XmlRFC rfc = result.getRFC();
+		if (rfc != null) {
+			String revocId = rfc.getId();
+			if (revocId != null) {
+				for (XmlRAC rac : result.getRAC()) {
+					if (revocId.equals(rac.getId())) {
+						return rac;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 }
