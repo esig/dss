@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
@@ -32,6 +27,11 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DSS1619Test extends AbstractCAdESTestValidation {
 
@@ -76,7 +76,7 @@ public class DSS1619Test extends AbstractCAdESTestValidation {
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
 		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
-		assertEquals(2, diagnosticData.getAllOrphanRevocationObjects().size());
+		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size());
 		assertEquals(2, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 

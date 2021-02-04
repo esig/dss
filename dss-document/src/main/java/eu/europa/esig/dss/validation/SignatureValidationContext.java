@@ -24,6 +24,7 @@ import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.alert.status.Status;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
@@ -31,6 +32,7 @@ import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
@@ -568,7 +570,7 @@ public class SignatureValidationContext implements ValidationContext {
 				CertificateToken trustAnchor = (CertificateToken) getFirstTrustAnchor(certChain);
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
-				OCSPAndCRLRevocationSource onlineVerifier = null;
+				OCSPAndCRLRevocationSource onlineVerifier;
 				if (!trustedCertSources.isEmpty() && (trustAnchor != null)) {
 					LOG.trace("Initializing a revocation verifier for a trusted chain...");
 					onlineVerifier = instantiateWithTrustServices(trustAnchor);
@@ -831,7 +833,7 @@ public class SignatureValidationContext implements ValidationContext {
 		for (RevocationToken<Revocation> revocationToken : revocations) {
 			if (refreshNeededAfterTime != null && (refreshNeededAfterTime.before(revocationToken.getProductionDate()))
 					&& (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason()
-					&& isConsistent(revocationToken))) {
+					&& isConsistent(revocationToken, certToken))) {
 				freshRevocationDataFound = true;
 				break;
 			}
@@ -856,10 +858,25 @@ public class SignatureValidationContext implements ValidationContext {
 		return lowestPOE;
 	}
 	
-	private boolean isConsistent(RevocationToken<Revocation> revocation) {
+	private boolean isConsistent(RevocationToken<Revocation> revocation, CertificateToken certToken) {
 		List<CertificateToken> certificateTokenChain = toCertificateTokenChain(getCertChain(revocation));
 		if (Utils.isCollectionEmpty(certificateTokenChain)) {
-			LOG.debug("The revocation {} is not consistent! Issuer CertificateToken is not found.", revocation.getDSSIdAsString());
+			LOG.debug("The revocation {} is not consistent! Issuer CertificateToken is not found.",
+					revocation.getDSSIdAsString());
+			return false;
+		}
+
+		if (RevocationType.OCSP.equals(revocation.getRevocationType()) &&
+				!DSSRevocationUtils.checkIssuerValidAtRevocationProductionTime(revocation)) {
+			LOG.debug("The revocation {} is not consistent! The revocation has been produced outside " +
+					"the issuer certificate's validity range!", revocation.getDSSIdAsString());
+			return false;
+		}
+
+		if (RevocationType.CRL.equals(revocation.getRevocationType()) && (
+				!isInCertificateValidityRange(revocation, certToken))) {
+			LOG.debug("The revocation '{}' was not issued during the validity period of the certificate! Certificate: {}",
+					revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
 			return false;
 		}
 		
@@ -870,6 +887,14 @@ public class SignatureValidationContext implements ValidationContext {
 			// useful for short-life certificates (i.e. ocsp responder)
 			return hasPOEInTheValidityRange(certificateTokenChain.iterator().next());
 		}
+	}
+
+	private boolean isInCertificateValidityRange(RevocationToken<?> revocationToken, CertificateToken certificateToken) {
+		final Date thisUpdate = revocationToken.getThisUpdate();
+		final Date nextUpdate = revocationToken.getNextUpdate();
+		final Date notAfter = certificateToken.getNotAfter();
+		final Date notBefore = certificateToken.getNotBefore();
+		return thisUpdate.compareTo(notAfter) <= 0 && (nextUpdate != null && nextUpdate.compareTo(notBefore) >= 0);
 	}
 	
 	private boolean hasPOEAfterProductionAndBeforeNextUpdate(RevocationToken<Revocation> revocation) {
