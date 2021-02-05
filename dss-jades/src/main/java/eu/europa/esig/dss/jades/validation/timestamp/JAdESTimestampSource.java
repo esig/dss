@@ -425,7 +425,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 						try {
 							TimestampToken timestampToken = new TimestampToken(
 									Utils.fromBase64(tstBase64), timestampType, references);
-							timestampToken.setAttributeIdentifier(signatureAttribute.getIdentifier());
+							timestampToken.setTimestampAttribute(signatureAttribute);
 							result.add(timestampToken);
 						} catch (Exception e) {
 							LOG.error("Unable to parse timestamp '{}'", tstBase64, e);

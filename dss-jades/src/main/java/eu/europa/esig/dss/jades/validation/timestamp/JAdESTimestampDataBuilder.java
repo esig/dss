@@ -180,7 +180,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
 				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
 
-					if (timestampToken != null && timestampToken.getAttributeIdentifier().equals(etsiUComponent.getIdentifier())) {
+					if (timestampToken != null && timestampToken.getTimestampAttribute().equals(etsiUComponent)) {
 						// the current timestamp is found, stop the iteration
 						break;
 					}
@@ -379,7 +379,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
 				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
 
-					if (timestampToken != null && timestampToken.getAttributeIdentifier().equals(etsiUComponent.getIdentifier())) {
+					if (timestampToken != null && timestampToken.getTimestampAttribute().equals(etsiUComponent)) {
 						// the timestamp is reached, stop the iteration
 						break;
 					}
