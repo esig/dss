@@ -22,7 +22,9 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
@@ -36,6 +38,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
@@ -68,6 +71,7 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
+import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
@@ -84,6 +88,7 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.enums.TypeOfProof;
@@ -2141,7 +2146,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNull(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		
 		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
-		assertEquals(1, warnings.size());
+		assertEquals(2, warnings.size());
 		assertEquals(i18nProvider.getMessage(MessageTag.BBB_SAV_ISQPMDOSPP_ANS), warnings.get(0));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
@@ -3855,6 +3860,186 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void expiredOCSPResponderWithInformLevelTest() throws Exception {
+		// see DSS-2338
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_expired_ocsp_responder.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+		BasicSignatureConstraints basicSignatureConstraints = revocationConstraints.getBasicSignatureConstraints();
+		CertificateConstraints signingCertificateConstraints = basicSignatureConstraints.getSigningCertificate();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.INFORM);
+		signingCertificateConstraints.setRevocationDataAvailable(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		CertificateWrapper signingCertificate = signature.getSigningCertificate();
+		assertNotNull(signingCertificate);
+
+		List<CertificateRevocationWrapper> certificateRevocationData = signingCertificate.getCertificateRevocationData();
+		assertEquals(1, certificateRevocationData.size());
+		CertificateRevocationWrapper revocationWrapper = certificateRevocationData.get(0);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+
+		XmlSubXCV subXCV = subXCVs.get(0);
+		assertEquals(Indication.INDETERMINATE, subXCV.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, subXCV.getConclusion().getSubIndication());
+
+		List<XmlRAC> rac = subXCV.getRAC();
+		assertEquals(1, rac.size());
+
+		XmlRAC xmlRAC = rac.get(0);
+		assertEquals(Indication.INDETERMINATE, xmlRAC.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, xmlRAC.getConclusion().getSubIndication());
+
+		boolean consistencyCheckFound = false;
+		for (XmlConstraint constraint : xmlRAC.getConstraint()) {
+			if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getNameId())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_IRDC_ANS.getId(), constraint.getError().getNameId());
+				assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCED_AT_OUT_OF_BOUNDS,
+						revocationWrapper.getId(),
+						ValidationProcessUtils.getFormattedDate(revocationWrapper.getProductionDate()),
+						ValidationProcessUtils.getFormattedDate(revocationWrapper.getSigningCertificate().getNotBefore()),
+						ValidationProcessUtils.getFormattedDate(revocationWrapper.getSigningCertificate().getNotAfter())),
+						constraint.getAdditionalInfo());
+				consistencyCheckFound = true;
+			}
+		}
+		assertTrue(consistencyCheckFound);
+	}
+
+	@Test
+	public void skipRevocationCheckTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_expired_ocsp_responder.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		BasicSignatureConstraints basicSignatureConstraints = signatureConstraints.getBasicSignatureConstraints();
+		CertificateConstraints signingCertificateConstraints = basicSignatureConstraints.getSigningCertificate();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.INFORM);
+		signingCertificateConstraints.setRevocationDataAvailable(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(simpleReport.getInfo(simpleReport.getFirstSignatureId()).contains(
+				i18nProvider.getMessage(MessageTag.BBB_XCV_IARDPFC_ANS)));
+	}
+
+	@Test
+	public void notYetValidCRLIssuerTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_not_yet_valid_ca.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+		BasicSignatureConstraints basicSignatureConstraints = revocationConstraints.getBasicSignatureConstraints();
+		CertificateConstraints signingCertificateConstraints = basicSignatureConstraints.getSigningCertificate();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.INFORM);
+		signingCertificateConstraints.setRevocationDataAvailable(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		CertificateWrapper signingCertificate = signature.getSigningCertificate();
+		assertNotNull(signingCertificate);
+
+		List<CertificateRevocationWrapper> certificateRevocationData = signingCertificate.getCertificateRevocationData();
+		assertEquals(1, certificateRevocationData.size());
+
+		CertificateWrapper caCertificate = signingCertificate.getSigningCertificate();
+		assertNotNull(caCertificate);
+
+		certificateRevocationData = caCertificate.getCertificateRevocationData();
+		assertEquals(1, certificateRevocationData.size());
+		CertificateRevocationWrapper revocationWrapper = certificateRevocationData.get(0);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+
+		XmlSubXCV subXCV = subXCVs.get(0);
+		assertEquals(Indication.PASSED, subXCV.getConclusion().getIndication());
+
+		subXCV = subXCVs.get(1);
+		assertEquals(Indication.INDETERMINATE, subXCV.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, subXCV.getConclusion().getSubIndication());
+
+		List<XmlRAC> rac = subXCV.getRAC();
+		assertEquals(1, rac.size());
+
+		XmlRAC xmlRAC = rac.get(0);
+		assertEquals(Indication.INDETERMINATE, xmlRAC.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, xmlRAC.getConclusion().getSubIndication());
+
+		boolean consistencyCheckFound = false;
+		for (XmlConstraint constraint : xmlRAC.getConstraint()) {
+			if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getNameId())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_IRDC_ANS.getId(), constraint.getError().getNameId());
+				assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_BEFORE,
+						revocationWrapper.getId(),
+						ValidationProcessUtils.getFormattedDate(revocationWrapper.getThisUpdate()),
+						ValidationProcessUtils.getFormattedDate(caCertificate.getNotBefore()),
+						ValidationProcessUtils.getFormattedDate(caCertificate.getNotAfter())),
+						constraint.getAdditionalInfo());
+				consistencyCheckFound = true;
+			}
+		}
+		assertTrue(consistencyCheckFound);
 	}
 
 	@Test

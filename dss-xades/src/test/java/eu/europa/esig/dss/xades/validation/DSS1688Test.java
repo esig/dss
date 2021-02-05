@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1688Test extends AbstractXAdESTestValidation {
 
@@ -66,12 +65,6 @@ public class DSS1688Test extends AbstractXAdESTestValidation {
 		assertTrue(signingCertificateReference.isDigestValueMatch());
 		assertTrue(signingCertificateReference.isIssuerSerialPresent());
 		assertTrue(signingCertificateReference.isIssuerSerialMatch());
-	}
-	
-	@Override
-	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
-		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size());
 	}
 
 }

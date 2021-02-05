@@ -24,7 +24,6 @@ import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
-import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -125,15 +124,8 @@ public class PAdESFiveSignaturesDocTest extends AbstractPAdESTestValidation {
         }
         
         List<RevocationWrapper> timestampedRevocations = docTimestamp.getTimestampedRevocations();
-        assertEquals(2, timestampedRevocations.size());
+        assertEquals(4, timestampedRevocations.size());
         for (RevocationWrapper revocationWrapper : timestampedRevocations) {
-            assertFalse(checkedIds.contains(revocationWrapper.getId()));
-            checkedIds.add(revocationWrapper.getId());
-        }
-        
-        List<OrphanTokenWrapper> timestampedOrphanRevocations = docTimestamp.getTimestampedOrphanRevocations();
-        assertEquals(2, timestampedOrphanRevocations.size());
-        for (OrphanTokenWrapper revocationWrapper : timestampedOrphanRevocations) {
             assertFalse(checkedIds.contains(revocationWrapper.getId()));
             checkedIds.add(revocationWrapper.getId());
         }
@@ -146,14 +138,6 @@ public class PAdESFiveSignaturesDocTest extends AbstractPAdESTestValidation {
         }
         
         assertEquals(30, checkedIds.size());
-	}
-	
-	@Override
-	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
-		assertEquals(2, diagnosticData.getAllOrphanRevocationObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 	
 	@Override

@@ -339,7 +339,7 @@
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
             <NotAfter>2018-07-20T15:32:16</NotAfter>
-            <NotBefore>2004-07-20T15:32:16</NotBefore>
+            <NotBefore>2002-07-20T15:32:16</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B</EntityKey>
