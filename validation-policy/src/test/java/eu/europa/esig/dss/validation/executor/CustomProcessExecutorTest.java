@@ -396,7 +396,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(timestampProductionDate, bestSignatureTime);
 		
 		assertEquals(0, simpleReport.getErrors(simpleReport.getFirstSignatureId()).size());
-		assertEquals(2, simpleReport.getWarnings(simpleReport.getFirstSignatureId()).size());
+		assertEquals(3, simpleReport.getWarnings(simpleReport.getFirstSignatureId()).size());
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -2150,7 +2150,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNull(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		
 		List<Message> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
-		assertEquals(1, warnings.size());
+		assertEquals(2, warnings.size());
 		assertEquals(i18nProvider.getMessage(MessageTag.BBB_SAV_ISQPMDOSPP_ANS), warnings.get(0).getValue());
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
