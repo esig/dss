@@ -41,7 +41,7 @@ import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.SignatureAttributeIdentifier;
+import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -133,7 +133,7 @@ public class TimestampToken extends Token {
 	 * It's an internal attribute which allows to unambiguously identify a timestamp.
 	 * The value is used for a message-imprint computation.
 	 */
-	private SignatureAttributeIdentifier attributeIdentifier;
+	private SignatureAttribute attribute;
 
 	/**
 	 * Cached list of signing certificate candidates
@@ -672,21 +672,21 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Gets the timestamp's element identifier (XAdES, JAdES)
+	 * Gets the timestamp's element attribute (XAdES, JAdES)
 	 *
-	 * @return {@link SignatureAttributeIdentifier}
+	 * @return {@link SignatureAttribute}
 	 */
-	public SignatureAttributeIdentifier getAttributeIdentifier() {
-		return attributeIdentifier;
+	public SignatureAttribute getTimestampAttribute() {
+		return attribute;
 	}
 
 	/**
-	 * Sets the timestamp's element identifier (XAdES, JAdES)
+	 * Sets the timestamp's element attribute (XAdES, JAdES)
 	 *
-	 * @param attributeIdentifier {@link SignatureAttributeIdentifier}
+	 * @param attribute {@link SignatureAttribute}
 	 */
-	public void setAttributeIdentifier(SignatureAttributeIdentifier attributeIdentifier) {
-		this.attributeIdentifier = attributeIdentifier;
+	public void setTimestampAttribute(SignatureAttribute attribute) {
+		this.attribute = attribute;
 	}
 
 	@Override

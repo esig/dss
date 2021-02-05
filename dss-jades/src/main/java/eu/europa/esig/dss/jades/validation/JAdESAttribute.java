@@ -20,12 +20,14 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import eu.europa.esig.dss.validation.ISignatureAttribute;
+import eu.europa.esig.dss.validation.SignatureAttribute;
+
+import java.util.Objects;
 
 /**
  * Represents the JAdES header
  */
-public class JAdESAttribute implements ISignatureAttribute {
+public class JAdESAttribute implements SignatureAttribute {
 
 	/** Name if the header */
 	protected String name;
@@ -77,4 +79,19 @@ public class JAdESAttribute implements ISignatureAttribute {
 		return identifier;
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		JAdESAttribute that = (JAdESAttribute) o;
+
+		return Objects.equals(getIdentifier(), that.getIdentifier());
+	}
+
+	@Override
+	public int hashCode() {
+		return getIdentifier() != null ? getIdentifier().hashCode() : 0;
+	}
+
 }

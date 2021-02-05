@@ -151,7 +151,7 @@ public class JAdESEtsiUHeader implements SignatureProperties<EtsiUComponent> {
 			int position = iterator.nextIndex();
 			Object item = iterator.next();
 			EtsiUComponent currentComponent = EtsiUComponent.build(item, position);
-			if (attribute.getIdentifier().equals(currentComponent.getIdentifier())) {
+			if (attribute.equals(currentComponent)) {
 				iterator.set(attribute.getComponent());
 				break;
 			}
