@@ -24,7 +24,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ISignatureAttribute;
+import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
@@ -36,11 +36,12 @@ import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a XAdES attribute
  */
-public class XAdESAttribute implements ISignatureAttribute {
+public class XAdESAttribute implements SignatureAttribute {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESAttribute.class);
 
@@ -171,6 +172,21 @@ public class XAdESAttribute implements ISignatureAttribute {
 		return identifier;
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		XAdESAttribute that = (XAdESAttribute) o;
+
+		return Objects.equals(this.getIdentifier(), that.getIdentifier());
+	}
+
+	@Override
+	public int hashCode() {
+		return identifier != null ? identifier.hashCode() : 0;
+	}
+
 	@Override
 	public String toString() {
 		return getName();
