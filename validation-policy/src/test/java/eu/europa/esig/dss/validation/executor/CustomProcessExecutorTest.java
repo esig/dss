@@ -2151,7 +2151,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		List<Message> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
 		assertEquals(2, warnings.size());
-		assertEquals(i18nProvider.getMessage(MessageTag.BBB_SAV_ISQPMDOSPP_ANS), warnings.get(0).getValue());
+		assertTrue(checkMessageValuePresence(warnings, i18nProvider.getMessage(MessageTag.BBB_SAV_ISQPMDOSPP_ANS)));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());

@@ -760,6 +760,7 @@
             <SourceAddress>http://qca.ocsp.luxtrust.lu</SourceAddress>
             <ProductionDate>2020-04-24T08:06:39</ProductionDate>
             <ThisUpdate>2020-04-24T08:06:24</ThisUpdate>
+            <NextUpdate>2020-10-24T08:06:24</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
