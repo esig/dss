@@ -41,7 +41,6 @@ import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,14 +112,15 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				}
 				
 			} else if (xadesReferenceValidation.isFound() && DomUtils.isElementReference(uri)) {
-				NodeList nodeList = DomUtils.getNodeList(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(),
-						"//*" + DomUtils.getXPathByIdAttribute(uri));
-				if (nodeList != null && nodeList.getLength() == 1) {
-					Node signedElement = nodeList.item(0);
+				Element signedElement = DomUtils.getElementById(
+						xadesSignature.getSignatureElement().getOwnerDocument(), DomUtils.getId(uri));
+				if (signedElement != null) {
 					if (isEverythingCovered(xadesSignature, xmlIdOfSignedElement)) {
-						result.add(new XmlRootSignatureScope(transformations, getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
+						result.add(new XmlRootSignatureScope(transformations,
+								getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
 					} else {
-						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
+						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations,
+								getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
 					}
 				}
 				

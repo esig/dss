@@ -20,23 +20,10 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -48,6 +35,18 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DSS1444Test {
 
@@ -147,12 +146,12 @@ public class DSS1444Test {
 		assertNotNull(xmlBasicBuildingBlocks);
 		XmlConclusion xmlConclusion = xmlBasicBuildingBlocks.getConclusion();
 		assertNotNull(xmlConclusion);
-		List<XmlName> xmlNames = xmlConclusion.getErrors();
-		assertNotNull(xmlNames);
-		for (int i = 0; i < xmlNames.size(); i++) {
-			if (MessageTag.ASCCM_EAA_ANS.name().equals(xmlNames.get(i).getNameId())) {
+		List<XmlMessage> messages = xmlConclusion.getErrors();
+		assertNotNull(messages);
+		for (int i = 0; i < messages.size(); i++) {
+			if (MessageTag.ASCCM_EAA_ANS.name().equals(messages.get(i).getKey())) {
 				assertEquals(new I18nProvider().getMessage(MessageTag.ASCCM_EAA_ANS, EncryptionAlgorithm.PLAIN_ECDSA, MessageTag.ACCM_POS_SIG_SIG),
-						xmlNames.get(i).getValue());
+						messages.get(i).getValue());
 				return;
 			}
 		}

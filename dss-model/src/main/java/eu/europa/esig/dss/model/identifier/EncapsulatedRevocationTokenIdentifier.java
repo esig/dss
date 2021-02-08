@@ -22,7 +22,7 @@ package eu.europa.esig.dss.model.identifier;
 
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
-public class EncapsulatedRevocationTokenIdentifier<R extends Revocation> extends MultipleDigestIdentifier {
+public class EncapsulatedRevocationTokenIdentifier<R extends Revocation> extends MultipleDigestIdentifier implements IdentifierBasedObject {
 
 	private static final long serialVersionUID = -562828035596645649L;
 
@@ -30,4 +30,9 @@ public class EncapsulatedRevocationTokenIdentifier<R extends Revocation> extends
 		super("R-", binaries);
 	}
 	
+	@Override
+	public Identifier getDSSId() {
+		return this;
+	}
+
 }

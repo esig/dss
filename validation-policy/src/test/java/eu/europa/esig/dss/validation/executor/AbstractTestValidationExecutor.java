@@ -20,18 +20,7 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,9 +31,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
@@ -56,6 +45,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
@@ -64,6 +54,17 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.ValidationReportFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractTestValidationExecutor {
 
@@ -214,9 +215,9 @@ public abstract class AbstractTestValidationExecutor {
 		}
 
 		@Override
-		public XmlTimestampedObject deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+		public XmlTimestampedObject deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
 			ObjectMapper mapper = (ObjectMapper) jp.getCodec();
-			ObjectNode root = (ObjectNode) mapper.readTree(jp);
+			ObjectNode root = mapper.readTree(jp);
 			JsonNode categoryNode = root.get("Category");
 			TimestampedObjectType category = TimestampedObjectType.valueOf(categoryNode.textValue());
 			JsonNode tokenNode = root.get("Token");
@@ -256,6 +257,14 @@ public abstract class AbstractTestValidationExecutor {
 			return timestampedObject;
 		}
 
+	}
+
+	protected boolean checkMessageValuePresence(List<Message> messages, String messageValue) {
+		return messages.stream().map(m -> m.getValue()).collect(Collectors.toList()).contains(messageValue);
+	}
+
+	protected List<Message> convert(List<XmlMessage> messages) {
+		return messages.stream().map(m -> new Message(m.getKey(), m.getValue())).collect(Collectors.toList());
 	}
 
 }

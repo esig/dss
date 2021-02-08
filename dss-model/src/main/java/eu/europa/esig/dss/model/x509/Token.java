@@ -20,23 +20,23 @@
  */
 package eu.europa.esig.dss.model.x509;
 
-import java.io.Serializable;
-import java.security.PublicKey;
-import java.util.Date;
-
-import javax.security.auth.x500.X500Principal;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
+import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+
+import javax.security.auth.x500.X500Principal;
+import java.io.Serializable;
+import java.security.PublicKey;
+import java.util.Date;
 
 /**
  * This is the base class for the different types of tokens (certificate, OCSP,
  * CRL, Timestamp) used in the process of signature validation.
  */
 @SuppressWarnings("serial")
-public abstract class Token implements Serializable {
+public abstract class Token implements IdentifierBasedObject, Serializable {
 
 	/**
 	 * The token identifier to avoid to compute more than one time the digest value
@@ -111,6 +111,7 @@ public abstract class Token implements Serializable {
 	 * 
 	 * @return an instance of TokenIdentifier
 	 */
+	@Override
 	public TokenIdentifier getDSSId() {
 		if (tokenIdentifier == null) {
 			tokenIdentifier = buildTokenIdentifier();

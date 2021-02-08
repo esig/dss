@@ -109,7 +109,7 @@ public class TLValidationJobSummary {
 	public TLInfo getTLInfoById(Identifier identifier) {
 		if (Utils.isCollectionNotEmpty(otherTLInfos)) {
 			for (TLInfo tlInfo : otherTLInfos) {
-				if (identifier.equals(tlInfo.getIdentifier())) {
+				if (identifier.equals(tlInfo.getDSSId())) {
 					return tlInfo;
 				}
 			}
@@ -118,7 +118,7 @@ public class TLValidationJobSummary {
 		if (Utils.isCollectionNotEmpty(lotlInfos)) {
 			for (LOTLInfo lotlInfo : lotlInfos) {
 				for (TLInfo tlInfo : lotlInfo.getTLInfos()) {
-					if (identifier.equals(tlInfo.getIdentifier())) {
+					if (identifier.equals(tlInfo.getDSSId())) {
 						return tlInfo;
 					}
 				}
@@ -138,7 +138,7 @@ public class TLValidationJobSummary {
 	public LOTLInfo getLOTLInfoById(Identifier identifier) {
 		if (Utils.isCollectionNotEmpty(lotlInfos)) {
 			for (LOTLInfo lotlInfo : lotlInfos) {
-				if (identifier.equals(lotlInfo.getIdentifier())) {
+				if (identifier.equals(lotlInfo.getDSSId())) {
 					return lotlInfo;
 				}
 			}

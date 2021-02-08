@@ -48,7 +48,7 @@
 			</xsd:element>
 			<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Global constraints about cryptograhic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
+					<xsd:documentation>Global constraints about cryptographic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Model" type="ModelConstraint" minOccurs="0">
@@ -574,11 +574,6 @@
 					<xsd:documentation>Checks if the certificate policy id is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="QCStatementIds" type="MultiValuesConstraint" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate qc statement is in the acceptable values list</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="Qualification" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is declared as qualified (no TL overrule)</xsd:documentation>
@@ -587,6 +582,11 @@
 			<xsd:element name="SupportedByQSCD" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is declared as QSCD (no TL overrule)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="QcLegislationCountryCodes" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the country or set of countries under the legislation of which the certificate is issued as qualified (no TL overrule). Shall be empty for EU qualified certificates.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="IssuedToNaturalPerson" type="LevelConstraint" minOccurs="0">

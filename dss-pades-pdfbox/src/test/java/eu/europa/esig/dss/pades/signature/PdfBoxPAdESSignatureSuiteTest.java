@@ -41,6 +41,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTAException
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAAndLevelTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTANotTrustedTSPTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignRevokedSigWithPOETest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTWrongAIATest;
@@ -49,6 +50,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTWithSHA1MessageImprintTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESNoDuplicateValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESServiceTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESSignWithRevokedCertTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignatureParametersSerializationTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignedAssertionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSpaceEOFTest;
@@ -75,7 +77,7 @@ import org.junit.runner.RunWith;
 		PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class, CertificateConflictTest.class, ProtectedDocumentsSignatureTest.class,
 		PAdESTwoSignersLTALevelTest.class, PAdESWithPemEncodedCrlTest.class, PAdESSignatureParametersSerializationTest.class,
 		PAdESSignedAssertionTest.class, PAdESLevelLTAAndLevelTTest.class, PAdESLevelTNotTrustedTSPTest.class,
-		PAdESLevelLTANotTrustedTSPTest.class })
+		PAdESLevelLTANotTrustedTSPTest.class, PAdESSignWithRevokedCertTest.class, PAdESLevelLTASignRevokedSigWithPOETest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

@@ -1,16 +1,34 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -54,12 +72,8 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification().getId(), "ID (OID or URI) for SpDocSpecification must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSignaturePolicyContent(), "Signature policy content must be provided");
 
-		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(document);
-		JWSJsonSerializationObject jwsJsonSerializationObject = parser.parse();
-
-		if (jwsJsonSerializationObject == null || Utils.isCollectionEmpty(jwsJsonSerializationObject.getSignatures())) {
-			throw new DSSException("There is no signature to extend!");
-		}
+		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(document);
+		assertIsJSONSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
 
 		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
 			assertEtsiUComponentsConsistent(signature, base64UrlInstance);
@@ -93,7 +107,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 				sigPolicyStoreParams.put(JAdESHeaderParameterNames.SP_DSPEC, oidObject);
 
 				JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-				etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.SIG_PST,
+				etsiUHeader.addComponent(JAdESHeaderParameterNames.SIG_PST,
 						sigPolicyStoreParams, base64UrlInstance);
 
 			} else {

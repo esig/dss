@@ -54,6 +54,9 @@ public final class PAdESUtils {
 	 */
 	public static final int DEFAULT_FIRST_PAGE = 1;
 
+	/** The starting bytes of a PDF document */
+	private static final byte[] PDF_PREAMBLE = new byte[]{'%', 'P', 'D', 'F', '-'};
+
 	private PAdESUtils() {
 	}
 
@@ -71,7 +74,7 @@ public final class PAdESUtils {
 			ByteRange signatureByteRange = padesSignature.getPdfRevision().getByteRange();
 			DSSDocument firstByteRangePart = DSSUtils.splitDocument(dataToBeSigned,
 					signatureByteRange.getFirstPartStart(), signatureByteRange.getFirstPartEnd());
-			return retrieveLastPDFRevision(firstByteRangePart);
+			return retrieveCompletePDFRevision(firstByteRangePart);
 		}
 		return null;
 	}
@@ -85,12 +88,29 @@ public final class PAdESUtils {
 	public static InMemoryDocument getOriginalPDF(final PdfCMSRevision pdfRevision) {
 		byte[] signedDocumentBytes = pdfRevision.getRevisionCoveredBytes();
 		ByteRange signatureByteRange = pdfRevision.getByteRange();
-		DSSDocument firstByteRangePart = DSSUtils.splitDocument(new InMemoryDocument(signedDocumentBytes),
-				signatureByteRange.getFirstPartStart(), signatureByteRange.getFirstPartEnd());
-		return retrieveLastPDFRevision(firstByteRangePart);
+		return retrievePreviousPDFRevision(new InMemoryDocument(signedDocumentBytes), signatureByteRange);
 	}
 
-	private static InMemoryDocument retrieveLastPDFRevision(DSSDocument firstByteRangePart) {
+	/**
+	 * Retrieves the PDF document up to the previous PDF Revision, an empty document if such revision is not found
+	 *
+	 * @param document {@link DSSDocument} the original document
+	 * @param byteRange {@link ByteRange} representing the signed revision, to get the previous covered PDF for
+	 * @return {@link InMemoryDocument} the PDF document up to the signed revision
+	 */
+	public static InMemoryDocument retrievePreviousPDFRevision(DSSDocument document, ByteRange byteRange) {
+		DSSDocument firstByteRangePart = DSSUtils.splitDocument(document,
+				byteRange.getFirstPartStart(), byteRange.getFirstPartEnd());
+		return retrieveCompletePDFRevision(firstByteRangePart);
+	}
+
+	/**
+	 * Returns the PDF document up to the last complete PDF revision (up to the "%%EOF" string)
+	 *
+	 * @param firstByteRangePart {@link DSSDocument} the document to get last revision for
+	 * @return {@link InMemoryDocument}
+	 */
+	private static InMemoryDocument retrieveCompletePDFRevision(DSSDocument firstByteRangePart) {
 		final byte[] eof = new byte[] { '%', '%', 'E', 'O', 'F' };
 		try (InputStream is = firstByteRangePart.openStream();
 				BufferedInputStream bis = new BufferedInputStream(is);
@@ -197,6 +217,16 @@ public final class PAdESUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if the given {@code DSSDocument} represents a PDF document
+	 *
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the document is a PDF, FALSE otherwise
+	 */
+	public static boolean isPDFDocument(DSSDocument document) {
+		return DSSUtils.compareFirstBytes(document, PDF_PREAMBLE);
 	}
 
 }

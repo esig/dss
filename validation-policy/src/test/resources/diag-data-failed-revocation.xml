@@ -1,0 +1,938 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>pades-revoc-removed-from-dss-dict.pdf</DocumentName>
+    <ValidationDate>2021-01-22T13:41:05</ValidationDate>
+    <Signatures>
+        <Signature Id="S-105C143F73EB0F581E04BDDAFD03ABC415AAC8E932E095B6E6243CCB016F7F83">
+            <SignatureFilename>pades-revoc-removed-from-dss-dict.pdf</SignatureFilename>
+            <ClaimedSigningTime>2020-02-13T21:05:47</ClaimedSigningTime>
+            <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>vjtndcV8QG6aOiZvzVuC3zpR7uQNzgZhmgwO0X79PDQ=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-518C77691A42B537AD74787FC6232389E95AAA1410EE1905721B971BBBD19FD4"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-518C77691A42B537AD74787FC6232389E95AAA1410EE1905721B971BBBD19FD4"/>
+                <ChainItem Certificate="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=Herritar eta Erakundeen CA - CA de Ciudadanos y Entidades (4), OU=NZZ Ziurtagiri publikoa - Certificado publico SCI, O=IZENPE S.A., C=ES</IssuerName>
+                    <SerialNumber>745650</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature1</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <Type>Sig</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.CAdES.detached</SubFilter>
+                    <SignatureByteRange>0 12431 50321 490</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-2626B19563BC78D9B1442B93CE98D14A1E4B74264ACC90222F1F3C2385C27337">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-518C77691A42B537AD74787FC6232389E95AAA1410EE1905721B971BBBD19FD4">
+                    <Origin>SIGNED_DATA</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIG1MIGtpIGqMIGnMQswCQYDVQQGEwJFUzEUMBIGA1UECgwLSVpFTlBFIFMuQS4xOjA4BgNVBAsMMU5aWiBaaXVydGFnaXJpIHB1Ymxpa29hIC0gQ2VydGlmaWNhZG8gcHVibGljbyBTQ0kxRjBEBgNVBAMMPUhlcnJpdGFyIGV0YSBFcmFrdW5kZWVuIENBIC0gQ0EgZGUgQ2l1ZGFkYW5vcyB5IEVudGlkYWRlcyAoNCkCAwifUg==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>UYx3aRpCtTetdHh/xiMjielaqhQQ7hkFchuXG7vRn9Q=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-DB79D0AF49E6D8B88AEA6E1A92EE60C0CE8D35616AA43ECAB28F8D989D7EEE97">
+                    <Type>OCSP</Type>
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-8B7E65F7C92FE1CBDECE61B5C4B987A1F4FE8B1711902CD8B456E259822B3C4E"/>
+                <FoundTimestamp Timestamp="T-C86C6A830E4D3363C8D8503E96E216CD3978753139BD1A48781F2953FFA0EF63"/>
+                <FoundTimestamp Timestamp="T-940DF67BDA34C310CDB860E7117FF6F871E8FA4575C1F976441B745B40A68058"/>
+                <FoundTimestamp Timestamp="T-ED14B8B4F6984C07B665724E1A8D939C3CD8FC094CA924822B340D474DC00EF2"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-82DE84D2658602DED1EF796333EF65BB32FA97CD214A20ADCE25C1668DB59868">
+                    <Scope>PARTIAL</Scope>
+                    <Name>Partial PDF</Name>
+                    <Description>The document ByteRange : [0, 12431, 50321, 490]</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>fP4keFmGBYXDQUOJpMDB2BkMXHnudlqV5bw8SqIqiko=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>R5RUOahjucnWBaChlPPtPnqReqz1PD17gReL+KHAPtM=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>j8cptH23FMMPFfrnU3z21c82sNoNjbs0WCWFXKUGuRkAy3jX0sw5RVmwn3CHYMx/e7/GNhJ4RX1jsd6jsqkW2nJHCnxMzPKn1MU+nYn7vWEK0aPlRDkujdWldcCdAYqk1fSMuvPdicXTZVgqHkLWG/cTEd/LATEKFS90Nb39YnUGntBV8vqbowOC48dB88CQ7tkG/zTTg8Iceh/2UroL6GVIjVmBBnP6LdD591Z0NnaxhR7E55Hmd8uXDB92h7z5NY3ThofEyJmYd4RkNWtCITm+ZMEDffs8JkeA7ysB6RPE94p/FJDlB7390tNOApnVM8NRWGkuK0rvkB2s01dv4w==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-2626B19563BC78D9B1442B93CE98D14A1E4B74264ACC90222F1F3C2385C27337">
+            <SubjectDistinguishedName Format="CANONICAL">cn=herritar eta erakundeen ca - ca de ciudadanos y entidades (4),ou=nzz ziurtagiri publikoa - certificado publico sci,o=izenpe s.a.,c=es</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Herritar eta Erakundeen CA - CA de Ciudadanos y Entidades (4),OU=NZZ Ziurtagiri publikoa - Certificado publico SCI,O=IZENPE S.A.,C=ES</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=izenpe.com,o=izenpe s.a.,c=es</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Izenpe.com,O=IZENPE S.A.,C=ES</IssuerDistinguishedName>
+            <SerialNumber>113337510715436163020379579576825479821</SerialNumber>
+            <CommonName>Herritar eta Erakundeen CA - CA de Ciudadanos y Entidades (4)</CommonName>
+            <CountryName>ES</CountryName>
+            <OrganizationName>IZENPE S.A.</OrganizationName>
+            <OrganizationalUnit>NZZ Ziurtagiri publikoa - Certificado publico SCI</OrganizationalUnit>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>http://www.izenpe.com</subjectAlternativeName>
+                <subjectAlternativeName>info@izenpe.com</subjectAlternativeName>
+                <subjectAlternativeName>street=Avda del Mediterraneo Etorbidea 14 - 01010 Vitoria-Gasteiz,o=IZENPE S.A. - CIF A01337260-RMerc.Vitoria-Gasteiz T1055 F62 S8</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.izenpe.com:8094</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2037-12-12T23:00:00</NotAfter>
+            <NotBefore>2009-02-24T08:05:46</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-A6CC591DEDF7B811375F608BBABD9FACC255FCE28B55C8F23D555286903EF8DE</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.izenpe.com/cps">2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>JiaxlWO8eNmxRCuTzpjRSh5LdCZKzJAiLx88I4XCczc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-518C77691A42B537AD74787FC6232389E95AAA1410EE1905721B971BBBD19FD4">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#9393939393930513093933,2.5.4.4=#544943490c084649434f,2.5.4.42=#1444140c09434955444e4f,cn=ciudadano ficticio activo,2.5.4.46=#130e2d646e6920393939393939393053,ou=condiciones de uso en www.izenpe.com nola erabili jakiteko,ou=herritar ziurtagiria - certificado de ciudadano,ou=ziurtagiri onartua - certificado reconocido,c=es</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#9393939393930513093933,2.5.4.4=#544943490c084649434f,2.5.4.42=#1444140c09434955444e4f,CN=CIUDADANO FICTICIO ACTIVO,2.5.4.46=#130e2d646e6920393939393939393053,OU=Condiciones de uso en www.izenpe.com nola erabili jakiteko,OU=Herritar ziurtagiria - Certificado de ciudadano,OU=Ziurtagiri onartua - Certificado reconocido,C=ES</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=herritar eta erakundeen ca - ca de ciudadanos y entidades (4),ou=nzz ziurtagiri publikoa - certificado publico sci,o=izenpe s.a.,c=es</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Herritar eta Erakundeen CA - CA de Ciudadanos y Entidades (4),OU=NZZ Ziurtagiri publikoa - Certificado publico SCI,O=IZENPE S.A.,C=ES</IssuerDistinguishedName>
+            <SerialNumber>507456</SerialNumber>
+            <SubjectSerialNumber>99999990S</SubjectSerialNumber>
+            <CommonName>CIUDADANO FICTICIO ACTIVO</CommonName>
+            <CountryName>ES</CountryName>
+            <OrganizationalUnit>Ziurtagiri onartua - Certificado reconocido</OrganizationalUnit>
+            <GivenName>CIUDADANO</GivenName>
+            <Surname>FICTICIO</Surname>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.izenpe.com/cgi-bin/crl2</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.izenpe.com</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2021-07-12T13:00:01</NotAfter>
+            <NotBefore>2017-07-12T13:00:01</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-A8BBF270BB4D797A7A6C0DE670791D7F6050E5DE2FD200699B828AA8151A4202</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+                <KeyUsage>keyEncipherment</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+                <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.izenpe.com/rpaciudadano">1.3.6.1.4.1.14777.2.6</certificatePolicy>
+                <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcEuRetentionPeriod>15</QcEuRetentionPeriod>
+                <QcQSSD present="true"/>
+                <QcEuPDS>
+                    <PdsLocation lang="EN">https://www.izenpe.com/pds/en/</PdsLocation>
+                    <PdsLocation lang="EU">https://www.izenpe.com/pds/eu/</PdsLocation>
+                    <PdsLocation lang="ES">https://www.izenpe.com/pds/es/</PdsLocation>
+                </QcEuPDS>
+                <QcTypes/>
+                <QcCClegislation/>
+            </QcStatements>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-DB79D0AF49E6D8B88AEA6E1A92EE60C0CE8D35616AA43ECAB28F8D989D7EEE97">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-DCC0C21B56C96D738CEA26AC64FA37A757222E38BB6EB320929C6BA1616AD643">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>UYx3aRpCtTetdHh/xiMjielaqhQQ7hkFchuXG7vRn9Q=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp.izenpe.com,o=izenpe s.a.,c=es</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=ocsp.izenpe.com,O=IZENPE S.A.,C=ES</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=herritar eta erakundeen ca - ca de ciudadanos y entidades (4),ou=nzz ziurtagiri publikoa - certificado publico sci,o=izenpe s.a.,c=es</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Herritar eta Erakundeen CA - CA de Ciudadanos y Entidades (4),OU=NZZ Ziurtagiri publikoa - Certificado publico SCI,O=IZENPE S.A.,C=ES</IssuerDistinguishedName>
+            <SerialNumber>509966</SerialNumber>
+            <CommonName>ocsp.izenpe.com</CommonName>
+            <CountryName>ES</CountryName>
+            <OrganizationName>IZENPE S.A.</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.izenpe.com/cgi-bin/crl2</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2020-06-04T11:50:06</NotAfter>
+            <NotBefore>2015-06-04T11:50:06</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-BF770D36042BFD7D7001F550B2414BDF94895849BBE31FF29E932B815648BF62</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>VeomE80cE934LljdN4TQSeoTmuEUPsYJEYMVizJPphQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375">
+            <SubjectDistinguishedName Format="CANONICAL">cn=herritar eta erakundeen ca - ca de ciudadanos y entidades (4),ou=nzz ziurtagiri publikoa - certificado publico sci,o=izenpe s.a.,c=es</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Herritar eta Erakundeen CA - CA de Ciudadanos y Entidades (4),OU=NZZ Ziurtagiri publikoa - Certificado publico SCI,O=IZENPE S.A.,C=ES</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=izenpe.com,o=izenpe s.a.,c=es</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Izenpe.com,O=IZENPE S.A.,C=ES</IssuerDistinguishedName>
+            <SerialNumber>44226866073358392262219520495746478787</SerialNumber>
+            <CommonName>Herritar eta Erakundeen CA - CA de Ciudadanos y Entidades (4)</CommonName>
+            <CountryName>ES</CountryName>
+            <OrganizationName>IZENPE S.A.</OrganizationName>
+            <OrganizationalUnit>NZZ Ziurtagiri publikoa - Certificado publico SCI</OrganizationalUnit>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>http://www.izenpe.com</subjectAlternativeName>
+                <subjectAlternativeName>info@izenpe.com</subjectAlternativeName>
+                <subjectAlternativeName>street=Avda del Mediterraneo Etorbidea 14 - 01010 Vitoria-Gasteiz,o=IZENPE S.A. - CIF A01337260-RMerc.Vitoria-Gasteiz T1055 F62 S8</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.izenpe.com:8094</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2037-12-12T23:00:00</NotAfter>
+            <NotBefore>2010-10-20T08:16:02</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-A6CC591DEDF7B811375F608BBABD9FACC255FCE28B55C8F23D555286903EF8DE</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.izenpe.com/cps">2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ftGTYa1zTXA/ut8Cn1LsO2ZI2N1WuroIhO1PhZtbk3U=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+            <SubjectDistinguishedName Format="CANONICAL">cn=baltstamp qtsa tsu2,o=baltstamp uab,l=vilnius,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=BalTstamp QTSA TSU2,O=BalTstamp UAB,L=Vilnius,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ssc qualified class 3 ca,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SSC Qualified Class 3 CA,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</IssuerDistinguishedName>
+            <SerialNumber>104155880393078814540679</SerialNumber>
+            <CommonName>BalTstamp QTSA TSU2</CommonName>
+            <Locality>Vilnius</Locality>
+            <CountryName>LT</CountryName>
+            <OrganizationName>BalTstamp UAB</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.ssc.lt/cacert/ssc_class3nqc.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://ncrl.ssc.lt/class3nqc/cacrl.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp-3nqc.ssc.lt/</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2022-05-15T11:34:54</NotAfter>
+            <NotBefore>2012-05-15T11:34:54</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-6B8F751FB030568FCEC7D43BBCD238B3876AD05E7ADEA61C2F1A493A306ACB2A</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lqVEdQJp/EAjc7mTBfk7EbgeMz1OS4gr2FNH+tps00A=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ssc qualified class 3 ca,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SSC Qualified Class 3 CA,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ssc root ca a,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SSC Root CA A,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</IssuerDistinguishedName>
+            <SerialNumber>117727027898364819414749499309229344414</SerialNumber>
+            <CommonName>SSC Qualified Class 3 CA</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
+            <OrganizationalUnit>Certification Authority</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.ssc.lt/cacert/ssc_root_a.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.ssc.lt/crl/ssc_root_a.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp2.ssc.lt</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2026-10-25T12:05:00</NotAfter>
+            <NotBefore>2012-03-03T11:00:17</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-19EC2E86A9C59098407E816C29554E0CB566EDA0F53E92CC600FA01D36A42C8A</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>onfwYYsRYDtXap2bBFP6qp7CFgFyxW+mPYydQl+iyaU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219">
+            <SubjectDistinguishedName Format="CANONICAL">cn=tsa.izenpe.com,2.5.4.97=#0c0f56415445532d413031333337323630,o=izenpe s.a.,c=es</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=tsa.izenpe.com,2.5.4.97=#0c0f56415445532d413031333337323630,O=IZENPE S.A.,C=ES</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=izenpe.com,o=izenpe s.a.,c=es</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Izenpe.com,O=IZENPE S.A.,C=ES</IssuerDistinguishedName>
+            <SerialNumber>153937334957709364140310094114160524157</SerialNumber>
+            <CommonName>tsa.izenpe.com</CommonName>
+            <CountryName>ES</CountryName>
+            <OrganizationIdentifier>VATES-A01337260</OrganizationIdentifier>
+            <OrganizationName>IZENPE S.A.</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2022-02-06T10:21:23</NotAfter>
+            <NotBefore>2017-02-06T10:21:23</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-4FB1CDF6ABDF578449E115030672BE3A4054B71D3120554287879687D17C01D7</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.izenpe.com/cps">1.3.6.1.4.1.14777.3.3</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>zXcKO6UAW6w/bvKef6THvqHvQb5SElNW2g3RjwRckhk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ssc root ca a,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SSC Root CA A,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ssc root ca a,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SSC Root CA A,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</IssuerDistinguishedName>
+            <SerialNumber>135620924367389805115245033738757833813</SerialNumber>
+            <CommonName>SSC Root CA A</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
+            <OrganizationalUnit>Certification Authority</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.ssc.lt/root-a/cacrl.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2026-12-28T12:05:04</NotAfter>
+            <NotBefore>2006-12-27T12:18:52</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-D1ECACCA44012C3E1E6D1B39DD2968FC7FD3127AAA57AB5182A3BEABCCD7A3A9</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>8bE/XJoyZAOw8xu+dpnNF8fRwLmBWG3Rp7IZxSUI/pk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-DB79D0AF49E6D8B88AEA6E1A92EE60C0CE8D35616AA43ECAB28F8D989D7EEE97">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2020-02-14T17:05:34</ProductionDate>
+            <ThisUpdate>2020-02-14T17:05:34</ThisUpdate>
+            <NextUpdate>2020-02-16T17:05:34</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614"/>
+                <ChainItem Certificate="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=ocsp.izenpe.com, O=IZENPE S.A., C=ES</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>23nQr0nm2LiK6m4aku5gwM6NNWFqpD7Kso+NmJ1+7pc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-DCC0C21B56C96D738CEA26AC64FA37A757222E38BB6EB320929C6BA1616AD643">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2020-02-12T22:24:18</ProductionDate>
+            <ThisUpdate>2020-02-12T22:24:18</ThisUpdate>
+            <NextUpdate>2020-02-14T22:24:18</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614"/>
+                <ChainItem Certificate="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-7ED19361AD734D703FBADF029F52EC3B6648D8DD56BABA0884ED4F859B5B9375">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=ocsp.izenpe.com, O=IZENPE S.A., C=ES</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>3MDCG1bJbXOM6iasZPo3p1ciLji7brMgkpxroWFq1kM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-8B7E65F7C92FE1CBDECE61B5C4B987A1F4FE8B1711902CD8B456E259822B3C4E">
+            <ProductionTime>2020-02-13T21:05:49</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>R/ygHznzDHnX9sLym9UX2dzqf3DbRMz/tJNK1Rs0zys=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=Izenpe.com, O=IZENPE S.A., C=ES</IssuerName>
+                    <SerialNumber>153937334957709364140310094114160524157</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MFAwPKQ6MDgxCzAJBgNVBAYTAkVTMRQwEgYDVQQKDAtJWkVOUEUgUy5BLjETMBEGA1UEAwwKSXplbnBlLmNvbQIQc89Alm7KoeNYmE4j9Ko7fQ==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>zXcKO6UAW6w/bvKef6THvqHvQb5SElNW2g3RjwRckhk=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-82DE84D2658602DED1EF796333EF65BB32FA97CD214A20ADCE25C1668DB59868" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-105C143F73EB0F581E04BDDAFD03ABC415AAC8E932E095B6E6243CCB016F7F83" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-518C77691A42B537AD74787FC6232389E95AAA1410EE1905721B971BBBD19FD4" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>i35l98kv4cvezmG1xLmHofT+ixcRkCzYtFbiWYIrPE4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-C86C6A830E4D3363C8D8503E96E216CD3978753139BD1A48781F2953FFA0EF63">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+            <ProductionTime>2020-02-13T21:05:49</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>nGooDkjRG3ULjP/eTKLx+5+NmQsZOxUp4fwy4NA24XM=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=Izenpe.com, O=IZENPE S.A., C=ES</IssuerName>
+                    <SerialNumber>153937334957709364140310094114160524157</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature2</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <Type>DocTimeStamp</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.RFC3161</SubFilter>
+                    <SignatureByteRange>0 63842 82788 792</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MFAwPKQ6MDgxCzAJBgNVBAYTAkVTMRQwEgYDVQQKDAtJWkVOUEUgUy5BLjETMBEGA1UEAwwKSXplbnBlLmNvbQIQc89Alm7KoeNYmE4j9Ko7fQ==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>zXcKO6UAW6w/bvKef6THvqHvQb5SElNW2g3RjwRckhk=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-82DE84D2658602DED1EF796333EF65BB32FA97CD214A20ADCE25C1668DB59868" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-105C143F73EB0F581E04BDDAFD03ABC415AAC8E932E095B6E6243CCB016F7F83" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-518C77691A42B537AD74787FC6232389E95AAA1410EE1905721B971BBBD19FD4" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-2626B19563BC78D9B1442B93CE98D14A1E4B74264ACC90222F1F3C2385C27337" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-DCC0C21B56C96D738CEA26AC64FA37A757222E38BB6EB320929C6BA1616AD643" Category="REVOCATION"/>
+                <TimestampedObject Token="T-8B7E65F7C92FE1CBDECE61B5C4B987A1F4FE8B1711902CD8B456E259822B3C4E" Category="TIMESTAMP"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>yGxqgw5NM2PI2FA+luIWzTl4dTE5vRpIeB8pU/+g72M=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-940DF67BDA34C310CDB860E7117FF6F871E8FA4575C1F976441B745B40A68058">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+            <ProductionTime>2020-02-14T18:29:11</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>IAUAPOyh+mx3dQWhrwORMZPqu2sYBJADQirAVf4v4WE=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340"/>
+                <ChainItem Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=SSC Qualified Class 3 CA, OU=Certification Authority, O=Skaitmeninio sertifikavimo centras, C=LT</IssuerName>
+                    <SerialNumber>104155880393078814540679</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature3</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <Type>DocTimeStamp</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.RFC3161</SubFilter>
+                    <SignatureByteRange>0 88673 107619 493</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>IKNS4s4ucwcLs8+d3opO/vDwo1s=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-82DE84D2658602DED1EF796333EF65BB32FA97CD214A20ADCE25C1668DB59868" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-105C143F73EB0F581E04BDDAFD03ABC415AAC8E932E095B6E6243CCB016F7F83" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-518C77691A42B537AD74787FC6232389E95AAA1410EE1905721B971BBBD19FD4" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-2626B19563BC78D9B1442B93CE98D14A1E4B74264ACC90222F1F3C2385C27337" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-DCC0C21B56C96D738CEA26AC64FA37A757222E38BB6EB320929C6BA1616AD643" Category="REVOCATION"/>
+                <TimestampedObject Token="R-DB79D0AF49E6D8B88AEA6E1A92EE60C0CE8D35616AA43ECAB28F8D989D7EEE97" Category="REVOCATION"/>
+                <TimestampedObject Token="T-8B7E65F7C92FE1CBDECE61B5C4B987A1F4FE8B1711902CD8B456E259822B3C4E" Category="TIMESTAMP"/>
+                <TimestampedObject Token="T-C86C6A830E4D3363C8D8503E96E216CD3978753139BD1A48781F2953FFA0EF63" Category="TIMESTAMP"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lA32e9o0wxDNuGDnEX/2+HHo+kV1wfl2RBt0W0CmgFg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-ED14B8B4F6984C07B665724E1A8D939C3CD8FC094CA924822B340D474DC00EF2">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+            <ProductionTime>2020-02-14T18:29:58</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>dRZOCMu6fpb2c1TzqapUlw2aU68I13bGXgTmH4HP1YQ=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340"/>
+                <ChainItem Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=SSC Qualified Class 3 CA, OU=Certification Authority, O=Skaitmeninio sertifikavimo centras, C=LT</IssuerName>
+                    <SerialNumber>104155880393078814540679</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature4</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <Type>DocTimeStamp</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.RFC3161</SubFilter>
+                    <SignatureByteRange>0 113789 132735 494</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>IKNS4s4ucwcLs8+d3opO/vDwo1s=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-82DE84D2658602DED1EF796333EF65BB32FA97CD214A20ADCE25C1668DB59868" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-105C143F73EB0F581E04BDDAFD03ABC415AAC8E932E095B6E6243CCB016F7F83" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-518C77691A42B537AD74787FC6232389E95AAA1410EE1905721B971BBBD19FD4" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-2626B19563BC78D9B1442B93CE98D14A1E4B74264ACC90222F1F3C2385C27337" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-55EA2613CD1C13DDF82E58DD3784D049EA139AE1143EC6091183158B324FA614" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-DCC0C21B56C96D738CEA26AC64FA37A757222E38BB6EB320929C6BA1616AD643" Category="REVOCATION"/>
+                <TimestampedObject Token="R-DB79D0AF49E6D8B88AEA6E1A92EE60C0CE8D35616AA43ECAB28F8D989D7EEE97" Category="REVOCATION"/>
+                <TimestampedObject Token="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5" Category="CERTIFICATE"/>
+                <TimestampedObject Token="T-8B7E65F7C92FE1CBDECE61B5C4B987A1F4FE8B1711902CD8B456E259822B3C4E" Category="TIMESTAMP"/>
+                <TimestampedObject Token="T-C86C6A830E4D3363C8D8503E96E216CD3978753139BD1A48781F2953FFA0EF63" Category="TIMESTAMP"/>
+                <TimestampedObject Token="T-940DF67BDA34C310CDB860E7117FF6F871E8FA4575C1F976441B745B40A68058" Category="TIMESTAMP"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>7RS4tPaYTAe2ZXJOGo2TnDzY/AlMqSSCKzQNR03ADvI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-82DE84D2658602DED1EF796333EF65BB32FA97CD214A20ADCE25C1668DB59868">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>SGc5nIeues+0VBOV9+RSlqa8+F6cAUnxOOxg7kjqyjU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

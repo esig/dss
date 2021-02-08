@@ -23,7 +23,9 @@ package eu.europa.esig.dss.xades;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.AbstractPaths;
 import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -46,10 +48,12 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -58,6 +62,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.OutputKeys;
@@ -71,6 +76,7 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -323,7 +329,7 @@ public final class DSSXMLUtils {
 				Element sigChild = (Element) childNode;
 				String idAttribute = getIDIdentifier(sigChild);
 				if (noIndentObjectIds.contains(idAttribute)) {
-					Node nodeToReplace = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+					Node nodeToReplace = DomUtils.getElementById(indentedSignature, idAttribute);
 					Node importedNode = indentedSignature.getOwnerDocument().importNode(sigChild, true);
 					indentedSignature.replaceChild(importedNode, nodeToReplace);
 				}
@@ -364,7 +370,7 @@ public final class DSSXMLUtils {
 				Node indentedSignature = getIndentedNode(signature);
 				Node indentedXmlNode;
 				if (idAttribute != null) {
-					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+					indentedXmlNode = DomUtils.getElementById(indentedSignature, idAttribute);
 				} else {
 					indentedXmlNode = DomUtils.getNode(indentedSignature, pathAllFromCurrentPosition);
 				}
@@ -1097,6 +1103,187 @@ public final class DSSXMLUtils {
 	 */
 	public static byte[] applyTransforms(final DSSDocument document, final List<DSSTransform> transforms) {
 		return applyTransforms(DomUtils.buildDOM(document), transforms);
+	}
+
+	/**
+	 * Returns a list of {@code DigestAlgorithm} for all references containing inside
+	 * the provided {@code referenceContainer}
+	 *
+	 * @param referenceContainer {@link Element} containing the ds:Reference elements
+	 * @return a list of {@link DigestAlgorithm}s
+	 */
+	public static List<DigestAlgorithm> getReferenceDigestAlgos(Element referenceContainer) {
+		List<DigestAlgorithm> digestAlgorithms = new ArrayList<>();
+		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPaths.REFERENCE_PATH);
+		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
+			Element referenceElement = (Element) referenceNodeList.item(ii);
+			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
+			if (digest != null) {
+				digestAlgorithms.add(digest.getAlgorithm());
+			}
+		}
+		return digestAlgorithms;
+	}
+
+	/**
+	 * Returns a list of reference types
+	 *
+	 * @param referenceContainer {@link Element} containing the ds:Reference elements
+	 * @return a list of {@link String} reference types
+	 */
+	public static List<String> getReferenceTypes(Element referenceContainer) {
+		List<String> referenceTypes = new ArrayList<>();
+		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPaths.REFERENCE_PATH);
+		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
+			Element referenceElement = (Element) referenceNodeList.item(ii);
+			String type = referenceElement.getAttribute(XMLDSigAttribute.TYPE.getAttributeName());
+			if (Utils.isStringNotEmpty(type)) {
+				referenceTypes.add(type);
+			}
+		}
+		return referenceTypes;
+	}
+
+	/**
+	 * Extracts a list of {@code Reference}s from the given {@code Manifest} object
+	 *
+	 * NOTE: can be used also for a {@code SignedInfo} element
+	 *
+	 * @param manifest {@link Manifest}
+	 * @return a list of {@link Reference}s
+	 */
+	public static List<Reference> extractReferences(Manifest manifest) {
+		List<Reference> references = new ArrayList<>();
+		final int numberOfReferences = manifest.getLength();
+		for (int ii = 0; ii < numberOfReferences; ii++) {
+			try {
+				final Reference reference = manifest.item(ii);
+				references.add(reference);
+			} catch (XMLSecurityException e) {
+				LOG.warn("Unable to retrieve reference #{} : {}", ii, e.getMessage());
+			}
+		}
+		return references;
+	}
+
+	/**
+	 * Returns the {@code Digest} extracted from the provided {@code reference}
+	 *
+	 * @param reference {@link Reference}
+	 * @return {@link Digest}
+	 */
+	public static Digest getReferenceDigest(Reference reference) {
+		try {
+			final Digest digest = new Digest();
+			digest.setValue(reference.getDigestValue());
+			digest.setAlgorithm(
+					DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
+			return digest;
+		} catch (XMLSecurityException e) {
+			LOG.warn("Unable to extract Digest from a reference with Id [{}] : {}",
+					reference.getId(), e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * Checks if the original reference document content can be obtained (de-referenced)
+	 *
+	 * @param reference {@link Reference} to check
+	 * @return TRUE if the de-referencing is succeeds, FALSE otherwise
+	 */
+	public static boolean isAbleToDeReferenceContent(Reference reference) {
+		try {
+			return reference.getContentsBeforeTransformation() != null;
+
+		} catch (ReferenceNotInitializedException e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(String.format(
+						"Cannot get the pointed bytes by a reference with uri='%s'. Reason : [%s]",
+						reference.getURI(), e.getMessage()));
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * Checks if the reference with the {@code uri} occurs multiple times in the {@code document}
+	 *
+	 * @param document {@link Document} to be checked for a wrapping attack
+	 * @param uri {@link String} the referenced uri to be verified
+	 * @return TRUE if the reference is ambiguous (duplicated), FALSE otherwise
+	 */
+	public static boolean isReferencedContentAmbiguous(Document document, String uri) {
+		if (Utils.isStringNotEmpty(uri)) {
+			return !XMLUtils.protectAgainstWrappingAttack(document, DomUtils.getId(uri));
+		}
+		// empty URI means enveloped signature (unambiguous)
+		return false;
+	}
+
+	/**
+	 * Incorporates a ds:Transforms element into the given parent {@code element}
+	 *
+	 * @param parentElement {@link Element} to incorporate ds:Transforms into
+	 * @param transforms a list of {@link DSSTransform}s to be incorporated
+	 * @param namespace {@link DSSNamespace} to use
+	 */
+	public static void incorporateTransforms(final Element parentElement, List<DSSTransform> transforms, DSSNamespace namespace) {
+		if (Utils.isCollectionNotEmpty(transforms)) {
+			Document documentDom = parentElement.getOwnerDocument();
+			final Element transformsDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.TRANSFORMS);
+			parentElement.appendChild(transformsDom);
+			for (final DSSTransform dssTransform : transforms) {
+				dssTransform.createTransform(documentDom, transformsDom);
+			}
+		}
+	}
+
+	/**
+	 * This method creates the ds:DigestMethod DOM object
+	 *
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentElement
+	 *             {@link Element}the parent element
+	 * @param digestAlgorithm
+	 *            {@link DigestAlgorithm} the digest algorithm
+	 * @param namespace
+	 *            {@link DSSNamespace} to use
+	 */
+	public static void incorporateDigestMethod(final Element parentElement, DigestAlgorithm digestAlgorithm, DSSNamespace namespace) {
+		Document documentDom = parentElement.getOwnerDocument();
+		final Element digestMethodDom = DomUtils.addElement(documentDom, parentElement, namespace, XMLDSigElement.DIGEST_METHOD);
+		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
+	}
+
+	/**
+	 * This method creates the ds:DigestValue DOM object.
+	 *
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            {@link Element} the parent element
+	 * @param base64EncodedDigestBytes
+	 *            {@link String} representing a base64-encoded Digest value
+	 * @param namespace
+	 *            {@link DSSNamespace}
+	 */
+	public static void incorporateDigestValue(final Element parentDom, String base64EncodedDigestBytes, DSSNamespace namespace) {
+		Document documentDom = parentDom.getOwnerDocument();
+		final Element digestValueDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.DIGEST_VALUE);
+
+		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
+		digestValueDom.appendChild(textNode);
+		parentDom.appendChild(digestValueDom);
 	}
 
 }

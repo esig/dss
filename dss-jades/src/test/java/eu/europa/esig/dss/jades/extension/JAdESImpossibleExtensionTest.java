@@ -1,11 +1,24 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.jades.extension;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Collections;
-
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
@@ -23,6 +36,12 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 
@@ -35,6 +54,7 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 
 		JAdESSignatureParameters parameters = new JAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_T);
+		parameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
 		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(doc, parameters));
 		assertEquals("There is no signature to extend!", exception.getMessage());
@@ -65,6 +85,7 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		JAdESSignatureParameters extensionParameters = new JAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
 		extensionParameters.setDetachedContents(Collections.singletonList(digestDocument));
+		extensionParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 
 		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, extensionParameters));
 		assertEquals("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "

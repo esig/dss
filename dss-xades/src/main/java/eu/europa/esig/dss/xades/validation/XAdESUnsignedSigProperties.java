@@ -33,11 +33,11 @@ public class XAdESUnsignedSigProperties extends XAdESSigProperties {
 	/**
 	 * Default constructor
 	 *
-	 * @param signatureProperties {@link Element} signature properties
+	 * @param unsignedSignatureProperties {@link Element} unsigned signature properties
 	 * @param xadesPaths {@link XAdESPaths}
 	 */
-	XAdESUnsignedSigProperties(Element signatureProperties, XAdESPaths xadesPaths) {
-		super(signatureProperties, xadesPaths);
+	public XAdESUnsignedSigProperties(Element unsignedSignatureProperties, XAdESPaths xadesPaths) {
+		super(unsignedSignatureProperties, xadesPaths);
 	}
 
 	/**

@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.policy;
 
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.policy.jaxb.Algo;
-import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
@@ -42,9 +40,6 @@ import eu.europa.esig.dss.policy.jaxb.UnsignedAttributesConstraints;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. It
@@ -68,40 +63,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	 */
 	public EtsiValidationPolicy(ConstraintsParameters policy) {
 		this.policy = policy;
-	}
-
-	@Override
-	public Date getAlgorithmExpirationDate(final String algorithm, Context context, SubContext subContext) {
-		CryptographicConstraint signatureCryptographicConstraint = getCertificateCryptographicConstraint(context, subContext);
-		if (signatureCryptographicConstraint != null) {
-			return extractExpirationDate(algorithm, signatureCryptographicConstraint);
-		}
-		signatureCryptographicConstraint = getCertificateCryptographicConstraint(Context.SIGNATURE, SubContext.SIGNING_CERT);
-		if (signatureCryptographicConstraint != null) {
-			return extractExpirationDate(algorithm, signatureCryptographicConstraint);
-		}
-		return null;
-	}
-
-	private Date extractExpirationDate(final String algorithm, CryptographicConstraint signatureCryptographicConstraint) {
-		AlgoExpirationDate algoExpirationDate = signatureCryptographicConstraint.getAlgoExpirationDate();
-		String dateFormat = DateUtils.DEFAULT_DATE_FORMAT;
-		if (algoExpirationDate != null) {
-			if (algoExpirationDate.getFormat() != null) {
-				dateFormat = algoExpirationDate.getFormat();
-			}
-			List<Algo> algos = algoExpirationDate.getAlgo();
-			String foundExpirationDate = null;
-			for (Algo algo : algos) {
-				if (algo.getValue().equalsIgnoreCase(algorithm)) {
-					foundExpirationDate = algo.getDate();
-				}
-			}
-			if (foundExpirationDate != null) {
-				return DateUtils.parseDate(dateFormat, foundExpirationDate);
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -644,15 +605,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext) {
-		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getQCStatementIds();
-		}
-		return null;
-	}
-
-	@Override
 	public LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
@@ -675,6 +627,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getSupportedByQSCD();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateQcCCLegislationConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcLegislationCountryCodes();
 		}
 		return null;
 	}

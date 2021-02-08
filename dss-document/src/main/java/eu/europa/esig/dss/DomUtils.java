@@ -23,7 +23,7 @@ package eu.europa.esig.dss;
 import eu.europa.esig.dss.definition.DSSAttribute;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -646,6 +646,7 @@ public final class DomUtils {
 
 	/**
 	 * Returns case-insensitive xPath expression
+	 *
 	 * @param uri to find
 	 * @return {@link String} xPath expression
 	 */
@@ -654,6 +655,13 @@ public final class DomUtils {
 		return "[@Id='" + id + "' or @id='" + id + "' or @ID='" + id + "']";
 	}
 
+	/**
+	 * Gets Id value from the given URI reference
+	 * Ex. "#signature" = "signature"
+	 *
+	 * @param uri {@link String} representing a URI reference (e.g. "#r-signature-1")
+	 * @return {@link String} Id
+	 */
 	public static String getId(String uri) {
 		String id = uri;
 		if (startsFromHash(uri)) {
@@ -663,7 +671,29 @@ public final class DomUtils {
 	}
 
 	/**
+	 * Extract an element from the given document {@code node} with the given Id
+	 *
+	 * @param node {@link Node} containing the element with the Id
+	 * @param id {@link String} id of an element to find
+	 * @return {@link Element} with the given Id, NULL if unique result is not found
+	 */
+	public static Element getElementById(Node node, String id) {
+		try {
+			return DomUtils.getElement(node, ".//*" + DomUtils.getXPathByIdAttribute(id));
+		} catch (Exception e) {
+			String errorMessage = "An exception occurred during an attempt to extract an element by its Id '{}' : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, id, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, id, e.getMessage());
+			}
+			return null;
+		}
+	}
+
+	/**
 	 * Returns TRUE if the provided {@code uri} starts from the hash "#" character
+	 *
 	 * @param uri {@link String} to be checked
 	 * @return TRUE if {@code uri} is starts from "#", FALSE otherwise
 	 */
@@ -673,6 +703,7 @@ public final class DomUtils {
 	
 	/**
 	 * Returns TRUE if the provided {@code uri} refers to an element in the signature
+	 *
 	 * @param uri {@link String} to be checked
 	 * @return TRUE if {@code uri} is referred to an element, FALSE otherwise
 	 */

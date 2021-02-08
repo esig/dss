@@ -23,6 +23,9 @@ package eu.europa.esig.dss.validation.process.qualification.certificate;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
+import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategyFactory;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified.QualificationStrategy;
@@ -42,10 +45,10 @@ public class CertificateQualificationCalculation {
 
 	public CertificateQualification getQualification() {
 		QualificationStrategy qcStrategy = QualificationStrategyFactory.createQualificationFromCertAndTL(endEntityCert, caqcTrustService);
-		QualifiedStatus qualifiedStatus = qcStrategy.getQualifiedStatus();
+		CertificateQualifiedStatus qualifiedStatus = qcStrategy.getQualifiedStatus();
 
 		TypeStrategy typeStrategy = TypeStrategyFactory.createTypeFromCertAndTL(endEntityCert, caqcTrustService, qualifiedStatus);
-		Type type = typeStrategy.getType();
+		CertificateType type = typeStrategy.getType();
 
 		QSCDStrategy qscdStrategy = QSCDStrategyFactory.createQSCDFromCertAndTL(endEntityCert, caqcTrustService, qualifiedStatus);
 		QSCDStatus qscdStatus = qscdStrategy.getQSCDStatus();

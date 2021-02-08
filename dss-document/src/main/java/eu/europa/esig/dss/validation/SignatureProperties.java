@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Defined a "signed-signature-element" or "unsigned-signature-element" of a signature
  */
-public interface SignatureProperties<UnsignedAttribute extends ISignatureAttribute> {
+public interface SignatureProperties<UnsignedAttribute extends SignatureAttribute> {
 	
 	/**
 	 * Checks if "unsigned-signature-properties" exists and can be processed
@@ -35,7 +35,7 @@ public interface SignatureProperties<UnsignedAttribute extends ISignatureAttribu
 	
 	/**
 	 * Returns a list of children contained in the element
-	 * @return list of {@link ISignatureAttribute}s
+	 * @return list of {@link SignatureAttribute}s
 	 */
 	List<UnsignedAttribute> getAttributes();
 

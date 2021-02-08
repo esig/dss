@@ -20,18 +20,40 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.OriginalIdentifierProvider;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelLTATest extends AbstractXAdESTestSignature {
 
@@ -52,6 +74,58 @@ public class XAdESLevelLTATest extends AbstractXAdESTestSignature {
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
+		validator.setTokenIdentifierProvider(new OriginalIdentifierProvider());
+		return validator;
+	}
+
+	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+		super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
+
+		assertTrue(Utils.isCollectionNotEmpty(advancedSignatures));
+		for (AdvancedSignature advancedSignature : advancedSignatures) {
+			SignatureWrapper signature = diagnosticData.getSignatureById(advancedSignature.getId());
+			assertNotNull(signature);
+
+			List<CertificateToken> certificates = advancedSignature.getCertificates();
+			List<String> certIds = certificates.stream().map(CertificateToken::getDSSIdAsString).collect(Collectors.toList());
+			assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getUsedCertificates()));
+			for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+				assertTrue(certIds.contains(certificateWrapper.getId()));
+			}
+
+			Set<RevocationToken<CRL>> crlTokens = advancedSignature.getCRLSource().getAllRevocationTokens();
+			List<String> crlIds = crlTokens.stream().map(RevocationToken::getDSSIdAsString).collect(Collectors.toList());
+			Set<RevocationToken<OCSP>> ocspTokens = advancedSignature.getOCSPSource().getAllRevocationTokens();
+			List<String> ocspIds = ocspTokens.stream().map(RevocationToken::getDSSIdAsString).collect(Collectors.toList());
+			Set<String> revocIds = new HashSet<>();
+			revocIds.addAll(crlIds);
+			revocIds.addAll(ocspIds);
+			assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getAllRevocationData()));
+			for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
+				assertTrue(revocIds.contains(revocationWrapper.getId()));
+			}
+
+			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
+			List<String> tstIds = timestamps.stream().map(TimestampToken::getDSSIdAsString).collect(Collectors.toList());
+			assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getTimestampList()));
+			for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+				assertTrue(tstIds.contains(timestampWrapper.getId()));
+			}
+
+			List<SignatureScope> signatureScopes = advancedSignature.getSignatureScopes();
+			List<String> ssIds = signatureScopes.stream().map(SignatureScope::getDSSIdAsString).collect(Collectors.toList());
+			assertTrue(Utils.isCollectionNotEmpty(advancedSignature.getSignatureScopes()));
+			for (SignerDataWrapper signerDataWrapper: diagnosticData.getOriginalSignerDocuments()) {
+				assertTrue(ssIds.contains(signerDataWrapper.getId()));
+			}
+
+		}
 	}
 
 	@Override

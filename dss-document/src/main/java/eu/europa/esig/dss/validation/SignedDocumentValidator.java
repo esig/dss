@@ -129,6 +129,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
 
 	/**
+	 * The implementation to be used for identifiers generation
+	 */
+	private TokenIdentifierProvider identifierProvider = new OriginalIdentifierProvider();
+
+	/**
 	 * This variable allows to include the semantics for Indication / SubIndication
 	 */
 	private boolean includeSemantics = false;
@@ -259,6 +264,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
 		Objects.requireNonNull(tokenExtractionStrategy);
 		this.tokenExtractionStrategy = tokenExtractionStrategy;
+	}
+
+	@Override
+	public void setTokenIdentifierProvider(TokenIdentifierProvider identifierProvider) {
+		Objects.requireNonNull(identifierProvider);
+		this.identifierProvider = identifierProvider;
 	}
 
 	@Override
@@ -483,6 +494,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				.usedRevocations(validationContext.getProcessedRevocations())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.tokenExtractionStrategy(tokenExtractionStrategy)
+				.tokenIdentifierProvider(identifierProvider)
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime());
@@ -785,6 +797,50 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	@Override
+	public List<DSSDocument> getOriginalDocuments(String signatureId) {
+		AdvancedSignature advancedSignature = getSignatureById(signatureId);
+		if (advancedSignature != null) {
+			return getOriginalDocuments(advancedSignature);
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns the signature with the given id. Processes custom {@code TokenIdentifierProvider} and counter signatures
+	 *
+	 * @param signatureId {@link String} id of a signature to be extracted
+	 * @return {@link AdvancedSignature} with the given id if found, NULL otherwise
+	 */
+	public AdvancedSignature getSignatureById(String signatureId) {
+		Objects.requireNonNull(signatureId, "Signature Id cannot be null!");
+		for (AdvancedSignature advancedSignature : getSignatures()) {
+			AdvancedSignature signature = findSignatureRecursively(advancedSignature, signatureId);
+			if (signature != null) {
+				return signature;
+			}
+		}
+		return null;
+	}
+
+	private AdvancedSignature findSignatureRecursively(AdvancedSignature signature, String signatureId) {
+		if (doesIdMatch(signature, signatureId)) {
+			return signature;
+		}
+		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
+			AdvancedSignature advancedSignature = findSignatureRecursively(counterSignature, signatureId);
+			if (advancedSignature != null) {
+				return advancedSignature;
+			}
+		}
+		return null;
+	}
+
+	private boolean doesIdMatch(AdvancedSignature signature, String signatureId) {
+		return signatureId.equals(signature.getId()) || signatureId.equals(signature.getDAIdentifier()) ||
+				signatureId.equals(identifierProvider.getIdAsString(signature));
 	}
 
 }

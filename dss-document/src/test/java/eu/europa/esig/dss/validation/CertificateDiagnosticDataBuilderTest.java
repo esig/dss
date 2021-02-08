@@ -126,7 +126,7 @@ public class CertificateDiagnosticDataBuilderTest {
 
 		LOTLInfo lotlInfo = new LOTLInfo(null, null, null, "aaaa");
 		TLInfo tlInfo = new TLInfo(null, null, null, "bbb");
-		TrustProperties trustProperties = new TrustProperties(lotlInfo.getIdentifier(), tlInfo.getIdentifier(), trustServiceProvider, status);
+		TrustProperties trustProperties = new TrustProperties(lotlInfo.getDSSId(), tlInfo.getDSSId(), trustServiceProvider, status);
 		
 		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<>();
 		hashMap.put(rootToken, Arrays.asList(trustProperties));

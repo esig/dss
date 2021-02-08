@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.timestamp;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
@@ -17,7 +37,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ISignatureAttribute;
+import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
@@ -36,9 +56,9 @@ import java.util.Set;
  * The timestamp source of a signature
  *
  * @param <AS> {@code AdvancedSignature} implementation
- * @param <SignatureAttribute> the corresponding {@code ISignatureAttribute}
+ * @param <SA> the corresponding {@code SignatureAttribute}
  */
-public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SignatureAttribute extends ISignatureAttribute>
+public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA extends SignatureAttribute>
         extends AbstractTimestampSource implements TimestampSource {
 
     private static final Logger LOG = LoggerFactory.getLogger(SignatureTimestampSource.class);
@@ -96,12 +116,12 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
     /**
      * A cached instance of Signed Signature Properties
      */
-    private SignatureProperties<SignatureAttribute> signedSignatureProperties;
+    private SignatureProperties<SA> signedSignatureProperties;
 
     /**
      * A cached instance of Unsigned Signature Properties
      */
-    private SignatureProperties<SignatureAttribute> unsignedSignatureProperties;
+    private SignatureProperties<SA> unsignedSignatureProperties;
 
     /**
      * Default constructor
@@ -292,12 +312,12 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      */
     protected void makeTimestampTokensFromSignedAttributes() {
 
-        SignatureProperties<SignatureAttribute> signedSignatureProperties = getSignedSignatureProperties();
+        SignatureProperties<SA> signedSignatureProperties = getSignedSignatureProperties();
         if (signedSignatureProperties == null || !signedSignatureProperties.isExist()) {
             return;
         }
 
-        for (SignatureAttribute signedAttribute : signedSignatureProperties.getAttributes()) {
+        for (SA signedAttribute : signedSignatureProperties.getAttributes()) {
 
             List<TimestampToken> timestampTokens;
 
@@ -335,14 +355,14 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      */
     protected void makeTimestampTokensFromUnsignedAttributes() {
 
-        final SignatureProperties<SignatureAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
+        final SignatureProperties<SA> unsignedSignatureProperties = getUnsignedSignatureProperties();
         if (unsignedSignatureProperties == null || !unsignedSignatureProperties.isExist()) {
             return;
         }
 
         final List<TimestampToken> timestamps = new ArrayList<>();
 
-        for (SignatureAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
+        for (SA unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
             List<TimestampToken> timestampTokens;
 
             if (isSignatureTimestamp(unsignedAttribute)) {
@@ -369,7 +389,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
                 continue;
 
             } else if (isRefsOnlyTimestamp(unsignedAttribute)) {
-                timestampTokens = makeTimestampTokens(unsignedAttribute, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP, unsignedPropertiesReferences);
+                final List<TimestampedReference> references = new ArrayList<>();
+                addReferences(references, unsignedPropertiesReferences);
+
+                timestampTokens = makeTimestampTokens(unsignedAttribute, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP, references);
                 if (Utils.isCollectionEmpty(timestampTokens)) {
                     continue;
                 }
@@ -446,7 +469,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      *
      * @return {@link SignatureProperties}
      */
-    protected SignatureProperties<SignatureAttribute> getSignedSignatureProperties() {
+    protected SignatureProperties<SA> getSignedSignatureProperties() {
         if (signedSignatureProperties == null) {
             signedSignatureProperties = buildSignedSignatureProperties();
         }
@@ -458,14 +481,14 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      *
      * @return {@link SignatureProperties}
      */
-    protected abstract SignatureProperties<SignatureAttribute> buildSignedSignatureProperties();
+    protected abstract SignatureProperties<SA> buildSignedSignatureProperties();
 
     /**
      * Returns the 'unsigned-signature-properties' element of the signature
      *
      * @return {@link SignatureProperties}
      */
-    protected SignatureProperties<SignatureAttribute> getUnsignedSignatureProperties() {
+    protected SignatureProperties<SA> getUnsignedSignatureProperties() {
         if (unsignedSignatureProperties == null) {
             unsignedSignatureProperties = buildUnsignedSignatureProperties();
         }
@@ -477,181 +500,181 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      *
      * @return {@link SignatureProperties}
      */
-    protected abstract SignatureProperties<SignatureAttribute> buildUnsignedSignatureProperties();
+    protected abstract SignatureProperties<SA> buildUnsignedSignatureProperties();
 
     /**
      * Determines if the given {@code signedAttribute} is an instance of "content-timestamp" element
      * NOTE: Applicable only for CAdES
      *
-     * @param signedAttribute {@link ISignatureAttribute} to process
+     * @param signedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Data Objects Timestamp, FALSE otherwise
      */
-    protected abstract boolean isContentTimestamp(SignatureAttribute signedAttribute);
+    protected abstract boolean isContentTimestamp(SA signedAttribute);
 
     /**
      * Determines if the given {@code signedAttribute} is an instance of "data-objects-timestamp" element
      * NOTE: Applicable only for XAdES
      *
-     * @param signedAttribute {@link ISignatureAttribute} to process
+     * @param signedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Data Objects Timestamp, FALSE otherwise
      */
-    protected abstract boolean isAllDataObjectsTimestamp(SignatureAttribute signedAttribute);
+    protected abstract boolean isAllDataObjectsTimestamp(SA signedAttribute);
 
     /**
      * Determines if the given {@code signedAttribute} is an instance of "individual-data-objects-timestamp" element
      * NOTE: Applicable only for XAdES
      *
-     * @param signedAttribute {@link ISignatureAttribute} to process
+     * @param signedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Data Objects Timestamp, FALSE otherwise
      */
-    protected abstract boolean isIndividualDataObjectsTimestamp(SignatureAttribute signedAttribute);
+    protected abstract boolean isIndividualDataObjectsTimestamp(SA signedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "signature-timestamp" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Signature Timestamp, FALSE otherwise
      */
-    protected abstract boolean isSignatureTimestamp(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isSignatureTimestamp(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "complete-certificate-ref" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Complete Certificate Ref, FALSE otherwise
      */
-    protected abstract boolean isCompleteCertificateRef(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isCompleteCertificateRef(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "attribute-certificate-ref" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is an Attribute Certificate Ref, FALSE otherwise
      */
-    protected abstract boolean isAttributeCertificateRef(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isAttributeCertificateRef(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "complete-revocation-ref" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Complete Revocation Ref, FALSE otherwise
      */
-    protected abstract boolean isCompleteRevocationRef(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isCompleteRevocationRef(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "attribute-revocation-ref" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is an Attribute Revocation Ref, FALSE otherwise
      */
-    protected abstract boolean isAttributeRevocationRef(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isAttributeRevocationRef(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "refs-only-timestamp" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Refs Only TimeStamp, FALSE otherwise
      */
-    protected abstract boolean isRefsOnlyTimestamp(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isRefsOnlyTimestamp(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "sig-and-refs-timestamp" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Sig And Refs TimeStamp, FALSE otherwise
      */
-    protected abstract boolean isSigAndRefsTimestamp(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isSigAndRefsTimestamp(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "certificate-values" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Certificate Values, FALSE otherwise
      */
-    protected abstract boolean isCertificateValues(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isCertificateValues(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "revocation-values" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is a Revocation Values, FALSE otherwise
      */
-    protected abstract boolean isRevocationValues(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isRevocationValues(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "AttrAuthoritiesCertValues" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is an AttrAuthoritiesCertValues, FALSE otherwise
      */
-    protected abstract boolean isAttrAuthoritiesCertValues(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isAttrAuthoritiesCertValues(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "AttributeRevocationValues" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is an AttributeRevocationValues, FALSE otherwise
      */
-    protected abstract boolean isAttributeRevocationValues(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isAttributeRevocationValues(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of "archive-timestamp" element
      *
-     * @param unsignedAttribute {@link ISignatureAttribute} to process
+     * @param unsignedAttribute {@link SignatureAttribute} to process
      * @return TRUE if the {@code unsignedAttribute} is an Archive TimeStamp, FALSE otherwise
      */
-    protected abstract boolean isArchiveTimestamp(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isArchiveTimestamp(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of
      * "timestamp-validation-data" element
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to process
+     * @param unsignedAttribute {@link SA} to process
      * @return TRUE if the {@code unsignedAttribute} is a TimeStamp Validation Data,
      * FALSE otherwise
      */
-    protected abstract boolean isTimeStampValidationData(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isTimeStampValidationData(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of
      * "counter-signature" element
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to process
+     * @param unsignedAttribute {@link SA} to process
      * @return TRUE if the {@code unsignedAttribute} is a Counter signature, FALSE
      * otherwise
      */
-    protected abstract boolean isCounterSignature(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isCounterSignature(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of
      * "signature-policy-store" element
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to process
+     * @param unsignedAttribute {@link SA} to process
      * @return TRUE if the {@code unsignedAttribute} is a Counter signature, FALSE
      * otherwise
      */
-    protected abstract boolean isSignaturePolicyStore(SignatureAttribute unsignedAttribute);
+    protected abstract boolean isSignaturePolicyStore(SA unsignedAttribute);
 
     /**
      * Creates a timestamp token from the provided {@code signatureAttribute}
      *
-     * @param signatureAttribute {@link ISignatureAttribute} to create timestamp from
+     * @param signatureAttribute {@link SignatureAttribute} to create timestamp from
      * @param timestampType      a target {@link TimestampType}
      * @param references         list of {@link TimestampedReference}s covered by the current timestamp
      * @return {@link TimestampToken}
      */
-    protected abstract TimestampToken makeTimestampToken(SignatureAttribute signatureAttribute, TimestampType timestampType,
+    protected abstract TimestampToken makeTimestampToken(SA signatureAttribute, TimestampType timestampType,
                                                          List<TimestampedReference> references);
 
     /**
      * Creates timestamp tokens from the provided {@code signatureAttribute}
      *
-     * @param signatureAttribute {@link ISignatureAttribute} to create timestamp from
+     * @param signatureAttribute {@link SignatureAttribute} to create timestamp from
      * @param timestampType      a target {@link TimestampType}
      * @param references         list of {@link TimestampedReference}s covered by the current timestamp
      * @return a list of {@link TimestampToken}s
      */
-    protected List<TimestampToken> makeTimestampTokens(SignatureAttribute signatureAttribute, TimestampType timestampType,
+    protected List<TimestampToken> makeTimestampTokens(SA signatureAttribute, TimestampType timestampType,
                                                        List<TimestampedReference> references) {
         TimestampToken timestampToken = makeTimestampToken(signatureAttribute, timestampType, references);
         if (timestampToken != null) {
@@ -677,10 +700,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      * Returns a list of {@link TimestampedReference}s for an "individual-data-objects-timestamp"
      * NOTE: Used only in XAdES
      *
-     * @param signedAttribute {@link SignatureAttribute}
+     * @param signedAttribute {@link SA}
      * @return a list of {@link TimestampedReference}s
      */
-    protected abstract List<TimestampedReference> getIndividualContentTimestampedReferences(SignatureAttribute signedAttribute);
+    protected abstract List<TimestampedReference> getIndividualContentTimestampedReferences(SA signedAttribute);
 
     /**
      * Returns a list of {@link TimestampedReference} for a "signature-timestamp" element
@@ -710,10 +733,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      * Returns a list of {@link TimestampedReference} certificate refs found in the
      * given {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to find references from
+     * @param unsignedAttribute {@link SA} to find references from
      * @return list of {@link TimestampedReference}s
      */
-    protected List<TimestampedReference> getTimestampedCertificateRefs(SignatureAttribute unsignedAttribute) {
+    protected List<TimestampedReference> getTimestampedCertificateRefs(SA unsignedAttribute) {
         return getTimestampedCertificateRefs(getCertificateRefs(unsignedAttribute), certificateSource);
     }
 
@@ -743,18 +766,18 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      * Returns a list of {@link CertificateRef}s from the given
      * {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to get certRefs from
+     * @param unsignedAttribute {@link SA} to get certRefs from
      * @return list of {@link CertificateRef}s
      */
-    protected abstract List<CertificateRef> getCertificateRefs(SignatureAttribute unsignedAttribute);
+    protected abstract List<CertificateRef> getCertificateRefs(SA unsignedAttribute);
 
     /**
      * Returns a list of {@link TimestampedReference} revocation refs found in the given {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to find references from
+     * @param unsignedAttribute {@link SA} to find references from
      * @return list of {@link TimestampedReference}s
      */
-    protected List<TimestampedReference> getTimestampedRevocationRefs(SignatureAttribute unsignedAttribute) {
+    protected List<TimestampedReference> getTimestampedRevocationRefs(SA unsignedAttribute) {
         List<TimestampedReference> timestampedReferences = new ArrayList<>();
         timestampedReferences.addAll(getTimestampedCRLRefs(getCRLRefs(unsignedAttribute), crlSource));
         timestampedReferences.addAll(getTimestampedOCSPRefs(getOCSPRefs(unsignedAttribute), ocspSource));
@@ -805,45 +828,45 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
      * Returns a list of CRL revocation refs from the given
      * {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to get CRLRef
+     * @param unsignedAttribute {@link SA} to get CRLRef
      * @return list of {@link CRLRef}s
      */
-    protected abstract List<CRLRef> getCRLRefs(SignatureAttribute unsignedAttribute);
+    protected abstract List<CRLRef> getCRLRefs(SA unsignedAttribute);
 
     /**
      * Returns a list of OCSP revocation refs from the given
      * {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to get OCSPRefs from
+     * @param unsignedAttribute {@link SA} to get OCSPRefs from
      * @return list of {@link OCSPRef}s
      */
-    protected abstract List<OCSPRef> getOCSPRefs(SignatureAttribute unsignedAttribute);
+    protected abstract List<OCSPRef> getOCSPRefs(SA unsignedAttribute);
 
     /**
      * Returns a list of {@code TimestampedReference}s from the {@code unsignedAttribute} containing certificate values
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to extract certificate values from
+     * @param unsignedAttribute {@link SA} to extract certificate values from
      * @return a list of {@link TimestampedReference}s
      */
-    protected List<TimestampedReference> getTimestampedCertificateValues(SignatureAttribute unsignedAttribute) {
+    protected List<TimestampedReference> getTimestampedCertificateValues(SA unsignedAttribute) {
         return createReferencesForIdentifiers(getEncapsulatedCertificateIdentifiers(unsignedAttribute), TimestampedObjectType.CERTIFICATE);
     }
 
     /**
      * Returns a list of {@link Identifier}s obtained from the given {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to get certificate identifiers from
+     * @param unsignedAttribute {@link SA} to get certificate identifiers from
      * @return list of {@link Identifier}s
      */
-    protected abstract List<Identifier> getEncapsulatedCertificateIdentifiers(SignatureAttribute unsignedAttribute);
+    protected abstract List<Identifier> getEncapsulatedCertificateIdentifiers(SA unsignedAttribute);
 
     /**
      * Returns a list of timestamped revocation references extracted from the given unsigned attribute
      *
-     * @param unsignedAttribute {@link SignatureAttribute} containing revocation data
+     * @param unsignedAttribute {@link SA} containing revocation data
      * @return a list of {@link TimestampedReference}s
      */
-    protected List<TimestampedReference> getTimestampedRevocationValues(SignatureAttribute unsignedAttribute) {
+    protected List<TimestampedReference> getTimestampedRevocationValues(SA unsignedAttribute) {
         List<TimestampedReference> timestampedReferences = new ArrayList<>();
         timestampedReferences.addAll(createReferencesForIdentifiers(getEncapsulatedCRLIdentifiers(unsignedAttribute), TimestampedObjectType.REVOCATION));
         timestampedReferences.addAll(createReferencesForIdentifiers(getEncapsulatedOCSPIdentifiers(unsignedAttribute), TimestampedObjectType.REVOCATION));
@@ -853,28 +876,28 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
     /**
      * Returns a list of {@link Identifier}s obtained from the given {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to get CRL identifiers from
+     * @param unsignedAttribute {@link SA} to get CRL identifiers from
      * @return list of {@link Identifier}s
      */
-    protected abstract List<Identifier> getEncapsulatedCRLIdentifiers(SignatureAttribute unsignedAttribute);
+    protected abstract List<Identifier> getEncapsulatedCRLIdentifiers(SA unsignedAttribute);
 
     /**
      * Returns a list of {@link Identifier}s obtained from the given {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to get OCSP identifiers from
+     * @param unsignedAttribute {@link SA} to get OCSP identifiers from
      * @return list of {@link Identifier}s
      */
-    protected abstract List<Identifier> getEncapsulatedOCSPIdentifiers(SignatureAttribute unsignedAttribute);
+    protected abstract List<Identifier> getEncapsulatedOCSPIdentifiers(SA unsignedAttribute);
 
     /**
      * Returns a list of {@code TimestampedReference}s that has been extracted from
      * previously incorporated signed and unsigned elements
      *
-     * @param unsignedAttribute  {@link SignatureAttribute} representing a timestamp
+     * @param unsignedAttribute  {@link SA} representing a timestamp
      * @param previousTimestamps a list of previously created {@link TimestampToken}
      * @return a list of {@link TimestampedReference}s
      */
-    protected List<TimestampedReference> getArchiveTimestampInitialReferences(SignatureAttribute unsignedAttribute,
+    protected List<TimestampedReference> getArchiveTimestampInitialReferences(SA unsignedAttribute,
                                                                               List<TimestampToken> previousTimestamps) {
         final List<TimestampedReference> references = new ArrayList<>();
         addReferences(references, getSignatureTimestampReferences());
@@ -932,10 +955,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
     /**
      * Returns a list of {@link TimestampedReference}s encapsulated to the "timestamp-validation-data" {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to get timestamped references from
+     * @param unsignedAttribute {@link SA} to get timestamped references from
      * @return list of {@link TimestampedReference}s
      */
-    protected List<TimestampedReference> getTimestampValidationData(SignatureAttribute unsignedAttribute) {
+    protected List<TimestampedReference> getTimestampValidationData(SA unsignedAttribute) {
         List<TimestampedReference> timestampedReferences = new ArrayList<>();
 
         List<TimestampedReference> certTimestampedReferences = createReferencesForIdentifiers(
@@ -997,10 +1020,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
     /**
      * Extracts Counter Signatures from the given {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} containing counter signatures
+     * @param unsignedAttribute {@link SA} containing counter signatures
      * @return a list of {@link AdvancedSignature} containing counter signatures
      */
-    protected abstract List<AdvancedSignature> getCounterSignatures(SignatureAttribute unsignedAttribute);
+    protected abstract List<AdvancedSignature> getCounterSignatures(SA unsignedAttribute);
 
     private List<TimestampToken> filterSignatureTimestamps(List<TimestampToken> previousTimestampedTimestamp) {
         List<TimestampToken> result = new ArrayList<>();
@@ -1012,7 +1035,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
         return result;
     }
 
-    private void setArchiveTimestampType(List<TimestampToken> timestampTokens, SignatureAttribute unsignedAttribute) {
+    private void setArchiveTimestampType(List<TimestampToken> timestampTokens, SA unsignedAttribute) {
         ArchiveTimestampType archiveTimestampType = getArchiveTimestampType(unsignedAttribute);
         for (TimestampToken timestampToken : timestampTokens) {
             timestampToken.setArchiveTimestampType(archiveTimestampType);
@@ -1022,10 +1045,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, Sig
     /**
      * Returns {@link ArchiveTimestampType} for the given {@code unsignedAttribute}
      *
-     * @param unsignedAttribute {@link SignatureAttribute} to get archive timestamp type for
+     * @param unsignedAttribute {@link SA} to get archive timestamp type for
      * @return {@link ArchiveTimestampType}
      */
-    protected abstract ArchiveTimestampType getArchiveTimestampType(SignatureAttribute unsignedAttribute);
+    protected abstract ArchiveTimestampType getArchiveTimestampType(SA unsignedAttribute);
 
     /**
      * Validates list of all timestamps present in the source

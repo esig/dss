@@ -26,9 +26,13 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -54,14 +58,16 @@ import java.util.List;
  */
 public class ManifestBuilder {
 
+	/** Defines the default id for the Manifest element if none is provided */
+	private static final String DEFAULT_MANIFEST_ID = "manifest";
+
+	private static final DSSNamespace DEFAULT_NAMESPACE = XAdESNamespaces.XMLDSIG;
+
 	/** The manifest id */
 	private final String manifestId;
 
-	/** The DigestAlgorithm to use */
-	private final DigestAlgorithm digestAlgorithm;
-
-	/** List of manifested documents */
-	private final List<DSSDocument> documents;
+	/** The list of references to be incorporated into the Manifest */
+	private final List<DSSReference> references;
 
 	/** The namespace */
 	private final DSSNamespace xmldsigNamespace;
@@ -75,7 +81,7 @@ public class ManifestBuilder {
 	 *            the documents to include
 	 */
 	public ManifestBuilder(DigestAlgorithm digestAlgorithm, List<DSSDocument> documents) {
-		this("manifest", digestAlgorithm, documents);
+		this(DEFAULT_MANIFEST_ID, digestAlgorithm, documents);
 	}
 
 	/**
@@ -88,8 +94,8 @@ public class ManifestBuilder {
 	 * @param documents
 	 *            the documents to include
 	 */
-	public ManifestBuilder(String manifestId, DigestAlgorithm digestAlgorithm, List<DSSDocument> documents) {
-		this(manifestId, digestAlgorithm, documents, new DSSNamespace("http://www.w3.org/2000/09/xmldsig#", "ds"));
+	public ManifestBuilder(final String manifestId, DigestAlgorithm digestAlgorithm, List<DSSDocument> documents) {
+		this(manifestId, digestAlgorithm, documents, DEFAULT_NAMESPACE);
 	}
 
 	/**
@@ -104,11 +110,61 @@ public class ManifestBuilder {
 	 * @param xmldsigNamespace 
 	 * 			the xmldsig namespace definition           
 	 */
-	public ManifestBuilder(String manifestId, DigestAlgorithm digestAlgorithm, List<DSSDocument> documents, DSSNamespace xmldsigNamespace) {
+	public ManifestBuilder(final String manifestId, DigestAlgorithm digestAlgorithm, List<DSSDocument> documents,
+						   final DSSNamespace xmldsigNamespace) {
+		this(manifestId, createReferences(manifestId, digestAlgorithm, documents), xmldsigNamespace);
+	}
+
+	/**
+	 * The constructor with custom references and default manifest id
+	 *
+	 * @param references
+	 * 			  a list of custom {@link DSSReference}s to be incorporated into the Manifest
+	 */
+	public ManifestBuilder(final List<DSSReference> references) {
+		this(DEFAULT_MANIFEST_ID, references);
+	}
+
+	/**
+	 * The constructor with custom references and default namespace
+	 *
+	 * @param manifestId
+	 * 			  {@link String} the id of the Manifest element
+	 * @param references
+	 * 			  a list of custom {@link DSSReference}s to be incorporated into the Manifest
+	 */
+	public ManifestBuilder(final String manifestId, final List<DSSReference> references) {
+		this(manifestId, references, DEFAULT_NAMESPACE);
+	}
+
+	/**
+	 * The constructor with custom references
+	 *
+	 * @param manifestId
+	 * 			  {@link String} the id of the Manifest element
+	 * @param references
+	 * 			  a list of custom {@link DSSReference}s to be incorporated into the Manifest
+	 * @param xmldsigNamespace
+	 * 			  {@link String} the xmldsig namespace definition
+	 */
+	public ManifestBuilder(final String manifestId, final List<DSSReference> references,
+						   final DSSNamespace xmldsigNamespace) {
+		if (Utils.isCollectionEmpty(references)) {
+			throw new IllegalArgumentException("List of references cannot be empty!");
+		}
 		this.manifestId = manifestId;
-		this.digestAlgorithm = digestAlgorithm;
-		this.documents = documents;
+		this.references = references;
 		this.xmldsigNamespace = xmldsigNamespace;
+	}
+
+	private static List<DSSReference> createReferences(String manifestId, DigestAlgorithm digestAlgorithm,
+													   List<DSSDocument> documents) {
+		if (Utils.isCollectionEmpty(documents)) {
+			throw new IllegalArgumentException("List of documents cannot be empty!");
+		}
+		ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, digestAlgorithm);
+		referenceBuilder.setReferenceIdPrefix("r-" + manifestId + "-");
+		return referenceBuilder.build();
 	}
 
 	/**
@@ -121,25 +177,10 @@ public class ManifestBuilder {
 
 		Element manifestDom = DomUtils.createElementNS(documentDom, xmldsigNamespace, XMLDSigElement.MANIFEST);
 		manifestDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), manifestId);
-
 		documentDom.appendChild(manifestDom);
 
-		for (DSSDocument document : documents) {
-
-			Element referenceDom = DomUtils.createElementNS(documentDom, xmldsigNamespace, XMLDSigElement.REFERENCE);
-			manifestDom.appendChild(referenceDom);
-			referenceDom.setAttribute(XMLDSigAttribute.URI.getAttributeName(), document.getName());
-
-			Element digestMethodDom = DomUtils.createElementNS(documentDom, xmldsigNamespace, XMLDSigElement.DIGEST_METHOD);
-			referenceDom.appendChild(digestMethodDom);
-			digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
-
-			Element digestValueDom = DomUtils.createElementNS(documentDom, xmldsigNamespace, XMLDSigElement.DIGEST_VALUE);
-			referenceDom.appendChild(digestValueDom);
-			Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));
-			digestValueDom.appendChild(textNode);
-
-		}
+		ReferenceProcessor referenceProcessor = new ReferenceProcessor();
+		referenceProcessor.incorporateReferences(manifestDom, references, xmldsigNamespace);
 
 		return DomUtils.createDssDocumentFromDomDocument(documentDom, manifestId);
 	}

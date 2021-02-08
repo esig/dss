@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -49,6 +51,9 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 	/** ThisUpdate of the revocation */
 	private Date thisUpdate;
 
+	/** ProducedAt time of the revocation */
+	private Date producedAt;
+
 	/** Certificate's NotBefore */
 	private Date certNotBefore;
 
@@ -72,9 +77,14 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 	 */
 	public RevocationConsistentCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate, 
 			RevocationWrapper revocationData, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint);
+		super(i18nProvider, result, constraint, revocationData.getId());
 		this.certificate = certificate;
 		this.revocationData = revocationData;
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.REV_CC;
 	}
 
 	@Override
@@ -82,6 +92,7 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 		certNotBefore = certificate.getNotBefore();
 		certNotAfter = certificate.getNotAfter();
 		thisUpdate = revocationData.getThisUpdate();
+		producedAt = revocationData.getProductionDate();
 
 		notAfterRevoc = thisUpdate;
 
@@ -121,7 +132,45 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 		 */
 		certHashOK = revocationData.isCertHashExtensionPresent() && revocationData.isCertHashExtensionMatch();
 
-		return thisUpdate != null && certNotBefore.compareTo(thisUpdate) <= 0 && (certNotAfter.compareTo(notAfterRevoc) >= 0 || certHashOK);
+		return checkThisUpdateDefined() && checkRevocationDataHasInformationAboutCertificate() &&
+				checkIssuerKnowsCertificate() && checkRevocationIssuerKnown() &&
+				checkIssuerValidAtProductionTime();
+	}
+
+	private boolean checkThisUpdateDefined() {
+		return thisUpdate != null;
+	}
+
+	private boolean checkRevocationDataHasInformationAboutCertificate() {
+		return certNotBefore.compareTo(thisUpdate) <= 0;
+	}
+
+	private boolean checkIssuerKnowsCertificate() {
+		return checkIssuerHasInformationForExpiredCertificate() || checkCertHashMatches();
+	}
+
+	private boolean checkIssuerHasInformationForExpiredCertificate() {
+		return certNotAfter.compareTo(notAfterRevoc) >= 0;
+	}
+
+	private boolean checkCertHashMatches() {
+		return certHashOK;
+	}
+
+	private boolean checkRevocationIssuerKnown() {
+		return revocationData.getSigningCertificate() != null;
+	}
+
+	private boolean checkIssuerValidAtProductionTime() {
+		// check performed only for OCSP certificates
+		return !RevocationType.OCSP.equals(revocationData.getRevocationType()) ||
+				checkOCSPResponderValidAtRevocationProductionTime();
+	}
+
+	private boolean checkOCSPResponderValidAtRevocationProductionTime() {
+		CertificateWrapper revocationIssuer = revocationData.getSigningCertificate();
+		return producedAt.compareTo(revocationIssuer.getNotBefore()) >= 0 &&
+						producedAt.compareTo(revocationIssuer.getNotAfter()) <= 0;
 	}
 
 	@Override
@@ -146,20 +195,41 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 
 	@Override
 	protected String buildAdditionalInfo() {
-		if (thisUpdate == null) {
+
+		if (!checkThisUpdateDefined()) {
 			return i18nProvider.getMessage(MessageTag.REVOCATION_NO_THIS_UPDATE, revocationData.getId());
-		} else if (!certNotBefore.before(thisUpdate)) {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_BEFORE, revocationData.getId(), ValidationProcessUtils.getFormattedDate(
-					thisUpdate), ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
-		} else if (certNotAfter.compareTo(notAfterRevoc) < 0 && !certHashOK) {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_NOT_AFTER_AFTER, revocationData.getId(), ValidationProcessUtils.getFormattedDate(
-					notAfterRevoc), ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
-		} else if (certHashOK) {
+
+		} else if (!checkRevocationDataHasInformationAboutCertificate()) {
+			return i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_BEFORE, revocationData.getId(),
+					ValidationProcessUtils.getFormattedDate(thisUpdate),
+					ValidationProcessUtils.getFormattedDate(certNotBefore),
+					ValidationProcessUtils.getFormattedDate(certNotAfter));
+
+		} else if (!checkIssuerKnowsCertificate()) {
+			return i18nProvider.getMessage(MessageTag.REVOCATION_NOT_AFTER_AFTER, revocationData.getId(),
+					ValidationProcessUtils.getFormattedDate(notAfterRevoc),
+					ValidationProcessUtils.getFormattedDate(certNotBefore),
+					ValidationProcessUtils.getFormattedDate(certNotAfter));
+
+		} else if (!checkRevocationIssuerKnown()) {
+			return i18nProvider.getMessage(MessageTag.REVOCATION_ISSUER_FOUND, revocationData.getId());
+
+		} else if (!checkIssuerValidAtProductionTime()) {
+			return i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCED_AT_OUT_OF_BOUNDS, revocationData.getId(),
+					ValidationProcessUtils.getFormattedDate(producedAt),
+					ValidationProcessUtils.getFormattedDate(revocationData.getSigningCertificate().getNotBefore()),
+					ValidationProcessUtils.getFormattedDate(revocationData.getSigningCertificate().getNotAfter()));
+
+		} else if (checkCertHashMatches()) {
 			return i18nProvider.getMessage(MessageTag.REVOCATION_CERT_HASH_OK, revocationData.getId());
+
 		} else {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT, revocationData.getId(), ValidationProcessUtils.getFormattedDate(
-					thisUpdate), ValidationProcessUtils.getFormattedDate(certNotBefore), ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT, revocationData.getId(),
+					ValidationProcessUtils.getFormattedDate(thisUpdate),
+					ValidationProcessUtils.getFormattedDate(certNotBefore),
+					ValidationProcessUtils.getFormattedDate(certNotAfter));
 		}
+
 	}
 
 }

@@ -29,7 +29,6 @@ import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
 
 /**
  * Checks if the certificate is Qualified
@@ -56,11 +55,11 @@ public class CertificateQualifiedCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected boolean process() {
 		// This check only uses the certificate (not the TL)
-		boolean isQCCompliant = QCStatementPolicyIdentifiers.isQCCompliant(certificate);
+		boolean isQcCompliance = certificate.isQcCompliance();
 		boolean isQCP = CertificatePolicyIdentifiers.isQCP(certificate);
 		boolean isQCPPlus = CertificatePolicyIdentifiers.isQCPPlus(certificate);
 
-		return (isQCCompliant || isQCP || isQCPPlus);
+		return (isQcCompliance || isQCP || isQCPPlus);
 	}
 
 	@Override

@@ -42,13 +42,13 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.ValidationTime;
+import eu.europa.esig.dss.jaxb.object.Message;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * This class represents the detailed report built during the validation process. It contains information on each
@@ -452,7 +452,7 @@ public class DetailedReport {
 
 		List<XmlSignature> signatures = getSignatures();
 		for (XmlSignature xmlSignature : signatures) {
-			List<XmlTimestamp> timestamps = xmlSignature.getTimestamp();
+			List<XmlTimestamp> timestamps = xmlSignature.getTimestamps();
 			for (XmlTimestamp xmlTimestamp : timestamps) {
 				if (xmlTimestamp.getId().equals(timestampId)) {
 					return xmlTimestamp;
@@ -707,123 +707,63 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Returns a set of error messages for a signature with id
+	 * Returns a list of error messages for a token or token with id
 	 *
-	 * @param signatureId {@link String}
-	 * @return a set of {@link String} error messages
+	 * @param tokenId {@link String}
+	 * @return a list of error {@link Message}s
 	 */
-    public Set<String> getSignatureValidationErrors(String signatureId) {
-    	return getMessageCollector().getSignatureValidationErrors(signatureId);
+    public List<Message> getValidationErrors(String tokenId) {
+    	return getMessageCollector().getValidationErrors(tokenId);
     }
 
 	/**
-	 * Returns a set of warning messages for a signature with id
+	 * Returns a list of warning messages for a token or token with id
 	 *
-	 * @param signatureId {@link String}
-	 * @return a set of {@link String} warning messages
+	 * @param tokenId {@link String}
+	 * @return a list of warning {@link Message}s
 	 */
-    public Set<String> getSignatureValidationWarnings(String signatureId) {
-    	return getMessageCollector().getSignatureValidationWarnings(signatureId);
+    public List<Message> getValidationWarnings(String tokenId) {
+    	return getMessageCollector().getValidationWarnings(tokenId);
     }
 
 	/**
-	 * Returns a set of info messages for a signature with id
+	 * Returns a list of info messages for a token or token with id
 	 *
-	 * @param signatureId {@link String}
-	 * @return a set of {@link String} info messages
+	 * @param tokenId {@link String}
+	 * @return a list of info {@link Message}s
 	 */
-    public Set<String> getSignatureValidationInfos(String signatureId) {
-    	return getMessageCollector().getSignatureValidationInfos(signatureId);
+    public List<Message> getValidationInfos(String tokenId) {
+    	return getMessageCollector().getValidationInfos(tokenId);
     }
 
 	/**
-	 * Returns a set of error messages for a signature with id
+	 * Returns a list of qualification validation errors for a token with the given id
 	 *
-	 * @param signatureId {@link String}
-	 * @return a set of {@link String} error messages
+	 * @param tokenId {@link String} id of a token to get qualification errors for
+	 * @return a list of {@link Message}s
 	 */
-	public Set<String> getSignatureQualificationErrors(String signatureId) {
-		return getMessageCollector().getSignatureQualificationErrors(signatureId);
+	public List<Message> getQualificationErrors(String tokenId) {
+		return getMessageCollector().getQualificationErrors(tokenId);
 	}
 
 	/**
-	 * Returns a set of warning messages for a signature with id
+	 * Returns a list of qualification validation warnings for a token with the given id
 	 *
-	 * @param signatureId {@link String}
-	 * @return a set of {@link String} warning messages
+	 * @param tokenId {@link String} id of a token to get qualification warnings for
+	 * @return a list of {@link Message}s
 	 */
-	public Set<String> getSignatureQualificationWarnings(String signatureId) {
-		return getMessageCollector().getSignatureQualificationWarnings(signatureId);
+	public List<Message> getQualificationWarnings(String tokenId) {
+		return getMessageCollector().getQualificationWarnings(tokenId);
 	}
 
 	/**
-	 * Returns a set of info messages for a signature with id
+	 * Returns a list of qualification validation infos for a token with the given id
 	 *
-	 * @param signatureId {@link String}
-	 * @return a set of {@link String} info messages
+	 * @param tokenId {@link String} id of a token to get qualification infos for
+	 * @return a list of {@link Message}s
 	 */
-	public Set<String> getSignatureQualificationInfos(String signatureId) {
-		return getMessageCollector().getSignatureQualificationInfos(signatureId);
-	}
-
-	/**
-	 * Returns a set of error messages for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return a set of {@link String} error messages
-	 */
-	public Set<String> getTimestampValidationErrors(String timestampId) {
-		return getMessageCollector().getTimestampValidationErrors(timestampId);
-	}
-
-	/**
-	 * Returns a set of warning messages for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return a set of {@link String} warning messages
-	 */
-	public Set<String> getTimestampValidationWarnings(String timestampId) {
-		return getMessageCollector().getTimestampValidationWarnings(timestampId);
-	}
-
-	/**
-	 * Returns a set of info messages for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return a set of {@link String} info messages
-	 */
-	public Set<String> getTimestampValidationInfos(String timestampId) {
-		return getMessageCollector().getTimestampValidationInfos(timestampId);
-	}
-
-	/**
-	 * Returns a set of error messages for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return a set of {@link String} error messages
-	 */
-	public Set<String> getTimestampQualificationErrors(String timestampId) {
-		return getMessageCollector().getTimestampQualificationErrors(timestampId);
-	}
-
-	/**
-	 * Returns a set of warning messages for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return a set of {@link String} warning messages
-	 */
-	public Set<String> getTimestampQualificationWarnings(String timestampId) {
-		return getMessageCollector().getTimestampQualificationWarnings(timestampId);
-	}
-
-	/**
-	 * Returns a set of info messages for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return a set of {@link String} info messages
-	 */
-	public Set<String> getTimestampQualificationInfos(String timestampId) {
-		return getMessageCollector().getTimestampQualificationInfos(timestampId);
+	public List<Message> getQualificationInfos(String tokenId) {
+		return getMessageCollector().getQualificationInfos(tokenId);
 	}
 
 }

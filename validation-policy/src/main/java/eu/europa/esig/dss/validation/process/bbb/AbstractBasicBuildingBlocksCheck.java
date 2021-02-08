@@ -27,7 +27,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
@@ -70,7 +70,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 	private SubIndication subIndication;
 
 	/** List of errors */
-	private List<XmlName> errors = new ArrayList<>();
+	private final List<XmlMessage> errors = new ArrayList<>();
 
 	/**
 	 * Default constructor
@@ -332,7 +332,8 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
 
 			SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBBs.getId());
-			if (currentSignature != null && isSignatureValueConcernedByFailure(currentSignature, cryptographicInfo) 
+			if (currentSignature != null && cryptographicInfo != null
+					&& isSignatureValueConcernedByFailure(currentSignature, cryptographicInfo)
 					&& isThereValidContentTimestampAfterDate(currentSignature, cryptographicInfo.getNotAfter())) {
 				indication = Indication.INDETERMINATE;
 				subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE;
@@ -360,7 +361,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 
 	private boolean isThereValidContentTimestampAfterDate(SignatureWrapper currentSignature, Date date) {
 		List<TimestampWrapper> contentTimestamps = currentSignature.getContentTimestamps();
-		if (Utils.isCollectionNotEmpty(contentTimestamps)) {
+		if (Utils.isCollectionNotEmpty(contentTimestamps) && date != null) {
 			for (TimestampWrapper timestamp : contentTimestamps) {
 				if (isValidTimestamp(timestamp)) {
 					Date tspProductionTime = timestamp.getProductionTime();
@@ -406,7 +407,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 	}
 
 	@Override
-	protected List<XmlName> getPreviousErrors() {
+	protected List<XmlMessage> getPreviousErrors() {
 		return errors;
 	}
 

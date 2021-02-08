@@ -20,23 +20,25 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.validationreport.jaxb.SignerInformationType;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEEmptyCertificateStoreTest extends AbstractASiCWithCAdESTestValidation {
 
@@ -82,6 +84,11 @@ public class ASiCEEmptyCertificateStoreTest extends AbstractASiCWithCAdESTestVal
 	@Override
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		assertNull(diagnosticData.getSigningCertificateId(diagnosticData.getFirstSignatureId()));
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(EncryptionAlgorithm.RSA, signature.getEncryptionAlgorithm());
+		assertEquals("?", signature.getKeyLengthUsedToSignThisToken());
+		assertEquals(DigestAlgorithm.SHA256, signature.getDigestAlgorithm());
 	}
 	
 	@Override

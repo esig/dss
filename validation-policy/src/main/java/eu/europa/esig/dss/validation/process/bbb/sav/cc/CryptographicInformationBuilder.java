@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -14,12 +34,14 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * Builds a cryptographic information for the ETSI Validation report
  */
 public class CryptographicInformationBuilder {
+
+	/** The urn for a not identified (supported) algorithm */
+	private static final String ALGORITHM_UNIDENTIFIED_URN = "urn:etsi:019102:algorithm:unidentified";
 
 	/** The conclusion */
 	private final XmlConclusion conclusion;
@@ -49,8 +71,10 @@ public class CryptographicInformationBuilder {
 	 * @param conclusion {@link XmlConclusion}
 	 * @param constraint {@link CryptographicConstraint}
 	 */
-	public CryptographicInformationBuilder(TokenProxy token, XmlConclusion conclusion, CryptographicConstraint constraint) {
-		this(token.getDigestAlgorithm(), token.getEncryptionAlgorithm(), token.getMaskGenerationFunction(), token.getKeyLengthUsedToSignThisToken(), 
+	public CryptographicInformationBuilder(TokenProxy token, XmlConclusion conclusion,
+										   CryptographicConstraint constraint) {
+		this(token.getDigestAlgorithm(), token.getEncryptionAlgorithm(), token.getMaskGenerationFunction(),
+				token.getKeyLengthUsedToSignThisToken(),
 				token.getId(), conclusion, constraint);
 	}
 
@@ -61,8 +85,10 @@ public class CryptographicInformationBuilder {
 	 * @param conclusion {@link XmlConclusion}
 	 * @param constraint {@link CryptographicConstraint}
 	 */
-	public CryptographicInformationBuilder(XmlDigestMatcher digestMatcher, XmlConclusion conclusion, CryptographicConstraint constraint) {
-		this(digestMatcher.getDigestMethod(), null, null, null, getDigestMatcherDescription(digestMatcher), conclusion, constraint);
+	public CryptographicInformationBuilder(XmlDigestMatcher digestMatcher, XmlConclusion conclusion,
+										   CryptographicConstraint constraint) {
+		this(digestMatcher.getDigestMethod(), null, null, null,
+				getDigestMatcherDescription(digestMatcher), conclusion, constraint);
 	}
 	
 	private static String getDigestMatcherDescription(XmlDigestMatcher digestMatcher) {
@@ -73,13 +99,14 @@ public class CryptographicInformationBuilder {
 		return description.toString();
 	}
 	
-	private CryptographicInformationBuilder(DigestAlgorithm digestAlgorithm, EncryptionAlgorithm encryptionAlgorithm, MaskGenerationFunction maskGenerationFunction,
-			String keyLength, String objectDecription, XmlConclusion conclusion, CryptographicConstraint constraint) {
+	private CryptographicInformationBuilder(DigestAlgorithm digestAlgorithm, EncryptionAlgorithm encryptionAlgorithm,
+											MaskGenerationFunction maskGenerationFunction,
+			String keyLength, String objectDescription, XmlConclusion conclusion, CryptographicConstraint constraint) {
 		this.digestAlgorithm = digestAlgorithm;
 		this.encryptionAlgorithm = encryptionAlgorithm;
 		this.maskGenerationFunction = maskGenerationFunction;
 		this.keyLength = keyLength;
-		this.objectDescription =objectDecription;
+		this.objectDescription = objectDescription;
 		
 		this.conclusion = conclusion;
 		this.constraint = constraint;
@@ -96,14 +123,12 @@ public class CryptographicInformationBuilder {
 	}
 
 	private String getAlgorithmURI() {
-		try {
-			if (encryptionAlgorithm != null) {
-				return getSignatureAlgorithmUri(digestAlgorithm, encryptionAlgorithm, maskGenerationFunction);
-			} else {
-				return getDigestAlgorithmUri(digestAlgorithm);
-			}
-		} catch (Exception e) {
-			return "???";
+		if (digestAlgorithm == null) {
+			return ALGORITHM_UNIDENTIFIED_URN;
+		} else if (encryptionAlgorithm != null) {
+			return getSignatureAlgorithmUri(digestAlgorithm, encryptionAlgorithm, maskGenerationFunction);
+		} else {
+			return getDigestAlgorithmUri(digestAlgorithm);
 		}
 	}
 	
@@ -122,16 +147,12 @@ public class CryptographicInformationBuilder {
 	}
 	
 	private Date getNotAfter() {
-		if (constraint != null) {
-			Date notAfter = null;
-			CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(constraint);
-			Map<String, Date> expirationDates = wrapper.getExpirationTimes();
-			String digestAlgoToFind = digestAlgorithm == null ? Utils.EMPTY_STRING : digestAlgorithm.getName();
-			notAfter = expirationDates.get(digestAlgoToFind);
-			String encryptionAlgoToFind = encryptionAlgorithm == null ? Utils.EMPTY_STRING : encryptionAlgorithm.name();
-			int keySize = Utils.isStringDigits(keyLength) ? Integer.parseInt(keyLength) : 0;
-			Date expirationEncryption = wrapper.getExpirationDate(encryptionAlgoToFind, keySize);
-			if (notAfter != null && encryptionAlgorithm != null && (expirationEncryption == null || expirationEncryption.before(notAfter))) {
+		CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(constraint);
+		if (wrapper.isDigestAlgorithmReliable(digestAlgorithm) && wrapper.isEncryptionAlgorithmReliable(encryptionAlgorithm) &&
+				wrapper.isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, keyLength)) {
+			Date notAfter = wrapper.getExpirationDate(digestAlgorithm);
+			Date expirationEncryption = wrapper.getExpirationDate(encryptionAlgorithm, keyLength);
+			if (notAfter == null || (expirationEncryption != null && expirationEncryption.before(notAfter))) {
 				notAfter = expirationEncryption;
 			}
 			return notAfter;

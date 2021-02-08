@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -29,6 +31,8 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+
+import java.util.List;
 
 /**
  * Verifies if the RAC result is valid
@@ -51,6 +55,11 @@ public class RevocationAcceptanceCheckerResultCheck<T extends XmlConstraintsConc
 	public RevocationAcceptanceCheckerResultCheck(I18nProvider i18nProvider, T result, XmlRAC racResult, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, racResult.getId());
 		this.racResult = racResult;
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.RAC;
 	}
 
 	@Override
@@ -85,6 +94,11 @@ public class RevocationAcceptanceCheckerResultCheck<T extends XmlConstraintsConc
 			return i18nProvider.getMessage(MessageTag.REVOCATION_ACCEPTANCE_CHECK, racResult.getId(), date);
 		}
 		return null;
+	}
+
+	@Override
+	public List<XmlMessage> getPreviousErrors() {
+		return racResult.getConclusion().getErrors();
 	}
 
 }

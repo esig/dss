@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -55,6 +56,11 @@ public class RevocationFreshnessCheckerResultCheck<T extends XmlConstraintsConcl
 	}
 
 	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.RFC;
+	}
+
+	@Override
 	protected boolean process() {
 		return isValid(rfcResult);
 	}
@@ -80,7 +86,7 @@ public class RevocationFreshnessCheckerResultCheck<T extends XmlConstraintsConcl
 	}
 
 	@Override
-	protected List<XmlName> getPreviousErrors() {
+	protected List<XmlMessage> getPreviousErrors() {
 		return rfcResult.getConclusion().getErrors();
 	}
 	

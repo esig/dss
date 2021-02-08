@@ -41,6 +41,7 @@ import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -129,13 +130,14 @@ public class TimestampToken extends Token {
 	private X500Principal tsaX500Principal;
 
 	/**
-	 * This attribute is used only with XAdES timestamps. It represents the hash code of the DOM element containing the
-	 * timestamp. It's an internal attribute which allows to
-	 * unambiguously identify a timestamp.
+	 * It's an internal attribute which allows to unambiguously identify a timestamp.
+	 * The value is used for a message-imprint computation.
 	 */
-	private int hashCode;
+	private SignatureAttribute attribute;
 
-	/* cached */
+	/**
+	 * Cached list of signing certificate candidates
+	 */
 	private CandidatesForSigningCertificate candidatesForSigningCertificate;
 
 	/**
@@ -670,22 +672,21 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Sets timestamp's element hash code (XAdES, JAdES)
+	 * Gets the timestamp's element attribute (XAdES, JAdES)
 	 *
-	 * @param hashCode
-	 *            the hash code of the element containing the timestamp
+	 * @return {@link SignatureAttribute}
 	 */
-	public void setHashCode(final int hashCode) {
-		this.hashCode = hashCode;
+	public SignatureAttribute getTimestampAttribute() {
+		return attribute;
 	}
 
 	/**
-	 * Gets timestamp's element hash code (XAdES, JAdES)
+	 * Sets the timestamp's element attribute (XAdES, JAdES)
 	 *
-	 * @return the hash code of the element containing the timestamp
+	 * @param attribute {@link SignatureAttribute}
 	 */
-	public int getHashCode() {
-		return hashCode;
+	public void setTimestampAttribute(SignatureAttribute attribute) {
+		this.attribute = attribute;
 	}
 
 	@Override

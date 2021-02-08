@@ -175,7 +175,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		assertEquals(1, detailedReport.getSignatures().size());
 		XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
 		assertEquals(0, detailedReport.getIndependentTimestamps().size());
-		assertEquals(2, xmlSignature.getTimestamp().size());
+		assertEquals(2, xmlSignature.getTimestamps().size());
 
 		checkReports(reports);
 	}

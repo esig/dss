@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 
@@ -59,8 +60,17 @@ public class DSS2023Test extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertFalse(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertEquals(2, signatures.size());
+		for (SignatureWrapper signatureWrapper : signatures) {
+			if (Utils.isCollectionNotEmpty(signatureWrapper.getTimestampList())) {
+				assertTrue(diagnosticData.isTLevelTechnicallyValid(signatureWrapper.getId()));
+				assertTrue(diagnosticData.isALevelTechnicallyValid(signatureWrapper.getId()));
+			} else {
+				assertFalse(diagnosticData.isTLevelTechnicallyValid(signatureWrapper.getId()));
+				assertFalse(diagnosticData.isALevelTechnicallyValid(signatureWrapper.getId()));
+			}
+		}
 	}
 
 }

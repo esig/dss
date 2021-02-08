@@ -52,7 +52,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,9 +59,6 @@ import java.util.Objects;
  * Validation of PDF document.
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
-
-    /** The starting bytes of a PDF document */
-    private static final byte[] pdfPreamble = new byte[]{'%', 'P', 'D', 'F', '-'};
 
     /** Loads the relevant implementation for PDF document reading */
     private IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
@@ -86,15 +82,15 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      */
     public PDFDocumentValidator(final DSSDocument document) {
         super(new PAdESSignatureScopeFinder());
-        this.document = document;
-        if (!DSSUtils.compareFirstBytes(document, pdfPreamble)) {
+        if (!isSupported(document)) {
             throw new DSSException("Not supported document");
         }
+        this.document = document;
     }
 
     @Override
     public boolean isSupported(DSSDocument dssDocument) {
-        return DSSUtils.compareFirstBytes(dssDocument, pdfPreamble);
+        return PAdESUtils.isPDFDocument(dssDocument);
     }
 
     /**
@@ -315,18 +311,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
             documentRevisions = pdfSignatureService.getRevisions(document, passwordProtection);
         }
         return documentRevisions;
-    }
-
-    @Override
-    public List<DSSDocument> getOriginalDocuments(String signatureId) {
-        Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-        List<AdvancedSignature> signatures = getSignatures();
-        for (AdvancedSignature signature : signatures) {
-            if (signature.getId().equals(signatureId)) {
-                return getOriginalDocuments(signature);
-            }
-        }
-        return Collections.emptyList();
     }
 
     @Override

@@ -89,7 +89,11 @@ public class FileDocument extends CommonDocument {
 		return file;
 	}
 
-	@Override
+	/**
+	 * Returns the {@code String} representing the absolute path to the encapsulated document.
+	 *
+	 * @return {@code String} representing the absolute path to the encapsulated document.
+	 */
 	public String getAbsolutePath() {
 		return file.getAbsolutePath();
 	}

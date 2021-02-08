@@ -24,7 +24,6 @@ import eu.europa.esig.dss.model.CommonDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -82,26 +81,12 @@ public class CMSSignedDocument extends CommonDocument {
 		}
 	}
 
-	/**
-	 * Returns base64 encoded representation of the CMSSignedData
-	 *
-	 * @return {@link String} base64 encoded
-	 */
-	public String getBase64Encoded() {
-		return Utils.toBase64(getBytes());
-	}
-	
 	@Override
 	public void writeTo(OutputStream stream) throws IOException {
 		final byte[] encoded = signedData.getEncoded();
 		final ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(encoded);
 		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ASN1Encoding.DER);
 		asn1OutputStream.writeObject(asn1Primitive);
-	}
-
-	@Override
-	public String getAbsolutePath() {
-		return super.getName();
 	}
 
 }

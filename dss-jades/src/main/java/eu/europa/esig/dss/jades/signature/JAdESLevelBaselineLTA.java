@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -51,12 +71,12 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		if (jadesSignature.hasLTAProfile()) {
 			// must be executed before data removing
 			final ValidationContext validationContext = jadesSignature.getSignatureValidationContext(certificateVerifier);
-			etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.TST_VD);
+			removeLastTimestampValidationData(jadesSignature, etsiUHeader);
 			
 			final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature, validationContext);
 			if (!validationDataForInclusion.isEmpty()) {
 				JsonObject tstVd = getTstVd(validationDataForInclusion);
-				etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.TST_VD, tstVd,
+				etsiUHeader.addComponent(JAdESHeaderParameterNames.TST_VD, tstVd,
 						params.isBase64UrlEncodedEtsiUComponents());
 			}
 		}
@@ -64,9 +84,15 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		TimestampBinary timestampBinary = getArchiveTimestamp(jadesSignature, params);
 		JsonObject arcTst = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary),
 				params.getArchiveTimestampParameters().getCanonicalizationMethod());
-		etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.ARC_TST, arcTst,
+		etsiUHeader.addComponent(JAdESHeaderParameterNames.ARC_TST, arcTst,
 				params.isBase64UrlEncodedEtsiUComponents());
 		
+	}
+
+	private void removeLastTimestampValidationData(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
+		etsiUHeader.removeLastComponent(JAdESHeaderParameterNames.TST_VD);
+		jadesSignature.resetCertificateSource();
+		jadesSignature.resetRevocationSources();
 	}
 
 	private JsonObject getTstVd(final ValidationDataForInclusion validationDataForInclusion) {

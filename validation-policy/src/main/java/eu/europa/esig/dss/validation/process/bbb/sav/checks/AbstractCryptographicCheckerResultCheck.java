@@ -1,10 +1,30 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -30,7 +50,7 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	protected final XmlCC ccResult;
 
 	/** The checker result message */
-	private final XmlName checkerResultMessage;
+	private final XmlMessage checkerResultMessage;
 
 	/**
 	 * Default constructor
@@ -46,13 +66,13 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 		super(i18nProvider, result, constraint);
 		this.position = position;
 		this.ccResult = ccResult;
-		this.checkerResultMessage = extractXmlNameMessage(ccResult, constraint);
+		this.checkerResultMessage = extractXmlMessage(ccResult, constraint);
 	}
 	
-	private static XmlName extractXmlNameMessage(XmlCC ccResult, LevelConstraint constraint) {
+	private static XmlMessage extractXmlMessage(XmlCC ccResult, LevelConstraint constraint) {
 		XmlConclusion conclusion = ccResult.getConclusion();
 		if (conclusion != null && constraint != null && constraint.getLevel() != null) {
-			List<XmlName> messages = null;
+			List<XmlMessage> messages = null;
 			switch (constraint.getLevel()) {
 				case FAIL:
 					messages = conclusion.getErrors();
@@ -92,12 +112,12 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	}
 	
 	@Override
-	protected XmlName buildConstraintMessage() {
-		return buildXmlName(MessageTag.ACCM, position);
+	protected XmlMessage buildConstraintMessage() {
+		return buildXmlMessage(MessageTag.ACCM, position);
 	}
 	
 	@Override
-	protected XmlName buildErrorMessage() {
+	protected XmlMessage buildErrorMessage() {
 		return checkerResultMessage;
 	}
 
@@ -112,7 +132,7 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	}
 
 	@Override
-	protected List<XmlName> getPreviousErrors() {
+	protected List<XmlMessage> getPreviousErrors() {
 		return ccResult.getConclusion().getErrors();
 	}
 

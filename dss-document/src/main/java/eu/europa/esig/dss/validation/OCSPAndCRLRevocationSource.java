@@ -20,19 +20,19 @@
  */
 package eu.europa.esig.dss.validation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Fetches revocation data for a certificate by querying an OCSP server first and
@@ -75,7 +75,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 	 * 
 	 * @param trustedListCertificateSource {@link ListCertificateSource}
 	 */
-	public void setTrustedCertificateSource(final ListCertificateSource trustedListCertificateSource) {
+	public void setTrustedCertificateSource(ListCertificateSource trustedListCertificateSource) {
 		this.trustedListCertificateSource = trustedListCertificateSource;
 	}
 
@@ -123,7 +123,8 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 		}
 		try {
 			final RevocationToken<OCSP> revocationToken = ocspSource.getRevocationToken(certificateToken, issuerToken);
-			if (revocationToken != null && containsCertificateStatus(revocationToken) && isAcceptable(revocationToken)) {
+			if (revocationToken != null && containsCertificateStatus(revocationToken) && isAcceptable(revocationToken)
+					&& isIssuerValidAtRevocationProductionTime(revocationToken)) {
 				if (LOG.isDebugEnabled()) {
 					LOG.debug("OCSP response for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
 					LOG.debug("OCSP Response {} status is : {}", revocationToken.getDSSIdAsString(), revocationToken.getStatus());
@@ -176,7 +177,12 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 	}
 	
 	private boolean containsCertificateStatus(RevocationToken<?> revocationToken) {
-		return revocationToken.getStatus() != null;
+		if (revocationToken.getStatus() == null) {
+			LOG.warn("The obtained revocation token does not contain the certificate status. "
+					+ "The token is skipped.");
+			return false;
+		}
+		return true;
 	}
 	
 	private boolean isAcceptable(RevocationToken<OCSP> ocspToken) {
@@ -220,6 +226,15 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 			return true;
 		}
 		return false;
+	}
+
+	private boolean isIssuerValidAtRevocationProductionTime(RevocationToken<?> revocationToken) {
+		if (!DSSRevocationUtils.checkIssuerValidAtRevocationProductionTime(revocationToken)) {
+			LOG.warn("The revocation token has been produced outside the issuer certificate's validity range. "
+					+ "The token is skipped.");
+			return false;
+		}
+		return true;
 	}
 
 }

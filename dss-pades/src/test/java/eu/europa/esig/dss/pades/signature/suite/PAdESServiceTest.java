@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -56,6 +44,17 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESServiceTest extends PKIFactoryAccess {
 	
@@ -161,6 +160,7 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setContentSize(1);
 		signatureParameters.getArchiveTimestampParameters().setContentSize(1);
         exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertTrue(exception.getMessage().contains("Unable to save a document."));
 
         signatureParameters.setContentSize(8192);
 		signatureParameters.getArchiveTimestampParameters().setContentSize(8192);
@@ -218,8 +218,8 @@ public class PAdESServiceTest extends PKIFactoryAccess {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+
 		DSSDocument signedDocument = signAndValidate(documentToSign, signatureParameters);
-		signedDocument.save("target/signed.pdf");
 		
 		PAdESSignatureParameters extensionParameters = new PAdESSignatureParameters();
 		

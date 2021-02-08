@@ -38,7 +38,6 @@ public class InMemoryDocumentTest {
 	public void test() {
 		InMemoryDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/AdobeCA.p7c"));
 		assertNotNull(doc);
-		assertNull(doc.getAbsolutePath());
 		assertNull(doc.getMimeType());
 		assertNull(doc.getName());
 		assertNotNull(doc.getBytes());
@@ -49,7 +48,6 @@ public class InMemoryDocumentTest {
 	public void testSetter() {
 		InMemoryDocument doc = new InMemoryDocument();
 		assertNotNull(doc);
-		assertNull(doc.getAbsolutePath());
 		assertNull(doc.getMimeType());
 		assertNull(doc.getName());
 		assertNull(doc.getBytes());
@@ -70,7 +68,6 @@ public class InMemoryDocumentTest {
 	public void testWithName() {
 		InMemoryDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/AdobeCA.p7c"), "AdobeCA.p7c");
 		assertNotNull(doc);
-		assertNull(doc.getAbsolutePath());
 		assertEquals(MimeType.BINARY, doc.getMimeType());
 		assertNotNull(doc.getName());
 		assertNotNull(doc.getBytes());
@@ -87,7 +84,6 @@ public class InMemoryDocumentTest {
 		assertNotNull(doc.getName());
 		assertNotNull(doc.getBytes());
 		assertNotNull(doc.getDigest(DigestAlgorithm.SHA256));
-		assertNull(doc.getAbsolutePath());
 	}
 
 	@Test

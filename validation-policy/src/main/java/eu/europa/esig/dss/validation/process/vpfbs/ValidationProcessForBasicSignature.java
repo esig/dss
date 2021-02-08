@@ -21,15 +21,20 @@
 package eu.europa.esig.dss.validation.process.vpfbs;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.SignatureBasicBuildingBlocksCheck;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,6 +83,21 @@ public class ValidationProcessForBasicSignature extends Chain<XmlValidationProce
 			throw new IllegalStateException(String.format("Missing Basic Building Blocks result for token '%s'", signature.getId()));
 		}
 		return new SignatureBasicBuildingBlocksCheck(i18nProvider, result, diagnosticData, signatureBBB, bbbs, getFailLevelConstraint());
+	}
+
+	@Override
+	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+		super.collectMessages(conclusion, constraint);
+
+		XmlBasicBuildingBlocks signatureBBB = bbbs.get(signature.getId());
+		List<XmlMessage> warnings = signatureBBB.getConclusion().getWarnings();
+		if (Utils.isCollectionNotEmpty(warnings)) {
+			conclusion.getWarnings().addAll(warnings);
+		}
+		List<XmlMessage> infos = signatureBBB.getConclusion().getInfos();
+		if (Utils.isCollectionNotEmpty(infos)) {
+			conclusion.getInfos().addAll(infos);
+		}
 	}
 
 }

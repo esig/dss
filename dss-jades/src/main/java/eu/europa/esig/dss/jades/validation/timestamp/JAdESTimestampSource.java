@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.jades.validation.timestamp;
 
 import eu.europa.esig.dss.crl.CRLUtils;
@@ -348,6 +368,15 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		}
 		return Collections.emptyList();
 	}
+
+	/**
+	 * Returns the message-imprint data for a SignatureTimestamp (BASE64URL(JWS Signature Value))
+	 *
+	 * @return byte array representing a message-imprint
+	 */
+	public byte[] getSignatureTimestampData() {
+		return getTimestampDataBuilder().getSignatureTimestampData();
+	}
 	
 	/**
 	 * Returns concatenated data for an ArchiveTimestamp
@@ -381,8 +410,8 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		}
 	}
 
-	private List<TimestampToken> extractTimestampTokens(JAdESAttribute signatureAttribute, Map<?, ?> tstContainer, TimestampType timestampType,
-			List<TimestampedReference> references) {
+	private List<TimestampToken> extractTimestampTokens(JAdESAttribute signatureAttribute, Map<?, ?> tstContainer,
+														TimestampType timestampType, List<TimestampedReference> references) {
 		List<TimestampToken> result = new LinkedList<>();
 
 		List<?> tokens = (List<?>) tstContainer.get(JAdESHeaderParameterNames.TST_TOKENS);
@@ -394,9 +423,9 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
 						String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
 						try {
-							TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(tstBase64),
-									timestampType, references);
-							timestampToken.setHashCode(signatureAttribute.hashCode());
+							TimestampToken timestampToken = new TimestampToken(
+									Utils.fromBase64(tstBase64), timestampType, references);
+							timestampToken.setTimestampAttribute(signatureAttribute);
 							result.add(timestampToken);
 						} catch (Exception e) {
 							LOG.error("Unable to parse timestamp '{}'", tstBase64, e);

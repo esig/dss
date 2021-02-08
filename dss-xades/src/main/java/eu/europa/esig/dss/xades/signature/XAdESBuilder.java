@@ -46,15 +46,12 @@ import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
-import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
-import eu.europa.esig.dss.xades.reference.DSSTransform;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -108,54 +105,6 @@ public abstract class XAdESBuilder {
 	protected XAdESBuilder(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
-	
-	/**
-	 * This method creates the ds:DigestMethod DOM object
-	 * 
-	 * <pre>
-	 * {@code
-	 * 		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-	 * }
-	 * </pre>
-	 *
-	 * @param parentDom
-	 *            the parent element
-	 * @param digestAlgorithm
-	 *            the digest algorithm xml identifier
-	 */
-	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
-		final Element digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
-		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName() , digestAlgorithm.getUri());
-	}
-
-	/**
-	 * This method creates the ds:DigestValue DOM object.
-	 * 
-	 * <pre>
-	 * {@code
-	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
-	 * }
-	 * </pre>
-	 *
-	 * @param parentDom
-	 *            the parent element
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used
-	 * @param originalDocument
-	 *            the document to be digested
-	 */
-	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm,
-			final DSSDocument originalDocument) {
-
-		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
-
-		String base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
-		
-		LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
-		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
-		digestValueDom.appendChild(textNode);
-		parentDom.appendChild(digestValueDom);
-	}
 
 	/**
 	 * This method creates the ds:DigestValue DOM object.
@@ -173,21 +122,16 @@ public abstract class XAdESBuilder {
 	 * @param token
 	 *            the token to be digested
 	 */
-	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final Token token) {
-		Element digestValueDom = null;
-		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
-			digestValueDom = DomUtils.createElementNS(documentDom, getXadesNamespace(), XAdES111Element.DIGEST_VALUE);
-		} else {
-			digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
-		}
+	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm,
+										  final Token token) {
+		DSSNamespace namespace = XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri()) ?
+				getXadesNamespace() : getXmldsigNamespace();
 		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
+			LOG.trace("Digest value {} for the token with if [{}] --> {}", parentDom.getNodeName(),
+					token.getDSSIdAsString(), base64EncodedDigestBytes);
 		}
-		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
-		digestValueDom.appendChild(textNode);
-
-		parentDom.appendChild(digestValueDom);
+		DSSXMLUtils.incorporateDigestValue(parentDom, base64EncodedDigestBytes, namespace);
 	}
 
 	/**

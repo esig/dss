@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2020-11-04T15:02:06",
+    "ValidationDate" : "2020-12-14T15:38:59",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -30,8 +30,9 @@
       "CountryName" : null,
       "OrganizationIdentifier" : null,
       "OrganizationName" : "DSS-test",
-      "GivenName" : null,
       "OrganizationalUnit" : null,
+      "Title" : null,
+      "GivenName" : null,
       "Surname" : null,
       "Pseudonym" : null,
       "Email" : null,
@@ -64,6 +65,7 @@
       "certificatePolicy" : [ ],
       "qcStatementOid" : [ ],
       "qcTypeOid" : [ ],
+      "QCLimitValue" : null,
       "SemanticsIdentifier" : null,
       "TrustedServiceProvider" : [ ],
       "CertificateRevocation" : [ ],
@@ -77,7 +79,7 @@
     "Revocation" : [ ],
     "Timestamp" : null,
     "OrphanTokens" : null,
-    "SignerData" : [ ],
+    "SignerData" : null,
     "TrustedList" : [ ]
   },
   "simpleCertificateReport" : {
@@ -116,7 +118,7 @@
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2020-11-04T15:02:06"
+    "ValidationTime" : "2020-12-14T15:38:59"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {

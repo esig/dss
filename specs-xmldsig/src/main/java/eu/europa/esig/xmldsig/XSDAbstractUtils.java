@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.xmldsig;
 
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
-import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.common.exception.XSDValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;

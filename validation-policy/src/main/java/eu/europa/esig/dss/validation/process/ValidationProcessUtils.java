@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -41,7 +42,7 @@ import java.util.TimeZone;
  */
 public class ValidationProcessUtils {
 
-	/** The Validaiton policy date format */
+	/** The Validation policy date format */
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	
 	/**
@@ -172,7 +173,7 @@ public class ValidationProcessUtils {
 	}
 	
 	/**
-	 * Returns crypto possition MessageTag for the given XmlDigestMatcher
+	 * Returns crypto position MessageTag for the given XmlDigestMatcher
 	 * 
 	 * @param digestMatcher {@link XmlDigestMatcher} to get crypto position for
 	 * @return {@link MessageTag} position
@@ -208,6 +209,22 @@ public class ValidationProcessUtils {
 		default:
 			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!", digestMatcher.getType()));
 		}
+	}
+
+	/**
+	 * Checks if a valid revocation (RAC) has been found
+	 *
+	 * @param subXCV {@link XmlSubXCV} result to be checked
+	 * @return TRUE if at least one valid RAC found, FALSE otherwise
+	 */
+	public static boolean isValidRACFound(XmlSubXCV subXCV) {
+		for (XmlRAC rac : subXCV.getRAC()) {
+			if (rac != null && rac.getConclusion() != null &&
+					Indication.PASSED.equals(rac.getConclusion().getIndication())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

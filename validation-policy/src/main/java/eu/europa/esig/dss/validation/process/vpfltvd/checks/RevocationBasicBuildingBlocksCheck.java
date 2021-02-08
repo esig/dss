@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -49,6 +50,11 @@ public class RevocationBasicBuildingBlocksCheck extends AbstractBasicBuildingBlo
 											  DiagnosticData diagnosticData, XmlBasicBuildingBlocks revocationBBB,
 											  Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
 		super(i18nProvider, result, diagnosticData, revocationBBB, bbbs, constraint);
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.REV_BBB;
 	}
 
 	@Override

@@ -121,7 +121,6 @@ public class FileCacheDataLoaderTest {
 	@Test
 	public void testGetDSSDocument() {
 		DSSDocument dssDocument = getDSSDocumentByUrl();
-		assertNotNull(dssDocument.getAbsolutePath());
 		assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(dssDocument)));
 	}
 	

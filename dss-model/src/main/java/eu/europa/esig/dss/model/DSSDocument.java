@@ -68,13 +68,6 @@ public interface DSSDocument extends Serializable {
 	void setName(String name);
 
 	/**
-	 * Returns the {@code String} representing the absolute path to the encapsulated document.
-	 *
-	 * @return {@code String} representing the absolute path to the encapsulated document.
-	 */
-	String getAbsolutePath();
-
-	/**
 	 * Returns the mime-type of the {@code DSSDocument}.
 	 *
 	 * @return {@code MimeType}

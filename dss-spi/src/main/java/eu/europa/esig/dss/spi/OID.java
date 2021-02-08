@@ -126,4 +126,10 @@ public class OID {
 	 */
 	public static final ASN1ObjectIdentifier psd2_qcStatement = new ASN1ObjectIdentifier("0.4.0.19495.2");
 
+	/**
+	 * esi4-qcStatement-7 QC-STATEMENT ::= { SYNTAX QcCClegislation IDENTIFIED BY id-etsi-qcsQcCClegislation }
+	 * id-etsi-qcs-QcCClegislation OBJECT IDENTIFIER ::= { id-etsi-qcs 7 }
+	 */
+	public static final ASN1ObjectIdentifier id_etsi_qcs_QcCClegislation = new ASN1ObjectIdentifier("0.4.0.1862.1.7");
+
 }

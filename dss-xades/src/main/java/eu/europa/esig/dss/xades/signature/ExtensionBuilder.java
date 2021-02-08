@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSException;
@@ -34,6 +28,12 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Builds XAdES signature extension
@@ -223,6 +223,20 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			}
 		}
 		return xadesNamespace;
+	}
+
+	/**
+	 * Returns a {@code NodeList} of signatures to be extended. Throws an extension if no valid signatures found
+	 *
+	 * @param documentDom {@link Document} with signatures to be extended
+	 * @return {@link NodeList} of signatures
+	 */
+	protected NodeList getSignaturesNodeListToExtend(Document documentDom) {
+		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDom);
+		if (signatureNodeList.getLength() == 0) {
+			throw new DSSException("There is no signature to extend!");
+		}
+		return signatureNodeList;
 	}
 	
 }

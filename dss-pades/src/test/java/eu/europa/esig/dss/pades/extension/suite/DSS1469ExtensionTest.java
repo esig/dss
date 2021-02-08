@@ -20,12 +20,7 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.event.Level;
-
-import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -40,7 +35,15 @@ import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 
@@ -49,13 +52,12 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 	private static final String TSA_CA_URL = "http://www.firmadigital.go.cr/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crt";
 	private static final String TSA_CA = "MIILkzCCCXugAwIBAgITTgAAAASYOR/4A7hb3AAAAAAABDANBgkqhkiG9w0BAQ0FADBzMRkwFwYDVQQFExBDUEotMi0xMDAtMDk4MzExMQ0wCwYDVQQLEwREQ0ZEMQ8wDQYDVQQKEwZNSUNJVFQxCzAJBgNVBAYTAkNSMSkwJwYDVQQDEyBDQSBSQUlaIE5BQ0lPTkFMIC0gQ09TVEEgUklDQSB2MjAeFw0xNTAyMjUyMTQ3NDNaFw0zMTAyMjUyMTU3NDNaMIGAMRkwFwYDVQQFExBDUEotMi0xMDAtMDk4MzExMQswCQYDVQQGEwJDUjEPMA0GA1UEChMGTUlDSVRUMQ0wCwYDVQQLEwREQ0ZEMTYwNAYDVQQDEy1DQSBQT0xJVElDQSBTRUxMQURPIERFIFRJRU1QTyAtIENPU1RBIFJJQ0EgdjIwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQC2m5S5sYbQiWTklYT8+i9PCNAXS/Mw/TByDhY7zNP7WyJtPSUnSbQRLdQ3hMPuJ6iVgoZWNKx1TJ7MzNVPOv713eEcqqDm69XWSSaQJEz3HbTAVC23V3PJcEuuQfJuKZ+7YP2VMMhBj73UoJdQqMx3nJpECJDjzCrCZHEPtusDRa1+CEmm61ghSDKwUvjow98rkuBvu837MWb3iDj9y8KbbKvme4CPRiAnmZv9N8H5q1zrO6EmWX46+z4ofkUji7flDLzVxCG9b3irrGf7ig+IzfXBBqyr/OLNg32xKZNdezbSKDRsjHxQMpeS6vHu+spOPK65ujLhjTLNHF5v31x+fFPiz++Iz1DoUfTpEz/GlB3Z6HceP2eKgghwOrEgzZ9sT+l0aGxolASLeiiyW73TWyuL1ubRPaJV41ZfFzgZcb7b/LDei31claIEm+OMPEF1s5dfjsAByXqQCl0UUuTYqaBT8N8OC7qh/KZYQx4jbdgl2vvgR/bnaD1VO6AEbySBHW7sG1XgDkjKsPZr2EtnacZ6pdAlAI69pYPabwOo5wvJhKhFXh3ymhV5JNThCpbqGX+7x1eL8eTfelvsbmmnZtS5+Rtol9bsSLG/BAwhNHJmFHvnbper5cHJ4TPmz+k0aveKM2i+yGeRcp/0N5ZOKoWCia4apU7RcBZnTFVFfQIDAQABo4IGEDCCBgwwEAYJKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFLC74AguSxNo8NCARANnpD//JWP2MIIDvwYDVR0gBIIDtjCCA7IwggEUBgdggTwBAQEBMIIBBzCBpgYIKwYBBQUHAgIwgZkegZYASQBtAHAAbABlAG0AZQBuAHQAYQAgAGwAYQAgAFAAbwBsAGkAdABpAGMAYQAgAGQAZQAgAGwAYQAgAFIAYQBpAHoAIABDAG8AcwB0AGEAcgByAGkAYwBlAG4AcwBlACAAZABlACAAQwBlAHIAdABpAGYAaQBjAGEAYwBpAG8AbgAgAEQAaQBnAGkAdABhAGwAIAB2ADIwKgYIKwYBBQUHAgEWHmh0dHA6Ly93d3cuZmlybWFkaWdpdGFsLmdvLmNyADAwBggrBgEFBQcCARYkaHR0cDovL3d3dy5taWNpdC5nby5jci9maXJtYWRpZ2l0YWwAMIIBWwYIYIE8AQEBAQEwggFNMIHsBggrBgEFBQcCAjCB3x6B3ABJAG0AcABsAGUAbQBlAG4AdABhACAAbABhACAAUABvAGwAaQB0AGkAYwBhACAAYwBvAG0AbwAgAEMAQQAgAEUAbQBpAHMAbwByAGEAIABwAGEAcgBhACAAUwBlAGwAbABhAGQAbwAgAGQAZQAgAFQAaQBlAG0AcABvACAAcABlAHIAdABlAG4AZQBjAGkAZQBuAHQAZQAgAGEAIABsAGEAIABQAEsASQAgAE4AYQBjAGkAbwBuAGEAbAAgAGQAZQAgAEMAbwBzAHQAYQAgAFIAaQBjAGEAIAB2ADIwKgYIKwYBBQUHAgEWHmh0dHA6Ly93d3cuZmlybWFkaWdpdGFsLmdvLmNyADAwBggrBgEFBQcCARYkaHR0cDovL3d3dy5taWNpdC5nby5jci9maXJtYWRpZ2l0YWwAMIIBNwYIYIE8AQEBAQUwggEpMIHIBggrBgEFBQcCAjCBux6BuABJAG0AcABsAGUAbQBlAG4AdABhACAAbABhACAAUABvAGwAaQB0AGkAYwBhACAAZABlACAAUwBlAGwAbABhAGQAbwAgAGQAZQAgAFQAaQBlAG0AcABvACAAZABlAGwAIABTAGkAcwB0AGUAbQBhACAATgBhAGMAaQBvAG4AYQBsACAAZABlACAAQwBlAHIAdABpAGYAaQBjAGEAYwBpAG8AbgAgAEQAaQBnAGkAdABhAGwAIAB2ADIwKgYIKwYBBQUHAgEWHmh0dHA6Ly93d3cuZmlybWFkaWdpdGFsLmdvLmNyADAwBggrBgEFBQcCARYkaHR0cDovL3d3dy5taWNpdC5nby5jci9maXJtYWRpZ2l0YWwAMBkGCSsGAQQBgjcUAgQMHgoAUwB1AGIAQwBBMAsGA1UdDwQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB8GA1UdIwQYMBaAFODy/n3ERE5Q5DX9CImPToQZRDNAMIHSBgNVHR8EgcowgccwgcSggcGggb6GWmh0dHA6Ly93d3cuZmlybWFkaWdpdGFsLmdvLmNyL3JlcG9zaXRvcmlvL0NBJTIwUkFJWiUyME5BQ0lPTkFMJTIwLSUyMENPU1RBJTIwUklDQSUyMHYyLmNybIZgaHR0cDovL3d3dy5taWNpdC5nby5jci9maXJtYWRpZ2l0YWwvcmVwb3NpdG9yaW8vQ0ElMjBSQUlaJTIwTkFDSU9OQUwlMjAtJTIwQ09TVEElMjBSSUNBJTIwdjIuY3JsMIHmBggrBgEFBQcBAQSB2TCB1jBmBggrBgEFBQcwAoZaaHR0cDovL3d3dy5maXJtYWRpZ2l0YWwuZ28uY3IvcmVwb3NpdG9yaW8vQ0ElMjBSQUlaJTIwTkFDSU9OQUwlMjAtJTIwQ09TVEElMjBSSUNBJTIwdjIuY3J0MGwGCCsGAQUFBzAChmBodHRwOi8vd3d3Lm1pY2l0LmdvLmNyL2Zpcm1hZGlnaXRhbC9yZXBvc2l0b3Jpby9DQSUyMFJBSVolMjBOQUNJT05BTCUyMC0lMjBDT1NUQSUyMFJJQ0ElMjB2Mi5jcnQwDQYJKoZIhvcNAQENBQADggIBADnF0LdoBRhNynIHrWcNmRTmX3HqQBdO7rIIqhZvDdfVj/Ew2Io73K/eW3DRI28HmV545pRKxU5lKeZy7szI+W8+ZTApBGZgQErw5Klfk20b2bul15OEYphIz3d1NC2lQG5PggpO9KQtHEMeGCDx569UKsYekBaWfz7q7V7a+k4xFGKJFNyKQP0HAsmpfLSuJvqRrEORuQpNRxGzljIF3N1VTwzFTnW2sH7DBVoH3a/Viggs8BXqBpp2bqdfUJKiwgCmY//9fBP1zLiyEKthG1lKmzs06OdjmWeqL/6QBlfBbQtecqrfHIfJAnkwsIGXGLd39cM0jAZFnENl2z5unJnHdCLnxro/ct06E7bYJ4MJcWA9s4IrDREHjSAO4PczDzE0W/a0cpGDdYGvXIuH3qRV1LutTmecxC5+mALhBEWV1JAAr0W7LAWTRBtwjHNas9AVxb4SOGbtEV9jabics2QqNU08PiMROjuM/qnKACR5euRZG6k8eP7ft1n3ufHmP9FpPz5jWF37m4ciVm/3VJTA/RvBkzwGFdISOyOUx0Ei4wx8z2MeGaa0ZEhY7kwOugT6Jsi/npc/tVcDxCo35g4cz47tFkY4r2hoUTPqvrlStanbwdI5xD3P3j2Z7rVwal+R/Nx3Ma6EP+mf73m8w+KdZHrQbL/oXIB9A/GW+roN";
 
-	@Override
-	protected DSSDocument getSignedDocument() {
-		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/doc-firmado-T.pdf"));
+	private CertificateVerifier certificateVerifier;
 
-		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+	@BeforeEach
+	public void init() {
+		certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSources(getTrustedCertSource());
-		certificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.WARN));
 
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(TSA_CA_URL, Utils.fromBase64(TSA_CA));
@@ -64,6 +66,17 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 
 		certificateVerifier.setCrlSource(new OnlineCRLSource());
 		certificateVerifier.setOcspSource(new OnlineOCSPSource());
+	}
+
+	private CertificateSource getTrustedCertSource() {
+		CertificateSource trustedCertSource = new CommonTrustedCertificateSource();
+		trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(TRUST_ANCHOR));
+		return trustedCertSource;
+	}
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/doc-firmado-T.pdf"));
 
 		PAdESService service = new PAdESService(certificateVerifier);
 		service.setTspSource(getGoodTsa());
@@ -75,10 +88,17 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 		return extendedDocument;
 	}
 
-	private CertificateSource getTrustedCertSource() {
-		CertificateSource trustedCertSource = new CommonTrustedCertificateSource();
-		trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(TRUST_ANCHOR));
-		return trustedCertSource;
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
+		validator.setCertificateVerifier(certificateVerifier);
+		return validator;
 	}
 
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		super.checkSignatureLevel(diagnosticData);
+
+		assertEquals(SignatureLevel.PAdES_BASELINE_LT, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
 }

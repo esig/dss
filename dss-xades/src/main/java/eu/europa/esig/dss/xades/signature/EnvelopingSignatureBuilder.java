@@ -20,26 +20,23 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.List;
-
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.xades.DSSObject;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.DSSReference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.reference.DSSReference;
+import java.util.List;
 
 /**
  * This class handles the specifics of the enveloping XML signature
@@ -57,30 +54,15 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 	 * @param document
 	 *            The original document to sign.
 	 * @param certificateVerifier
+	 *            {@link CertificateVerifier}
 	 */
-	public EnvelopingSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
+	public EnvelopingSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document,
+									  final CertificateVerifier certificateVerifier) {
 		super(params, document, certificateVerifier);
 	}
 
-	/**
-	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
-	 *
-	 * @param signatureValue
-	 * @return {@link DSSDocument}
-	 * @throws DSSException
-	 */
 	@Override
-	public DSSDocument signDocument(final byte[] signatureValue) throws DSSException {
-		if (!built) {
-			build();
-		}
-
-		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
-		final byte[] signatureValueBytes = DSSASN1Utils.fromAsn1toSignatureValue(encryptionAlgorithm, signatureValue);
-		final String signatureValueBase64Encoded = Utils.toBase64(signatureValueBytes);
-		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
-		signatureValueDom.appendChild(signatureValueNode);
-
+	protected void incorporateSignedObjects() {
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
 			// <ds:Object>
@@ -92,7 +74,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 				String idAttribute = root.getAttribute(XMLDSigAttribute.ID.getAttributeName());
 
 				// rebuild manifest element to avoid namespace duplication
-				final Element manifestDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.MANIFEST);	
+				final Element manifestDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.MANIFEST);
 				manifestDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), idAttribute);
 				for (int i = 0; i < referencesNodes.getLength(); i++) {
 					Node copyNode = documentDom.importNode(referencesNodes.item(i), true);
@@ -102,24 +84,23 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 				final Element dom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.OBJECT);
 				dom.appendChild(manifestDom);
 				signatureDom.appendChild(dom);
-			} else if (params.isEmbedXML()) {
-				Document doc = DomUtils.buildDOM(reference.getContents());
-				Element root = doc.getDocumentElement();
-				Node adopted = documentDom.adoptNode(root);
 
-				final Element dom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.OBJECT);
-				final String id = reference.getUri().substring(1);
-				dom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), id);
-				dom.appendChild(adopted);
-				signatureDom.appendChild(dom);
 			} else {
-				final String base64EncodedOriginalDocument = Utils.toBase64(DSSUtils.toByteArray(reference.getContents()));
-				final Element objectDom = DomUtils.addTextElement(documentDom, signatureDom, getXmldsigNamespace(), XMLDSigElement.OBJECT, base64EncodedOriginalDocument);
-				final String id = reference.getUri().substring(1);
-				objectDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), id);
+				DSSObject object = new DSSObject();
+
+				DSSDocument content;
+				if (params.isEmbedXML()) {
+					content = reference.getContents();
+				} else {
+					String base64EncodedOriginalDocument = Utils.toBase64(DSSUtils.toByteArray(reference.getContents()));
+					content = new InMemoryDocument(base64EncodedOriginalDocument.getBytes());
+				}
+				object.setContent(content);
+				object.setId(reference.getUri().substring(1));
+
+				incorporateObject(object);
 			}
 		}
-		return createXmlDocument();
 	}
 
 }

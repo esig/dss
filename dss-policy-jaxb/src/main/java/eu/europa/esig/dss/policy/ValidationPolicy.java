@@ -33,27 +33,12 @@ import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 
-import java.util.Date;
-
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. This
  * is the base class used to implement a
  * specific validation policy
  */
 public interface ValidationPolicy {
-
-	/**
-	 * This function returns the algorithm expiration date extracted from the 'constraint.xml' file. If the TAG
-	 * AlgoExpirationDate is not present within the
-	 * constraints {@code null} is returned.
-	 *
-	 * @param algorithm
-	 *            algorithm (SHA1, SHA256, RSA2048...) to be checked
-	 * @param context {@link Context}
-	 * @param subContext {@link SubContext}
-	 * @return expiration date or null
-	 */
-	Date getAlgorithmExpirationDate(String algorithm, Context context, SubContext subContext);
 
 	/**
 	 * Indicates if the signature policy should be checked. If AcceptablePolicies element is absent within the
@@ -443,6 +428,19 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Indicates the country or set of countries under the legislation of which the certificate is issued as a
+	 * qualified certificate is present.
+	 *
+	 * NOTE: in order to verify the EU compliance, the value shall be empty (no QcCCLegislation is allowed)
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} the country or set of countries under the legislation of which
+	 * 		the certificate is issued as a qualified certificate
+	 */
+	MultiValuesConstraint getCertificateQcCCLegislationConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Indicates if the end user certificate used in validating the signature is issued to a legal person.
 	 *
 	 * @param context {@link Context}
@@ -777,16 +775,6 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
-
-	/**
-	 * Returns CertificateQCStatementIds constraint if present in the policy, null otherwise
-	 *
-	 * @param context {@link Context}
-	 * @param subContext {@link SubContext}
-	 * @return {@code MultiValuesConstraint} if CertificateQCStatementIds element is present
-	 *                                 in the constraint file, null otherwise.
-	 */
-	MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns CertificateIssuedToNaturalPerson constraint if present in the policy, null otherwise

@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
@@ -50,7 +37,6 @@ import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -79,6 +65,18 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of PDFSignatureService using iText
@@ -294,8 +292,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			int csize = parameters.getContentSize();
 			if (csize < pk.length) {
 				throw new DSSException(
-						String.format("The signature size [%s] is too small for the signature value with a length [%s]",
-								csize, pk.length));
+						String.format("Unable to save a document. Reason : The signature size [%s] is too small " +
+										"for the signature value with a length [%s]", csize, pk.length));
 			}
 
 			byte[] outc = new byte[csize];

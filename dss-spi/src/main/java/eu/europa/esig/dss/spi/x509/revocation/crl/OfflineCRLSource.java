@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -66,7 +65,7 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 			CRLBinary crlBinary = (CRLBinary) binary;
 			try {
 				CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerToken);
-				if (crlValidity.isValid() && isInCertificateValidityRange(crlValidity, certificateToken)) {
+				if (crlValidity.isValid()) {
 					final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 					addRevocation(crlToken, crlBinary);
 					result.add(crlToken);
@@ -78,19 +77,6 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 
 		LOG.trace("--> OfflineCRLSource found result(s) : {}", result.size());
 		return result;
-	}
-
-	private boolean isInCertificateValidityRange(CRLValidity crlValidity, CertificateToken certificateToken) {
-		final Date thisUpdate = crlValidity.getThisUpdate();
-		final Date nextUpdate = crlValidity.getNextUpdate();
-		final Date notAfter = certificateToken.getNotAfter();
-		final Date notBefore = certificateToken.getNotBefore();
-		boolean periodAreIntersecting = thisUpdate.compareTo(notAfter) <= 0 && (nextUpdate != null && nextUpdate.compareTo(notBefore) >= 0);
-		if (!periodAreIntersecting) {
-			LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: {}", certificateToken.getDSSIdAsString());
-			return false;
-		}
-		return true;
 	}
 
 }

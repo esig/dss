@@ -152,6 +152,9 @@ public class CommonsDataLoader implements DataLoader {
 	/** Defines if the redirection is enabled */
 	private boolean redirectsEnabled = true;
 
+	/** Defines if the default system network properties shall be used */
+	private boolean useSystemProperties = false;
+
 	/** Defines the accepted HTTP statuses */
 	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
@@ -362,7 +365,11 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return {@link HttpClientBuilder}
 	 */
 	protected synchronized HttpClientBuilder getHttpClientBuilder(final String url) {
-		HttpClientBuilder httpClientBuilder =  HttpClients.custom();
+		HttpClientBuilder httpClientBuilder = HttpClients.custom();
+
+		if (useSystemProperties) {
+			httpClientBuilder.useSystemProperties();
+		}
 
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
 
@@ -893,6 +900,28 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	public void setRedirectsEnabled(boolean redirectsEnabled) {
 		this.redirectsEnabled = redirectsEnabled;
+	}
+
+	/**
+	 * Gets if the default system network properties shall be used
+	 *
+	 * @return TRUE if the default system network properties shall be used, FALSE otherwise
+	 */
+	public boolean isUseSystemProperties() {
+		return useSystemProperties;
+	}
+
+	/**
+	 * Sets if the default system network properties shall be used
+	 *
+	 * Default: FALSE (system properties are not used)
+	 *
+	 * NOTE: all other configured property may override the default behavior!
+	 *
+	 * @param useSystemProperties if the default system network properties shall be used
+	 */
+	public void setUseSystemProperties(boolean useSystemProperties) {
+		this.useSystemProperties = useSystemProperties;
 	}
 
 	/**

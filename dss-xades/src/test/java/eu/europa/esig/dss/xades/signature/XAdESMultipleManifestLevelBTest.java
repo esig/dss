@@ -20,13 +20,11 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -34,6 +32,14 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESMultipleManifestLevelBTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
@@ -41,15 +47,18 @@ public class XAdESMultipleManifestLevelBTest extends AbstractXAdESMultipleDocume
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
+	private List<DSSDocument> detachedContents;
+
 	@BeforeEach
 	public void init() throws Exception {
 
-		List<DSSDocument> documents = new ArrayList<>();
-		documents.add(new FileDocument("src/test/resources/sample.png"));
-		documents.add(new FileDocument("src/test/resources/sample.txt"));
-		documents.add(new FileDocument("src/test/resources/sample.xml"));
-		ManifestBuilder builder1 = new ManifestBuilder("manifest-sha512", DigestAlgorithm.SHA512, documents);
-		ManifestBuilder builder2 = new ManifestBuilder("manifest-sha256", DigestAlgorithm.SHA256, documents);
+		detachedContents = new ArrayList<>();
+		detachedContents.add(new FileDocument("src/test/resources/sample.png"));
+		detachedContents.add(new FileDocument("src/test/resources/sample.txt"));
+		detachedContents.add(new FileDocument("src/test/resources/sample.xml"));
+
+		ManifestBuilder builder1 = new ManifestBuilder("manifest-sha512", DigestAlgorithm.SHA512, detachedContents);
+		ManifestBuilder builder2 = new ManifestBuilder("manifest-sha256", DigestAlgorithm.SHA256, detachedContents);
 
 		documentToSigns = Arrays.asList(builder1.build(), builder2.build());
 
@@ -61,6 +70,34 @@ public class XAdESMultipleManifestLevelBTest extends AbstractXAdESMultipleDocume
 		signatureParameters.setManifestSignature(true);
 
 		service = new XAdESService(getOfflineCertificateVerifier());
+	}
+
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		assertEquals(9, digestMatchers.size());
+
+		int manifestCounter = 0;
+		int manifestEntryCounter = 0;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			assertTrue(digestMatcher.isDataFound());
+			assertTrue(digestMatcher.isDataIntact());
+			if (DigestMatcherType.MANIFEST.equals(digestMatcher.getType())) {
+				++manifestCounter;
+			} else if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+				++manifestEntryCounter;
+			}
+		}
+		assertEquals(2, manifestCounter);
+		assertEquals(6, manifestEntryCounter);
+	}
+
+	@Override
+	public List<DSSDocument> getDetachedContents() {
+		return detachedContents;
 	}
 
 	@Override

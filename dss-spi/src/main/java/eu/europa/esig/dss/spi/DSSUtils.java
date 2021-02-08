@@ -1087,11 +1087,25 @@ public final class DSSUtils {
 	 */
 	public static String removeControlCharacters(String str) {
 		if (str != null) {
-			String cleanedString = str.replaceAll("[^\\P{Cntrl}]", "");
+			String cleanedString = str.replaceAll("[^\\P{Cntrl}]+", "");
 			if (!str.equals(cleanedString)) {
 				LOG.warn("The string [{}] contains illegal characters and was replaced to [{}]", str, cleanedString);
 			}
 			return cleanedString;
+		}
+		return null;
+	}
+
+	/**
+	 * Replaces all non-alphanumeric characters in the {@code str} by the {@code replacement}
+	 *
+	 * @param str {@link String} to replace non-alphanumeric characters in
+	 * @param replacement {@link String} to be used as a replacement
+	 * @return {@link String}
+	 */
+	public static String replaceAllNonAlphanumericCharacters(String str, String replacement) {
+		if (str != null) {
+			return str.replaceAll("[^\\p{L}\\p{Nd}]+", replacement);
 		}
 		return null;
 	}

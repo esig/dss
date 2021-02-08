@@ -117,7 +117,7 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 
 			item = item.setNextItem(signingCertificateAttributePresent());
 
-			// not revelant for timestamps RFC 5816
+			// not relevant for timestamps RFC 5816
 			item = item.setNextItem(unicitySigningCertificateAttribute());
 			
 			/*

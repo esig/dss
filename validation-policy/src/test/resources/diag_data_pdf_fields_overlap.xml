@@ -214,8 +214,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-1BF5EF9A4A8F594D7E966780796D278449C84B68B50F5EE6146E5ACECEB7D136">
@@ -266,8 +264,6 @@
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>TV9yIWMyR4C/bA7Xnt5vu7ZSDaTHCiXZOsxvRXvJqUE=</DigestValue>
@@ -318,8 +314,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <Revocations>
                 <CertificateRevocation Revocation="R-9FBB73DAA9C78156C0F81E1EE54C48E53A457273567915EAB33F02BCC167A23E">
                     <Status>GOOD</Status>
@@ -372,8 +366,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>g9U/V4PTCEbVM5kONlS1XFUwoHpMoq9icaS2EBLYpt0=</DigestValue>

@@ -110,12 +110,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		if (LOG.isInfoEnabled()) {
 			LOG.info("====> Extending: {}", (dssDocument.getName() == null ? "IN MEMORY DOCUMENT" : dssDocument.getName()));
 		}
-		documentDom = DomUtils.buildDOM(dssDocument);
 
-		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDom);
-		if (signatureNodeList.getLength() == 0) {
-			throw new DSSException("There is no signature to extend!");
-		}
+		documentDom = DomUtils.buildDOM(dssDocument);
+		final NodeList signatureNodeList = getSignaturesNodeListToExtend(documentDom);
 
 		// In the case of the enveloped signature we have a specific treatment:<br>
 		// we will just extend the signature that is being created (during creation process)
@@ -197,7 +194,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *            the tspSource to set
 	 */
 	public void setTspSource(final TSPSource tspSource) {
-
 		this.tspSource = tspSource;
 	}
 	
@@ -467,8 +463,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * 		<Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
 	 *	</Transforms>
 	 * </HashDataInfo>
-	 * @param timeStampDom
-	 * @param timestampC14nMethod
+	 *
+	 * @param timeStampDom {@link Element}
+	 * @param timestampC14nMethod {@link String} canonicalization algorithm for the timestamp
 	 */
 	private void incorporateHashDataInfo(Element timeStampDom, String timestampC14nMethod) {
 		Element hashDataInfoDom = DomUtils.addElement(documentDom, timeStampDom, getXadesNamespace(), XAdES111Element.HASH_DATA_INFO);

@@ -21,9 +21,6 @@
 package eu.europa.esig.dss.validation.executor.signature;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -37,18 +34,32 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.simplereport.jaxb.*;
+import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
+import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.simplereport.jaxb.XmlDetails;
+import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSemantic;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
@@ -68,10 +79,10 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	private int validSignatureCount = 0;
 
 	/** Set of all used Indications (used for semantics) */
-	private Set<Indication> finalIndications = new HashSet<>();
+	private final Set<Indication> finalIndications = new HashSet<>();
 
 	/** Set of all used SubIndications (used for semantics) */
-	private Set<SubIndication> finalSubIndications = new HashSet<>();
+	private final Set<SubIndication> finalSubIndications = new HashSet<>();
 
 	/** The POE set */
 	private POEExtraction poe;
@@ -184,18 +195,12 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			xmlSignature.setSignedBy(getReadableCertificateName(signingCertificate.getId()));
 		}
 
-		XmlDetails validationDetails = new XmlDetails();
-		validationDetails.getError().addAll(detailedReport.getSignatureValidationErrors(signatureId));
-		validationDetails.getWarning().addAll(detailedReport.getSignatureValidationWarnings(signatureId));
-		validationDetails.getInfo().addAll(detailedReport.getSignatureValidationInfos(signatureId));
+		XmlDetails validationDetails = getValidationDetails(signatureId);
 		if (isNotEmpty(validationDetails)) {
 			xmlSignature.setValidationDetails(validationDetails);
 		}
 
-		XmlDetails qualificationDetails = new XmlDetails();
-		qualificationDetails.getError().addAll(detailedReport.getSignatureQualificationErrors(signatureId));
-		qualificationDetails.getWarning().addAll(detailedReport.getSignatureQualificationWarnings(signatureId));
-		qualificationDetails.getInfo().addAll(detailedReport.getSignatureQualificationInfos(signatureId));
+		XmlDetails qualificationDetails = getQualificationDetails(signatureId);
 		if (isNotEmpty(qualificationDetails)) {
 			xmlSignature.setQualificationDetails(qualificationDetails);
 		}
@@ -234,18 +239,44 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		return xmlSignature;
 	}
 
+	private XmlDetails getValidationDetails(String tokenId) {
+		XmlDetails validationDetails = new XmlDetails();
+		validationDetails.getError().addAll(convert(detailedReport.getValidationErrors(tokenId)));
+		validationDetails.getWarning().addAll(convert(detailedReport.getValidationWarnings(tokenId)));
+		validationDetails.getInfo().addAll(convert(detailedReport.getValidationInfos(tokenId)));
+		return validationDetails;
+	}
+
+	private XmlDetails getQualificationDetails(String tokenId) {
+		XmlDetails qualificationDetails = new XmlDetails();
+		qualificationDetails.getError().addAll(convert(detailedReport.getQualificationErrors(tokenId)));
+		qualificationDetails.getWarning().addAll(convert(detailedReport.getQualificationWarnings(tokenId)));
+		qualificationDetails.getInfo().addAll(convert(detailedReport.getQualificationInfos(tokenId)));
+		return qualificationDetails;
+	}
+
 	private boolean isNotEmpty(XmlDetails details) {
-		return Utils.isCollectionNotEmpty(details.getError()) || Utils.isCollectionNotEmpty(details.getWarning()) || Utils.isCollectionNotEmpty(details.getInfo());
+		return Utils.isCollectionNotEmpty(details.getError()) || Utils.isCollectionNotEmpty(details.getWarning()) ||
+				Utils.isCollectionNotEmpty(details.getInfo());
+	}
+
+	private List<XmlMessage> convert(Collection<Message> messages) {
+		return messages.stream().map(m -> {
+				XmlMessage xmlMessage = new XmlMessage();
+				xmlMessage.setKey(m.getKey());
+				xmlMessage.setValue(m.getValue());
+				return xmlMessage;
+			}).collect(Collectors.toList());
 	}
 
 	private XmlCertificateChain getCertChain(String tokenId) {
 		List<String> certIds = detailedReport.getBasicBuildingBlocksCertChain(tokenId);
 		XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
 		if (Utils.isCollectionNotEmpty(certIds)) {
-			for (String certid : certIds) {
+			for (String certId : certIds) {
 				XmlCertificate certificate = new XmlCertificate();
-				certificate.setId(certid);
-				certificate.setQualifiedName(getReadableCertificateName(certid));
+				certificate.setId(certId);
+				certificate.setQualifiedName(getReadableCertificateName(certId));
 				xmlCertificateChain.getCertificate().add(certificate);
 			}
 		}
@@ -326,18 +357,12 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			xmlTimestamp.setTimestampLevel(xmlTimestampLevel);
 		}
 
-		XmlDetails validationDetails = new XmlDetails();
-		validationDetails.getError().addAll(detailedReport.getTimestampValidationErrors(timestampId));
-		validationDetails.getWarning().addAll(detailedReport.getTimestampValidationWarnings(timestampId));
-		validationDetails.getInfo().addAll(detailedReport.getTimestampValidationInfos(timestampId));
+		XmlDetails validationDetails = getValidationDetails(timestampId);
 		if (isNotEmpty(validationDetails)) {
 			xmlTimestamp.setValidationDetails(validationDetails);
 		}
 
-		XmlDetails qualificationDetails = new XmlDetails();
-		qualificationDetails.getError().addAll(detailedReport.getTimestampQualificationErrors(timestampId));
-		qualificationDetails.getWarning().addAll(detailedReport.getTimestampQualificationWarnings(timestampId));
-		qualificationDetails.getInfo().addAll(detailedReport.getTimestampQualificationInfos(timestampId));
+		XmlDetails qualificationDetails = getQualificationDetails(timestampId);
 		if (isNotEmpty(qualificationDetails)) {
 			xmlTimestamp.setQualificationDetails(qualificationDetails);
 		}
@@ -351,16 +376,6 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			return signingCertificate.getReadableCertificateName();
 		}
 		return Utils.EMPTY_STRING;
-	}
-
-	private List<String> toStrings(List<XmlName> xmlNames) {
-		List<String> strings = new ArrayList<>();
-		if (Utils.isCollectionNotEmpty(xmlNames)) {
-			for (XmlName name : xmlNames) {
-				strings.add(name.getValue());
-			}
-		}
-		return strings;
 	}
 
 	private void determineExtensionPeriod(XmlSignature xmlSignature) {

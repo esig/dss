@@ -36,6 +36,7 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
+import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
@@ -88,15 +89,14 @@ public class AllDataObjectsTimeStampBuilder {
 	 * @return {@link TimestampToken}
 	 */
 	public TimestampToken build(List<DSSDocument> documents) {
-		ReferenceBuilder referenceBuilder = new ReferenceBuilder(signatureParameters);
-		
 		// Prepare references
+		ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, signatureParameters);
 		List<DSSReference> references = signatureParameters.getReferences();
-		if (Utils.isCollectionEmpty(references)) {
-			references = referenceBuilder.build(documents);
-			signatureParameters.setReferences(references);
-		} else {
+		if (Utils.isCollectionNotEmpty(references)) {
 			referenceBuilder.checkReferencesValidity();
+		} else {
+			references = referenceBuilder.build();
+			signatureParameters.setReferences(references);
 		}
 
 		byte[] dataToBeDigested = null;
@@ -109,7 +109,8 @@ public class AllDataObjectsTimeStampBuilder {
 				 * 1) process the retrieved ds:Reference element according to the reference-processing model of XMLDSIG [1]
 				 * clause 4.4.3.2;
 				 */
-				DSSDocument referenceContent = referenceBuilder.getReferenceOutput(reference);
+				ReferenceProcessor referenceProcessor = new ReferenceProcessor(signatureParameters);
+				DSSDocument referenceContent = referenceProcessor.getReferenceOutput(reference);
 				byte[] binaries = DSSUtils.toByteArray(referenceContent);
 				/*
 				 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and

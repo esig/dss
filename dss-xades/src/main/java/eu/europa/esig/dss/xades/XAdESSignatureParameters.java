@@ -161,6 +161,11 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * XAdES 1.4.1 definition
 	 */
 	private DSSNamespace xades141Namespace = XAdESNamespaces.XADES_141;
+
+	/**
+	 * List of custom ds:Object elements to be incorporated inside the signature
+	 */
+	private List<DSSObject> objects;
 	
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -555,6 +560,24 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		} else {
 			throw new DSSException("Not accepted URI");
 		}
+	}
+
+	/**
+	 * Gets the list of custom ds:Object elements
+	 *
+	 * @return a list of {@link DSSObject}s
+	 */
+	public List<DSSObject> getObjects() {
+		return objects;
+	}
+
+	/**
+	 * Sets the list of custom ds:Object elements to be incorporated within the ds:Signature
+	 *
+	 * @param objects a list of {@link DSSObject} to be included
+	 */
+	public void setObjects(List<DSSObject> objects) {
+		this.objects = objects;
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public abstract class AbstractXAdESTestExtension extends AbstractTestExtension<X
 	}
 
 	@Override
-	protected DSSDocument getOriginalDocument() {
+	protected FileDocument getOriginalDocument() {
 		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".xml");
 		try (FileOutputStream fos = new FileOutputStream(originalDoc); FileInputStream fis = new FileInputStream(new File("src/test/resources/sample.xml"))) {
 			Utils.copy(fis, fos);

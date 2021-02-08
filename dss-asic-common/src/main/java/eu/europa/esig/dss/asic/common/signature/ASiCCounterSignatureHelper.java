@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.asic.common.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
@@ -43,23 +63,22 @@ public abstract class ASiCCounterSignatureHelper {
 	 * @param signatureId {@link String} id of a signature to extract a file with
 	 * @return {@link DSSDocument} signature document containing a signature to be counter signed with a defined id
 	 */
-	public DSSDocument extractSignatureDocument(String signatureId) {		
-		if (ASiCUtils.isZip(asicContainer)) {
-			
-			List<DSSDocument> signatureDocuments = getSignatureDocuments();
-			if (Utils.isCollectionNotEmpty(signatureDocuments)) {
-				for (DSSDocument signatureDocument : signatureDocuments) {
-					if (containsSignatureToBeCounterSigned(signatureDocument, signatureId)) {
-						checkCounterSignaturePossible(signatureDocument);
-						return signatureDocument;
-					}
-				}
-
-				throw new DSSException(String.format("A signature with id '%s' has not been found!", signatureId));
-			}
-			
+	public DSSDocument extractSignatureDocument(String signatureId) {
+		if (!ASiCUtils.isZip(asicContainer)) {
+			throw new DSSException("The provided file shall be an ASiC container with signatures inside!");
 		}
-		throw new DSSException("The provided file shall be an ASiC container with signatures inside!");
+		List<DSSDocument> signatureDocuments = getSignatureDocuments();
+		if (Utils.isCollectionEmpty(signatureDocuments)) {
+			throw new DSSException("No signatures found to be extended!");
+		}
+
+		for (DSSDocument signatureDocument : signatureDocuments) {
+			if (containsSignatureToBeCounterSigned(signatureDocument, signatureId)) {
+				checkCounterSignaturePossible(signatureDocument);
+				return signatureDocument;
+			}
+		}
+		throw new DSSException(String.format("A signature with id '%s' has not been found!", signatureId));
 	}
 
 	/**

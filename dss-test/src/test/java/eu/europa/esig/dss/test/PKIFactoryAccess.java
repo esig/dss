@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.security.KeyStore.PasswordProtection;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import org.h2.jdbcx.JdbcDataSource;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
@@ -57,6 +45,17 @@ import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.token.KeyStoreSignatureTokenConnection;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import org.h2.jdbcx.JdbcDataSource;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.security.KeyStore.PasswordProtection;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 
 public abstract class PKIFactoryAccess {
@@ -129,6 +128,9 @@ public abstract class PKIFactoryAccess {
 	protected static final String EE_GOOD_USER = "ee-good-user";
 	protected static final String OCSP_SKIP_USER = "ocsp-skip-user";
 	protected static final String OCSP_SKIP_USER_WITH_CRL = "ocsp-skip-user-with-crl";
+	protected static final String OCSP_SKIP_CA = "ocsp-skip-valid-ca";
+	protected static final String OCSP_EXPIRED_RESPONDER_USER = "ocsp-skip-expired-ocsp-user";
+	protected static final String OCSP_NOT_YET_VALID_CA_USER = "ocsp-skip-not-yet-valid-ca-user";
 	protected static final String ROOT_CA = "root-ca";
 	
 	private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";

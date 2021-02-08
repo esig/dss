@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
@@ -6,9 +26,9 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
+import eu.europa.esig.dss.jades.validation.JAdESAttributeIdentifier;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
@@ -36,9 +56,9 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	 * @return {@link DSSDocument} extracted SignatureValue
 	 */
 	public DSSDocument getSignatureValueToBeSigned(DSSDocument signatureDocument, JAdESCounterSignatureParameters parameters) {
-		JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(signatureDocument);
-		JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
-		
+		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(signatureDocument);
+		assertIsJSONSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
+
 		JAdESSignature jadesSignature = (JAdESSignature) extractSignatureById(jwsJsonSerializationObject,
 				parameters.getSignatureIdToCounterSign());
 		return new InMemoryDocument(jadesSignature.getSignatureValue());
@@ -54,9 +74,9 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	 */
 	public DSSDocument buildEmbeddedCounterSignature(DSSDocument signatureDocument, DSSDocument counterSignature, 
 			JAdESCounterSignatureParameters parameters) {
-		JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(signatureDocument);
-		JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
-		
+		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(signatureDocument);
+		assertIsJSONSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
+
 		JAdESSignature jadesSignature = (JAdESSignature) extractSignatureById(jwsJsonSerializationObject,
 				parameters.getSignatureIdToCounterSign());
 		assertEtsiUComponentsConsistent(jadesSignature.getJws(), parameters.isBase64UrlEncodedEtsiUComponents());
@@ -64,8 +84,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		Object cSig = getCSig(counterSignature, parameters.getJwsSerializationType());
 		
 		JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-		etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.C_SIG, cSig,
-				parameters.isBase64UrlEncodedEtsiUComponents());
+		etsiUHeader.addComponent(JAdESHeaderParameterNames.C_SIG, cSig, parameters.isBase64UrlEncodedEtsiUComponents());
 		
 		updateMasterSignatureRecursively(jadesSignature);
 
@@ -85,10 +104,9 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 					jwsJsonSerializationObject.getJWSSerializationType());
 
 			Object cSig = getCSig(generator.generate(), jwsJsonSerializationObject.getJWSSerializationType());
-			masterCSigAttribute.overwriteValue(cSig);
-
-			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-			etsiUHeader.replaceComponent(masterSignature.getJws(), masterCSigAttribute);
+			EtsiUComponent updatedCSigAttribute = EtsiUComponent.build(JAdESHeaderParameterNames.C_SIG, cSig,
+					masterCSigAttribute.isBase64UrlEncoded(), (JAdESAttributeIdentifier) masterCSigAttribute.getIdentifier());
+			replaceCSigComponent(jadesSignature, updatedCSigAttribute);
 
 			updateMasterSignatureRecursively(masterSignature);
 		}
@@ -113,6 +131,14 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 						jwsSerializationType));
 		}
 		return cSig;
+	}
+
+	private void replaceCSigComponent(JAdESSignature jadesSignature, EtsiUComponent cSigAttribute) {
+		JAdESSignature masterSignature = (JAdESSignature) jadesSignature.getMasterSignature();
+		JAdESEtsiUHeader etsiUHeader = masterSignature.getEtsiUHeader();
+		etsiUHeader.replaceComponent(cSigAttribute);
+
+		jadesSignature.setMasterCSigComponent(cSigAttribute);
 	}
 	
 	private AdvancedSignature extractSignatureById(JWSJsonSerializationObject jwsJsonSerializationObject,

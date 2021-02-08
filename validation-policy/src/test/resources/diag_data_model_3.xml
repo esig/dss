@@ -108,10 +108,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.3.6.1.4.1.21679.1.1.5.2.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
@@ -182,10 +181,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.3.6.1.4.1.21679.1.1.5.2.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
@@ -256,10 +254,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.3.6.1.4.1.21679.1.1.5.2.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
@@ -333,10 +330,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.3.6.1.4.1.21679.1.1.5.2.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
@@ -406,10 +402,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.3.6.1.4.1.21679.1.1.5.2.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
@@ -480,10 +475,9 @@
             <CertificatePolicies>
                 <certificatePolicy>1.3.6.1.4.1.21679.1.1.1.2.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcQSSD present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>

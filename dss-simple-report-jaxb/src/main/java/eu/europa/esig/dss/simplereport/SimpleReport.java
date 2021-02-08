@@ -25,16 +25,20 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
+import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlToken;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A SimpleReport holder to fetch values from a JAXB SimpleReport.
@@ -214,10 +218,10 @@ public class SimpleReport {
 	 *            the token id
 	 * @return the linked errors
 	 */
-	public List<String> getValidationErrors(final String tokenId) {
+	public List<Message> getValidationErrors(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null && token.getValidationDetails() != null) {
-			return token.getValidationDetails().getError();
+			return convert(token.getValidationDetails().getError());
 		}
 		return Collections.emptyList();
 	}
@@ -229,10 +233,10 @@ public class SimpleReport {
 	 *            the token id
 	 * @return the linked warnings
 	 */
-	public List<String> getValidationWarnings(final String tokenId) {
+	public List<Message> getValidationWarnings(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null && token.getValidationDetails() != null) {
-			return token.getValidationDetails().getWarning();
+			return convert(token.getValidationDetails().getWarning());
 		}
 		return Collections.emptyList();
 	}
@@ -244,10 +248,10 @@ public class SimpleReport {
 	 *            the token id
 	 * @return the linked information
 	 */
-	public List<String> getValidationInfo(final String tokenId) {
+	public List<Message> getValidationInfo(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null && token.getValidationDetails() != null) {
-			return token.getValidationDetails().getInfo();
+			return convert(token.getValidationDetails().getInfo());
 		}
 		return Collections.emptyList();
 	}
@@ -259,10 +263,10 @@ public class SimpleReport {
 	 *            the token id
 	 * @return the linked errors
 	 */
-	public List<String> getQualificationErrors(final String tokenId) {
+	public List<Message> getQualificationErrors(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null && token.getQualificationDetails() != null) {
-			return token.getQualificationDetails().getError();
+			return convert(token.getQualificationDetails().getError());
 		}
 		return Collections.emptyList();
 	}
@@ -274,10 +278,10 @@ public class SimpleReport {
 	 *            the token id
 	 * @return the linked warnings
 	 */
-	public List<String> getQualificationWarnings(final String tokenId) {
+	public List<Message> getQualificationWarnings(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null && token.getQualificationDetails() != null) {
-			return token.getQualificationDetails().getWarning();
+			return convert(token.getQualificationDetails().getWarning());
 		}
 		return Collections.emptyList();
 	}
@@ -289,10 +293,24 @@ public class SimpleReport {
 	 *            the token id
 	 * @return the linked information
 	 */
-	public List<String> getQualificationInfo(final String tokenId) {
+	public List<Message> getQualificationInfo(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
 		if (token != null && token.getQualificationDetails() != null) {
-			return token.getQualificationDetails().getInfo();
+			return convert(token.getQualificationDetails().getInfo());
+		}
+		return Collections.emptyList();
+	}
+
+	private Message convert(XmlMessage v) {
+		if (v != null) {
+			return new Message(v.getKey(), v.getValue());
+		}
+		return null;
+	}
+
+	private List<Message> convert(Collection<XmlMessage> messages) {
+		if (messages != null) {
+			return messages.stream().map(m -> convert(m)).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
 	}

@@ -291,33 +291,45 @@
 	
 	<xs:complexType name="Constraint">
 		<xs:sequence>
-			<xs:element name="Name" type="Name" />
+			<xs:element name="Name" type="Message" />
 			<xs:element name="Status" type="Status" />
-			<xs:element name="Error" type="Name" minOccurs="0" />
-			<xs:element name="Warning" type="Name" minOccurs="0" />
-			<xs:element name="Info" type="Name" minOccurs="0" />
+			<xs:element name="Error" type="Message" minOccurs="0" />
+			<xs:element name="Warning" type="Message" minOccurs="0" />
+			<xs:element name="Info" type="Message" minOccurs="0" />
 			<xs:element name="AdditionalInfo" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="optional" /> <!-- In case of constraint with a BBB -->
+		<xs:attribute name="BlockType" type="BlockType" use="optional" /> <!-- Defines type of validating chain result (e.g. RAC, RFC, etc.) -->
 	</xs:complexType>
 
 	<xs:complexType name="Conclusion">
 		<xs:sequence>
 			<xs:element name="Indication" type="Indication" />
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
-			<xs:element name="Errors" type="Name" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Warnings" type="Name" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Infos" type="Name" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Errors" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Warnings" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Infos" type="Message" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="Name">
+	<xs:complexType name="Message">
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
-				<xs:attribute name="NameId" type="xs:string" />
+				<xs:attribute name="Key" type="xs:string" />
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+
+	<xs:simpleType name="BlockType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SIG_BBB" />
+			<xs:enumeration value="REV_BBB" />
+			<xs:enumeration value="RAC" />
+			<xs:enumeration value="RFC" />
+			<xs:enumeration value="SUB_XCV" />
+			<xs:enumeration value="REV_CC" />
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:simpleType name="Status" final="restriction">
 		<xs:restriction base="xs:string">

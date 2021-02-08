@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -49,6 +39,19 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.validationreport.jaxb.SACertIDListType;
+import eu.europa.esig.validationreport.jaxb.SARevIDListType;
+import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
+import org.junit.jupiter.api.BeforeEach;
+
+import javax.xml.bind.JAXBElement;
+import java.io.File;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 
@@ -147,6 +150,48 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		assertEquals(1, diagnosticData.getAllOrphanCertificateReferences().size());
 		assertEquals(2, diagnosticData.getAllOrphanRevocationReferences().size());
+	}
+
+	@Override
+	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes) {
+		super.validateETSISignatureAttributes(signatureAttributes);
+
+		boolean signCertRefFound = false;
+		boolean completeCertRefFound = false;
+		boolean completeRevocRefFound = false;
+
+		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+		for (Object signatureAttributeObj : signatureAttributeObjects) {
+			if (signatureAttributeObj instanceof JAXBElement) {
+				JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
+				String xmlElementName = jaxbElement.getName().getLocalPart();
+				if ("SigningCertificate".equals(xmlElementName)) {
+					SACertIDListType certIdList = (SACertIDListType) jaxbElement.getValue();
+					assertTrue(certIdList.isSigned());
+					assertEquals(1, certIdList.getAttributeObject().size());
+					assertEquals(1, certIdList.getAttributeObject().get(0).getVOReference().size());
+					assertEquals(0, certIdList.getCertID().size());
+					signCertRefFound = true;
+				}
+				if ("CompleteCertificateRefs".equals(xmlElementName)) {
+					SACertIDListType certIdList = (SACertIDListType) jaxbElement.getValue();
+					assertEquals(1, certIdList.getAttributeObject().size());
+					assertEquals(2, certIdList.getAttributeObject().get(0).getVOReference().size());
+					assertEquals(1, certIdList.getCertID().size());
+					completeCertRefFound = true;
+				}
+				if ("CompleteRevocationRefs".equals(xmlElementName)) {
+					SARevIDListType revIdList = (SARevIDListType) jaxbElement.getValue();
+					assertEquals(0, revIdList.getAttributeObject().size());
+					assertEquals(2, revIdList.getCRLIDOrOCSPID().size());
+					completeRevocRefFound = true;
+				}
+			}
+		}
+		assertTrue(signCertRefFound);
+		assertTrue(completeCertRefFound);
+		assertTrue(completeRevocRefFound);
+
 	}
 
 	@Override

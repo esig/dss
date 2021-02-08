@@ -102,7 +102,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 														  ValidationPolicy policy, Date currentTime) {
 		super(i18nProvider, new XmlValidationProcessArchivalData());
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
-		this.xmlTimestamps = signatureAnalysis.getTimestamp();
+		this.xmlTimestamps = signatureAnalysis.getTimestamps();
 		this.signature = signature;
 		this.diagnosticData = diagnosticData;
 		this.bbbs = bbbs;

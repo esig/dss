@@ -72,12 +72,16 @@
 		</jaxb:bindings>
 		
 		
+		<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='Timestamp']">
+			<jaxb:property name="Timestamps" />
+		</jaxb:bindings>
 	  	<jaxb:bindings node="//xs:complexType[@name='SubXCV']//xs:element[@name='CrossCertificate']">
 			<jaxb:property name="CrossCertificates" />
 		</jaxb:bindings>
 	  	<jaxb:bindings node="//xs:complexType[@name='SubXCV']//xs:element[@name='EquivalentCertificate']">
 			<jaxb:property name="EquivalentCertificates" />
 		</jaxb:bindings>
+
 	</jaxb:bindings>
 
 </jaxb:bindings>

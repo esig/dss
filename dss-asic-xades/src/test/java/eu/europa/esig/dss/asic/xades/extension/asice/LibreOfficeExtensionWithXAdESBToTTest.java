@@ -57,7 +57,7 @@ public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractASiCWithXAdES
 	}
 
 	@Override
-	protected void deleteOriginalFile(DSSDocument originalDocument) {
+	protected void deleteOriginalFile(FileDocument originalDocument) {
 		//Skip step
 	}
 	

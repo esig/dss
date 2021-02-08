@@ -72,6 +72,13 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * @param tokenExtractionStrategy the {@link TokenExtractionStrategy}
 	 */
 	void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy);
+
+	/**
+	 * Sets the TokenIdentifierProvider
+	 *
+	 * @param identifierProvider {@link TokenIdentifierProvider}
+	 */
+	void setTokenIdentifierProvider(TokenIdentifierProvider identifierProvider);
 	
 	/**
 	 * This method allows to enable/disable the semantics inclusion in the reports

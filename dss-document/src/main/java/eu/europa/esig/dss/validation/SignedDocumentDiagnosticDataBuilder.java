@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.crl.CRLBinary;
@@ -302,7 +322,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	private XmlSignerData getXmlSignerData(SignatureScope signatureScope) {
 		XmlSignerData xmlSignedData = new XmlSignerData();
-		xmlSignedData.setId(signatureScope.getDSSIdAsString());
+		xmlSignedData.setId(identifierProvider.getIdAsString(signatureScope));
 		xmlSignedData.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(signatureScope.getDigest()));
 		xmlSignedData.setReferencedName(signatureScope.getName());
 		return xmlSignedData;
@@ -401,7 +421,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		XmlSignature xmlSignature = new XmlSignature();
 		xmlSignature.setSignatureFilename(removeSpecialCharsForXml(signature.getSignatureFilename()));
 
-		xmlSignature.setId(signature.getId());
+		xmlSignature.setId(identifierProvider.getIdAsString(signature));
 		xmlSignature.setDAIdentifier(signature.getDAIdentifier());
 		xmlSignature.setClaimedSigningTime(signature.getSigningTime());
 		xmlSignature.setStructuralValidation(getXmlStructuralValidation(signature));
@@ -499,10 +519,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private XmlBasicSignature getXmlBasicSignature(AdvancedSignature signature, PublicKey signingCertificatePublicKey) {
 		XmlBasicSignature xmlBasicSignature = new XmlBasicSignature();
 		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(signature.getEncryptionAlgorithm());
-
-		final int keyLength = signingCertificatePublicKey == null ? 0
-				: DSSPKUtils.getPublicKeySize(signingCertificatePublicKey);
-		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
+		xmlBasicSignature.setKeyLengthUsedToSignThisToken(DSSPKUtils.getStringPublicKeySize(signingCertificatePublicKey));
 		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(signature.getDigestAlgorithm());
 		xmlBasicSignature.setMaskGenerationFunctionUsedToSignThisToken(signature.getMaskGenerationFunction());
 
@@ -725,8 +742,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	protected <R extends Revocation> XmlOrphanRevocationToken createOrphanTokenFromRevocationIdentifier(
 			EncapsulatedRevocationTokenIdentifier<R> revocationIdentifier) {
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
-		String tokenId = revocationIdentifier.asXmlId();
-		orphanToken.setId(tokenId);
+		orphanToken.setId(identifierProvider.getIdAsString(revocationIdentifier));
 		if (tokenExtractionStrategy.isRevocationData()) {
 			orphanToken.setBase64Encoded(revocationIdentifier.getBinaries());
 		} else {
@@ -738,7 +754,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		} else {
 			orphanToken.setType(RevocationType.OCSP);
 		}
-		xmlOrphanRevocationTokensMap.put(tokenId, orphanToken);
+		xmlOrphanRevocationTokensMap.put(revocationIdentifier.asXmlId(), orphanToken);
 		return orphanToken;
 	}
 
@@ -747,7 +763,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
 
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
-		orphanToken.setId(ref.getDSSIdAsString());
+		orphanToken.setId(identifierProvider.getIdAsString(ref));
 		if (ref.getDigest() != null) {
 			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
 		}
@@ -805,7 +821,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 		final XmlTimestamp xmlTimestampToken = new XmlTimestamp();
 
-		xmlTimestampToken.setId(timestampToken.getDSSIdAsString());
+		xmlTimestampToken.setId(identifierProvider.getIdAsString(timestampToken));
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
 		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType()); // property is defined only
 																								// for archival

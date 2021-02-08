@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <ValidationDate>2021-01-08T12:47:05</ValidationDate>
+    <UsedCertificates>
+        <Certificate Id="C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC">
+            <SubjectDistinguishedName Format="CANONICAL">cn=john doe,ou=test pki,o=test organization,st=midlands,c=tc</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=John Doe,OU=TEST PKI,O=Test organization,ST=Midlands,C=TC</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=tc etrust qc for esignatures ca,o=third country qtsp company,c=tc</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=TC eTrust QC for eSignatures CA,O=Third Country QTSP Company,C=TC</IssuerDistinguishedName>
+            <SerialNumber>4790640315483750677771987618222800710</SerialNumber>
+            <CommonName>John Doe</CommonName>
+            <State>Midlands</State>
+            <CountryName>TC</CountryName>
+            <OrganizationName>Test organization</OrganizationName>
+            <OrganizationalUnit>TEST PKI</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://nt-qwac.nowina.solutions/res/caqctsp/sub-ca_tc.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://nt-qwac.nowina.solutions/res/caqctsp/sub-ca_tc.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>UNKNOWN</Source>
+            </Sources>
+            <NotAfter>2025-06-02T16:23:31</NotAfter>
+            <NotBefore>2020-06-03T16:23:31</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-018ECA9D3C524E4282E9B1CC1C7BF224204B887D0B0380BA61835EF4094567E6</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9E0CF61CF38440777296CD8DE3E5FE960BCAB9731DB240E5DFE826A606795F70"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9E0CF61CF38440777296CD8DE3E5FE960BCAB9731DB240E5DFE826A606795F70"/>
+                <ChainItem Certificate="C-4FD76679A5982110B760AD5B1B6BB4EF951CE226C4F44520F209E56049545CC8"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcQSSD present="false"/>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+                <QcCClegislation>
+                    <CountryName>TC</CountryName>
+                </QcCClegislation>
+            </QcStatements>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8">
+                    <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC">
+                            <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-86ca5ddddcb6ca73c77511dff3c94961bd675ca15111810103942ca7d96dce1b4fd467c5bfd626dd6a8fb05d515e8d1f57a819aa454f3e96f2dc113b4adebe9a">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>LRGLvJ4LmNatB7udRM/EJEZ7ji2DouBGYemmINqgYvw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-4FD76679A5982110B760AD5B1B6BB4EF951CE226C4F44520F209E56049545CC8">
+            <SubjectDistinguishedName Format="CANONICAL">cn=root ca,o=third country qtsp company,c=tc</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Root CA,O=Third Country QTSP Company,C=TC</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=root ca,o=third country qtsp company,c=tc</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Root CA,O=Third Country QTSP Company,C=TC</IssuerDistinguishedName>
+            <SerialNumber>168282269439570657829386563108176041054</SerialNumber>
+            <CommonName>Root CA</CommonName>
+            <CountryName>TC</CountryName>
+            <OrganizationName>Third Country QTSP Company</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>AIA</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2030-05-16T18:45:40</NotAfter>
+            <NotBefore>2020-05-18T18:45:40</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-56527FB9704A82EFB2DE904F6839D1FA0E024A4BDD0E12285A2F24DCD39EBB82</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>T9dmeaWYIRC3YK1bG2u075Uc4ibE9EUg8gnlYElUXMg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-9E0CF61CF38440777296CD8DE3E5FE960BCAB9731DB240E5DFE826A606795F70">
+            <SubjectDistinguishedName Format="CANONICAL">cn=tc etrust qc for esignatures ca,o=third country qtsp company,c=tc</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=TC eTrust QC for eSignatures CA,O=Third Country QTSP Company,C=TC</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=root ca,o=third country qtsp company,c=tc</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Root CA,O=Third Country QTSP Company,C=TC</IssuerDistinguishedName>
+            <SerialNumber>168282269439570657829386563108176041056</SerialNumber>
+            <CommonName>TC eTrust QC for eSignatures CA</CommonName>
+            <CountryName>TC</CountryName>
+            <OrganizationName>Third Country QTSP Company</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://18.202.217.18/res/caqctsp/root-ca_tc.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://18.202.217.18/res/caqctsp/root-ca_tc.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>AIA</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2030-06-15T10:06:52</NotAfter>
+            <NotBefore>2020-06-17T10:06:52</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-3A17381B1BE30A700CFE5F29AC81BA72C0FAF2F769CCA6C3AA14DED134C9359B</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-4FD76679A5982110B760AD5B1B6BB4EF951CE226C4F44520F209E56049545CC8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-4FD76679A5982110B760AD5B1B6BB4EF951CE226C4F44520F209E56049545CC8"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8">
+                    <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC">
+                            <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ngz2HPOEQHdyls2N4+X+lgvKuXMdskDl3+gmpgZ5X3A=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-86ca5ddddcb6ca73c77511dff3c94961bd675ca15111810103942ca7d96dce1b4fd467c5bfd626dd6a8fb05d515e8d1f57a819aa454f3e96f2dc113b4adebe9a">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-21.1.1</SourceAddress>
+            <ProductionDate>2021-01-07T14:45:33</ProductionDate>
+            <ThisUpdate>2021-01-07T14:45:33</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9E0CF61CF38440777296CD8DE3E5FE960BCAB9731DB240E5DFE826A606795F70"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9E0CF61CF38440777296CD8DE3E5FE960BCAB9731DB240E5DFE826A606795F70"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>03ff75fec96d2b5ebc245f91203f3d3bc1b40921</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <TrustedLists>
+        <TrustedList Id="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8">
+            <CountryCode>TC</CountryCode>
+            <Url>http://localhost:8080/TC.xml</Url>
+            <SequenceNumber>1</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2021-01-07T14:45:31</LastLoading>
+            <IssueDate>2021-01-07T14:37:39</IssueDate>
+            <NextUpdate>2021-01-10T14:37:39</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

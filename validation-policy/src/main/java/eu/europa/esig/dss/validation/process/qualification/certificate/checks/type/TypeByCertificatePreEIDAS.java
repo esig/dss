@@ -22,8 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
-import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
+import eu.europa.esig.dss.enumerations.CertificateType;
 
 class TypeByCertificatePreEIDAS implements TypeStrategy {
 
@@ -34,12 +33,12 @@ class TypeByCertificatePreEIDAS implements TypeStrategy {
 	}
 
 	@Override
-	public Type getType() {
-		if (QCStatementPolicyIdentifiers.isQCCompliant(signingCertificate) || CertificatePolicyIdentifiers.isQCP(signingCertificate)
+	public CertificateType getType() {
+		if (signingCertificate.isQcCompliance() || CertificatePolicyIdentifiers.isQCP(signingCertificate)
 				|| CertificatePolicyIdentifiers.isQCPPlus(signingCertificate)) {
-			return Type.ESIGN; // if QC -> ESign
+			return CertificateType.ESIGN; // if QC -> ESign
 		} else {
-			return Type.UNKNOWN;
+			return CertificateType.UNKNOWN;
 		}
 	}
 

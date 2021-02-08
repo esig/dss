@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
@@ -43,7 +35,16 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class CertificateWrapper extends AbstractTokenProxy {
 
@@ -320,14 +321,29 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return getOidValues(certificatePolicyIds);
 	}
 
-	public List<String> getQCStatementIds() {
-		List<XmlOID> certificateQCStatementIds = certificate.getQCStatementIds();
-		return getOidValues(certificateQCStatementIds);
+	public boolean isSupportedByQSCD() {
+		return (certificate.getQcStatements() != null && certificate.getQcStatements().getQcQSSD() != null && certificate.getQcStatements().getQcQSSD().isPresent());
 	}
 
-	public List<String> getQCTypes() {
-		List<XmlOID> certificateQCTypeIds = certificate.getQCTypes();
-		return getOidValues(certificateQCTypeIds);
+	public boolean isQcCompliance() {
+		return (certificate.getQcStatements() != null && certificate.getQcStatements().getQcCompliance() != null && certificate.getQcStatements().getQcCompliance().isPresent());
+	}
+
+	public List<QCType> getQCTypes() {
+		List<QCType> result = new ArrayList<>();
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getQcTypes() != null) {
+			for (XmlOID oid : certificate.getQcStatements().getQcTypes()) {
+				result.add(QCType.fromOid(oid.getValue()));
+			}
+		}
+		return result;
+	}
+
+	public List<String> getQcLegislationCountryCodes() {
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getQcCClegislation() != null) {
+			return certificate.getQcStatements().getQcCClegislation();
+		}
+		return Collections.emptyList();
 	}
 
 	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {
@@ -350,15 +366,15 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public PSD2InfoWrapper getPSD2Info() {
-		if (certificate.getPSD2Info() != null) {
-			return new PSD2InfoWrapper(certificate.getPSD2Info());
+		if (certificate.getQcStatements() !=null && certificate.getQcStatements().getPSD2Info() != null) {
+			return new PSD2InfoWrapper(certificate.getQcStatements().getPSD2Info());
 		}
 		return null;
 	}
 
 	public QCLimitValueWrapper getQCLimitValue() {
-		if (certificate.getQCLimitValue() !=null) {
-			return new QCLimitValueWrapper(certificate.getQCLimitValue());
+		if (certificate.getQcStatements() !=null && certificate.getQcStatements().getQcLimitValue() !=null) {
+			return new QCLimitValueWrapper(certificate.getQcStatements().getQcLimitValue());
 		}
 		return null;
 	}
@@ -368,9 +384,11 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public SemanticsIdentifier getSemanticsIdentifier() {
-		XmlOID xmlOID = certificate.getSemanticsIdentifier();
-		if (xmlOID != null) {
-			return SemanticsIdentifier.fromOid(xmlOID.getValue());
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getSemanticsIdentifier() != null) {
+			XmlOID xmlOID = certificate.getQcStatements().getSemanticsIdentifier();
+			if (xmlOID != null) {
+				return SemanticsIdentifier.fromOid(xmlOID.getValue());
+			}
 		}
 		return null;
 	}

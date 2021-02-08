@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -37,6 +35,8 @@ import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLFreshn
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLNotExpiredCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLVersionCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLWellSignedCheck;
+
+import java.util.Date;
 
 public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 
@@ -82,11 +82,6 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 
 	private boolean isLastTL() {
 		return currentTL.getNextUpdate() == null;
-	}
-
-	@Override
-	protected void addAdditionalInfo() {
-		collectErrorsWarnsInfos();
 	}
 
 	private ChainItem<XmlTLAnalysis> tlFreshness() {

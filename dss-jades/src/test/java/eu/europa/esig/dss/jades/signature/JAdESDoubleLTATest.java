@@ -1,19 +1,24 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.jades.signature;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.jose4j.json.JsonUtil;
-import org.jose4j.lang.JoseException;
-import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -30,7 +35,6 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
-import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
@@ -43,6 +47,20 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.lang.JoseException;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 	
@@ -166,18 +184,18 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 			assertNotNull(payload);
 			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(payload)));
 			
-			String header = (String) rootStructure.get(JWSConstants.PROTECTED);
+			String header = (String) rootStructure.get("protected");
 			assertNotNull(header);
 			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(header)));
 			
-			String signatureValue = (String) rootStructure.get(JWSConstants.SIGNATURE);
+			String signatureValue = (String) rootStructure.get("signature");
 			assertNotNull(signatureValue);
 			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(signatureValue)));
 			
-			Map<String, Object> unprotected = (Map<String, Object>) rootStructure.get(JWSConstants.HEADER);
+			Map<String, Object> unprotected = (Map<String, Object>) rootStructure.get("header");
 			assertTrue(Utils.isMapNotEmpty(unprotected));
 			
-			List<Object> unsignedProperties = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+			List<Object> unsignedProperties = (List<Object>) unprotected.get("etsiU");
 			
 			int xValsCounter = 0;
 			int rValsCounter = 0;
@@ -187,21 +205,21 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 			for (Object property : unsignedProperties) {
 				Map<String, Object> map = DSSJsonUtils.parseEtsiUComponent(property);
 
-				List<?> xVals = (List<?>) map.get(JAdESHeaderParameterNames.X_VALS);
+				List<?> xVals = (List<?>) map.get("xVals");
 				if (xVals != null) {
 					++xValsCounter;
 				}
-				Map<?, ?> rVals = (Map<?, ?>) map.get(JAdESHeaderParameterNames.R_VALS);
+				Map<?, ?> rVals = (Map<?, ?>) map.get("rVals");
 				if (rVals != null) {
 					++rValsCounter;
 				}
-				Map<?, ?> arcTst = (Map<?, ?>) map.get(JAdESHeaderParameterNames.ARC_TST);
+				Map<?, ?> arcTst = (Map<?, ?>) map.get("arcTst");
 				if (arcTst != null) {
 					++arcTstCounter;
-					List<?> tsTokens = (List<?>) arcTst.get(JAdESHeaderParameterNames.TST_TOKENS);
+					List<?> tsTokens = (List<?>) arcTst.get("tstTokens");
 					assertEquals(1, tsTokens.size());
 				}
-				Map<?, ?> tstVd = (Map<?, ?>) map.get(JAdESHeaderParameterNames.TST_VD);
+				Map<?, ?> tstVd = (Map<?, ?>) map.get("tstVD");
 				if (tstVd != null) {
 					++tstVdCounter;
 				}

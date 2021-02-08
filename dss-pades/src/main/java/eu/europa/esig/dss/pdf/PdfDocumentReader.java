@@ -42,7 +42,7 @@ public interface PdfDocumentReader extends Closeable {
 	PdfDssDict getDSSDictionary();
 	
 	/**
-	 * Extracts PdfSignatureSictionaries present in the signature
+	 * Extracts PdfSignatureDictionaries present in the signature
 	 * 
 	 * @return a map between {@link PdfSignatureDictionary} and related field names
 	 * @throws IOException if an exception occurs

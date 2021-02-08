@@ -50,6 +50,9 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 
 	/** The TokenExtractionStrategy */
 	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
+
+	/** The token identifier provider to use */
+	private TokenIdentifierProvider identifierProvider = new OriginalIdentifierProvider();
 	
 	/**
 	 * Locale to use for reports generation
@@ -97,6 +100,16 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	public void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
 		Objects.requireNonNull(tokenExtractionStrategy);
 		this.tokenExtractionStrategy = tokenExtractionStrategy;
+	}
+
+	/**
+	 * Sets the TokenIdentifierProvider
+	 *
+	 * @param identifierProvider {@link TokenIdentifierProvider}
+	 */
+	public void setTokenIdentifierProvider(TokenIdentifierProvider identifierProvider) {
+		Objects.requireNonNull(identifierProvider);
+		this.identifierProvider = identifierProvider;
 	}
 
 	/**
@@ -157,6 +170,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 				.usedRevocations(svc.getProcessedRevocations())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.tokenExtractionStrategy(tokenExtractionStrategy)
+				.tokenIdentifierProvider(identifierProvider)
 				.certificateSourceTypes(svc.getCertificateSourceTypes())
 				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime()).build();
@@ -164,7 +178,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setCertificateId(token.getDSSIdAsString());
+		executor.setCertificateId(identifierProvider.getIdAsString(token));
 		executor.setLocale(locale);
 		executor.setCurrentTime(getValidationTime());
 		return executor.execute();

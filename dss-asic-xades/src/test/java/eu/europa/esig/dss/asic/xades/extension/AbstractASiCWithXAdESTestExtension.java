@@ -59,7 +59,7 @@ public abstract class AbstractASiCWithXAdESTestExtension extends AbstractTestExt
 	}
 
 	@Override
-	protected DSSDocument getOriginalDocument() {
+	protected FileDocument getOriginalDocument() {
 		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".bin");
 		try (FileOutputStream fos = new FileOutputStream(originalDoc)) {
 			fos.write("Hello world!".getBytes());

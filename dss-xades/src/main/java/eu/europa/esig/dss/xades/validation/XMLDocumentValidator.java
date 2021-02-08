@@ -22,8 +22,6 @@ package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -41,9 +39,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Validator of XML Signed document
@@ -143,55 +139,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			signatures.add(xadesSignature);
 		}
 		return signatures;
-	}
-
-	/**
-	 * Retrieves a signature based on its Id
-	 *
-	 * @param signatureId
-	 *            the given Id
-	 * @return the corresponding {@code XAdESSignature}
-	 * @throws DSSException
-	 *             in case no Id is provided, or in case no signature was found for the given Id
-	 */
-	public AdvancedSignature getSignatureById(final String signatureId) throws DSSException {
-		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-		final List<AdvancedSignature> advancedSignatures = getSignatures();
-		for (final AdvancedSignature advancedSignature : advancedSignatures) {
-
-			final String advancedSignatureId = advancedSignature.getId();
-			if (signatureId.equals(advancedSignatureId)) {
-				return advancedSignature;
-			}
-		}
-		throw new DSSException("The signature with the given id was not found!");
-	}
-
-	@Override
-	public List<DSSDocument> getOriginalDocuments(final String signatureId) {
-		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-
-		List<AdvancedSignature> signatureList = getSignatures();
-		List<DSSDocument> result = getOriginalDocumentsFromListOfSignatures(signatureList, signatureId);
-		if (Utils.isCollectionEmpty(result)) {
-			for (AdvancedSignature advancedSignature : signatureList) {
-				result = getOriginalDocumentsFromListOfSignatures(advancedSignature.getCounterSignatures(), signatureId);
-				if (Utils.isCollectionNotEmpty(result)) {
-					break;
-				}
-			}
-		}
-		
-		return result;
-	}
-	
-	private List<DSSDocument> getOriginalDocumentsFromListOfSignatures(List<AdvancedSignature> signatureList, String signatureId) {
-		for (AdvancedSignature advancedSignature : signatureList) {
-			if (signatureId.equals(advancedSignature.getId())) {
-				return getOriginalDocuments(advancedSignature);
-			}
-		}
-		return Collections.emptyList();
 	}
 	
 	@Override

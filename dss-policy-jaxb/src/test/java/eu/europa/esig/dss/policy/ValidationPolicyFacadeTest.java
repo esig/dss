@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.policy;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.UnmarshalException;
-import javax.xml.stream.XMLStreamException;
-
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
-
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -43,6 +28,19 @@ import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
 import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeUnit;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
+import javax.xml.stream.XMLStreamException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ValidationPolicyFacadeTest {
 
@@ -54,7 +52,7 @@ public class ValidationPolicyFacadeTest {
 				.unmarshall(new File("src/test/resources/constraint.xml"));
 
 		Algo algo = constraintsParameters.getSignatureConstraints().getBasicSignatureConstraints().getCryptographic()
-				.getMiniPublicKeySize().getAlgo().get(0);
+				.getMiniPublicKeySize().getAlgos().get(0);
 		assertNotNull(algo);
 		String algoName = algo.getValue();
 		assertEquals("DSA", algoName);

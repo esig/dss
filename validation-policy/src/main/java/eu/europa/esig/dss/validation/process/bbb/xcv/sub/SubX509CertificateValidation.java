@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
@@ -46,12 +49,12 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAcc
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToNaturalPersonCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotOnHoldCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQCStatementIdsCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotRevokedCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotSelfSignedCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcCCLegislationCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
@@ -155,11 +158,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificatePolicyIds(currentCertificate, subContext));
 
-		item = item.setNextItem(certificateQCStatementIds(currentCertificate, subContext));
-
 		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateSupportedByQSCD(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQcCCLegislation(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
 
@@ -362,11 +365,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new CertificatePolicyIdsCheck(i18nProvider, result, certificate, constraint);
 	}
 
-	private ChainItem<XmlSubXCV> certificateQCStatementIds(CertificateWrapper certificate, SubContext subContext) {
-		MultiValuesConstraint constraint = validationPolicy.getCertificateQCStatementIdsConstraint(context, subContext);
-		return new CertificateQCStatementIdsCheck(i18nProvider, result, certificate, constraint);
-	}
-
 	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
 		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
@@ -384,6 +382,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new CertificateSupportedByQSCDCheck(i18nProvider, result, certificate, constraint);
 	}
 
+	private ChainItem<XmlSubXCV> certificateQcCCLegislation(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateQcCCLegislationConstraint(context, subContext);
+		return new CertificateQcCCLegislationCheck(i18nProvider, result, certificate, constraint);
+	}
+
 	private ChainItem<XmlSubXCV> certificateIssuedToLegalPerson(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateIssuedToLegalPersonConstraint(context, subContext);
 		return new CertificateIssuedToLegalPersonCheck(i18nProvider, result, certificate, constraint);
@@ -396,6 +399,50 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {
 		return new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, currentTime, getWarnLevelConstraint());
+	}
+
+	@Override
+	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+		// collect all messages from not RAC checks, collect from RAC only when all of them failed
+		if (!XmlBlockType.RAC.equals(constraint.getBlockType()) || !ValidationProcessUtils.isValidRACFound(result)) {
+			super.collectMessages(conclusion, constraint);
+		}
+		if (XmlBlockType.RFC.equals(constraint.getBlockType())) {
+			XmlRFC rfc = result.getRFC();
+			for (XmlConstraint rfcConstrain : rfc.getConstraint()) {
+				super.collectMessages(conclusion, rfcConstrain);
+			}
+		}
+	}
+
+	@Override
+	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		if (!ValidationProcessUtils.isValidRACFound(result)) {
+			for (XmlRAC rac : result.getRAC()) {
+				super.collectAllMessages(conclusion, rac.getConclusion());
+			}
+		} else {
+			// collect additional messages for the valid RAC
+			XmlRAC rac = getValidRAC();
+			if (rac != null) {
+				super.collectAllMessages(conclusion, rac.getConclusion());
+			}
+		}
+	}
+
+	private XmlRAC getValidRAC() {
+		XmlRFC rfc = result.getRFC();
+		if (rfc != null) {
+			String revocId = rfc.getId();
+			if (revocId != null) {
+				for (XmlRAC rac : result.getRAC()) {
+					if (revocId.equals(rac.getId())) {
+						return rac;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 }

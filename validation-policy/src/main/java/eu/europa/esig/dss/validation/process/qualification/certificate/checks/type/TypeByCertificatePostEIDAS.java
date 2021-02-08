@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
+import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QCTypeIdentifiers;
 
 class TypeByCertificatePostEIDAS implements TypeStrategy {
@@ -33,7 +33,7 @@ class TypeByCertificatePostEIDAS implements TypeStrategy {
 	}
 
 	@Override
-	public Type getType() {
+	public CertificateType getType() {
 		boolean esign = QCTypeIdentifiers.isQCTypeEsign(signingCertificate);
 		boolean eseal = QCTypeIdentifiers.isQCTypeEseal(signingCertificate);
 		boolean web = QCTypeIdentifiers.isQCTypeWeb(signingCertificate);
@@ -44,13 +44,13 @@ class TypeByCertificatePostEIDAS implements TypeStrategy {
 		boolean onlyOne = esign ^ eseal ^ web;
 
 		if (noneType || (esign && onlyOne)) {
-			return Type.ESIGN;
+			return CertificateType.ESIGN;
 		} else if (eseal && onlyOne) {
-			return Type.ESEAL;
+			return CertificateType.ESEAL;
 		} else if (web && onlyOne) {
-			return Type.WSA;
+			return CertificateType.WSA;
 		} else {
-			return Type.UNKNOWN;
+			return CertificateType.UNKNOWN;
 		}
 
 	}

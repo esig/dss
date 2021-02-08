@@ -90,7 +90,7 @@ public class XAdESLTAWithTrustServiceTest extends AbstractXAdESTestValidation {
 		statusHistoryList.addOldest(statusAndInformationExtensions);
 		
 		TLInfo tlInfo = new TLInfo(null, null, null, "BE.xml");
-		TrustProperties trustProperties = new TrustProperties(tlInfo.getIdentifier(), trustServiceProviderBuilder.build(), statusHistoryList);
+		TrustProperties trustProperties = new TrustProperties(tlInfo.getDSSId(), trustServiceProviderBuilder.build(), statusHistoryList);
 
 		Map<CertificateToken, List<TrustProperties>> trustPropertiesByCertMap = new HashMap<>();
 		trustPropertiesByCertMap.put(DSSUtils.loadCertificateFromBase64EncodedString(

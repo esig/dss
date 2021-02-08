@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -70,25 +90,25 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
 		if (Utils.isCollectionNotEmpty(certificateValuesToAdd)) {
 			JSONArray xVals = getXVals(certificateValuesToAdd);
-			etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS, xVals,
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.X_VALS, xVals,
 					params.isBase64UrlEncodedEtsiUComponents());
 		}
 		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
 		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 		if (Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
 			JsonObject rVals = getRVals(crlsToAdd, ocspsToAdd);
-			etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS, rVals,
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.R_VALS, rVals,
 					params.isBase64UrlEncodedEtsiUComponents());
 		}
 	}
 
 	private void removeOldCertificateValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
-		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.X_VALS);
+		etsiUHeader.removeComponent(JAdESHeaderParameterNames.X_VALS);
 		jadesSignature.resetCertificateSource();
 	}
 
 	private void removeOldRevocationValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
-		etsiUHeader.removeLastComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.R_VALS);
+		etsiUHeader.removeComponent(JAdESHeaderParameterNames.R_VALS);
 		jadesSignature.resetRevocationSources();
 	}
 

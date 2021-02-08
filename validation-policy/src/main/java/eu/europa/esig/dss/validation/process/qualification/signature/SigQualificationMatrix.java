@@ -87,8 +87,8 @@ public final class SigQualificationMatrix {
 		QUALIFS[NOT_ADES][CERT_FOR_ESIG] = SignatureQualification.NOT_ADES;
 		QUALIFS[NOT_ADES][CERT_FOR_ESEAL] = SignatureQualification.NOT_ADES;
 		QUALIFS[NOT_ADES][CERT_FOR_WSA] = SignatureQualification.NOT_ADES;
-
 		QUALIFS[NOT_ADES][NA] = SignatureQualification.NOT_ADES;
+
 	}
 
 	public static SignatureQualification getSignatureQualification(Indication ades, CertificateQualification certQualification) {

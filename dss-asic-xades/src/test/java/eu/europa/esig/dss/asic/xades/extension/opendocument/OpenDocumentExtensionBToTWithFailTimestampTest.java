@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.opendocument;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import eu.europa.esig.dss.asic.xades.extension.AbstractTestOpenDocumentExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OpenDocumentExtensionBToTWithFailTimestampTest extends AbstractTestOpenDocumentExtension {
 	
@@ -57,7 +56,7 @@ public class OpenDocumentExtensionBToTWithFailTimestampTest extends AbstractTest
 	@Override
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void init(DSSDocument fileToTest) throws Exception {
+	public void init(FileDocument fileToTest) throws Exception {
 		assertThrows(DSSException.class, () -> super.init(fileToTest));
 	}
 

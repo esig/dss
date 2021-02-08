@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ISignatureAttribute;
+import eu.europa.esig.dss.validation.SignatureAttribute;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Represents a CAdES attribute, part of AttributeTable
  */
-public class CAdESAttribute implements ISignatureAttribute {
+public class CAdESAttribute implements SignatureAttribute {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESAttribute.class);
 

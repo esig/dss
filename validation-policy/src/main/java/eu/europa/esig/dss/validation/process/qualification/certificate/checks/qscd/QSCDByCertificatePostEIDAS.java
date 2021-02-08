@@ -21,8 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
 
 class QSCDByCertificatePostEIDAS implements QSCDStrategy {
 
@@ -35,7 +34,7 @@ class QSCDByCertificatePostEIDAS implements QSCDStrategy {
 	@Override
 	public QSCDStatus getQSCDStatus() {
 		// checks only in QC statement extension
-		if (QCStatementPolicyIdentifiers.isSupportedByQSCD(certificate)) {
+		if (certificate.isSupportedByQSCD()) {
 			return QSCDStatus.QSCD;
 		} else {
 			return QSCDStatus.NOT_QSCD;
