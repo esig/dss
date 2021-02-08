@@ -113,7 +113,7 @@ public class SSLCertificateLoader implements Serializable {
 
 			return readCertificates(localContext);
 
-		} catch (URISyntaxException | IOException e) {
+		} catch (Exception e) {
 			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
 		
 		} finally {
