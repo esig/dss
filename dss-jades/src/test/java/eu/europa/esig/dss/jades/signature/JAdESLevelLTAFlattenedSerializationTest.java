@@ -20,24 +20,12 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import org.jose4j.json.JsonUtil;
-import org.jose4j.lang.JoseException;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -51,6 +39,22 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.lang.JoseException;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSignature {
 
@@ -105,6 +109,9 @@ public class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSi
 			boolean xValsFound = false;
 			boolean rValsFound = false;
 			boolean arcTstFound = false;
+
+			Object arcTstObject = null;
+			String arcTstValue = null;
 			
 			for (Object property : unsignedProperties) {
 				Map<?, ?> map = DSSJsonUtils.parseEtsiUComponent(property);
@@ -118,6 +125,16 @@ public class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSi
 				}
 				Map<?, ?> arcTst = (Map<?, ?>) map.get(JAdESHeaderParameterNames.ARC_TST);
 				if (arcTst != null) {
+					arcTstObject = property;
+
+					List<?> tstTokens = (List<?>) arcTst.get(JAdESHeaderParameterNames.TST_TOKENS);
+					assertEquals(1, tstTokens.size());
+
+					Map<?, ?> tstToken = (Map<?, ?>) tstTokens.get(0);
+					arcTstValue = (String) tstToken.get(JAdESHeaderParameterNames.VAL);
+					assertNotNull(arcTstValue);
+					assertTrue(Utils.isBase64Encoded(arcTstValue));
+
 					arcTstFound = true;
 				}
 			}
@@ -125,6 +142,37 @@ public class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSi
 			assertTrue(xValsFound);
 			assertTrue(rValsFound);
 			assertTrue(arcTstFound);
+			assertNotNull(arcTstObject);
+			assertNotNull(arcTstValue);
+
+			SignedDocumentValidator tstValidator = DetachedTimestampValidator.fromDocument(new InMemoryDocument(Utils.fromBase64(arcTstValue)));
+			tstValidator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+			StringBuilder arcTstMessageImprintBuilder = new StringBuilder();
+			arcTstMessageImprintBuilder.append(payload);
+			arcTstMessageImprintBuilder.append(".");
+			arcTstMessageImprintBuilder.append(header).append(".");
+			arcTstMessageImprintBuilder.append(signatureValue);
+			arcTstMessageImprintBuilder.append(".");
+			for (Object etsiUMember : unsignedProperties) {
+				if (etsiUMember == arcTstObject) {
+					break; // arcTst reached
+				}
+				arcTstMessageImprintBuilder.append((String) etsiUMember);
+			}
+			String arcTstMessageImprint = arcTstMessageImprintBuilder.toString();
+			tstValidator.setDetachedContents(Arrays.asList(new InMemoryDocument(arcTstMessageImprint.getBytes())));
+
+			Reports reports = tstValidator.validateDocument();
+			DiagnosticData diagnosticData = reports.getDiagnosticData();
+			assertEquals(0, diagnosticData.getSignatures().size());
+			assertEquals(1, diagnosticData.getTimestampList().size());
+
+			TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
+			assertTrue(timestampWrapper.isMessageImprintDataFound());
+			assertTrue(timestampWrapper.isMessageImprintDataIntact());
+			assertTrue(timestampWrapper.isSignatureIntact());
+			assertTrue(timestampWrapper.isSignatureValid());
 
 		} catch (JoseException e) {
 			fail("Unable to parse the signed file : " + e.getMessage());

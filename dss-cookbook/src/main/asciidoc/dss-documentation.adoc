@@ -134,7 +134,7 @@ Please note that the DSS framework is still under maintenance and new features w
 
 === References
 
-[cols=4]
+[%header,cols=4]
 .References
 |=======================
 |Ref.			|Title																			|Reference					|Version
@@ -228,11 +228,13 @@ This installation will run all unit tests present in the modules, which can take
 
 In addition to the general build, the framework provides a list of custom profiles, allowing a customized behavior:
 
- * quick - disables unit tests and java-doc check, in order to process the build as quick as possible (takes 2-3 minutes). Be aware, that some modules (dss-utils, dss-crl-parser and dss-pades) still have to be built completely.
+ * quick - disables unit tests and java-doc check, in order to process the build as quick as possible (takes 2-3 minutes).
  * slow-tests - executes all tests, including time-consuming unit tests.
  * owasp - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
  * jdk19-plus - executed automatically for JDK version 9 and higher. Provides a support of JDK 8 with newer versions.
  * spotless - used to add a licence header into project files.
+
+WARNING: Some modules (e.g. `dss-utils`, `dss-crl-parser`, etc., see below) still have to be built completely when using the `quick` profile.
  
 In order to run a build with a specific profile, the following command must be executed:
 
@@ -543,16 +545,16 @@ The different formats of the digital signature make possible to cover a wide ran
 
 In general can be said that for each format of the digital signature the number of security levels defined in the new standards has been reduced. Below is a comparative table of old and new levels for each format of the signature:
 
-[cols=7]
+[%header,cols=7*^.^]
 .Signature supported profiles
 |=======================
-2+|XAdES				  2+|CAdES				  2+|PAdES                              |JAdES
-|STANDARD 		|BASELINE	|STANDARD 	|BASELINE 	|STANDARD	|BASELINE               |BASELINE
-|XAdES-BES 		.2+^.^|XAdES-B	|CAdES-BES 	.2+^.^|CAdES-B 	|PAdES-BES 	.2+^.^|PAdES-B  .2+^.^|JAdES-B
-|XAdES-EPES					|CAdES-EPES	 			|PAdES-EPES                         |
-|XAdES-T 		|XAdES-T	|CAdES-T 	|CAdES-T 	|PAdES-T 	|PAdES-T                |JAdES-T
-|XAdES-XL 		|XAdES-LT	|CAdES-XL 	|CAdES-LT 	|PAdES-XL 	|PAdES-LT               |JAdES-LT
-|XAdES-A 		|XAdES-LTA	|CAdES-A 	|CAdES-LTA 	|PAdES-LTV 	|PAdES-LTA              |JAdES-LTA
+2+|XAdES				       2+|CAdES				             2+|PAdES                           |JAdES
+|*STANDARD* 	   |*BASELINE*	 |*STANDARD*       |*BASELINE* 	   |*STANDARD*	    |*BASELINE*     |*BASELINE*
+|XAdES-BES 		.2+|XAdES-B	     |CAdES-BES 	.2+|CAdES-B 	   |PAdES-BES    .2+|PAdES-B     .2+|JAdES-B
+|XAdES-EPES					     |CAdES-EPES	 			       |PAdES-EPES
+|XAdES-T 		   |XAdES-T      |CAdES-T 	       |CAdES-T   	   |PAdES-T 	    |PAdES-T        |JAdES-T
+|XAdES-XL 		   |XAdES-LT  	 |CAdES-XL         |CAdES-LT 	   |PAdES-XL 	    |PAdES-LT       |JAdES-LT
+|XAdES-A 		   |XAdES-LTA	 |CAdES-A 	       |CAdES-LTA 	   |PAdES-LTV 	    |PAdES-LTA      |JAdES-LTA
 |=======================
 
 Note that the new version (v4) of the DSS framework is compatible with the baseline profiles, it is no longer possible to use the standard profiles for signing purpose. The validation of the signature still takes into account the old profiles.
@@ -568,28 +570,28 @@ The vertical column specifies available signature profiles and their extensions.
 .File formats and Signature types conformance
 [%header,cols="12*^.^"]
 |===
-  3+|Signature profiles                        |XML   |JSON  |PDF   |Binary   |Digest   |Multiple files   |Parallel signatures |Counter signature |Stand-alone timestamp
-.10+|XAdES   .4+|Enveloping  |Base64 encoded   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-                             |Embed XML    |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-                             |Manifest     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-             .4+|Enveloped   |enveloped transformation   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-                             |based on XPath   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-                             |based on Filter2   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-                             |Canonicalization   |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-              2+|Internally Detached       |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |XML only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-.2+|CAdES     2+|Enveloping                |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-              2+|Detached                  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-|PAdES        2+|Enveloped                 |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"]
-.6+|JAdES    .3+|Enveloping  |Compact Serialization   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"]
-                             |Flattened JSON Serialization     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-                             |JSON Serialization    |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-            .3+|Detached     |Compact Serialization   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only |icon:times-circle[role="red"] |icon:times-circle[role="red"] |icon:times-circle[role="red"]
-                             |Flattened JSON Serialization  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-                             |JSON Serialization    |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
-.2+|ASiC        |ASiCS       |CAdES / XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
-                |ASiCE       |CAdES / XAdES  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
+  3+|Signature profiles                                        |XML                            |JSON                           |PDF                            |Binary                         |Digest                         |Multiple files                 |Multiple signatures            |Counter signature              |Stand-alone timestamp
+.10+|XAdES   .4+|Enveloping  |Base64 encoded                   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Embed XML                        |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |XML only                       |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Manifest                         |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Canonicalization                 |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |XML only                       |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+             .4+|Enveloped   |enveloped transformation         |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |based on XPath                   |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |based on Filter2                 |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |Canonicalization                 |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |XML only                       |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+              2+|Detached                                      |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+              2+|Internally Detached                           |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |XML only                       |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+.2+|CAdES     2+|Enveloping                                    |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+              2+|Detached                                      |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+|PAdES        2+|Enveloped                                     |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"]
+.6+|JAdES    .3+|Enveloping  |Compact Serialization            |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]
+                             |Flattened JSON Serialization     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |JSON Serialization               |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+             .3+|Detached    |Compact Serialization            |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only                      |icon:times-circle[role="red"]  |icon:times-circle[role="red"]  |icon:times-circle[role="red"]
+                             |Flattened JSON Serialization     |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only                      |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+                             |JSON Serialization               |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |SigD only                      |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
+.2+|ASiC        |ASiCS       |CAdES / XAdES                    |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
+                |ASiCE       |CAdES / XAdES                    |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"]
 |===
 
 [.portrait]

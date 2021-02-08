@@ -21,6 +21,9 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate;
 
 import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
+import eu.europa.esig.dss.enumerations.CertificateType;
 
 public final class CertQualificationMatrix {
 
@@ -57,18 +60,18 @@ public final class CertQualificationMatrix {
 		QUALIFS[NOT_QC][WSA][NOT_QSCD] = CertificateQualification.CERT_FOR_WSA;
 		QUALIFS[NOT_QC][UNKNOWN][NOT_QSCD] = CertificateQualification.NA;
 
-		QUALIFS[NOT_QC][ESIG][QSCD] = CertificateQualification.NA;
-		QUALIFS[NOT_QC][ESEAL][QSCD] = CertificateQualification.NA;
-		QUALIFS[NOT_QC][WSA][QSCD] = CertificateQualification.NA;
+		QUALIFS[NOT_QC][ESIG][QSCD] = CertificateQualification.CERT_FOR_ESIG;
+		QUALIFS[NOT_QC][ESEAL][QSCD] = CertificateQualification.CERT_FOR_ESEAL;
+		QUALIFS[NOT_QC][WSA][QSCD] = CertificateQualification.CERT_FOR_WSA;
 		QUALIFS[NOT_QC][UNKNOWN][QSCD] = CertificateQualification.NA;
 
 	}
 
-	public static CertificateQualification getCertQualification(QualifiedStatus qc, Type type, QSCDStatus qscd) {
-		return QUALIFS[getInt(QualifiedStatus.isQC(qc))][getInt(type)][getInt(QSCDStatus.isQSCD(qscd))];
+	public static CertificateQualification getCertQualification(CertificateQualifiedStatus qc, CertificateType type, QSCDStatus qscd) {
+		return QUALIFS[getInt(CertificateQualifiedStatus.isQC(qc))][getInt(type)][getInt(QSCDStatus.isQSCD(qscd))];
 	}
 
-	private static int getInt(Type type) {
+	private static int getInt(CertificateType type) {
 		switch (type) {
 		case ESIGN:
 			return ESIG;

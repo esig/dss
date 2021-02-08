@@ -368,6 +368,15 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		}
 		return Collections.emptyList();
 	}
+
+	/**
+	 * Returns the message-imprint data for a SignatureTimestamp (BASE64URL(JWS Signature Value))
+	 *
+	 * @return byte array representing a message-imprint
+	 */
+	public byte[] getSignatureTimestampData() {
+		return getTimestampDataBuilder().getSignatureTimestampData();
+	}
 	
 	/**
 	 * Returns concatenated data for an ArchiveTimestamp
@@ -401,8 +410,8 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		}
 	}
 
-	private List<TimestampToken> extractTimestampTokens(JAdESAttribute signatureAttribute, Map<?, ?> tstContainer, TimestampType timestampType,
-			List<TimestampedReference> references) {
+	private List<TimestampToken> extractTimestampTokens(JAdESAttribute signatureAttribute, Map<?, ?> tstContainer,
+														TimestampType timestampType, List<TimestampedReference> references) {
 		List<TimestampToken> result = new LinkedList<>();
 
 		List<?> tokens = (List<?>) tstContainer.get(JAdESHeaderParameterNames.TST_TOKENS);
@@ -414,9 +423,9 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
 						String tstBase64 = (String) jsonToken.get(JAdESHeaderParameterNames.VAL);
 						try {
-							TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(tstBase64),
-									timestampType, references);
-							timestampToken.setHashCode(signatureAttribute.hashCode());
+							TimestampToken timestampToken = new TimestampToken(
+									Utils.fromBase64(tstBase64), timestampType, references);
+							timestampToken.setTimestampAttribute(signatureAttribute);
 							result.add(timestampToken);
 						} catch (Exception e) {
 							LOG.error("Unable to parse timestamp '{}'", tstBase64, e);

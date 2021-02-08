@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.detailedreport;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -42,6 +35,13 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualificatio
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.Indication;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The class is used to collect all messages for a token validation by a defined type from a DetailedReport
@@ -177,6 +177,7 @@ public class DetailedReportMessageCollector {
 				if (subXCV != null) {
 					for (XmlSubXCV xmlSubXCV : subXCV) {
 						collect(type, result, xmlSubXCV, bbb.getId());
+						collect(type, result, xmlSubXCV.getRFC());
 					}
 				}
 			}

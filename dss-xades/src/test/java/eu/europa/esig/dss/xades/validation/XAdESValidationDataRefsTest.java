@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
@@ -51,6 +44,13 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class XAdESValidationDataRefsTest extends AbstractXAdESTestValidation {
 
 	@Override
@@ -60,8 +60,8 @@ public class XAdESValidationDataRefsTest extends AbstractXAdESTestValidation {
 	
 	@Override
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
-			DiagnosticData diagnosticData) {
-SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+												  DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
 		List<OrphanCertificateWrapper> orphanCertificates = signature.foundCertificates().getOrphanCertificates();
 		assertEquals(3, orphanCertificates.size());

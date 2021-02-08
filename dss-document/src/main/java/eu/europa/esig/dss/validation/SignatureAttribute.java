@@ -18,28 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.qualification.certificate;
+package eu.europa.esig.dss.validation;
 
-public enum QualifiedStatus {
-
-	/* Qualified */
-	QC("Qualified"),
-
-	/* Not qualifed */
-	NOT_QC("Not qualified");
-
-	private final String label;
-
-	QualifiedStatus(String label) {
-		this.label = label;
-	}
-
-	public String getLabel() {
-		return label;
-	}
-
-	public static boolean isQC(QualifiedStatus status) {
-		return QC == status;
-	}
-
+/**
+ * Defines a child of "signed-signature-properties" or "unsigned-signature-properties" element
+ */
+public interface SignatureAttribute {
+	
 }

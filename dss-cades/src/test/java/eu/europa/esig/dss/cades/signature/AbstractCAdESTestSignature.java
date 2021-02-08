@@ -20,30 +20,13 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DERTaggedObject;
-import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.SignedData;
-import org.bouncycastle.asn1.cms.SignerInfo;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
@@ -52,12 +35,32 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.SignedData;
+import org.bouncycastle.asn1.cms.SignerInfo;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		checkSignedAttributesOrder(byteArray);
+		checkSignaturePackaging(byteArray);
 	}
 
 	@Override
@@ -87,6 +90,19 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
+		}
+	}
+
+	protected void checkSignaturePackaging(byte[] byteArray) {
+		try {
+			CMSSignedData cmsSignedData = new CMSSignedData(byteArray);
+			assertEquals(SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging()),
+					cmsSignedData.isDetachedSignature());
+			assertEquals(SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging()),
+					cmsSignedData.getSignedContent() == null);
+
+		} catch (CMSException e) {
+			fail(e);
 		}
 	}
 	

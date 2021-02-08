@@ -70,6 +70,8 @@ public class ASiCSCAdESLevelBTest extends AbstractASiCSCAdESTestSignature {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
 		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doc);

@@ -115,18 +115,34 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getSignatureTimestampData(TimestampToken timestampToken) {
-		return new InMemoryDocument(signature.getSignatureValue());
+		return new InMemoryDocument(getSignatureTimestampData());
+	}
+
+	/**
+	 * Returns the message-imprint data for a SignatureTimestamp (BASE64URL(JWS Signature Value))
+	 *
+	 * @return byte array representing a message-imprint
+	 */
+	public byte[] getSignatureTimestampData() {
+		/*
+		 * 5.3.4	The sigTst JSON object
+		 *
+		 * The input of the message imprint computation for the time-stamp tokens encapsulated
+		 * by sigTst JSON object shall be the base64url-encoded JWS Signature Value.
+		 */
+		return getBase64UrlEncodedSignatureValue();
 	}
 
 	@Override
 	public DSSDocument getTimestampX1Data(TimestampToken timestampToken) {
 		
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("--->Get SigAndRefs timestamp data");
+			LOG.trace("--->Get '{}' timestamp data", JAdESHeaderParameterNames.SIG_R_TST);
 		}
 		String canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : null;
 		
 		JWS jws = signature.getJws();
+
 		/*
 		 * A.1.5.1	The sigRTst JSON object
 		 * 
@@ -138,7 +154,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			/*
 			 * 1) The value of the base64url-encoded JWS Signature Value.
 			 */
-			baos.write(jws.getEncodedSignature().getBytes());
+			baos.write(getBase64UrlEncodedSignatureValue());
 			
 			/*
 			 * 2) The character '.'.
@@ -164,7 +180,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
 				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
 
-					if (timestampToken != null && timestampToken.getHashCode() == etsiUComponent.hashCode()) {
+					if (timestampToken != null && timestampToken.getTimestampAttribute().equals(etsiUComponent)) {
 						// the current timestamp is found, stop the iteration
 						break;
 					}
@@ -179,19 +195,19 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				}
 
 			} else {
-				LOG.warn("Unable to process 'etsiU' entries for a 'sigRTst' timestamp. "
-						+ "The 'etsiU' components shall have a common format (Strings or Objects)!");
+				LOG.warn("Unable to process 'etsiU' entries for a '{}' timestamp. "
+						+ "The 'etsiU' components shall have a common format (Strings or Objects)!", JAdESHeaderParameterNames.SIG_R_TST);
 			}
 
 			byte[] messageImprint = baos.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The SigAndRefs timestamp message-imprint : {}", new String(messageImprint));
+				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.SIG_R_TST, new String(messageImprint));
 			}
 			
 			return new InMemoryDocument(messageImprint);
 			
 		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message imprint");
+			throw new DSSException("An error occurred during building of a message-imprint!");
 		}
 		
 	}
@@ -204,7 +220,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	public DSSDocument getTimestampX2Data(TimestampToken timestampToken) {
 		
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("--->Get RefsOnly timestamp data");
+			LOG.trace("--->Get '{}' timestamp data", JAdESHeaderParameterNames.RFS_TST);
 		}
 		String canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : null;
 		
@@ -245,19 +261,19 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				}
 				
 			} else {
-				LOG.warn("Unable to process 'etsiU' entries for an 'rfsTst' timestamp. "
-						+ "The 'etsiU' components shall have a common format (Strings or Objects)!");
+				LOG.warn("Unable to process 'etsiU' entries for an '{}' timestamp. "
+						+ "The 'etsiU' components shall have a common format (Strings or Objects)!", JAdESHeaderParameterNames.RFS_TST);
 			}
 
 			byte[] messageImprint = baos.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The Refs timestamp message-imprint : {}", new String(messageImprint));
+				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.RFS_TST, new String(messageImprint));
 			}
 			
 			return new InMemoryDocument(messageImprint);
 			
 		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message imprint");
+			throw new DSSException("An error occurred during building of a message-imprint!");
 		}
 		
 	}
@@ -294,7 +310,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	protected byte[] getArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
 		
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("--->Get archive timestamp data : {}", (timestampToken == null ? "--> CREATION" : "--> VALIDATION"));
+			LOG.trace("--->Get '{}' timestamp data : {}", JAdESHeaderParameterNames.ARC_TST,
+					(timestampToken == null ? "--> CREATION" : "--> VALIDATION"));
 		}
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
 				
@@ -342,10 +359,15 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			/*
 			 * 5) The value of the JAdES Signature Value, base64url encoded.
 			 */
-			baos.write(jws.getEncodedSignature().getBytes());
+			baos.write(getBase64UrlEncodedSignatureValue());
+
+			/*
+			 * 6) The character '.'.
+			 */
+			baos.write('.');
 			
 			/*
-			 * 6) If the elements of the etsiU array appear as the base64url encodings of
+			 * 7) If the elements of the etsiU array appear as the base64url encodings of
 			 * the unsigned components, then proceed as specified in clause 5.3.6.3.1.1 of
 			 * the present document. If the elements of the etsiU array appear as clear
 			 * instances of unsigned components, then proceed as specified in clause
@@ -357,7 +379,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
 				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
 
-					if (timestampToken != null && timestampToken.getHashCode() == etsiUComponent.hashCode()) {
+					if (timestampToken != null && timestampToken.getTimestampAttribute().equals(etsiUComponent)) {
 						// the timestamp is reached, stop the iteration
 						break;
 					}
@@ -366,21 +388,29 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				}
 
 			} else {
-				LOG.warn("Unable to process 'etsiU' entries for an archive timestamp. "
-						+ "The 'etsiU' components shall have a common format (Strings or Objects)!");
+				LOG.warn("Unable to process 'etsiU' entries for an '{}' timestamp. "
+						+ "The 'etsiU' components shall have a common format (Strings or Objects)!", JAdESHeaderParameterNames.ARC_TST);
 			}
 
 			byte[] messageImprint = baos.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The 'arcTst' timestamp message-imprint : {}", new String(messageImprint));
+				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.ARC_TST, new String(messageImprint));
 			}
 			
 			return messageImprint;
 			
 			
 		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message imprint");
+			throw new DSSException("An error occurred during building of a message-imprint!");
 		}
+	}
+
+	private byte[] getBase64UrlEncodedSignatureValue() {
+		String messageImprint = signature.getJws().getEncodedSignature();
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.SIG_TST, messageImprint);
+		}
+		return messageImprint.getBytes();
 	}
 	
 	private byte[] getEtsiUComponentValue(EtsiUComponent etsiUComponent, String canonicalizationMethod) {

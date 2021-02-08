@@ -28,7 +28,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
 
 public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> {
 

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.ResponderId;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -461,6 +462,17 @@ public final class DSSRevocationUtils {
 			return new Digest(digestAlgorithm, digestValue);
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if the revocation has been produced during the issuer certificate validity range
+	 *
+	 * @param revocationToken {@link RevocationToken} to check
+	 * @return TRUE if the the revocation producedAt time is in the issuer certificate's validity range, false otherwise
+	 */
+	public static boolean checkIssuerValidAtRevocationProductionTime(RevocationToken<?> revocationToken) {
+		CertificateToken issuerCertificateToken = revocationToken.getIssuerCertificateToken();
+		return issuerCertificateToken != null && issuerCertificateToken.isValidOn(revocationToken.getProductionDate());
 	}
 
 }

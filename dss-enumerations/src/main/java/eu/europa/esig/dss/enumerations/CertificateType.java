@@ -18,16 +18,41 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.qualification.certificate;
+package eu.europa.esig.dss.enumerations;
 
-public enum QSCDStatus {
+public enum CertificateType {
 
-	QSCD,
+	/* For electronic signature */
+	ESIGN("eSig"),
 
-	NOT_QSCD;
+	/* For electronic seal */
+	ESEAL("eSeal"),
 
-	public static boolean isQSCD(QSCDStatus status) {
-		return QSCD == status;
+	/* For Web authentication */
+	WSA("WSA"),
+
+	/* Unknown */
+	UNKNOWN("unknown");
+
+	/** Represents a user-friendly string */
+	private String label;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param label {@link String}
+	 */
+	CertificateType(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * Gets the user-friendly label
+	 *
+	 * @return {@link String}
+	 */
+	public String getLabel() {
+		return label;
 	}
 
 }

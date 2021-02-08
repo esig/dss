@@ -611,6 +611,8 @@ public class DSSJsonUtils {
 					JAdESSignature signature = (JAdESSignature) signatures.iterator().next(); // only one is considered
 					signature.setMasterSignature(masterSignature);
 					signature.setMasterCSigComponent(cSigAttribute);
+					// TODO : temporary fix for 5.8 release
+					signature.getJws().setDetachedPayload(masterSignature.getSignatureValue());
 					signature.setDetachedContents(Arrays.asList(new InMemoryDocument(masterSignature.getSignatureValue())));
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("A JWS counter signature found with Id : '{}'", signature.getId());

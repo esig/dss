@@ -28,6 +28,7 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
+import eu.europa.esig.dss.jades.validation.JAdESAttributeIdentifier;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
@@ -83,8 +84,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		Object cSig = getCSig(counterSignature, parameters.getJwsSerializationType());
 		
 		JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-		etsiUHeader.addComponent(jadesSignature.getJws(), JAdESHeaderParameterNames.C_SIG, cSig,
-				parameters.isBase64UrlEncodedEtsiUComponents());
+		etsiUHeader.addComponent(JAdESHeaderParameterNames.C_SIG, cSig, parameters.isBase64UrlEncodedEtsiUComponents());
 		
 		updateMasterSignatureRecursively(jadesSignature);
 
@@ -104,10 +104,9 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 					jwsJsonSerializationObject.getJWSSerializationType());
 
 			Object cSig = getCSig(generator.generate(), jwsJsonSerializationObject.getJWSSerializationType());
-			masterCSigAttribute.overwriteValue(cSig);
-
-			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-			etsiUHeader.replaceComponent(masterSignature.getJws(), masterCSigAttribute);
+			EtsiUComponent updatedCSigAttribute = EtsiUComponent.build(JAdESHeaderParameterNames.C_SIG, cSig,
+					masterCSigAttribute.isBase64UrlEncoded(), (JAdESAttributeIdentifier) masterCSigAttribute.getIdentifier());
+			replaceCSigComponent(jadesSignature, updatedCSigAttribute);
 
 			updateMasterSignatureRecursively(masterSignature);
 		}
@@ -132,6 +131,14 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 						jwsSerializationType));
 		}
 		return cSig;
+	}
+
+	private void replaceCSigComponent(JAdESSignature jadesSignature, EtsiUComponent cSigAttribute) {
+		JAdESSignature masterSignature = (JAdESSignature) jadesSignature.getMasterSignature();
+		JAdESEtsiUHeader etsiUHeader = masterSignature.getEtsiUHeader();
+		etsiUHeader.replaceComponent(cSigAttribute);
+
+		jadesSignature.setMasterCSigComponent(cSigAttribute);
 	}
 	
 	private AdvancedSignature extractSignatureById(JWSJsonSerializationObject jwsJsonSerializationObject,

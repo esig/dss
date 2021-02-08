@@ -23,8 +23,10 @@ package eu.europa.esig.dss.jades.extension;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
+import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,7 +55,16 @@ public class JAdESExtensionCompactBToFlattenedLTATest extends AbstractJAdESTestE
     protected void onDocumentSigned(DSSDocument signedDocument) {
         super.onDocumentSigned(signedDocument);
 
-        JWSJsonSerializationParser parser = new JWSJsonSerializationParser(signedDocument);
+        JWSCompactSerializationParser parser = new JWSCompactSerializationParser(signedDocument);
+        JWS jws = parser.parse();
+        assertNotNull(jws);
+    }
+
+    @Override
+    protected void onDocumentExtended(DSSDocument extendedDocument) {
+        super.onDocumentExtended(extendedDocument);
+
+        JWSJsonSerializationParser parser = new JWSJsonSerializationParser(extendedDocument);
         JWSJsonSerializationObject jsonSerializationObject = parser.parse();
         assertNotNull(jsonSerializationObject);
         assertEquals(JWSSerializationType.FLATTENED_JSON_SERIALIZATION,  jsonSerializationObject.getJWSSerializationType());

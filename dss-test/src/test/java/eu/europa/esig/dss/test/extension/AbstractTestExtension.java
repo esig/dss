@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.test.extension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -39,6 +30,14 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractTestExtension<SP extends SerializableSignatureParameters, 
 				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
@@ -68,10 +67,7 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 		String signedFilePath = "target/" + signedDocument.getName();
 		signedDocument.save(signedFilePath);
 
-		assertNotNull(signedDocument);
-		assertNotNull(signedDocument.getMimeType());
-		assertNotNull(DSSUtils.toByteArray(signedDocument));
-		assertNotNull(signedDocument.getName());
+		onDocumentSigned(signedDocument);
 		
 		Reports reports = verify(signedDocument);
 		checkOriginalLevel(reports.getDiagnosticData());
@@ -83,10 +79,7 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 
 		compare(signedDocument, extendedDocument);
 
-		assertNotNull(extendedDocument);
-		assertNotNull(extendedDocument.getMimeType());
-		assertNotNull(DSSUtils.toByteArray(extendedDocument));
-		assertNotNull(extendedDocument.getName());
+		onDocumentExtended(extendedDocument);
 
 		reports = verify(extendedDocument);
 		checkFinalLevel(reports.getDiagnosticData());
@@ -146,11 +139,17 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
     }
 
 	protected void onDocumentSigned(DSSDocument signedDocument) {
-		// do nothing by default
+		assertNotNull(signedDocument);
+		assertNotNull(signedDocument.getMimeType());
+		assertNotNull(DSSUtils.toByteArray(signedDocument));
+		assertNotNull(signedDocument.getName());
 	}
 
 	protected void onDocumentExtended(DSSDocument extendedDocument) {
-		// do nothing by default
+		assertNotNull(extendedDocument);
+		assertNotNull(extendedDocument.getMimeType());
+		assertNotNull(DSSUtils.toByteArray(extendedDocument));
+		assertNotNull(extendedDocument.getName());
 	}
 
 }

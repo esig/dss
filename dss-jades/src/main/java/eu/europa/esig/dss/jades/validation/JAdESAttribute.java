@@ -20,18 +20,23 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import eu.europa.esig.dss.validation.ISignatureAttribute;
+import eu.europa.esig.dss.validation.SignatureAttribute;
+
+import java.util.Objects;
 
 /**
  * Represents the JAdES header
  */
-public class JAdESAttribute implements ISignatureAttribute {
+public class JAdESAttribute implements SignatureAttribute {
 
 	/** Name if the header */
 	protected String name;
 
 	/** The component's value */
 	protected Object value;
+
+	/** Identifies the instance */
+	protected JAdESAttributeIdentifier identifier;
 
 	/**
 	 * Default constructor
@@ -61,5 +66,32 @@ public class JAdESAttribute implements ISignatureAttribute {
 	public Object getValue() {
 		return value;
 	}
+
+	/**
+	 * Gets the attribute identifier
+	 *
+	 * @return {@link JAdESAttributeIdentifier}
+	 */
+	public JAdESAttributeIdentifier getIdentifier() {
+		if (identifier == null) {
+			identifier = JAdESAttributeIdentifier.build(name, value);
+		}
+		return identifier;
+	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		JAdESAttribute that = (JAdESAttribute) o;
+
+		return Objects.equals(getIdentifier(), that.getIdentifier());
+	}
+
+	@Override
+	public int hashCode() {
+		return getIdentifier() != null ? getIdentifier().hashCode() : 0;
+	}
+
 }
