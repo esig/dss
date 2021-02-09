@@ -28,7 +28,7 @@
     			Validation Policy : <xsl:value-of select="dss:PolicyName"/>
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in show</xsl:attribute>
 	        	<xsl:attribute name="id">collapsePolicy</xsl:attribute>
 	        	<p>
 	        		<xsl:value-of select="dss:PolicyDescription"/>
@@ -75,7 +75,7 @@
     			<xsl:value-of select="$idToken" />
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in show</xsl:attribute>
 				<xsl:attribute name="id">collapseSig<xsl:value-of select="$idToken" /></xsl:attribute>
 				
 				<xsl:if test="dss:Filename">
@@ -121,7 +121,9 @@
 				    		</span>					
 			        	</dd>
 			        </dl>
-				</xsl:if>	
+				</xsl:if>
+
+				<xsl:apply-templates select="dss:QualificationDetails" />
 
 				<xsl:if test="@SignatureFormat">
 			        <dl>
@@ -172,11 +174,9 @@
 		        <xsl:apply-templates select="dss:SubIndication">
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
-<!--
-			    <xsl:apply-templates select="dss:Errors" />
-			    <xsl:apply-templates select="dss:Warnings" />
-		        <xsl:apply-templates select="dss:Infos" />
--->
+
+				<xsl:apply-templates select="dss:ValidationDetails" />
+
 		        <dl>
 	        		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
 		            <dt>Certificate Chain:</dt>
@@ -256,10 +256,79 @@
 				        </dl>
 			        </xsl:for-each>
 		        </xsl:if>
+
+				<xsl:if test="dss:Timestamps">
+					<div>
+						<xsl:attribute name="class">panel panel-default mt-3</xsl:attribute>
+						<div>
+							<xsl:attribute name="class">panel-heading collapsed</xsl:attribute>
+							<xsl:attribute name="data-target">#collapseSigDetails<xsl:value-of select="$idToken" /></xsl:attribute>
+							<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+							<xsl:attribute name="aria-expanded">false</xsl:attribute>
+
+							Timestamps <span class="badge badge-light"><xsl:value-of select="count(dss:Timestamps/dss:Timestamp)" /></span>
+						</div>
+						<div>
+							<xsl:attribute name="class">panel-body collapse pb-1</xsl:attribute>
+							<xsl:attribute name="id">collapseSigDetails<xsl:value-of select="$idToken" /></xsl:attribute>
+							<xsl:apply-templates select="dss:Timestamps" />
+						</div>
+					</div>
+				</xsl:if>
 		        
     		</div>
     	</div>
     </xsl:template>
+
+	<xsl:template match="dss:ValidationDetails">
+		<dl>
+			<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			<dt>Validation Details :</dt>
+			<dd></dd>
+			<xsl:apply-templates select="dss:Error" />
+			<xsl:apply-templates select="dss:Warning" />
+			<xsl:apply-templates select="dss:Info" />
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="dss:QualificationDetails">
+		<dl>
+			<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			<dt>Qualification Details :</dt>
+			<dd></dd>
+			<xsl:apply-templates select="dss:Error" />
+			<xsl:apply-templates select="dss:Warning" />
+			<xsl:apply-templates select="dss:Info" />
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="dss:Error">
+		<dd>
+			<xsl:attribute name="class">text-danger</xsl:attribute>
+			<xsl:value-of select="." />
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="dss:Warning">
+		<dd>
+			<xsl:attribute name="class">text-warning</xsl:attribute>
+			<xsl:value-of select="." />
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="dss:Info">
+		<dd>
+			<xsl:value-of select="." />
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="dss:Timestamps">
+		<div>
+			<xsl:apply-templates select="dss:Timestamp">
+				<xsl:with-param name="cardStyle" select="'light'"/>
+			</xsl:apply-templates>
+		</div>
+	</xsl:template>
 
 	<xsl:template match="dss:SubIndication">
 		<xsl:param name="indicationClass" />
@@ -272,39 +341,7 @@
 			</dd>
 		</dl>
 	</xsl:template>
-<!--
-	<xsl:template match="dss:Errors">
-		<dl>
-    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-			<dt></dt>
-			<dd>
-				<xsl:attribute name="class">text-danger</xsl:attribute>
-				<xsl:value-of select="." />
-			</dd>
-		</dl>
-	</xsl:template>
-	
-	<xsl:template match="dss:Warnings">
-		<dl>
-    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-			<dt></dt>
-			<dd>
-				<xsl:attribute name="class">text-warning</xsl:attribute>
-				<xsl:value-of select="." />
-			</dd>
-		</dl>
-	</xsl:template>
-	
-	<xsl:template match="dss:Infos">
-		<dl>
-    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-			<dt></dt>
-			<dd>
-				<xsl:value-of select="." />
-			</dd>
-		</dl>
-	</xsl:template>
--->
+
     <xsl:template name="documentInformation">
 		<div>
     		<xsl:attribute name="class">panel panel-primary</xsl:attribute>
@@ -315,7 +352,7 @@
     			Document Information
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in show</xsl:attribute>
 	        	<xsl:attribute name="id">collapseInfo</xsl:attribute>
 	        	
 				<xsl:if test="dss:ContainerType">
