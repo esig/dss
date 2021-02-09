@@ -231,9 +231,14 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		if (Utils.isCollectionNotEmpty(timestampList)) {
 			XmlTimestamps xmlTimestamps = new XmlTimestamps();
 			for (TimestampWrapper timestamp : timestampList) {
-				xmlTimestamps.getTimestamp().add(getXmlTimestamp(timestamp));
+				Indication tstValidationIndication = detailedReport.getTimestampValidationIndication(timestamp.getId());
+				if (tstValidationIndication != null) {
+					xmlTimestamps.getTimestamp().add(getXmlTimestamp(timestamp));
+				}
 			}
-			xmlSignature.setTimestamps(xmlTimestamps);
+			if (Utils.isCollectionNotEmpty(xmlTimestamps.getTimestamp())) {
+				xmlSignature.setTimestamps(xmlTimestamps);
+			}
 		}
 
 		return xmlSignature;

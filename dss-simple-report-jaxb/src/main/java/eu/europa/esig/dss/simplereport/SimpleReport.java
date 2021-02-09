@@ -536,6 +536,21 @@ public class SimpleReport {
 	}
 
 	/**
+	 * This method returns a list of timestamps for a signature with the given id
+	 *
+	 * @param signatureId
+	 *            the signature id
+	 * @return list if timestamp wrappers
+	 */
+	public List<XmlTimestamp> getSignatureTimestamps(String signatureId) {
+		XmlSignature xmlSignature = getSignatureById(signatureId);
+		if (xmlSignature != null && xmlSignature.getTimestamps() != null) {
+			return xmlSignature.getTimestamps().getTimestamp();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
 	 * This methods returns the jaxb model of the simple report
 	 * 
 	 * @return the jaxb model

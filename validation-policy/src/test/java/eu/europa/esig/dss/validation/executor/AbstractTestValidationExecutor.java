@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
@@ -152,7 +151,6 @@ public abstract class AbstractTestValidationExecutor {
 		try {
 			String json = om.writeValueAsString(reports.getDetailedReportJaxb());
 			assertNotNull(json);
-//			LOG.info(json);
 			XmlDetailedReport detailedReportObject = om.readValue(json, XmlDetailedReport.class);
 			assertNotNull(detailedReportObject);
 		} catch (Exception e) {
@@ -263,7 +261,11 @@ public abstract class AbstractTestValidationExecutor {
 		return messages.stream().map(m -> m.getValue()).collect(Collectors.toList()).contains(messageValue);
 	}
 
-	protected List<Message> convert(List<XmlMessage> messages) {
+	protected List<Message> convert(List<eu.europa.esig.dss.detailedreport.jaxb.XmlMessage> messages) {
+		return messages.stream().map(m -> new Message(m.getKey(), m.getValue())).collect(Collectors.toList());
+	}
+
+	protected List<Message> convertMessages(List<eu.europa.esig.dss.simplereport.jaxb.XmlMessage> messages) {
 		return messages.stream().map(m -> new Message(m.getKey(), m.getValue())).collect(Collectors.toList());
 	}
 

@@ -131,7 +131,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		assertNotNull(simpleReport.getProducedBy(timestampId));
 		assertNotNull(simpleReport.getProductionTime(timestampId));
 		assertNotNull(simpleReport.getValidationTime());
-		assertFalse(Utils.isCollectionEmpty(simpleReport.getErrors(timestampId))); // qualification error message
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(timestampId))); // qualification error message
 	}
 	
 	@Override

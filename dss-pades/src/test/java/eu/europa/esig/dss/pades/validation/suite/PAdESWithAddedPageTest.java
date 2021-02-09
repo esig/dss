@@ -60,7 +60,7 @@ public class PAdESWithAddedPageTest extends AbstractPAdESTestValidation {
 		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
-		List<Message> errors = simpleReport.getErrors(simpleReport.getFirstSignatureId());
+		List<Message> errors = simpleReport.getValidationErrors(simpleReport.getFirstSignatureId());
 		List<String> errorMessages = errors.stream().map(m -> m.getValue()).collect(Collectors.toList());
 
 		I18nProvider i18nProvider = new I18nProvider();
