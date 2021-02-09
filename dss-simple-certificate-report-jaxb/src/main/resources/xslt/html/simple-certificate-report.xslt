@@ -51,7 +51,7 @@
 				<xsl:value-of select="$idCert" />
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in show</xsl:attribute>
 	        	<xsl:attribute name="id">collapseCert-<xsl:value-of select="$idCert"/></xsl:attribute>
 	        	
 	        	<xsl:if test="dss:qualificationAtIssuance or dss:qualificationAtValidation">
