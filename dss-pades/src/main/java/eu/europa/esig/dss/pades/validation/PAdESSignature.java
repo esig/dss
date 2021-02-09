@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -72,7 +71,7 @@ public class PAdESSignature extends CAdESSignature {
 		super(pdfSignatureRevision.getCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(pdfSignatureRevision.getCMSSignedData()));
 		this.pdfSignatureRevision = pdfSignatureRevision;
 		this.documentRevisions = documentRevisions;
-		this.detachedContents = Arrays.asList(new InMemoryDocument(pdfSignatureRevision.getRevisionCoveredBytes()));
+		this.detachedContents = Arrays.asList(pdfSignatureRevision.getSignedData());
 	}
 
 	@Override

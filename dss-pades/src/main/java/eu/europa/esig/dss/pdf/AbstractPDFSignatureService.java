@@ -207,21 +207,22 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					byteRange.validate();
 
 					final byte[] cms = signatureDictionary.getContents();
-					byte[] signedContent = DSSUtils.EMPTY_BYTE_ARRAY;
+					byte[] revisionContent = DSSUtils.EMPTY_BYTE_ARRAY;
 					if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, fieldNames)) {
 						LOG.warn("Signature {} is skipped. SIWA detected !", fieldNames);
 					} else {
-						signedContent = PAdESUtils.getSignedContent(document, byteRange);
+						revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
 					}
 
 					boolean signatureCoversWholeDocument = reader.isSignatureCoversWholeDocument(signatureDictionary);
+					byte[] signedData = PAdESUtils.getSignedContentFromRevision(revisionContent, byteRange);
+					DSSDocument signedContent = new InMemoryDocument(signedData);
 
 					// create a DSS revision if updated
 					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, lastDSSDictionary,
-							signedContent, pwd);
+							revisionContent, pwd);
 
 					PdfCMSRevision newRevision = null;
-
 					if (isDocTimestamp(signatureDictionary)) {
 						newRevision = new PdfDocTimestampRevision(signatureDictionary, fieldNames, signedContent,
 								signatureCoversWholeDocument);
@@ -240,13 +241,13 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 					// add signature/timestamp revision
 					if (newRevision != null) {
-						newRevision.setModificationDetection(getPdfModificationDetection(reader, signedContent, pwd));
+						newRevision.setModificationDetection(getPdfModificationDetection(reader, revisionContent, pwd));
 						revisions.add(newRevision);
 					}
 
 					// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
 					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, lastDSSDictionary,
-							extractBeforeSignatureValue(byteRange, signedContent), pwd);
+							extractBeforeSignatureValue(byteRange, revisionContent), pwd);
 
 
 				} catch (Exception e) {

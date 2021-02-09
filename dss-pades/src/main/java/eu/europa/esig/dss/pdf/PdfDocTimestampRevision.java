@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -49,16 +49,16 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 	 * @param timestampFieldNames
 	 *            					   list of signature field names
 	 * @param signedContent
-	 *                                 the signed data
+	 *                                 {@link DSSDocument} the signed data
 	 * @param coverCompleteRevision
 	 *                                 true if the signature covers all bytes
 	 */
 	public PdfDocTimestampRevision(PdfSignatureDictionary signatureDictionary, List<String> timestampFieldNames,
-								   byte[] signedContent, boolean coverCompleteRevision) {
+								   DSSDocument signedContent, boolean coverCompleteRevision) {
 		super(signatureDictionary, timestampFieldNames, signedContent, coverCompleteRevision);
 		try {
 			timestampToken = new PdfTimestampToken(this);
-			timestampToken.matchData(new InMemoryDocument(getRevisionCoveredBytes()));
+			timestampToken.matchData(getSignedData());
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Created PdfDocTimestampInfo : {}", getByteRange());
 			}

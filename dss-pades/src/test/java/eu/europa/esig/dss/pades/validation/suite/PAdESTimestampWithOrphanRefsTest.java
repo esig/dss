@@ -83,8 +83,9 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 					assertTrue(timestampToken instanceof PdfTimestampToken);
 					PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
 
-					PdfDocTimestampRevision pdfRevision = (PdfDocTimestampRevision) pdfTimestampToken.getPdfRevision();
-					byte[] signedContent = PAdESUtils.getSignedContent(document, pdfRevision.getByteRange());
+					PdfDocTimestampRevision pdfRevision = pdfTimestampToken.getPdfRevision();
+					byte[] revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
+					byte[] signedContent = PAdESUtils.getSignedContentFromRevision(revisionContent, pdfRevision.getByteRange());
 
 					SignedDocumentValidator timestampValidator = SignedDocumentValidator
 							.fromDocument(new InMemoryDocument(pdfTimestampToken.getEncoded()));

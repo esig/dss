@@ -939,11 +939,11 @@ public final class DSSUtils {
 	 * Skip the defined {@code n} number of bytes from the {@code InputStream}
 	 * and validates success of the operation
 	 * @param is {@link InputStream} to skip bytes from
-	 * @param n {@code long} number bytes to skip
+	 * @param n {@code int} number bytes to skip
 	 * @return actual number of bytes have been skipped
      * @exception IllegalStateException in case of {@code InputStream} reading error 
 	 */
-	public static long skipAvailableBytes(InputStream is, long n) throws IllegalStateException {
+	public static long skipAvailableBytes(InputStream is, int n) throws IllegalStateException {
 		try {
 			long skipped = is.skip(n);
 			if (skipped != n) {

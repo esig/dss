@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 
 import java.util.List;
@@ -41,14 +42,15 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	 *            the DSS dictionary
 	 * @param signatureFieldNames
 	 *            list of signature field names
-	 * @param originalBytes
-	 *            the original bytes of the whole signed document
+	 * @param signedContent
+	 *            {@link DSSDocument} the signed data
 	 * @param coverCompleteRevision
 	 *            identifies if the signature covers the whole revision
 	 */
-	public PdfSignatureRevision(PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary, List<String> signatureFieldNames,
-			byte[] originalBytes, boolean coverCompleteRevision) {
-		super(signatureDictionary, signatureFieldNames, originalBytes, coverCompleteRevision);
+	public PdfSignatureRevision(PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary,
+								List<String> signatureFieldNames, DSSDocument signedContent,
+								boolean coverCompleteRevision) {
+		super(signatureDictionary, signatureFieldNames, signedContent, coverCompleteRevision);
 		this.dssDictionarySource = dssDictionary;
 	}
 

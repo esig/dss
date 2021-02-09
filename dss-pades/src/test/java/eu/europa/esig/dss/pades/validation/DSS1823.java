@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -53,6 +40,18 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class DSS1823 extends PKIFactoryAccess {
 
@@ -71,7 +70,8 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
 				byte[] cmsContent = pdSignature.getContents();
-				byte[] signedContent = PAdESUtils.getSignedContent(dssDocument, pdSignature.getByteRange());
+				byte[] revisionContent = PAdESUtils.getRevisionContent(dssDocument, pdSignature.getByteRange());
+				byte[] signedContent = PAdESUtils.getSignedContentFromRevision(revisionContent, pdSignature.getByteRange());
 
 				DSSDocument cmsDocument = new InMemoryDocument(cmsContent);
 
@@ -124,7 +124,8 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
 				byte[] cmsContent = pdSignature.getContents();
-				byte[] signedContent = PAdESUtils.getSignedContent(dssDocument, pdSignature.getByteRange());
+				byte[] revisionContent = PAdESUtils.getRevisionContent(dssDocument, pdSignature.getByteRange());
+				byte[] signedContent = PAdESUtils.getSignedContentFromRevision(revisionContent, pdSignature.getByteRange());
 
 				DSSDocument cmsDocument = new InMemoryDocument(cmsContent);
 
@@ -175,7 +176,8 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
 				byte[] cmsContent = pdSignature.getContents();
-				byte[] signedContent = PAdESUtils.getSignedContent(dssDocument, pdSignature.getByteRange());
+				byte[] revisionContent = PAdESUtils.getRevisionContent(dssDocument, pdSignature.getByteRange());
+				byte[] signedContent = PAdESUtils.getSignedContentFromRevision(revisionContent, pdSignature.getByteRange());
 
 				DSSDocument cmsDocument = new InMemoryDocument(cmsContent);
 

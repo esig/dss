@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pades.validation.timestamp;
 import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampDataBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
@@ -82,13 +81,12 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 		throw new DSSException("Timestamp Data not found");
 	}
 
-	private DSSDocument getSignedDataInPDFRevisions(final TimestampToken timestampToken) {
+	private final DSSDocument getSignedDataInPDFRevisions(final TimestampToken timestampToken) {
 		for (final PdfRevision signatureInfo : documentRevisions) {
 			if (signatureInfo instanceof PdfDocTimestampRevision) {
 				PdfDocTimestampRevision pdfTimestampInfo = (PdfDocTimestampRevision) signatureInfo;
 				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
-					final byte[] signedDocumentBytes = pdfTimestampInfo.getRevisionCoveredBytes();
-					return new InMemoryDocument(signedDocumentBytes);
+					return pdfTimestampInfo.getSignedData();
 				}
 			}
 		}
