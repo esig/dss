@@ -46,11 +46,18 @@
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
-			<xs:element name="Errors" type="Message" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Warnings" type="Message" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Infos" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ValidationDetails" type="Details" minOccurs="0" />
+			<xs:element name="QualificationDetails" type="Details" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" /> <!-- Must be a String type in order to avoid conflict with DetailedReport in REST/SOAP webServices -->
+	</xs:complexType>
+
+	<xs:complexType name="Details">
+		<xs:sequence>
+			<xs:element name="Error" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Warning" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Info" type="Message" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="Message">
@@ -79,6 +86,7 @@
 							</xs:simpleContent>
 						</xs:complexType>
 					</xs:element>
+					<xs:element name="Timestamps" type="Timestamps" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
 				<xs:attribute name="ParentId" type="xs:string" use="optional" />
@@ -88,6 +96,12 @@
 				<xs:attribute name="ExtensionPeriodMax" type="xs:dateTime" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Timestamps">
+		<xs:sequence>
+			<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="Timestamp">

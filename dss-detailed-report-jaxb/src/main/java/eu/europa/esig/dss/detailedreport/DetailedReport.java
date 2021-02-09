@@ -712,8 +712,8 @@ public class DetailedReport {
 	 * @param tokenId {@link String}
 	 * @return a list of error {@link Message}s
 	 */
-    public List<Message> getErrors(String tokenId) {
-    	return getMessageCollector().getErrors(tokenId);
+    public List<Message> getValidationErrors(String tokenId) {
+    	return getMessageCollector().getValidationErrors(tokenId);
     }
 
 	/**
@@ -722,8 +722,8 @@ public class DetailedReport {
 	 * @param tokenId {@link String}
 	 * @return a list of warning {@link Message}s
 	 */
-    public List<Message> getWarnings(String tokenId) {
-    	return getMessageCollector().getWarnings(tokenId);
+    public List<Message> getValidationWarnings(String tokenId) {
+    	return getMessageCollector().getValidationWarnings(tokenId);
     }
 
 	/**
@@ -732,8 +732,8 @@ public class DetailedReport {
 	 * @param tokenId {@link String}
 	 * @return a list of info {@link Message}s
 	 */
-    public List<Message> getInfos(String tokenId) {
-    	return getMessageCollector().getInfos(tokenId);
+    public List<Message> getValidationInfos(String tokenId) {
+    	return getMessageCollector().getValidationInfos(tokenId);
     }
 
 	/**

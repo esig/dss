@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.validation.executor.signature;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -40,6 +38,7 @@ import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.simplereport.jaxb.XmlDetails;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSemantic;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
@@ -48,6 +47,7 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -195,13 +195,15 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			xmlSignature.setSignedBy(getReadableCertificateName(signingCertificate.getId()));
 		}
 
-		// TODO : temporary solution to collect validation and qualification messages in bulk
-		xmlSignature.getErrors().addAll(convert(detailedReport.getErrors(signatureId)));
-		xmlSignature.getErrors().addAll(convert(detailedReport.getQualificationErrors(signatureId)));
-		xmlSignature.getWarnings().addAll(convert(detailedReport.getWarnings(signatureId)));
-		xmlSignature.getWarnings().addAll(convert(detailedReport.getQualificationWarnings(signatureId)));
-		xmlSignature.getInfos().addAll(convert(detailedReport.getInfos(signatureId)));
-		xmlSignature.getInfos().addAll(convert(detailedReport.getQualificationInfos(signatureId)));
+		XmlDetails validationDetails = getValidationDetails(signatureId);
+		if (isNotEmpty(validationDetails)) {
+			xmlSignature.setValidationDetails(validationDetails);
+		}
+
+		XmlDetails qualificationDetails = getQualificationDetails(signatureId);
+		if (isNotEmpty(qualificationDetails)) {
+			xmlSignature.setQualificationDetails(qualificationDetails);
+		}
 
 		if (container) {
 			xmlSignature.setFilename(signature.getSignatureFilename());
@@ -224,7 +226,38 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		addSignatureProfile(xmlSignature);
 
 		xmlSignature.setCertificateChain(getCertChain(signatureId));
+
+		List<TimestampWrapper> timestampList = signature.getTimestampList();
+		if (Utils.isCollectionNotEmpty(timestampList)) {
+			XmlTimestamps xmlTimestamps = new XmlTimestamps();
+			for (TimestampWrapper timestamp : timestampList) {
+				xmlTimestamps.getTimestamp().add(getXmlTimestamp(timestamp));
+			}
+			xmlSignature.setTimestamps(xmlTimestamps);
+		}
+
 		return xmlSignature;
+	}
+
+	private XmlDetails getValidationDetails(String tokenId) {
+		XmlDetails validationDetails = new XmlDetails();
+		validationDetails.getError().addAll(convert(detailedReport.getValidationErrors(tokenId)));
+		validationDetails.getWarning().addAll(convert(detailedReport.getValidationWarnings(tokenId)));
+		validationDetails.getInfo().addAll(convert(detailedReport.getValidationInfos(tokenId)));
+		return validationDetails;
+	}
+
+	private XmlDetails getQualificationDetails(String tokenId) {
+		XmlDetails qualificationDetails = new XmlDetails();
+		qualificationDetails.getError().addAll(convert(detailedReport.getQualificationErrors(tokenId)));
+		qualificationDetails.getWarning().addAll(convert(detailedReport.getQualificationWarnings(tokenId)));
+		qualificationDetails.getInfo().addAll(convert(detailedReport.getQualificationInfos(tokenId)));
+		return qualificationDetails;
+	}
+
+	private boolean isNotEmpty(XmlDetails details) {
+		return Utils.isCollectionNotEmpty(details.getError()) || Utils.isCollectionNotEmpty(details.getWarning()) ||
+				Utils.isCollectionNotEmpty(details.getInfo());
 	}
 
 	private List<XmlMessage> convert(Collection<Message> messages) {
@@ -240,10 +273,10 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		List<String> certIds = detailedReport.getBasicBuildingBlocksCertChain(tokenId);
 		XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
 		if (Utils.isCollectionNotEmpty(certIds)) {
-			for (String certid : certIds) {
+			for (String certId : certIds) {
 				XmlCertificate certificate = new XmlCertificate();
-				certificate.setId(certid);
-				certificate.setQualifiedName(getReadableCertificateName(certid));
+				certificate.setId(certId);
+				certificate.setQualifiedName(getReadableCertificateName(certId));
 				xmlCertificateChain.getCertificate().add(certificate);
 			}
 		}
@@ -299,41 +332,39 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 	private XmlTimestamp getXmlTimestamp(TimestampWrapper timestampWrapper) {
 		XmlTimestamp xmlTimestamp = new XmlTimestamp();
-		xmlTimestamp.setId(timestampWrapper.getId());
+		String timestampId = timestampWrapper.getId();
+		xmlTimestamp.setId(timestampId);
 		xmlTimestamp.setProductionTime(timestampWrapper.getProductionTime());
 		xmlTimestamp.setProducedBy(getProducedByName(timestampWrapper));
-		xmlTimestamp.setCertificateChain(getCertChain(timestampWrapper.getId()));
+		xmlTimestamp.setCertificateChain(getCertChain(timestampId));
 		xmlTimestamp.setFilename(timestampWrapper.getFilename());
 
-		XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(timestampWrapper.getId());
-		if (timestampBBB != null && timestampBBB.getConclusion() != null) {
-			XmlConclusion bbbConclusion = timestampBBB.getConclusion();
-			
-			Indication indication = bbbConclusion.getIndication();
-			xmlTimestamp.setIndication(indication);
-			finalIndications.add(indication);
-			
-			SubIndication subIndication = bbbConclusion.getSubIndication();
-			if (subIndication != null) {
-				xmlTimestamp.setSubIndication(subIndication);
-				finalSubIndications.add(subIndication);
-			}
-			
-			// TODO : temporary solution to collect validation and qualification messages in bulk
-			xmlTimestamp.getErrors().addAll(convert(detailedReport.getErrors(timestampWrapper.getId())));
-			xmlTimestamp.getErrors().addAll(convert(detailedReport.getQualificationErrors(timestampWrapper.getId())));
-			xmlTimestamp.getWarnings().addAll(convert(detailedReport.getWarnings(timestampWrapper.getId())));
-			xmlTimestamp.getWarnings().addAll(convert(detailedReport.getQualificationWarnings(timestampWrapper.getId())));
-			xmlTimestamp.getInfos().addAll(convert(detailedReport.getInfos(timestampWrapper.getId())));
-			xmlTimestamp.getInfos().addAll(convert(detailedReport.getQualificationInfos(timestampWrapper.getId())));
+		Indication indication = detailedReport.getBasicBuildingBlocksIndication(timestampId);
+		xmlTimestamp.setIndication(indication);
+		finalIndications.add(indication);
+
+		SubIndication subIndication = detailedReport.getBasicBuildingBlocksSubIndication(timestampId);
+		if (subIndication != null) {
+			xmlTimestamp.setSubIndication(subIndication);
+			finalSubIndications.add(subIndication);
 		}
 
-		TimestampQualification timestampQualification = detailedReport.getTimestampQualification(timestampWrapper.getId());
+		TimestampQualification timestampQualification = detailedReport.getTimestampQualification(timestampId);
 		if (timestampQualification != null) {
 			XmlTimestampLevel xmlTimestampLevel = new XmlTimestampLevel();
 			xmlTimestampLevel.setValue(timestampQualification);
 			xmlTimestampLevel.setDescription(timestampQualification.getLabel());
 			xmlTimestamp.setTimestampLevel(xmlTimestampLevel);
+		}
+
+		XmlDetails validationDetails = getValidationDetails(timestampId);
+		if (isNotEmpty(validationDetails)) {
+			xmlTimestamp.setValidationDetails(validationDetails);
+		}
+
+		XmlDetails qualificationDetails = getQualificationDetails(timestampId);
+		if (isNotEmpty(qualificationDetails)) {
+			xmlTimestamp.setQualificationDetails(qualificationDetails);
 		}
 
 		return xmlTimestamp;

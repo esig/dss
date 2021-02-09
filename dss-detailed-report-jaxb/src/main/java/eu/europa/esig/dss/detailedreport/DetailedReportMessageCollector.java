@@ -63,7 +63,7 @@ public class DetailedReportMessageCollector {
 	 * @param tokenId {@link String} id of a token to get validation errors for
 	 * @return a list of {@link Message}s
 	 */
-	List<Message> getErrors(String tokenId) {
+	List<Message> getValidationErrors(String tokenId) {
 		return collect(MessageType.ERROR, tokenId);
 	}
 
@@ -73,7 +73,8 @@ public class DetailedReportMessageCollector {
 	 * @param tokenId {@link String} id of a token to get validation warnings for
 	 * @return a list of {@link Message}s
 	 */
-	List<Message> getWarnings(String tokenId) {
+
+	List<Message> getValidationWarnings(String tokenId) {
 		return collect(MessageType.WARN, tokenId);
 	}
 
@@ -83,7 +84,7 @@ public class DetailedReportMessageCollector {
 	 * @param tokenId {@link String} id of a token to get validation infos for
 	 * @return a list of {@link Message}s
 	 */
-	List<Message> getInfos(String tokenId) {
+	List<Message> getValidationInfos(String tokenId) {
 		return collect(MessageType.INFO, tokenId);
 	}
 
@@ -93,6 +94,7 @@ public class DetailedReportMessageCollector {
 	 * @param tokenId {@link String} id of a token to get qualification errors for
 	 * @return a list of {@link Message}s
 	 */
+
 	List<Message> getQualificationErrors(String tokenId) {
 		return collectQualification(MessageType.ERROR, tokenId);
 	}
@@ -155,19 +157,9 @@ public class DetailedReportMessageCollector {
 		XmlConstraintsConclusion highestConclusion = detailedReport.getHighestConclusion(xmlSignature.getId());
 		if (MessageType.ERROR != type || !Indication.PASSED.equals(highestConclusion.getConclusion().getIndication())) {
 			addMessages(result, getMessages(type, xmlSignature.getValidationProcessBasicSignature()));
-			addMessages(result, collectTimestampsValidation(type, xmlSignature.getTimestamps()));
 			addMessages(result, getMessages(type, xmlSignature.getValidationProcessLongTermData()));
 		}
 		addMessages(result, getMessages(type, highestConclusion));
-
-		return result;
-	}
-
-	private List<Message> collectTimestampsValidation(MessageType type, List<XmlTimestamp> timestamps) {
-		List<Message> result = new ArrayList<>();
-		for (XmlTimestamp timestamp : timestamps) {
-			addMessages(result, collectTimestampValidation(type, timestamp));
-		}
 		return result;
 	}
 
@@ -179,15 +171,6 @@ public class DetailedReportMessageCollector {
 	private List<Message> collectSignatureQualification(MessageType type, XmlSignature xmlSignature) {
 		List<Message> result = new ArrayList<>();
 		addMessages(result, getMessages(type, xmlSignature.getValidationSignatureQualification()));
-		addMessages(result, collectTimestampsQualification(type, xmlSignature.getTimestamps()));
-		return result;
-	}
-
-	private List<Message> collectTimestampsQualification(MessageType type, List<XmlTimestamp> timestamps) {
-		List<Message> result = new ArrayList<>();
-		for (XmlTimestamp timestamp : timestamps) {
-			addMessages(result, collectTimestampQualification(type, timestamp));
-		}
 		return result;
 	}
 

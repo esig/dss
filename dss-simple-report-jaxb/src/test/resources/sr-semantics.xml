@@ -23,14 +23,18 @@
         </CertificateChain>
         <Indication>TOTAL_FAILED</Indication>
         <SubIndication>SIG_CRYPTO_FAILURE</SubIndication>
-        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
-        <Errors>The result of the LTV validation process is not acceptable to continue the process!</Errors>
-        <Errors>The certificate chain for signature is not trusted, it does not contain a trust anchor.</Errors>
-        <Errors>The signature is not intact!</Errors>
-        <Errors>The result of the timestamps validation process is not conclusive!</Errors>
-        <Errors>The algorithm is no longer considered reliable!</Errors>
-        <Errors>The certificate chain for timestamp is not trusted, it does not contain a trust anchor.</Errors>
-        <Warnings>The signature/seal is not a valid AdES digital signature!</Warnings>
+        <ValidationDetails>
+            <Error>The result of the LTV validation process is not acceptable to continue the process!</Error>
+            <Error>The certificate chain for signature is not trusted, it does not contain a trust anchor.</Error>
+            <Error>The signature is not intact!</Error>
+            <Error>The result of the timestamps validation process is not conclusive!</Error>
+            <Error>The algorithm is no longer considered reliable!</Error>
+            <Error>The certificate chain for timestamp is not trusted, it does not contain a trust anchor.</Error>
+        </ValidationDetails>
+        <QualificationDetails>
+            <Error>Unable to build a certificate chain until a trusted list!</Error>
+            <Warning>The signature/seal is not a valid AdES digital signature!</Warning>
+        </QualificationDetails>
         <SigningTime>2018-08-31T14:49:38</SigningTime>
         <BestSignatureTime>2020-06-19T14:56:13</BestSignatureTime>
         <SignedBy>TEST Signature.Bank</SignedBy>

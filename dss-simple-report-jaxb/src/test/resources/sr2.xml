@@ -21,13 +21,17 @@
             </Certificate>
         </CertificateChain>
         <Indication>TOTAL_PASSED</Indication>
-        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
-        <Warnings>The structure of the signature is not valid!</Warnings>
-        <Warnings>The authority info access is not present!</Warnings>
-        <Warnings>The revocation info access is not present!</Warnings>
-        <Warnings>The revocation acceptance check is not conclusive!</Warnings>
-        <Warnings>The signers certificate does not have an expected extended key-usage!</Warnings>
-        <Warnings>The revocation data is not consistent!</Warnings>
+        <ValidationDetails>
+            <Warning>The structure of the signature is not valid!</Warning>
+            <Warning>The authority info access is not present!</Warning>
+            <Warning>The revocation info access is not present!</Warning>
+            <Warning>The revocation acceptance check is not conclusive!</Warning>
+            <Warning>The signers certificate does not have an expected extended key-usage!</Warning>
+            <Warning>The revocation data is not consistent!</Warning>
+        </ValidationDetails>
+        <QualificationDetails>
+            <Error>Unable to build a certificate chain until a trusted list!</Error>
+        </QualificationDetails>
         <SigningTime>2014-10-14T14:49:49</SigningTime>
         <BestSignatureTime>2014-10-14T14:53:02</BestSignatureTime>
         <SignedBy>L R</SignedBy>

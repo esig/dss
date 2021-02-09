@@ -212,46 +212,91 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This method retrieves the information for a given token by id
-	 * 
-	 * @param tokenId
-	 *            the token id
-	 * @return the linked information
-	 */
-	public List<Message> getInfo(final String tokenId) {
-		XmlToken token = getTokenById(tokenId);
-		if (token != null) {
-			return convert(token.getInfos());
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * This method retrieve the errors for a given token by id
+	 * This method retrieve the validation process's errors for a given token by id
 	 * 
 	 * @param tokenId
 	 *            the token id
 	 * @return the linked errors
 	 */
-	public List<Message> getErrors(final String tokenId) {
+	public List<Message> getValidationErrors(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
-		if (token != null) {
-			return convert(token.getErrors());
+		if (token != null && token.getValidationDetails() != null) {
+			return convert(token.getValidationDetails().getError());
 		}
 		return Collections.emptyList();
 	}
 
 	/**
-	 * This method retrieve the warnings for a given token by id
+	 * This method retrieve the validation process's warnings for a given token by id
 	 * 
 	 * @param tokenId
 	 *            the token id
 	 * @return the linked warnings
 	 */
-	public List<Message> getWarnings(final String tokenId) {
+	public List<Message> getValidationWarnings(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
-		if (token != null) {
-			return convert(token.getWarnings());
+		if (token != null && token.getValidationDetails() != null) {
+			return convert(token.getValidationDetails().getWarning());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieves the validation process's information for a given token by id
+	 *
+	 * @param tokenId
+	 *            the token id
+	 * @return the linked information
+	 */
+	public List<Message> getValidationInfo(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null && token.getValidationDetails() != null) {
+			return convert(token.getValidationDetails().getInfo());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the qualification process's errors for a given token by id
+	 *
+	 * @param tokenId
+	 *            the token id
+	 * @return the linked errors
+	 */
+	public List<Message> getQualificationErrors(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null && token.getQualificationDetails() != null) {
+			return convert(token.getQualificationDetails().getError());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the qualification process's warnings for a given token by id
+	 *
+	 * @param tokenId
+	 *            the token id
+	 * @return the linked warnings
+	 */
+	public List<Message> getQualificationWarnings(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null && token.getQualificationDetails() != null) {
+			return convert(token.getQualificationDetails().getWarning());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieves the qualification process's information for a given token by id
+	 *
+	 * @param tokenId
+	 *            the token id
+	 * @return the linked information
+	 */
+	public List<Message> getQualificationInfo(final String tokenId) {
+		XmlToken token = getTokenById(tokenId);
+		if (token != null && token.getQualificationDetails() != null) {
+			return convert(token.getQualificationDetails().getInfo());
 		}
 		return Collections.emptyList();
 	}

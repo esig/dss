@@ -37,18 +37,25 @@
 					<fo:bookmark-title>Validation Policy</fo:bookmark-title>
 				</fo:bookmark>
 				
-				<xsl:for-each select="//dss:Signature">
+				<xsl:for-each select="dss:Signature">
 					<xsl:variable name="index"><xsl:value-of select="count(preceding-sibling::dss:Signature) + 1" /></xsl:variable>
 					<fo:bookmark>
-						<xsl:attribute name="internal-destination">signature<xsl:value-of select="$index" /></xsl:attribute>
+						<xsl:attribute name="internal-destination">signature-<xsl:value-of select="$index" /></xsl:attribute>
 						<fo:bookmark-title>Signature <xsl:value-of select="$index" /></fo:bookmark-title>
 					</fo:bookmark>
+					<xsl:for-each select="dss:Timestamps/dss:Timestamp">
+						<xsl:variable name="index_tst"><xsl:value-of select="count(preceding-sibling::dss:Timestamp) + 1" /></xsl:variable>
+						<fo:bookmark>
+							<xsl:attribute name="internal-destination">timestamp-<xsl:value-of select="$index" />-<xsl:value-of select="$index_tst" /></xsl:attribute>
+							<fo:bookmark-title>Timestamp <xsl:value-of select="$index" />-<xsl:value-of select="$index_tst" /></fo:bookmark-title>
+						</fo:bookmark>
+					</xsl:for-each>
 				</xsl:for-each>
 				
-				<xsl:for-each select="//dss:Timestamp">
+				<xsl:for-each select="dss:Timestamp">
 					<xsl:variable name="index"><xsl:value-of select="count(preceding-sibling::dss:Timestamp) + 1" /></xsl:variable>
 					<fo:bookmark>
-						<xsl:attribute name="internal-destination">timestamp<xsl:value-of select="$index" /></xsl:attribute>
+						<xsl:attribute name="internal-destination">timestamp-<xsl:value-of select="$index" /></xsl:attribute>
 						<fo:bookmark-title>Timestamp <xsl:value-of select="$index" /></fo:bookmark-title>
 					</fo:bookmark>
 				</xsl:for-each>
@@ -187,6 +194,7 @@
     <xsl:template match="dss:Signature|dss:Timestamp">
         <xsl:variable name="nodeName" select="name()" />
         
+		<xsl:param name="sigCounter" />
     	<xsl:variable name="counter">
     		<xsl:if test="$nodeName = 'Signature'">
     			<xsl:value-of select="count(preceding-sibling::dss:Signature) + 1" />
@@ -210,10 +218,16 @@
         
         <fo:table table-layout="fixed">
     		<xsl:if test="$nodeName = 'Signature'">
-    			<xsl:attribute name="id">signature<xsl:value-of select="$counter" /></xsl:attribute>
+    			<xsl:attribute name="id">signature-<xsl:value-of select="$counter" /></xsl:attribute>
     		</xsl:if>
     		<xsl:if test="$nodeName = 'Timestamp'">
-    			<xsl:attribute name="id">timestamp<xsl:value-of select="$counter" /></xsl:attribute>
+				<xsl:variable name="tstCounter">
+					<xsl:choose>
+						<xsl:when test="$sigCounter"><xsl:value-of select="$sigCounter" />-<xsl:value-of select="$counter" /></xsl:when>
+						<xsl:otherwise><xsl:value-of select="$counter" /></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+    			<xsl:attribute name="id">timestamp-<xsl:value-of select="$tstCounter" /></xsl:attribute>
     		</xsl:if>
 			
 			<xsl:attribute name="margin-top">7px</xsl:attribute>
@@ -323,12 +337,14 @@
 												<xsl:value-of select="dss:SignatureLevel" />
 											</xsl:if>
 											<xsl:if test="dss:TimestampLevel">
-												<xsl:value-of select="dss:TimestampLevel" />
+												<xsl:value-of select="dss:TimestampLevel/@description" />
 											</xsl:if>
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
 							</xsl:if>
+
+							<xsl:apply-templates select="dss:QualificationDetails" />
 						
 							<fo:table-row>
 								<fo:table-cell>
@@ -350,13 +366,10 @@
 				       					<xsl:variable name="subIndication"><xsl:value-of select="dss:SubIndication" /></xsl:variable>
 										<xsl:value-of select="dss:Indication" /><xsl:if test="$subIndication != ''"> - <xsl:value-of select="dss:SubIndication" /></xsl:if>
 									</fo:block>
-									
-								    <xsl:apply-templates select="dss:Errors" />
-								    <xsl:apply-templates select="dss:Warnings" />
-							        <xsl:apply-templates select="dss:Infos" />
-									
 								</fo:table-cell>
 							</fo:table-row>
+
+							<xsl:apply-templates select="dss:ValidationDetails" />
 							
 							<xsl:if test="@SignatureFormat">
 								<fo:table-row>
@@ -520,6 +533,9 @@
 						</fo:table-body>	
 					</fo:table>
 		
+					<xsl:apply-templates select="dss:Timestamps">
+						<xsl:with-param name="sigCounter" select="$counter"/>
+					</xsl:apply-templates>
 		
 		       	</fo:block-container>
 	       	</fo:block-container>
@@ -527,13 +543,39 @@
     	</fo:block-container>
 
     </xsl:template>
-    
-    
-	<xsl:template match="dss:Errors|dss:Warnings|dss:Infos">
+
+	<xsl:template match="dss:QualificationDetails|dss:ValidationDetails">
+		<xsl:variable name="header">
+			<xsl:choose>
+				<xsl:when test="name() = 'ValidationDetails'">Validation Details</xsl:when>
+				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:table-row>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+					<xsl:value-of select="$header" /> :
+				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell>
+
+				<xsl:apply-templates select="dss:Error" />
+				<xsl:apply-templates select="dss:Warning" />
+				<xsl:apply-templates select="dss:Info" />
+
+			</fo:table-cell>
+		</fo:table-row>
+	</xsl:template>
+
+	<xsl:template match="dss:Error|dss:Warning|dss:Info">
 		<xsl:variable name="indicationColor">
         	<xsl:choose>
-				<xsl:when test="name() = 'Errors'">red</xsl:when>
-				<xsl:when test="name() = 'Warnings'">orange</xsl:when>
+				<xsl:when test="name() = 'Error'">red</xsl:when>
+				<xsl:when test="name() = 'Warning'">orange</xsl:when>
 				<xsl:otherwise>black</xsl:otherwise>
 			</xsl:choose>
         </xsl:variable>
@@ -544,6 +586,27 @@
 			<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
 			<xsl:value-of select="." />
 		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="dss:Timestamps">
+		<xsl:param name="sigCounter" />
+		<fo:block-container>
+			<fo:block>
+				<xsl:attribute name="margin-top">1px</xsl:attribute>
+				<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+				<xsl:attribute name="font-size">7pt</xsl:attribute>
+
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				Timestamps :
+			</fo:block>
+		</fo:block-container>
+		<fo:block-container>
+			<fo:block>
+				<xsl:apply-templates>
+					<xsl:with-param name="sigCounter" select="$sigCounter"/>
+				</xsl:apply-templates>
+			</fo:block>
+		</fo:block-container>
 	</xsl:template>
     
     <xsl:template name="documentInformation">

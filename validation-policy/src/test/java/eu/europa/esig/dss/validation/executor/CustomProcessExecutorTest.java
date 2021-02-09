@@ -3972,9 +3972,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		for (XmlRevocation xmlRevocation : usedRevocations) {
 			assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(xmlRevocation.getId()));
 			assertEquals(SubIndication.TRY_LATER, detailedReport.getBasicBuildingBlocksSubIndication(xmlRevocation.getId()));
-			assertEquals(2, detailedReport.getErrors(xmlRevocation.getId()).size());
-			assertEquals(1, detailedReport.getWarnings(xmlRevocation.getId()).size());
-			assertEquals(0, detailedReport.getInfos(xmlRevocation.getId()).size());
+			assertEquals(2, detailedReport.getValidationErrors(xmlRevocation.getId()).size());
+			assertEquals(1, detailedReport.getValidationWarnings(xmlRevocation.getId()).size());
+			assertEquals(0, detailedReport.getValidationInfos(xmlRevocation.getId()).size());
 
 			XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(xmlRevocation.getId());
 			assertEquals(2, bbb.getConclusion().getErrors().size());
@@ -4007,17 +4007,17 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertTrue(checkMessageValuePresence(convert(xcv.getConclusion().getWarnings()),
 					i18nProvider.getMessage(MessageTag.BBB_XCV_OCSP_NO_CHECK_ANS)));
 
-			assertTrue(checkMessageValuePresence(detailedReport.getErrors(xmlRevocation.getId()),
+			assertTrue(checkMessageValuePresence(detailedReport.getValidationErrors(xmlRevocation.getId()),
 					i18nProvider.getMessage(MessageTag.BBB_XCV_IRDPFC_ANS)));
-			assertTrue(checkMessageValuePresence(detailedReport.getWarnings(xmlRevocation.getId()),
+			assertTrue(checkMessageValuePresence(detailedReport.getValidationWarnings(xmlRevocation.getId()),
 					i18nProvider.getMessage(MessageTag.BBB_XCV_OCSP_NO_CHECK_ANS)));
 		}
 
 		assertEquals(Indication.INDETERMINATE, detailedReport.getFinalIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.TRY_LATER, detailedReport.getFinalSubIndication(detailedReport.getFirstSignatureId()));
-		assertTrue(checkMessageValuePresence(detailedReport.getErrors(detailedReport.getFirstSignatureId()),
+		assertTrue(checkMessageValuePresence(detailedReport.getValidationErrors(detailedReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.BBB_XCV_IRDPFC_ANS)));
-		assertTrue(checkMessageValuePresence(detailedReport.getWarnings(detailedReport.getFirstSignatureId()),
+		assertTrue(checkMessageValuePresence(detailedReport.getValidationWarnings(detailedReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.BBB_XCV_OCSP_NO_CHECK_ANS)));
 
 		XmlConstraintsConclusion highestConclusion = detailedReport.getHighestConclusion(detailedReport.getFirstSignatureId());
