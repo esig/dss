@@ -28,34 +28,40 @@ package eu.europa.esig.dss.enumerations;
  * id-etsi-qcs-semantics-identifiers OBJECT IDENTIFIER ::= { itu-t(0)
  * identified-organization(4) etsi(0) id-cert-profile(194121) 1 }
  * 
- * -- Semantics identifier for natural person identifier
- * 
- * id-etsi-qcs-semanticsId-Natural OBJECT IDENTIFIER ::= {
- * id-etsi-qcs-semantics-identifiers 1 }
- * 
- * -- Semantics identifier for legal person identifier
- * 
- * id-etsi-qcs-SemanticsId-Legal OBJECT IDENTIFIER ::= {
- * id-etsi-qcs-semantics-identifiers 2 }
- * 
  */
 public enum SemanticsIdentifier implements OidDescription {
 
+	/**
+	 * -- Semantics identifier for natural person identifier
+	 *
+	 * id-etsi-qcs-semanticsId-Natural OBJECT IDENTIFIER ::= {
+	 * id-etsi-qcs-semantics-identifiers 1 }
+	 */
 	qcsSemanticsIdNatural("Semantics identifier for natural person", "0.4.0.194121.1.1"),
 
+	/**
+	 * -- Semantics identifier for legal person identifier
+	 *
+	 * id-etsi-qcs-SemanticsId-Legal OBJECT IDENTIFIER ::= {
+	 * id-etsi-qcs-semantics-identifiers 2 }
+	 */
 	qcsSemanticsIdLegal("Semantics identifier for legal person", "0.4.0.194121.1.2");
 
+	/** The human-readable description */
 	private final String description;
+
+	/** OID */
 	private final String oid;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param description {@link String}
+	 * @param oid {@link String}
+	 */
 	SemanticsIdentifier(String description, String oid) {
 		this.description = description;
 		this.oid = oid;
-	}
-
-	@Override
-	public String getOid() {
-		return oid;
 	}
 
 	@Override
@@ -63,6 +69,17 @@ public enum SemanticsIdentifier implements OidDescription {
 		return description;
 	}
 
+	@Override
+	public String getOid() {
+		return oid;
+	}
+
+	/**
+	 * Returns {@code SemanticsIdentifier} based on the provided OID
+	 *
+	 * @param oid {@link String}
+	 * @return {@link SemanticsIdentifier} if found by the given OID, null otherwise
+	 */
 	public static SemanticsIdentifier fromOid(String oid) {
 		for (SemanticsIdentifier semanticsIdentifier : SemanticsIdentifier.values()) {
 			if (semanticsIdentifier.oid.equals(oid)) {
@@ -71,4 +88,5 @@ public enum SemanticsIdentifier implements OidDescription {
 		}
 		return null;
 	}
+
 }

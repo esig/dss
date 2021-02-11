@@ -35,8 +35,10 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -49,13 +51,24 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAcc
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToNaturalPersonCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateMinQcEuRetentionPeriodCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateMinQcTransactionLimitCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotOnHoldCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotRevokedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcComplianceCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcCCLegislationCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcEuPDSLocationCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePS2DQcCompetentAuthorityIdCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePS2DQcCompetentAuthorityNameCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePS2DQcRolesOfPSPCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcEuLimitValueCurrencyCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSemanticsIdentifierForLegalPersonCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSemanticsIdentifierForNaturalPersonCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
@@ -160,13 +173,35 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
 
+		item = item.setNextItem(certificateQcCompliance(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQcEuLimitValueCurrency(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateMinQcEuLimitValue(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQcEuRetentionPeriod(currentCertificate, subContext));
+
 		item = item.setNextItem(certificateSupportedByQSCD(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQcEuPDSLocation(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQcType(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateQcCCLegislation(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateIssuedToNaturalPerson(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateSemanticsIdentifierForLegalPerson(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateSemanticsIdentifierForNaturalPerson(currentCertificate, subContext));
+
+		item = item.setNextItem(certificatePS2DQcRolesOfPSP(currentCertificate, subContext));
+
+		item = item.setNextItem(certificatePS2DQcCompetentAuthorityName(currentCertificate, subContext));
+
+		item = item.setNextItem(certificatePS2DQcCompetentAuthorityId(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateSignatureValid(currentCertificate, subContext));
 
@@ -368,7 +403,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
 		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
-
 		return new CryptographicCheck<>(i18nProvider, result, certificate, position, currentTime, cryptographicConstraint);
 	}
 
@@ -377,9 +411,39 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new CertificateQualifiedCheck(i18nProvider, result, certificate, constraint);
 	}
 
+	private ChainItem<XmlSubXCV> certificateQcCompliance(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateQCComplianceConstraint(context, subContext);
+		return new CertificateQcComplianceCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateMinQcEuLimitValue(CertificateWrapper certificate, SubContext subContext) {
+		IntValueConstraint constraint = validationPolicy.getCertificateMinQcEuLimitValueConstraint(context, subContext);
+		return new CertificateMinQcTransactionLimitCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateQcEuLimitValueCurrency(CertificateWrapper certificate, SubContext subContext) {
+		ValueConstraint constraint = validationPolicy.getCertificateQcEuLimitValueCurrencyConstraint(context, subContext);
+		return new CertificateQcEuLimitValueCurrencyCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateQcEuRetentionPeriod(CertificateWrapper certificate, SubContext subContext) {
+		IntValueConstraint constraint = validationPolicy.getCertificateMinQcEuRetentionPeriodConstraint(context, subContext);
+		return new CertificateMinQcEuRetentionPeriodCheck(i18nProvider, result, certificate, constraint);
+	}
+
 	private ChainItem<XmlSubXCV> certificateSupportedByQSCD(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSupportedByQSCDConstraint(context, subContext);
 		return new CertificateSupportedByQSCDCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateQcEuPDSLocation(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateQcEuPDSLocationConstraint(context, subContext);
+		return new CertificateQcEuPDSLocationCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateQcType(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateQcTypeConstraint(context, subContext);
+		return new CertificateQcTypeCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateQcCCLegislation(CertificateWrapper certificate, SubContext subContext) {
@@ -395,6 +459,31 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> certificateIssuedToNaturalPerson(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateIssuedToNaturalPersonConstraint(context, subContext);
 		return new CertificateIssuedToNaturalPersonCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateSemanticsIdentifierForLegalPerson(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateSemanticsIdentifierForLegalPersonConstraint(context, subContext);
+		return new CertificateSemanticsIdentifierForLegalPersonCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificateSemanticsIdentifierForNaturalPerson(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateSemanticsIdentifierForNaturalPersonConstraint(context, subContext);
+		return new CertificateSemanticsIdentifierForNaturalPersonCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificatePS2DQcRolesOfPSP(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificatePS2DQcTypeRolesOfPSPConstraint(context, subContext);
+		return new CertificatePS2DQcRolesOfPSPCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificatePS2DQcCompetentAuthorityName(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificatePS2DQcCompetentAuthorityNameConstraint(context, subContext);
+		return new CertificatePS2DQcCompetentAuthorityNameCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> certificatePS2DQcCompetentAuthorityId(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificatePS2DQcCompetentAuthorityIdConstraint(context, subContext);
+		return new CertificatePS2DQcCompetentAuthorityIdCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {

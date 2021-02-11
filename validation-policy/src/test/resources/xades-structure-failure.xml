@@ -120,7 +120,7 @@
             </CertificatePolicies>
             <QcStatements>
                 <QcCompliance present="true"/>
-                <QcQSSD present="true"/>
+                <QcQSCD present="true"/>
             </QcStatements>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>

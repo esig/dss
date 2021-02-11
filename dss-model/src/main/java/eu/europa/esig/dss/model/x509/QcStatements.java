@@ -32,7 +32,7 @@ public class QcStatements {
      * esi4-qcStatement-4 QC-STATEMENT ::= { IDENTIFIED BY id-etsi-qcs-QcSSCD }
      * id-etsi-qcs-QcSSCD OBJECT IDENTIFIER ::= { id-etsi-qcs 4 }
      */
-    private boolean qcQSSD;
+    private boolean qcQSCD;
 
     /**
      * esi4-qcStatement-5 QC-STATEMENT ::= { SYNTAX QcEuPDS IDENTIFIED BY id-etsi-qcs-QcPDS }
@@ -91,12 +91,12 @@ public class QcStatements {
         this.qcEuRetentionPeriod = qcEuRetentionPeriod;
     }
 
-    public boolean isQcQSSD() {
-        return qcQSSD;
+    public boolean isQcQSCD() {
+        return qcQSCD;
     }
 
-    public void setQcQSSD(boolean qcQSSD) {
-        this.qcQSSD = qcQSSD;
+    public void setQcQSCD(boolean qcQSCD) {
+        this.qcQSCD = qcQSCD;
     }
 
     public List<PdsLocation> getQcEuPDS() {

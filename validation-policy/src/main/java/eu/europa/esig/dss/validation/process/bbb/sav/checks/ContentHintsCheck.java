@@ -37,9 +37,6 @@ public class ContentHintsCheck extends AbstractValueCheckItem<XmlSAV> {
 	/** The signature to check */
 	private final SignatureWrapper signature;
 
-	/** The constraint */
-	private final ValueConstraint constraint;
-
 	/**
 	 * Default constructor
 	 *
@@ -52,14 +49,12 @@ public class ContentHintsCheck extends AbstractValueCheckItem<XmlSAV> {
 							 ValueConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
-		this.constraint = constraint;
 	}
 
 	@Override
 	protected boolean process() {
 		String contentType = signature.getContentHints();
-		String expectedValue = constraint.getValue();
-		return processValueCheck(contentType, expectedValue);
+		return processValueCheck(contentType);
 	}
 
 	@Override

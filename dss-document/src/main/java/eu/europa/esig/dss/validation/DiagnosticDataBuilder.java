@@ -40,7 +40,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Role;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlQcQSSD;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcQSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -1136,7 +1136,7 @@ public abstract class DiagnosticDataBuilder {
 	private XmlQcStatements getXmlQcStatements(QcStatements qcStatements) {
 		XmlQcStatements result = new XmlQcStatements();
 		result.setQcCompliance(getXmlQcCompliance(qcStatements.isQcCompliance()));
-		result.setQcQSSD(getXmlQcQSSD(qcStatements.isQcQSSD()));
+		result.setQcQSCD(getXmlQcQSCD(qcStatements.isQcQSCD()));
 		if (qcStatements.getQcEuRetentionPeriod() != null) {
 			result.setQcEuRetentionPeriod(qcStatements.getQcEuRetentionPeriod());
 		}
@@ -1172,10 +1172,10 @@ public abstract class DiagnosticDataBuilder {
 		return result;
 	}
 
-	protected XmlQcQSSD getXmlQcQSSD(boolean present) {
-		XmlQcQSSD xmlQcQSSD = new XmlQcQSSD();
-		xmlQcQSSD.setPresent(present);
-		return xmlQcQSSD;
+	protected XmlQcQSCD getXmlQcQSCD(boolean present) {
+		XmlQcQSCD xmlQcQSCD = new XmlQcQSCD();
+		xmlQcQSCD.setPresent(present);
+		return xmlQcQSCD;
 	}
 
 	protected XmlQcCompliance getXmlQcCompliance(boolean present) {

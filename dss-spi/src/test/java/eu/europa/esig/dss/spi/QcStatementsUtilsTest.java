@@ -29,7 +29,7 @@ public class QcStatementsUtilsTest {
         QcStatements qcStatements = QcStatementUtils.getQcStatements(cert);
         assertNotNull(qcStatements);
         assertTrue(qcStatements.isQcCompliance());
-        assertFalse(qcStatements.isQcQSSD());
+        assertFalse(qcStatements.isQcQSCD());
         assertNull(qcStatements.getQcSemanticsIdentifier());
         assertNull(qcStatements.getQcLimitValue());
         assertNull(qcStatements.getQcEuRetentionPeriod());
@@ -51,7 +51,7 @@ public class QcStatementsUtilsTest {
         QcStatements qcStatements = QcStatementUtils.getQcStatements(caTokenA);
         assertNotNull(qcStatements);
         assertTrue(qcStatements.isQcCompliance());
-        assertTrue(qcStatements.isQcQSSD());
+        assertTrue(qcStatements.isQcQSCD());
         assertNull(qcStatements.getQcLimitValue());
         assertNull(qcStatements.getPsd2QcType());
         assertNull(qcStatements.getQcEuRetentionPeriod());

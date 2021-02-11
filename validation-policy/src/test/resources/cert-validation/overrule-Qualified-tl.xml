@@ -106,7 +106,7 @@
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
             <QcStatements>
-                <QcQSSD present="true"/>
+                <QcQSCD present="true"/>
                 <QcTypes>
                     <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
                 </QcTypes>

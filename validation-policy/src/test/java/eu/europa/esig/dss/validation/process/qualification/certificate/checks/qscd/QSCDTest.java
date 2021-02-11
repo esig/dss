@@ -26,7 +26,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlQcQSSD;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcQSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.OidDescription;
@@ -197,9 +197,9 @@ public class QSCDTest {
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
 		xmlQcStatements.setQcTypes(toOids(qcTypes));
 		if (qcStatementIds.contains(QCStatement.QC_SSCD)) {
-			XmlQcQSSD xmlQscd = new XmlQcQSSD();
+			XmlQcQSCD xmlQscd = new XmlQcQSCD();
 			xmlQscd.setPresent(true);
-			xmlQcStatements.setQcQSSD(xmlQscd);
+			xmlQcStatements.setQcQSCD(xmlQscd);
 		}
 		if (qcStatementIds.contains(QCStatement.QC_COMPLIANCE)) {
 			XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
@@ -222,9 +222,9 @@ public class QSCDTest {
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
 		xmlQcStatements.setQcTypes(toOids(qcTypes));
 		if (qcStatementIds.contains(QCStatement.QC_SSCD)) {
-			XmlQcQSSD xmlQscd = new XmlQcQSSD();
+			XmlQcQSCD xmlQscd = new XmlQcQSCD();
 			xmlQscd.setPresent(true);
-			xmlQcStatements.setQcQSSD(xmlQscd);
+			xmlQcStatements.setQcQSCD(xmlQscd);
 		}
 		if (qcStatementIds.contains(QCStatement.QC_COMPLIANCE)) {
 			XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();

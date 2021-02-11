@@ -399,7 +399,7 @@
 			</xs:element>
 			<xs:element name="QcLimitValue" type="QCLimitValue" minOccurs="0" />
 			<xs:element name="QcEuRetentionPeriod" type="xs:int" minOccurs="0" />
-			<xs:element name="QcQSSD" minOccurs="0">
+			<xs:element name="QcQSCD" minOccurs="0">
 				<xs:complexType>
 					<xs:attribute name="present" type="xs:boolean" use="required" />
 				</xs:complexType>

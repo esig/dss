@@ -49,8 +49,16 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Role;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcQSCD;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
@@ -76,6 +84,7 @@ import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
@@ -85,6 +94,7 @@ import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignedAttributesConstraints;
 import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
+import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.utils.Utils;
@@ -4349,6 +4359,557 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.PASSED, rac.getConclusion().getIndication());
 		assertTrue(checkMessageValuePresence(convert(subXCV.getConclusion().getWarnings()),
 				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+	}
+
+	@Test
+	public void qcComplianceTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		certificateConstraints.setQcCompliance(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCICQCC_ANS)));
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
+		xmlQcCompliance.setPresent(true);
+		xmlQcStatements.setQcCompliance(xmlQcCompliance);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void qcEuLimitValueCurrencyTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlQCLimitValue xmlQCLimitValue = new XmlQCLimitValue();
+		xmlQCLimitValue.setCurrency("AUD");
+		xmlQcStatements.setQcLimitValue(xmlQCLimitValue);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		ValueConstraint constraint = new ValueConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.setValue("EUR");
+		certificateConstraints.setQcEuLimitValueCurrency(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCICQCLVHAC_ANS)));
+
+		xmlQCLimitValue.setCurrency("EUR");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void minQcEuLimitValueTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlQCLimitValue xmlQCLimitValue = new XmlQCLimitValue();
+		xmlQCLimitValue.setAmount(1000);
+		xmlQCLimitValue.setExponent(0);
+		xmlQcStatements.setQcLimitValue(xmlQCLimitValue);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		IntValueConstraint constraint = new IntValueConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.setValue(500000);
+		certificateConstraints.setMinQcEuLimitValue(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCICQCLVA_ANS)));
+
+		xmlQCLimitValue.setExponent(3);
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void minQcEuRetentionPeriodTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setQcEuRetentionPeriod(3);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		IntValueConstraint constraint = new IntValueConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.setValue(5);
+		certificateConstraints.setMinQcEuRetentionPeriod(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCICQCERPA_ANS)));
+
+		xmlQcStatements.setQcEuRetentionPeriod(10);
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void qcSupportedByQSCDTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlQcQSCD xmlQcQSCD = new XmlQcQSCD();
+		xmlQcQSCD.setPresent(false);
+		xmlQcStatements.setQcQSCD(xmlQcQSCD);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+		certificateConstraints.setSupportedByQSCD(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCIQSCD_ANS)));
+
+		xmlQcQSCD.setPresent(true);
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void qcEuPDSLocationTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlLangAndValue langAndValue = new XmlLangAndValue();
+		langAndValue.setLang("en");
+		langAndValue.setValue("https://repository.eid.lux.lu");
+		xmlQcStatements.getQcEuPDS().add(langAndValue);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.getId().add("https://repository.eid.belgium.be");
+		certificateConstraints.setQcEuPDSLocation(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCICQCPDSLA_ANS)));
+
+		langAndValue.setValue("https://repository.eid.belgium.be");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void qcTypeTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlOID xmlOID = new XmlOID();
+		xmlOID.setValue("0.4.0.1862.1.6.2");
+		xmlOID.setDescription("qc-type-eseal");
+		xmlQcStatements.setQcTypes(Arrays.asList(xmlOID));
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.getId().add("qc-type-esign");
+		certificateConstraints.setQcType(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCICQCTA_ANS)));
+
+		xmlOID.setValue("0.4.0.1862.1.6.1");
+		xmlOID.setDescription("qc-type-esign");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void qcCCLegislationTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+		// Id list empty (EU certificate expected)
+		certificateConstraints.setQcLegislationCountryCodes(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		xmlQcStatements.setQcCClegislation(Arrays.asList("FR"));
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCDCQCCLCEC_ANS_EU)));
+
+		constraint.getId().add("LU");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCDCQCCLCEC_ANS)));
+
+		constraint.getId().add("FR");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void semanticsIdentifierForLegalPersonTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlOID xmlOID = new XmlOID();
+		xmlOID.setDescription("Semantics identifier for natural person");
+		xmlOID.setValue("0.4.0.194121.1.1");
+		xmlQcStatements.setSemanticsIdentifier(xmlOID);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+		certificateConstraints.setSemanticsIdentifierForLegalPerson(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCISILP_ANS)));
+
+		xmlOID.setDescription("Semantics identifier for legal person");
+		xmlOID.setValue("0.4.0.194121.1.2");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void semanticsIdentifierForNaturalPersonTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlOID xmlOID = new XmlOID();
+		xmlOID.setDescription("Semantics identifier for legal person");
+		xmlOID.setValue("0.4.0.194121.1.2");
+		xmlQcStatements.setSemanticsIdentifier(xmlOID);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+		certificateConstraints.setSemanticsIdentifierForNaturalPerson(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCISINP_ANS)));
+
+		xmlOID.setDescription("Semantics identifier for natural person");
+		xmlOID.setValue("0.4.0.194121.1.1");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void ps2dQcRolesOfPSPTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
+		XmlPSD2Role xmlPSD2Role = new XmlPSD2Role();
+		XmlOID xmlOID = new XmlOID();
+		xmlOID.setDescription("psp-as");
+		xmlOID.setValue("0.4.0.19495.1.1");
+		xmlPSD2Role.setPspOid(xmlOID);
+		xmlPSD2Info.getPSD2Roles().add(xmlPSD2Role);
+		xmlQcStatements.setPSD2Info(xmlPSD2Info);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.getId().add("psp-pi");
+		certificateConstraints.setPSD2QcTypeRolesOfPSP(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCICQCRA_ANS)));
+
+		xmlOID.setDescription("psp-pi");
+		xmlOID.setValue("0.4.0.19495.1.2");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void ps2dQcCANameTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
+		xmlPSD2Info.setNcaName("NBB");
+		xmlQcStatements.setPSD2Info(xmlPSD2Info);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.getId().add("CSSF");
+		certificateConstraints.setPSD2QcCompetentAuthorityName(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCICQCNA_ANS)));
+
+		xmlPSD2Info.setNcaName("CSSF");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void ps2dQcCAIdTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
+		xmlPSD2Info.setNcaId("BE-NBB");
+		xmlQcStatements.setPSD2Info(xmlPSD2Info);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.getId().add("LU-CSSF");
+		certificateConstraints.setPSD2QcCompetentAuthorityId(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCICQCIA_ANS)));
+
+		xmlPSD2Info.setNcaId("LU-CSSF");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
 
 	@Test

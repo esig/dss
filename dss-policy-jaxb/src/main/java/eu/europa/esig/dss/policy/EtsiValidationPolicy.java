@@ -27,6 +27,7 @@ import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
+import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
@@ -605,19 +606,46 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext) {
+	public LevelConstraint getCertificateQualificationConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getIssuedToNaturalPerson();
+			return certificateConstraints.getQualification();
 		}
 		return null;
 	}
 
 	@Override
-	public LevelConstraint getCertificateQualificationConstraint(Context context, SubContext subContext) {
+	public LevelConstraint getCertificateQCComplianceConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getQualification();
+			return certificateConstraints.getQcCompliance();
+		}
+		return null;
+	}
+
+	@Override
+	public ValueConstraint getCertificateQcEuLimitValueCurrencyConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcEuLimitValueCurrency();
+		}
+		return null;
+	}
+
+	@Override
+	public IntValueConstraint getCertificateMinQcEuLimitValueConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getMinQcEuLimitValue();
+		}
+		return null;
+	}
+
+	@Override
+	public IntValueConstraint getCertificateMinQcEuRetentionPeriodConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getMinQcEuRetentionPeriod();
 		}
 		return null;
 	}
@@ -632,6 +660,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public MultiValuesConstraint getCertificateQcEuPDSLocationConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcEuPDSLocation();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateQcTypeConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcType();
+		}
+		return null;
+	}
+
+	@Override
 	public MultiValuesConstraint getCertificateQcCCLegislationConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
@@ -641,10 +687,64 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getIssuedToNaturalPerson();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getCertificateIssuedToLegalPersonConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getIssuedToLegalPerson();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateSemanticsIdentifierForNaturalPersonConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSemanticsIdentifierForNaturalPerson();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateSemanticsIdentifierForLegalPersonConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSemanticsIdentifierForLegalPerson();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificatePS2DQcTypeRolesOfPSPConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPSD2QcTypeRolesOfPSP();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificatePS2DQcCompetentAuthorityNameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPSD2QcCompetentAuthorityName();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificatePS2DQcCompetentAuthorityIdConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPSD2QcCompetentAuthorityId();
 		}
 		return null;
 	}
