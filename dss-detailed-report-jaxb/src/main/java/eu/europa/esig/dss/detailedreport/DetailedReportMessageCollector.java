@@ -58,34 +58,34 @@ public class DetailedReportMessageCollector {
 	}
 	
 	/**
-	 * Returns a list of errors from the report for a token with the given id
+	 * Returns a list of ETSI EN 319 102-1 AdES validation error messages for a token with the given id
 	 * 
 	 * @param tokenId {@link String} id of a token to get validation errors for
 	 * @return a list of {@link Message}s
 	 */
-	List<Message> getValidationErrors(String tokenId) {
-		return collect(MessageType.ERROR, tokenId);
+	List<Message> getAdESValidationErrors(String tokenId) {
+		return collectAdESValidationMessages(MessageType.ERROR, tokenId);
 	}
 
 	/**
-	 * Returns a list of warnings from the report for a token with the given id
+	 * Returns a list of ETSI EN 319 102-1 AdES validation warning messages for a token with the given id
 	 * 
 	 * @param tokenId {@link String} id of a token to get validation warnings for
 	 * @return a list of {@link Message}s
 	 */
 
-	List<Message> getValidationWarnings(String tokenId) {
-		return collect(MessageType.WARN, tokenId);
+	List<Message> getAdESValidationWarnings(String tokenId) {
+		return collectAdESValidationMessages(MessageType.WARN, tokenId);
 	}
 
 	/**
-	 * Returns a list of infos from the report for a token with the given id
+	 * Returns a list of ETSI EN 319 102-1 AdES validation info messages for a token with the given id
 	 * 
 	 * @param tokenId {@link String} id of a token to get validation infos for
 	 * @return a list of {@link Message}s
 	 */
-	List<Message> getValidationInfos(String tokenId) {
-		return collect(MessageType.INFO, tokenId);
+	List<Message> getAdESValidationInfos(String tokenId) {
+		return collectAdESValidationMessages(MessageType.INFO, tokenId);
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class DetailedReportMessageCollector {
 	 */
 
 	List<Message> getQualificationErrors(String tokenId) {
-		return collectQualification(MessageType.ERROR, tokenId);
+		return collectQualificationMessages(MessageType.ERROR, tokenId);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class DetailedReportMessageCollector {
 	 * @return a list of {@link Message}s
 	 */
 	List<Message> getQualificationWarnings(String tokenId) {
-		return collectQualification(MessageType.WARN, tokenId);
+		return collectQualificationMessages(MessageType.WARN, tokenId);
 	}
 
 	/**
@@ -116,10 +116,10 @@ public class DetailedReportMessageCollector {
 	 * @return a list of {@link Message}s
 	 */
 	List<Message> getQualificationInfos(String tokenId) {
-		return collectQualification(MessageType.INFO, tokenId);
+		return collectQualificationMessages(MessageType.INFO, tokenId);
 	}
 
-	private List<Message> collect(MessageType type, String tokenId) {
+	private List<Message> collectAdESValidationMessages(MessageType type, String tokenId) {
 		XmlSignature signatureById = detailedReport.getXmlSignatureById(tokenId);
 		if (signatureById != null) {
 			return collectSignatureValidation(type, signatureById);
@@ -139,7 +139,7 @@ public class DetailedReportMessageCollector {
 		return Collections.emptyList();
 	}
 
-	private List<Message> collectQualification(MessageType type, String tokenId) {
+	private List<Message> collectQualificationMessages(MessageType type, String tokenId) {
 		XmlSignature signatureById = detailedReport.getXmlSignatureById(tokenId);
 		if (signatureById != null) {
 			return collectSignatureQualification(type, signatureById);

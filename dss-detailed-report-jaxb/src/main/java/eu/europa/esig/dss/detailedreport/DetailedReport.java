@@ -707,33 +707,33 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Returns a list of error messages for a token or token with id
+	 * Returns a list of ETSI EN 319 102-1 AdES validation error messages for a token with the given id
 	 *
 	 * @param tokenId {@link String}
 	 * @return a list of error {@link Message}s
 	 */
-    public List<Message> getValidationErrors(String tokenId) {
-    	return getMessageCollector().getValidationErrors(tokenId);
+    public List<Message> getAdESValidationErrors(String tokenId) {
+    	return getMessageCollector().getAdESValidationErrors(tokenId);
     }
 
 	/**
-	 * Returns a list of warning messages for a token or token with id
+	 * Returns a list of ETSI EN 319 102-1 AdES validation warning messages for a token with the given id
 	 *
 	 * @param tokenId {@link String}
 	 * @return a list of warning {@link Message}s
 	 */
-    public List<Message> getValidationWarnings(String tokenId) {
-    	return getMessageCollector().getValidationWarnings(tokenId);
+    public List<Message> getAdESValidationWarnings(String tokenId) {
+    	return getMessageCollector().getAdESValidationWarnings(tokenId);
     }
 
 	/**
-	 * Returns a list of info messages for a token or token with id
+	 * Returns a list of ETSI EN 319 102-1 AdES validation info messages for a token with the given id
 	 *
 	 * @param tokenId {@link String}
 	 * @return a list of info {@link Message}s
 	 */
-    public List<Message> getValidationInfos(String tokenId) {
-    	return getMessageCollector().getValidationInfos(tokenId);
+    public List<Message> getAdESValidationInfos(String tokenId) {
+    	return getMessageCollector().getAdESValidationInfos(tokenId);
     }
 
 	/**

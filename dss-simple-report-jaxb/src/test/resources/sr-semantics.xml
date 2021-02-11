@@ -23,14 +23,14 @@
         </CertificateChain>
         <Indication>TOTAL_FAILED</Indication>
         <SubIndication>SIG_CRYPTO_FAILURE</SubIndication>
-        <ValidationDetails>
+        <AdESValidationDetails>
             <Error>The result of the LTV validation process is not acceptable to continue the process!</Error>
             <Error>The certificate chain for signature is not trusted, it does not contain a trust anchor.</Error>
             <Error>The signature is not intact!</Error>
             <Error>The result of the timestamps validation process is not conclusive!</Error>
             <Error>The algorithm is no longer considered reliable!</Error>
             <Error>The certificate chain for timestamp is not trusted, it does not contain a trust anchor.</Error>
-        </ValidationDetails>
+        </AdESValidationDetails>
         <QualificationDetails>
             <Error>Unable to build a certificate chain until a trusted list!</Error>
             <Warning>The signature/seal is not a valid AdES digital signature!</Warning>

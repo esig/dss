@@ -197,7 +197,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 		XmlDetails validationDetails = getValidationDetails(signatureId);
 		if (isNotEmpty(validationDetails)) {
-			xmlSignature.setValidationDetails(validationDetails);
+			xmlSignature.setAdESValidationDetails(validationDetails);
 		}
 
 		XmlDetails qualificationDetails = getQualificationDetails(signatureId);
@@ -246,9 +246,9 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 	private XmlDetails getValidationDetails(String tokenId) {
 		XmlDetails validationDetails = new XmlDetails();
-		validationDetails.getError().addAll(convert(detailedReport.getValidationErrors(tokenId)));
-		validationDetails.getWarning().addAll(convert(detailedReport.getValidationWarnings(tokenId)));
-		validationDetails.getInfo().addAll(convert(detailedReport.getValidationInfos(tokenId)));
+		validationDetails.getError().addAll(convert(detailedReport.getAdESValidationErrors(tokenId)));
+		validationDetails.getWarning().addAll(convert(detailedReport.getAdESValidationWarnings(tokenId)));
+		validationDetails.getInfo().addAll(convert(detailedReport.getAdESValidationInfos(tokenId)));
 		return validationDetails;
 	}
 
@@ -364,7 +364,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 		XmlDetails validationDetails = getValidationDetails(timestampId);
 		if (isNotEmpty(validationDetails)) {
-			xmlTimestamp.setValidationDetails(validationDetails);
+			xmlTimestamp.setAdESValidationDetails(validationDetails);
 		}
 
 		XmlDetails qualificationDetails = getQualificationDetails(timestampId);

@@ -29,10 +29,10 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>TRY_LATER</SubIndication>
-        <ValidationDetails>
+        <AdESValidationDetails>
             <Error>The result of the LTV validation process is not acceptable to continue the process!</Error>
             <Error>No acceptable revocation data for the certificate!</Error>
-        </ValidationDetails>
+        </AdESValidationDetails>
         <QualificationDetails>
             <Error>Unable to build a certificate chain until a trusted list!</Error>
             <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
@@ -62,10 +62,10 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>TRY_LATER</SubIndication>
-        <ValidationDetails>
+        <AdESValidationDetails>
             <Error>The result of the LTV validation process is not acceptable to continue the process!</Error>
             <Error>No acceptable revocation data for the certificate!</Error>
-        </ValidationDetails>
+        </AdESValidationDetails>
         <QualificationDetails>
             <Error>Unable to build a certificate chain until a trusted list!</Error>
             <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>

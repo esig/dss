@@ -46,7 +46,7 @@
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
-			<xs:element name="ValidationDetails" type="Details" minOccurs="0" />
+			<xs:element name="AdESValidationDetails" type="Details" minOccurs="0" />
 			<xs:element name="QualificationDetails" type="Details" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" /> <!-- Must be a String type in order to avoid conflict with DetailedReport in REST/SOAP webServices -->

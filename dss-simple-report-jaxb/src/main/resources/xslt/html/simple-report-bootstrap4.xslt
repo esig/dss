@@ -216,7 +216,7 @@
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
 
-				<xsl:apply-templates select="dss:ValidationDetails" />
+				<xsl:apply-templates select="dss:AdESValidationDetails" />
 
 		        <dl>
 	        		<xsl:attribute name="class">row mb-0</xsl:attribute>
@@ -371,10 +371,10 @@
     	</div>
     </xsl:template>
 
-	<xsl:template match="dss:ValidationDetails|dss:QualificationDetails">
+	<xsl:template match="dss:AdESValidationDetails|dss:QualificationDetails">
 		<xsl:variable name="header">
 			<xsl:choose>
-				<xsl:when test="name() = 'ValidationDetails'">Validation Details</xsl:when>
+				<xsl:when test="name() = 'AdESValidationDetails'">AdES Validation Details</xsl:when>
 				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
 			</xsl:choose>
 		</xsl:variable>

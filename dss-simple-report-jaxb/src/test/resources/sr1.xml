@@ -27,14 +27,14 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>CRYPTO_CONSTRAINTS_FAILURE_NO_POE</SubIndication>
-        <ValidationDetails>
+        <AdESValidationDetails>
             <Error>The past signature validation is not conclusive!</Error>
             <Error>The algorithm is no longer considered reliable!</Error>
             <Error>The certificate validation is not conclusive!</Error>
             <Error>The revocation freshness check is not conclusive!</Error>
             <Warning>The validation of manifest entries is not performed!</Warning>
             <Warning>The result of the revocation data validation process is not acceptable!</Warning>
-        </ValidationDetails>
+        </AdESValidationDetails>
         <QualificationDetails>
             <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
         </QualificationDetails>

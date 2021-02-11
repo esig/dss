@@ -175,7 +175,7 @@
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
 
-				<xsl:apply-templates select="dss:ValidationDetails" />
+				<xsl:apply-templates select="dss:AdESValidationDetails" />
 
 		        <dl>
 	        		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
@@ -280,10 +280,16 @@
     	</div>
     </xsl:template>
 
-	<xsl:template match="dss:ValidationDetails">
+	<xsl:template match="dss:AdESValidationDetails|dss:QualificationDetails">
+		<xsl:variable name="header">
+			<xsl:choose>
+				<xsl:when test="name() = 'AdESValidationDetails'">AdES Validation Details</xsl:when>
+				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
 		<dl>
 			<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-			<dt>Validation Details :</dt>
+			<dt><xsl:value-of select="$header" /> :</dt>
 			<dd></dd>
 			<xsl:apply-templates select="dss:Error" />
 			<xsl:apply-templates select="dss:Warning" />
@@ -291,33 +297,16 @@
 		</dl>
 	</xsl:template>
 
-	<xsl:template match="dss:QualificationDetails">
-		<dl>
-			<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-			<dt>Qualification Details :</dt>
-			<dd></dd>
-			<xsl:apply-templates select="dss:Error" />
-			<xsl:apply-templates select="dss:Warning" />
-			<xsl:apply-templates select="dss:Info" />
-		</dl>
-	</xsl:template>
-
-	<xsl:template match="dss:Error">
+	<xsl:template match="dss:Error|dss:Warning|dss:Info">
+		<xsl:variable name="style">
+			<xsl:choose>
+				<xsl:when test="name() = 'Error'">danger</xsl:when>
+				<xsl:when test="name() = 'Warning'">warning</xsl:when>
+				<xsl:otherwise>auto</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<dd>
-			<xsl:attribute name="class">text-danger</xsl:attribute>
-			<xsl:value-of select="." />
-		</dd>
-	</xsl:template>
-
-	<xsl:template match="dss:Warning">
-		<dd>
-			<xsl:attribute name="class">text-warning</xsl:attribute>
-			<xsl:value-of select="." />
-		</dd>
-	</xsl:template>
-
-	<xsl:template match="dss:Info">
-		<dd>
+			<xsl:attribute name="class">text-<xsl:value-of select="$style" /></xsl:attribute>
 			<xsl:value-of select="." />
 		</dd>
 	</xsl:template>

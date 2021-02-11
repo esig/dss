@@ -714,8 +714,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 	
 	private void checkErrorMessageAbsence(SimpleReport simpleReport, MessageTag messageKey) {
-		assertTrue(!simpleReport.getValidationWarnings(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
-		assertTrue(!simpleReport.getValidationErrors(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertTrue(!simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertTrue(!simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
 	}
 	
 	private void checkErrorMessagePresence(String message) {
@@ -725,7 +725,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	private void checkWarningMessagePresence(SimpleReport simpleReport, String message) {
-		assertTrue(checkMessageValuePresence(simpleReport.getValidationWarnings(simpleReport.getFirstSignatureId()), message));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()), message));
 	}
 	
 	private void checkBasicSignatureErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {

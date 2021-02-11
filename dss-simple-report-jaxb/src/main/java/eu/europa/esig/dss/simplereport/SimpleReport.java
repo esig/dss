@@ -212,46 +212,46 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This method retrieve the validation process's errors for a given token by id
+	 * This method retrieve the ETSI EN 319 102-1 AdES validation errors for a given token by id
 	 * 
 	 * @param tokenId
 	 *            the token id
 	 * @return the linked errors
 	 */
-	public List<Message> getValidationErrors(final String tokenId) {
+	public List<Message> getAdESValidationErrors(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
-		if (token != null && token.getValidationDetails() != null) {
-			return convert(token.getValidationDetails().getError());
+		if (token != null && token.getAdESValidationDetails() != null) {
+			return convert(token.getAdESValidationDetails().getError());
 		}
 		return Collections.emptyList();
 	}
 
 	/**
-	 * This method retrieve the validation process's warnings for a given token by id
+	 * This method retrieve the ETSI EN 319 102-1 AdES validation warnings for a given token by id
 	 * 
 	 * @param tokenId
 	 *            the token id
 	 * @return the linked warnings
 	 */
-	public List<Message> getValidationWarnings(final String tokenId) {
+	public List<Message> getAdESValidationWarnings(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
-		if (token != null && token.getValidationDetails() != null) {
-			return convert(token.getValidationDetails().getWarning());
+		if (token != null && token.getAdESValidationDetails() != null) {
+			return convert(token.getAdESValidationDetails().getWarning());
 		}
 		return Collections.emptyList();
 	}
 
 	/**
-	 * This method retrieves the validation process's information for a given token by id
+	 * This method retrieve the ETSI EN 319 102-1 AdES validation information for a given token by id
 	 *
 	 * @param tokenId
 	 *            the token id
 	 * @return the linked information
 	 */
-	public List<Message> getValidationInfo(final String tokenId) {
+	public List<Message> getAdESValidationInfo(final String tokenId) {
 		XmlToken token = getTokenById(tokenId);
-		if (token != null && token.getValidationDetails() != null) {
-			return convert(token.getValidationDetails().getInfo());
+		if (token != null && token.getAdESValidationDetails() != null) {
+			return convert(token.getAdESValidationDetails().getInfo());
 		}
 		return Collections.emptyList();
 	}
