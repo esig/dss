@@ -52,6 +52,13 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * @return true if signature with an expired certificate is allowed
 	 */
 	boolean isSignWithExpiredCertificate();
+
+	/**
+	 * Indicates if it is possible to sign with a not yet valid certificate. The default value is false.
+	 *
+	 * @return true if signature with a not yet valid certificate is allowed
+	 */
+	boolean isSignWithNotYetValidCertificate();
 	
 	/**
 	 * Get Baseline B parameters (signed properties)

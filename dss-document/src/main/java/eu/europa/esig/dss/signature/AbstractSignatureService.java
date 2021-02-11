@@ -95,16 +95,38 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 			} else {
 				throw new DSSException("Signing Certificate is not defined!");
 			}
-		} else if (parameters.isSignWithExpiredCertificate()) {
+		}
+		assertSigningCertificateIsYetValid(parameters);
+		assertSigningCertificateIsNotExpired(parameters);
+	}
+
+	private void assertSigningCertificateIsYetValid(SerializableSignatureParameters parameters) {
+		if (parameters.isSignWithNotYetValidCertificate()) {
 			return;
 		}
 		final CertificateToken signingCertificate = parameters.getSigningCertificate();
-		final Date notAfter = signingCertificate.getNotAfter();
 		final Date notBefore = signingCertificate.getNotBefore();
+		final Date notAfter = signingCertificate.getNotAfter();
 		final Date signingDate = parameters.bLevel().getSigningDate();
-		if (signingDate.after(notAfter) || signingDate.before(notBefore)) {
-			throw new DSSException(String.format("Signing Date (%s) is not in certificate validity range (%s, %s).", signingDate.toString(),
-					notBefore.toString(), notAfter.toString()));
+		if (signingDate.before(notBefore)) {
+			throw new DSSException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
+							"is not yet valid at signing time %s!",
+					notBefore.toString(), notAfter.toString(), signingDate.toString()));
+		}
+	}
+
+	private void assertSigningCertificateIsNotExpired(SerializableSignatureParameters parameters) {
+		if (parameters.isSignWithExpiredCertificate()) {
+			return;
+		}
+		final CertificateToken signingCertificate = parameters.getSigningCertificate();
+		final Date notBefore = signingCertificate.getNotBefore();
+		final Date notAfter = signingCertificate.getNotAfter();
+		final Date signingDate = parameters.bLevel().getSigningDate();
+		if (signingDate.after(notAfter)) {
+			throw new DSSException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
+							"is expired at signing time %s!",
+					notBefore.toString(), notAfter.toString(), signingDate.toString()));
 		}
 	}
 

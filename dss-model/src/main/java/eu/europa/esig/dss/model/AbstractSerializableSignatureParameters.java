@@ -37,12 +37,23 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 
 	/**
 	 * This variable indicates if it is possible to sign with an expired certificate.
+	 *
+	 * Default : false
 	 */
 	private boolean signWithExpiredCertificate = false;
 
 	/**
+	 * This variable indicates if it is possible to sign with a not yet valid certificate.
+	 *
+	 * Default : false
+	 */
+	private boolean signWithNotYetValidCertificate = false;
+
+	/**
 	 * This variable indicates if it is possible to generate ToBeSigned data without
 	 * the signing certificate.
+	 *
+	 * Default : false
 	 */
 	private boolean generateTBSWithoutCertificate = false;
 
@@ -101,11 +112,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 */
 	protected TP archiveTimestampParameters;
 
-	/**
-	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
-	 *
-	 * @return true if signature with an expired certificate is allowed
-	 */
 	@Override
 	public boolean isSignWithExpiredCertificate() {
 		return signWithExpiredCertificate;
@@ -114,11 +120,30 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	/**
 	 * Allows to change the default behavior regarding the use of an expired certificate.
 	 *
+	 * Default : false (forbid signing with an expired signing certificate)
+	 *
 	 * @param signWithExpiredCertificate
 	 *            true if signature with an expired certificate is allowed
 	 */
-	public void setSignWithExpiredCertificate(final boolean signWithExpiredCertificate) {
+	public void setSignWithExpiredCertificate(boolean signWithExpiredCertificate) {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
+	}
+
+	@Override
+	public boolean isSignWithNotYetValidCertificate() {
+		return signWithNotYetValidCertificate;
+	}
+
+	/**
+	 * Allows to change the default behavior regarding the use of a not yet valid certificate.
+	 *
+	 * Default : false (forbid signing with a not yet valid signing certificate)
+	 *
+	 * @param signWithNotYetValidCertificate
+	 *            true if signature with a not yet valid certificate is allowed
+	 */
+	public void setSignWithNotYetValidCertificate(boolean signWithNotYetValidCertificate) {
+		this.signWithNotYetValidCertificate = signWithNotYetValidCertificate;
 	}
 
 	/**

@@ -121,6 +121,7 @@ public abstract class PKIFactoryAccess {
 	protected static final String GOOD_USER_WITH_PEM_CRL = "good-user-pem-crl";
 	protected static final String REVOKED_USER = "revoked-user";
 	protected static final String EXPIRED_USER = "expired-user";
+	protected static final String NOT_YET_VALID_USER = "not-yet-valid-user";
 	protected static final String DSA_USER = "good-dsa-user";
 	protected static final String ECDSA_USER = "good-ecdsa-user";
 	protected static final String RSA_SHA3_USER = "sha3-good-user";
