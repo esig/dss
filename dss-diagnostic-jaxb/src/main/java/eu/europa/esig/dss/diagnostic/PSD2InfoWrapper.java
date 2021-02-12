@@ -20,36 +20,55 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRoleOfPSP;
+import eu.europa.esig.dss.enumerations.RoleOfPspOid;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Role;
-import eu.europa.esig.dss.enumerations.RoleOfPspOid;
-
+/**
+ * The wrapper provides a user-friendly interface for dealing with {@code XmlPSD2QcInfo}
+ */
 public class PSD2InfoWrapper {
 
-	private final XmlPSD2Info psd2Info;
+	/** The wrapped {@code XmlPSD2QcInfo} object */
+	private final XmlPSD2QcInfo psd2QcInfo;
 
-	public PSD2InfoWrapper(XmlPSD2Info psd2Info) {
-		this.psd2Info = psd2Info;
+	/**
+	 * Default constructor
+	 *
+	 * @param psd2QcInfo {@link XmlPSD2QcInfo}
+	 */
+	public PSD2InfoWrapper(XmlPSD2QcInfo psd2QcInfo) {
+		this.psd2QcInfo = psd2QcInfo;
 	}
 
+	/**
+	 * Returns names of roles of PSP
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getRoleOfPSPNames() {
 		List<String> result = new ArrayList<>();
-		List<XmlPSD2Role> psd2Roles = psd2Info.getPSD2Roles();
-		for (XmlPSD2Role xmlPSD2Role : psd2Roles) {
-			result.add(xmlPSD2Role.getPspName());
+		List<XmlRoleOfPSP> rolesOfPSP = psd2QcInfo.getRolesOfPSP();
+		for (XmlRoleOfPSP roleOfPSP : rolesOfPSP) {
+			result.add(roleOfPSP.getName());
 		}
 		return result;
 	}
 
+	/**
+	 * Returns OIDs of roles of PSP
+	 *
+	 * @return a list of {@link RoleOfPspOid}s
+	 */
 	public List<RoleOfPspOid> getRoleOfPSPOids() {
 		List<RoleOfPspOid> result = new ArrayList<>();
-		List<XmlPSD2Role> psd2Roles = psd2Info.getPSD2Roles();
-		for (XmlPSD2Role xmlPSD2Role : psd2Roles) {
-			XmlOID pspOid = xmlPSD2Role.getPspOid();
+		List<XmlRoleOfPSP> rolesOfPSP = psd2QcInfo.getRolesOfPSP();
+		for (XmlRoleOfPSP roleOfPSP : rolesOfPSP) {
+			XmlOID pspOid = roleOfPSP.getOid();
 			if (pspOid != null) {
 				result.add(RoleOfPspOid.fromOid(pspOid.getValue()));
 			}
@@ -57,12 +76,22 @@ public class PSD2InfoWrapper {
 		return result;
 	}
 
+	/**
+	 * Returns the Competent Authority Id
+	 *
+	 * @return {@link String}
+	 */
 	public String getNcaId() {
-		return psd2Info.getNcaId();
+		return psd2QcInfo.getNcaId();
 	}
 
+	/**
+	 * Returns the Competent Authority name
+	 *
+	 * @return {@link String}
+	 */
 	public String getNcaName() {
-		return psd2Info.getNcaName();
+		return psd2QcInfo.getNcaName();
 	}
 
 }

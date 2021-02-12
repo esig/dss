@@ -176,7 +176,7 @@
             </CertificatePolicies>
             <QcStatements>
                 <QcCompliance present="true"/>
-                <QcQSCD present="true"/>
+                <QcSSCD present="true"/>
                                 <QcTypes>
                     <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
                 </QcTypes>

@@ -118,7 +118,7 @@
             </CertificatePolicies>
             <QcStatements>
                 <QcCompliance present="true"/>
-                <QcQSCD present="true"/>
+                <QcSSCD present="true"/>
             </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">

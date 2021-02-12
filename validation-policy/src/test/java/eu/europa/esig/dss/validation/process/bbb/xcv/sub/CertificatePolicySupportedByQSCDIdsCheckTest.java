@@ -20,24 +20,25 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicySupportedByQSCDIdsCheck;
+import org.junit.jupiter.api.Test;
 
-public class CertificateSupportedByQSCDCheckTest extends AbstractTestCheck {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificateSupportedByQSCDCheck() throws Exception {
@@ -50,7 +51,8 @@ public class CertificateSupportedByQSCDCheckTest extends AbstractTestCheck {
 		xc.getCertificatePolicies().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		CertificatePolicySupportedByQSCDIdsCheck csbsc = new CertificatePolicySupportedByQSCDIdsCheck(
+				i18nProvider, result, new CertificateWrapper(xc), constraint);
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -70,11 +72,35 @@ public class CertificateSupportedByQSCDCheckTest extends AbstractTestCheck {
 		xc.getCertificatePolicies().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		CertificatePolicySupportedByQSCDIdsCheck csbsc = new CertificatePolicySupportedByQSCDIdsCheck(
+				i18nProvider, result, new CertificateWrapper(xc), constraint);
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
 		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
 	}
+
+	@Test
+	public void certificateWithQcSSCDCheck() throws Exception {
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlCertificate xc = new XmlCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
+		xmlQcSSCD.setPresent(true);
+		xmlQcStatements.setQcSSCD(xmlQcSSCD);
+		xc.setQcStatements(xmlQcStatements);
+
+		XmlSubXCV result = new XmlSubXCV();
+		CertificatePolicySupportedByQSCDIdsCheck csbsc = new CertificatePolicySupportedByQSCDIdsCheck(
+				i18nProvider, result, new CertificateWrapper(xc), constraint);
+		csbsc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
 }

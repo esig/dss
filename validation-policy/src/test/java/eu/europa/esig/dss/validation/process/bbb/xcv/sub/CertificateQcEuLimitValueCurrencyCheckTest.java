@@ -5,7 +5,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
@@ -23,9 +23,9 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
 
-        XmlQCLimitValue xmlQCLimitValue = new XmlQCLimitValue();
-        xmlQCLimitValue.setCurrency("EUR");
-        xmlQcStatements.setQcLimitValue(xmlQCLimitValue);
+        XmlQcEuLimitValue xmlQcEuLimitValue = new XmlQcEuLimitValue();
+        xmlQcEuLimitValue.setCurrency("EUR");
+        xmlQcStatements.setQcEuLimitValue(xmlQcEuLimitValue);
 
         ValueConstraint constraint = new ValueConstraint();
         constraint.setLevel(Level.FAIL);
@@ -48,9 +48,9 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
 
-        XmlQCLimitValue xmlQCLimitValue = new XmlQCLimitValue();
-        xmlQCLimitValue.setCurrency("EUR");
-        xmlQcStatements.setQcLimitValue(xmlQCLimitValue);
+        XmlQcEuLimitValue xmlQcEuLimitValue = new XmlQcEuLimitValue();
+        xmlQcEuLimitValue.setCurrency("EUR");
+        xmlQcStatements.setQcEuLimitValue(xmlQcEuLimitValue);
 
         ValueConstraint constraint = new ValueConstraint();
         constraint.setLevel(Level.FAIL);

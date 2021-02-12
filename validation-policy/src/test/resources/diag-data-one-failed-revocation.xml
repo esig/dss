@@ -186,7 +186,7 @@
             </CertificatePolicies>
             <QcStatements>
                 <QcCompliance present="true"/>
-                <QcQSCD present="true"/>
+                <QcSSCD present="true"/>
                 <QcCClegislation/>
             </QcStatements>
             <TrustedServiceProviders />

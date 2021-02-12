@@ -6,9 +6,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Role;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRoleOfPSP;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -25,16 +25,16 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
 
-        XmlPSD2Role xmlPSD2Role = new XmlPSD2Role();
-        xmlPSD2Role.setPspName("Payment Initiation Service Provider");
+        XmlRoleOfPSP xmlRoleOfPSP = new XmlRoleOfPSP();
+        xmlRoleOfPSP.setName("Payment Initiation Service Provider");
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription("psp-pi");
         xmlOID.setValue("0.4.0.19495.1.2");
-        xmlPSD2Role.setPspOid(xmlOID);
+        xmlRoleOfPSP.setOid(xmlOID);
 
-        XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
-        xmlPSD2Info.getPSD2Roles().add(xmlPSD2Role);
-        xmlQcStatements.setPSD2Info(xmlPSD2Info);
+        XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
+        xmlPSD2QcInfo.getRolesOfPSP().add(xmlRoleOfPSP);
+        xmlQcStatements.setPSD2QcInfo(xmlPSD2QcInfo);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
@@ -56,16 +56,16 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
     public void multipleValuesTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
 
-        XmlPSD2Role xmlPSD2Role = new XmlPSD2Role();
-        xmlPSD2Role.setPspName("Payment Initiation Service Provider");
+        XmlRoleOfPSP xmlRoleOfPSP = new XmlRoleOfPSP();
+        xmlRoleOfPSP.setName("Payment Initiation Service Provider");
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription("psp-pi");
         xmlOID.setValue("0.4.0.19495.1.2");
-        xmlPSD2Role.setPspOid(xmlOID);
+        xmlRoleOfPSP.setOid(xmlOID);
 
-        XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
-        xmlPSD2Info.getPSD2Roles().add(xmlPSD2Role);
-        xmlQcStatements.setPSD2Info(xmlPSD2Info);
+        XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
+        xmlPSD2QcInfo.getRolesOfPSP().add(xmlRoleOfPSP);
+        xmlQcStatements.setPSD2QcInfo(xmlPSD2QcInfo);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
@@ -89,16 +89,16 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
     public void oidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
 
-        XmlPSD2Role xmlPSD2Role = new XmlPSD2Role();
-        xmlPSD2Role.setPspName("Payment Initiation Service Provider");
+        XmlRoleOfPSP xmlRoleOfPSP = new XmlRoleOfPSP();
+        xmlRoleOfPSP.setName("Payment Initiation Service Provider");
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription("psp-pi");
         xmlOID.setValue("0.4.0.19495.1.2");
-        xmlPSD2Role.setPspOid(xmlOID);
+        xmlRoleOfPSP.setOid(xmlOID);
 
-        XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
-        xmlPSD2Info.getPSD2Roles().add(xmlPSD2Role);
-        xmlQcStatements.setPSD2Info(xmlPSD2Info);
+        XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
+        xmlPSD2QcInfo.getRolesOfPSP().add(xmlRoleOfPSP);
+        xmlQcStatements.setPSD2QcInfo(xmlPSD2QcInfo);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
@@ -121,16 +121,16 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
 
-        XmlPSD2Role xmlPSD2Role = new XmlPSD2Role();
-        xmlPSD2Role.setPspName("Payment Initiation Service Provider");
+        XmlRoleOfPSP xmlRoleOfPSP = new XmlRoleOfPSP();
+        xmlRoleOfPSP.setName("Payment Initiation Service Provider");
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription("psp-as");
         xmlOID.setValue("0.4.0.19495.1.1");
-        xmlPSD2Role.setPspOid(xmlOID);
+        xmlRoleOfPSP.setOid(xmlOID);
 
-        XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
-        xmlPSD2Info.getPSD2Roles().add(xmlPSD2Role);
-        xmlQcStatements.setPSD2Info(xmlPSD2Info);
+        XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
+        xmlPSD2QcInfo.getRolesOfPSP().add(xmlRoleOfPSP);
+        xmlQcStatements.setPSD2QcInfo(xmlPSD2QcInfo);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);

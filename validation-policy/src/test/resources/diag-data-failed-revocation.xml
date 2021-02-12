@@ -233,7 +233,7 @@
             <QcStatements>
                 <QcCompliance present="true"/>
                 <QcEuRetentionPeriod>15</QcEuRetentionPeriod>
-                <QcQSCD present="true"/>
+                <QcSSCD present="true"/>
                 <QcEuPDS>
                     <PdsLocation lang="EN">https://www.izenpe.com/pds/en/</PdsLocation>
                     <PdsLocation lang="EU">https://www.izenpe.com/pds/eu/</PdsLocation>

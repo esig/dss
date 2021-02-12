@@ -36,15 +36,15 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Role;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlQcQSCD;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRoleOfPSP;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
@@ -1136,12 +1136,12 @@ public abstract class DiagnosticDataBuilder {
 	private XmlQcStatements getXmlQcStatements(QcStatements qcStatements) {
 		XmlQcStatements result = new XmlQcStatements();
 		result.setQcCompliance(getXmlQcCompliance(qcStatements.isQcCompliance()));
-		result.setQcQSCD(getXmlQcQSCD(qcStatements.isQcQSCD()));
+		result.setQcSSCD(getXmlQcSSCD(qcStatements.isQcQSCD()));
 		if (qcStatements.getQcEuRetentionPeriod() != null) {
 			result.setQcEuRetentionPeriod(qcStatements.getQcEuRetentionPeriod());
 		}
 		if (qcStatements.getQcLimitValue() != null) {
-			result.setQcLimitValue(getQCLimitValue(qcStatements.getQcLimitValue()));
+			result.setQcEuLimitValue(getQcEuLimitValue(qcStatements.getQcLimitValue()));
 		}
 		if (Utils.isCollectionNotEmpty(qcStatements.getQcTypes())) {
 			result.setQcTypes(getXmlQcTypes(qcStatements.getQcTypes()));
@@ -1156,7 +1156,7 @@ public abstract class DiagnosticDataBuilder {
 			result.setQcCClegislation(qcStatements.getQcLegislationCountryCodes());
 		}
 		if (qcStatements.getPsd2QcType() != null) {
-			result.setPSD2Info(getPSD2Info(qcStatements.getPsd2QcType()));
+			result.setPSD2QcInfo(getPSD2QcInfo(qcStatements.getPsd2QcType()));
 		}
 		return result;
 	}
@@ -1172,10 +1172,10 @@ public abstract class DiagnosticDataBuilder {
 		return result;
 	}
 
-	protected XmlQcQSCD getXmlQcQSCD(boolean present) {
-		XmlQcQSCD xmlQcQSCD = new XmlQcQSCD();
-		xmlQcQSCD.setPresent(present);
-		return xmlQcQSCD;
+	protected XmlQcSSCD getXmlQcSSCD(boolean present) {
+		XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
+		xmlQcSSCD.setPresent(present);
+		return xmlQcSSCD;
 	}
 
 	protected XmlQcCompliance getXmlQcCompliance(boolean present) {
@@ -1194,29 +1194,29 @@ public abstract class DiagnosticDataBuilder {
 		return xmlOID;
 	}
 
-	private XmlPSD2Info getPSD2Info(PSD2QcType psd2QcStatement) {
-		XmlPSD2Info xmlInfo = new XmlPSD2Info();
+	private XmlPSD2QcInfo getPSD2QcInfo(PSD2QcType psd2QcStatement) {
+		XmlPSD2QcInfo xmlInfo = new XmlPSD2QcInfo();
 		xmlInfo.setNcaId(psd2QcStatement.getNcaId());
 		xmlInfo.setNcaName(psd2QcStatement.getNcaName());
 		List<RoleOfPSP> rolesOfPSP = psd2QcStatement.getRolesOfPSP();
-		List<XmlPSD2Role> psd2Roles = new ArrayList<>();
+		List<XmlRoleOfPSP> psd2Roles = new ArrayList<>();
 		for (RoleOfPSP roleOfPSP : rolesOfPSP) {
-			XmlPSD2Role xmlRole = new XmlPSD2Role();
+			XmlRoleOfPSP xmlRole = new XmlRoleOfPSP();
 			RoleOfPspOid role = roleOfPSP.getPspOid();
-			xmlRole.setPspOid(getXmlOid(role));
-			xmlRole.setPspName(roleOfPSP.getPspName());
+			xmlRole.setOid(getXmlOid(role));
+			xmlRole.setName(roleOfPSP.getPspName());
 			psd2Roles.add(xmlRole);
 		}
-		xmlInfo.setPSD2Roles(psd2Roles);
+		xmlInfo.setRolesOfPSP(psd2Roles);
 		return xmlInfo;
 	}
 
-	private XmlQCLimitValue getQCLimitValue(QCLimitValue qcLimitValue) {
-		XmlQCLimitValue xmlQCLimitValue = new XmlQCLimitValue();
-		xmlQCLimitValue.setCurrency(qcLimitValue.getCurrency());
-		xmlQCLimitValue.setAmount(qcLimitValue.getAmount());
-		xmlQCLimitValue.setExponent(qcLimitValue.getExponent());
-		return xmlQCLimitValue;
+	private XmlQcEuLimitValue getQcEuLimitValue(QCLimitValue qcLimitValue) {
+		XmlQcEuLimitValue xmlQcEuLimitValue = new XmlQcEuLimitValue();
+		xmlQcEuLimitValue.setCurrency(qcLimitValue.getCurrency());
+		xmlQcEuLimitValue.setAmount(qcLimitValue.getAmount());
+		xmlQcEuLimitValue.setExponent(qcLimitValue.getExponent());
+		return xmlQcEuLimitValue;
 	}
 
 	private List<CertificateSourceType> getXmlCertificateSources(final CertificateToken token) {

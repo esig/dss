@@ -5,14 +5,17 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcComplianceCheck;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,6 +59,28 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
 
         XmlCertificate xc = new XmlCertificate();
         xc.setQcStatements(xmlQcStatements);
+
+        XmlSubXCV result = new XmlSubXCV();
+        CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,
+                new CertificateWrapper(xc), constraint);
+        cqccc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+    }
+
+    @Test
+    public void certificateQualifiedCheckWithCertificate() throws Exception {
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlCertificate xc = new XmlCertificate();
+        List<XmlCertificatePolicy> certPolicies = new ArrayList<>();
+        XmlCertificatePolicy oid = new XmlCertificatePolicy();
+        oid.setValue(CertificatePolicy.QCP_PUBLIC.getOid());
+        certPolicies.add(oid);
+        xc.setCertificatePolicies(certPolicies);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,

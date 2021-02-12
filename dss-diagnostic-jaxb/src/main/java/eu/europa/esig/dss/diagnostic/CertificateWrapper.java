@@ -522,7 +522,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return TRUE if the certificate is supported by QSCD, FALSE otherwise
 	 */
 	public boolean isSupportedByQSCD() {
-		return (certificate.getQcStatements() != null && certificate.getQcStatements().getQcQSCD() != null && certificate.getQcStatements().getQcQSCD().isPresent());
+		return certificate.getQcStatements() != null && certificate.getQcStatements().getQcSSCD() != null
+				&& certificate.getQcStatements().getQcSSCD().isPresent();
 	}
 
 	/**
@@ -531,7 +532,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return TRUE if the certificate is QC compliant, FALSE otherwise
 	 */
 	public boolean isQcCompliance() {
-		return (certificate.getQcStatements() != null && certificate.getQcStatements().getQcCompliance() != null && certificate.getQcStatements().getQcCompliance().isPresent());
+		return certificate.getQcStatements() != null && certificate.getQcStatements().getQcCompliance() != null
+				&& certificate.getQcStatements().getQcCompliance().isPresent();
 	}
 
 	/**
@@ -591,8 +593,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return {@link PSD2InfoWrapper}
 	 */
 	public PSD2InfoWrapper getPSD2Info() {
-		if (certificate.getQcStatements() !=null && certificate.getQcStatements().getPSD2Info() != null) {
-			return new PSD2InfoWrapper(certificate.getQcStatements().getPSD2Info());
+		if (certificate.getQcStatements() !=null && certificate.getQcStatements().getPSD2QcInfo() != null) {
+			return new PSD2InfoWrapper(certificate.getQcStatements().getPSD2QcInfo());
 		}
 		return null;
 	}
@@ -603,8 +605,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return {@link QCLimitValueWrapper}
 	 */
 	public QCLimitValueWrapper getQCLimitValue() {
-		if (certificate.getQcStatements() !=null && certificate.getQcStatements().getQcLimitValue() !=null) {
-			return new QCLimitValueWrapper(certificate.getQcStatements().getQcLimitValue());
+		if (certificate.getQcStatements() !=null && certificate.getQcStatements().getQcEuLimitValue() !=null) {
+			return new QCLimitValueWrapper(certificate.getQcStatements().getQcEuLimitValue());
 		}
 		return null;
 	}

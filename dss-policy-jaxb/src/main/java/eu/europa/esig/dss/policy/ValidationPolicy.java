@@ -408,14 +408,35 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
 
 	/**
-	 * Indicates if the end user certificate is qualified.
+	 * Returns CertificatePolicyIds constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if Qualification for a given context element is present in the constraint file,
+	 * @return {@code MultiValuesConstraint} if CertificatePolicyIds element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates if the CertificatePolicyIds declare the certificate as qualified.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if PolicyQualificationIds for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	LevelConstraint getCertificatePolicyQualificationIdsConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates if the CertificatePolicyIds mandate the certificate as to be supported by
+	 * a secure signature creation device (QSCD).
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if PolicySupportedByQSCDIds for a given context element is present in the constraint file,
 	 *         null otherwise.
 	 */
-	LevelConstraint getCertificateQualificationConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificatePolicySupportedByQSCDIdsConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Indicates if the end user certificate used in validating the signature is QC Compliant.
@@ -465,10 +486,10 @@ public interface ValidationPolicy {
 	 *
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if SupportedByQSCD for a given context element is present in the constraint file,
-	 *         null otherwise.
+	 * @return {@code LevelConstraint} if QcSSCD for a given context element is present
+	 *         in the constraint file, null otherwise.
 	 */
-	LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificateQcSSCDConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Indicates the location or set of locations of PKI Disclosure Statements.
@@ -883,16 +904,6 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getCertificateRevocationInfoAccessPresentConstraint(Context context, SubContext subContext);
-
-	/**
-	 * Returns CertificatePolicyIds constraint if present in the policy, null otherwise
-	 *
-	 * @param context {@link Context}
-	 * @param subContext {@link SubContext}
-	 * @return {@code MultiValuesConstraint} if CertificatePolicyIds element is present
-	 *                                 in the constraint file, null otherwise.
-	 */
-	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns AcceptedContainerTypes constraint if present in the policy, null otherwise

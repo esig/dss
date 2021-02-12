@@ -143,7 +143,7 @@
             <QcStatements>
                 <QcCompliance present="true"/>
                 <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
-                <QcQSCD present="true"/>
+                <QcSSCD present="true"/>
             </QcStatements>
             <TrustedServiceProviders />
 			<Revocations>

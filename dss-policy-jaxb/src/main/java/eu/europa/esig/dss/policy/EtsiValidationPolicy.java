@@ -606,10 +606,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateQualificationConstraint(Context context, SubContext subContext) {
+	public LevelConstraint getCertificatePolicyQualificationIdsConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getQualification();
+			return certificateConstraints.getPolicyQualificationIds();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificatePolicySupportedByQSCDIdsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPolicySupportedByQSCDIds();
 		}
 		return null;
 	}
@@ -651,10 +660,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext) {
+	public LevelConstraint getCertificateQcSSCDConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getSupportedByQSCD();
+			return certificateConstraints.getQcSSCD();
 		}
 		return null;
 	}

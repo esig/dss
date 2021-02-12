@@ -5,7 +5,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2Info;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -23,9 +23,9 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
 
-        XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
-        xmlPSD2Info.setNcaName("CSSF");
-        xmlQcStatements.setPSD2Info(xmlPSD2Info);
+        XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
+        xmlPSD2QcInfo.setNcaName("CSSF");
+        xmlQcStatements.setPSD2QcInfo(xmlPSD2QcInfo);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
@@ -48,9 +48,9 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
     public void multipleValuesTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
 
-        XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
-        xmlPSD2Info.setNcaName("CSSF");
-        xmlQcStatements.setPSD2Info(xmlPSD2Info);
+        XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
+        xmlPSD2QcInfo.setNcaName("CSSF");
+        xmlQcStatements.setPSD2QcInfo(xmlPSD2QcInfo);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
@@ -74,9 +74,9 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
 
-        XmlPSD2Info xmlPSD2Info = new XmlPSD2Info();
-        xmlPSD2Info.setNcaName("NBB");
-        xmlQcStatements.setPSD2Info(xmlPSD2Info);
+        XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
+        xmlPSD2QcInfo.setNcaName("NBB");
+        xmlQcStatements.setPSD2QcInfo(xmlPSD2QcInfo);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
