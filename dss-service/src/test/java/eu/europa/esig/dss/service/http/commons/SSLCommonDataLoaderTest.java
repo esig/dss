@@ -23,7 +23,6 @@ package eu.europa.esig.dss.service.http.commons;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import org.h2.command.dml.Update;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
