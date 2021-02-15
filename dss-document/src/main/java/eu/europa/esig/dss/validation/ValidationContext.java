@@ -150,6 +150,19 @@ public interface ValidationContext {
 	boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate);
 
 	/**
+	 * This method verifies if the signing certificate has not been expired yet or has a still valid timestamp
+	 *
+	 * Additionally, an alert can be handled
+	 * {@link CertificateVerifier#setAlertOnExpiredSignature(eu.europa.esig.dss.alert.StatusAlert)}
+	 *
+	 * @param signingCertificate {@code CertificateToken} signing certificate of the
+	 *                           signature to be checked
+	 * @return true if the signing certificate or its POE(s) not yet expired, false otherwise
+	 *
+	 */
+	boolean checkSignatureNotExpired(CertificateToken signingCertificate);
+
+	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
 	 * given document. This list
 	 * includes the certificate to check, certification chain certificates, OCSP response certificate...

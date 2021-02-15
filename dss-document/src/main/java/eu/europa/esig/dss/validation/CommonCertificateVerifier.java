@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
-
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
@@ -41,6 +34,12 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
@@ -148,6 +147,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * Default : LogOnStatusAlert - log a warning message
 	 */
 	private StatusAlert alertOnUncoveredPOE = new LogOnStatusAlert(Level.WARN);
+
+	/**
+	 * This variable set the behavior to follow in case of an expired signature.
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert alertOnExpiredSignature = new ExceptionOnStatusAlert();
 
 	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
@@ -389,6 +395,17 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	public void setAlertOnNoRevocationAfterBestSignatureTime(StatusAlert alertOnNoRevocationAfterBestSignatureTime) {
 		Objects.requireNonNull(alertOnNoRevocationAfterBestSignatureTime);
 		this.alertOnNoRevocationAfterBestSignatureTime = alertOnNoRevocationAfterBestSignatureTime;
+	}
+
+	@Override
+	public void setAlertOnExpiredSignature(StatusAlert alertOnExpiredSignature) {
+		Objects.requireNonNull(alertOnExpiredSignature);
+		this.alertOnExpiredSignature = alertOnExpiredSignature;
+	}
+
+	@Override
+	public StatusAlert getAlertOnExpiredSignature() {
+		return alertOnExpiredSignature;
 	}
 
 	@Override

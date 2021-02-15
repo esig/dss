@@ -39,7 +39,6 @@ import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -741,7 +740,7 @@ public class TimestampToken extends Token {
 	 */
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
 		if (candidatesForSigningCertificate == null) {
-			candidatesForSigningCertificate = ((CMSCertificateSource) getCertificateSource())
+			candidatesForSigningCertificate = getCertificateSource()
 					.getCandidatesForSigningCertificate(null);
 		}
 		return candidatesForSigningCertificate;

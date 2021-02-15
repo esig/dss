@@ -364,7 +364,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		validationContext.checkAllCertificatesValid();
 
 		CertificateToken signingCertificateToken = getSigningCertificateToken();
-		validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
+		if (signingCertificateToken != null) {
+			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
+			validationContext.checkSignatureNotExpired(signingCertificateToken);
+		}
 
 		return validationContext;
 	}

@@ -223,8 +223,7 @@ public interface CertificateVerifier {
 	void setAlertOnInvalidTimestamp(StatusAlert alertOnInvalidTimestamp);
 
 	/**
-	 * This method returns true if an exception needs to be thrown on invalid
-	 * timestamp.
+	 * This method returns the defined execution behaviour on invalid timestamp.
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of an invalid timestamp
 	 */
@@ -242,8 +241,7 @@ public interface CertificateVerifier {
 	void setAlertOnMissingRevocationData(StatusAlert alertOnMissingRevocationData);
 
 	/**
-	 * This method returns true if an exception needs to be thrown on missing
-	 * revocation data.
+	 * This method returns the defined execution behaviour on missing revocation data.
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of missing revocation
 	 *         data
@@ -262,8 +260,7 @@ public interface CertificateVerifier {
 	void setAlertOnRevokedCertificate(StatusAlert alertOnRevokedCertificate);
 
 	/**
-	 * This method returns true if an exception needs to be thrown on revoked
-	 * certificate.
+	 * This method returns the defined execution behaviour on revoked certificate.
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of revoked certificate
 	 */
@@ -282,7 +279,7 @@ public interface CertificateVerifier {
 	void setAlertOnNoRevocationAfterBestSignatureTime(StatusAlert alertOnNoRevocationAfterBestSignatureTime);
 	
 	/**
-	 * This method returns true if an exception needs to be thrown in case if no
+	 * This method returns the defined execution behaviour if no
 	 * revocation data obtained with an issuance time after the bestSignatureTime
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of no revocation data
@@ -300,12 +297,29 @@ public interface CertificateVerifier {
 	void setAlertOnUncoveredPOE(StatusAlert alertOnUncoveredPOE);
 	
 	/**
-	 * This method returns true if an exception needs to be thrown on uncovered
-	 * POE(timestamp).
+	 * This method returns the defined execution behaviour on uncovered POE (timestamp).
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of uncovered POE
 	 */
 	StatusAlert getAlertOnUncoveredPOE();
+
+	/**
+	 * This method allows to change the behavior on expired signature
+	 * (if the signing certificate or its POE(s) has been expired).
+	 *
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 *
+	 * @param alertOnUncoveredPOE defines a behaviour in case of an expired signature
+	 */
+	void setAlertOnExpiredSignature(StatusAlert alertOnUncoveredPOE);
+
+	/**
+	 * This method returns the defined execution behaviour on expired signature
+	 * (if the signing certificate or its POE(s) has been expired).
+	 *
+	 * @return {@link StatusAlert} to be processed in case of uncovered POE
+	 */
+	StatusAlert getAlertOnExpiredSignature();
 
 	/**
 	 * This method allows to enable revocation checking for untrusted certificate
