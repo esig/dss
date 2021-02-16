@@ -115,7 +115,7 @@
             </CertificatePolicies>
             <QcStatements>
                 <QcCompliance present="true"/>
-                <QcQSSD present="true"/>
+                <QcSSCD present="true"/>
             </QcStatements>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>

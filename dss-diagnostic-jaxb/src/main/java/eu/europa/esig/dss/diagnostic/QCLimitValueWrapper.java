@@ -20,24 +20,49 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import eu.europa.esig.dss.diagnostic.jaxb.XmlQCLimitValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
 
+/**
+ * The class provides a user-friendly API for dealing with {@code XmlQCEuLimitValue}
+ *
+ */
 public class QCLimitValueWrapper {
 
-    private final XmlQCLimitValue wrapped;
+    /** Th wrapped object */
+    private final XmlQcEuLimitValue wrapped;
 
-    public QCLimitValueWrapper(XmlQCLimitValue qcLimitValue) {
-        this.wrapped = qcLimitValue;
+    /**
+     * Default constructor
+     *
+     * @param qcEuLimitValue {@link XmlQcEuLimitValue}
+     */
+    public QCLimitValueWrapper(XmlQcEuLimitValue qcEuLimitValue) {
+        this.wrapped = qcEuLimitValue;
     }
 
+    /**
+     * Returns the Iso4217CurrencyCode
+     *
+     * @return {@link String}
+     */
     public String getCurrency() {
         return wrapped.getCurrency();
     }
 
+    /**
+     * Returns the defined amount
+     *
+     * @return int amount
+     */
     public int getAmount() {
         return wrapped.getAmount();
     }
 
+    /**
+     * Returns the defined exponent
+     *
+     * @return int exponent
+     */
     public int getExponent() {
         return wrapped.getExponent();
     }

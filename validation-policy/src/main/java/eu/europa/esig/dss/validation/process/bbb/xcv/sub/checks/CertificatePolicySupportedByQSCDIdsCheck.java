@@ -31,9 +31,9 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 /**
- * Checks if the certificate is Qualified
+ * Checks if the certificate has a is a supported by QSCD policy identifier
  */
-public class CertificateQualifiedCheck extends ChainItem<XmlSubXCV> {
+public class CertificatePolicySupportedByQSCDIdsCheck extends ChainItem<XmlSubXCV> {
 
 	/** Certificate to check */
 	private final CertificateWrapper certificate;
@@ -46,8 +46,8 @@ public class CertificateQualifiedCheck extends ChainItem<XmlSubXCV> {
 	 * @param certificate {@link CertificateWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public CertificateQualifiedCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
-									 LevelConstraint constraint) {
+	public CertificatePolicySupportedByQSCDIdsCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+													LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}
@@ -55,21 +55,19 @@ public class CertificateQualifiedCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected boolean process() {
 		// This check only uses the certificate (not the TL)
-		boolean isQcCompliance = certificate.isQcCompliance();
-		boolean isQCP = CertificatePolicyIdentifiers.isQCP(certificate);
-		boolean isQCPPlus = CertificatePolicyIdentifiers.isQCPPlus(certificate);
 
-		return (isQcCompliance || isQCP || isQCPPlus);
+		// checks in policy id extension
+		return CertificatePolicyIdentifiers.isSupportedByQSCD(certificate);
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_CMDCIQC;
+		return MessageTag.BBB_XCV_CMDCIQSCD;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_CMDCIQC_ANS;
+		return MessageTag.BBB_XCV_CMDCIQSCD_ANS;
 	}
 
 	@Override

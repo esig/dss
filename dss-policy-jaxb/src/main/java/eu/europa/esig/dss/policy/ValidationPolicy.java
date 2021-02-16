@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
+import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -407,14 +408,77 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
 
 	/**
-	 * Indicates if the end user certificate is qualified.
+	 * Returns CertificatePolicyIds constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if Qualification for a given context element is present in the constraint file,
+	 * @return {@code MultiValuesConstraint} if CertificatePolicyIds element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates if the CertificatePolicyIds declare the certificate as qualified.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if PolicyQualificationIds for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	LevelConstraint getCertificatePolicyQualificationIdsConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates if the CertificatePolicyIds mandate the certificate as to be supported by
+	 * a secure signature creation device (QSCD).
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if PolicySupportedByQSCDIds for a given context element is present in the constraint file,
 	 *         null otherwise.
 	 */
-	LevelConstraint getCertificateQualificationConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificatePolicySupportedByQSCDIdsConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates if the end user certificate used in validating the signature is QC Compliant.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if QcCompliance for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateQCComplianceConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the allowed currency used to specify certificate's QCLimitValue statement.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code IntValueConstraint} if QcTransactionLimitCurrency for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	ValueConstraint getCertificateQcEuLimitValueCurrencyConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the minimal allowed QcEuLimitValue transaction limit for which the end user certificate used
+	 * for the signature can be used.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code IntValueConstraint} if MinQcTransactionLimit for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	IntValueConstraint getCertificateMinQcEuLimitValueConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the minimal allowed QC retention period for material information relevant to the use of
+	 * the end user certificate used for the signature.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code IntValueConstraint} if MinQcRetentionPeriod for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	IntValueConstraint getCertificateMinQcEuRetentionPeriodConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Indicates if the end user certificate used in validating the signature is mandated to be supported by a secure
@@ -422,10 +486,28 @@ public interface ValidationPolicy {
 	 *
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if SupportedByQSCD for a given context element is present in the constraint file,
-	 *         null otherwise.
+	 * @return {@code LevelConstraint} if QcSSCD for a given context element is present
+	 *         in the constraint file, null otherwise.
 	 */
-	LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificateQcSSCDConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the location or set of locations of PKI Disclosure Statements.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} the the location or set of locations of PKI Disclosure Statements
+	 */
+	MultiValuesConstraint getCertificateQcEuPDSLocationConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the certificate is claimed as a certificate of a particular type.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} the types that the certificate is claimed to be of
+	 */
+	MultiValuesConstraint getCertificateQcTypeConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Indicates the country or set of countries under the legislation of which the certificate is issued as a
@@ -441,6 +523,16 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getCertificateQcCCLegislationConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Indicates if the end user certificate used in validating the signature is issued to a natural person.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if IssuedToNaturalPerson for a given context element is present in the constraint
+	 *         file, null otherwise.
+	 */
+	LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Indicates if the end user certificate used in validating the signature is issued to a legal person.
 	 *
 	 * @param context {@link Context}
@@ -449,6 +541,53 @@ public interface ValidationPolicy {
 	 *         file, null otherwise.
 	 */
 	LevelConstraint getCertificateIssuedToLegalPersonConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the certificate's QCStatement contains a semantics identifier for natural person.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if QcSemanticsIdentifierForNaturalPerson for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	LevelConstraint getCertificateSemanticsIdentifierForNaturalPersonConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the certificate's QCStatement contains a semantics identifier for legal person.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if QcSemanticsIdentifierForLegalPerson for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	LevelConstraint getCertificateSemanticsIdentifierForLegalPersonConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the acceptable QC PS2D roles for the certificate used for a signature.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} the set of acceptable QC PS2D roles
+	 */
+	MultiValuesConstraint getCertificatePS2DQcTypeRolesOfPSPConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the acceptable QC PS2D names for the certificate used for a signature.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} the set of acceptable QC PS2D names
+	 */
+	MultiValuesConstraint getCertificatePS2DQcCompetentAuthorityNameConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Indicates the acceptable QC PS2D ids for the certificate used for a signature.
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} the set of acceptable QC PS2D ids
+	 */
+	MultiValuesConstraint getCertificatePS2DQcCompetentAuthorityIdConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Indicates if the end user certificate used in validating the signature is issued to a natural person.
@@ -765,26 +904,6 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getCertificateRevocationInfoAccessPresentConstraint(Context context, SubContext subContext);
-
-	/**
-	 * Returns CertificatePolicyIds constraint if present in the policy, null otherwise
-	 *
-	 * @param context {@link Context}
-	 * @param subContext {@link SubContext}
-	 * @return {@code MultiValuesConstraint} if CertificatePolicyIds element is present
-	 *                                 in the constraint file, null otherwise.
-	 */
-	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
-
-	/**
-	 * Returns CertificateIssuedToNaturalPerson constraint if present in the policy, null otherwise
-	 *
-	 * @param context {@link Context}
-	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if CertificateIssuedToNaturalPerson element is present
-	 *                                 in the constraint file, null otherwise.
-	 */
-	LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns AcceptedContainerTypes constraint if present in the policy, null otherwise

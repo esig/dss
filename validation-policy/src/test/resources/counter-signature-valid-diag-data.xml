@@ -167,7 +167,7 @@
             <QcStatements>
                 <QcCompliance present="true"/>
                 <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
-                <QcQSSD present="true"/>
+                <QcSSCD present="true"/>
                 <SemanticsIdentifier Description="Semantics identifier for natural person">0.4.0.194121.1.1</SemanticsIdentifier>
             </QcStatements>
             <TrustedServiceProviders/>

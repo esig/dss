@@ -31,9 +31,9 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 /**
- * Checks if the certificate is supported by QSCD
+ * Checks if the certificate policies contain a Qualified identifier(s)
  */
-public class CertificateSupportedByQSCDCheck extends ChainItem<XmlSubXCV> {
+public class CertificatePolicyQualifiedIdsCheck extends ChainItem<XmlSubXCV> {
 
 	/** Certificate to check */
 	private final CertificateWrapper certificate;
@@ -46,8 +46,8 @@ public class CertificateSupportedByQSCDCheck extends ChainItem<XmlSubXCV> {
 	 * @param certificate {@link CertificateWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public CertificateSupportedByQSCDCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
-										   LevelConstraint constraint) {
+	public CertificatePolicyQualifiedIdsCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+											  LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}
@@ -55,24 +55,19 @@ public class CertificateSupportedByQSCDCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected boolean process() {
 		// This check only uses the certificate (not the TL)
-
-		// checks in policy id extension
-		boolean policyIdSupportedByQSCD = CertificatePolicyIdentifiers.isSupportedByQSCD(certificate);
-
-		// checks in QC statement extension
-		boolean qcStatementSupportedByQSCD = certificate.isSupportedByQSCD();
-
-		return policyIdSupportedByQSCD || qcStatementSupportedByQSCD;
+		boolean isQCP = CertificatePolicyIdentifiers.isQCP(certificate);
+		boolean isQCPPlus = CertificatePolicyIdentifiers.isQCPPlus(certificate);
+		return isQCP || isQCPPlus;
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_CMDCIQSCD;
+		return MessageTag.BBB_XCV_CMDCIQC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_CMDCIQSCD_ANS;
+		return MessageTag.BBB_XCV_CMDCIQC_ANS;
 	}
 
 	@Override

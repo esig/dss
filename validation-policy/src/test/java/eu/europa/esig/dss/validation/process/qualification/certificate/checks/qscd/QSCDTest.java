@@ -26,14 +26,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlQcQSSD;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
+import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.QSCDStatus;
-import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 import org.junit.jupiter.api.Test;
@@ -197,9 +197,9 @@ public class QSCDTest {
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
 		xmlQcStatements.setQcTypes(toOids(qcTypes));
 		if (qcStatementIds.contains(QCStatement.QC_SSCD)) {
-			XmlQcQSSD xmlQscd = new XmlQcQSSD();
-			xmlQscd.setPresent(true);
-			xmlQcStatements.setQcQSSD(xmlQscd);
+			XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
+			xmlQcSSCD.setPresent(true);
+			xmlQcStatements.setQcSSCD(xmlQcSSCD);
 		}
 		if (qcStatementIds.contains(QCStatement.QC_COMPLIANCE)) {
 			XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
@@ -222,9 +222,9 @@ public class QSCDTest {
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
 		xmlQcStatements.setQcTypes(toOids(qcTypes));
 		if (qcStatementIds.contains(QCStatement.QC_SSCD)) {
-			XmlQcQSSD xmlQscd = new XmlQcQSSD();
-			xmlQscd.setPresent(true);
-			xmlQcStatements.setQcQSSD(xmlQscd);
+			XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
+			xmlQcSSCD.setPresent(true);
+			xmlQcStatements.setQcSSCD(xmlQcSSCD);
 		}
 		if (qcStatementIds.contains(QCStatement.QC_COMPLIANCE)) {
 			XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();

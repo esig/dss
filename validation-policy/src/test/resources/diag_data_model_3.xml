@@ -476,7 +476,7 @@
                 <certificatePolicy>1.3.6.1.4.1.21679.1.1.1.2.1</certificatePolicy>
             </CertificatePolicies>
             <QcStatements>
-                <QcQSSD present="true"/>
+                <QcSSCD present="true"/>
             </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">

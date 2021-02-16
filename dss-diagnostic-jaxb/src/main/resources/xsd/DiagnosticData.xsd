@@ -397,9 +397,9 @@
 					<xs:attribute name="present" type="xs:boolean" use="required" />
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="QcLimitValue" type="QCLimitValue" minOccurs="0" />
+			<xs:element name="QcEuLimitValue" type="QcEuLimitValue" minOccurs="0" />
 			<xs:element name="QcEuRetentionPeriod" type="xs:int" minOccurs="0" />
-			<xs:element name="QcQSSD" minOccurs="0">
+			<xs:element name="QcSSCD" minOccurs="0">
 				<xs:complexType>
 					<xs:attribute name="present" type="xs:boolean" use="required" />
 				</xs:complexType>
@@ -426,7 +426,7 @@
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
-			<xs:element name="PSD2Info" type="PSD2Info" minOccurs="0" />
+			<xs:element name="PSD2QcInfo" type="PSD2QcInfo" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -438,12 +438,12 @@
 		</xs:simpleContent>
 	</xs:complexType>
 	
-	<xs:complexType name="PSD2Info">
+	<xs:complexType name="PSD2QcInfo">
 		<xs:sequence>
-			<xs:element name="PSD2Roles">
+			<xs:element name="RolesOfPSP">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="PSD2Role" type="PSD2Role" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="RoleOfPSP" type="RoleOfPSP" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -452,7 +452,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="QCLimitValue">
+	<xs:complexType name="QcEuLimitValue">
 		<xs:sequence>
 			<xs:element name="currency" type="xs:string" />
 			<xs:element name="amount" type="xs:int" />
@@ -460,10 +460,10 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="PSD2Role">
+	<xs:complexType name="RoleOfPSP">
 		<xs:sequence>
-			<xs:element name="pspOid" type="OID" minOccurs="0" />
-			<xs:element name="pspName" type="xs:string" />
+			<xs:element name="oid" type="OID" minOccurs="0" />
+			<xs:element name="name" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
 	

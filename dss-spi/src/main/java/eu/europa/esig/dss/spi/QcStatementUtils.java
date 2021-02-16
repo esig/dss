@@ -59,7 +59,7 @@ public class QcStatementUtils {
             } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_RetentionPeriod.equals(objectIdentifier)) {
                 result.setQcEuRetentionPeriod(getQcEuRetentionPeriod(statementInfo));
             } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.equals(objectIdentifier)) {
-                result.setQcQSSD(true);
+                result.setQcQSCD(true);
             } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcPds.equals(objectIdentifier)) {
                 result.setQcEuPDS(getQcEuPDS(statementInfo));
             } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcType.equals(objectIdentifier)) {
