@@ -827,18 +827,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			for (Reference reference : santuarioReferences) {
 				XAdESReferenceValidation validation = new XAdESReferenceValidation(reference);
 				validation.setType(DigestMatcherType.REFERENCE);
+
+				referenceValidations.add(validation);
+
 				boolean found = false;
 				boolean intact = false;
 				
 				try {
-					
 					final Digest digest = DSSXMLUtils.getReferenceDigest(reference);
 					validation.setDigest(digest);
 
 					found = DSSXMLUtils.isAbleToDeReferenceContent(reference);
-					
-					final String uri = validation.getUri();
 
+					final String uri = validation.getUri();
 					boolean isDuplicated = DSSXMLUtils.isReferencedContentAmbiguous(
 							signatureElement.getOwnerDocument(), uri);
 					validation.setDuplicated(isDuplicated);
@@ -856,12 +857,21 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					} else if (DSSXMLUtils.isCounterSignature(reference, xadesPaths)) {
 						validation.setType(DigestMatcherType.COUNTER_SIGNATURE);
 						// found is checked in the reference validation
+						XAdESSignature masterSignature = (XAdESSignature) getMasterSignature();
+						if (masterSignature != null) {
+							referenceValidations.add(getCounterSignatureReferenceValidation(reference, masterSignature));
+						} else {
+							LOG.warn("Master signature is not found! " +
+									"Unable to verify counter signed SignatureValue for detached signatures.");
+						}
 						
-					} else if (isElementReference && DSSXMLUtils.isKeyInfoReference(reference, currentSantuarioSignature.getElement())) {
+					} else if (isElementReference && DSSXMLUtils.isKeyInfoReference(reference,
+							currentSantuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.KEY_INFO);
 						found = true; // we check it in prior inside "isKeyInfoReference" method
 						
-					} else if (isElementReference && DSSXMLUtils.isSignaturePropertiesReference(reference, currentSantuarioSignature.getElement())) {
+					} else if (isElementReference && DSSXMLUtils.isSignaturePropertiesReference(reference,
+							currentSantuarioSignature.getElement())) {
 						validation.setType(DigestMatcherType.SIGNATURE_PROPERTIES);
 						found = true; // Id is verified inside "isSignaturePropertiesReference" method
 						
@@ -895,7 +905,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					
 				validation.setFound(found);
 				validation.setIntact(intact);
-				referenceValidations.add(validation);
 				
 			}
 
@@ -911,6 +920,43 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			
 		}
 		return referenceValidations;
+	}
+
+	private ReferenceValidation getCounterSignatureReferenceValidation(Reference counterSignatureReference,
+																	   XAdESSignature masterSignature) {
+		ReferenceValidation referenceValidation = new ReferenceValidation();
+		referenceValidation.setType(DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE);
+
+		String masterSignatureValueBase64 = masterSignature.getSignatureValueBase64();
+		if (Utils.isStringNotEmpty(masterSignatureValueBase64)) {
+			referenceValidation.setFound(true);
+
+			try {
+				byte[] referencedBytes = counterSignatureReference.getContentsAfterTransformation().getBytes();
+				Document document = DomUtils.buildDOM(referencedBytes);
+				Element referencedElement = document.getDocumentElement();
+				if (XMLDSigElement.SIGNATURE_VALUE.isSameTagName(referencedElement.getLocalName())) {
+					String referencedSignatureValueBase64 = referencedElement.getTextContent();
+					boolean intact = Utils.areStringsEqual(masterSignatureValueBase64, referencedSignatureValueBase64);
+					if (!intact) {
+						LOG.warn("The referenced counter signed value does not match " +
+								"the master signature's ds:SignatureValue content!");
+					}
+					referenceValidation.setIntact(intact);
+
+				} else {
+					LOG.warn("The counter signature reference does not result to a ds:SignatureValue element!");
+				}
+
+			} catch (Exception e) {
+				LOG.warn("Unable to verify the counter signed reference! Reason : {}", e.getMessage(), e);
+			}
+
+		} else {
+			LOG.warn("Master signature's ds:SignatureValue element does not contain data!");
+		}
+
+		return referenceValidation;
 	}
 
 	/**
