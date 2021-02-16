@@ -131,12 +131,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
-		return getSignatureAlgorithm().getDigestAlgorithm();
+		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+		if (signatureAlgorithm == null) {
+			return null;
+		}
+		return signatureAlgorithm.getDigestAlgorithm();
 	}
 
 	@Override
 	public MaskGenerationFunction getMaskGenerationFunction() {
-		return getSignatureAlgorithm().getMaskGenerationFunction();
+		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+		if (signatureAlgorithm == null) {
+			return null;
+		}
+		return signatureAlgorithm.getMaskGenerationFunction();
 	}
 
 	@Override
@@ -555,10 +563,16 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			
 			JAdESReferenceValidation signingInputReferenceValidation = getSigningInputReferenceValidation();
 			referenceValidations.add(signingInputReferenceValidation);
-			
-			List<JAdESReferenceValidation> detachedReferenceValidations = getDetachedReferenceValidations();
-			if (Utils.isCollectionNotEmpty(detachedReferenceValidations)) {
-				referenceValidations.addAll(detachedReferenceValidations);
+
+			if (isDetachedSignature()) {
+				List<JAdESReferenceValidation> detachedReferenceValidations = getDetachedReferenceValidations();
+				if (Utils.isCollectionNotEmpty(detachedReferenceValidations)) {
+					referenceValidations.addAll(detachedReferenceValidations);
+				}
+			}
+
+			if (isCounterSignature()) {
+				referenceValidations.add(getCounterSignatureReferenceValidation());
 			}
 			
 		}
@@ -606,11 +620,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 						LOG.warn("The payload is not found! The detached content must be provided!");
 						
 					}
-					
-					String payload = jws.getSignedPayload();
-					String headerAndPayloadResult = DSSJsonUtils.concatenate(encodedHeader, payload);
-					// The data to sign by RFC 7515 shall be ASCII-encoded
-					byte[] dataToSign = DSSJsonUtils.getAsciiBytes(headerAndPayloadResult);
+
+					byte[] dataToSign = DSSJsonUtils.getSigningInputBytes(jws);
 					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 					Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));
 					signatureValueReferenceValidation.setDigest(digest);
@@ -644,20 +655,18 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private List<JAdESReferenceValidation> getDetachedReferenceValidations() {
-		if (isDetachedSignature()) {
-			SigDMechanism sigDMechanism = getSigDMechanism();
-			if (sigDMechanism != null) {
-				switch (sigDMechanism) {
-					case HTTP_HEADERS:
-					case OBJECT_ID_BY_URI:
-						// the documents are added to the payload, not possible to extract separate reference validations
-						break;
-					case OBJECT_ID_BY_URI_HASH:
-						return getReferenceValidationsByUriHashMechanism();
-					default:
-						LOG.warn("The SigDMechanism '{}' is not supported!", sigDMechanism);
-						break;
-				}
+		SigDMechanism sigDMechanism = getSigDMechanism();
+		if (sigDMechanism != null) {
+			switch (sigDMechanism) {
+				case HTTP_HEADERS:
+				case OBJECT_ID_BY_URI:
+					// the documents are added to the payload, not possible to extract separate reference validations
+					break;
+				case OBJECT_ID_BY_URI_HASH:
+					return getReferenceValidationsByUriHashMechanism();
+				default:
+					LOG.warn("The SigDMechanism '{}' is not supported!", sigDMechanism);
+					break;
 			}
 		}
 		return Collections.emptyList();
@@ -897,6 +906,36 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		LOG.warn("The computed digest '{}' from a document with name '{}' does not match one provided on the sigD : {}!", 
 				DSSJsonUtils.toBase64Url(computedDigestValue), document.getName(), DSSJsonUtils.toBase64Url(expectedDigest));
 		return false;
+	}
+
+	private JAdESReferenceValidation getCounterSignatureReferenceValidation() {
+		JAdESReferenceValidation referenceValidation = new JAdESReferenceValidation();
+		referenceValidation.setType(DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE);
+
+		JAdESSignature masterSignature = (JAdESSignature) getMasterSignature();
+		if (masterSignature != null) {
+
+			byte[] signatureValue = masterSignature.getJws().getSignatureValue();
+			if (Utils.isArrayNotEmpty(signatureValue)) {
+				referenceValidation.setFound(true);
+			}
+
+			byte[] unverifiedPayloadBytes = getJws().getUnverifiedPayloadBytes();
+			if (Utils.isArrayNotEmpty(unverifiedPayloadBytes)) {
+				boolean intact = Arrays.equals(signatureValue, unverifiedPayloadBytes);
+				if (!intact) {
+					LOG.warn("The payload of a cSig with Id '{}' does not match the signature value of its master signature!",
+							getDSSId().asXmlId());
+				}
+				referenceValidation.setIntact(intact);
+			} else {
+				// nothing to compare against for an attached signature
+				referenceValidation.setIntact(true);
+			}
+
+		}
+
+		return referenceValidation;
 	}
 	
 	private Object getUnsignedProperty(String headerName) {

@@ -20,31 +20,17 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jose4j.json.JsonUtil;
-import org.jose4j.jwx.HeaderParameterNames;
-import org.jose4j.jwx.Headers;
-import org.jose4j.lang.JoseException;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -57,6 +43,22 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.jwx.HeaderParameterNames;
+import org.jose4j.jwx.Headers;
+import org.jose4j.lang.JoseException;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJAdESCounterSignatureTest extends AbstractCounterSignatureTest<JAdESSignatureParameters, 
 				JAdESTimestampParameters, JAdESCounterSignatureParameters> {
@@ -129,6 +131,45 @@ public abstract class AbstractJAdESCounterSignatureTest extends AbstractCounterS
 		return SignatureLevel.JAdES_BASELINE_LTA.equals(signatureLevel);
 	}
 	
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+
+		Set<SignatureWrapper> allCounterSignatures = diagnosticData.getAllCounterSignatures();
+		assertTrue(Utils.isCollectionNotEmpty(allCounterSignatures));
+		for (SignatureWrapper signatureWrapper : allCounterSignatures) {
+			boolean jwsSignatureInputFound = false;
+			boolean counterSignedSignatureValueFound = false;
+			for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+				if (DigestMatcherType.JWS_SIGNING_INPUT_DIGEST.equals(digestMatcher.getType())) {
+					jwsSignatureInputFound = true;
+				} else if (DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(digestMatcher.getType())) {
+					counterSignedSignatureValueFound = true;
+				}
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+			}
+			assertTrue(jwsSignatureInputFound);
+			assertTrue(counterSignedSignatureValueFound);
+		}
+	}
+
+	@Override
+	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+				if (DigestMatcherType.JWS_SIGNING_INPUT_DIGEST.equals(digestMatcher.getType()) ||
+						DigestMatcherType.SIG_D_ENTRY.equals(digestMatcher.getType())) {
+					assertNotNull(digestMatcher.getDigestMethod());
+					assertNotNull(digestMatcher.getDigestValue());
+				} else if (DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(digestMatcher.getType())) {
+					assertNull(digestMatcher.getDigestMethod());
+					assertNull(digestMatcher.getDigestValue());
+				}
+			}
+		}
+	}
+
 	@Override
 	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {

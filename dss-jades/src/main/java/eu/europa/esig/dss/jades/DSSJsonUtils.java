@@ -55,6 +55,9 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -285,6 +288,23 @@ public class DSSJsonUtils {
 	 */
 	public static boolean isUrlSafe(byte b) {
 		return 0x1f < b && b < 0x2e || 0x2e < b && b < 0x7f;
+	}
+
+	/**
+	 * Checks if the binaries contain a UTF-8 encoded string
+	 *
+	 * @param binaries byte array to check
+	 * @return TRUE if binaries contain a UTF-8 encoded string, FALSE otherwise
+	 */
+	public static boolean isUtf8(byte[] binaries) {
+		try {
+			CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
+			ByteBuffer buf = ByteBuffer.wrap(binaries);
+			decoder.decode(buf);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	/**
@@ -808,6 +828,58 @@ public class DSSJsonUtils {
 		}
 
 		return null;
+	}
+
+	/**
+	 * This method computes the signing input bytes for a JWS signature
+	 *
+	 * @param jws {@link JWS} to get signing input for
+	 * @return signing input bytes
+	 */
+	public static byte[] getSigningInputBytes(JWS jws) {
+		/*
+        https://tools.ietf.org/html/rfc7797#section-3
+        +-------+-----------------------------------------------------------+
+        | "b64" | JWS Signing Input Formula                                 |
+        +-------+-----------------------------------------------------------+
+        | true  | ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.' ||     |
+        |       | BASE64URL(JWS Payload))                                   |
+        |       |                                                           |
+        | false | ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.') ||    |
+        |       | JWS Payload                                               |
+        +-------+-----------------------------------------------------------+
+		*/
+		byte[] dataToSign;
+
+		if (!jws.isRfc7797UnencodedPayload()) {
+			String dataToBeSignedString = DSSJsonUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
+			dataToSign = DSSJsonUtils.getAsciiBytes(dataToBeSignedString);
+
+		} else {
+			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+				// NOTE: unencoded payload shall not be converted to a string, it can lead to a data corruption!
+				os.write(DSSJsonUtils.getAsciiBytes(jws.getEncodedHeader()));
+				os.write(0x2e); // ascii for "."
+				byte[] payloadBytes = jws.getUnverifiedPayloadBytes();
+				if (Utils.isArrayNotEmpty(payloadBytes)) {
+					os.write(payloadBytes);
+				}
+				dataToSign = os.toByteArray();
+
+			} catch (IOException e) {
+				throw new DSSException(String.format(
+						"Unable to compute the JWS Signature Input for the unencoded payload! " +
+								"Reason : %s", e.getMessage()), e);
+			}
+
+		}
+
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("JWS Signature Input: ");
+			LOG.trace(new String(dataToSign));
+		}
+
+		return dataToSign;
 	}
 
 }

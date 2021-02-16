@@ -700,6 +700,7 @@
 			<!-- JAdES -->
 			<xs:enumeration value="JWS_SIGNING_INPUT_DIGEST" />
 			<xs:enumeration value="SIG_D_ENTRY" />
+			<xs:enumeration value="COUNTER_SIGNED_SIGNATURE_VALUE" />
 			
 			<!-- TIMESTAMP -->
 			<xs:enumeration value="MESSAGE_IMPRINT" />

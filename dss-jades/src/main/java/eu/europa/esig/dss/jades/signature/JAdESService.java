@@ -352,21 +352,31 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	
 	private void verifyAndSetCounterSignatureParameters(JAdESCounterSignatureParameters parameters) {
 		if (parameters.getSignaturePackaging() == null) {
-			parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		} else if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
-			throw new IllegalArgumentException(String.format("The SignaturePackaging '%s' is not supported by JAdES Counter Signature!", 
-					parameters.getSignaturePackaging()));
+			// attached counter signature is created by default
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		}
-		
-		if (parameters.getSigDMechanism() == null) {
-			parameters.setSigDMechanism(SigDMechanism.NO_SIG_D);
-		} else if (!SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
-			throw new IllegalArgumentException(String.format("The SigDMechanism '%s' is not supported by JAdES Counter Signature!", 
-					parameters.getSigDMechanism()));
+
+		switch (parameters.getSignaturePackaging()) {
+			case ENVELOPING:
+				break;
+			case DETACHED:
+				if (parameters.getSigDMechanism() == null) {
+					parameters.setSigDMechanism(SigDMechanism.NO_SIG_D);
+				} else if (!SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
+					throw new IllegalArgumentException(String.format("The SigDMechanism '%s' is not supported by JAdES Counter Signature!",
+							parameters.getSigDMechanism()));
+				}
+				break;
+			default:
+				throw new IllegalArgumentException(
+						String.format("The SignaturePackaging '%s' is not supported by JAdES Counter Signature!",
+						parameters.getSignaturePackaging()));
 		}
+
 		
 		if (JWSSerializationType.JSON_SERIALIZATION.equals(parameters.getJwsSerializationType())) {
-			throw new IllegalArgumentException("The JWSSerializationType.JSON_SERIALIZATION parameter is not supported for a JAdES Counter Signature!");
+			throw new IllegalArgumentException("The JWSSerializationType.JSON_SERIALIZATION parameter " +
+					"is not supported for a JAdES Counter Signature!");
 		}
 	}
 

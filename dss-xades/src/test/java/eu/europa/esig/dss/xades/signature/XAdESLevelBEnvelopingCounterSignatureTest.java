@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -53,6 +40,18 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
 
@@ -123,16 +122,20 @@ public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCoun
 				counterSignatureFound = true;
 				
 				boolean counterSignatureDMFound = false;
+				boolean counterSignedSignatureDMFound = false;
 				boolean signedPropertiesDMFound = false;
-				assertEquals(2, signatureWrapper.getDigestMatchers().size());
+				assertEquals(3, signatureWrapper.getDigestMatchers().size());
 				for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
 					if (DigestMatcherType.COUNTER_SIGNATURE.equals(digestMatcher.getType())) {
 						counterSignatureDMFound = true;
+					} else if (DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(digestMatcher.getType())) {
+						counterSignedSignatureDMFound = true;
 					} else if (DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType())) {
 						signedPropertiesDMFound = true;
 					}
 				}
 				assertTrue(counterSignatureDMFound);
+				assertTrue(counterSignedSignatureDMFound);
 				assertTrue(signedPropertiesDMFound);
 			}
 		}

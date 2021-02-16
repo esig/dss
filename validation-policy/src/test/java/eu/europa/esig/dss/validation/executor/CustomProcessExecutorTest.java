@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -128,6 +129,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -4064,6 +4066,50 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.ARCH_LTVV_ANS)));
 
+	}
+
+	@Test
+	public void counterSignatureReplaceAttackTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_counter_sig_replace_attack.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		Set<SignatureWrapper> counterSignatures = diagnosticData.getAllCounterSignatures();
+		assertEquals(1, counterSignatures.size());
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(counterSignatures.iterator().next().getId());
+		assertNotNull(bbb);
+		assertEquals(Indication.FAILED, bbb.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, bbb.getConclusion().getSubIndication());
+
+		XmlCV cv = bbb.getCV();
+		assertEquals(Indication.FAILED, cv.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, cv.getConclusion().getSubIndication());
+
+		boolean signatureValueCheckPresentFound = false;
+		boolean signatureValueCheckIntactFound = false;
+		for (XmlConstraint constraint : cv.getConstraint()) {
+			if (MessageTag.BBB_CV_CS_CSSVF.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				signatureValueCheckPresentFound = true;
+			} else if (MessageTag.BBB_CV_CS_CSPS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertNotNull(constraint.getError());
+				assertEquals(MessageTag.BBB_CV_CS_CSPS_ANS.getId(), constraint.getError().getKey());
+				signatureValueCheckIntactFound = true;
+			}
+		}
+		assertTrue(signatureValueCheckPresentFound);
+		assertTrue(signatureValueCheckIntactFound);
 	}
 
 	@Test

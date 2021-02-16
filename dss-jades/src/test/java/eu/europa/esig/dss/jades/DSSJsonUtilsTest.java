@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.jades;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.jose4j.jws.EcdsaUsingShaAlgorithm;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -35,6 +28,14 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.jose4j.jws.EcdsaUsingShaAlgorithm;
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSSJsonUtilsTest {
 	
@@ -61,6 +62,16 @@ public class DSSJsonUtilsTest {
 		assertFalse(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsb\ryBXb3JsZCEiDQp9"));
 		assertFalse(DSSJsonUtils.isUrlSafePayload("."));
 		assertFalse(DSSJsonUtils.isUrlSafePayload("..."));
+	}
+
+	@Test
+	public void isUtf8Test() {
+		assertTrue(DSSJsonUtils.isUtf8("Some string".getBytes()));
+		assertTrue(DSSJsonUtils.isUtf8(new byte[]{ (byte) 0b11001111, (byte) 0b10111111 }));
+		assertTrue(DSSJsonUtils.isUtf8(new byte[]{ (byte) 0b11101111, (byte) 0b10101010, (byte) 0b10111111 }));
+		assertTrue(DSSJsonUtils.isUtf8("\u24b6".getBytes(StandardCharsets.UTF_8)));
+		assertFalse(DSSJsonUtils.isUtf8(new byte[]{ (byte) 0b10001111, (byte) 0b10111111} ));
+		assertFalse(DSSJsonUtils.isUtf8(new byte[]{ (byte) 0b10101010, (byte) 0b00111111} ));
 	}
 	
 	@Test

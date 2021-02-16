@@ -74,33 +74,7 @@ public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 		incorporateHeader(jws);
 		incorporatePayload(jws);
 		
-		/*
-        https://tools.ietf.org/html/rfc7797#section-3
-        +-------+-----------------------------------------------------------+
-        | "b64" | JWS Signing Input Formula                                 |
-        +-------+-----------------------------------------------------------+
-        | true  | ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.' ||     |
-        |       | BASE64URL(JWS Payload))                                   |
-        |       |                                                           |
-        | false | ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.') ||    |
-        |       | JWS Payload                                               |
-        +-------+-----------------------------------------------------------+
-		*/
-		byte[] dataToSign;
-		if (parameters.isBase64UrlEncodedPayload()) {
-			String dataToBeSignedString = DSSJsonUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
-			dataToSign = DSSJsonUtils.getAsciiBytes(dataToBeSignedString);
-		} else {
-			String encodedHeader = new String(DSSJsonUtils.getAsciiBytes(jws.getEncodedHeader()));
-			String dataToBeSignedString = DSSJsonUtils.concatenate(encodedHeader, jws.getUnverifiedPayload());
-			dataToSign = dataToBeSignedString.getBytes();
-		}
-		
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Data to sign: ");
-			LOG.trace(new String(dataToSign));
-		}
-		
+		byte[] dataToSign = DSSJsonUtils.getSigningInputBytes(jws);
 		return new ToBeSigned(dataToSign);
 	}
 	

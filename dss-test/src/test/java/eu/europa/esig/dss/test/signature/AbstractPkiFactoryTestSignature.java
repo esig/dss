@@ -392,14 +392,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
 		super.checkMessageDigestAlgorithm(diagnosticData);
 
-		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
-			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
-			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-				assertNotNull(xmlDigestMatcher.getDigestMethod());
-				assertNotNull(xmlDigestMatcher.getDigestValue());
-			}
-		}
 		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
 		DigestAlgorithm expectedDigestAlgorithm = signatureParameters.getReferenceDigestAlgorithm();
 		if (expectedDigestAlgorithm == null) {

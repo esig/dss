@@ -195,6 +195,7 @@ public class ValidationProcessUtils {
 		case SIGNATURE_PROPERTIES:
 			return MessageTag.ACCM_POS_SIGNTR_PRT;
 		case COUNTER_SIGNATURE:
+		case COUNTER_SIGNED_SIGNATURE_VALUE:
 			return MessageTag.ACCM_POS_CNTR_SIG;
 		case MESSAGE_DIGEST:
 			return MessageTag.ACCM_POS_MES_DIG;
@@ -207,7 +208,8 @@ public class ValidationProcessUtils {
 		case MESSAGE_IMPRINT:
 			return MessageTag.ACCM_POS_MESS_IMP;
 		default:
-			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!", digestMatcher.getType()));
+			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!",
+					digestMatcher.getType()));
 		}
 	}
 
