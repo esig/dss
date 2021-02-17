@@ -59,6 +59,7 @@ public class CertificateVerifierBuilder {
 			copy.setAlertOnNoRevocationAfterBestSignatureTime(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime());
 			copy.setAlertOnRevokedCertificate(certificateVerifier.getAlertOnRevokedCertificate());
 			copy.setAlertOnUncoveredPOE(certificateVerifier.getAlertOnUncoveredPOE());
+			copy.setAlertOnExpiredSignature(certificateVerifier.getAlertOnExpiredSignature());
 		}
 		return copy;
 	}
@@ -81,6 +82,7 @@ public class CertificateVerifierBuilder {
 		offlineCertificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert());
+		offlineCertificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
 		return offlineCertificateVerifier;
 	}
 	

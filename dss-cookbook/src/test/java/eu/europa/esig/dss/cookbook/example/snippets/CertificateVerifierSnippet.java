@@ -80,31 +80,34 @@ public class CertificateVerifierSnippet {
 		// DSS v5.4+ : The 3 below configurations concern the extension mode (LT/LTA
 		// extension)
 
-		// DSS throws an exception by default in case of missing revocation data
-		// Default : ExceptionOnStatusAlert
+		// Defines a behavior in case of missing revocation data
+		// Default : ExceptionOnStatusAlert -> interrupt the process
 		cv.setAlertOnMissingRevocationData(new ExceptionOnStatusAlert());
 
-		// DSS logs a warning if a TSU certificate chain is not covered with a
+		// Defines a behavior if a TSU certificate chain is not covered with a
 		// revocation data (timestamp generation time > CRL/OCSP production time).
-		// Default : LogOnStatusAlert
+		// Default : LogOnStatusAlert -> a WARN log
 		cv.setAlertOnUncoveredPOE(new LogOnStatusAlert(Level.WARN));
 
-		// DSS interrupts by default the extension process if a revoked certificate is
-		// present
-		// Default : ExceptionOnStatusAlert
+		// Defines a behavior if a revoked certificate is present
+		// Default : ExceptionOnStatusAlert -> interrupt the process
 		cv.setAlertOnRevokedCertificate(new ExceptionOnStatusAlert());
 
-		// DSS stops the extension process if an invalid timestamp is met
-		// Default : ExceptionOnStatusAlert
+		// Defines a behavior if an invalid timestamp is found
+		// Default : ExceptionOnStatusAlert -> interrupt the process
 		cv.setAlertOnInvalidTimestamp(new ExceptionOnStatusAlert());
 		
-		// DSS v5.5+ : logs a warning message in case if there is no valid revocation
-		// data
-		// with thisUpdate time after the best signature time
+		// DSS v5.5+ : defines a behavior in case if there is no valid revocation
+		// data with thisUpdate time after the best signature time
 		// Example: if a signature was extended to T level then the obtained revocation 
 		// must have thisUpdate time after production time of the signature timestamp.
-		// Default : LogOnStatusAlert
+		// Default : LogOnStatusAlert -> a WARN log
 		cv.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert(Level.ERROR));
+
+		// DSS 5.9+ :
+		// Defines behavior in case if the signing certificate or its related POE(s) have been expired
+		// Default : ExceptionOnStatusAlert -> interrupt the process
+		cv.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
 		
 		// 5.7 : The below methods have been moved to DocumentValidator /
 		// CertificateValidator
