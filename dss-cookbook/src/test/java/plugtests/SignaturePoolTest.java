@@ -20,32 +20,6 @@
  */
 package plugtests;
 
-import static java.time.Duration.ofSeconds;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -101,6 +75,31 @@ import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static java.time.Duration.ofSeconds;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files
@@ -228,19 +227,6 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			if (signatureWrapper.isSigningCertificateIdentified()) {
 				assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getDigestMatchers()));
-			}
-		}
-	}
-	
-	@Override
-	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
-		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getDigestMatchers()));
-			for (XmlDigestMatcher xmlDigestMatcher : signatureWrapper.getDigestMatchers()) {
-				if (xmlDigestMatcher.isDataIntact()) {
-					assertNotNull(xmlDigestMatcher.getDigestMethod());
-					assertNotNull(xmlDigestMatcher.getDigestValue());
-				}
 			}
 		}
 	}

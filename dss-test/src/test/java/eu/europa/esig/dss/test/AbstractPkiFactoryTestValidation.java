@@ -819,7 +819,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-				if (!DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(xmlDigestMatcher.getType())) {
+				if (!DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(xmlDigestMatcher.getType()) &&
+						xmlDigestMatcher.isDataIntact()) {
 					assertNotNull(xmlDigestMatcher.getDigestMethod());
 					assertNotNull(xmlDigestMatcher.getDigestValue());
 				}
