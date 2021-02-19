@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
-
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
@@ -41,6 +34,12 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
@@ -403,6 +402,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		Objects.requireNonNull(digestAlgorithm, "Default DigestAlgorithm cannot be nulL!");
 		this.defaultDigestAlgorithm = digestAlgorithm;
 	}
 	

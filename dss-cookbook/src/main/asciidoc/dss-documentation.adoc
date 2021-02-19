@@ -1595,7 +1595,7 @@ As well as a single timestamp creation, DSS provides a validation service for ti
 
  * Detached CMS timestamp (`DetachedTimestampValidator`) - a detached signed content must be provided (or its digest);
  * PDF document (`PDFDocumentValidator`);
- * ASiC CAdES container with a timestamp (`ASiCEWithCAdESTimestampValidator`).
+ * ASiC CAdES container with a timestamp (`ASiCWithCAdESTimestampValidator`).
 
 The validation process can be run with the following inputs :
 

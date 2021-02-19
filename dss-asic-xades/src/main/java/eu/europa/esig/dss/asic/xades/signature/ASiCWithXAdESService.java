@@ -94,6 +94,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
 			throw new DSSException("List of documents to sign cannot be empty!");
 		}
+		assertSigningDateInCertificateValidityRange(parameters);
+
 		GetDataToSignASiCWithXAdESHelper dataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
 				.build(toSignDocuments, parameters);
 		XAdESSignatureParameters xadesParameters = getParameters(parameters, dataToSignHelper);
@@ -108,9 +110,9 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
 			throw new DSSException("List of documents to sign cannot be empty!");
 		}
+		assertSigningDateInCertificateValidityRange(parameters);
 
 		final ASiCParameters asicParameters = parameters.aSiC();
-		assertSigningDateInCertificateValidityRange(parameters);
 
 		GetDataToSignASiCWithXAdESHelper dataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
 				.build(toSignDocuments, parameters);

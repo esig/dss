@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
@@ -52,6 +40,17 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
 	
@@ -74,21 +73,23 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
 		
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, null));
         assertEquals("SignatureParameters cannot be null!", exception.getMessage());
-        
-        signatureParameters.aSiC().setContainerType(null);
-        exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("ASiCContainerType must be defined!", exception.getMessage());
-		
-        signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+
         exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("Signing Certificate is not defined!", exception.getMessage());
-        
-        signatureParameters.setGenerateTBSWithoutCertificate(true);
-        exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("SignatureLevel must be defined!", exception.getMessage());
-        signatureParameters.setGenerateTBSWithoutCertificate(false);
 
         signatureParameters.setSignWithExpiredCertificate(true);
+        exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Signing Certificate is not defined!", exception.getMessage());
+
+        signatureParameters.setGenerateTBSWithoutCertificate(true);
+        exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("ASiCContainerType must be defined!", exception.getMessage());
+
+        signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+        exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("SignatureLevel must be defined!", exception.getMessage());
+
+        signatureParameters.setGenerateTBSWithoutCertificate(false);
         exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("Signing Certificate is not defined!", exception.getMessage());
         

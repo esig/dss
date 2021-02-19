@@ -136,6 +136,9 @@ public class ASiCETimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureIntact());
 			assertTrue(timestamp.isSignatureValid());
+			
+			assertEquals(3, timestampWrapper.getDigestMatchers().size());
+			assertEquals(3, timestampWrapper.getTimestampedSignedData().size());
 		}
 
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();

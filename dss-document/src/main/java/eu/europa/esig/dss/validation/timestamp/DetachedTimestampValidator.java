@@ -177,13 +177,26 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 	protected List<SignatureScope> getTimestampSignatureScopes() {
 		DSSDocument timestampedData = getTimestampedData();
 		if (timestampedData != null) {
-			if (timestampedData instanceof DigestDocument) {
-				return Arrays.asList(new DigestSignatureScope("Digest document", ((DigestDocument) timestampedData).getExistingDigest()));
-			} else {
-				return Arrays.asList(new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData)));
-			}
+			return getTimestampSignatureScopeForDocument(timestampedData);
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a timestamped {@code SignatureScope} for the given document
+	 *
+	 * @param document {@link DSSDocument}
+	 * @return a list of {@link SignatureScope}s
+	 */
+	protected List<SignatureScope> getTimestampSignatureScopeForDocument(DSSDocument document) {
+		String documentName = document.getName();
+		if (document instanceof DigestDocument) {
+			return Arrays.asList(new DigestSignatureScope(Utils.isStringNotEmpty(documentName) ? documentName : "Digest document",
+					((DigestDocument) document).getExistingDigest()));
+		} else {
+			return Arrays.asList(new FullSignatureScope(Utils.isStringNotEmpty(documentName) ? documentName : "Full document",
+					getDigest(document)));
+		}
 	}
 
 	@Override

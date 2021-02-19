@@ -25,7 +25,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestValidator;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESTimestampValidator;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESTimestampValidator;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -111,12 +111,14 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 		
-		ASiCEWithCAdESTimestampValidator asiceWithCAdESTimestampValidator = new ASiCEWithCAdESTimestampValidator(
-				archiveTimestamp, TimestampType.ARCHIVE_TIMESTAMP, manifestFile, documentsToSign);
-		asiceWithCAdESTimestampValidator.setTimestampedData(archiveManifest);
-		asiceWithCAdESTimestampValidator.setCertificateVerifier(certificateVerifier);
+		ASiCWithCAdESTimestampValidator asicWithCAdESTimestampValidator = new ASiCWithCAdESTimestampValidator(
+				archiveTimestamp, TimestampType.ARCHIVE_TIMESTAMP);
+		asicWithCAdESTimestampValidator.setTimestampedData(archiveManifest);
+		asicWithCAdESTimestampValidator.setManifestFile(manifestFile);
+		asicWithCAdESTimestampValidator.setOriginalDocuments(documentsToSign);
+		asicWithCAdESTimestampValidator.setCertificateVerifier(certificateVerifier);
 		
-		return asiceWithCAdESTimestampValidator;
+		return asicWithCAdESTimestampValidator;
 	}
 	
 	@Override

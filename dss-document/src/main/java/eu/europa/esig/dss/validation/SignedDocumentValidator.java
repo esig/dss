@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -257,6 +258,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
+		Objects.requireNonNull(certificateVerifier);
 		this.certificateVerifier = certificateVerifier;
 	}
 
@@ -841,6 +843,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private boolean doesIdMatch(AdvancedSignature signature, String signatureId) {
 		return signatureId.equals(signature.getId()) || signatureId.equals(signature.getDAIdentifier()) ||
 				signatureId.equals(identifierProvider.getIdAsString(signature));
+	}
+
+	/**
+	 * Gets digest of a document
+	 *
+	 * @param document {@link DSSDocument}
+	 * @return {@link Digest}
+	 */
+	protected Digest getDigest(DSSDocument document) {
+		return new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(document.getDigest(getDefaultDigestAlgorithm())));
 	}
 
 }

@@ -91,7 +91,7 @@ public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 			assertTrue(timestamp.isSignatureValid());
 
 			assertEquals(1, timestamp.getDigestMatchers().size());
-			assertEquals(1, timestamp.getTimestampedSignedData().size());
+			assertEquals(3, timestamp.getTimestampedSignedData().size());
 		}
 
 		timestampParameters = new ASiCWithCAdESTimestampParameters();
@@ -119,11 +119,11 @@ public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 			assertTrue(timestamp.isSignatureValid());
 
 			if (timestamp.getDigestMatchers().size() == 1) {
-				assertEquals(1, timestamp.getTimestampedSignedData().size());
+				assertEquals(3, timestamp.getTimestampedSignedData().size());
 				firstTstFound = true;
 			} else if (timestamp.getDigestMatchers().size() == 3) {
 				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getName());
-				assertEquals(3, timestamp.getTimestampedSignedData().size());
+				assertEquals(5, timestamp.getTimestampedSignedData().size());
 				secondTstFound = true;
 			}
 		}
