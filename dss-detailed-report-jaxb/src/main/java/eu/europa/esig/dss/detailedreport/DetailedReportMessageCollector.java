@@ -129,7 +129,7 @@ public class DetailedReportMessageCollector {
 			return collectTimestampValidation(type, timestampById);
 		}
 		XmlTLAnalysis tlAnalysisById = detailedReport.getTLAnalysisById(tokenId);
-		if (timestampById != null) {
+		if (tlAnalysisById != null) {
 			return getMessages(type, tlAnalysisById.getConclusion());
 		}
 		XmlBasicBuildingBlocks bbbById = detailedReport.getBasicBuildingBlockById(tokenId);

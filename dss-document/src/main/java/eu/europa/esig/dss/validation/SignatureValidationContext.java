@@ -783,7 +783,8 @@ public class SignatureValidationContext implements ValidationContext {
 					// check if there is a best-signature-time before the revocation date
 					Date lowestPOETime = getLowestPOETime(certificateToken);
 					for (RevocationToken<Revocation> revocationToken : relatedRevocationTokens) {
-						if ((revocationToken.getStatus().isRevoked() && !lowestPOETime.before(revocationToken.getRevocationDate())) ||
+						if ((revocationToken.getStatus().isRevoked() && lowestPOETime != null &&
+								!lowestPOETime.before(revocationToken.getRevocationDate())) ||
 								!revocationToken.getStatus().isKnown()) {
 							invalidCertificateIds.add(certificateToken.getDSSIdAsString());
 						}
@@ -848,11 +849,12 @@ public class SignatureValidationContext implements ValidationContext {
 	private Date getLowestPOETime(Token token) {
 		Date lowestPOE = null;
 		List<Date> bestSignatureTimeList = poeTimes.get(token.getDSSIdAsString());
-		if (Utils.isCollectionNotEmpty(bestSignatureTimeList)) {
-			for (Date poeTime : bestSignatureTimeList) {
-				if (lowestPOE == null || poeTime.before(lowestPOE)) {
-					lowestPOE = poeTime;
-				}
+		if (Utils.isCollectionEmpty(bestSignatureTimeList)) {
+			throw new IllegalStateException("POE shall be defined before accessing the 'poeTimes' list!");
+		}
+		for (Date poeTime : bestSignatureTimeList) {
+			if (lowestPOE == null || poeTime.before(lowestPOE)) {
+				lowestPOE = poeTime;
 			}
 		}
 		return lowestPOE;

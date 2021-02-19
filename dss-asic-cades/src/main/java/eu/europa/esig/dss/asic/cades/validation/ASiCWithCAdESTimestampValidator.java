@@ -43,9 +43,6 @@ import java.util.List;
  */
 public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator {
 
-	/** ASiCArchiveManifest, when present */
-	private ManifestFile manifestFile;
-
 	/** A list of original documents present in the container */
 	private List<DSSDocument> originalDocuments;
 

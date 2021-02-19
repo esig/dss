@@ -50,7 +50,7 @@ public class XAdESAttributeIdentifier extends SignatureAttributeIdentifier {
         Node parentNode = node.getParentNode();
         if (parentNode != null) {
             NodeList childNodes = parentNode.getChildNodes();
-            for (int ii = 0; ii > childNodes.getLength(); ii++) {
+            for (int ii = 0; ii < childNodes.getLength(); ii++) {
                 Node child = childNodes.item(ii);
                 if (node == child) {
                     return ii;

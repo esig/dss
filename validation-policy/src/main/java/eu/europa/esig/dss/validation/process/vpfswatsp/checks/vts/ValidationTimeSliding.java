@@ -230,7 +230,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
                 XmlSAV revocationSAV = getRevocationCryptographicAcceptanceResult(latestCompliantRevocation, controlTime);
                 if (!isValidConclusion(revocationSAV.getConclusion())) {
 					Date revCryptoNotAfter = getCryptographicAlgorithmExpirationDateOrNull(revocationSAV);
-                    if (cryptoNotAfterDate == null || revCryptoNotAfter.before(cryptoNotAfterDate)) {
+                    if (cryptoNotAfterDate == null ||
+							(revCryptoNotAfter != null && revCryptoNotAfter.before(cryptoNotAfterDate))) {
                         cryptoNotAfterDate = revCryptoNotAfter;
                     }
                 }

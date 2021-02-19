@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -45,6 +34,16 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // see DSS-2140
 public class XAdESWithNotAcceptableOCSPTest extends AbstractXAdESTestSignature {
@@ -61,6 +60,9 @@ public class XAdESWithNotAcceptableOCSPTest extends AbstractXAdESTestSignature {
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getSelfSignedTsa());
+
+		signingAlias = OCSP_SKIP_USER_WITH_CRL;
+		initSignatureParameters();
 	}
 	
 	private void initSignatureParameters() {
@@ -70,15 +72,6 @@ public class XAdESWithNotAcceptableOCSPTest extends AbstractXAdESTestSignature {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-	}
-	
-	@Override
-	@Test
-	public void signAndVerify() {
-		signingAlias = OCSP_SKIP_USER_WITH_CRL;
-		initSignatureParameters();
-		
-		super.signAndVerify();
 	}
 	
 	@Override
