@@ -52,7 +52,7 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 	private final static String DEFAULT_CANONICALIZATION = CanonicalizationMethod.EXCLUSIVE;
 
 	/** The default prefix for an enveloped signature reference id */
-	private final static String DEFAULT_REFERENCE_PREFIX = "enveloped-signature-";
+	private final static String DEFAULT_REFERENCE_PREFIX = "ref-enveloped-signature";
 	
 	/**
 	 * The XML Trusted List document
@@ -92,6 +92,8 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 
 	/**
 	 * Sets an Enveloped Reference Id to use
+	 *
+	 * Default: "ref-enveloped-signature"
 	 * 
 	 * @param referenceId {@link String} reference Id
 	 * @return this builder
@@ -130,7 +132,7 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 		if (referenceId != null) {
 			dssReference.setId(referenceId);
 		} else {
-			dssReference.setId(DEFAULT_REFERENCE_PREFIX + signatureParameters.getDeterministicId());
+			dssReference.setId(DEFAULT_REFERENCE_PREFIX);
 		}
 		dssReference.setUri("");
 		dssReference.setContents(tlXmlDocument);
