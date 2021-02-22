@@ -70,6 +70,7 @@ import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -2153,7 +2154,6 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
 
 		checkReports(reports);
-		
 	}
 	
 	@Test
@@ -2180,7 +2180,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNull(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		
 		List<Message> warnings = simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId());
-		assertEquals(2, warnings.size());
+		assertEquals(1, warnings.size());
 		assertTrue(checkMessageValuePresence(warnings, i18nProvider.getMessage(MessageTag.BBB_SAV_ISQPMDOSPP_ANS)));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
@@ -3095,6 +3095,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				refIntactCheckFound = true;
 			}
 		}
+
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(1, timestampIds.size());
 		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(timestampIds.get(0));
@@ -5083,6 +5084,153 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		reports = executor.execute();
 		simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void nextUpdateCheckTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		BasicSignatureConstraints basicSigConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
+		basicSigConstraints.getSigningCertificate().setOCSPNextUpdatePresent(null);
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		basicSigConstraints.getCACertificate().setCRLNextUpdatePresent(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlXCV xcv = sigBBB.getXCV();
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+
+		boolean signCertFound = false;
+		boolean caCertFound = false;
+		boolean rootCertFound = false;
+		for (XmlSubXCV subXCV : subXCVs) {
+			XmlRFC rfc = subXCV.getRFC();
+			if (rfc != null) {
+				RevocationWrapper revocation = diagnosticData.getRevocationById(rfc.getId());
+				assertNotNull(revocation);
+				if (RevocationType.OCSP.equals(revocation.getRevocationType())) {
+					signCertFound = true;
+
+					boolean nextUpdateCheckPerformed = false;
+					List<XmlConstraint> constraints = rfc.getConstraint();
+					for (XmlConstraint constraint : constraints) {
+						if (MessageTag.BBB_RFC_NUP.getId().equals(constraint.getName().getKey())) {
+							nextUpdateCheckPerformed = true;
+						}
+					}
+					assertFalse(nextUpdateCheckPerformed);
+
+				} else if (RevocationType.CRL.equals(revocation.getRevocationType())) {
+					caCertFound = true;
+
+					boolean nextUpdateCheckPerformed = false;
+					List<XmlConstraint> constraints = rfc.getConstraint();
+					for (XmlConstraint constraint : constraints) {
+						if (MessageTag.BBB_RFC_NUP.getId().equals(constraint.getName().getKey())) {
+							nextUpdateCheckPerformed = true;
+							assertEquals(XmlStatus.OK, constraint.getStatus());
+						}
+					}
+					assertTrue(nextUpdateCheckPerformed);
+				}
+			} else {
+				rootCertFound = true;
+			}
+		}
+		assertTrue(signCertFound);
+		assertTrue(caCertFound);
+		assertTrue(rootCertFound);
+	}
+
+	@Test
+	public void nextUpdateCheckOCSPFailTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		BasicSignatureConstraints basicSigConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		basicSigConstraints.getSigningCertificate().setOCSPNextUpdatePresent(levelConstraint);
+		basicSigConstraints.getCACertificate().setCRLNextUpdatePresent(null);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlXCV xcv = sigBBB.getXCV();
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+
+		boolean signCertFound = false;
+		boolean caCertFound = false;
+		boolean rootCertFound = false;
+		for (XmlSubXCV subXCV : subXCVs) {
+			XmlRFC rfc = subXCV.getRFC();
+			if (rfc != null) {
+				RevocationWrapper revocation = diagnosticData.getRevocationById(rfc.getId());
+				assertNotNull(revocation);
+				if (RevocationType.OCSP.equals(revocation.getRevocationType())) {
+					signCertFound = true;
+
+					boolean nextUpdateCheckPerformed = false;
+					List<XmlConstraint> constraints = rfc.getConstraint();
+					for (XmlConstraint constraint : constraints) {
+						if (MessageTag.BBB_RFC_NUP.getId().equals(constraint.getName().getKey())) {
+							nextUpdateCheckPerformed = true;
+							assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+							assertEquals(MessageTag.BBB_RFC_NUP_ANS.getId(), constraint.getError().getKey());
+						}
+					}
+					assertTrue(nextUpdateCheckPerformed);
+
+				} else if (RevocationType.CRL.equals(revocation.getRevocationType())) {
+					caCertFound = true;
+
+					boolean nextUpdateCheckPerformed = false;
+					List<XmlConstraint> constraints = rfc.getConstraint();
+					for (XmlConstraint constraint : constraints) {
+						if (MessageTag.BBB_RFC_NUP.getId().equals(constraint.getName().getKey())) {
+							nextUpdateCheckPerformed = true;
+							assertEquals(XmlStatus.OK, constraint.getStatus());
+						}
+					}
+					assertFalse(nextUpdateCheckPerformed);
+				}
+			} else {
+				rootCertFound = true;
+			}
+		}
+		assertTrue(signCertFound);
+		assertTrue(caCertFound);
+		assertTrue(rootCertFound);
 	}
 
 	@Test

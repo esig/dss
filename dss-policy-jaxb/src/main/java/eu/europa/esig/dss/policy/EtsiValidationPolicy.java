@@ -525,10 +525,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getRevocationDataNextUpdatePresentConstraint(Context context, SubContext subContext) {
+	public LevelConstraint getCRLNextUpdatePresentConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getRevocationDataNextUpdatePresent();
+			return certificateConstraints.getCRLNextUpdatePresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getOCSPNextUpdatePresentConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getOCSPNextUpdatePresent();
 		}
 		return null;
 	}

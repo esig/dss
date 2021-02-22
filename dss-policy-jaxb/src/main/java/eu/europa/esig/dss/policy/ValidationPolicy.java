@@ -330,14 +330,24 @@ public interface ValidationPolicy {
 	LevelConstraint getRevocationDataAvailableConstraint(Context context, SubContext subContext);
 
 	/**
-	 * Returns revocation data's nextUpdate present constraint
+	 * Returns CRL's nextUpdate present constraint
 	 *
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if RevocationDataNextUpdatePresent for a given
+	 * @return {@code LevelConstraint} if CRLNextUpdatePresent for a given
 	 *         context element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getRevocationDataNextUpdatePresentConstraint(Context context, SubContext subContext);
+	LevelConstraint getCRLNextUpdatePresentConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns OCSP's nextUpdate present constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if OCSPNextUpdatePresent for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getOCSPNextUpdatePresentConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns revocation data's freshness constraint

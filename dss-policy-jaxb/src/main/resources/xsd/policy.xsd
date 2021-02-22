@@ -489,9 +489,14 @@
 					<xsd:documentation>Checks if a revocation data is found in the signature or externally for this certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="RevocationDataNextUpdatePresent" type="LevelConstraint" minOccurs="0" >
+			<xsd:element name="CRLNextUpdatePresent" type="LevelConstraint" minOccurs="0" >
 				<xsd:annotation>
-					<xsd:documentation>Checks the presence of the NextUpdate value in the revocation data</xsd:documentation>
+					<xsd:documentation>Checks the presence of the NextUpdate value for a CRL</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OCSPNextUpdatePresent" type="LevelConstraint" minOccurs="0" >
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of the NextUpdate value for an OCSP response</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="RevocationDataFreshness" type="LevelConstraint" minOccurs="0">
