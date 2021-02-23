@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -669,6 +670,28 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlXCV xcv = signatureBBB.getXCV();
+
+		// DSS-2385 test
+		boolean nestedRACFound = false;
+		for (XmlSubXCV subXCV : xcv.getSubXCV()) {
+			for (XmlRAC rac : subXCV.getRAC()) {
+				for (XmlConstraint constraint : rac.getConstraint()) {
+					if (XmlBlockType.RAC.equals(constraint.getBlockType())) {
+						assertNotNull(constraint.getId());
+						XmlBasicBuildingBlocks revBBB = detailedReport.getBasicBuildingBlockById(constraint.getId());
+						assertNotNull(revBBB);
+
+						nestedRACFound = true;
+					}
+
+				}
+			}
+		}
+		assertTrue(nestedRACFound);
 		
 		checkReports(reports);
 	}
@@ -4134,6 +4157,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());

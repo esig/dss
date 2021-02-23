@@ -83,24 +83,26 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	public RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate,
 									   CertificateRevocationWrapper revocationData, Date controlTime,
 									   ValidationPolicy policy) {
-		this(i18nProvider, certificate, revocationData, controlTime, policy, new ArrayList<String>());
-		result.setId(revocationData.getId());
-		result.setRevocationProductionDate(revocationData.getProductionDate());
+		this(i18nProvider, certificate, revocationData, controlTime, policy, new ArrayList<>());
 	}
 	
-	@Override
-	protected MessageTag getTitle() {
-		return MessageTag.RAC;
-	}
-	
-	private RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
-			Date controlTime, ValidationPolicy policy, List<String> validatedTokens) {
+	private RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate,
+										CertificateRevocationWrapper revocationData, Date controlTime,
+										ValidationPolicy policy, List<String> validatedTokens) {
 		super(i18nProvider, new XmlRAC());
 		this.certificate = certificate;
 		this.revocationData = revocationData;
 		this.controlTime = controlTime;
 		this.policy = policy;
 		this.validatedTokens = validatedTokens;
+
+		result.setId(revocationData.getId());
+		result.setRevocationProductionDate(revocationData.getProductionDate());
+	}
+
+	@Override
+	protected MessageTag getTitle() {
+		return MessageTag.RAC;
 	}
 
 	@Override
