@@ -468,25 +468,25 @@
 	    		<xsl:attribute name="class">col-md-10</xsl:attribute>
 				<xsl:value-of select="dss:Name"/>
 	    		<xsl:if test="@Id">
-	    			<xsl:variable name="NameId" select="dss:Name/@NameId"/>
+	    			<xsl:variable name="BlockType" select="@BlockType"/>
 	    			<a>
 	    				<xsl:choose>
-		    				<xsl:when test="$NameId='BBB_XCV_SUB'">
+		    				<xsl:when test="$BlockType='SUB_XCV'">
 								<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
 					        </xsl:when>
-		    				<xsl:when test="$NameId='BBB_XCV_RAC'">
+		    				<xsl:when test="$BlockType='RAC' and name(..) != 'RAC'">
 								<xsl:attribute name="href">#RAC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
 					        </xsl:when>
-		    				<xsl:when test="$NameId='BBB_XCV_RFC'">
+		    				<xsl:when test="$BlockType='RFC'">
 								<xsl:attribute name="href">#RFC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
 					        </xsl:when>
-		    				<xsl:when test="$NameId='PSV_IPSVC'">
+		    				<xsl:when test="$BlockType='PSV'">
 								<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-PSV</xsl:attribute>
 					        </xsl:when>
-		    				<xsl:when test="$NameId='PSV_IPCVA'">
+		    				<xsl:when test="$BlockType='PCV'">
 								<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-PCV</xsl:attribute>
 					        </xsl:when>
-		    				<xsl:when test="$NameId='PCV_IVTSC'">
+		    				<xsl:when test="$BlockType='VTS'">
 								<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-VTS</xsl:attribute>
 					        </xsl:when>
 					        <xsl:otherwise>

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -50,6 +51,11 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 													LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, tokenId);
 		this.pcv = pcv;
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.PCV;
 	}
 
 	@Override

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -92,6 +93,11 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 		this.currentTime = currentTime;
 		this.policy = policy;
 		this.context = context;
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.PSV;
 	}
 
 	@Override
