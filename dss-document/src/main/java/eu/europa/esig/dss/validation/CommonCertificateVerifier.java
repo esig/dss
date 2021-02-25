@@ -149,6 +149,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private StatusAlert alertOnUncoveredPOE = new LogOnStatusAlert(Level.WARN);
 
 	/**
+	 * This variable set the behavior to follow in case of an expired signature.
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert alertOnExpiredSignature = new ExceptionOnStatusAlert();
+
+	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
 	 * untrusted certificate chains.
 	 * 
@@ -388,6 +395,17 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	public void setAlertOnNoRevocationAfterBestSignatureTime(StatusAlert alertOnNoRevocationAfterBestSignatureTime) {
 		Objects.requireNonNull(alertOnNoRevocationAfterBestSignatureTime);
 		this.alertOnNoRevocationAfterBestSignatureTime = alertOnNoRevocationAfterBestSignatureTime;
+	}
+
+	@Override
+	public void setAlertOnExpiredSignature(StatusAlert alertOnExpiredSignature) {
+		Objects.requireNonNull(alertOnExpiredSignature);
+		this.alertOnExpiredSignature = alertOnExpiredSignature;
+	}
+
+	@Override
+	public StatusAlert getAlertOnExpiredSignature() {
+		return alertOnExpiredSignature;
 	}
 
 	@Override

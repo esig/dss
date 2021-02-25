@@ -54,6 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -108,7 +109,10 @@ public class SignatureValidationContext implements ValidationContext {
 	private final Map<CertificateToken, Date> lastTimestampCertChainDates = new HashMap<>();
 
 	/** A map of token IDs and their corresponding POE times */
-	private final Map<String, List<Date>> poeTimes = new HashMap<>();
+	private final Map<String, List<POE>> poeTimes = new HashMap<>();
+
+	/** Cached map of tokens and their {@code CertificateToken} issuers */
+	private final Map<Token, CertificateToken> tokenIssuerMap = new HashMap<>();
 	
 	/**
 	 * The map contains all the certificate chains that has been used into the signature.
@@ -250,11 +254,18 @@ public class SignatureValidationContext implements ValidationContext {
 		return chain;
 	}
 
-	private Token getIssuer(final Token token) {
+	private CertificateToken getIssuer(final Token token) {
+		// Return cached value
+		CertificateToken issuerCertificateToken = tokenIssuerMap.get(token);
+		if (issuerCertificateToken != null) {
+			return issuerCertificateToken;
+		}
+
+		// Find issuer from sources
 		ListCertificateSource allCertificateSources = getAllCertificateSources();
 
 		Set<CertificateToken> candidates = getIssuersFromSources(token, allCertificateSources);
-		CertificateToken issuerCertificateToken = getTokenIssuerFromCandidates(token, candidates);
+		issuerCertificateToken = getTokenIssuerFromCandidates(token, candidates);
 
 		if ((issuerCertificateToken == null) && (token instanceof CertificateToken) && dataLoader != null) {
 			AIACertificateSource aiaSource = new AIACertificateSource((CertificateToken) token, dataLoader);
@@ -270,8 +281,9 @@ public class SignatureValidationContext implements ValidationContext {
 			issuerCertificateToken = getTSACertificate((TimestampToken) token, allCertificateSources);
 		}
 
-		if (issuerCertificateToken instanceof CertificateToken) {
+		if (issuerCertificateToken != null) {
 			addCertificateTokenForVerification(issuerCertificateToken);
+			tokenIssuerMap.put(token, issuerCertificateToken);
 		}
 
 		return issuerCertificateToken;
@@ -474,17 +486,26 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		for (TimestampedReference timestampedReference : timestampToken.getTimestampedReferences()) {
-			registerPOE(timestampedReference.getObjectId(), usageDate);
+			registerPOE(timestampedReference.getObjectId(), timestampToken);
 		}
 	}
 
-	private void registerPOE(String tokenId, Date poeTime) {
-		List<Date> poeTimeList = poeTimes.get(tokenId);
+	private void registerPOE(String tokenId, TimestampToken timestampToken) {
+		List<POE> poeTimeList = poeTimes.get(tokenId);
 		if (Utils.isCollectionEmpty(poeTimeList)) {
 			poeTimeList = new ArrayList<>();
 			poeTimes.put(tokenId, poeTimeList);
 		}
-		poeTimeList.add(poeTime);
+		poeTimeList.add(new POE(timestampToken));
+	}
+
+	private void registerPOE(String tokenId, Date poeTime) {
+		List<POE> poeTimeList = poeTimes.get(tokenId);
+		if (Utils.isCollectionEmpty(poeTimeList)) {
+			poeTimeList = new ArrayList<>();
+			poeTimes.put(tokenId, poeTimeList);
+		}
+		poeTimeList.add(new POE(poeTime));
 	}
 	
 	private List<CertificateToken> toCertificateTokenChain(List<Token> tokens) {
@@ -848,11 +869,12 @@ public class SignatureValidationContext implements ValidationContext {
 	
 	private Date getLowestPOETime(Token token) {
 		Date lowestPOE = null;
-		List<Date> bestSignatureTimeList = poeTimes.get(token.getDSSIdAsString());
-		if (Utils.isCollectionEmpty(bestSignatureTimeList)) {
+		List<POE> poeList = poeTimes.get(token.getDSSIdAsString());
+		if (Utils.isCollectionEmpty(poeList)) {
 			throw new IllegalStateException("POE shall be defined before accessing the 'poeTimes' list!");
 		}
-		for (Date poeTime : bestSignatureTimeList) {
+		for (POE poe : poeList) {
+			Date poeTime = poe.getTime();
 			if (lowestPOE == null || poeTime.before(lowestPOE)) {
 				lowestPOE = poeTime;
 			}
@@ -900,10 +922,10 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 	
 	private boolean hasPOEAfterProductionAndBeforeNextUpdate(RevocationToken<Revocation> revocation) {
-		List<Date> poeTimeList = poeTimes.get(revocation.getDSSIdAsString());
+		List<POE> poeTimeList = poeTimes.get(revocation.getDSSIdAsString());
 		if (Utils.isCollectionNotEmpty(poeTimeList)) {
-			for (Date poeTime : poeTimeList) {
-				if (isConsistentOnTime(revocation, poeTime)) {
+			for (POE poeTime : poeTimeList) {
+				if (isConsistentOnTime(revocation, poeTime.getTime())) {
 					return true;
 				}
 			}
@@ -912,10 +934,10 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 	
 	private boolean hasPOEInTheValidityRange(CertificateToken certificateToken) {
-		List<Date> poeTimeList = poeTimes.get(certificateToken.getDSSIdAsString());
+		List<POE> poeTimeList = poeTimes.get(certificateToken.getDSSIdAsString());
 		if (Utils.isCollectionNotEmpty(poeTimeList)) {
-			for (Date poeTime : poeTimeList) {
-				if (certificateToken.isValidOn(poeTime)) {
+			for (POE poeTime : poeTimeList) {
+				if (certificateToken.isValidOn(poeTime.getTime())) {
 					return true;
 				}
 				// continue
@@ -961,6 +983,40 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
+	public boolean checkSignatureNotExpired(CertificateToken signingCertificate) {
+		boolean signatureNotExpired = verifyCertificateTokenHasPOERecursively(signingCertificate);
+		if (!signatureNotExpired) {
+			Status status = new Status("The signing certificate has been expired and " +
+					"there is no POE during its validity range.", Arrays.asList(signingCertificate.getDSSIdAsString()));
+			certificateVerifier.getAlertOnExpiredSignature().alert(status);
+		}
+		return signatureNotExpired;
+	}
+
+	private boolean verifyCertificateTokenHasPOERecursively(CertificateToken certificateToken) {
+		List<POE> poeTimeList = poeTimes.get(certificateToken.getDSSIdAsString());
+		if (Utils.isCollectionNotEmpty(poeTimeList)) {
+			for (POE poeTime : poeTimeList) {
+				if (certificateToken.isValidOn(poeTime.getTime())) {
+					TimestampToken timestampToken = poeTime.getTimestampToken();
+					if (timestampToken != null) {
+						// check if the timestamp is valid at validation time
+						CertificateToken issuerCertificateToken = getIssuer(timestampToken);
+						if (issuerCertificateToken != null &&
+								verifyCertificateTokenHasPOERecursively(issuerCertificateToken)) {
+							return true;
+						}
+					} else {
+						// the certificate is valid at the current time
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public Set<CertificateToken> getProcessedCertificates() {
 		return Collections.unmodifiableSet(processedCertificates);
 	}
@@ -987,6 +1043,56 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private <T extends Token> boolean isTrusted(T token) {
 		return token instanceof CertificateToken && trustedCertSources.isTrusted((CertificateToken) token);
+	}
+
+	/**
+	 * This class defines a POE provided to the validation process or obtained from processed timestamps
+	 */
+	private class POE {
+
+		/** The POE time */
+		private final Date time;
+
+		/** The TimestampToken provided the POE, when present */
+		private TimestampToken timestampToken;
+
+		/**
+		 * Default constructor to instantiate the object from a provided time
+		 *
+		 * @param time {@link Date}
+		 */
+		public POE(final Date time) {
+			this.time = time;
+		}
+
+		/**
+		 * Constructor to instantiate the POE object from a TimestampToken
+		 *
+		 * @param timestampToken {@link TimestampToken}
+		 */
+		public POE(TimestampToken timestampToken) {
+			this.timestampToken = timestampToken;
+			this.time = timestampToken.getCreationDate();
+		}
+
+		/**
+		 * Returns the POE time
+		 *
+		 * @return {@link Date}
+		 */
+		public Date getTime() {
+			return time;
+		}
+
+		/**
+		 * Returns the TimestampToken used to create the POE, when present
+		 *
+		 * @return {@link TimestampToken} if it has been used for the POE, null otherwise
+		 */
+		public TimestampToken getTimestampToken() {
+			return timestampToken;
+		}
+
 	}
 
 }
