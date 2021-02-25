@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -31,14 +27,19 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * This class represents the implementation of XAdES level -X extension.
  *
- *
  */
-
 public class XAdESLevelX extends XAdESLevelC {
+
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignature.class);
 
 	/**
 	 * The default constructor for XAdESLevelX.
@@ -60,33 +61,56 @@ public class XAdESLevelX extends XAdESLevelC {
 	 */
 	@Override
 	protected void extendSignatureTag() throws DSSException {
-
 		/* Go up to -C */
 		super.extendSignatureTag();
-		Element levelCUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		// TODO : for XAdES_XL the development is not conform with the standard ?
-		if (!xadesSignature.hasXProfile() || SignatureLevel.XAdES_X.equals(signatureLevel) || SignatureLevel.XAdES_XL.equals(signatureLevel)) {
+		// for XL-level it is required to re-create SigAndRefsTimeStamp
+		if (!xadesSignature.hasXProfile() || SignatureLevel.XAdES_X.equals(signatureLevel) ||
+				SignatureLevel.XAdES_XL.equals(signatureLevel)) {
 
-			if (SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
+			assertExtendSignatureToXPossible();
 
-				final NodeList toRemoveList = xadesSignature.getSigAndRefsTimeStamp();
-				for (int index = 0; index < toRemoveList.getLength(); index++) {
+			final Element levelCUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-					final Node item = toRemoveList.item(index);
-					removeChild(unsignedSignaturePropertiesDom, item);
-				}
-			}
+			removeOldTimestamps();
 
 			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
-			final byte[] timestampX1Data = xadesSignature.getTimestampSource().getTimestampX1Data(canonicalizationMethod);
+			final byte[] timestampX1Data = xadesSignature.getTimestampSource().getTimestampX1Data(
+					canonicalizationMethod, params.isEn319132());
 			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, timestampX1Data);
 			createXAdESTimeStampType(TimestampType.VALIDATION_DATA_TIMESTAMP, canonicalizationMethod, digestValue);
 			
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelCUnsignedProperties);
+		}
+	}
+
+	private void removeOldTimestamps() {
+		final NodeList sigAndRefsTimeStampList = xadesSignature.getSigAndRefsTimeStamp();
+		if (sigAndRefsTimeStampList != null && sigAndRefsTimeStampList.getLength() > 0) {
+			LOG.warn("An existing SigAndRefsTimeStamp found! " +
+					"The entry will be removed in order to extend the signature with the updated data.");
+		}
+		removeNodes(sigAndRefsTimeStampList);
+
+		NodeList refsOnlyTimestampTimeStamp = xadesSignature.getRefsOnlyTimestampTimeStamp();
+		if (refsOnlyTimestampTimeStamp != null && refsOnlyTimestampTimeStamp.getLength() > 0) {
+			LOG.warn("An existing RefsOnlyTimeStamp found! " +
+					"The entry will be removed in order to extend the signature with the updated data.");
+		}
+		removeNodes(refsOnlyTimestampTimeStamp);
+	}
+
+	/**
+	 * Checks if the extension is possible.
+	 */
+	private void assertExtendSignatureToXPossible() {
+		final SignatureLevel signatureLevel = params.getSignatureLevel();
+		if (SignatureLevel.XAdES_X.equals(signatureLevel) && (xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
+			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
+			throw new DSSException(String.format(exceptionMessage, "XAdES XL"));
 		}
 	}
 

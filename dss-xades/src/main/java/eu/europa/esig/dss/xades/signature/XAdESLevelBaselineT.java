@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -40,9 +41,11 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
@@ -65,7 +68,9 @@ import org.w3c.dom.NodeList;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
@@ -182,7 +187,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	private void assertExtendSignatureToTPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		if (XAdES_BASELINE_T.equals(signatureLevel) && (xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
-			final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
+			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
 			throw new DSSException(String.format(exceptionMessage, "XAdES LT"));
 		}
 	}
@@ -349,10 +354,12 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param indent
 	 *            {@link String} to add between elements (if not NULL)
 	 */
-	protected void incorporateCertificateValues(final Element parentDom, final Collection<CertificateToken> certificatesToBeAdded, String indent) {
+	protected void incorporateCertificateValues(final Element parentDom,
+												final Collection<CertificateToken> certificatesToBeAdded,
+												String indent) {
 		Element certificatesDom = incorporateCertificateValues(parentDom, certificatesToBeAdded);
 		if (certificatesDom != null && indent != null) {
-			DomUtils.setTextNode(documentDom, unsignedSignaturePropertiesDom, indent);
+			DomUtils.setTextNode(documentDom, parentDom, indent);
 			DSSXMLUtils.indentAndReplace(documentDom, certificatesDom);
 		}
 	}
@@ -380,9 +387,101 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			final Collection<OCSPToken> ocspsToAdd, String indent) {
 		Element revocationDom = incorporateRevocationValues(parentDom, crlsToAdd, ocspsToAdd);
 		if (revocationDom != null && indent != null) {
-			DomUtils.setTextNode(documentDom, unsignedSignaturePropertiesDom, indent);
+			DomUtils.setTextNode(documentDom, parentDom, indent);
 			DSSXMLUtils.indentAndReplace(documentDom, revocationDom);
 		}
+	}
+
+	/**
+	 * This method removes old certificate values from the unsigned signature properties element.
+	 */
+	protected String removeOldCertificateValues() {
+		String text = null;
+		final Element toRemove = xadesSignature.getCertificateValues();
+		if (toRemove != null) {
+			text = removeNode(toRemove);
+			xadesSignature.resetCertificateSource();
+		}
+		return text;
+	}
+
+	/**
+	 * This method removes old revocation values from the unsigned signature properties element.
+	 */
+	protected void removeOldRevocationValues() {
+		final Element toRemove = xadesSignature.getRevocationValues();
+		if (toRemove != null) {
+			removeNode(toRemove);
+			xadesSignature.resetRevocationSources();
+		}
+	}
+
+	/**
+	 * This method removes the timestamp validation data of the last archive timestamp.
+	 *
+	 * @return indent of the last {@code TimeStampValidationData} xml element, if present
+	 */
+	protected String removeLastTimestampValidationData() {
+		final Element toRemove = xadesSignature.getLastTimestampValidationData();
+		if (toRemove != null) {
+			/* Certificate and revocation sources need to be reset because of
+			 * the removing of timeStampValidationData element */
+			xadesSignature.resetCertificateSource();
+			xadesSignature.resetRevocationSources();
+
+			return removeNode(toRemove);
+		}
+		return null;
+	}
+
+	/**
+	 * This method incorporates the timestamp validation data in the signature
+	 *
+	 * @param validationDataForInclusion {@link ValidationDataForInclusion} to be included into the signature
+	 */
+	protected void incorporateTimestampValidationData(final ValidationDataForInclusion validationDataForInclusion, String indent) {
+
+		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
+
+		if (Utils.isCollectionNotEmpty(certificateValuesToAdd) || Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
+
+			final Element timeStampValidationDataDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(),
+					XAdES141Element.TIMESTAMP_VALIDATION_DATA);
+
+			incorporateCertificateValues(timeStampValidationDataDom, certificateValuesToAdd, indent);
+			incorporateRevocationValues(timeStampValidationDataDom, crlsToAdd, ocspsToAdd, indent);
+
+			String id = "1";
+			final List<TimestampToken> archiveTimestamps = xadesSignature.getArchiveTimestamps();
+			if (archiveTimestamps.size() > 0) {
+				final TimestampToken timestampToken = archiveTimestamps.get(archiveTimestamps.size() - 1);
+				id = timestampToken.getDSSIdAsString();
+			}
+
+			timeStampValidationDataDom.setAttribute("Id", "id-" + id);
+			if (params.isPrettyPrint()) {
+				DSSXMLUtils.indentAndReplace(documentDom, timeStampValidationDataDom);
+			}
+
+		}
+	}
+
+	/**
+	 * This method incorporate timestamp type object.
+	 */
+	protected void incorporateArchiveTimestamp() {
+		final XAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
+		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
+		final byte[] archiveTimestampData = xadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Data to be signed by the ArchiveTimestamp:");
+			LOG.trace(new String(archiveTimestampData));
+		}
+		final DigestAlgorithm timestampDigestAlgorithm = archiveTimestampParameters.getDigestAlgorithm();
+		final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, archiveTimestampData);
+		createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, canonicalizationMethod, digestBytes);
 	}
 
 	/**
@@ -400,35 +499,44 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	protected void createXAdESTimeStampType(final TimestampType timestampType, final String timestampC14nMethod, final byte[] digestValue) throws DSSException {
 
 		if ((XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())
-				|| XAdESNamespaces.XADES_122.isSameUri(getXadesNamespace().getUri())) && TimestampType.SIGNATURE_TIMESTAMP != timestampType) {
+				|| XAdESNamespaces.XADES_122.isSameUri(getXadesNamespace().getUri()))
+				&& TimestampType.SIGNATURE_TIMESTAMP != timestampType) {
 			throw new DSSException("Signature Timestamp creation is only supported for XAdES 1.1.1 and 1.2.2");
 		}		
-		
-		Element timeStampDom = null;
+
 		final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 		DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
-		switch (timestampType) {
 
-		case SIGNATURE_TIMESTAMP:
-			// <xades:SignatureTimeStamp Id="time-stamp-1dee38c4-8388-40d1-8880-9eeda853fe60">
-			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignatureTimeStamp());
-			break;
-		case VALIDATION_DATA_TIMESTAMP:
-			// <xades:SigAndRefsTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-			if (params.isEn319132() && !isOldGeneration(params.getSignatureLevel())) {
-				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(), XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2);
-			} else {
-				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigAndRefsTimeStamp());
-			}
-			break;
-		case ARCHIVE_TIMESTAMP:
-			// <xades141:ArchiveTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
-			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(), XAdES141Element.ARCHIVE_TIMESTAMP);
-			timestampDigestAlgorithm = params.getArchiveTimestampParameters().getDigestAlgorithm();
-			break;
-		default:
-			// Content timestamps need to be generated before the signature itself
-			throw new DSSException("Unsupported timestamp type : " + timestampType);
+		Element timeStampDom;
+		switch (timestampType) {
+			case SIGNATURE_TIMESTAMP:
+				// <xades:SignatureTimeStamp Id="time-stamp-1dee38c4-8388-40d1-8880-9eeda853fe60">
+				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignatureTimeStamp());
+				break;
+			case VALIDATION_DATA_TIMESTAMP:
+				// <xades:SigAndRefsTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
+				if (params.isEn319132()) {
+					timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(), XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2);
+				} else {
+					timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigAndRefsTimeStamp());
+				}
+				break;
+			case VALIDATION_DATA_REFSONLY_TIMESTAMP:
+				// <xades:RefsOnlyTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
+				if (params.isEn319132()) {
+					timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(), XAdES141Element.REFS_ONLY_TIMESTAMP_V2);
+				} else {
+					timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementRefsOnlyTimeStamp());
+				}
+				break;
+			case ARCHIVE_TIMESTAMP:
+				// <xades141:ArchiveTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
+				timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(), XAdES141Element.ARCHIVE_TIMESTAMP);
+				timestampDigestAlgorithm = params.getArchiveTimestampParameters().getDigestAlgorithm();
+				break;
+			default:
+				// Content timestamps need to be generated before the signature itself
+				throw new DSSException("Unsupported timestamp type : " + timestampType);
 		}
 
 		if (LOG.isDebugEnabled()) {
@@ -480,8 +588,34 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		includeDom.setAttribute(XAdES122Attribute.URI.getAttributeName(), '#' + xadesSignature.getSignatureValueId());
 	}
 
-	private boolean isOldGeneration(SignatureLevel signatureLevel) {
-		return SignatureLevel.XAdES_X.equals(signatureLevel) || SignatureLevel.XAdES_XL.equals(signatureLevel) || SignatureLevel.XAdES_A.equals(signatureLevel);
+	/**
+	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
+	 *
+	 * @throws DSSException in case of the cryptographic signature verification fails
+	 */
+	protected void checkSignatureIntegrity() throws DSSException {
+		final SignatureCryptographicVerification signatureCryptographicVerification =
+				xadesSignature.getSignatureCryptographicVerification();
+		if (!signatureCryptographicVerification.isSignatureIntact()) {
+			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
+			throw new DSSException("Cryptographic signature verification has failed" +
+					(errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
+		}
+	}
+
+	/**
+	 * Checks if the detached content represented by binary documents (used for -LTA level extension)
+	 */
+	protected void assertDetachedDocumentsContainBinaries() {
+		List<DSSDocument> detachedContents = params.getDetachedContents();
+		if (Utils.isCollectionNotEmpty(detachedContents)) {
+			for (DSSDocument detachedDocument : detachedContents) {
+				if (detachedDocument instanceof DigestDocument) {
+					throw new DSSException("XAdES-LTA requires complete binaries of signed documents! "
+							+ "Extension with a DigestDocument is not possible.");
+				}
+			}
+		}
 	}
 
 }

@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.PublicKey;
-import java.security.cert.CRLReason;
-import java.security.cert.X509CRLEntry;
-import java.util.Objects;
-
-import javax.security.auth.x500.X500Principal;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
@@ -45,6 +33,16 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.x500.X500Principal;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.PublicKey;
+import java.security.cert.CRLReason;
+import java.security.cert.X509CRLEntry;
+import java.util.Objects;
 
 /**
  * This class represents a CRL and provides the information about its validity.
@@ -209,8 +207,8 @@ public class CRLToken extends RevocationToken<CRL> {
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 		out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
 		out.append(indentStr).append("Issuer's certificate: ").append(getIssuerX500Principal()).append('\n');
-		if (getRelatedCertificateID() != null) {
-			out.append(indentStr).append("Related certificate: ").append(getRelatedCertificateID()).append('\n');
+		if (getRelatedCertificateId() != null) {
+			out.append(indentStr).append("Related certificate: ").append(getRelatedCertificateId()).append('\n');
 		}
 		indentStr = indentStr.substring(1);
 		out.append(indentStr).append(']');

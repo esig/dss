@@ -894,20 +894,22 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	}
 
 	private void incorporateSigningCertificateV1(Set<CertificateToken> certificates) {
-		Element signingCertificateDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigningCertificate());
+		Element signingCertificateDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, getXadesNamespace(),
+				getCurrentXAdESElements().getElementSigningCertificate());
 
+		DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
 		for (final CertificateToken certificate : certificates) {
-			final Element certDom = incorporateCert(signingCertificateDom, certificate);
-			incorporateIssuerV1(certDom, certificate);
+			incorporateCert(signingCertificateDom, certificate, signingCertificateDigestMethod);
 		}
 	}
 
 	private void incorporateSigningCertificateV2(Set<CertificateToken> certificates) {
-		Element signingCertificateDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigningCertificateV2());
+		Element signingCertificateDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, getXadesNamespace(),
+				getCurrentXAdESElements().getElementSigningCertificateV2());
 
+		DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
 		for (final CertificateToken certificate : certificates) {
-			final Element certDom = incorporateCert(signingCertificateDom, certificate);
-			incorporateIssuerV2(certDom, certificate);
+			incorporateCert(signingCertificateDom, certificate, signingCertificateDigestMethod);
 		}
 	}
 

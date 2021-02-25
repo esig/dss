@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -242,7 +242,7 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(2, signatures.size());
 		SignatureWrapper signatureWrapper = signatures.get(0);
-		List<RevocationRefWrappper> allFoundRevocationRefs = signatureWrapper.foundRevocations().getRelatedRevocationRefs();
+		List<RevocationRefWrapper> allFoundRevocationRefs = signatureWrapper.foundRevocations().getRelatedRevocationRefs();
 		assertNotNull(allFoundRevocationRefs);
 		assertEquals(0, allFoundRevocationRefs.size());
 		

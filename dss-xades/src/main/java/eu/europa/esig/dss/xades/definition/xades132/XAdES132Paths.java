@@ -211,7 +211,7 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCompleteCertificateRefsV2CertPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
-				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2, XAdES132Element.CERT_REFS, XAdES132Element.CERT);
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2, XAdES141Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
@@ -235,7 +235,7 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getAttributeCertificateRefsV2CertPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
-				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2, XAdES132Element.CERT_REFS, XAdES132Element.CERT);
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2, XAdES141Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
@@ -282,7 +282,7 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public String getSignatureTimestampsPath() {
+	public String getSignatureTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNATURE_TIMESTAMP);
 	}
@@ -297,6 +297,30 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	public String getSigAndRefsTimestampV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2);
+	}
+
+	@Override
+	public String getRefsOnlyTimestampPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.REFS_ONLY_TIMESTAMP);
+	}
+
+	@Override
+	public String getRefsOnlyTimestampV2Path() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.REFS_ONLY_TIMESTAMP_V2);
+	}
+
+	@Override
+	public String getArchiveTimestampPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ARCHIVE_TIMESTAMP);
+	}
+
+	@Override
+	public String getTimestampValidationDataPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.TIMESTAMP_VALIDATION_DATA);
 	}
 
 	@Override
@@ -356,6 +380,11 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentCertRefsCertChildren() {
 		return fromCurrentPosition(XAdES132Element.CERT_REFS, XAdES132Element.CERT);
+	}
+
+	@Override
+	public String getCurrentCertRefs141CertChildren() {
+		return fromCurrentPosition(XAdES141Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override

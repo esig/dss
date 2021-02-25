@@ -20,29 +20,37 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
-
-import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
-import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 
@@ -63,6 +71,67 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		Document document = DomUtils.buildDOM(byteArray);
+		NodeList signaturesList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
+		assertEquals(1, signaturesList.getLength());
+
+		XAdES132Paths paths = new XAdES132Paths();
+
+		Node signature = signaturesList.item(0);
+		NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificatePath());
+		assertEquals(1, signingCertificateList.getLength());
+
+		NodeList signingCertificateV2List = DomUtils.getNodeList(signature, paths.getSigningCertificateV2Path());
+		assertEquals(0, signingCertificateV2List.getLength());
+
+		NodeList completeCertificateRefsList = DomUtils.getNodeList(signature, paths.getCompleteCertificateRefsPath());
+		assertEquals(1, completeCertificateRefsList.getLength());
+
+		NodeList completeCertificateRefsV2List = DomUtils.getNodeList(signature, paths.getCompleteCertificateRefsV2Path());
+		assertEquals(0, completeCertificateRefsV2List.getLength());
+
+		NodeList completeRevocationRefsList = DomUtils.getNodeList(signature, paths.getCompleteRevocationRefsPath());
+		assertEquals(1, completeRevocationRefsList.getLength());
+
+		NodeList sigAndRefsTimeStampList = DomUtils.getNodeList(signature, paths.getSigAndRefsTimestampPath());
+		assertEquals(1, sigAndRefsTimeStampList.getLength());
+
+		NodeList sigAndRefsTimeStampV2List = DomUtils.getNodeList(signature, paths.getSigAndRefsTimestampV2Path());
+		assertEquals(0, sigAndRefsTimeStampV2List.getLength());
+	}
+
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(2, timestampList.size());
+
+		boolean sigTstFound = false;
+		boolean sigAndRefsTstFound = false;
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+				assertEquals(1, timestampWrapper.getTimestampedCertificates().size());
+				sigTstFound = true;
+			} else if (TimestampType.VALIDATION_DATA_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+				assertEquals(4, timestampWrapper.getTimestampedCertificates().size());
+				assertEquals(1, timestampWrapper.getTimestampedOrphanCertificates().size());
+				assertEquals(2, timestampWrapper.getTimestampedOrphanRevocations().size());
+				sigAndRefsTstFound = true;
+			}
+		}
+		assertTrue(sigTstFound);
+		assertTrue(sigAndRefsTstFound);
 	}
 
 	@Override
@@ -93,9 +162,9 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 			List<RelatedRevocationWrapper> allFoundRevocations = signatureWrapper.foundRevocations().getRelatedRevocationData();
 			for (RelatedRevocationWrapper foundRevocation : allFoundRevocations) {
 				assertEquals(0, foundRevocation.getOrigins().size()); // only refs
-				List<RevocationRefWrappper> revocationRefs = foundRevocation.getReferences();
+				List<RevocationRefWrapper> revocationRefs = foundRevocation.getReferences();
 				assertEquals(1, revocationRefs.size());
-				RevocationRefWrappper xmlRevocationRef = revocationRefs.get(0);
+				RevocationRefWrapper xmlRevocationRef = revocationRefs.get(0);
 				assertNotNull(xmlRevocationRef);
 				assertNotNull(xmlRevocationRef.getOrigins());
 			}

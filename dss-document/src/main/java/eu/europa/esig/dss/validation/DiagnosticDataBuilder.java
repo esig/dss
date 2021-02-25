@@ -1237,7 +1237,7 @@ public abstract class DiagnosticDataBuilder {
 		Set<RevocationToken<Revocation>> revocations = new HashSet<>();
 		if (Utils.isCollectionNotEmpty(usedRevocations)) {
 			for (RevocationToken<Revocation> revocationToken : usedRevocations) {
-				if (Utils.areStringsEqual(certToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
+				if (Utils.areStringsEqual(certToken.getDSSIdAsString(), revocationToken.getRelatedCertificateId())) {
 					revocations.add(revocationToken);
 				}
 			}

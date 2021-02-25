@@ -211,30 +211,41 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getTimestampX1Data(final TimestampToken timestampToken) {
-		byte[] timestampX1Data = getTimestampX1Data(timestampToken, null);
+		byte[] timestampX1Data = getTimestampX1Data(timestampToken, null, null);
 		return new InMemoryDocument(timestampX1Data);
 	}
 	
 	/**
 	 * Returns SigAndRefsTimestamp/SigAndRefsTimestampV2 message-imprint data for a new timestamp
 	 *
-	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (SigAndRefsTimestampV2)
 	 * @return message-imprint octets
 	 */
-	public byte[] getTimestampX1Data(final String canonicalizationMethod) {
-		return getTimestampX1Data(null, canonicalizationMethod);
+	public byte[] getTimestampX1Data(final String canonicalizationMethod, boolean en319132) {
+		return getTimestampX1Data(null, canonicalizationMethod, en319132);
 	}
 
 	/**
 	 * Computes the message-imprint for SigAndRefsTimestamp/SigAndRefsTimestampV2
 	 *
-	 * @param timestampToken {@link TimestampToken} on signature validation
-	 * @param canonicalizationMethod {@link String} the canonicalization method
+	 * @param timestampToken
+	 *              {@link TimestampToken} on signature validation
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (SigAndRefsTimestampV2)
 	 * @return message-imprint octets
 	 */
-	protected byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+	protected byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod, Boolean en319132) {
 		XAdESAttribute timestampAttribute = timestampToken != null ? (XAdESAttribute) timestampToken.getTimestampAttribute() : null;
+
+		canonicalizationMethod = timestampToken != null ?
+				timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+		en319132 = timestampToken != null ?
+				checkAttributeNameMatches(timestampAttribute, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2) : en319132;
 
 		/**
 		 * A.1.5.1 The SigAndRefsTimeStampV2 qualifying property (A.1.5.1.2 Not distributed case)
@@ -254,13 +265,20 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * 2) Those among the following unsigned qualifying properties that appear before SigAndRefsTimeStampV2,
 			 * in their order of appearance within the UnsignedSignatureProperties element:
 			 */
-			XAdESUnsignedSigProperties xadesUnsignedSigProperties = getXAdESUnsignedSignatureProperties(timestampToken);
+
+			// Canonicalization copy is used in order to allow XL/A levels creation
+			Element unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy();
+			if (unsignedProperties == null) {
+				throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
+			}
+
+			XAdESUnsignedSigProperties xadesUnsignedSigProperties = new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
 			for (XAdESAttribute xadesAttribute : xadesUnsignedSigProperties.getAttributes()) {
 				if (timestampAttribute != null && timestampAttribute.equals(xadesAttribute)) {
 					break;
 				}
 
-				if (checkAttributeNameMatches(timestampAttribute, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2)) {
+				if (en319132) {
 					/**
 					 * - The SignatureTimeStamp qualifying properties.
 					 * - The CompleteCertificateRefsV2 qualifying property.
@@ -274,10 +292,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 						writeCanonicalizedValue(xadesAttribute, canonicalizationMethod, buffer);
 					}
 
-				// Use SigAndRefsTimeStamp on signature creation/extension by default
-				// TODO : allow the new SigAndRefsTimeStampV2 creation
-				} else if (timestampToken == null ||
-						checkAttributeNameMatches(timestampAttribute, XAdES132Element.SIG_AND_REFS_TIMESTAMP)) {
+				} else {
 					/**
 					 * TS 101 903 v1.4.2 : 7.5.1 The SigAndRefsTimeStamp element (7.5.1.1 Not distributed case)
 					 *
@@ -309,30 +324,40 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getTimestampX2Data(final TimestampToken timestampToken) {
-		byte[] timestampX2Data = getTimestampX2Data(timestampToken, null);
+		byte[] timestampX2Data = getTimestampX2Data(timestampToken, null, null);
 		return new InMemoryDocument(timestampX2Data);
 	}
 	
 	/**
 	 * Returns RefsOnlyTimestamp/RefsOnlyTimestampV2 message-imprint data for a new timestamp
 	 *
-	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (RefsOnlyTimestampV2)
 	 * @return message-imprint octets
 	 */
-	public byte[] getTimestampX2Data(final String canonicalizationMethod) {
-		return getTimestampX2Data(null, canonicalizationMethod);
+	public byte[] getTimestampX2Data(final String canonicalizationMethod, boolean en319132) {
+		return getTimestampX2Data(null, canonicalizationMethod, en319132);
 	}
 
 	/**
 	 * Computes the message-imprint for RefsOnlyTimestamp/RefsOnlyTimestampV2
 	 *
-	 * @param timestampToken {@link TimestampToken} on signature validation
-	 * @param canonicalizationMethod {@link String} the canonicalization method
+	 * @param timestampToken
+	 *              {@link TimestampToken} on signature validation
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (RefsOnlyTimestampV2)
 	 * @return message-imprint octets
 	 */
-	protected byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+	protected byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod, Boolean en319132) {
 		XAdESAttribute timestampAttribute = timestampToken != null ? (XAdESAttribute) timestampToken.getTimestampAttribute() : null;
+
+		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+		en319132 = timestampToken != null ?
+				checkAttributeNameMatches(timestampAttribute, XAdES141Element.REFS_ONLY_TIMESTAMP_V2) : en319132;
 
 		/**
 		 * A.1.5.2 The RefsOnlyTimeStampV2 qualifying property (A.1.5.2.2 Not distributed case)
@@ -345,14 +370,21 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		 */
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 
-			XAdESUnsignedSigProperties xadesUnsignedSigProperties = getXAdESUnsignedSignatureProperties(timestampToken);
+
+			// Canonicalization copy is used in order to allow XL/A levels creation
+			Element unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy();
+			if (unsignedProperties == null) {
+				throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
+			}
+
+			XAdESUnsignedSigProperties xadesUnsignedSigProperties = new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
 			for (XAdESAttribute xadesAttribute : xadesUnsignedSigProperties.getAttributes()) {
 				if (timestampAttribute != null && timestampAttribute.equals(xadesAttribute)) {
 					break;
 				}
 
 				// Use RefsOnlyTimeStampV2 on signature creation/extension
-				if (checkAttributeNameMatches(timestampAttribute, XAdES141Element.REFS_ONLY_TIMESTAMP_V2)) {
+				if (en319132) {
 					/**
 					 * - The CompleteCertificateRefsV2 qualifying property.
 					 * - The CompleteRevocationRefs qualifying property.
@@ -365,10 +397,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 						writeCanonicalizedValue(xadesAttribute, canonicalizationMethod, buffer);
 					}
 
-				// Use RefsOnlyTimeStamp on signature creation/extension by default
-				// TODO : allow the new RefsOnlyTimeStampV2 creation
-				} else if (timestampToken == null ||
-						checkAttributeNameMatches(timestampAttribute, XAdES132Element.REFS_ONLY_TIMESTAMP)) {
+				} else {
 					/**
 					 * TS 101 903 v1.4.2 : 7.5.1 The SigAndRefsTimeStamp element (7.5.1.1 Not distributed case)
 					 *

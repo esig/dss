@@ -481,11 +481,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		
 		List<RelatedCertificateWrapper> relatedCertificates = foundCertificates.getRelatedCertificates();
 		for (RelatedCertificateWrapper foundCert : relatedCertificates) {
-			assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+			assertTrue(foundCert.getOrigins().size() < 2, "Duplicate certificate in " + foundCert.getOrigins());
 		}
 		List<OrphanCertificateWrapper> orphanCertificates = foundCertificates.getOrphanCertificates();
 		for (OrphanCertificateWrapper foundCert : orphanCertificates) {
-			assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+			assertTrue(foundCert.getOrigins().size() < 2, "Duplicate certificate in " + foundCert.getOrigins());
 		}
 	}
 
@@ -495,11 +495,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		
 		List<RelatedRevocationWrapper> relatedRevocations = foundRevocations.getRelatedRevocationData();
 		for (RelatedRevocationWrapper foundRevocation : relatedRevocations) {
-			assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
+			assertTrue(foundRevocation.getOrigins().size() < 2, "Duplicate revocation data in " + foundRevocation.getOrigins());
 		}
 		List<OrphanRevocationWrapper> orphanRevocations = foundRevocations.getOrphanRevocationData();
 		for (OrphanRevocationWrapper foundRevocation : orphanRevocations) {
-			assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
+			assertTrue(foundRevocation.getOrigins().size() < 2, "Duplicate revocation data in " + foundRevocation.getOrigins());
 		}
 	}
 	

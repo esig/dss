@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.xades.requirements;
 
-import java.io.File;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -34,12 +28,16 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.BeforeEach;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.io.File;
 
 public class XAdESBaselineBTest extends AbstractXAdESRequirementChecks {
 
-	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
-	private XAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
+	protected XAdESSignatureParameters signatureParameters;
+	protected DSSDocument documentToSign;
 
 	@BeforeEach
 	public void init() throws Exception {
@@ -55,13 +53,8 @@ public class XAdESBaselineBTest extends AbstractXAdESRequirementChecks {
 	}
 
 	@Override
-	public void checkSignatureTimeStampPresent() throws XPathExpressionException {
-		// No timestamp in Baseline Profile B
-	}
-
-	@Override
-	public void checkArchiveTimeStampPresent() throws XPathExpressionException {
-		// No ArchiveTimestamp in Baseline Profile B
+	public void checkUnsignedProperties() throws XPathExpressionException {
+		// do nothing
 	}
 
 	@Override

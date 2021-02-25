@@ -25,7 +25,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
@@ -88,7 +88,7 @@ public class XAdESValidationDataRefsTest extends AbstractXAdESTestValidation {
 				ocspRevocationCounter++;
 			}
 
-			for (RevocationRefWrappper revocationRef : orphanRevocation.getReferences()) {
+			for (RevocationRefWrapper revocationRef : orphanRevocation.getReferences()) {
 				assertNotNull(revocationRef.getOrigins());
 				assertNotNull(revocationRef.getDigestAlgoAndValue());
 				assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());

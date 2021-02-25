@@ -26,7 +26,6 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationDataForInclusion;
 import org.w3c.dom.Element;
@@ -59,7 +58,6 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	 */
 	@Override
 	protected void extendSignatureTag() throws DSSException {
-		
 		super.extendSignatureTag();
 		
 		if (xadesSignature.hasLTAProfile()) {
@@ -98,51 +96,12 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	}
 
 	/**
-	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
-	 *
-	 * @throws DSSException in case of the cryptographic signature verification fails
-	 */
-	protected void checkSignatureIntegrity() throws DSSException {
-		final SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
-		if (!signatureCryptographicVerification.isSignatureIntact()) {
-			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
-			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
-		}
-	}
-
-	/**
-	 * This method removes old certificates values from the unsigned signature properties element.
-	 */
-	private String removeOldCertificateValues() {
-		String text = null;
-		final Element toRemove = xadesSignature.getCertificateValues();
-		if (toRemove != null) {
-			text = removeChild(unsignedSignaturePropertiesDom, toRemove);
-			/* Because the element was removed, the certificate source needs to be reset */
-			xadesSignature.resetCertificateSource();
-		}
-		return text;
-	}
-
-	/**
-	 * This method removes old revocation values from the unsigned signature properties element.
-	 */
-	private void removeOldRevocationValues() {
-		final Element toRemove = xadesSignature.getRevocationValues();
-		if (toRemove != null) {
-			removeChild(unsignedSignaturePropertiesDom, toRemove);
-			/* Because the element was removed, the revocation sources need to be reset */
-			xadesSignature.resetRevocationSources();
-		}
-	}
-
-	/**
 	 * Checks if the extension is possible.
 	 */
 	private void assertExtendSignatureToLTPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		if (SignatureLevel.XAdES_BASELINE_LT.equals(signatureLevel) && xadesSignature.hasLTAProfile()) {
-			final String exceptionMessage = "Cannot extend the signature. The signedData is already extended with [%s]!";
+			final String exceptionMessage = "Cannot extend the signature. The signature is already extended with [%s]!";
 			throw new DSSException(String.format(exceptionMessage, "XAdES LTA"));
 		} else if (xadesSignature.areAllSelfSignedCertificates()) {
 			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");

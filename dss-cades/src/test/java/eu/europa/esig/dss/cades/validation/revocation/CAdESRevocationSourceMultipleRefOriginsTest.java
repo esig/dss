@@ -32,7 +32,7 @@ import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -56,7 +56,7 @@ public class CAdESRevocationSourceMultipleRefOriginsTest extends AbstractCAdESTe
 		List<OrphanRevocationWrapper> allFoundRevocations = signature.foundRevocations().getOrphanRevocationData();
 		assertEquals(3, allFoundRevocations.size());
 
-		List<RevocationRefWrappper> allFoundRevocationRefs = signature.foundRevocations().getRelatedRevocationRefs();
+		List<RevocationRefWrapper> allFoundRevocationRefs = signature.foundRevocations().getRelatedRevocationRefs();
 		assertEquals(0, allFoundRevocationRefs.size());
 
 		List<String> revocationIds = new ArrayList<>();
@@ -66,10 +66,10 @@ public class CAdESRevocationSourceMultipleRefOriginsTest extends AbstractCAdESTe
 			assertFalse(revocationIds.contains(revocation.getId()));
 			revocationIds.add(revocation.getId());
 			
-			List<RevocationRefWrappper> revocationRefs = revocation.getReferences();
+			List<RevocationRefWrapper> revocationRefs = revocation.getReferences();
 			assertEquals(1, revocationRefs.size());
 			
-			RevocationRefWrappper revocationRef = revocationRefs.get(0);
+			RevocationRefWrapper revocationRef = revocationRefs.get(0);
 			assertEquals(1, revocationRef.getOrigins().size());
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
@@ -103,10 +103,10 @@ public class CAdESRevocationSourceMultipleRefOriginsTest extends AbstractCAdESTe
 					
 					assertTrue(revocationIds.contains(revocation.getId()));
 					
-					List<RevocationRefWrappper> revocationRefs = revocation.getReferences();
+					List<RevocationRefWrapper> revocationRefs = revocation.getReferences();
 					assertEquals(1, revocationRefs.size());
 					
-					RevocationRefWrappper revocationRef = revocationRefs.get(0);
+					RevocationRefWrapper revocationRef = revocationRefs.get(0);
 					assertEquals(1, revocationRef.getOrigins().size());
 					assertNotNull(revocationRef.getDigestAlgoAndValue());
 					assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());

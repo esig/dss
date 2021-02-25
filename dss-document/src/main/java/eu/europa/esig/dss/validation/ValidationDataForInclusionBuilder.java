@@ -219,7 +219,7 @@ public class ValidationDataForInclusionBuilder {
 	 * The method allows to avoid adding of revocation data for certificates that had been removed from the inclusion
 	 */
 	private boolean isAtLeastOneCertificateCovered(RevocationToken revocationToken, final Collection<CertificateToken> certificateTokens) {
-		String relatedCertificateID = revocationToken.getRelatedCertificateID();
+		String relatedCertificateID = revocationToken.getRelatedCertificateId();
 		if (Utils.isStringNotEmpty(relatedCertificateID)) {
 			for (CertificateToken certificateToken : certificateTokens) {
 				if (certificateToken.getDSSIdAsString().equals(relatedCertificateID)) {

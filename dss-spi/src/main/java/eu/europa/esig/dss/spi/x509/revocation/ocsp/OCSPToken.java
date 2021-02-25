@@ -318,8 +318,8 @@ public class OCSPToken extends RevocationToken<OCSP> {
 			out.append(indentStr).append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
 		}
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm.getJCEId()).append('\n');
-		if (getRelatedCertificateID() != null) {
-			out.append(indentStr).append("Related certificate: ").append(getRelatedCertificateID()).append('\n');
+		if (getRelatedCertificateId() != null) {
+			out.append(indentStr).append("Related certificate: ").append(getRelatedCertificateId()).append('\n');
 		}
 		indentStr = indentStr.substring(1);
 		out.append(indentStr).append("]");

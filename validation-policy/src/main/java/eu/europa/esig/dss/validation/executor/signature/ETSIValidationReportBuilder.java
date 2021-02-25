@@ -44,7 +44,7 @@ import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
@@ -1008,7 +1008,7 @@ public class ETSIValidationReportBuilder {
 			for (OrphanRevocationWrapper orphanRev : orphanRevs) {
 				if (orphanRev != null) {
 					if (Utils.isCollectionNotEmpty(orphanRev.getReferences()) && !allOrphanRevocations.contains(orphanRev)) {
-						for (RevocationRefWrappper revRef : orphanRev.getReferences()) {
+						for (RevocationRefWrapper revRef : orphanRev.getReferences()) {
 							Serializable revID;
 							if (RevocationType.CRL.equals(orphanRev.getRevocationType())) {
 								revID = buildCRLID(revRef.getDigestAlgoAndValue());
@@ -1041,7 +1041,7 @@ public class ETSIValidationReportBuilder {
 		return sacrlidType;
 	}
 
-	private SAOCSPIDType buildOCSPID(RevocationRefWrappper revRef) {
+	private SAOCSPIDType buildOCSPID(RevocationRefWrapper revRef) {
 		if (Utils.isStringNotEmpty(revRef.getResponderIdName()) || Utils.isArrayNotEmpty(revRef.getResponderIdKey())) {
 			SAOCSPIDType saocspidType = objectFactory.createSAOCSPIDType();
 			saocspidType.setProducedAt(revRef.getProductionTime());

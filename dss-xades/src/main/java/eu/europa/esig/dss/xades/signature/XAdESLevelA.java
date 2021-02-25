@@ -20,14 +20,12 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import org.w3c.dom.Element;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import org.w3c.dom.Element;
 
 /**
  * Holds level A aspects of XAdES
@@ -54,20 +52,31 @@ public class XAdESLevelA extends XAdESLevelXL {
 	 */
 	@Override
 	protected void extendSignatureTag() throws DSSException {
-
 		/* Up to -XL */
 		super.extendSignatureTag();
+
+		assertExtendSignatureToAPossible();
+
 		Element levelXLUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+		if (xadesSignature.hasLTAProfile()) {
+			checkSignatureIntegrity();
 
-		xadesSignature.checkSignatureIntegrity();
+			// must be executed before data removing
+			final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+			String indent = removeLastTimestampValidationData();
 
-		final XAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
-		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
-		final byte[] data = xadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
-		final DigestAlgorithm timestampDigestAlgorithm = archiveTimestampParameters.getDigestAlgorithm();
-		final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, data);
-		createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, canonicalizationMethod, digestBytes);
+			ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(validationContext);
+			incorporateTimestampValidationData(validationDataForInclusion, indent);
+		}
+		incorporateArchiveTimestamp();
 		
 		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXLUnsignedProperties);
 	}
+
+	private void assertExtendSignatureToAPossible() {
+		if (SignatureLevel.XAdES_A.equals(params.getSignatureLevel())) {
+			assertDetachedDocumentsContainBinaries();
+		}
+	}
+
 }

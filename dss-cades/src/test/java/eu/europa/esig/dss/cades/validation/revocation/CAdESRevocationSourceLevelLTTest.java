@@ -28,7 +28,7 @@ import java.util.List;
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -51,12 +51,12 @@ public class CAdESRevocationSourceLevelLTTest extends AbstractCAdESTestValidatio
 		
 		List<RelatedRevocationWrapper> foundRevocations = signature.foundRevocations().getRelatedRevocationData();
 		assertNotNull(foundRevocations);
-		List<RevocationRefWrappper> foundRevocationRefs = signature.foundRevocations().getRelatedRevocationRefs();
+		List<RevocationRefWrapper> foundRevocationRefs = signature.foundRevocations().getRelatedRevocationRefs();
 		assertEquals(3, foundRevocationRefs.size());
 		assertEquals(3, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
 		assertEquals(0, signature.foundRevocations().getOrphanRevocationData().size());
-		for (RevocationRefWrappper revocationRef : foundRevocationRefs) {
+		for (RevocationRefWrapper revocationRef : foundRevocationRefs) {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());

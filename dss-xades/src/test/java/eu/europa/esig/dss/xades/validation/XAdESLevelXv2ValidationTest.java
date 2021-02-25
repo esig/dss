@@ -19,7 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelXV2Test extends AbstractXAdESTestValidation {
+public class XAdESLevelXv2ValidationTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -51,7 +51,7 @@ public class XAdESLevelXV2Test extends AbstractXAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 
         FoundCertificatesProxy foundCertificates = signature.foundCertificates();
-        assertEquals(3, foundCertificates.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size() +
+        assertEquals(4, foundCertificates.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size() +
                 foundCertificates.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
 
         FoundRevocationsProxy foundRevocations = signature.foundRevocations();

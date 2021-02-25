@@ -169,14 +169,34 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
 		}
 	}
+
+	/**
+	 * Removes the given {@code nodeListToRemove} from its parent
+	 *
+	 * @param nodeListToRemove {@link NodeList} to remove
+	 * @return String of the next TEXT sibling of the first removed node with indent
+	 */
+	protected String removeNodes(NodeList nodeListToRemove) {
+		String text = null;
+		if (nodeListToRemove != null) {
+			for (int index = 0; index < nodeListToRemove.getLength(); index++) {
+				final Node item = nodeListToRemove.item(index);
+				String indent = removeNode(item);
+				if (text == null) {
+					text = indent;
+				}
+			}
+		}
+		return text;
+	}
 	
 	/**
-	 * Removes the given nodeToRemove from its parentNode
-	 * @param parentNode owner {@link Node} of the nodeToRemove
+	 * Removes the given {@code nodeToRemove} from its parent
+	 *
 	 * @param nodeToRemove {@link Node} to remove
 	 * @return String of the next TEXT sibling of the removed node (can be NULL if the TEXT sibling does not exist)
 	 */
-	protected String removeChild(Node parentNode, Node nodeToRemove) {
+	protected String removeNode(Node nodeToRemove) {
 		String text = null;
 		if (nodeToRemove != null) {
 			Node nextSibling = nodeToRemove.getNextSibling();

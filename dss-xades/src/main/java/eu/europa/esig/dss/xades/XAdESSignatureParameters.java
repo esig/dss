@@ -167,6 +167,13 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	private List<DSSObject> objects;
 	
+	/**
+	 * The {@code DigestAlgorithm} used to incorporate CompleteCertificateRefs/CompleteRevocationRefs on -C level
+	 *
+	 * Default: SHA256
+	 */
+	private DigestAlgorithm tokenReferencesDigestAlgorithm = DigestAlgorithm.SHA256;
+
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
 		if (signatureLevel == null || SignatureForm.XAdES != signatureLevel.getSignatureForm()) {
@@ -578,6 +585,26 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	public void setObjects(List<DSSObject> objects) {
 		this.objects = objects;
+	}
+
+	/**
+	 * Gets a {@code DigestAlgorithm} to create CompleteCertificateRefs/CompleteRevocationRefs with
+	 *
+	 * @return {@link DigestAlgorithm}
+	 */
+	public DigestAlgorithm getTokenReferencesDigestAlgorithm() {
+		return tokenReferencesDigestAlgorithm;
+	}
+
+	/**
+	 * Sets a {@code DigestAlgorithm} to create CompleteCertificateRefs/CompleteRevocationRefs for -C level
+	 *
+	 * Default : SHA256
+	 *
+	 * @param tokenReferencesDigestAlgorithm {@link DigestAlgorithm}
+	 */
+	public void setTokenReferencesDigestAlgorithm(DigestAlgorithm tokenReferencesDigestAlgorithm) {
+		this.tokenReferencesDigestAlgorithm = tokenReferencesDigestAlgorithm;
 	}
 
 	@Override

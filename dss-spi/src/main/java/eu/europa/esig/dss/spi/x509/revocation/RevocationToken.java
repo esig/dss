@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
-import java.util.Date;
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationReason;
@@ -31,6 +28,9 @@ import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
+
+import java.util.Date;
+import java.util.Objects;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken<R extends Revocation> extends Token {
@@ -107,15 +107,16 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	 */
 	public abstract RevocationType getRevocationType();
 
-	public String getRelatedCertificateID() {
+	/**
+	 * Gets DSS String Id of the related certificate
+	 *
+	 * @return {@link String}
+	 */
+	public String getRelatedCertificateId() {
 		if (relatedCertificate != null) {
 			return relatedCertificate.getDSSIdAsString();
 		}
 		return null;
-	}
-
-	public void setRelatedCertificate(CertificateToken relatedCertificate) {
-		this.relatedCertificate = relatedCertificate;
 	}
 	
 	/**

@@ -59,57 +59,49 @@ public class XAdESLevelXL extends XAdESLevelX {
 	 */
 	@Override
 	protected void extendSignatureTag() throws DSSException {
-
 		/* Go up to -X */
 		super.extendSignatureTag();
+
+		if (xadesSignature.hasLTAProfile()) {
+			return;
+		}
+
+		// NOTE: do not force sources reload for certificate and revocation sources
+		// in order to ensure the same validation data as on -C level
+		xadesSignature.resetTimestampSource();
+
+		assertExtendSignatureToXLPossible();
 		Element levelXUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-		if (!xadesSignature.hasLTProfile() || SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
+		checkSignatureIntegrity();
 
-			// Data sources can already be loaded in memory (force reload)
-			xadesSignature.resetCertificateSource();
-			xadesSignature.resetRevocationSources();
-			xadesSignature.resetTimestampSource();
+		final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 
-			final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+		String indent = removeOldCertificateValues();
+		removeOldRevocationValues();
 
-			String afterCertificateText = removeOldCertificateValues();
-			removeOldRevocationValues();
+		final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(validationContext);
 
-			final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(validationContext);
+		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 
-			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
-			List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
-			List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
-			
-			incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, afterCertificateText);
-			incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, afterCertificateText);
-			
-			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXUnsignedProperties);
-		}
+		incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
+		incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
+
+		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXUnsignedProperties);
 	}
 
 	/**
-	 * This method removes old certificate values from the unsigned signature properties element.
+	 * Checks if the extension is possible.
 	 */
-	private String removeOldCertificateValues() {
-		String text = null;
-		final Element toRemove = xadesSignature.getCertificateValues();
-		if (toRemove != null) {
-			text = removeChild(unsignedSignaturePropertiesDom, toRemove);
-			xadesSignature.resetCertificateSource();
-		}
-		return text;
-	}
-
-	/**
-	 * This method removes old revocation values from the unsigned signature properties element.
-	 */
-	private void removeOldRevocationValues() {
-		final Element toRemove = xadesSignature.getRevocationValues();
-		if (toRemove != null) {
-			removeChild(unsignedSignaturePropertiesDom, toRemove);
-			xadesSignature.resetRevocationSources();
+	private void assertExtendSignatureToXLPossible() {
+		final SignatureLevel signatureLevel = params.getSignatureLevel();
+		if (SignatureLevel.XAdES_XL.equals(signatureLevel) && xadesSignature.hasLTAProfile()) {
+			final String exceptionMessage = "Cannot extend the signature. The signature is already extended with [%s]!";
+			throw new DSSException(String.format(exceptionMessage, "XAdES A"));
+		} else if (xadesSignature.areAllSelfSignedCertificates()) {
+			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}
 

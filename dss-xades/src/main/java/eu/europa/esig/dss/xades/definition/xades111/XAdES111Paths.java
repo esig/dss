@@ -268,7 +268,7 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public String getSignatureTimestampsPath() {
+	public String getSignatureTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.UNSIGNED_PROPERTIES,
 				XAdES111Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNATURE_TIMESTAMP);
 	}
@@ -281,6 +281,26 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
 	public String getSigAndRefsTimestampV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getRefsOnlyTimestampPath() {
+		return null;
+	}
+
+	@Override
+	public String getRefsOnlyTimestampV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getArchiveTimestampPath() {
+		return null;
+	}
+
+	@Override
+	public String getTimestampValidationDataPath() {
 		return null;
 	}
 
@@ -339,6 +359,11 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentCertRefsCertChildren() {
 		return fromCurrentPosition(XAdES111Element.CERT_REFS, XAdES111Element.CERT);
+	}
+
+	@Override
+	public String getCurrentCertRefs141CertChildren() {
+		return null;
 	}
 
 	@Override

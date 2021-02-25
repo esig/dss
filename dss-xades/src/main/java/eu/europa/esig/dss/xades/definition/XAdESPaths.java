@@ -227,14 +227,14 @@ public interface XAdESPaths {
 	String getCompleteCertificateRefsCertPath();
 
 	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CompleteCertificateRefsV2"
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:CompleteCertificateRefsV2"
 	 *
 	 * @return {@link String} path
 	 */
 	String getCompleteCertificateRefsV2Path();
 
 	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CompleteCertificateRefsV2/xades:CertRefs/xades:Cert"
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:CompleteCertificateRefsV2/xades141:CertRefs/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
@@ -255,14 +255,14 @@ public interface XAdESPaths {
 	String getAttributeCertificateRefsCertPath();
 
 	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttributeCertificateRefsV2"
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AttributeCertificateRefsV2"
 	 *
 	 * @return {@link String} path
 	 */
 	String getAttributeCertificateRefsV2Path();
 
 	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttributeCertificateRefsV2/xades:CertRefs/xades:Cert"
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AttributeCertificateRefsV2/xades141:CertRefs/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
@@ -290,34 +290,6 @@ public interface XAdESPaths {
 	String getAttributeRevocationValuesPath();
 
 	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:TimeStampValidationData/xades:RevocationValues"
-	 *
-	 * @return {@link String} path
-	 */
-	String getTimeStampValidationDataRevocationValuesPath();
-
-	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SignatureTimeStamp"
-	 *
-	 * @return {@link String} path
-	 */
-	String getSignatureTimestampsPath();
-
-	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SigAndRefsTimeStamp"
-	 *
-	 * @return {@link String} path
-	 */
-	String getSigAndRefsTimestampPath();
-
-	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:SigAndRefsTimeStampV2"
-	 *
-	 * @return {@link String} path
-	 */
-	String getSigAndRefsTimestampV2Path();
-
-	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:SigAndRefsTimeStampV2"
 	 *
 	 * @return {@link String} path
@@ -337,6 +309,62 @@ public interface XAdESPaths {
 	 * @return {@link String} path
 	 */
 	String getEncapsulatedTimeStampValidationDataCertValuesPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:TimeStampValidationData/xades:RevocationValues"
+	 *
+	 * @return {@link String} path
+	 */
+	String getTimeStampValidationDataRevocationValuesPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SignatureTimeStamp"
+	 *
+	 * @return {@link String} path
+	 */
+	String getSignatureTimestampPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SigAndRefsTimeStamp"
+	 *
+	 * @return {@link String} path
+	 */
+	String getSigAndRefsTimestampPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:SigAndRefsTimeStampV2"
+	 *
+	 * @return {@link String} path
+	 */
+	String getSigAndRefsTimestampV2Path();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:RefsOnlyTimeStamp"
+	 *
+	 * @return {@link String} path
+	 */
+	String getRefsOnlyTimestampPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:RefsOnlyTimeStampV2"
+	 *
+	 * @return {@link String} path
+	 */
+	String getRefsOnlyTimestampV2Path();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:ArchiveTimeStamp"
+	 *
+	 * @return {@link String} path
+	 */
+	String getArchiveTimestampPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:TimeStampValidationData"
+	 *
+	 * @return {@link String} path
+	 */
+	String getTimestampValidationDataPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SignaturePolicyStore"
@@ -416,6 +444,13 @@ public interface XAdESPaths {
 	 * @return {@link String} path
 	 */
 	String getCurrentCertRefsCertChildren();
+
+	/**
+	 * Gets path "./xades141:CertRefs/xades:Cert"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentCertRefs141CertChildren();
 
 	/**
 	 * Gets path "./xades:Cert"

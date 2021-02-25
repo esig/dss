@@ -102,7 +102,7 @@ public class JdbcCacheOcspSourceTest {
 		assertEquals(revocationToken.getProductionDate(), savedRevocationToken.getProductionDate());
 		assertEquals(Hex.encodeHexString(revocationToken.getPublicKeyOfTheSigner().getEncoded()), Hex.encodeHexString(savedRevocationToken.getPublicKeyOfTheSigner().getEncoded()));
 		assertEquals(revocationToken.getReason(), savedRevocationToken.getReason());
-		assertEquals(revocationToken.getRelatedCertificateID(), savedRevocationToken.getRelatedCertificateID());
+		assertEquals(revocationToken.getRelatedCertificateId(), savedRevocationToken.getRelatedCertificateId());
 		assertEquals(revocationToken.getRevocationDate(), savedRevocationToken.getRevocationDate());
 		assertEquals(revocationToken.getSignatureAlgorithm().getEncryptionAlgorithm().name(), savedRevocationToken.getSignatureAlgorithm().getEncryptionAlgorithm().name());
 		assertEquals(revocationToken.getSourceURL(), savedRevocationToken.getSourceURL());

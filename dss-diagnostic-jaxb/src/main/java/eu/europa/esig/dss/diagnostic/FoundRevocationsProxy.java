@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FoundRevocationsProxy {
 	
@@ -125,7 +125,7 @@ public class FoundRevocationsProxy {
 		
 		List<RelatedRevocationWrapper> relatedRevocations = getRelatedRevocationData();
 		for (RelatedRevocationWrapper relatedRevocation : relatedRevocations) {
-			for (RevocationRefWrappper revocationRef : relatedRevocation.getReferences()) {
+			for (RevocationRefWrapper revocationRef : relatedRevocation.getReferences()) {
 				if (revocationRef.getOrigins().contains(refOrigin)) {
 					revocationWrappers.add(relatedRevocation);
 					break;
@@ -147,7 +147,7 @@ public class FoundRevocationsProxy {
 		
 		List<OrphanRevocationWrapper> orphanRevocationData = getOrphanRevocationData();
 		for (OrphanRevocationWrapper orphanRevocation : orphanRevocationData) {
-			for (RevocationRefWrappper refWrappper : orphanRevocation.getReferences()) {
+			for (RevocationRefWrapper refWrappper : orphanRevocation.getReferences()) {
 				if (refWrappper.getOrigins().contains(refOrigin)) {
 					revocationWrappers.add(orphanRevocation);
 					break;
@@ -199,10 +199,10 @@ public class FoundRevocationsProxy {
 	/**
 	 * Returns a list of all found references for related revocations
 	 * 
-	 * @return a list of {@link RevocationRefWrappper}
+	 * @return a list of {@link RevocationRefWrapper}
 	 */
-	public List<RevocationRefWrappper> getRelatedRevocationRefs() {
-		List<RevocationRefWrappper> revocationRefs = new ArrayList<>();
+	public List<RevocationRefWrapper> getRelatedRevocationRefs() {
+		List<RevocationRefWrapper> revocationRefs = new ArrayList<>();
 		for (RelatedRevocationWrapper revocationWrapper : getRelatedRevocationData()) {
 			revocationRefs.addAll(revocationWrapper.getReferences());
 		}
@@ -212,10 +212,10 @@ public class FoundRevocationsProxy {
 	/**
 	 * Returns a list of all found references for orphan revocations
 	 * 
-	 * @return a list of {@link RevocationRefWrappper}
+	 * @return a list of {@link RevocationRefWrapper}
 	 */
-	public List<RevocationRefWrappper> getOrphanRevocationRefs() {
-		List<RevocationRefWrappper> revocationRefs = new ArrayList<>();
+	public List<RevocationRefWrapper> getOrphanRevocationRefs() {
+		List<RevocationRefWrapper> revocationRefs = new ArrayList<>();
 		for (OrphanRevocationWrapper revocationWrapper : getOrphanRevocationData()) {
 			revocationRefs.addAll(revocationWrapper.getReferences());
 		}

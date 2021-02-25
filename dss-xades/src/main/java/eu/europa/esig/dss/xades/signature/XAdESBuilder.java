@@ -56,7 +56,6 @@ import org.w3c.dom.Element;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Builds a XAdES signature
@@ -107,11 +106,14 @@ public abstract class XAdESBuilder {
 	}
 
 	/**
-	 * This method creates the ds:DigestValue DOM object.
+	 * This method creates the xades:CertDigest DOM object.
 	 * 
 	 * <pre>
 	 * {@code
-	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * 		<CertDigest>
+	 * 	       <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+	 * 	       <ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * 	    </CertDigest>
 	 * }
 	 * </pre>
 	 *
@@ -122,33 +124,62 @@ public abstract class XAdESBuilder {
 	 * @param token
 	 *            the token to be digested
 	 */
-	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm,
-										  final Token token) {
+	protected void incorporateCertDigest(final Element parentDom, final DigestAlgorithm digestAlgorithm,
+										 final Token token) {
+		final Element certDigestDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(),
+				getCurrentXAdESElements().getElementCertDigest());
+		incorporateDigestMethod(certDigestDom, digestAlgorithm);
+		incorporateDigestValue(certDigestDom, digestAlgorithm, token);
+	}
+
+	/**
+	 * This method creates the ds:DigestMethod DOM object.
+	 *
+	 * <pre>
+	 * {@code
+	 * 	   <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            the parent element
+	 * @param digestAlgorithm
+	 *            the digest algorithm to use
+	 */
+	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
+		Element digestMethodDom;
+		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+			digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), XAdES111Element.DIGEST_METHOD);
+		} else {
+			digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
+		}
+		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
+	}
+
+	/**
+	 * This method creates the ds:DigestValue DOM object.
+	 *
+	 * <pre>
+	 * {@code
+	 * 	   <ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            the parent element
+	 * @param digestAlgorithm
+	 *            the digest algorithm to use
+	 * @param token
+	 *            {@link Token} to compute Digest from
+	 */
+	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, Token token) {
 		DSSNamespace namespace = XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri()) ?
 				getXadesNamespace() : getXmldsigNamespace();
 		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Digest value {} for the token with if [{}] --> {}", parentDom.getNodeName(),
-					token.getDSSIdAsString(), base64EncodedDigestBytes);
+			LOG.trace("Digest value for the token with Id [{}] --> {}", token.getDSSIdAsString(), base64EncodedDigestBytes);
 		}
 		DSSXMLUtils.incorporateDigestValue(parentDom, base64EncodedDigestBytes, namespace);
-	}
-
-	/**
-	 * Incorporates the certificate's references as a child of the given parent node. The first element of the
-	 * {@code X509Certificate} {@code List} MUST be the
-	 * signing certificate.
-	 *
-	 * @param signingCertificateDom
-	 *            DOM parent element
-	 * @param certificates
-	 *            {@code List} of the certificates to be incorporated
-	 */
-	protected void incorporateCertificateRef(final Element signingCertificateDom, final Set<CertificateToken> certificates) {
-		for (final CertificateToken certificate : certificates) {
-			final Element certDom = incorporateCert(signingCertificateDom, certificate);
-			incorporateIssuerV1(certDom, certificate);
-		}
 	}
 
 	/**
@@ -173,24 +204,23 @@ public abstract class XAdESBuilder {
 	 *            the parent element
 	 * @param certificate
 	 *            the certificate to be added
+	 * @param digestAlgorithm
+	 *            {@link DigestAlgorithm} to use
 	 * @return {@link Element}
 	 */
-	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
+	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate,
+									  DigestAlgorithm digestAlgorithm) {
+
 		final Element certDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCert());
 
-		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, getXadesNamespace(), getCurrentXAdESElements().getElementCertDigest());
+		incorporateCertDigest(certDom, digestAlgorithm, certificate);
 
-		final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
-	
-		Element digestMethodDom = null;
-		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
-			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, getXadesNamespace(), XAdES111Element.DIGEST_METHOD);
+		if (params.isEn319132()) {
+			incorporateIssuerV2(certDom, certificate);
 		} else {
-			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
+			incorporateIssuerV1(certDom, certificate);
 		}
-		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signingCertificateDigestMethod.getUri());
-		
-		incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, certificate);
+
 		return certDom;
 	}
 
@@ -202,7 +232,6 @@ public abstract class XAdESBuilder {
 	 */
 	protected void incorporateIssuerV1(final Element parentDom, final CertificateToken certificate) {
 		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerial());
-
 		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, getXmldsigNamespace(), XMLDSigElement.X509_ISSUER_NAME);
 				
 		final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();

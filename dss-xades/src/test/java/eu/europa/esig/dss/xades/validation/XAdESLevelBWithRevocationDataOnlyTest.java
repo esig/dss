@@ -96,7 +96,7 @@ public class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestVali
 				new XAdES132Paths().getUnsignedSignaturePropertiesPath());
 		assertNotNull(unsignedSignatureProperties);
 
-		Element signatureTimeStamp = DomUtils.getElement(signature, new XAdES132Paths().getSignatureTimestampsPath());
+		Element signatureTimeStamp = DomUtils.getElement(signature, new XAdES132Paths().getSignatureTimestampPath());
 		assertNotNull(signatureTimeStamp);
 
 		unsignedSignatureProperties.removeChild(signatureTimeStamp);

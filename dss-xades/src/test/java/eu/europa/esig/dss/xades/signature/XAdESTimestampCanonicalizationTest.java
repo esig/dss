@@ -20,18 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -41,6 +30,19 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("slow")
 public class XAdESTimestampCanonicalizationTest extends AbstractXAdESTestSignature {
@@ -54,31 +56,34 @@ public class XAdESTimestampCanonicalizationTest extends AbstractXAdESTestSignatu
 				Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS, Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS, Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS };
 		Object[] packagings = { SignaturePackaging.ENVELOPED, SignaturePackaging.ENVELOPING, 
 				SignaturePackaging.DETACHED, SignaturePackaging.INTERNALLY_DETACHED };
-		return combine(canonicalizations, packagings);
+		Object[] levels = { SignatureLevel.XAdES_BASELINE_LTA, SignatureLevel.XAdES_A };
+		return combine(canonicalizations, packagings, levels);
 	}
 
-	static Stream<Arguments> combine(Object[] canonicalizations, Object[] packagings) {
+	static Stream<Arguments> combine(Object[] canonicalizations, Object[] packagings, Object[] levels) {
 		List<Arguments> args = new ArrayList<>();
 		for (int i = 0; i < canonicalizations.length; i++) {
 			for (int j = 0; j < canonicalizations.length; j++) {
 				for (int k = 0; k < packagings.length; k++) {
-					args.add(Arguments.of(canonicalizations[i], canonicalizations[j], packagings[k]));
+					for (int m = 0; m < levels.length; m++) {
+						args.add(Arguments.of(canonicalizations[i], canonicalizations[j], packagings[k], levels[m]));
+					}
 				}
 			}
 		}
 		return args.stream();
 	}
 
-	@ParameterizedTest(name = "Canonicalization {index} : {0} - {1} - {2}")
+	@ParameterizedTest(name = "Canonicalization {index} : {0} - {1} - {2} - {3}")
 	@MethodSource("data")
-	public void test(String contentTstC14N, String otherTstC14N, SignaturePackaging packaging) {
+	public void test(String contentTstC14N, String otherTstC14N, SignaturePackaging packaging, SignatureLevel level) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample-c14n.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(packaging);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+		signatureParameters.setSignatureLevel(level);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		signatureParameters.setContentTimestampParameters(new XAdESTimestampParameters(DigestAlgorithm.SHA256, contentTstC14N));
@@ -92,6 +97,12 @@ public class XAdESTimestampCanonicalizationTest extends AbstractXAdESTestSignatu
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 
 		super.signAndVerify();
+	}
+
+
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertEquals(SignatureLevel.XAdES_BASELINE_LTA, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override

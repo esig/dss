@@ -41,7 +41,7 @@ import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -169,9 +169,9 @@ public class XAdESWithPemEncodedCrlTest extends AbstractXAdESTestSignature {
 				List<RelatedRevocationWrapper> allFoundRevocations = signatureWrapper.foundRevocations().getRelatedRevocationData();
 				for (RelatedRevocationWrapper foundRevocation : allFoundRevocations) {
 					assertEquals(0, foundRevocation.getOrigins().size()); // only refs
-					List<RevocationRefWrappper> revocationRefs = foundRevocation.getReferences();
+					List<RevocationRefWrapper> revocationRefs = foundRevocation.getReferences();
 					assertEquals(1, revocationRefs.size());
-					RevocationRefWrappper xmlRevocationRef = revocationRefs.get(0);
+					RevocationRefWrapper xmlRevocationRef = revocationRefs.get(0);
 					assertNotNull(xmlRevocationRef);
 					assertNotNull(xmlRevocationRef.getOrigins());
 				}

@@ -28,7 +28,7 @@ import java.util.List;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -55,23 +55,23 @@ public class XAdESWithOrphanOcspRefTest extends AbstractXAdESTestValidation {
 		int containsDigest = 0;
 		String noDigestOcspRefId = null;
 		for (OrphanRevocationWrapper orphanRevocationWrapper : ocspOrphanRevocations) {
-			List<RevocationRefWrappper> references = orphanRevocationWrapper.getReferences();
+			List<RevocationRefWrapper> references = orphanRevocationWrapper.getReferences();
 			assertEquals(1, references.size());
 			
-			RevocationRefWrappper revocationRefWrappper = references.get(0);
-			XmlDigestAlgoAndValue digestAlgoAndValue = revocationRefWrappper.getDigestAlgoAndValue();
+			RevocationRefWrapper revocationRefWrapper = references.get(0);
+			XmlDigestAlgoAndValue digestAlgoAndValue = revocationRefWrapper.getDigestAlgoAndValue();
 			if (digestAlgoAndValue != null) {
 				++containsDigest;
 			} else {
-				assertNotNull(revocationRefWrappper.getProductionTime());
-				assertNotNull(revocationRefWrappper.getResponderIdName());
+				assertNotNull(revocationRefWrapper.getProductionTime());
+				assertNotNull(revocationRefWrapper.getResponderIdName());
 				noDigestOcspRefId = orphanRevocationWrapper.getId();
 			}
 		}
 		assertEquals(1, containsDigest);
 		assertNotNull(noDigestOcspRefId);
 		
-		List<RevocationRefWrappper> orphanRevocationRefs = signatureWrapper.foundRevocations().getOrphanRevocationRefs();
+		List<RevocationRefWrapper> orphanRevocationRefs = signatureWrapper.foundRevocations().getOrphanRevocationRefs();
 		assertEquals(3, orphanRevocationRefs.size());
 		
 		List<OrphanRevocationWrapper> allOrphanRevocationObjects = diagnosticData.getAllOrphanRevocationObjects();

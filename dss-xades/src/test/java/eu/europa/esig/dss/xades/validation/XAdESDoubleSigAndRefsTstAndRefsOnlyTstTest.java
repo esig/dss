@@ -95,8 +95,4 @@ public class XAdESDoubleSigAndRefsTstAndRefsOnlyTstTest extends AbstractXAdESTes
                 foundRevocations.getOrphanRevocationsByType(RevocationType.OCSP).size());
     }
 
-    @Override
-    protected void checkStructureValidation(DiagnosticData diagnosticData) {
-        // skip
-    }
 }

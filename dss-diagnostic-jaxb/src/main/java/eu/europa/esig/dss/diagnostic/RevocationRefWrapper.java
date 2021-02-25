@@ -20,22 +20,28 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Represents a revocation data wrapper
  *
  */
-public class RevocationRefWrappper {
-	
+public class RevocationRefWrapper {
+
+	/** The wrapped XML Revocation Ref */
 	private final XmlRevocationRef revocationRef;
-	
-	public RevocationRefWrappper(final XmlRevocationRef revocationRef) {
+
+	/**
+	 * Default constructor
+	 *
+	 * @param revocationRef {@link XmlRevocationRef}
+	 */
+	public RevocationRefWrapper(final XmlRevocationRef revocationRef) {
 		this.revocationRef = revocationRef;
 	}
 	
@@ -58,7 +64,7 @@ public class RevocationRefWrappper {
 	}
 	
 	/**
-	 * Returns responser's ID name if present
+	 * Returns responder's ID name if present
 	 * 
 	 * @return {@link String}
 	 */
@@ -70,7 +76,7 @@ public class RevocationRefWrappper {
 	}
 	
 	/**
-	 * Returns responser's ID key if present
+	 * Returns responder's ID key if present
 	 * 
 	 * @return a byte array
 	 */

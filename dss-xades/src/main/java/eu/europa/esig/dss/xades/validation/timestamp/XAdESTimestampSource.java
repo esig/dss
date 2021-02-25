@@ -119,6 +119,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	
 	/**
 	 * Returns concatenated data for a SignatureTimestamp
+	 *
 	 * @param canonicalizationMethod {@link String} canonicalization method to use
 	 * @return byte array
 	 */
@@ -128,24 +129,33 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	
 	/**
 	 * Returns concatenated data for a SigAndRefsTimestamp
-	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 *
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (SigAndRefsTimestampV2)
 	 * @return byte array
 	 */
-	public byte[] getTimestampX1Data(String canonicalizationMethod) {
-		return timestampDataBuilder.getTimestampX1Data(canonicalizationMethod);
+	public byte[] getTimestampX1Data(String canonicalizationMethod, boolean en319132) {
+		return timestampDataBuilder.getTimestampX1Data(canonicalizationMethod, en319132);
 	}
-	
+
 	/**
 	 * Returns concatenated data for a RefsOnlyTimestamp
-	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 *
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (RefsOnlyTimestampV2)
 	 * @return byte array
 	 */
-	public byte[] getTimestampX2Data(String canonicalizationMethod) {
-		return timestampDataBuilder.getTimestampX2Data(canonicalizationMethod);
+	public byte[] getTimestampX2Data(String canonicalizationMethod, boolean en319132) {
+		return timestampDataBuilder.getTimestampX2Data(canonicalizationMethod, en319132);
 	}
 	
 	/**
 	 * Returns concatenated data for an ArchiveTimestamp
+	 *
 	 * @param canonicalizationMethod {@link String} canonicalization method to use
 	 * @return byte array
 	 */
@@ -368,10 +378,17 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	protected List<CertificateRef> getCertificateRefs(XAdESAttribute unsignedAttribute) {
 		List<CertificateRef> certRefs = new ArrayList<>();
 		boolean certificateRefV1 = isCertificateRefV1(unsignedAttribute);
-		NodeList certRefsNodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsCertChildren());
+
+		NodeList certRefsNodeList;
+		if (certificateRefV1) {
+			certRefsNodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsCertChildren());
+		} else {
+			certRefsNodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefs141CertChildren());
+		}
+
 		for (int ii = 0; ii < certRefsNodeList.getLength(); ii++) {
 			Element certRefElement = (Element) certRefsNodeList.item(ii);
-			CertificateRef certificateRef = null;
+			CertificateRef certificateRef;
 			if (certificateRefV1) {
 				certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV1(certRefElement, xadesPaths);
 			} else {

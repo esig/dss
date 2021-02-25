@@ -43,6 +43,7 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
@@ -683,16 +684,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * Gets xades:CompleteCertificateRefs element
+	 * Gets xades:CompleteCertificateRefs or xades141:CompleteCertificateRefsV2 element
 	 *
 	 * @return {@link Element}
 	 */
 	public Element getCompleteCertificateRefs() {
-		return DomUtils.getElement(signatureElement, xadesPaths.getCompleteCertificateRefsPath());
+		Element completeCertificateRefs = DomUtils.getElement(signatureElement, xadesPaths.getCompleteCertificateRefsPath());
+		if (completeCertificateRefs != null) {
+			return completeCertificateRefs;
+		}
+		return DomUtils.getElement(signatureElement, xadesPaths.getCompleteCertificateRefsV2Path());
 	}
 
 	/**
-	 * Gets xades:CompleteRevocationRefs element
+	 * Gets xades:CompleteRevocationRefs
 	 *
 	 * @return {@link Element}
 	 */
@@ -711,6 +716,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			String sigAndRefsTimestampV2Path = xadesPaths.getSigAndRefsTimestampV2Path();
 			if (sigAndRefsTimestampV2Path != null) {
 				nodeList = DomUtils.getNodeList(signatureElement, sigAndRefsTimestampV2Path);
+			}
+		}
+		return nodeList;
+	}
+
+	/**
+	 * Gets xades:RefsOnlyTimestamp node list
+	 *
+	 * @return {@link NodeList}
+	 */
+	public NodeList getRefsOnlyTimestampTimeStamp() {
+		NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPaths.getRefsOnlyTimestampPath());
+		if (nodeList == null || nodeList.getLength() == 0) {
+			String refsOnlyTimestampV2Path = xadesPaths.getRefsOnlyTimestampV2Path();
+			if (refsOnlyTimestampV2Path != null) {
+				nodeList = DomUtils.getNodeList(signatureElement, refsOnlyTimestampV2Path);
 			}
 		}
 		return nodeList;
@@ -751,8 +772,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public boolean hasCProfile() {
 		final boolean certRefs = DomUtils.isNotEmpty(signatureElement, xadesPaths.getCompleteCertificateRefsPath());
+		final boolean certRefsV2 = DomUtils.isNotEmpty(signatureElement, xadesPaths.getCompleteCertificateRefsV2Path());
+
+		ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
+		boolean allSelfSigned = certificateSources.isAllSelfSigned();
+
 		final boolean revocationRefs = DomUtils.isNotEmpty(signatureElement, xadesPaths.getCompleteRevocationRefsPath());
-		return certRefs || revocationRefs;
+		return (certRefs || certRefsV2) && (allSelfSigned || revocationRefs);
 	}
 
 	/**
@@ -761,7 +787,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return true if the -X extension is present
 	 */
 	public boolean hasXProfile() {
-		return DomUtils.isNotEmpty(signatureElement, xadesPaths.getSigAndRefsTimestampPath());
+		final boolean sigAndRefsTst = DomUtils.isNotEmpty(signatureElement, xadesPaths.getSigAndRefsTimestampPath());
+		final boolean sigAndRefsTstV2 = DomUtils.isNotEmpty(signatureElement, xadesPaths.getSigAndRefsTimestampV2Path());
+		return sigAndRefsTst || sigAndRefsTstV2;
 	}
 
 	@Override

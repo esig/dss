@@ -814,7 +814,7 @@ public class SignatureValidationContext implements ValidationContext {
 	private List<RevocationToken> getRelatedRevocationTokens(CertificateToken certificateToken) {
 		List<RevocationToken> result = new ArrayList<>();
 		for (RevocationToken<Revocation> revocationToken : processedRevocations) {
-			if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
+			if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateId())) {
 				result.add(revocationToken);
 			}
 		}
