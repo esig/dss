@@ -59,6 +59,7 @@ import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
@@ -753,6 +754,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public Element getRevocationValues() {
 		return DomUtils.getElement(signatureElement, xadesPaths.getRevocationValuesPath());
+	}
+
+	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		throw new DSSException("The action is not supported for XAdES!");
 	}
 
 	/**

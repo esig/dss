@@ -49,9 +49,9 @@ import java.util.List;
 /**
  * This class parses the manifest document and produces a {@code ManifestFile}
  */
-public class ASiCEWithCAdESManifestParser {
+public class ASiCWithCAdESManifestParser {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestParser.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithCAdESManifestParser.class);
 
 	static {
 		DomUtils.registerNamespace(XMLDSigNamespace.NS);
@@ -59,7 +59,14 @@ public class ASiCEWithCAdESManifestParser {
 	}
 
 	/**
+	 * Default constructor
+	 */
+	private ASiCWithCAdESManifestParser() {
+	}
+
+	/**
 	 * Parses and converts {@code DSSDocument} to {@code ManifestFile}
+	 *
 	 * @param manifestDocument {@link DSSDocument} to parse
 	 * @return {@link ManifestFile}
 	 */
@@ -78,7 +85,8 @@ public class ASiCEWithCAdESManifestParser {
 	}
 	
 	/**
-	 * Returns the relative manifests for the given signature name 
+	 * Returns the relative manifests for the given signature name
+	 *
 	 * @param manifestDocuments list of found manifests {@link DSSDocument} in the container (candidates)
 	 * @param signatureName {@link String} name of the signature to get related manifest for
 	 * @return {@link DSSDocument} the related manifests

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -262,6 +263,11 @@ public class PAdESSignature extends CAdESSignature {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, getPdfSignatureDictionary().getContents());
 		String vriId = Utils.toHex(digest);
 		return vriId.toUpperCase();
+	}
+
+	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		throw new DSSException("The action is not supported for PAdES!");
 	}
 
 }

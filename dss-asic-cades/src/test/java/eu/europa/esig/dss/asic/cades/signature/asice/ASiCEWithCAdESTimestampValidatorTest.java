@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestValidator;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESTimestampValidator;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
@@ -103,7 +103,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		assertEquals(1, archiveManifestDocuments.size());
 		DSSDocument archiveManifest = archiveManifestDocuments.get(0);
 		
-		ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifest);
+		ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
 		assertNotNull(manifestFile);
 		
 		ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, asicExtractResult.getAllDocuments());

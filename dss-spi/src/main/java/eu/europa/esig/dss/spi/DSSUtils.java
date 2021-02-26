@@ -1211,7 +1211,7 @@ public final class DSSUtils {
 	 * @param leading {@link String} to remove
 	 * @return trimmed text {@link String}
 	 */
-	public static String stripFirstLeadingOccurance(String text, String leading) {
+	public static String stripFirstLeadingOccurrence(String text, String leading) {
 		if (text == null) {
 			return null;
 		}
@@ -1232,6 +1232,22 @@ public final class DSSUtils {
 			return dssDocuments.stream().map(DSSDocument::getName).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a document with the given {@code fileName} from the list of {@code documents}, when present
+	 *
+	 * @param documents a list of {@link DSSDocument}s
+	 * @param fileName {@link String} name of the document to extract
+	 * @return {@link DSSDocument} when found, NULL otherwise
+	 */
+	public static DSSDocument getDocumentWithName(List<DSSDocument> documents, String fileName) {
+		for (DSSDocument document : documents) {
+			if (fileName.equals(document.getName())) {
+				return document;
+			}
+		}
+		return null;
 	}
 
 	/**

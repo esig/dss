@@ -436,15 +436,15 @@ public class DSSUtilsTest {
 	
 	@Test
 	public void stripFirstLeadingOccuranceTest() {
-		assertEquals(null, DSSUtils.stripFirstLeadingOccurance(null, null));
-		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", null));
-		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", ""));
-		assertEquals("aabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "a"));
-		assertEquals("bbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "aaa"));
-		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "aaaa"));
-		assertEquals("", DSSUtils.stripFirstLeadingOccurance("application/", "application/"));
-		assertEquals("json", DSSUtils.stripFirstLeadingOccurance("application/json", "application/"));
-		assertEquals("application/json", DSSUtils.stripFirstLeadingOccurance("application/application/json", "application/"));
+		assertEquals(null, DSSUtils.stripFirstLeadingOccurrence(null, null));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", null));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", ""));
+		assertEquals("aabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", "a"));
+		assertEquals("bbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", "aaa"));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", "aaaa"));
+		assertEquals("", DSSUtils.stripFirstLeadingOccurrence("application/", "application/"));
+		assertEquals("json", DSSUtils.stripFirstLeadingOccurrence("application/json", "application/"));
+		assertEquals("application/json", DSSUtils.stripFirstLeadingOccurrence("application/application/json", "application/"));
 	}
 
 }

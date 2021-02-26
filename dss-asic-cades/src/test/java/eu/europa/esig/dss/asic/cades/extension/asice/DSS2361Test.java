@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.asic.cades.extension.asice;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
@@ -26,6 +27,8 @@ public class DSS2361Test extends AbstractASiCWithCAdESTestValidation {
     public void init() {
         certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.addTrustedCertSources(getTrustedCertSource());
+        certificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
+        certificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert());
     }
 
     private CertificateSource getTrustedCertSource() {
@@ -67,6 +70,7 @@ public class DSS2361Test extends AbstractASiCWithCAdESTestValidation {
 
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         CertificateWrapper signingCertificate = signature.getSigningCertificate();
+        // no new revocation data is being added
         assertEquals(2, signingCertificate.getCertificateRevocationData().size());
     }
 

@@ -458,12 +458,13 @@ public final class ASiCUtils {
 	}
 	
 	/**
-	 * Generates an unique name for a new ASiC-E Manifest file, avoiding any name collision
-	 * @param expectedManifestName {@link String} defines the expected name of the file without extension (e.g. "ASiCmanifest")
+	 * Generates an unique name for a new ASiC Manifest file, avoiding any name collision
+	 *
+	 * @param expectedManifestName {@link String} defines the expected name of the file without extension (e.g. "ASiCManifest")
 	 * @param existingManifests list of existing {@link DSSDocument} manifests of the type present in the container
 	 * @return {@link String} new manifest name
 	 */
-	public static String getNextASiCEManifestName(final String expectedManifestName, final List<DSSDocument> existingManifests) {
+	public static String getNextASiCManifestName(final String expectedManifestName, final List<DSSDocument> existingManifests) {
 		List<String> manifestNames = DSSUtils.getDocumentNames(existingManifests);
 		
 		String manifestName = null;
@@ -483,6 +484,7 @@ public final class ASiCUtils {
 	
 	/**
 	 * Checks if the current document an ASiC-E ZIP specific archive
+	 *
 	 * @param document {@link DSSDocument} to check
 	 * @return TRUE if the document if a "package.zip" archive, FALSE otherwise
 	 */

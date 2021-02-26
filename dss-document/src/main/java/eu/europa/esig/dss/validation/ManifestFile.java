@@ -47,6 +47,15 @@ public class ManifestFile {
 	private boolean archiveManifest;
 
 	/**
+	 * Gets the {@code DSSDocument} representing the manifest
+	 *
+	 * @return {@link DSSDocument}
+	 */
+	public DSSDocument getDocument() {
+		return document;
+	}
+
+	/**
 	 * Sets the manifest document
 	 *
 	 * @param document {@link DSSDocument}

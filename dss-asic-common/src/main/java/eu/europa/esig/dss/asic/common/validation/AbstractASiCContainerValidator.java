@@ -142,6 +142,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	/**
 	 * Attaches existing external timestamps to the list of {@code AdvancedSignature}s
+	 *
 	 * @param allSignatures list of {@link AdvancedSignature}s
 	 * @return list of attached {@link TimestampToken}s
 	 */

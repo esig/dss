@@ -412,6 +412,8 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * This method allows to add an external timestamp. The given timestamp must be processed before.
+	 *
+	 * NOTE: The method is supported only for CAdES signatures
 	 * 
 	 * @param timestamp
 	 *            the timestamp token

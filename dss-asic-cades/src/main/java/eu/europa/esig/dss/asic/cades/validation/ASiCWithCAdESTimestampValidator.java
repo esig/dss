@@ -80,11 +80,6 @@ public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator 
 		return manifestFile;
 	}
 
-	@Override
-	public void setManifestFile(ManifestFile manifestFile) {
-		this.manifestFile = manifestFile;
-	}
-
 	/**
 	 * Sets the original documents present in the ASiC container
 	 *

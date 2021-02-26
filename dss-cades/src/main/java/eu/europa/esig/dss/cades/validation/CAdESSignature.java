@@ -61,6 +61,7 @@ import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -1077,6 +1078,23 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
 		return getCertificateSource().getAllCertificateIdentifiers();
+	}
+
+	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		if (!timestamp.isProcessed()) {
+			throw new DSSException("Timestamp token must be validated first !");
+		}
+
+		switch (timestamp.getTimeStampType()) {
+			case CONTENT_TIMESTAMP:
+			case ARCHIVE_TIMESTAMP:
+				break;
+			default:
+				throw new DSSException("Only content and archival timestamp are allowed !");
+		}
+
+		getTimestampSource().addExternalTimestamp(timestamp);
 	}
 
 	@Override

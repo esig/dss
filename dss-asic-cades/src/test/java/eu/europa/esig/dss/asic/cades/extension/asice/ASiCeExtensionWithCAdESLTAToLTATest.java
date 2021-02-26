@@ -35,7 +35,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.extension.AbstractASiCWithCAdESTestExtension;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -143,7 +143,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
 		assertTrue(Utils.isCollectionNotEmpty(archiveManifests));
 		
 		for (int ii = 0; ii < archiveManifests.size(); ii++) {
-			ManifestFile archiveManifestFile = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifests.get(ii));
+			ManifestFile archiveManifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifests.get(ii));
 			Digest archManifestSigDigest = getSignatureDigest(archiveManifestFile);
 			assertEquals(signatureDigest, Utils.toBase64(archManifestSigDigest.getValue()));
 		}

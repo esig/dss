@@ -100,7 +100,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 					cadesValidator.setDetachedContents(Collections.singletonList(signedDocument));
 				}
 				
-				DSSDocument signatureManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(getAllManifestDocuments(), signature.getName());
+				DSSDocument signatureManifest = ASiCWithCAdESManifestParser.getLinkedManifest(getAllManifestDocuments(), signature.getName());
 				if (signatureManifest != null) {
 					ManifestFile manifestFile = toValidatedManifestFile(signatureManifest);
 					cadesValidator.setManifestFile(manifestFile);
@@ -126,7 +126,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				TimestampType timestampType = TimestampType.CONTENT_TIMESTAMP;
 				ManifestFile manifestFile = null;
 
-				DSSDocument archiveManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(
+				DSSDocument archiveManifest = ASiCWithCAdESManifestParser.getLinkedManifest(
 						getAllManifestDocuments(), timestamp.getName());
 				if (archiveManifest != null) {
 					timestampedDocument = archiveManifest;
@@ -243,6 +243,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	/**
 	 * Checks if the manifestFile covers a signature
+	 *
 	 * @return TRUE if manifest entries contain a signature, FALSE otherwise
 	 */
 	private boolean coversSignature(ManifestFile manifestFile) {
@@ -259,7 +260,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		List<ManifestFile> descriptions = new ArrayList<>();
 		List<DSSDocument> manifestDocuments = getManifestDocuments();
 		for (DSSDocument manifestDocument : manifestDocuments) {
-			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(manifestDocument);
+			ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifestDocument);
 			if (manifestFile != null) {
 				ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, getAllDocuments());
 				asiceWithCAdESManifestValidator.validateEntries();
@@ -269,7 +270,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 		List<DSSDocument> archiveManifestDocuments = getArchiveManifestDocuments();
 		for (DSSDocument manifestDocument : archiveManifestDocuments) {
-			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(manifestDocument);
+			ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifestDocument);
 			if (manifestFile != null) {
 				manifestFile.setArchiveManifest(true);
 				ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, getAllDocuments());
@@ -291,11 +292,11 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
 			return getSignedDocumentsASiCS(retrievedDocs);
 		} else {
-			DSSDocument linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(getManifestDocuments(), advancedSignature.getSignatureFilename());
+			DSSDocument linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(getManifestDocuments(), advancedSignature.getSignatureFilename());
 			if (linkedManifest == null) {
 				return Collections.emptyList();
 			}
-			ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
+			ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(linkedManifest);
 			return getManifestedDocuments(manifestFile);
 		}
 	}

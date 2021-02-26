@@ -80,7 +80,7 @@ public abstract class AbstractDataToSignASiCEWithCAdES {
 
 		ASiCEWithCAdESManifestBuilder manifestBuilder = new ASiCEWithCAdESManifestBuilder(
 				operation, documents, parameters.getDigestAlgorithm(), uri);
-		String newManifestName = ASiCUtils.getNextASiCEManifestName(ASiCUtils.ASIC_MANIFEST_FILENAME, manifests);
+		String newManifestName = ASiCUtils.getNextASiCManifestName(ASiCUtils.ASIC_MANIFEST_FILENAME, manifests);
 
 		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), newManifestName);
 	}

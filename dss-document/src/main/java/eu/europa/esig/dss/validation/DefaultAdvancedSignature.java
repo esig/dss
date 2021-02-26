@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
@@ -561,19 +560,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<TimestampToken> getAllTimestamps() {
 		return getTimestampSource().getAllTimestamps();
-	}
-
-	@Override
-	public void addExternalTimestamp(TimestampToken timestamp) {
-		if (!timestamp.isProcessed()) {
-			throw new DSSException("Timestamp token must be validated first !");
-		}
-
-		if (!timestamp.getTimeStampType().isArchivalTimestamp()) {
-			throw new DSSException("Only archival timestamp is allowed !");
-		}
-
-		getTimestampSource().addExternalTimestamp(timestamp);
 	}
 
 	/**

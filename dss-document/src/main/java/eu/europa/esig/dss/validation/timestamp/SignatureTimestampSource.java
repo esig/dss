@@ -272,12 +272,18 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
             createAndValidate();
         }
         processExternalTimestamp(timestamp);
-        if (TimestampType.ARCHIVE_TIMESTAMP == timestamp.getTimeStampType()) {
-            archiveTimestamps.add(timestamp);
-        } else {
-            throw new DSSException(
-                    String.format("The signature timestamp source does not support timestamp tokens with type [%s]. " + "The TimestampToken was not added.",
-                            timestamp.getTimeStampType().name()));
+
+        switch (timestamp.getTimeStampType()) {
+            case CONTENT_TIMESTAMP:
+                contentTimestamps.add(timestamp);
+                break;
+            case ARCHIVE_TIMESTAMP:
+                archiveTimestamps.add(timestamp);
+                break;
+            default:
+                throw new DSSException(
+                        String.format("The signature timestamp source does not support timestamp tokens with type [%s]. "
+                                        + "The TimestampToken was not added.", timestamp.getTimeStampType().name()));
         }
     }
 
