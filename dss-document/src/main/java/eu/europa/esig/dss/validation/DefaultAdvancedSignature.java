@@ -485,6 +485,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		for (final TimestampToken timestampToken : getDocumentTimestamps()) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
+
+		/*
+		 * This validates the detached timestamps present in a container (used in ASiC with CAdES)
+		 */
+		for (final TimestampToken timestampToken : getDetachedTimestamps()) {
+			validationContext.addTimestampTokenForVerification(timestampToken);
+		}
+
 	}
 	
 	@Override
@@ -557,6 +565,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return getTimestampSource().getDocumentTimestamps();
 	}
 	
+	@Override
+	public List<TimestampToken> getDetachedTimestamps() {
+		return getTimestampSource().getDetachedTimestamps();
+	}
+
 	@Override
 	public List<TimestampToken> getAllTimestamps() {
 		return getTimestampSource().getAllTimestamps();

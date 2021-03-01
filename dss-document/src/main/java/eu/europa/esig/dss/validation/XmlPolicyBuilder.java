@@ -173,7 +173,7 @@ public class XmlPolicyBuilder {
 			return signaturePolicyProvider.getSignaturePolicy(signaturePolicy.getIdentifier(), signaturePolicy.getUrl());
 		}
 		
-		throw new DSSException("Unable to extact a SignaturePolicy content. SignaturePolicyStore or SignaturePolicyProvider shall be provided.");
+		throw new DSSException("Unable to extract SignaturePolicy content. SignaturePolicyStore or SignaturePolicyProvider shall be provided.");
 	}
 	
 	/**

@@ -123,7 +123,8 @@ public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 				firstTstFound = true;
 			} else if (timestamp.getDigestMatchers().size() == 3) {
 				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getName());
-				assertEquals(5, timestamp.getTimestampedSignedData().size());
+				assertEquals(4, timestamp.getTimestampedSignedData().size());
+				assertEquals(1, timestamp.getTimestampedTimestamps().size());
 				secondTstFound = true;
 			}
 		}

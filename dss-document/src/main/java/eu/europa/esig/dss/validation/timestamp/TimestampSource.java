@@ -78,6 +78,13 @@ public interface TimestampSource extends Serializable {
 	List<TimestampToken> getDocumentTimestamps();
 
 	/**
+	 * Returns a list of detached timestamps (used in ASiC with CAdES)
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
+	List<TimestampToken> getDetachedTimestamps();
+
+	/**
 	 * Returns a list of all incorporated timestamps
 	 *
 	 * @return a list of {@link TimestampToken}s

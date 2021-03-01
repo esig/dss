@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -129,7 +130,7 @@ public class ValidationDataForInclusionBuilder {
 	private Set<CertificateToken> getValidationCertificates() {
 		Set<CertificateToken> certificatesForInclusion = completeCertificateSource.getAllCertificateTokens();
 		// avoid adding of cross-certificates to the list
-		final List<EntityIdentifier> publicKeys = getEntityIdentifierList(certificatesForInclusion);
+		final Collection<EntityIdentifier> publicKeys = DSSUtils.getEntityIdentifierList(certificatesForInclusion);
 		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
 			if (!publicKeys.contains(certificateToken.getEntityKey())) {
 				certificatesForInclusion.add(certificateToken);
@@ -140,14 +141,6 @@ public class ValidationDataForInclusionBuilder {
 			}
 		}
 		return certificatesForInclusion;
-	}
-
-	private List<EntityIdentifier> getEntityIdentifierList(Collection<CertificateToken> certificateTokens) {
-		final List<EntityIdentifier> entityIdentifiers = new ArrayList<>();
-		for (CertificateToken certificateToken : certificateTokens) {
-			entityIdentifiers.add(certificateToken.getEntityKey());
-		}
-		return entityIdentifiers;
 	}
 	
 	/**

@@ -201,7 +201,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		List<DSSDocument> extendedDocuments = new ArrayList<>();
 
-		if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(timestamps) > 0) {
+		if (Utils.collectionSize(timestamps) > 0) {
 
 			DSSDocument toTimestampDocument = toTimestampDocuments.get(0);
 			extractCurrentArchive(toTimestampDocument);
@@ -302,7 +302,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 
 		if (addASiCEArchiveManifest) {
-			extendWithArchiveManifest(getEmbeddedSignatures(), getEmbeddedArchiveManifests(), getEmbeddedManifests(), getEmbeddedTimestamps(), 
+			extendWithArchiveManifest(getEmbeddedSignatures(), getEmbeddedArchiveManifests(), getEmbeddedManifests(), getEmbeddedTimestamps(),
 					getEmbeddedSignedDocuments(), extendedDocuments, parameters.getDigestAlgorithm());
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
@@ -367,43 +367,32 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		// shall be computed on the first step, before timestamp extension/creation
 		String timestampFilename = getArchiveTimestampFilename(timestamps);
-		
-		DSSDocument lastArchiveManifest = null;
-		for (DSSDocument manifest : archiveManifests) {
-			if (DEFAULT_ARCHIVE_MANIFEST_FILENAME.equals(manifest.getName())) {
-				lastArchiveManifest = manifest;
-			} else {
-				// all other present manifests must be included to the computing list as well
-				manifests.add(manifest);
-			}
-		}
-		
-		if (lastArchiveManifest != null) {
-			ManifestFile archiveManifestFile = ASiCWithCAdESManifestParser.getManifestFile(lastArchiveManifest);
-			
-			String lastArchiveTimestampFileName = archiveManifestFile.getSignatureFilename();
-			DSSDocument lastTimestamp = DSSUtils.getDocumentWithName(timestamps, lastArchiveTimestampFileName);
-			if (lastTimestamp == null) {
-				throw new DSSException(String.format("Extension is not possible! The last archive timestamp with a name '%s' has not been found!", 
-						archiveManifestFile.getSignatureFilename()));
-			}
 
+		manifests.addAll(archiveManifests);
+		ManifestFile lastManifestFile = getLastManifestFile(manifests);
+		DSSDocument lastTimestamp = getLastTimestampDocument(lastManifestFile, timestamps);
+		if (lastTimestamp != null) {
 			ValidationDataForInclusion validationDataForInclusion =
-					new ASiCWithCAdESValidationDataForInclusionBuilder(certificateVerifier, archiveManifestFile)
-							.setSignatures(signatures).setTimestamps(timestamps).setManifests(manifests)
-							.build();
-			
-			DSSDocument extendedArchiveTimestamp = extendArchiveTimestamp(lastTimestamp, validationDataForInclusion, originalSignedDocuments);
+					new ASiCWithCAdESValidationDataForInclusionBuilder(certificateVerifier).setLastManifestFile(lastManifestFile)
+							.setLastTimestampDocument(lastTimestamp).setSignatures(signatures).setTimestamps(timestamps)
+							.setManifests(manifests).build();
+
+			DSSDocument extendedTimestamp = extendTimestamp(lastTimestamp, validationDataForInclusion, originalSignedDocuments);
 			// a newer version of the timestamp must be created
 			timestamps.remove(lastTimestamp);
-			extendedDocuments.add(extendedArchiveTimestamp);
-
-			// current ArchiveManifest must be renamed
-			lastArchiveManifest.setName(ASiCUtils.getNextASiCManifestName(ASiCUtils.ASIC_ARCHIVE_MANIFEST_FILENAME, archiveManifests));
+			extendedDocuments.add(extendedTimestamp);
 		}
 
-		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, timestamps, originalSignedDocuments,
-				manifests, lastArchiveManifest, digestAlgorithm, timestampFilename);
+		DSSDocument lastArchiveManifest = null;
+		if (lastManifestFile != null && isLastArchiveManifest(lastManifestFile.getFilename())) {
+			lastArchiveManifest = lastManifestFile.getDocument();
+			manifests.remove(lastArchiveManifest);
+			lastArchiveManifest.setName(ASiCUtils.getNextASiCManifestName(ASiCUtils.ASIC_ARCHIVE_MANIFEST_FILENAME,
+					archiveManifests));
+		}
+
+		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments,
+				timestamps, originalSignedDocuments, manifests, lastArchiveManifest, digestAlgorithm, timestampFilename);
 
 		DSSDocument archiveManifest = DomUtils.createDssDocumentFromDomDocument(builder.build(), DEFAULT_ARCHIVE_MANIFEST_FILENAME);
 		extendedDocuments.add(archiveManifest);
@@ -414,21 +403,53 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, archiveManifest));
 		DSSDocument timestamp = new InMemoryDocument(DSSASN1Utils.getDEREncoded(timeStampResponse), timestampFilename, MimeType.TST);
 		extendedDocuments.add(timestamp);
-
-	}
-
-	private DSSDocument extendArchiveTimestamp(DSSDocument archiveTimestamp, ValidationDataForInclusion validationDataForInclusion, 
-			List<DSSDocument> detachedContents) {
-		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
-		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion,
-				detachedContents);
-		return new InMemoryDocument(DSSASN1Utils.getEncoded(extendedCMSSignedData), archiveTimestamp.getName(), MimeType.TST);
 	}
 
 	private String getArchiveTimestampFilename(List<DSSDocument> timestamps) {
 		int num = Utils.collectionSize(timestamps) + 1;
 		return ZIP_ENTRY_ASICE_METAINF_CADES_TIMESTAMP.replace("001", ASiCUtils.getPadNumber(num));
+	}
+
+	private ManifestFile getLastManifestFile(List<DSSDocument> manifests) {
+		DSSDocument lastManifest = getLastArchiveManifest(manifests);
+		if (lastManifest == null) {
+			lastManifest = DSSUtils.getDocumentWithLastName(manifests);
+		}
+		if (lastManifest != null) {
+			return ASiCWithCAdESManifestParser.getManifestFile(lastManifest);
+		}
+		return null;
+	}
+
+	private DSSDocument getLastArchiveManifest(List<DSSDocument> manifests) {
+		if (Utils.isCollectionNotEmpty(manifests)) {
+			for (DSSDocument manifest : manifests) {
+				if (isLastArchiveManifest(manifest.getName())) {
+					return manifest;
+				}
+			}
+		}
+		return null;
+	}
+
+	private boolean isLastArchiveManifest(String fileName) {
+		return DEFAULT_ARCHIVE_MANIFEST_FILENAME.equals(fileName);
+	}
+
+	private DSSDocument getLastTimestampDocument(ManifestFile lastManifestFile, List<DSSDocument> timestamps) {
+		if (lastManifestFile != null) {
+			return DSSUtils.getDocumentWithName(timestamps, lastManifestFile.getSignatureFilename());
+		}
+		return DSSUtils.getDocumentWithLastName(timestamps);
+	}
+
+	private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationDataForInclusion validationDataForInclusion,
+										List<DSSDocument> detachedContents) {
+		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
+		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
+		CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion,
+				detachedContents);
+		return new InMemoryDocument(DSSASN1Utils.getEncoded(extendedCMSSignedData), archiveTimestamp.getName(), MimeType.TST);
 	}
 
 	@Override

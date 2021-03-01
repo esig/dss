@@ -1085,15 +1085,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (!timestamp.isProcessed()) {
 			throw new DSSException("Timestamp token must be validated first !");
 		}
-
-		switch (timestamp.getTimeStampType()) {
-			case CONTENT_TIMESTAMP:
-			case ARCHIVE_TIMESTAMP:
-				break;
-			default:
-				throw new DSSException("Only content and archival timestamp are allowed !");
-		}
-
 		getTimestampSource().addExternalTimestamp(timestamp);
 	}
 
@@ -1123,6 +1114,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		} else {
 			return SignatureLevel.CAdES_BASELINE_T;
 		}
+	}
+
+	@Override
+	public boolean hasLTAProfile() {
+		return Utils.isCollectionNotEmpty(getArchiveTimestamps()) || Utils.isCollectionNotEmpty(getDetachedTimestamps());
 	}
 
 	/**

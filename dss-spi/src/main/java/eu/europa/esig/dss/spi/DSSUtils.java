@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
@@ -80,6 +81,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -1251,6 +1253,21 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Returns the last document in the alphabetical ascendant order
+	 *
+	 * @param documents a list of {@link DSSDocument}s
+	 * @return {@link DSSDocument}
+	 */
+	public static DSSDocument getDocumentWithLastName(List<DSSDocument> documents) {
+		if (Utils.isCollectionNotEmpty(documents)) {
+			List<String> documentNames = DSSUtils.getDocumentNames(documents);
+			Collections.sort(documentNames);
+			return DSSUtils.getDocumentWithName(documents, documentNames.get(documentNames.size() - 1));
+		}
+		return null;
+	}
+
+	/**
 	 * Adds all objects from {@code toAddCollection} into {@code currentCollection} without duplicates
 	 *
 	 * @param currentCollection a collection to enrich
@@ -1263,6 +1280,20 @@ public final class DSSUtils {
 				currentCollection.add(object);
 			}
 		}
+	}
+
+	/**
+	 * Returns a collection of public key identifiers from the given collection of certificate tokens
+	 *
+	 * @param certificateTokens a collection of {@link CertificateToken}s to get public keys from
+	 * @return a collection of {@link EntityIdentifier}s
+	 */
+	public static Collection<EntityIdentifier> getEntityIdentifierList(Collection<CertificateToken> certificateTokens) {
+		final Set<EntityIdentifier> entityIdentifiers = new HashSet<>();
+		for (CertificateToken certificateToken : certificateTokens) {
+			entityIdentifiers.add(certificateToken.getEntityKey());
+		}
+		return entityIdentifiers;
 	}
 
 }

@@ -45,7 +45,7 @@ public class ValidationDataForInclusion {
 	private List<OCSPToken> ocspTokens;
 
 	/**
-	 * Sets certificate tokens ti be included into the signature
+	 * Sets certificate tokens to be included into the signature
 	 *
 	 * @param certificateTokens a set of {@link CertificateToken}s
 	 */
@@ -54,7 +54,7 @@ public class ValidationDataForInclusion {
 	}
 
 	/**
-	 * Sets CRL tokens ti be included into the signature
+	 * Sets CRL tokens to be included into the signature
 	 *
 	 * @param crlTokens a list of {@link CRLToken}s
 	 */
@@ -63,7 +63,7 @@ public class ValidationDataForInclusion {
 	}
 
 	/**
-	 * Sets OCSP tokens ti be included into the signature
+	 * Sets OCSP tokens to be included into the signature
 	 *
 	 * @param ocspTokens a list of {@link OCSPToken}s
 	 */
@@ -72,7 +72,7 @@ public class ValidationDataForInclusion {
 	}
 
 	/**
-	 * Gets certificate tokens ti be included into the signature
+	 * Gets certificate tokens to be included into the signature
 	 *
 	 * @return a set of {@link CertificateToken}s
 	 */
@@ -84,7 +84,7 @@ public class ValidationDataForInclusion {
 	}
 
 	/**
-	 * Sets CRL tokens ti be included into the signature
+	 * Sets CRL tokens to be included into the signature
 	 *
 	 * @return a list of {@link CRLToken}s
 	 */
@@ -96,7 +96,7 @@ public class ValidationDataForInclusion {
 	}
 
 	/**
-	 * Sets OCSP tokens ti be included into the signature
+	 * Sets OCSP tokens to be included into the signature
 	 *
 	 * @return a list of {@link OCSPToken}s
 	 */

@@ -26,6 +26,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -447,14 +449,25 @@ public final class ASiCUtils {
 	}
 
 	/**
+	 * Checks if the fileName matches to a Manifest name standard
+	 *
+	 * @param fileName {@link String} to check
+	 * @return TRUE if the given name matches Manifest filename, FALSE otherwise
+	 */
+	public static boolean isManifest(String fileName) {
+		return fileName.startsWith(ASiCUtils.META_INF_FOLDER) && fileName.contains(ASiCUtils.ASIC_MANIFEST_FILENAME)
+				&& fileName.endsWith(ASiCUtils.XML_EXTENSION);
+	}
+
+	/**
 	 * Checks if the fileName matches to an Archive Manifest name standard
 	 * 
 	 * @param fileName {@link String} to check
-	 * @return TRUE if the given name matches to and ASiC Archive Manifest filename,
-	 *         FALSE otherwise
+	 * @return TRUE if the given name matches ASiC Archive Manifest filename, FALSE otherwise
 	 */
 	public static boolean isArchiveManifest(String fileName) {
-		return fileName.contains(ASIC_ARCHIVE_MANIFEST_FILENAME) && fileName.endsWith(XML_EXTENSION);
+		return fileName.startsWith(ASiCUtils.META_INF_FOLDER) && fileName.contains(ASIC_ARCHIVE_MANIFEST_FILENAME)
+				&& fileName.endsWith(XML_EXTENSION);
 	}
 	
 	/**
@@ -490,6 +503,20 @@ public final class ASiCUtils {
 	 */
 	public static boolean isASiCSArchive(DSSDocument document) {
 		return Utils.areStringsEqual(PACKAGE_ZIP, document.getName());
+	}
+
+	/**
+	 * Checks if the manifestFile covers a signature
+	 *
+	 * @return TRUE if manifest entries contain a signature, FALSE otherwise
+	 */
+	public static boolean coversSignature(ManifestFile manifestFile) {
+		for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+			if (isSignature(manifestEntry.getFileName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

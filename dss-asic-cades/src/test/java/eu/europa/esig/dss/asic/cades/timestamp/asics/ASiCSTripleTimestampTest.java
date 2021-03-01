@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.cades.timestamp.asice;
+package eu.europa.esig.dss.asic.cades.timestamp.asics;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCETripleTimestampTest extends AbstractASiCWithCAdESTestValidation {
+public class ASiCSTripleTimestampTest extends AbstractASiCWithCAdESTestValidation {
 
     @Test
     public void test() throws IOException {
@@ -37,7 +37,7 @@ public class ASiCETripleTimestampTest extends AbstractASiCWithCAdESTestValidatio
         List<DSSDocument> docs = Arrays.asList(documentToSign, documentToSign2);
 
         ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();
-        timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+        timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
         ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
@@ -49,7 +49,7 @@ public class ASiCETripleTimestampTest extends AbstractASiCWithCAdESTestValidatio
 
         service.setTspSource(getSelfSignedTsa());
         archiveWithTimestamp = service.timestamp(archiveWithTimestamp, timestampParameters);
-        // archiveWithTimestamp.save("target/triple-tst.sce");
+        // archiveWithTimestamp.save("target/triple-tst.scs");
 
         verify(archiveWithTimestamp);
     }

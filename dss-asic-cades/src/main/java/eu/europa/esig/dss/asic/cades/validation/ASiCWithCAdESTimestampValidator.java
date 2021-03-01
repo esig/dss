@@ -161,4 +161,10 @@ public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator 
 		return result;
 	}
 
+	@Override
+	protected boolean addReference(SignatureScope signatureScope) {
+		String fileName = signatureScope.getName();
+		return fileName == null || (!ASiCUtils.isSignature(fileName) && !ASiCUtils.isTimestamp(fileName));
+	}
+
 }

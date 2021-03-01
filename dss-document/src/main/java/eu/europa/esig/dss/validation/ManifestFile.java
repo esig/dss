@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +161,7 @@ public class ManifestFile {
 	
 	/**
 	 * Returns a {@link ManifestEntry} with argument Rootfile="true"
+	 *
 	 * @return {@link ManifestEntry} if the rootfile is found, FALSE otherwise
 	 */
 	public ManifestEntry getRootFile() {
@@ -169,6 +171,23 @@ public class ManifestFile {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if the document with {@code documentName} is covered by the Manifest
+	 *
+	 * @param documentName {@link String} to check
+	 * @return TRUE if the document with the given name is covered, FALSE otherwise
+	 */
+	public boolean isDocumentCovered(String documentName) {
+		if (Utils.isStringNotBlank(documentName)) {
+			for (ManifestEntry entry : getEntries()) {
+				if (documentName.equals(entry.getFileName())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }
