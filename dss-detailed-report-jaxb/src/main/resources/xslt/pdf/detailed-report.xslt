@@ -240,6 +240,22 @@
 		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
 
 				       		<xsl:value-of select="@Title" />
+
+							<xsl:if test="dss:ProofOfExistence/dss:Time">
+								<fo:inline>
+									<xsl:attribute name="font-weight">normal</xsl:attribute>
+									<xsl:attribute name="font-size">6pt</xsl:attribute>
+									(Best signature time : <xsl:value-of select="dss:ProofOfExistence/dss:Time" />)
+								</fo:inline>
+							</xsl:if>
+
+							<xsl:if test="@ProductionTime">
+								<fo:inline>
+									<xsl:attribute name="font-weight">normal</xsl:attribute>
+									<xsl:attribute name="font-size">6pt</xsl:attribute>
+									(Production time : <xsl:value-of select="@ProductionTime"/>)
+								</fo:inline>
+							</xsl:if>
 			       		</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
@@ -308,6 +324,13 @@
 		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
     
     						<xsl:value-of select="@Title" />
+							<xsl:if test="@DateTime">
+								<fo:inline>
+									<xsl:attribute name="font-weight">normal</xsl:attribute>
+									<xsl:attribute name="font-size">6pt</xsl:attribute>
+									(<xsl:value-of select="@DateTime" />)
+								</fo:inline>
+							</xsl:if>
    						</fo:block>
     				</fo:table-cell>
     				
@@ -370,7 +393,7 @@
         </xsl:variable>
         
     	<fo:table table-layout="fixed">
-			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
+			<xsl:attribute name="keep-together.within-page">always</xsl:attribute>
 			
 			<xsl:attribute name="margin-top">4px</xsl:attribute>
 			<xsl:attribute name="margin-bottom">2px</xsl:attribute>
@@ -403,13 +426,13 @@
 									<xsl:if test="dss:CrossCertificate">
 										<fo:block>
 			    							<xsl:attribute name="font-weight">normal</xsl:attribute>
-											<xsl:text>&#xa;Cross certification: <xsl:value-of select="dss:CrossCertificate"/></xsl:text>
+											<xsl:text>&#xa;Cross certification: </xsl:text><xsl:value-of select="dss:CrossCertificate"/>
 										</fo:block>
 									</xsl:if>
 									<xsl:if test="dss:EquivalentCertificate">
 										<fo:block>
 			    							<xsl:attribute name="font-weight">normal</xsl:attribute>
-											<xsl:text>&#xa;Equivalent certification: <xsl:value-of select="dss:EquivalentCertificate"/></xsl:text>
+											<xsl:text>&#xa;Equivalent certification: </xsl:text><xsl:value-of select="dss:EquivalentCertificate"/>
 										</fo:block>
 									</xsl:if>
 								</xsl:when>
@@ -465,17 +488,20 @@
     
     <xsl:template match="dss:Constraint">
     	<fo:table table-layout="fixed">
+			<xsl:attribute name="keep-together.within-page">always</xsl:attribute>
     	
 			<fo:table-column>
-				<xsl:attribute name="column-width">80%</xsl:attribute>
+				<xsl:attribute name="column-width">65%</xsl:attribute>
 			</fo:table-column>
 			<fo:table-column>
-				<xsl:attribute name="column-width">20%</xsl:attribute>
+				<xsl:attribute name="column-width">35%</xsl:attribute>
 			</fo:table-column>
     	
 			<fo:table-body>
 				<xsl:attribute name="start-indent">0</xsl:attribute>
 				<xsl:attribute name="end-indent">0</xsl:attribute>
+
+				<xsl:variable name="statusText" select="dss:Status"/>
 				
 		    	<fo:table-row>
 					<fo:table-cell>
@@ -495,8 +521,7 @@
 		    				<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="font-size">7pt</xsl:attribute>
 							<xsl:attribute name="text-align">right</xsl:attribute>
-							
-							<xsl:variable name="statusText" select="dss:Status"/>
+
 				        	<xsl:choose>
 								<xsl:when test="$statusText='OK'">
 									<fo:instream-foreign-object fox:alt-text="OK" content-height="7px" content-width="7px" height="7px" width="7px">
@@ -531,6 +556,50 @@
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
+
+				<xsl:if test="dss:AdditionalInfo or ($statusText != 'OK' and $statusText != 'IGNORED')">
+					<fo:table-row>
+						<fo:table-cell>
+							<xsl:attribute name="display-align">before</xsl:attribute>
+							<xsl:attribute name="padding-top">-1px</xsl:attribute>
+
+							<fo:block>
+								<xsl:attribute name="font-weight">normal</xsl:attribute>
+								<xsl:attribute name="font-size">6pt</xsl:attribute>
+								<xsl:attribute name="color">grey</xsl:attribute>
+
+								<xsl:value-of select="dss:AdditionalInfo"/>
+							</fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<xsl:attribute name="display-align">before</xsl:attribute>
+							<xsl:attribute name="padding-top">-1px</xsl:attribute>
+
+							<fo:block>
+								<xsl:attribute name="font-weight">normal</xsl:attribute>
+								<xsl:attribute name="font-size">6pt</xsl:attribute>
+								<xsl:attribute name="text-align">right</xsl:attribute>
+
+								<xsl:choose>
+									<xsl:when test="$statusText='NOT OK'">
+										<xsl:attribute name="color">red</xsl:attribute>
+										<xsl:value-of select="dss:Error"/>
+									</xsl:when>
+									<xsl:when test="$statusText='WARNING'">
+										<xsl:attribute name="color">orange</xsl:attribute>
+										<xsl:value-of select="dss:Warning"/>
+									</xsl:when>
+									<xsl:when test="$statusText='INFORMATION'">
+										<xsl:attribute name="color">blue</xsl:attribute>
+										<xsl:value-of select="dss:Info"/>
+									</xsl:when>
+								</xsl:choose>
+
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				</xsl:if>
+
 			</fo:table-body>
 		</fo:table>
     </xsl:template>

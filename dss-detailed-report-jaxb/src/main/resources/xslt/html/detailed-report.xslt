@@ -7,6 +7,7 @@
 
     <xsl:template match="/dss:DetailedReport">
     	<div>
+			<xsl:attribute name="id">detailed-report-card</xsl:attribute>
     		<xsl:attribute name="class">panel panel-primary</xsl:attribute>
 	   		<div>
 	   			<xsl:attribute name="class">panel-heading</xsl:attribute>
@@ -579,7 +580,7 @@
 
     <xsl:template match="dss:Constraint">
 	    <div>
-	    	<xsl:attribute name="class">row</xsl:attribute>
+	    	<xsl:attribute name="class">row constraint</xsl:attribute>
 	    	<div>
 	    		<xsl:attribute name="class">col-md-8</xsl:attribute>
 				<xsl:value-of select="dss:Name"/>
@@ -654,7 +655,7 @@
 	    		
 	    		<xsl:if test="dss:AdditionalInfo">
 		    		<span>
-		    			<xsl:attribute name="class">glyphicon glyphicon-plus-sign text-info</xsl:attribute>
+		    			<xsl:attribute name="class">additional-info-tooltip glyphicon glyphicon-plus-sign text-info</xsl:attribute>
 						<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
 						<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 						<xsl:attribute name="data-placement">right</xsl:attribute>
@@ -662,6 +663,12 @@
 		    		</span>
 	    		</xsl:if>
 	    	</div>
+			<xsl:if test="dss:AdditionalInfo">
+				<div>
+					<xsl:attribute name="class">additional-info-text col-md-8 text-muted hidden</xsl:attribute>
+					<span><xsl:value-of select="dss:AdditionalInfo" /></span>
+				</div>
+			</xsl:if>
 	    </div>
         <xsl:apply-templates select="dss:Info"/>
     </xsl:template>

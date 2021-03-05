@@ -713,7 +713,7 @@
                 <AdditionalInfo>Reference : MESSAGE_IMPRINT</AdditionalInfo>
             </Constraint>
             <Constraint>
-                <Name Key="BBB_CV_ISIT">Is timestampss signature intact?</Name>
+                <Name Key="BBB_CV_ISIT">Is timestamp's signature intact?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Id = T-E70F7C745B498A2208A0096422489744EEAEC0F30FE781A6DC6F3E96467EDEE2</AdditionalInfo>
             </Constraint>
