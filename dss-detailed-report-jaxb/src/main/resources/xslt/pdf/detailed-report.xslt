@@ -224,10 +224,10 @@
 			<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 			
 			<fo:table-column>
-				<xsl:attribute name="column-width">60%</xsl:attribute>
+				<xsl:attribute name="column-width">65%</xsl:attribute>
 			</fo:table-column>
 			<fo:table-column>
-				<xsl:attribute name="column-width">40%</xsl:attribute>
+				<xsl:attribute name="column-width">35%</xsl:attribute>
 			</fo:table-column>
 			
 			<fo:table-body>
