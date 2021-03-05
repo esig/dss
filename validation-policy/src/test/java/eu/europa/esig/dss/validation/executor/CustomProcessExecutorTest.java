@@ -4198,7 +4198,6 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
 				assertEquals(MessageTag.BBB_XCV_IRDC_ANS.getId(), constraint.getError().getKey());
 				assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCED_AT_OUT_OF_BOUNDS,
-						revocationWrapper.getId(),
 						ValidationProcessUtils.getFormattedDate(revocationWrapper.getProductionDate()),
 						ValidationProcessUtils.getFormattedDate(revocationWrapper.getSigningCertificate().getNotBefore()),
 						ValidationProcessUtils.getFormattedDate(revocationWrapper.getSigningCertificate().getNotAfter())),
@@ -4319,7 +4318,6 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
 				assertEquals(MessageTag.BBB_XCV_IRDC_ANS.getId(), constraint.getError().getKey());
 				assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_BEFORE,
-						revocationWrapper.getId(),
 						ValidationProcessUtils.getFormattedDate(revocationWrapper.getThisUpdate()),
 						ValidationProcessUtils.getFormattedDate(caCertificate.getNotBefore()),
 						ValidationProcessUtils.getFormattedDate(caCertificate.getNotAfter())),

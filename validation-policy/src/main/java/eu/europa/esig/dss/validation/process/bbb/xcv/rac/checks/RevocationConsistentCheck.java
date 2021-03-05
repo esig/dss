@@ -43,28 +43,28 @@ import java.util.Date;
 public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** The certificate in question */
-	private final CertificateWrapper certificate;
+	protected final CertificateWrapper certificate;
 
 	/** Revocation data to check */
-	private final RevocationWrapper revocationData;
+	protected final RevocationWrapper revocationData;
 
 	/** ThisUpdate of the revocation */
-	private Date thisUpdate;
+	protected Date thisUpdate;
 
 	/** ProducedAt time of the revocation */
-	private Date producedAt;
+	protected Date producedAt;
 
 	/** Certificate's NotBefore */
-	private Date certNotBefore;
+	protected Date certNotBefore;
 
 	/** Certificate's NotAfter */
-	private Date certNotAfter;
+	protected Date certNotAfter;
 
 	/** Defines date after which the revocation issuer ensure the revocation is contained for the certificate */
-	private Date notAfterRevoc;
+	protected Date notAfterRevoc;
 
 	/** Defines if certHash matches */
-	private boolean certHashOK;
+	protected boolean certHashOK;
 
 	/**
 	 * Default constructor
@@ -195,41 +195,104 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 
 	@Override
 	protected String buildAdditionalInfo() {
-
 		if (!checkThisUpdateDefined()) {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_NO_THIS_UPDATE, revocationData.getId());
+			return getNoThisUpdateMessage();
 
 		} else if (!checkRevocationDataHasInformationAboutCertificate()) {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_BEFORE, revocationData.getId(),
-					ValidationProcessUtils.getFormattedDate(thisUpdate),
-					ValidationProcessUtils.getFormattedDate(certNotBefore),
-					ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return getThisUpdateBeforeCertificateNotBeforeMessage();
 
 		} else if (!checkIssuerKnowsCertificate()) {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_NOT_AFTER_AFTER, revocationData.getId(),
-					ValidationProcessUtils.getFormattedDate(notAfterRevoc),
-					ValidationProcessUtils.getFormattedDate(certNotBefore),
-					ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return getNotAfterAfterCertificateNotAfterMessage();
 
 		} else if (!checkRevocationIssuerKnown()) {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_ISSUER_FOUND, revocationData.getId());
+			return getRevocationIssuerNotFoundMessage();
 
 		} else if (!checkIssuerValidAtProductionTime()) {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCED_AT_OUT_OF_BOUNDS, revocationData.getId(),
-					ValidationProcessUtils.getFormattedDate(producedAt),
-					ValidationProcessUtils.getFormattedDate(revocationData.getSigningCertificate().getNotBefore()),
-					ValidationProcessUtils.getFormattedDate(revocationData.getSigningCertificate().getNotAfter()));
+			return getRevocationProducesAtOutOfBoundsMessage();
 
 		} else if (checkCertHashMatches()) {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_CERT_HASH_OK, revocationData.getId());
+			return getRevocationCertHashOkMessage();
 
 		} else {
-			return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT, revocationData.getId(),
-					ValidationProcessUtils.getFormattedDate(thisUpdate),
-					ValidationProcessUtils.getFormattedDate(certNotBefore),
-					ValidationProcessUtils.getFormattedDate(certNotAfter));
+			return getRevocationConsistentMessage();
 		}
+	}
 
+	/**
+	 * Returns the additional information message in case of no thisUpdate field defined
+	 *
+	 * @return {@link String}
+	 */
+	protected String getNoThisUpdateMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_NO_THIS_UPDATE);
+	}
+
+	/**
+	 * Returns the additional information message in case if thisUpdate is before certificate's notBefore
+	 *
+	 * @return {@link String}
+	 */
+	protected String getThisUpdateBeforeCertificateNotBeforeMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_BEFORE,
+				ValidationProcessUtils.getFormattedDate(thisUpdate),
+				ValidationProcessUtils.getFormattedDate(certNotBefore),
+				ValidationProcessUtils.getFormattedDate(certNotAfter));
+	}
+
+	/**
+	 * Returns the additional information message in case if
+	 * computed time 'notAfter' is after the certificate's notAfter
+	 *
+	 * @return {@link String}
+	 */
+	protected String getNotAfterAfterCertificateNotAfterMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_NOT_AFTER_AFTER,
+				ValidationProcessUtils.getFormattedDate(notAfterRevoc),
+				ValidationProcessUtils.getFormattedDate(certNotBefore),
+				ValidationProcessUtils.getFormattedDate(certNotAfter));
+	}
+
+	/**
+	 * Returns the additional information message when revocation's issue is not found
+	 *
+	 * @return {@link String}
+	 */
+	protected String getRevocationIssuerNotFoundMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_ISSUER_NOT_FOUND);
+	}
+
+	/**
+	 * Returns the additional information message when revocation has been produced at out of
+	 * the signing certificate's validity
+	 *
+	 * @return {@link String}
+	 */
+	protected String getRevocationProducesAtOutOfBoundsMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCED_AT_OUT_OF_BOUNDS,
+				ValidationProcessUtils.getFormattedDate(producedAt),
+				ValidationProcessUtils.getFormattedDate(revocationData.getSigningCertificate().getNotBefore()),
+				ValidationProcessUtils.getFormattedDate(revocationData.getSigningCertificate().getNotAfter()));
+	}
+
+	/**
+	 * Returns the additional information message when certHash matches
+	 *
+	 * @return {@link String}
+	 */
+	protected String getRevocationCertHashOkMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_CERT_HASH_OK);
+	}
+
+	/**
+	 * Returns the additional information message when the revocation is consistent
+	 *
+	 * @return {@link String}
+	 */
+	protected String getRevocationConsistentMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT,
+				ValidationProcessUtils.getFormattedDate(thisUpdate),
+				ValidationProcessUtils.getFormattedDate(certNotBefore),
+				ValidationProcessUtils.getFormattedDate(certNotAfter));
 	}
 
 }

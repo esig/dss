@@ -78,9 +78,4 @@ public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> ex
 		return SubIndication.TRY_LATER;
 	}
 
-	@Override
-	protected String buildAdditionalInfo() {
-		return i18nProvider.getMessage(MessageTag.CERTIFICATE_ID, certificate.getId());
-	}
-
 }

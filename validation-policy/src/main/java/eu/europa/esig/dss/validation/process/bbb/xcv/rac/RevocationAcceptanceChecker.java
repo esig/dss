@@ -36,6 +36,7 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactWithIdCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashMatchCheck;
@@ -227,7 +228,7 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	
 	private ChainItem<XmlRAC> certificateIntact(CertificateWrapper certificate) {
 		LevelConstraint constraint = policy.getSignatureIntactConstraint(Context.CERTIFICATE);
-		return new SignatureIntactCheck<>(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
+		return new SignatureIntactWithIdCheck(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
 	}
 
 	private ChainItem<XmlRAC> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {

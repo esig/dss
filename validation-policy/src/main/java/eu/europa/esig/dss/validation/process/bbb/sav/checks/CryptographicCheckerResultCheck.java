@@ -67,7 +67,7 @@ public class CryptographicCheckerResultCheck<T extends XmlConstraintsConclusion>
 		if (isValid(ccResult)) {
 			return i18nProvider.getMessage(MessageTag.VALIDATION_TIME, dateTime);
 		} else {
-			return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE, getErrorMessage(), token.getId(), dateTime);
+			return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE, getErrorMessage(), dateTime);
 		}
 	}
 

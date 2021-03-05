@@ -59,7 +59,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidati
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentWithIdCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
@@ -387,7 +387,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDataConsistent(CertificateWrapper certificate, CertificateRevocationWrapper revocationData) {
-		return new RevocationConsistentCheck<>(i18nProvider, result, certificate, revocationData, getWarnLevelConstraint());
+		return new RevocationConsistentWithIdCheck(i18nProvider, result, certificate, revocationData, getWarnLevelConstraint());
 	}
 	
 	private boolean isRevocationDataConsistent(CertificateWrapper certificate, CertificateRevocationWrapper revocationData) {
