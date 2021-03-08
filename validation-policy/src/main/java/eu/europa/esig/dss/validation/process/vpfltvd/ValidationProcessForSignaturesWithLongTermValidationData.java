@@ -44,6 +44,7 @@ import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -69,6 +70,7 @@ import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNot
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDataAcceptableCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeSuspensionTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
@@ -362,12 +364,22 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		}
 		
 		/*
-		 * 6) If step 2 returned the indication INDETERMINATE with the sub-indication TRY_LATER: the building block
-		 * shall run the Revocation Freshness Checker (clause 5.2.5) with the revocation status information returned in
-		 * step 2, the certificate for which the revocation status is being checked and best-signature-time. If the checker
-		 * returns PASSED, the building block shall go to the next step. Otherwise, the building block shall return the
-		 * indication INDETERMINATE, the sub-indication TRY_LATER and, if returned from the Revocation Freshness
-		 * Checker, the suggestion for when to try the validation again. 
+		 * 6) If step 2) returned the indication INDETERMINATE with the sub indication
+		 * TRY_LATER because the revocation information was not fresh enough: the building block
+		 * shall run the Revocation Freshness Checker (clause 5.2.5) with the revocation status
+		 * information returned in step 2), the certificate for which the revocation status
+		 * is being checked and best signature time. If the checker returns PASSED, the building block
+		 * shall go to the next step. Otherwise, the building block shall return the indication INDETERMINATE,
+		 * the sub indication TRY_LATER and, if returned from the Revocation Freshness Checker,
+		 * the suggestion for when to try the validation again.
+		 *
+		 * 7) If step 2) returned the indication INDETERMINATE with the sub indication TRY_LATER
+		 * because the certificate has been found to be suspended:
+		 *    a. If best-signature-time is before the time of suspension of the certificate:
+		 *       the process shall go to the step 8).
+		 *    b. Otherwise, the building block shall return the indication INDETERMINATE,
+		 *       the sub indication TRY_LATER and a suggestion on when to try the validation gain,
+		 *       if returned by the validation process in step 2).
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
 				&& SubIndication.TRY_LATER.equals(bsConclusion.getSubIndication())) {
@@ -375,7 +387,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		}
 		
 		/*
-		 * 7) The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the following
+		 * 8) The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the following
 		 * inputs:
 		 * a) The Signed Data Object(s).
 		 * b) best-signature-time as the validation time parameter.
@@ -383,14 +395,14 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		
 		/*
-		 * 8) If the signature acceptance validation process returns PASSED, the SVA shall go to the next step. Otherwise,
+		 * 9) If the signature acceptance validation process returns PASSED, the SVA shall go to the next step. Otherwise,
 		 * the SVA shall return the indication and sub-indication returned by the Signature Acceptance Validation
 		 * Process. 
 		 */
 		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime.getTime(), currentContext));
 		
 		/*
-		 * 9) Data extraction: the process shall return the success indication PASSED, the certificate chain obtained in step 2
+		 * 10) Data extraction: the process shall return the success indication PASSED, the certificate chain obtained in step 2
 		 * and best-signature-time.
 		 * In addition, the process should return additional information extracted from the signature and/or used by the
 		 * intermediate steps.
@@ -435,11 +447,18 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			Date bestSignatureTime, Context currentContext) {
 		for (Map.Entry<CertificateWrapper, CertificateRevocationWrapper> certRevocEntry : certificateRevocationMap.entrySet()) {
 			CertificateWrapper certificate = certRevocEntry.getKey();
-			CertificateRevocationWrapper revocationData = certRevocEntry.getValue();
 			SubContext subContext = getSubContext(certificate);
-			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, revocationData, bestSignatureTime, 
-					currentContext, subContext, policy);
-			item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfc.execute(), currentContext, subContext));
+
+			CertificateRevocationWrapper revocationData = certRevocEntry.getValue();
+			if (RevocationReason.CERTIFICATE_HOLD.equals(revocationData.getReason())) {
+				item = item.setNextItem(checkCertificateSuspensionNotBeforeBestSignatureTime(revocationData,
+						bestSignatureTime, currentContext, subContext));
+			} else {
+				RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, revocationData,
+						bestSignatureTime, currentContext, subContext, policy);
+				item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfc.execute(), currentContext, subContext));
+			}
+
 		}
 		return item;
 	}
@@ -457,6 +476,14 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				return SubIndication.TRY_LATER;
 			}
 		};
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> checkCertificateSuspensionNotBeforeBestSignatureTime(
+			CertificateRevocationWrapper certificateRevocationWrapper, Date bestSignatureTime,
+			Context context, SubContext subContext) {
+		LevelConstraint constraint = policy.getCertificateNotOnHoldConstraint(context, subContext);
+		return new BestSignatureTimeBeforeSuspensionTimeCheck(
+				i18nProvider, result, certificateRevocationWrapper, bestSignatureTime, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDateAfterBestSignatureTimeValidation(

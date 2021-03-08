@@ -6065,6 +6065,116 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void certificateOnHoldWithTimestampBeforeSuspensionTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_cert_on_hold_with_tst_before.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlXCV xcv = signatureBBB.getXCV();
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(2, subXCVs.size());
+
+		XmlSubXCV subXCV = subXCVs.get(0);
+		boolean onHoldCheckFound = false;
+		for (XmlConstraint constraint : subXCV.getConstraint()) {
+			if (MessageTag.BBB_XCV_ISCOH.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_ISCOH_ANS.getId(), constraint.getError().getKey());
+				onHoldCheckFound = true;
+			}
+		}
+		assertTrue(onHoldCheckFound);
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
+		assertEquals(Indication.PASSED, validationProcessLongTermData.getConclusion().getIndication());
+
+		onHoldCheckFound = false;
+		for (XmlConstraint constraint : validationProcessLongTermData.getConstraint()) {
+			if (MessageTag.ADEST_ISTPTBST.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				onHoldCheckFound = true;
+			}
+		}
+		assertTrue(onHoldCheckFound);
+	}
+
+	@Test
+	public void certificateOnHoldWithTimestampAfterSuspensionTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_cert_on_hold_with_tst_after.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		List<Message> validationErrors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
+		assertTrue(Utils.isCollectionNotEmpty(validationErrors));
+		assertTrue(checkMessageValuePresence(validationErrors, i18nProvider.getMessage(MessageTag.BBB_XCV_ISCOH_ANS)));
+		assertTrue(checkMessageValuePresence(validationErrors, i18nProvider.getMessage(MessageTag.ADEST_ISTPTBST_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlXCV xcv = signatureBBB.getXCV();
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(2, subXCVs.size());
+
+		XmlSubXCV subXCV = subXCVs.get(0);
+		boolean onHoldCheckFound = false;
+		for (XmlConstraint constraint : subXCV.getConstraint()) {
+			if (MessageTag.BBB_XCV_ISCOH.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_ISCOH_ANS.getId(), constraint.getError().getKey());
+				onHoldCheckFound = true;
+			}
+		}
+		assertTrue(onHoldCheckFound);
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
+		assertEquals(Indication.INDETERMINATE, validationProcessLongTermData.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, validationProcessLongTermData.getConclusion().getSubIndication());
+
+		onHoldCheckFound = false;
+		for (XmlConstraint constraint : validationProcessLongTermData.getConstraint()) {
+			if (MessageTag.ADEST_ISTPTBST.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_ISTPTBST_ANS.getId(), constraint.getError().getKey());
+				onHoldCheckFound = true;
+			}
+		}
+		assertTrue(onHoldCheckFound);
+	}
+
+
+	@Test
 	public void diagDataNotNull() throws Exception {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(null);
