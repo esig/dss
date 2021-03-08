@@ -160,10 +160,33 @@ public class CMSSignedDataBuilder {
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the
 	 *         CAdESLevelBaselineB
 	 */
-	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider, final CAdESSignatureParameters parameters,
-			final boolean includeUnsignedAttributes) {
+	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider,
+															 final CAdESSignatureParameters parameters,
+															 final boolean includeUnsignedAttributes) {
 
-		final CAdESLevelBaselineB cadesProfile = new CAdESLevelBaselineB();
+		return getSignerInfoGeneratorBuilder(digestCalculatorProvider, parameters, includeUnsignedAttributes, null);
+	}
+
+	/**
+	 * This method creates a builder of SignerInfoGenerator
+	 *
+	 * @param digestCalculatorProvider
+	 *            the digest calculator (can be pre-computed)
+	 * @param parameters
+	 *            the parameters of the signature containing values for the attributes
+	 * @param includeUnsignedAttributes
+	 *            true if the unsigned attributes must be included
+	 * @param contentToSign
+	 *            {@link DSSDocument} represents a content to be signed
+	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the
+	 *         CAdESLevelBaselineB
+	 */
+	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider,
+															 final CAdESSignatureParameters parameters,
+															 final boolean includeUnsignedAttributes,
+															 final DSSDocument contentToSign) {
+
+		final CAdESLevelBaselineB cadesProfile = new CAdESLevelBaselineB(contentToSign);
 		final AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
 
 		AttributeTable unsignedAttributes = null;

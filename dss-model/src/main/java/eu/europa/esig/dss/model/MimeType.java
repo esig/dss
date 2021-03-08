@@ -31,8 +31,8 @@ import java.util.Map.Entry;
 import java.util.Objects;
 
 /**
- * This class allows to handle different mime types. It also allows to add
- * (define) new mime-type.
+ * This class allows handling of different mime types. It also allows addition of a new mime-type.
+ *
  */
 @SuppressWarnings("serial")
 public class MimeType implements Serializable {
@@ -63,6 +63,8 @@ public class MimeType implements Serializable {
 	public static final MimeType JOSE_JSON = new MimeType("application/jose+json");
 	/** timestamp-token */
 	public static final MimeType TST = new MimeType("application/vnd.etsi.timestamp-token");
+	/** zip */
+	public static final MimeType ZIP = new MimeType("application/zip");
 	/** asic-s */
 	public static final MimeType ASICS = new MimeType("application/vnd.etsi.asic-s+zip");
 	/** asic-e */
@@ -103,6 +105,8 @@ public class MimeType implements Serializable {
 
 		fileExtensions.put("json", JSON);
 
+		fileExtensions.put("zip", ZIP);
+
 		fileExtensions.put("asics", ASICS);
 		fileExtensions.put("scs", ASICS);
 
@@ -111,7 +115,7 @@ public class MimeType implements Serializable {
 		// estonian bdoc file type is handled as asic-e document
 		fileExtensions.put("bdoc", ASICE);
 
-		// ASiC-E open-docuemnt
+		// ASiC-E open-document
 		fileExtensions.put("odt", ODT);
 		fileExtensions.put("ods", ODS);
 		fileExtensions.put("odp", ODP);

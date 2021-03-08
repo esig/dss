@@ -110,14 +110,17 @@ public class CAdESService extends
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
 		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
 
-		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, false);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
+
+		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
+		final DSSDocument contentToSign = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
+		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.
+				getSignerInfoGeneratorBuilder(dcp, parameters, false, contentToSign);
 
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
-		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
+		final DSSDocument toSignData = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
 		final CMSTypedData content = CMSUtils.getContentToBeSigned(toSignData);
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
@@ -140,17 +143,20 @@ public class CAdESService extends
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
 
-		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, true);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
 		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
 			parameters.setDetachedContents(Arrays.asList(toSignDocument));
 		}
 
+		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
+		final DSSDocument contentToSign = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
+		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.
+				getSignerInfoGeneratorBuilder(dcp, parameters, true, contentToSign);
+
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
-		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
+		final DSSDocument toSignData = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
 		final CMSTypedData content = CMSUtils.getContentToBeSigned(toSignData);
 
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
@@ -182,7 +188,7 @@ public class CAdESService extends
 	}
 
 	/**
-	 * This method retrieves the data to be signed. It this data is located within a signature then it is extracted.
+	 * This method retrieves the data to be signed. If this data is located within a signature then it is extracted.
 	 *
 	 * @param toSignDocument
 	 *            document to sign
@@ -192,12 +198,13 @@ public class CAdESService extends
 	 *            the signed data extracted from an existing signature or null
 	 * @return {@link DSSDocument} toSignData
 	 */
-	private DSSDocument getToSignData(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, final CMSSignedData originalCmsSignedData) {
+	private DSSDocument getContentToSign(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters,
+										 final CMSSignedData originalCmsSignedData) {
 		final List<DSSDocument> detachedContents = parameters.getDetachedContents();
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
-			// CAdES only can sign one document
-			// (ASiC-S -> the document to sign /
-			// ASiC-E -> ASiCManifest)
+			// * CAdES only can sign one document
+			// * ASiC-S -> the document to sign or package.zip
+			// * ASiC-E -> ASiCManifest
 			return detachedContents.get(0);
 		} else {
 			if (originalCmsSignedData == null) {
@@ -357,7 +364,8 @@ public class CAdESService extends
 		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
 
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, false);
+		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.
+				getSignerInfoGeneratorBuilder(dcp, parameters, false);
 
 		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(signatureDocument);
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,

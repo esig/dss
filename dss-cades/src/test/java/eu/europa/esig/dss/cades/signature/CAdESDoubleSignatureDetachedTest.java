@@ -31,6 +31,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
@@ -44,6 +45,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature {
@@ -54,7 +56,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 
 	private String user;
 	
-	private static DSSDocument original = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+	private static DSSDocument original = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 	
 	@BeforeEach
 	public void init() {
@@ -124,7 +126,18 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 
 		DSSException e = assertThrows(DSSException.class, () -> sign());
 		assertEquals("Unknown SignedContent", e.getMessage());
+	}
 
+	@Override
+	protected void checkMimeType(DiagnosticData diagnosticData) {
+		super.checkMimeType(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertNotNull(signatureWrapper.getMimeType());
+
+			MimeType mimeType = MimeType.fromMimeTypeString(signatureWrapper.getMimeType());
+			assertEquals(MimeType.TEXT, mimeType);
+		}
 	}
 	
 	@Override

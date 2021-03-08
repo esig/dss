@@ -22,13 +22,17 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 
 import eu.europa.esig.dss.asic.cades.signature.AbstractASiCWithCAdESTestSignature;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public abstract class AbstractASiCECAdESTestSignature extends AbstractASiCWithCAdESTestSignature {
 
@@ -47,6 +51,19 @@ public abstract class AbstractASiCECAdESTestSignature extends AbstractASiCWithCA
 		List<DSSDocument> manifestDocuments = extractResult.getManifestDocuments();
 		assertEquals(1, manifestDocuments.size());
 		return manifestDocuments.get(0);
+	}
+
+	@Override
+	protected void checkMimeType(DiagnosticData diagnosticData) {
+		super.checkMimeType(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (!signatureWrapper.isCounterSignature() && Utils.isStringEmpty(signatureWrapper.getContentHints())) {
+				assertEquals(MimeType.XML, MimeType.fromMimeTypeString(signatureWrapper.getMimeType()));
+			} else {
+				assertNull(signatureWrapper.getMimeType());
+			}
+		}
 	}
 
 }

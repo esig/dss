@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.common.signature.asics;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.MimeType;
 
 import java.util.Date;
 import java.util.List;
@@ -44,6 +45,7 @@ public abstract class AbstractGetDataToSignASiCS {
 	protected DSSDocument createPackageZip(List<DSSDocument> documents, Date signingDate, String zipComment) {
 		DSSDocument packageZip = ZipUtils.getInstance().createZipArchive(documents, signingDate, zipComment);
 		packageZip.setName(ASiCUtils.PACKAGE_ZIP);
+		packageZip.setMimeType(MimeType.ZIP);
 		return packageZip;
 	}
 

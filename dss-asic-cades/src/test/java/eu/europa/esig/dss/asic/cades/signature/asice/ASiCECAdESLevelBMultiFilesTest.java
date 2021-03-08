@@ -172,6 +172,15 @@ public class ASiCECAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 	}
 
 	@Override
+	protected void checkMimeType(DiagnosticData diagnosticData) {
+		super.checkMimeType(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertEquals(MimeType.XML, MimeType.fromMimeTypeString(signatureWrapper.getMimeType()));
+		}
+	}
+
+	@Override
 	protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}

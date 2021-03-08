@@ -52,6 +52,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -59,6 +60,7 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
 		checkSignedAttributesOrder(byteArray);
 		checkSignaturePackaging(byteArray);
 	}
@@ -83,7 +85,8 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 			for (int i = 0; i < authenticatedAttributeSet.size(); i++) {
 				Attribute attribute = Attribute.getInstance(authenticatedAttributeSet.getObjectAt(i));
 				ASN1ObjectIdentifier attrTypeOid = attribute.getAttrType();
-				int size = attrTypeOid.getEncoded().length + attribute.getEncoded().length;
+				ASN1Set attrValues = attribute.getAttrValues();
+				int size = attrTypeOid.getEncoded().length + attrValues.getEncoded().length;
 
 				assertTrue(size >= previousSize);
 				previousSize = size;
@@ -148,6 +151,19 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 			
 			assertNotNull(signatureIdentifier.getSignatureValue());
 			assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
+		}
+	}
+
+	@Override
+	protected void checkMimeType(DiagnosticData diagnosticData) {
+		super.checkMimeType(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (!signatureWrapper.isCounterSignature() && Utils.isStringEmpty(signatureWrapper.getContentHints())) {
+				assertNotNull(signatureWrapper.getMimeType());
+			} else {
+				assertNull(signatureWrapper.getMimeType());
+			}
 		}
 	}
 

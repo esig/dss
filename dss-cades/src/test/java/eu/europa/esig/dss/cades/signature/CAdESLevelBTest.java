@@ -76,6 +76,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -116,7 +117,6 @@ public class CAdESLevelBTest extends AbstractCAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 
 		service = new CAdESService(getOfflineCertificateVerifier());
-
 	}
 
 	@Override
@@ -306,6 +306,14 @@ public class CAdESLevelBTest extends AbstractCAdESTestSignature {
 			logger.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
+	}
+
+	@Override
+	protected void checkMimeType(DiagnosticData diagnosticData) {
+		super.checkMimeType(diagnosticData);
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNull(signature.getMimeType()); // ContentHints defined
 	}
 	
 	@Override

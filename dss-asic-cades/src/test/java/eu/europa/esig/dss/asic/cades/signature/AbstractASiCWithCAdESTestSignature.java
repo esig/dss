@@ -125,4 +125,17 @@ public abstract class AbstractASiCWithCAdESTestSignature
         }
     }
 
+    @Override
+    protected void checkMimeType(DiagnosticData diagnosticData) {
+        super.checkMimeType(diagnosticData);
+
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            if (!signatureWrapper.isCounterSignature() && Utils.isStringEmpty(signatureWrapper.getContentHints())) {
+                assertNotNull(signatureWrapper.getMimeType());
+            } else {
+                assertNull(signatureWrapper.getMimeType());
+            }
+        }
+    }
+
 }

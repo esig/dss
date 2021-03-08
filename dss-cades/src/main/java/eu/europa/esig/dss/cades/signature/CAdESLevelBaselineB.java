@@ -26,6 +26,8 @@ import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
@@ -93,6 +95,9 @@ public class CAdESLevelBaselineB {
 	/** Defines if the CMS signature will be created for a PAdES */
 	private final boolean padesUsage;
 
+	/** The document to be signed */
+	private final DSSDocument documentToSign;
+
 	/**
 	 * The default constructor for CAdESLevelBaselineB.
 	 */
@@ -106,6 +111,26 @@ public class CAdESLevelBaselineB {
 	 * @param padesUsage defines if the CMS signature shall be created a PAdES
 	 */
 	public CAdESLevelBaselineB(boolean padesUsage) {
+		this(null, padesUsage);
+	}
+
+	/**
+	 * The constructor for CAdESLevelBaselineB with a {@code documentToSign}
+	 *
+	 * @param documentToSign {@link DSSDocument} document to be signed
+	 */
+	public CAdESLevelBaselineB(DSSDocument documentToSign) {
+		this(documentToSign, false);
+	}
+
+	/**
+	 * The constructor for CAdESLevelBaselineB with a {@code documentToSign} and {@code padesUsage}
+	 *
+	 * @param documentToSign {@link DSSDocument} document to be signed
+	 * @param padesUsage defines if the CMS signature shall be created a PAdES
+	 */
+	CAdESLevelBaselineB(DSSDocument documentToSign, boolean padesUsage) {
+		this.documentToSign = documentToSign;
 		this.padesUsage = padesUsage;
 	}
 
@@ -126,7 +151,7 @@ public class CAdESLevelBaselineB {
 	 */
 	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
 		if (Utils.isArrayNotEmpty(parameters.getSignedData())) {
-			LOG.debug("Using explict SignedAttributes from parameter");
+			LOG.debug("Using explicit SignedAttributes from parameter");
 			return CMSUtils.getAttributesFromByteArray(parameters.getSignedData());
 		}
 
@@ -136,13 +161,11 @@ public class CAdESLevelBaselineB {
 		addSignerAttribute(parameters, signedAttributes);
 		addSignaturePolicyId(parameters, signedAttributes);
 		addContentHints(parameters, signedAttributes);
+		addMimeType(parameters, signedAttributes);
 		addContentIdentifier(parameters, signedAttributes);
 		addCommitmentType(parameters, signedAttributes);
 		addSignerLocation(parameters, signedAttributes);
 		addContentTimestamps(parameters, signedAttributes);
-
-		// mime-type attribute breaks parallel signatures by adding PKCS7 as a mime-type for subsequent signers.
-		// This attribute is not mandatory, so it has been disabled.
 
 		return new AttributeTable(signedAttributes);
 	}
@@ -507,6 +530,27 @@ public class CAdESLevelBaselineB {
 		}
 
 		CMSUtils.addSigningCertificateAttribute(signedAttributes, parameters.getDigestAlgorithm(), parameters.getSigningCertificate());
+	}
+
+	private void addMimeType(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+		if (padesUsage) {
+			return;
+		}
+		if (parameters instanceof CAdESCounterSignatureParameters) {
+			return;
+		}
+		if (Utils.isStringNotBlank(parameters.getContentHintsType())) {
+			return;
+		}
+
+		MimeType mimeType = MimeType.BINARY;
+		if (documentToSign != null && documentToSign.getMimeType() != null) {
+			mimeType = documentToSign.getMimeType();
+		}
+		final DERUTF8String mimeTypeDerString = new DERUTF8String(mimeType.getMimeTypeString());
+		final DERSet attrValues = new DERSet(mimeTypeDerString);
+		final Attribute attribute = new Attribute(OID.id_aa_ets_mimeType, attrValues);
+		signedAttributes.add(attribute);
 	}
 
 }

@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.RepeatedTest;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -36,46 +27,46 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author axel.abinet
  *
  */
-public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
-	
+public class CAdESDoubleSignatureTest extends AbstractCAdESTestSignature {
+
+	private static DSSDocument originalDocument;
 	private static Date date;
 	
 	private static String firstSignatureId;
 	private static String secondSignatureId;
 	
+	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
+	private CAdESSignatureParameters signatureParameters;
+	private DSSDocument documentToSign;
+
 	@BeforeAll
-	public static void init() {
+	public static void initBeforeAll() {
+		originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 		date = new Date();
 	}
 
-	@RepeatedTest(10)
-	public void test() throws Exception {
-		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+	@BeforeEach
+	public void init() throws Exception {
+		documentToSign = originalDocument;
 
-		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(date);
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-
-		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
-
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-
+		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(date);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
@@ -84,26 +75,39 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
 
-		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
-		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
+	@Override
+	protected DSSDocument sign() {
+		DSSDocument signedDocument = super.sign();
+		documentToSign = signedDocument;
+		DSSDocument doubleSignedDocument = super.sign();
+		documentToSign = originalDocument;
+		return doubleSignedDocument;
+	}
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+	@RepeatedTest(10)
+	@Override
+	public void signAndVerify() {
+		super.signAndVerify();
+	}
 
-		Reports reports = validator.validateDocument();
+	@Override
+	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+		assertEquals(2, diagnosticData.getSignatures().size());
+	}
 
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
 
-		assertEquals(2, diagnosticData.getSignatureIdList().size());
-
-		for (String id : diagnosticData.getSignatureIdList()) {
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(id));
-		}
-		
 		assertEquals(4, diagnosticData.getTimestampList().size());
-		
+	}
+
+	@Override
+	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
+		super.checkSignatureIdentifier(diagnosticData);
+
 		SignatureWrapper signatureOne = diagnosticData.getSignatures().get(0);
 		SignatureWrapper signatureTwo = diagnosticData.getSignatures().get(1);
 		assertNotEquals(signatureOne.getId(), signatureTwo.getId());
@@ -113,7 +117,43 @@ public class CAdESDoubleSignatureTest extends PKIFactoryAccess {
 		}
 		assertEquals(firstSignatureId, signatureOne.getId());
 		assertEquals(secondSignatureId, signatureTwo.getId());
-		
+	}
+
+	@Override
+	protected void checkMimeType(DiagnosticData diagnosticData) {
+		super.checkMimeType(diagnosticData);
+
+		boolean textMimeTypeFound = false;
+		boolean binaryMimeTypeFound = false;
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertNotNull(signatureWrapper.getMimeType());
+
+			MimeType mimeType = MimeType.fromMimeTypeString(signatureWrapper.getMimeType());
+			assertNotNull(mimeType);
+
+			if (MimeType.TEXT.equals(mimeType)) {
+				textMimeTypeFound = true;
+			} else if (MimeType.BINARY.equals(mimeType)) {
+				binaryMimeTypeFound = true;
+			}
+		}
+		assertTrue(textMimeTypeFound);
+		assertTrue(binaryMimeTypeFound);
+	}
+
+	@Override
+	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
+		return service;
+	}
+
+	@Override
+	protected CAdESSignatureParameters getSignatureParameters() {
+		return signatureParameters;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
 	}
 
 	@Override

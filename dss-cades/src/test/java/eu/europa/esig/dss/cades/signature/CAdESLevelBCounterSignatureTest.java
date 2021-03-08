@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -40,6 +41,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatureTest {
@@ -53,7 +56,7 @@ public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatu
 	public void init() throws Exception {
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
-		documentToSign = new InMemoryDocument("Hello World".getBytes());
+		documentToSign = new InMemoryDocument("Hello World".getBytes(), "test.text", MimeType.TEXT);
 		signingDate = new Date();
 	}
 
@@ -106,6 +109,26 @@ public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatu
 			}
 		}
 		assertTrue(counterSignatureFound);
+	}
+
+	@Override
+	protected void checkMimeType(DiagnosticData diagnosticData) {
+		super.checkMimeType(diagnosticData);
+
+		boolean masterSigFound = false;
+		boolean counterSigFound = false;
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (signatureWrapper.isCounterSignature()) {
+				assertNull(signatureWrapper.getMimeType());
+				counterSigFound = true;
+			} else {
+				assertNotNull(signatureWrapper.getMimeType());
+				assertEquals(MimeType.TEXT, MimeType.fromMimeTypeString(signatureWrapper.getMimeType()));
+				masterSigFound = true;
+			}
+		}
+		assertTrue(masterSigFound);
+		assertTrue(counterSigFound);
 	}
 
 	@Override
