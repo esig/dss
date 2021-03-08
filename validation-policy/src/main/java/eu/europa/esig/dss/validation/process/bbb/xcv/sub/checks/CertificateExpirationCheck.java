@@ -92,7 +92,8 @@ public class CertificateExpirationCheck<T extends XmlConstraintsConclusion> exte
 	protected String buildAdditionalInfo() {
 		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotBefore());
 		String notAfterStr = certificate.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotAfter());
-		return i18nProvider.getMessage(MessageTag.CERTIFICATE_VALIDITY, notBeforeStr, notAfterStr);
+		String validationTime = ValidationProcessUtils.getFormattedDate(currentTime);
+		return i18nProvider.getMessage(MessageTag.CERTIFICATE_VALIDITY, validationTime, notBeforeStr, notAfterStr);
 	}
 
 	@Override

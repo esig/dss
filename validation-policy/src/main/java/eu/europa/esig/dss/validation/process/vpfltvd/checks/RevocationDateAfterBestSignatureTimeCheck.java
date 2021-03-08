@@ -78,7 +78,8 @@ public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlVali
 	@Override
 	protected String buildAdditionalInfo() {
 		String bestSignatureTimeStr = bestSignatureTime == null ? " ? " : ValidationProcessUtils.getFormattedDate(bestSignatureTime);
-		return i18nProvider.getMessage(MessageTag.BEST_SIGNATURE_TIME, bestSignatureTimeStr);
+		String revocationTime = certificateRevocation.getRevocationDate() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificateRevocation.getRevocationDate());
+		return i18nProvider.getMessage(MessageTag.BEST_SIGNATURE_TIME_CERT_REVOCATION, bestSignatureTimeStr, revocationTime);
 	}
 
 	@Override

@@ -92,7 +92,7 @@ public class IdPkixOcspNoCheck<T extends XmlConstraintsConclusion> extends Chain
 		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotBefore());
 		String notAfterStr = certificate.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotAfter());
 		String validationTime = ValidationProcessUtils.getFormattedDate(controlTime);
-		return i18nProvider.getMessage(MessageTag.OCSP_NO_CHECK, notBeforeStr, notAfterStr, validationTime);
+		return i18nProvider.getMessage(MessageTag.CERTIFICATE_VALIDITY, validationTime, notBeforeStr, notAfterStr);
 	}
 
 }
