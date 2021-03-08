@@ -107,7 +107,7 @@ public class TimestampToken extends Token {
 	 */
 	private List<SignatureScope> timestampScopes;
 
-	/* In case of ASiC-E */
+	/* In case of ASiC with CAdES */
 	private ManifestFile manifestFile;
 
 	/**

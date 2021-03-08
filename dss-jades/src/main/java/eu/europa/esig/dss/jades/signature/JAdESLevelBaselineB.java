@@ -162,7 +162,7 @@ public class JAdESLevelBaselineB {
 		 * value.
 		 */
 		String mimeTypeString = mimeType.getMimeTypeString();
-		String shortMimeTypeString = DSSUtils.stripFirstLeadingOccurance(mimeTypeString, DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX);
+		String shortMimeTypeString = DSSUtils.stripFirstLeadingOccurrence(mimeTypeString, DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX);
 		if (!shortMimeTypeString.contains("/")) {
 			return shortMimeTypeString;
 		} else {

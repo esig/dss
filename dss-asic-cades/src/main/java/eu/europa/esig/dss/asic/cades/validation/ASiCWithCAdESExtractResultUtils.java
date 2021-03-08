@@ -53,7 +53,7 @@ public class ASiCWithCAdESExtractResultUtils {
 				return manifestDocuments.iterator().next();
 			}
 			// we need to check the manifest file and its digest
-			DSSDocument linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(extractResult.getManifestDocuments(), signatureFilename);
+			DSSDocument linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(extractResult.getManifestDocuments(), signatureFilename);
 			if (linkedManifest != null) {
 				return linkedManifest;
 			} else {
@@ -74,7 +74,7 @@ public class ASiCWithCAdESExtractResultUtils {
 		List<DSSDocument> manifests = extractResult.getAllManifestDocuments();
 		if (Utils.isCollectionNotEmpty(manifests)) {
 			for (DSSDocument archiveManifest : manifests) {
-				ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifest);
+				ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
 				for (ManifestEntry entry : manifestFile.getEntries()) {
 					if (signatureFilename != null && signatureFilename.equals(entry.getFileName())) {
 						return true;

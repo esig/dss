@@ -398,10 +398,21 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	
 	/**
 	 * Returns a list of timestamps defined with the 'DocTimeStamp' type
+	 *
 	 * NOTE: applicable only for PAdES
+	 *
 	 * @return {@code List} of {@code TimestampToken}s
 	 */
 	List<TimestampToken> getDocumentTimestamps();
+
+	/**
+	 * Returns a list of detached timestamps
+	 *
+	 * NOTE: used for ASiC with CAdES only
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
+	List<TimestampToken> getDetachedTimestamps();
 
 	/**
 	 * Returns a list of all timestamps found in the signature
@@ -412,6 +423,8 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * This method allows to add an external timestamp. The given timestamp must be processed before.
+	 *
+	 * NOTE: The method is supported only for CAdES signatures
 	 * 
 	 * @param timestamp
 	 *            the timestamp token

@@ -20,12 +20,17 @@
  */
 package eu.europa.esig.dss.validation.timestamp;
 
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.validation.ManifestFile;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-import eu.europa.esig.dss.enumerations.TimestampType;
-
+/**
+ * Compares {@code TimestampToken}s
+ *
+ */
 public class TimestampTokenComparator implements Comparator<TimestampToken>, Serializable {
 
 	private static final long serialVersionUID = 3404578959761631884L;
@@ -39,6 +44,16 @@ public class TimestampTokenComparator implements Comparator<TimestampToken>, Ser
 			TimestampType tst1Type = tst1.getTimeStampType();
 			TimestampType tst2Type = tst2.getTimeStampType();
 			result = tst1Type.compare(tst2Type);
+		}
+
+		if (result == 0) {
+			ManifestFile tst1ManifestFile = tst1.getManifestFile();
+			ManifestFile tst2ManifestFile = tst2.getManifestFile();
+			if (tst1ManifestFile != null && tst1ManifestFile.isDocumentCovered(tst2.getFileName())) {
+				result = 1;
+			} else if (tst2ManifestFile != null && tst2ManifestFile.isDocumentCovered(tst1.getFileName())) {
+				result = -1;
+			}
 		}
 		
 		if (result == 0) {

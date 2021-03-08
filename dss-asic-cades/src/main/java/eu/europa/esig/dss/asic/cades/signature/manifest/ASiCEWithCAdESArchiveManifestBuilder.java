@@ -87,17 +87,17 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 	 * @param timestamps a list of {@link DSSDocument} timestamps
 	 * @param signedFiles a list of {@link DSSDocument} signed files
 	 * @param manifests a list of {@link DSSDocument} manifests
-	 * @param lastArchiveManifets {@link DSSDocument} the last archive manifest "ASiCArchiveManifest.xml"
+	 * @param lastArchiveManifest {@link DSSDocument} the last archive manifest "ASiCArchiveManifest.xml"
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use for digest calculation
 	 * @param timestampFileUri {@link String} the name of the timestamp to add
 	 */
 	public ASiCEWithCAdESArchiveManifestBuilder(List<DSSDocument> signatures, List<DSSDocument> timestamps, List<DSSDocument> signedFiles,
-			List<DSSDocument> manifests, DSSDocument lastArchiveManifets, DigestAlgorithm digestAlgorithm, String timestampFileUri) {
+			List<DSSDocument> manifests, DSSDocument lastArchiveManifest, DigestAlgorithm digestAlgorithm, String timestampFileUri) {
 		this.signatures = signatures;
 		this.timestamps = timestamps;
 		this.signedFiles = signedFiles;
 		this.manifests = manifests;
-		this.lastArchiveManifest = lastArchiveManifets;
+		this.lastArchiveManifest = lastArchiveManifest;
 		this.digestAlgorithm = digestAlgorithm;
 		this.timestampFileUri = timestampFileUri;
 	}

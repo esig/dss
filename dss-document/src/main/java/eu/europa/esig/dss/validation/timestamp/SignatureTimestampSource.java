@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -37,8 +36,9 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.ListRevocationSource;
+import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
@@ -107,6 +107,11 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      * This variable contains the list of enclosed archive signature timestamps.
      */
     protected List<TimestampToken> archiveTimestamps;
+
+    /**
+     * This variable contains the list of detached timestamp tokens (used in ASiC with CAdES).
+     */
+    protected List<TimestampToken> detachedTimestamps;
 
     /**
      * A list of all TimestampedReferences extracted from a signature
@@ -180,6 +185,14 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     }
 
     @Override
+    public List<TimestampToken> getDetachedTimestamps() {
+        if (detachedTimestamps == null) {
+            createAndValidate();
+        }
+        return detachedTimestamps;
+    }
+
+    @Override
     public List<TimestampToken> getAllTimestamps() {
         List<TimestampToken> timestampTokens = new ArrayList<>();
         timestampTokens.addAll(getContentTimestamps());
@@ -188,6 +201,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         timestampTokens.addAll(getTimestampsX2());
         timestampTokens.addAll(getArchiveTimestamps());
         timestampTokens.addAll(getDocumentTimestamps());
+        timestampTokens.addAll(getDetachedTimestamps());
         return timestampTokens;
     }
 
@@ -219,6 +233,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
 
         final List<TimestampToken> archiveTimestamps = new ArrayList<>(getArchiveTimestamps());
         archiveTimestamps.addAll(getDocumentTimestamps()); // can be a document timestamp for PAdES
+        archiveTimestamps.addAll(getDetachedTimestamps()); // can be a detached timestamp for ASiC with CAdES
         Collections.sort(archiveTimestamps, new TimestampTokenComparator());
         if (archiveTimestamps.size() > 0) {
             for (int ii = 0; ii < archiveTimestamps.size() - 1; ii++) {
@@ -268,17 +283,11 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     @Override
     public void addExternalTimestamp(TimestampToken timestamp) {
         // if timestamp tokens not created yet
-        if (archiveTimestamps == null) {
+        if (detachedTimestamps == null) {
             createAndValidate();
         }
         processExternalTimestamp(timestamp);
-        if (TimestampType.ARCHIVE_TIMESTAMP == timestamp.getTimeStampType()) {
-            archiveTimestamps.add(timestamp);
-        } else {
-            throw new DSSException(
-                    String.format("The signature timestamp source does not support timestamp tokens with type [%s]. " + "The TimestampToken was not added.",
-                            timestamp.getTimeStampType().name()));
-        }
+        detachedTimestamps.add(timestamp);
     }
 
     /**
@@ -292,6 +301,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         sigAndRefsTimestamps = new ArrayList<>();
         refsOnlyTimestamps = new ArrayList<>();
         archiveTimestamps = new ArrayList<>();
+        detachedTimestamps = new ArrayList<>();
 
         // initialize combined revocation sources
         crlSource = new ListRevocationSource<>(signature.getCRLSource());
@@ -1112,11 +1122,27 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         // add all validation data present in Signature CMS SignedData, because an external timestamp covers a whole signature file
         addReferences(externalTimestamp.getTimestampedReferences(), getSignatureSignedDataReferences());
         // add references from previously added timestamps
-        addReferences(externalTimestamp.getTimestampedReferences(), getEncapsulatedReferencesFromTimestamps(getAllTimestamps()));
+        addReferences(externalTimestamp.getTimestampedReferences(), getEncapsulatedReferencesFromTimestamps(
+                getTimestampsCoveredByExternalTimestamp(externalTimestamp)));
         // add existing counter signatures
         addReferences(externalTimestamp.getTimestampedReferences(), getCounterSignatureReferences(signature));
         // populate timestamp certificate source with values present in the timestamp
         populateSources(externalTimestamp);
+    }
+
+    private List<TimestampToken> getTimestampsCoveredByExternalTimestamp(TimestampToken externalTimestamp) {
+        List<TimestampToken> result = new ArrayList<>();
+        for (TimestampToken timestampToken : getAllTimestamps()) {
+            if (detachedTimestamps.contains(timestampToken)) {
+                ManifestFile manifestFile = externalTimestamp.getManifestFile();
+                if (manifestFile == null || !manifestFile.isDocumentCovered(timestampToken.getFileName())) {
+                    // the detached timestamp is not covered, continue
+                    continue;
+                }
+            }
+            result.add(timestampToken);
+        }
+        return result;
     }
 
     /**

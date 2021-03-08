@@ -37,6 +37,7 @@ import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected List<DocumentValidator> signatureValidators;
 
 	/** List of timestamp document validators */
-	protected List<DocumentValidator> timestampValidators;
+	protected List<DetachedTimestampValidator> timestampValidators;
 
 	/** The container extraction result */
 	protected ASiCExtractResult extractResult;
@@ -142,6 +143,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	/**
 	 * Attaches existing external timestamps to the list of {@code AdvancedSignature}s
+	 *
 	 * @param allSignatures list of {@link AdvancedSignature}s
 	 * @return list of attached {@link TimestampToken}s
 	 */

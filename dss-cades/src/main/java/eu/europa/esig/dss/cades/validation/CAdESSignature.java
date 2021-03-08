@@ -61,6 +61,7 @@ import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -1080,6 +1081,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		if (!timestamp.isProcessed()) {
+			throw new DSSException("Timestamp token must be validated first !");
+		}
+		getTimestampSource().addExternalTimestamp(timestamp);
+	}
+
+	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
 		if (!hasBProfile()) {
 			return SignatureLevel.CMS_NOT_ETSI;
@@ -1105,6 +1114,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		} else {
 			return SignatureLevel.CAdES_BASELINE_T;
 		}
+	}
+
+	@Override
+	public boolean hasLTAProfile() {
+		return Utils.isCollectionNotEmpty(getArchiveTimestamps()) || Utils.isCollectionNotEmpty(getDetachedTimestamps());
 	}
 
 	/**

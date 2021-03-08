@@ -104,7 +104,7 @@ public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
         assertEquals(3, allManifestFiles.size());
         
         for (DSSDocument manifest : allManifestFiles) {
-        	ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(manifest);
+        	ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifest);
         	switch (manifestFile.getFilename()) {
         		case "META-INF/ASiCManifest.xml":
         			assertEquals("META-INF/signature001.p7s", manifestFile.getSignatureFilename());

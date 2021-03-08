@@ -96,8 +96,6 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		assertEquals(0, diagnosticData.getSignatureIdList().size());
 		assertEquals(1, diagnosticData.getTimestampIdList().size());
 
-		signaturesAndTimestampsIntact(diagnosticData);
-
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -121,8 +119,6 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		assertEquals(1, diagnosticData.getSignatureIdList().size());
 		assertEquals(1, diagnosticData.getTimestampIdList().size());
 
-		signaturesAndTimestampsIntact(diagnosticData);
-
 		timestampParameters = new ASiCWithCAdESTimestampParameters();
 		timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
@@ -140,8 +136,6 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, diagnosticData.getSignatureIdList().size());
 		assertEquals(2, diagnosticData.getTimestampIdList().size());
-
-		signaturesAndTimestampsIntact(diagnosticData);
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
@@ -166,7 +160,31 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		assertEquals(2, diagnosticData.getSignatureIdList().size());
 		assertEquals(2, diagnosticData.getTimestampIdList().size());
 
-		signaturesAndTimestampsIntact(diagnosticData);
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			assertTrue(signature.isSignatureIntact());
+			assertTrue(signature.isSignatureValid());
+		}
+
+		boolean firstTstFound = false;
+		boolean secondTstFound = false;
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+			assertTrue(timestamp.isMessageImprintDataFound());
+			assertTrue(timestamp.isMessageImprintDataIntact());
+			assertTrue(timestamp.isSignatureIntact());
+			assertTrue(timestamp.isSignatureValid());
+
+			if (timestamp.getDigestMatchers().size() == 2) {
+				assertEquals(2, timestamp.getTimestampedSignedData().size());
+				firstTstFound = true;
+			} else if (timestamp.getDigestMatchers().size() == 5) {
+				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getName());
+				assertEquals(4, timestamp.getTimestampedSignedData().size());
+				assertEquals(1, timestamp.getTimestampedTimestamps().size());
+				secondTstFound = true;
+			}
+		}
+		assertTrue(firstTstFound);
+		assertTrue(secondTstFound);
 
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReportJaxb);
@@ -202,24 +220,6 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		}
 		assertFalse(noTimestamp);
 
-	}
-
-	private void signaturesAndTimestampsIntact(DiagnosticData diagnosticData) {
-
-		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
-			assertTrue(signature.isSignatureIntact());
-			assertTrue(signature.isSignatureValid());
-		}
-
-		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
-			assertTrue(timestamp.isMessageImprintDataFound());
-			assertTrue(timestamp.isMessageImprintDataIntact());
-			assertTrue(timestamp.isSignatureIntact());
-			assertTrue(timestamp.isSignatureValid());
-
-			assertEquals(2, timestamp.getDigestMatchers().size());
-			assertEquals(2, timestamp.getTimestampedSignedData().size());
-		}
 	}
 
 	@Override

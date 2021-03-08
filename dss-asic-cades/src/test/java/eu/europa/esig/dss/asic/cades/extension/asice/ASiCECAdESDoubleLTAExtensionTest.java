@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -123,7 +123,7 @@ public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
         List<DSSDocument> manifestFiles = result.getManifestDocuments();
         assertEquals(1, manifestFiles.size());
         
-    	ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(manifestFiles.get(0));
+    	ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifestFiles.get(0));
 		assertFalse(manifestFile.isTimestampManifest());
 		assertFalse(manifestFile.isArchiveManifest());
         
@@ -131,7 +131,7 @@ public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
         assertEquals(2, archiveManifestFiles.size());
         
         for (DSSDocument archiveManifest : archiveManifestFiles) {
-        	manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifest);
+        	manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
 			assertTrue(manifestFile.isTimestampManifest());
 			assertTrue(manifestFile.isArchiveManifest());
         }

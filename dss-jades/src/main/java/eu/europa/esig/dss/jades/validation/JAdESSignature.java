@@ -58,6 +58,7 @@ import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1022,6 +1023,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			LOG.warn("Error(s) occurred during the JSON schema validation : {}", validationErrors);
 		}
 		return validationErrors;
+	}
+
+	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		throw new DSSException("The action is not supported for JAdES!");
 	}
 
 }
