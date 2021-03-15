@@ -266,11 +266,11 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		}
 
 		/* expiredCertsRevocationInfo Extension from TL */
-		if (expiredCertsOnCRL != null && archiveCutOff != null) {
+		if (expiredCertsOnCRL != null || archiveCutOff != null) {
 			CertificateWrapper revocCert = revocationData.getSigningCertificate();
 			if (revocCert != null) {
 				Date expiredCertsRevocationInfo = revocCert.getCertificateTSPServiceExpiredCertsRevocationInfo();
-				if (expiredCertsRevocationInfo != null) {
+				if (expiredCertsRevocationInfo != null && expiredCertsRevocationInfo.before(notAfterRevoc)) {
 					notAfterRevoc = expiredCertsRevocationInfo;
 				}
 			}
