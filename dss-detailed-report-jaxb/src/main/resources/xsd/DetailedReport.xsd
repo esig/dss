@@ -216,7 +216,12 @@
 	</xs:complexType>
 	<xs:complexType name="CC"> <!-- Cryptographic Checker -->
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="VerifiedAlgorithm" type="CryptographicAlgorithm" />
+					<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="CV">
@@ -228,9 +233,8 @@
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
-					<xs:element name="CryptographicInfo" type="CryptographicInformation" />
+					<xs:element name="CryptographicValidation" type="CryptographicValidation" />
 				</xs:sequence>
-				<xs:attribute name="ValidationTime" type="xs:dateTime" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -495,13 +499,21 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="CryptographicInformation">
+	<xs:complexType name="CryptographicValidation">
 		<xs:sequence>
-			<xs:element name="Algorithm" type="xs:string" />
-			<xs:element name="KeyLength" type="xs:string" minOccurs="0" />
-			<xs:element name="Secure" type="xs:boolean" />
+			<xs:element name="Algorithm" type="CryptographicAlgorithm" />
 			<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="ValidationTime" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="ConcernedMaterial" type="xs:string" />
+		</xs:sequence>
+		<xs:attribute name="secure" type="xs:boolean" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="CryptographicAlgorithm">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string" />
+			<xs:element name="Uri" type="xs:string" />
+			<xs:element name="KeyLength" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	

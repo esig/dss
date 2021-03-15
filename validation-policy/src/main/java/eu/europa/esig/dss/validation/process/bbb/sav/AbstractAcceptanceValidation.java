@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicValidation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.AbstractTokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -35,7 +36,6 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.CryptographicChecker;
-import eu.europa.esig.dss.validation.process.bbb.sav.cc.CryptographicInformationBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheckerResultCheck;
@@ -62,8 +62,8 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	/** The validation policy */
 	protected final ValidationPolicy validationPolicy;
 
-	/** Builds cryptographic information for the report */
-	private CryptographicInformationBuilder cryptographicInformationBuilder;
+	/** The cryptographic information for the report */
+	private XmlCryptographicValidation cryptographicValidation;
 
 	/**
 	 * Default constructor
@@ -94,8 +94,9 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		XmlCC ccResult = cc.execute();
 		
 		ChainItem<XmlSAV> item = firstItem = cryptographicCheckResult(ccResult, position, constraint);
-		
-		cryptographicInformationBuilder = new CryptographicInformationBuilder(token, ccResult.getConclusion(), constraint);
+
+		cryptographicValidation = getCryptographicValidation(ccResult);
+		cryptographicValidation.setConcernedMaterial(token.getId());
 		
 		if (!isValid(ccResult)) {
 			// return if not valid
@@ -119,7 +120,8 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 				
 				if (!isValid(dacResult)) {
 					// update the failed constraints and brake the loop
-					cryptographicInformationBuilder = new CryptographicInformationBuilder(digestMatcher, dacResult.getConclusion(), constraint);
+					cryptographicValidation = getCryptographicValidation(dacResult);
+					cryptographicValidation.setConcernedMaterial(getDigestMatcherDescription(digestMatcher));
 					break;
 				}
 			}
@@ -140,9 +142,25 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	@Override
 	protected void addAdditionalInfo() {
 		super.addAdditionalInfo();
-		
-		result.setValidationTime(currentTime);
-		result.setCryptographicInfo(cryptographicInformationBuilder.build());
+
+		result.setCryptographicValidation(cryptographicValidation);
+	}
+
+	private XmlCryptographicValidation getCryptographicValidation(XmlCC ccResult) {
+		XmlCryptographicValidation cryptographicValidation = new XmlCryptographicValidation();
+		cryptographicValidation.setAlgorithm(ccResult.getVerifiedAlgorithm());
+		cryptographicValidation.setNotAfter(ccResult.getNotAfter());
+		cryptographicValidation.setSecure(isValid(ccResult));
+		cryptographicValidation.setValidationTime(currentTime);
+		return cryptographicValidation;
+	}
+
+	private static String getDigestMatcherDescription(XmlDigestMatcher digestMatcher) {
+		StringBuilder description = new StringBuilder(digestMatcher.getType().name());
+		if (Utils.isStringNotEmpty(digestMatcher.getName())) {
+			description.append(" with name [").append(digestMatcher.getName()).append("]");
+		}
+		return description.toString();
 	}
 
 }

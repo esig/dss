@@ -57,12 +57,12 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 	
 	@Override
 	protected XmlMessage buildConstraintMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_DAA, digestAlgo);
+		return buildXmlMessage(MessageTag.ASCCM_DAA, getName(digestAlgo));
 	}
 	
 	@Override
 	protected XmlMessage buildErrorMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_DAA_ANS, digestAlgo, position);
+		return buildXmlMessage(MessageTag.ASCCM_DAA_ANS, getName(digestAlgo), position);
 	}
 
 }

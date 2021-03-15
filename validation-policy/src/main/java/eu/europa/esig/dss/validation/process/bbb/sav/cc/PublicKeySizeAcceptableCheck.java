@@ -62,12 +62,12 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	
 	@Override
 	protected XmlMessage buildConstraintMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_APKSA, encryptionAlgo, keyLength);
+		return buildXmlMessage(MessageTag.ASCCM_APKSA, getName(encryptionAlgo), keyLength);
 	}
 	
 	@Override
 	protected XmlMessage buildErrorMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_APKSA_ANS, encryptionAlgo, keyLength, position);
+		return buildXmlMessage(MessageTag.ASCCM_APKSA_ANS, getName(encryptionAlgo), keyLength, position);
 	}
 
 }

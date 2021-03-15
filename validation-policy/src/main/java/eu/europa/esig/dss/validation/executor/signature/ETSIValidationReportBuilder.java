@@ -27,7 +27,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicAlgorithm;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicValidation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
@@ -651,8 +652,8 @@ public class ETSIValidationReportBuilder {
 				}
 
 				XmlSAV sav = basicBuildingBlock.getSAV();
-				if (sav != null && sav.getCryptographicInfo() != null) {
-					fillCryptographicInfo(validationReportData, token.getId(), sav.getCryptographicInfo());
+				if (sav != null && sav.getCryptographicValidation() != null) {
+					fillCryptographicInfo(validationReportData, token.getId(), sav.getCryptographicValidation());
 				}
 			}
 
@@ -664,12 +665,15 @@ public class ETSIValidationReportBuilder {
 		}
 	}
 
-	private void fillCryptographicInfo(ValidationReportDataType validationReportData, String tokenId, XmlCryptographicInformation cryptographicInfo) {
+	private void fillCryptographicInfo(ValidationReportDataType validationReportData, String tokenId, XmlCryptographicValidation cryptographicValidation) {
 		CryptoInformationType cryptoInformationType = objectFactory.createCryptoInformationType();
 		cryptoInformationType.setValidationObjectId(getVOReference(tokenId));
-		cryptoInformationType.setAlgorithm(cryptographicInfo.getAlgorithm());
-		cryptoInformationType.setSecureAlgorithm(cryptographicInfo.isSecure());
-		cryptoInformationType.setNotAfter(cryptographicInfo.getNotAfter());
+		cryptoInformationType.setSecureAlgorithm(cryptographicValidation.isSecure());
+		XmlCryptographicAlgorithm algorithm = cryptographicValidation.getAlgorithm();
+		if (algorithm != null) {
+			cryptoInformationType.setAlgorithm(algorithm.getUri());
+		}
+		cryptoInformationType.setNotAfter(cryptographicValidation.getNotAfter());
 		validationReportData.setCryptoInformation(cryptoInformationType);
 	}
 

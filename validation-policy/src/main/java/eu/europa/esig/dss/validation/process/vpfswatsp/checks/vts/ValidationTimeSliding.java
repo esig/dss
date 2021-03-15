@@ -268,8 +268,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	}
 
 	private Date getCryptographicAlgorithmExpirationDateOrNull(XmlSAV sav) {
-		if (sav.getCryptographicInfo() != null) {
-			return sav.getCryptographicInfo().getNotAfter();
+		if (sav.getCryptographicValidation() != null && sav.getCryptographicValidation().getAlgorithm() != null) {
+			return sav.getCryptographicValidation().getNotAfter();
 		}
 		return null;
 	}

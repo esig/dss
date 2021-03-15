@@ -82,15 +82,19 @@ public class DigestCryptographicCheckerResultCheck<T extends XmlConstraintsConcl
 		String dateTime = ValidationProcessUtils.getFormattedDate(validationDate);
 		if (isValid(ccResult)) {
 			if (Utils.isStringNotEmpty(referenceName)) {
-				return i18nProvider.getMessage(MessageTag.VALIDATION_TIME_DM_WITH_NAME, dateTime, position, referenceName);
+				return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_SUCCESS_DM_WITH_NAME,
+						ccResult.getVerifiedAlgorithm().getName(), dateTime, position, referenceName);
 			} else {
-				return i18nProvider.getMessage(MessageTag.VALIDATION_TIME_DM, dateTime, position);
+				return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_SUCCESS_DM,
+						ccResult.getVerifiedAlgorithm().getName(), dateTime, position);
 			}
 		} else {
 			if (Utils.isStringNotEmpty(referenceName)) {
-				return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_REF_WITH_NAME, getErrorMessage(), referenceName, dateTime);
+				return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_REF_WITH_NAME,
+						getErrorMessage(), referenceName, dateTime);
 			} else {
-				return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_REF, getErrorMessage(), dateTime);
+				return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_REF,
+						getErrorMessage(), dateTime);
 			}
 		}
 	}

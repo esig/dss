@@ -317,7 +317,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2020-02-10T13:14:22" Title="Signature Acceptance Validation">
+        <SAV Title="Signature Acceptance Validation">
             <Constraint>
                 <Name Key="ARCCM">Are revocation cryptographic constraints met?</Name>
                 <Status>OK</Status>
@@ -326,13 +326,16 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <CryptographicInfo>
-                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
-                <KeyLength>2048</KeyLength>
-                <Secure>true</Secure>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>RSA with SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Uri>
+                    <KeyLength>2048</KeyLength>
+                </Algorithm>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ValidationTime>2020-02-10T13:14:22</ValidationTime>
                 <ConcernedMaterial>R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3</ConcernedMaterial>
-            </CryptographicInfo>
+            </CryptographicValidation>
         </SAV>
         <CertificateChain>
             <ChainItem Id="C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A">
@@ -395,7 +398,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2020-02-10T13:14:22" Title="Signature Acceptance Validation">
+        <SAV Title="Signature Acceptance Validation">
             <Constraint>
                 <Name Key="ARCCM">Are revocation cryptographic constraints met?</Name>
                 <Status>OK</Status>
@@ -404,13 +407,16 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <CryptographicInfo>
-                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
-                <KeyLength>4096</KeyLength>
-                <Secure>true</Secure>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>RSA with SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Uri>
+                    <KeyLength>4096</KeyLength>
+                </Algorithm>
                 <NotAfter>2025-12-31T23:00:00</NotAfter>
+                <ValidationTime>2020-02-10T13:14:22</ValidationTime>
                 <ConcernedMaterial>R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210</ConcernedMaterial>
-            </CryptographicInfo>
+            </CryptographicValidation>
         </SAV>
         <CertificateChain>
             <ChainItem Id="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
@@ -660,7 +666,7 @@
                 <Errors Key="BBB_CV_IRDOI_ANS">The reference data object is not intact!</Errors>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2020-02-10T13:14:22" Title="Signature Acceptance Validation">
+        <SAV Title="Signature Acceptance Validation">
             <Constraint>
                 <Name Key="BBB_SAV_ISSV">Is the structure of the signature valid?</Name>
                 <Status>OK</Status>
@@ -684,13 +690,16 @@
                 <SubIndication>CRYPTO_CONSTRAINTS_FAILURE_NO_POE</SubIndication>
                 <Errors Key="ASCCM_ANS_5">The algorithm is no longer considered reliable!</Errors>
             </Conclusion>
-            <CryptographicInfo>
-                <Algorithm>http://www.w3.org/2000/09/xmldsig#rsa-sha1</Algorithm>
-                <KeyLength>2048</KeyLength>
-                <Secure>false</Secure>
+            <CryptographicValidation secure="false">
+                <Algorithm>
+                    <Name>RSA with SHA1</Name>
+                    <Uri>http://www.w3.org/2000/09/xmldsig#rsa-sha1</Uri>
+                    <KeyLength>2048</KeyLength>
+                </Algorithm>
                 <NotAfter>2008-12-31T23:00:00</NotAfter>
+                <ValidationTime>2020-02-10T13:14:22</ValidationTime>
                 <ConcernedMaterial>S-B076879EC80E7D31F8B4ABECDFB4B646AF9AF30843BA2C44B4261243CC8D4542</ConcernedMaterial>
-            </CryptographicInfo>
+            </CryptographicValidation>
         </SAV>
         <CertificateChain>
             <ChainItem Id="C-0EC53B285E62AA6C9B3C1BF5346042BF4A53C35DF073E3034700420A5D3E30BA">

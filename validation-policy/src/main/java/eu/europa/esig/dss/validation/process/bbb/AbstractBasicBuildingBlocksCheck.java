@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicValidation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
@@ -329,12 +329,12 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		if (Indication.INDETERMINATE.equals(savConclusion.getIndication())
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(savConclusion.getSubIndication())) {
 
-			XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
+			XmlCryptographicValidation cryptographicValidation = sav.getCryptographicValidation();
 
 			SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBBs.getId());
-			if (currentSignature != null && cryptographicInfo != null
-					&& isSignatureValueConcernedByFailure(currentSignature, cryptographicInfo)
-					&& isThereValidContentTimestampAfterDate(currentSignature, cryptographicInfo.getNotAfter())) {
+			if (currentSignature != null && cryptographicValidation != null
+					&& isSignatureValueConcernedByFailure(currentSignature, cryptographicValidation)
+					&& isThereValidContentTimestampAfterDate(currentSignature, cryptographicValidation.getNotAfter())) {
 				indication = Indication.INDETERMINATE;
 				subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE;
 				return false;
@@ -355,8 +355,9 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		return true;
 	}
 	
-	private boolean isSignatureValueConcernedByFailure(SignatureWrapper currentSignature, XmlCryptographicInformation cryptographicInformation) {
-		return currentSignature.getId().equals(cryptographicInformation.getConcernedMaterial());
+	private boolean isSignatureValueConcernedByFailure(SignatureWrapper currentSignature,
+													   XmlCryptographicValidation cryptographicValidation) {
+		return currentSignature.getId().equals(cryptographicValidation.getConcernedMaterial());
 	}
 
 	private boolean isThereValidContentTimestampAfterDate(SignatureWrapper currentSignature, Date date) {

@@ -150,7 +150,7 @@ public class DSS1444Test {
 		assertNotNull(messages);
 		for (int i = 0; i < messages.size(); i++) {
 			if (MessageTag.ASCCM_EAA_ANS.name().equals(messages.get(i).getKey())) {
-				assertEquals(new I18nProvider().getMessage(MessageTag.ASCCM_EAA_ANS, EncryptionAlgorithm.PLAIN_ECDSA, MessageTag.ACCM_POS_SIG_SIG),
+				assertEquals(new I18nProvider().getMessage(MessageTag.ASCCM_EAA_ANS, EncryptionAlgorithm.PLAIN_ECDSA.getName(), MessageTag.ACCM_POS_SIG_SIG),
 						messages.get(i).getValue());
 				return;
 			}

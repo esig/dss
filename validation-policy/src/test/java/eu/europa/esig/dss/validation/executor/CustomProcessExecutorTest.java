@@ -27,7 +27,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicInformation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicValidation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
@@ -1490,10 +1490,10 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		for (String revocationId : revocationIds) {
 			XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(revocationId);
 			XmlSAV sav = bbb.getSAV();
-			XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
-			if (!cryptographicInfo.isSecure()) {
+			XmlCryptographicValidation cryptographicValidation = sav.getCryptographicValidation();
+			if (!cryptographicValidation.isSecure()) {
 				foundWeakAlgo = true;
-				assertTrue(validationDate.after(cryptographicInfo.getNotAfter()));
+				assertTrue(validationDate.after(cryptographicValidation.getNotAfter()));
 			}
 		}
 		assertTrue(foundWeakAlgo);
@@ -2537,7 +2537,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlSAV sav = signatureBBB.getSAV();
 		assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, sav.getConclusion().getSubIndication());
-		assertFalse(sav.getCryptographicInfo().isSecure());
+		assertFalse(sav.getCryptographicValidation().isSecure());
 		
 		checkReports(reports);
 	}
@@ -2617,10 +2617,10 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
 		XmlSAV sav = signatureBBB.getSAV();
 		assertEquals(1, sav.getConclusion().getErrors().size());
-		
-		XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
-		assertEquals(SignatureAlgorithm.RSA_SHA1, SignatureAlgorithm.forXML(cryptographicInfo.getAlgorithm()));
-		assertEquals("2048", cryptographicInfo.getKeyLength());
+
+		XmlCryptographicValidation cryptographicValidation = sav.getCryptographicValidation();
+		assertEquals(SignatureAlgorithm.RSA_SHA1, SignatureAlgorithm.forXML(cryptographicValidation.getAlgorithm().getUri()));
+		assertEquals("2048", cryptographicValidation.getAlgorithm().getKeyLength());
 		
 		checkReports(reports);
 	}
@@ -3497,9 +3497,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
 		XmlSAV sav = signatureBBB.getSAV();
 		assertEquals(1, sav.getConclusion().getErrors().size());
-		
-		XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
-		assertEquals(DigestAlgorithm.SHA1, DigestAlgorithm.forXML(cryptographicInfo.getAlgorithm()));		
+
+		XmlCryptographicValidation cryptographicValidation = sav.getCryptographicValidation();
+		assertEquals(DigestAlgorithm.SHA1, DigestAlgorithm.forXML(cryptographicValidation.getAlgorithm().getUri()));
 		
 		List<Message> errors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
 		assertTrue(checkMessageValuePresence(errors,
@@ -3533,9 +3533,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
 		XmlSAV sav = signatureBBB.getSAV();
 		assertEquals(1, sav.getConclusion().getErrors().size());
-		
-		XmlCryptographicInformation cryptographicInfo = sav.getCryptographicInfo();
-		assertEquals(DigestAlgorithm.SHA1, DigestAlgorithm.forXML(cryptographicInfo.getAlgorithm()));		
+
+		XmlCryptographicValidation cryptographicValidation = sav.getCryptographicValidation();
+		assertEquals(DigestAlgorithm.SHA1, DigestAlgorithm.forXML(cryptographicValidation.getAlgorithm().getUri()));
 		
 		List<Message> errors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
 		assertFalse(checkMessageValuePresence(errors,

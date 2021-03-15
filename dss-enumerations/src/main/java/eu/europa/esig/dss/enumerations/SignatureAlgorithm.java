@@ -725,4 +725,23 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		return JWA_ALGORITHMS_FOR_KEY.get(this);
 	}
 
+	/**
+	 * Returns user-friendly name for the signature algorithm
+	 *
+	 * @return {@link String} name
+	 */
+	public String getName() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(encryptionAlgo.getName());
+		if (digestAlgo != null) {
+			stringBuilder.append(" with ");
+			stringBuilder.append(digestAlgo.getName());
+		}
+		if (maskGenerationFunction != null) {
+			stringBuilder.append(" and ");
+			stringBuilder.append(maskGenerationFunction.getName());
+		}
+		return stringBuilder.toString();
+	}
+
 }

@@ -66,12 +66,12 @@ public class DigestAlgorithmOnValidationTimeCheck extends AbstractCryptographicC
 	
 	@Override
 	protected XmlMessage buildConstraintMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_AR, digestAlgo);
+		return buildXmlMessage(MessageTag.ASCCM_AR, getName(digestAlgo));
 	}
 	
 	@Override
 	protected XmlMessage buildErrorMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_AR_ANS_ANR, digestAlgo, position);
+		return buildXmlMessage(MessageTag.ASCCM_AR_ANS_ANR, getName(digestAlgo), position);
 	}
 
 }

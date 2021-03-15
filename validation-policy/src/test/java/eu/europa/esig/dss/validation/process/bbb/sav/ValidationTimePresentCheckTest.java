@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
@@ -33,6 +27,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.validation.executor.AbstractTestValidationExecutor;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ValidationTimePresentCheckTest extends AbstractTestValidationExecutor {
 	
@@ -50,7 +49,7 @@ public class ValidationTimePresentCheckTest extends AbstractTestValidationExecut
 		DetailedReport detailedReport = reports.getDetailedReport();
 		
 		XmlSAV sav = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId()).getSAV();
-		assertNotNull(sav.getValidationTime());
+		assertNotNull(sav.getCryptographicValidation().getValidationTime());
 	}
 
 }

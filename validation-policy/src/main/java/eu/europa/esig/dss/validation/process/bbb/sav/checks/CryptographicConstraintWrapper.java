@@ -32,9 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -202,22 +200,6 @@ public class CryptographicConstraintWrapper {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Extracts a list of algorithm names from {@code ListAlgo}
-	 *
-	 * @param listAlgo {@link ListAlgo}
-	 * @return a list of {@link String}
-	 */
-	private List<String> extract(ListAlgo listAlgo) {
-		List<String> result = new ArrayList<>();
-		if (listAlgo != null && Utils.isCollectionNotEmpty(listAlgo.getAlgos())) {
-			for (Algo algo : listAlgo.getAlgos()) {
-				result.add(algo.getValue());
-			}
-		}
-		return result;
 	}
 
 	/**

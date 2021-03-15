@@ -58,12 +58,12 @@ public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck
 	
 	@Override
 	protected XmlMessage buildConstraintMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_EAA, encryptionAlgo);
+		return buildXmlMessage(MessageTag.ASCCM_EAA, getName(encryptionAlgo));
 	}
 	
 	@Override
 	protected XmlMessage buildErrorMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_EAA_ANS, encryptionAlgo, position);
+		return buildXmlMessage(MessageTag.ASCCM_EAA_ANS, getName(encryptionAlgo), position);
 	}
 
 }

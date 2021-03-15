@@ -284,7 +284,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2020-02-10T06:53:57" Title="Signature Acceptance Validation">
+        <SAV Title="Signature Acceptance Validation">
             <Constraint>
                 <Name Key="ARCCM">Are revocation cryptographic constraints met?</Name>
                 <Status>OK</Status>
@@ -293,13 +293,16 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <CryptographicInfo>
-                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
-                <KeyLength>4096</KeyLength>
-                <Secure>true</Secure>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>RSA with SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Uri>
+                    <KeyLength>4096</KeyLength>
+                </Algorithm>
                 <NotAfter>2025-12-31T23:00:00</NotAfter>
+                <ValidationTime>2020-02-10T06:53:57</ValidationTime>
                 <ConcernedMaterial>R-54A348E8CB0461CB2A672B9FEE07605AC6CE8AAA6070A23A2E3F30A2A72CC652</ConcernedMaterial>
-            </CryptographicInfo>
+            </CryptographicValidation>
         </SAV>
         <CertificateChain>
             <ChainItem Id="C-C2F76882EA9FB4A81C4B286D5A09E44BB10D4B36572DAA7EAC1E854B0E0DA271">
@@ -454,7 +457,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2020-02-10T06:53:57" Title="Signature Acceptance Validation">
+        <SAV Title="Signature Acceptance Validation">
             <Constraint>
                 <Name Key="ARCCM">Are revocation cryptographic constraints met?</Name>
                 <Status>OK</Status>
@@ -463,13 +466,16 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <CryptographicInfo>
-                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
-                <KeyLength>2048</KeyLength>
-                <Secure>true</Secure>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>RSA with SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Uri>
+                    <KeyLength>2048</KeyLength>
+                </Algorithm>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ValidationTime>2020-02-10T06:53:57</ValidationTime>
                 <ConcernedMaterial>R-D617BFD380A606FA144B7207257891B5516E8FE2A155A65B1E466656C604E61C</ConcernedMaterial>
-            </CryptographicInfo>
+            </CryptographicValidation>
         </SAV>
         <CertificateChain>
             <ChainItem Id="C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A">
@@ -532,7 +538,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2020-02-10T06:53:57" Title="Signature Acceptance Validation">
+        <SAV Title="Signature Acceptance Validation">
             <Constraint>
                 <Name Key="ARCCM">Are revocation cryptographic constraints met?</Name>
                 <Status>OK</Status>
@@ -541,13 +547,16 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <CryptographicInfo>
-                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
-                <KeyLength>4096</KeyLength>
-                <Secure>true</Secure>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>RSA with SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Uri>
+                    <KeyLength>4096</KeyLength>
+                </Algorithm>
                 <NotAfter>2025-12-31T23:00:00</NotAfter>
+                <ValidationTime>2020-02-10T06:53:57</ValidationTime>
                 <ConcernedMaterial>R-C6107EDB0D55A32E70246643933113552E59120A3B073C72D159CA5D1BF257C0</ConcernedMaterial>
-            </CryptographicInfo>
+            </CryptographicValidation>
         </SAV>
         <CertificateChain>
             <ChainItem Id="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
@@ -721,7 +730,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2020-02-10T06:53:57" Title="Signature Acceptance Validation">
+        <SAV Title="Signature Acceptance Validation">
             <Constraint>
                 <Name Key="ATCCM">Are timestamp cryptographic constraints met?</Name>
                 <Status>OK</Status>
@@ -730,13 +739,16 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <CryptographicInfo>
-                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
-                <KeyLength>4096</KeyLength>
-                <Secure>true</Secure>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>RSA with SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Uri>
+                    <KeyLength>4096</KeyLength>
+                </Algorithm>
                 <NotAfter>2025-12-31T23:00:00</NotAfter>
+                <ValidationTime>2020-02-10T06:53:57</ValidationTime>
                 <ConcernedMaterial>T-E70F7C745B498A2208A0096422489744EEAEC0F30FE781A6DC6F3E96467EDEE2</ConcernedMaterial>
-            </CryptographicInfo>
+            </CryptographicValidation>
         </SAV>
         <CertificateChain>
             <ChainItem Id="C-FDCEA85C2138FFF0E1E3B5B9EACD8BCB7F30A806EFE5977961082EBDBE4167C6">
@@ -1006,7 +1018,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2020-02-10T06:53:57" Title="Signature Acceptance Validation">
+        <SAV Title="Signature Acceptance Validation">
             <Constraint>
                 <Name Key="BBB_SAV_ISSV">Is the structure of the signature valid?</Name>
                 <Status>OK</Status>
@@ -1027,13 +1039,16 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <CryptographicInfo>
-                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
-                <KeyLength>2048</KeyLength>
-                <Secure>true</Secure>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>RSA with SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Uri>
+                    <KeyLength>2048</KeyLength>
+                </Algorithm>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ValidationTime>2020-02-10T06:53:57</ValidationTime>
                 <ConcernedMaterial>S-3933842D6213C62CF3BE126A56FCF3A9EFFC24D93FEA04B66D6DA5BDEC550703</ConcernedMaterial>
-            </CryptographicInfo>
+            </CryptographicValidation>
         </SAV>
         <CertificateChain>
             <ChainItem Id="C-D9C2BCB81A49ED296437A5649B6C35440AFA261DF6C2FCE66C19A1F89C806B48">

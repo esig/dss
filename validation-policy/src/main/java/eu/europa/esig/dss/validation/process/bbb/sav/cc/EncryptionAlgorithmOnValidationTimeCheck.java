@@ -71,12 +71,12 @@ public class EncryptionAlgorithmOnValidationTimeCheck extends AbstractCryptograp
 	
 	@Override
 	protected XmlMessage buildConstraintMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_AR, encryptionAlgo);
+		return buildXmlMessage(MessageTag.ASCCM_AR, getName(encryptionAlgo));
 	}
 	
 	@Override
 		protected XmlMessage buildErrorMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_AR_ANS_AKSNR, encryptionAlgo, keyLength, position);
+		return buildXmlMessage(MessageTag.ASCCM_AR_ANS_AKSNR, getName(encryptionAlgo), keyLength, position);
 	}
 
 }
