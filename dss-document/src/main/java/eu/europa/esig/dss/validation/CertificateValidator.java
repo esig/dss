@@ -34,7 +34,7 @@ import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public class CertificateValidator implements ProcessExecutorProvider<CertificateProcessExecutor> {
 
-	private Date validationTime = new Date();
+	private Date validationTime;
 	private final CertificateToken token;
 	private CertificateVerifier certificateVerifier;
 	
@@ -56,6 +56,13 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	public void setValidationTime(Date validationTime) {
 		this.validationTime = validationTime;
 	}
+	
+	private Date getValidationTime() {
+		if (validationTime == null) {
+			validationTime = new Date();
+		}
+		return validationTime;
+	}
 
 	public CertificateReports validate() {
 		ValidationPolicy defaultPolicy = null;
@@ -72,7 +79,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		SignatureValidationContext svc = new SignatureValidationContext();
 		svc.initialize(certificateVerifier);
 		svc.addCertificateTokenForVerification(token);
-		svc.setCurrentTime(validationTime);
+		svc.setCurrentTime(getValidationTime());
 		svc.validate();
 
 		final XmlDiagnosticData diagnosticData = new DiagnosticDataBuilder().usedCertificates(svc.getProcessedCertificates())
@@ -80,13 +87,13 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
 				.certificateSourceTypes(svc.getCertificateSourceTypes())
 				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
-				.validationDate(svc.getCurrentTime()).build();
+				.validationDate(getValidationTime()).build();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setCertificateId(token.getDSSIdAsString());
-		executor.setCurrentTime(svc.getCurrentTime());
+		executor.setCurrentTime(getValidationTime());
 		return executor.execute();
 	}
 

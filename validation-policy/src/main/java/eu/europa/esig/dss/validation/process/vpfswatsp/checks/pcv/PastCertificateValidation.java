@@ -206,7 +206,9 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		ValidationTimeSliding validationTimeSliding = new ValidationTimeSliding(token, currentTime, context, poe, policy);
 		XmlVTS vts = validationTimeSliding.execute();
 		bbb.setVTS(vts);
-		controlTime = vts.getControlTime();
+		if (isValid(vts)) {
+			controlTime = vts.getControlTime();
+		}
 
 		return new ValidationTimeSlidingCheck(result, vts, getFailLevelConstraint());
 	}

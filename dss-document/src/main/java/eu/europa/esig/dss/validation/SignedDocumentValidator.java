@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.security.Security;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
@@ -85,6 +86,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	 * The document to be validated (with the signature(s))
 	 */
 	protected DSSDocument document;
+
+	/**
+	 * A time to validate the document against
+	 */
+	private Date validationTime;
 
 	/**
 	 * In case of a detached signature this {@code List} contains the signed
@@ -200,6 +206,28 @@ public abstract class SignedDocumentValidator implements DocumentValidator, Proc
 	@Override
 	public void setManifestFiles(List<ManifestFile> manifestFiles) {
 		this.manifestFiles = manifestFiles;
+	}
+
+	/**
+	 * Allows to define a custom validation time
+	 * @param validationTime {@link Date}
+	 */
+	@Override
+	public void setValidationTime(Date validationTime) {
+		this.validationTime = validationTime;
+	}
+
+	/**
+	 * Returns validation time
+	 * In case if the validation time is not provided, initialize the current time value from the system
+	 *
+	 * @return {@link Date} validation time
+	 */
+	protected Date getValidationTime() {
+		if (validationTime == null) {
+			validationTime = new Date();
+		}
+		return validationTime;
 	}
 
 	@Override

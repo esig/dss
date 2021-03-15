@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.model.DSSDocument;
@@ -92,6 +93,12 @@ public interface DocumentValidator {
 	 * @param validationLevel {@link ValidationLevel}
 	 */
 	void setValidationLevel(ValidationLevel validationLevel);
+
+	/**
+	 * Allows to define a custom validation time
+	 * @param validationTime {@link Date}
+	 */
+	public void setValidationTime(Date validationTime);
 	
 	/**
 	 * This method allows to specify if the ETSI Validation Report must be generated.
