@@ -59,8 +59,16 @@
 						Counter-signature
 		        	</span>
 				</xsl:if>
-				
-				Signature <xsl:value-of select="@Id"/>
+
+				<span>Signature <xsl:value-of select="@Id"/></span>
+				<i>
+					<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-light border-0 p-2 ml-1 mr-1</xsl:attribute>
+					<xsl:attribute name="data-id"><xsl:value-of select="@Id"/></xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">right</xsl:attribute>
+					<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+					<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+				</i>
 			</div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 				<div>
@@ -89,8 +97,16 @@
 					<xsl:with-param name="Conclusion" select="dss:ValidationProcessTimestamp/dss:Conclusion" />
 					<xsl:with-param name="AdditionalClass" select="' float-right ml-2'" />
 				</xsl:call-template>
-				
-				Timestamp <xsl:value-of select="@Id"/>
+
+				<span>Timestamp <xsl:value-of select="@Id"/></span>
+				<i>
+					<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-dark border-0 p-2 ml-1 mr-1</xsl:attribute>
+					<xsl:attribute name="data-id"><xsl:value-of select="@Id"/></xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">right</xsl:attribute>
+					<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+					<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+				</i>
 			</div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 				<div>
@@ -114,8 +130,15 @@
 	    		<xsl:attribute name="data-target">#collapseBasicBuildingBlocks<xsl:value-of select="@Id"/></xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 
-	   			Basic Building Blocks <br/>
-	   			<xsl:value-of select="@Type"/> (Id = <xsl:value-of select="@Id"/>)
+				<span>Basic Building Blocks <br/><xsl:value-of select="@Type"/> (Id = <xsl:value-of select="@Id"/>)</span>
+				<i>
+					<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-light border-0 p-2 ml-1 mr-1</xsl:attribute>
+					<xsl:attribute name="data-id"><xsl:value-of select="@Id"/></xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">right</xsl:attribute>
+					<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+					<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+				</i>
 	        </div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 				<xsl:variable name="PSV" select="dss:PSV" />
@@ -233,8 +256,19 @@
 					<xsl:with-param name="Conclusion" select="dss:Conclusion" />
 					<xsl:with-param name="AdditionalClass" select="' float-right'" />
 				</xsl:call-template>
-		       	
-				<xsl:value-of select="@Title"/>
+
+				<span><xsl:value-of select="@Title"/></span>
+
+				<xsl:if test="@Id != ''">
+					<i>
+						<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-dark border-0 p-2 ml-1 mr-1</xsl:attribute>
+						<xsl:attribute name="data-id"><xsl:value-of select="@Id"/></xsl:attribute>
+						<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+						<xsl:attribute name="data-placement">right</xsl:attribute>
+						<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+						<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+					</i>
+				</xsl:if>
 	        </div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 	    		<div>
@@ -315,8 +349,16 @@
        			</i>
 				<span class="constraint-text d-none">(<xsl:value-of select="@DateTime"/>)</span>
 	 			<xsl:if test="@Id">
-	       			<br />    
-		        	<xsl:value-of select="concat('Id = ', @Id)"/>
+	       			<br />
+					<span><xsl:value-of select="concat('Id = ', @Id)"/></span>
+					<i>
+						<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-dark border-0 p-2 ml-1 mr-1</xsl:attribute>
+						<xsl:attribute name="data-id"><xsl:value-of select="@Id"/></xsl:attribute>
+						<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+						<xsl:attribute name="data-placement">right</xsl:attribute>
+						<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+						<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+					</i>
 	        	</xsl:if>
 	        </div>
     		<div>
@@ -471,7 +513,15 @@
 
 						<xsl:if test="@Id">
 							<br />
-							<xsl:value-of select="concat('Id = ', @Id)"/>
+							<span><xsl:value-of select="concat('Id = ', @Id)"/></span>
+							<i>
+								<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-dark border-0 p-2 ml-1 mr-1</xsl:attribute>
+								<xsl:attribute name="data-id"><xsl:value-of select="@Id"/></xsl:attribute>
+								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+								<xsl:attribute name="data-placement">right</xsl:attribute>
+								<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+								<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+							</i>
 						</xsl:if>
 					</div>
 

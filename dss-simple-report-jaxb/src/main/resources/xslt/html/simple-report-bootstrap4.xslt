@@ -53,6 +53,12 @@
 				<xsl:when test="$indicationText='TOTAL_FAILED'">danger</xsl:when>
 			</xsl:choose>
         </xsl:variable>
+		<xsl:variable name="copyIdBtnColor">
+			<xsl:choose>
+				<xsl:when test="$cardStyle='primary'">light</xsl:when>
+				<xsl:otherwise>dark</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
         
         <div>
     		<xsl:attribute name="class">card mb-3</xsl:attribute>
@@ -67,15 +73,24 @@
 						Counter-signature
 		        	</span>
 				</xsl:if>
-				
-				<xsl:if test="$nodeName = 'Signature'">
-					Signature
-				</xsl:if>
-				<xsl:if test="$nodeName = 'Timestamp'">
-					Timestamp
-				</xsl:if>
-		       	
-    			<xsl:value-of select="$idToken" />
+
+				<span>
+					<xsl:if test="$nodeName = 'Signature'">
+						Signature
+					</xsl:if>
+					<xsl:if test="$nodeName = 'Timestamp'">
+						Timestamp
+					</xsl:if>
+					<xsl:value-of select="$idToken" />
+				</span>
+				<i>
+					<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-<xsl:value-of select="$copyIdBtnColor"/> border-0 p-2 ml-1 mr-1</xsl:attribute>
+					<xsl:attribute name="data-id"><xsl:value-of select="$idToken"/></xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">right</xsl:attribute>
+					<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+					<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+				</i>
 	        </div>
     		<div>
     			<xsl:attribute name="class">card-body collapse show</xsl:attribute>

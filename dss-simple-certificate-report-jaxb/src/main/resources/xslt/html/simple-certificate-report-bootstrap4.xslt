@@ -46,9 +46,19 @@
     			<xsl:attribute name="class">card-header bg-<xsl:value-of select="$indicationCssClass" /> text-white</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseCert-<xsl:value-of select="$idCert"/></xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-    			Certificate
 
-				<xsl:value-of select="$idCert" />
+				<span>
+					Certificate
+					<xsl:value-of select="$idCert" />
+				</span>
+				<i>
+					<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-light border-0 p-2 ml-1 mr-1</xsl:attribute>
+					<xsl:attribute name="data-id"><xsl:value-of select="$idCert"/></xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">right</xsl:attribute>
+					<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+					<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+				</i>
 	        </div>
     		<div>
     			<xsl:attribute name="class">card-body collapse show</xsl:attribute>
