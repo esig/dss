@@ -124,7 +124,9 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 			
 		} else {
 			// TODO : build an XPath ???
-			throw new DSSException("The signature with Id does not have an Id for a SignatureValue element! Unable to counter sign");
+			throw new DSSException(String.format(
+					"The signature with Id '%s' does not have an Id for a SignatureValue element! " +
+							"Unable to counter sign.", parameters.getSignatureIdToCounterSign()));
 		}
 		return reference;
 	}
