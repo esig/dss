@@ -1745,7 +1745,7 @@ The interface OCSPSource defines the method which returns OCSPToken for the give
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo]
 ----
 
-We use these classes during the certificate validation process through "validationContext" object (based on ValidationContext class) which is a "cache" for one validation request that contains every object retrieved so far. This object in turn instantiates a "verifier" based on `OCSPAndCRLRevocationSource` class whose role is to fetch revocation data by querying an OCSP server first and then a CRL server if no OCSP response could be retrieved.
+We use these classes during the certificate validation process through "validationContext" object (based on ValidationContext class) which is a "cache" for one validation request that contains every object retrieved so far. This object in turn instantiates a "verifier" based on `CompositeRevocationSource` class whose role is to fetch revocation data by querying an OCSP or CRL source in the defined order and return the succeeded result.
 In general, we can distinguish three main sources:
 
  * Offline sources (`OfflineRevocationSource`);

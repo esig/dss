@@ -147,7 +147,7 @@ public class JdbcCacheOcspSourceTest {
 			if (storedRevocationToken == null) {
 				return super.findRevocation(key, certificateToken, issuerCertificateToken);
 			} else {
-				LOG.info("ThisUpdate was overriden from {} to {}", storedRevocationToken.getThisUpdate(), requestTime);
+				LOG.info("ThisUpdate was overridden from {} to {}", storedRevocationToken.getThisUpdate(), requestTime);
 				storedRevocationToken.getThisUpdate().setTime(requestTime.getTime());
 				return storedRevocationToken;
 			}

@@ -126,6 +126,9 @@ public class SignatureValidationContext implements ValidationContext {
 	/** External CRL source */
 	private RevocationSource<CRL> crlSource;
 
+	/** This source defines the revocation loading logic and returns OCSP or CRL token for a provided certificate */
+	private CompositeRevocationSource compositeRevocationSource;
+
 	/** External trusted certificate sources */
 	private ListCertificateSource trustedCertSources;
 
@@ -176,6 +179,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.crlSource = certificateVerifier.getCrlSource();
 		this.ocspSource = certificateVerifier.getOcspSource();
 		this.dataLoader = certificateVerifier.getDataLoader();
+		this.compositeRevocationSource = certificateVerifier.getCompositeRevocationSource();
 		this.signatureCRLSource = certificateVerifier.getSignatureCRLSource();
 		this.signatureOCSPSource = certificateVerifier.getSignatureOCSPSource();
 		this.signatureCertificateSource = certificateVerifier.getSignatureCertificateSource();
@@ -559,7 +563,7 @@ public class SignatureValidationContext implements ValidationContext {
 			return Collections.emptyList();
 		}
 
-		CertificateToken issuerToken = (CertificateToken) getIssuer(certToken);
+		CertificateToken issuerToken = getIssuer(certToken);
 		if (issuerToken == null) {
 			LOG.warn("Issuer not found for certificate {}", certToken.getDSSIdAsString());
 			return Collections.emptyList();
@@ -590,20 +594,14 @@ public class SignatureValidationContext implements ValidationContext {
 				LOG.trace("Revocation update is in progress for certificate : {}", certToken.getDSSIdAsString());
 				CertificateToken trustAnchor = (CertificateToken) getFirstTrustAnchor(certChain);
 
-				// Online resources (OCSP and CRL if OCSP doesn't reply)
-				OCSPAndCRLRevocationSource onlineVerifier;
-				if (!trustedCertSources.isEmpty() && (trustAnchor != null)) {
-					LOG.trace("Initializing a revocation verifier for a trusted chain...");
-					onlineVerifier = instantiateWithTrustServices(trustAnchor);
-				} else {
-					LOG.trace("Initializing a revocation verifier for not trusted chain...");
-					onlineVerifier = new OCSPAndCRLRevocationSource(crlSource, ocspSource);
-				}
+				// Fetch OCSP or CRL from online sources
+				final RevocationToken<Revocation> onlineRevocationToken = getRevocationToken(
+						certToken, issuerToken, trustAnchor);
 
-				final RevocationToken<Revocation> onlineRevocationToken = onlineVerifier.getRevocationToken(certToken, issuerToken);
-				// CRL can already exist in the signature
+				// Check if the obtained revocation is not yet present
 				if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
-					LOG.debug("Obtained a new revocation data : {}, for certificate : {}", onlineRevocationToken.getDSSIdAsString(), certToken.getDSSIdAsString());
+					LOG.debug("Obtained a new revocation data : {}, for certificate : {}",
+							onlineRevocationToken.getDSSIdAsString(), certToken.getDSSIdAsString());
 					revocations.add(onlineRevocationToken);
 					addRevocationTokenForVerification(onlineRevocationToken);
 				}
@@ -632,28 +630,47 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		return null;
 	}
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private OCSPAndCRLRevocationSource instantiateWithTrustServices(CertificateToken trustAnchor) {
-		RevocationSource currentOCSPSource = null;
-		List<String> alternativeOCSPUrls = getAlternativeOCSPUrls(trustAnchor);
-		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
-			currentOCSPSource = new AlternateUrlsSourceAdapter<OCSP>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
-		} else {
-			currentOCSPSource = ocspSource;
-		}
 
-		RevocationSource currentCRLSource = null;
-		List<String> alternativeCRLUrls = getAlternativeCRLUrls(trustAnchor);
-		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
-			currentCRLSource = new AlternateUrlsSourceAdapter<CRL>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
+	private RevocationToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificate,
+											   CertificateToken trustAnchor) {
+		// configure the CompositeRevocationSource
+		RevocationSource<OCSP> currentOCSPSource;
+		RevocationSource<CRL> currentCRLSource;
+		ListCertificateSource currentCertSource = null;
+		if (!trustedCertSources.isEmpty() && (trustAnchor != null)) {
+			LOG.trace("Initializing a revocation verifier for a trusted chain...");
+			currentOCSPSource = instantiateOCSPWithTrustServices(trustAnchor);
+			currentCRLSource = instantiateCRLWithTrustServices(trustAnchor);
+			currentCertSource = trustedCertSources;
 		} else {
+			LOG.trace("Initializing a revocation verifier for not trusted chain...");
+			currentOCSPSource = ocspSource;
 			currentCRLSource = crlSource;
 		}
+		compositeRevocationSource.setOcspSource(currentOCSPSource);
+		compositeRevocationSource.setCrlSource(currentCRLSource);
+		compositeRevocationSource.setTrustedCertificateSource(currentCertSource);
 
-		OCSPAndCRLRevocationSource ocspAndCrlRevocationSource = new OCSPAndCRLRevocationSource(currentCRLSource, currentOCSPSource);
-		ocspAndCrlRevocationSource.setTrustedCertificateSource(trustedCertSources);
-		return ocspAndCrlRevocationSource;
+		// fetch the data
+		return compositeRevocationSource.getRevocationToken(certificateToken, issuerCertificate);
+	}
+
+	private RevocationSource<OCSP> instantiateOCSPWithTrustServices(CertificateToken trustAnchor) {
+		List<String> alternativeOCSPUrls = getAlternativeOCSPUrls(trustAnchor);
+		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
+			return new AlternateUrlsSourceAdapter<OCSP>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
+		} else {
+			return ocspSource;
+		}
+	}
+
+	private RevocationSource<CRL> instantiateCRLWithTrustServices(CertificateToken trustAnchor) {
+		List<String> alternativeCRLUrls = getAlternativeCRLUrls(trustAnchor);
+		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
+			return new AlternateUrlsSourceAdapter<CRL>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
+		} else {
+			return crlSource;
+		}
 	}
 
 	private List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {

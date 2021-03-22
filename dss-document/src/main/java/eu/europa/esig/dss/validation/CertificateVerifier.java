@@ -38,14 +38,6 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 public interface CertificateVerifier {
 
 	/**
-	 * Returns the OCSP source associated with this verifier.
-	 *
-	 * @return the used OCSP source for external access (web, filesystem,
-	 *         cached,...)
-	 */
-	RevocationSource<OCSP> getOcspSource();
-
-	/**
 	 * Returns the CRL source associated with this verifier.
 	 *
 	 * @return the used CRL source for external access (web, filesystem, cached,...)
@@ -62,6 +54,14 @@ public interface CertificateVerifier {
 	void setCrlSource(final RevocationSource<CRL> crlSource);
 
 	/**
+	 * Returns the OCSP source associated with this verifier.
+	 *
+	 * @return the used OCSP source for external access (web, filesystem,
+	 *         cached,...)
+	 */
+	RevocationSource<OCSP> getOcspSource();
+
+	/**
 	 * Defines the source of OCSP used by this class
 	 *
 	 * @param ocspSource
@@ -69,6 +69,24 @@ public interface CertificateVerifier {
 	 *                   filesystem, cached,...)
 	 */
 	void setOcspSource(final RevocationSource<OCSP> ocspSource);
+
+	/**
+	 * Returns a composite revocation source associated with this verifier.
+	 *
+	 * @return the used revocation source to fetch OCSP or CRL for validating certificates
+	 */
+	CompositeRevocationSource getCompositeRevocationSource();
+
+	/**
+	 * Defines a composite revocation source associated with this verifier,
+	 * used to fetch OCSP or CRL for validating certificates.
+	 *
+	 * Default: {@code OCSPFirstAndCRLRevocationSource} is used to extract OCSP token first and CRL after
+	 *
+	 * @param compositeRevocationSource
+	 *                   {@link CompositeRevocationSource}
+	 */
+	void setCompositeRevocationSource(final CompositeRevocationSource compositeRevocationSource);
 
 	/**
 	 * Returns the trusted certificate sources associated with this verifier. These

@@ -79,6 +79,14 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private RevocationSource<CRL> crlSource;
 
 	/**
+	 * Defines a composite revocation source associated with this verifier,
+	 * used to fetch OCSP or CRL for validating certificates.
+	 *
+	 * Default: {@code OCSPFirstAndCRLRevocationSource} is used to extract OCSP token first and CRL after
+	 */
+	private CompositeRevocationSource compositeRevocationSource = new OCSPFirstAndCRLRevocationSource();
+
+	/**
 	 * The data loader used to access AIA certificate source.
 	 */
 	private DataLoader dataLoader;
@@ -212,16 +220,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public ListCertificateSource getTrustedCertSources() {
-		return trustedCertSources;
-	}
-
-	@Override
-	public RevocationSource<OCSP> getOcspSource() {
-		return ocspSource;
-	}
-
-	@Override
 	public RevocationSource<CRL> getCrlSource() {
 		return crlSource;
 	}
@@ -232,8 +230,29 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	public RevocationSource<OCSP> getOcspSource() {
+		return ocspSource;
+	}
+
+	@Override
 	public void setOcspSource(final RevocationSource<OCSP> ocspSource) {
 		this.ocspSource = ocspSource;
+	}
+
+	@Override
+	public CompositeRevocationSource getCompositeRevocationSource() {
+		return compositeRevocationSource;
+	}
+
+	@Override
+	public void setCompositeRevocationSource(CompositeRevocationSource compositeRevocationSource) {
+		Objects.requireNonNull(compositeRevocationSource, "CompositeRevocationSource shall be defined!");
+		this.compositeRevocationSource = compositeRevocationSource;
+	}
+
+	@Override
+	public ListCertificateSource getTrustedCertSources() {
+		return trustedCertSources;
 	}
 
 	@Override
