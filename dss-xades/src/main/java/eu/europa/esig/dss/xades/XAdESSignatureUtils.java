@@ -104,29 +104,37 @@ public final class XAdESSignatureUtils {
 	}
 
 	private static DSSDocument getDSObject(Reference reference, XAdESSignature signature) {
-		if (reference.typeIsReferenceToObject() || Utils.isStringEmpty(reference.getType())) {
-			String objectId = DomUtils.getId(reference.getURI());
-			Node objectById = signature.getObjectById(objectId);
-			if (objectById != null && objectById.hasChildNodes()) {
-				byte[] bytes = DSSXMLUtils.getNodeBytes(objectById.getFirstChild());
-				if (bytes != null) {
-					return new InMemoryDocument(bytes, objectId, MimeType.XML);
+		try {
+			if (reference.typeIsReferenceToObject() || Utils.isStringEmpty(reference.getType())) {
+				String objectId = DomUtils.getId(reference.getURI());
+				Node objectById = signature.getObjectById(objectId);
+				if (objectById != null && objectById.hasChildNodes()) {
+					byte[] bytes = DSSXMLUtils.getNodeBytes(objectById.getFirstChild());
+					if (bytes != null) {
+						return new InMemoryDocument(bytes, objectId, MimeType.XML);
+					}
 				}
 			}
+		} catch (Exception e) {
+			LOG.debug("An error occurred during an attempt to extract signed object. Reason : {}", e.getMessage());
 		}
 		return null;
 	}
 
 	private static DSSDocument getDSManifest(Reference reference, XAdESSignature signature) {
-		if (reference.typeIsReferenceToManifest() || Utils.isStringEmpty(reference.getType())) {
-			String manifestId = DomUtils.getId(reference.getURI());
-			Node manifestById = signature.getManifestById(manifestId);
-			if (manifestById != null) {
-				byte[] bytes = DSSXMLUtils.getNodeBytes(manifestById);
-				if (bytes != null) {
-					return new InMemoryDocument(bytes, manifestId, MimeType.XML);
+		try {
+			if (reference.typeIsReferenceToManifest() || Utils.isStringEmpty(reference.getType())) {
+				String manifestId = DomUtils.getId(reference.getURI());
+				Node manifestById = signature.getManifestById(manifestId);
+				if (manifestById != null) {
+					byte[] bytes = DSSXMLUtils.getNodeBytes(manifestById);
+					if (bytes != null) {
+						return new InMemoryDocument(bytes, manifestId, MimeType.XML);
+					}
 				}
 			}
+		} catch (Exception e) {
+			LOG.debug("An error occurred during an attempt to extract signed manifest. Reason : {}", e.getMessage());
 		}
 		return null;
 	}

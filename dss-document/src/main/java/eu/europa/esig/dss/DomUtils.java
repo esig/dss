@@ -722,7 +722,7 @@ public final class DomUtils {
 		if (Utils.isStringEmpty(uriValue)) {
 			return false;
 		}
-		String decodedUri = DSSUtils.decodeUrl(uriValue);
+		String decodedUri = DSSUtils.decodeURI(uriValue);
 		if (decodedUri == null) {
 			return false;
 		}

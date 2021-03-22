@@ -89,7 +89,7 @@ public class CounterSignatureResolver extends ResourceResolverSpi {
 			return null;
 		}
 		
-		String uriValue = DSSUtils.decodeUrl(uriAttr.getNodeValue());
+		String uriValue = DSSUtils.decodeURI(uriAttr.getNodeValue());
 			
 		Document documentDom = DomUtils.buildDOM(document);
 		Node node = DomUtils.getNode(documentDom, XMLDSigPaths.ALL_SIGNATURE_VALUES_PATH + DomUtils.getXPathByIdAttribute(uriValue));

@@ -154,7 +154,7 @@ public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator 
 		result.add(new ContainerSignatureScope(document.getName(), getDigest(document)));
 		if (Utils.isCollectionNotEmpty(archiveDocuments)) {
 			for (DSSDocument archivedDocument : archiveDocuments) {
-				result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()),
+				result.add(new ContainerContentSignatureScope(DSSUtils.decodeURI(archivedDocument.getName()),
 						getDigest(archivedDocument)));
 			}
 		}

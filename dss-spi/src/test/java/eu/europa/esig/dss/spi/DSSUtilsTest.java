@@ -310,12 +310,15 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void decodeUrl() {
+	public void decodeURI() {
 		assertEquals("012éù*34ä5µ£ 6789~#%&()+=`@{[]}'.txt",
-				DSSUtils.decodeUrl("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%40%7B%5B%5D%7D%27.txt"));
+				DSSUtils.decodeURI("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%40%7B%5B%5D%7D%27.txt"));
 
 		assertEquals("012éù*34ä5µ£ 6789~#%&()+=` @{[]}'.txt",
-				DSSUtils.decodeUrl("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%20%40%7B%5B%5D%7D%27.txt"));
+				DSSUtils.decodeURI("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%20%40%7B%5B%5D%7D%27.txt"));
+
+		assertEquals("012éù*34ä5µ£ 6789~#&()+=` @{[]}'.txt",
+				DSSUtils.decodeURI("012éù*34ä5µ£ 6789~#&()+=` @{[]}'.txt"));
 	}
 
 	@Test

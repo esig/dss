@@ -923,13 +923,14 @@ public final class DSSUtils {
 
 
 	/**
-	 * Decodes URI to UTF-8
+	 * This method decodes an URI to be compliant with the RFC 3986 (see DSS-2411 for details)
 	 *
 	 * @param uri {@link String}
 	 * @return {@link String} UTF-8
 	 */
-	public static String decodeUrl(String uri) {
+	public static String decodeURI(String uri) {
 		try {
+			uri = uri.replace("+", "%2B"); // preserve '+' characters
 			return URLDecoder.decode(uri, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			LOG.error("Unable to decode '{}' : {}", uri, e.getMessage(), e);
@@ -1016,6 +1017,7 @@ public final class DSSUtils {
 	
 	/**
 	 * This method encodes an URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 *
 	 * @param fileURI the uri to be encoded
 	 * @return the encoded result
 	 */

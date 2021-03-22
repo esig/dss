@@ -145,7 +145,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			for (DSSDocument detachedDocument : detachedContents) {
 	
-				String decodedUrl = uri != null ? DSSUtils.decodeUrl(uri) : uri;
+				String decodedUrl = uri != null ? DSSUtils.decodeURI(uri) : uri;
 				// check the original detached file by its name (or if no name if provided, see {@link DetachedSignatureResolver})
 				if (detachedDocument.getName() == null 
 						|| (uri == null && detachedContents.size() == 1)
@@ -162,7 +162,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 					} else if (isASiCSArchive(xadesSignature, detachedDocument)) {
 						detachedSignatureScopes.add(new ContainerSignatureScope(decodedUrl, getDigest(detachedDocument)));
 						for (DSSDocument archivedDocument : xadesSignature.getContainerContents()) {
-							detachedSignatureScopes.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()),
+							detachedSignatureScopes.add(new ContainerContentSignatureScope(DSSUtils.decodeURI(archivedDocument.getName()),
 									getDigest(archivedDocument)));
 						}
 	

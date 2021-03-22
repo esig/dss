@@ -95,7 +95,7 @@ public class ASiCWithCAdESManifestParser {
 		for (DSSDocument manifest : manifestDocuments) {
 			Element manifestRoot = getManifestRootElement(manifest);
 			if (manifestRoot != null) {
-				String linkedSignatureName = DSSUtils.decodeUrl(getLinkedSignatureName(manifestRoot));
+				String linkedSignatureName = DSSUtils.decodeURI(getLinkedSignatureName(manifestRoot));
 				if (signatureName.equals(linkedSignatureName)) {
 					return manifest;
 				}
@@ -168,7 +168,7 @@ public class ASiCWithCAdESManifestParser {
 			for (int i = 0; i < dataObjectReferences.getLength(); i++) {
 				ManifestEntry entry = new ManifestEntry();
 				Element dataObjectReference = (Element) dataObjectReferences.item(i);
-				entry.setFileName(DSSUtils.decodeUrl(dataObjectReference.getAttribute(ASiCAttribute.URI.getAttributeName())));
+				entry.setFileName(DSSUtils.decodeURI(dataObjectReference.getAttribute(ASiCAttribute.URI.getAttributeName())));
 				entry.setMimeType(getMimeType(dataObjectReference));
 
 				DigestAlgorithm digestAlgorithm = getDigestAlgorithm(dataObjectReference);

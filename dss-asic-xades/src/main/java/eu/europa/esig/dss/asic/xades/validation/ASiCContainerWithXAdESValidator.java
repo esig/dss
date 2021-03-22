@@ -120,8 +120,8 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
-		XAdESSignature xadeSignature = (XAdESSignature) advancedSignature;
-		List<DSSDocument> retrievedDocs = XAdESSignatureUtils.getSignerDocuments(xadeSignature);
+		XAdESSignature xadesSignature = (XAdESSignature) advancedSignature;
+		List<DSSDocument> retrievedDocs = XAdESSignatureUtils.getSignerDocuments(xadesSignature);
 		if (Utils.isCollectionNotEmpty(retrievedDocs)) {
 			return extractArchiveDocuments(retrievedDocs);
 		}
