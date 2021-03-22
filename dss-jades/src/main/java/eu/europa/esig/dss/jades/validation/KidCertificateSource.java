@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * The certificate source containing a map of certificates by KIDs
  */
-public class KidCertificateSource extends CommonCertificateSource implements CertificateSource {
+public class KidCertificateSource extends CommonCertificateSource {
 
 	private static final long serialVersionUID = 8202022366337914356L;
 

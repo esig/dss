@@ -137,4 +137,20 @@ public interface CertificateSource extends Serializable {
 	 */
 	boolean isAllSelfSigned();
 
+	/**
+	 * This method checks if the current and the given {@code CertificateSource}s contain the same certificate tokens
+	 *
+	 * @param certificateSource {@link CertificateSource} to compare
+	 * @return TRUE if both certificate sources contains the same certificate tokens, FALSE otherwise
+	 */
+	boolean isCertificateSourceEqual(CertificateSource certificateSource);
+
+	/**
+	 * This method checks if the current and the given {@code CertificateSource}s contain the same public keys
+	 *
+	 * @param certificateSource {@link CertificateSource} to compare
+	 * @return TRUE if both certificate sources contains the same public keys, FALSE otherwise
+	 */
+	boolean isCertificateSourceEquivalent(CertificateSource certificateSource);
+
 }

@@ -50,6 +50,9 @@ public class CommonCertificateSource implements CertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateSource.class);
 	
+	/**
+	 * This object is used to match {@code CertificateToken}s and {@code CertificateRef}s
+	 */
 	protected final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
 
 	/**
@@ -109,6 +112,9 @@ public class CommonCertificateSource implements CertificateSource {
 		return certificateToAdd;
 	}
 
+	/**
+	 * This method removes all certificates from the source
+	 */
 	protected void reset() {
 		entriesByPublicKeyHash = new HashMap<>();
 		tokensBySubject = new HashMap<>();
@@ -265,6 +271,16 @@ public class CommonCertificateSource implements CertificateSource {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public boolean isCertificateSourceEqual(CertificateSource certificateSource) {
+		return new HashSet<>(getCertificates()).equals(new HashSet<>(certificateSource.getCertificates()));
+	}
+
+	@Override
+	public boolean isCertificateSourceEquivalent(CertificateSource certificateSource) {
+		return new HashSet<>(getEntities()).equals(new HashSet<>(certificateSource.getEntities()));
 	}
 
 }
