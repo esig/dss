@@ -79,6 +79,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private RevocationSource<CRL> crlSource;
 
 	/**
+	 * Defines a revocation data loading strategy used to fetch OCSP or CRL for validating certificates.
+	 *
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategy} is used to extract OCSP token first and CRL after
+	 */
+	private RevocationDataLoadingStrategy revocationDataLoadingStrategy = new OCSPFirstRevocationDataLoadingStrategy();
+
+	/**
 	 * The data loader used to access AIA certificate source.
 	 */
 	private DataLoader dataLoader;
@@ -212,16 +219,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public ListCertificateSource getTrustedCertSources() {
-		return trustedCertSources;
-	}
-
-	@Override
-	public RevocationSource<OCSP> getOcspSource() {
-		return ocspSource;
-	}
-
-	@Override
 	public RevocationSource<CRL> getCrlSource() {
 		return crlSource;
 	}
@@ -232,8 +229,29 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	public RevocationSource<OCSP> getOcspSource() {
+		return ocspSource;
+	}
+
+	@Override
 	public void setOcspSource(final RevocationSource<OCSP> ocspSource) {
 		this.ocspSource = ocspSource;
+	}
+
+	@Override
+	public RevocationDataLoadingStrategy getRevocationDataLoadingStrategy() {
+		return revocationDataLoadingStrategy;
+	}
+
+	@Override
+	public void setRevocationDataLoadingStrategy(RevocationDataLoadingStrategy revocationDataLoadingStrategy) {
+		Objects.requireNonNull(revocationDataLoadingStrategy, "RevocationDataLoadingStrategy shall be defined!");
+		this.revocationDataLoadingStrategy = revocationDataLoadingStrategy;
+	}
+
+	@Override
+	public ListCertificateSource getTrustedCertSources() {
+		return trustedCertSources;
 	}
 
 	@Override

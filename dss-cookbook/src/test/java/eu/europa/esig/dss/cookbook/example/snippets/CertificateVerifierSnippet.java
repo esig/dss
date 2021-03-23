@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategy;
 import org.slf4j.event.Level;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
@@ -108,12 +109,12 @@ public class CertificateVerifierSnippet {
 		// Defines behavior in case if the signing certificate or its related POE(s) have been expired
 		// Default : ExceptionOnStatusAlert -> interrupt the process
 		cv.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
-		
-		// 5.7 : The below methods have been moved to DocumentValidator /
-		// CertificateValidator
-//		cv.setIncludeCertificateRevocationValues(true);
-//		cv.setIncludeCertificateRevocationValues(true);
-//		cv.setIncludeTimestampTokenValues(true);
+
+		// DSS 5.9+ :
+		// RevocationDataLoadingStrategy defines logic for loading OCSP or CRL data
+		// Default : OCSPFirstRevocationDataLoadingStrategy -> loads OCSP first,
+		// 			 if not available or the response is invalid, then tries to load CRL
+		cv.setRevocationDataLoadingStrategy(new OCSPFirstRevocationDataLoadingStrategy());
 
 		// end::demo[]
 

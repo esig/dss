@@ -22,7 +22,6 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -35,38 +34,48 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Fetches revocation data for a certificate by querying an OCSP server first and
- * then a CRL server if no OCSP response could be retrieved.
+ * This class allows retrieving of Revocation data from CRL or OCSP sources, based on the defined strategy
+ *
+ * NOTE: The implemented object does not require setting of OCSP/CRL/TrustedCertificate sources
+ *       on instantiation from the user.
+ *       All the values are automatically configured and set in {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+ *       based on the parameters defined in the provided {@code eu.europa.esig.dss.validation.CertificateVerifier}
  *
  */
-public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> {
+public abstract class RevocationDataLoadingStrategy {
 
-	private static final long serialVersionUID = 3205352844337899410L;
+	private static final Logger LOG = LoggerFactory.getLogger(RevocationDataLoadingStrategy.class);
 
-	private static final Logger LOG = LoggerFactory.getLogger(OCSPAndCRLRevocationSource.class);
+	/**
+	 * The CRL revocation source
+	 */
+	protected RevocationSource<CRL> crlSource;
 
-	/** The OCSP revocation source */
-	private final RevocationSource<OCSP> ocspSource;
-
-	/** The CRL revocation source */
-	private final RevocationSource<CRL> crlSource;
+	/**
+	 * The OCSP revocation source
+	 */
+	protected RevocationSource<OCSP> ocspSource;
 
 	/**
 	 * The trusted certificate source is used to accept trusted OCSPToken's certificate issuers
 	 */
-	private ListCertificateSource trustedListCertificateSource;
+	protected ListCertificateSource trustedListCertificateSource;
 
 	/**
-	 * Build a OCSPAndCRLCertificateVerifier that will use the provided CRLSource
-	 * and OCSPSource
+	 * Sets the CRLSource
 	 *
-	 * @param crlSource
-	 *                           the used CRL Source (online or offline)
-	 * @param ocspSource
-	 *                           the used OCSP Source (online or offline)
+	 * @param crlSource {@link RevocationSource}
 	 */
-	public OCSPAndCRLRevocationSource(final RevocationSource<CRL> crlSource, final RevocationSource<OCSP> ocspSource) {
+	void setCrlSource(RevocationSource<CRL> crlSource) {
 		this.crlSource = crlSource;
+	}
+
+	/**
+	 * Sets the OCSPSource
+	 *
+	 * @param ocspSource {@link RevocationSource}
+	 */
+	void setOcspSource(RevocationSource<OCSP> ocspSource) {
 		this.ocspSource = ocspSource;
 	}
 
@@ -75,30 +84,55 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 	 * 
 	 * @param trustedListCertificateSource {@link ListCertificateSource}
 	 */
-	public void setTrustedCertificateSource(ListCertificateSource trustedListCertificateSource) {
+	void setTrustedCertificateSource(ListCertificateSource trustedListCertificateSource) {
 		this.trustedListCertificateSource = trustedListCertificateSource;
 	}
 
 	/**
-	 * This method tries firstly to collect from the OCSP Source and than from the
-	 * CRL Source. The first result is returned.
-	 * 
+	 * This method retrieves a {@code RevocationToken} for the given certificateToken
+	 *
+	 * @param certificateToken
+	 *                               The {@code CertificateToken} for which the
+	 *                               request is made
+	 * @param issuerCertificateToken
+	 *                               The {@code CertificateToken} which is the
+	 *                               issuer of the certificateToken
+	 * @return an instance of {@code RevocationToken}
 	 */
-	@Override
-	public RevocationToken<Revocation> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Check revocation for certificate : {}", certificateToken.getDSSIdAsString());
-		}
-		RevocationToken result = checkOCSP(certificateToken, issuerToken);
-		if (result != null) {
-			return result;
-		}
-		result = checkCRL(certificateToken, issuerToken);
-		if (result != null) {
-			return result;
+	protected abstract RevocationToken getRevocationToken(CertificateToken certificateToken,
+												CertificateToken issuerCertificateToken);
+
+	/**
+	 * Retrieves and verifies the obtained CRL token
+	 *
+	 * NOTE: returns only if a valid entry has been obtained!
+	 *
+	 * @param certificateToken {@link CertificateToken} to get CRL for
+	 * @param issuerToken {@link CertificateToken} issuer of {@code certificateToken}
+	 * @return {@link RevocationToken}
+	 */
+	protected RevocationToken<CRL> checkCRL(final CertificateToken certificateToken, final CertificateToken issuerToken) {
+		if (crlSource == null) {
+			LOG.debug("CRLSource is null");
+			return null;
 		}
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("There is no response for {} neither from OCSP nor from CRL!", certificateToken.getDSSIdAsString());
+			LOG.debug("CRL request for: {} using: {}", certificateToken.getDSSIdAsString(), crlSource.getClass().getSimpleName());
+		}
+		try {
+			final RevocationToken<CRL> revocationToken = crlSource.getRevocationToken(certificateToken, issuerToken);
+			if (revocationToken != null && containsCertificateStatus(revocationToken)) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("CRL for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
+				}
+				return revocationToken;
+			}
+		} catch (DSSException e) {
+			LOG.error("CRL DSS Exception: {}", e.getMessage(), e);
+			return null;
+		}
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("A CRL for token {} is not obtained! Return null value.", certificateToken.getDSSIdAsString());
 		}
 		return null;
 	}
@@ -112,7 +146,7 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 	 * @param issuerToken {@link CertificateToken} issuer of {@code certificateToken}
 	 * @return {@link RevocationToken}
 	 */
-	public RevocationToken<OCSP> checkOCSP(final CertificateToken certificateToken, final CertificateToken issuerToken) {
+	protected RevocationToken<OCSP> checkOCSP(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		if (ocspSource == null) {
 			LOG.debug("OCSPSource null");
 			return null;
@@ -141,41 +175,6 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 		return null;
 	}
 
-	/**
-	 * Retrieves and verifies the obtained CRL token
-	 *
-	 * NOTE: returns only if a valid entry has been obtained!
-	 *
-	 * @param certificateToken {@link CertificateToken} to get CRL for
-	 * @param issuerToken {@link CertificateToken} issuer of {@code certificateToken}
-	 * @return {@link RevocationToken}
-	 */
-	public RevocationToken<CRL> checkCRL(final CertificateToken certificateToken, final CertificateToken issuerToken) {
-		if (crlSource == null) {
-			LOG.debug("CRLSource is null");
-			return null;
-		}
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("CRL request for: {} using: {}", certificateToken.getDSSIdAsString(), crlSource.getClass().getSimpleName());
-		}
-		try {
-			final RevocationToken<CRL> revocationToken = crlSource.getRevocationToken(certificateToken, issuerToken);
-			if (revocationToken != null && containsCertificateStatus(revocationToken)) {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("CRL for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
-				}
-				return revocationToken;
-			}
-		} catch (DSSException e) {
-			LOG.error("CRL DSS Exception: {}", e.getMessage(), e);
-			return null;
-		}
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("A CRL for token {} is not obtained! Return null value.", certificateToken.getDSSIdAsString());
-		}
-		return null;
-	}
-	
 	private boolean containsCertificateStatus(RevocationToken<?> revocationToken) {
 		if (revocationToken.getStatus() == null) {
 			LOG.warn("The obtained revocation token does not contain the certificate status. "
@@ -184,23 +183,23 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 		}
 		return true;
 	}
-	
+
 	private boolean isAcceptable(RevocationToken<OCSP> ocspToken) {
 		CertificateToken issuerCertificateToken = ocspToken.getIssuerCertificateToken();
 		if (issuerCertificateToken == null) {
 			LOG.warn("The issuer certificate is not found for the obtained OCSPToken. "
 					+ "The token is skipped.");
 			return false;
-			
+
 		} else if (doesRequireRevocation(issuerCertificateToken) && !hasRevocationAccessPoints(issuerCertificateToken)) {
 			LOG.warn("The issuer certificate of the obtained OCSPToken requires a revocation data, "
 					+ "which is not acceptable due its configuration (no revocation access location points). The token is skipped.");
 			return false;
-			
+
 		}
 		return true;
 	}
-	
+
 	private boolean doesRequireRevocation(final CertificateToken certificateToken) {
 		if (certificateToken.isSelfSigned()) {
 			return false;
@@ -213,11 +212,11 @@ public class OCSPAndCRLRevocationSource implements RevocationSource<Revocation> 
 		}
 		return true;
 	}
-	
+
 	private boolean isTrusted(CertificateToken certificateToken) {
 		return trustedListCertificateSource != null && trustedListCertificateSource.isTrusted(certificateToken);
 	}
-	
+
 	private boolean hasRevocationAccessPoints(final CertificateToken certificateToken) {
 		if (Utils.isCollectionNotEmpty(DSSASN1Utils.getOCSPAccessLocations(certificateToken))) {
 			return true;
