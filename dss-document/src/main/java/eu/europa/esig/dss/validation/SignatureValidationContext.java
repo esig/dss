@@ -126,8 +126,8 @@ public class SignatureValidationContext implements ValidationContext {
 	/** External CRL source */
 	private RevocationSource<CRL> crlSource;
 
-	/** This source defines the revocation loading logic and returns OCSP or CRL token for a provided certificate */
-	private CompositeRevocationSource compositeRevocationSource;
+	/** This strategy defines the revocation loading logic and returns OCSP or CRL token for a provided certificate */
+	private RevocationDataLoadingStrategy revocationDataLoadingStrategy;
 
 	/** External trusted certificate sources */
 	private ListCertificateSource trustedCertSources;
@@ -179,7 +179,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.crlSource = certificateVerifier.getCrlSource();
 		this.ocspSource = certificateVerifier.getOcspSource();
 		this.dataLoader = certificateVerifier.getDataLoader();
-		this.compositeRevocationSource = certificateVerifier.getCompositeRevocationSource();
+		this.revocationDataLoadingStrategy = certificateVerifier.getRevocationDataLoadingStrategy();
 		this.signatureCRLSource = certificateVerifier.getSignatureCRLSource();
 		this.signatureOCSPSource = certificateVerifier.getSignatureOCSPSource();
 		this.signatureCertificateSource = certificateVerifier.getSignatureCertificateSource();
@@ -647,12 +647,12 @@ public class SignatureValidationContext implements ValidationContext {
 			currentOCSPSource = ocspSource;
 			currentCRLSource = crlSource;
 		}
-		compositeRevocationSource.setOcspSource(currentOCSPSource);
-		compositeRevocationSource.setCrlSource(currentCRLSource);
-		compositeRevocationSource.setTrustedCertificateSource(currentCertSource);
+		revocationDataLoadingStrategy.setOcspSource(currentOCSPSource);
+		revocationDataLoadingStrategy.setCrlSource(currentCRLSource);
+		revocationDataLoadingStrategy.setTrustedCertificateSource(currentCertSource);
 
 		// fetch the data
-		return compositeRevocationSource.getRevocationToken(certificateToken, issuerCertificate);
+		return revocationDataLoadingStrategy.getRevocationToken(certificateToken, issuerCertificate);
 	}
 
 	private RevocationSource<OCSP> instantiateOCSPWithTrustServices(CertificateToken trustAnchor) {

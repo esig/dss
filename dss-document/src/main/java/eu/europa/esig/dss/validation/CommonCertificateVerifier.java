@@ -79,12 +79,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private RevocationSource<CRL> crlSource;
 
 	/**
-	 * Defines a composite revocation source associated with this verifier,
-	 * used to fetch OCSP or CRL for validating certificates.
+	 * Defines a revocation data loading strategy used to fetch OCSP or CRL for validating certificates.
 	 *
-	 * Default: {@code OCSPFirstAndCRLRevocationSource} is used to extract OCSP token first and CRL after
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategy} is used to extract OCSP token first and CRL after
 	 */
-	private CompositeRevocationSource compositeRevocationSource = new OCSPFirstAndCRLRevocationSource();
+	private RevocationDataLoadingStrategy revocationDataLoadingStrategy = new OCSPFirstRevocationDataLoadingStrategy();
 
 	/**
 	 * The data loader used to access AIA certificate source.
@@ -240,14 +239,14 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public CompositeRevocationSource getCompositeRevocationSource() {
-		return compositeRevocationSource;
+	public RevocationDataLoadingStrategy getRevocationDataLoadingStrategy() {
+		return revocationDataLoadingStrategy;
 	}
 
 	@Override
-	public void setCompositeRevocationSource(CompositeRevocationSource compositeRevocationSource) {
-		Objects.requireNonNull(compositeRevocationSource, "CompositeRevocationSource shall be defined!");
-		this.compositeRevocationSource = compositeRevocationSource;
+	public void setRevocationDataLoadingStrategy(RevocationDataLoadingStrategy revocationDataLoadingStrategy) {
+		Objects.requireNonNull(revocationDataLoadingStrategy, "RevocationDataLoadingStrategy shall be defined!");
+		this.revocationDataLoadingStrategy = revocationDataLoadingStrategy;
 	}
 
 	@Override

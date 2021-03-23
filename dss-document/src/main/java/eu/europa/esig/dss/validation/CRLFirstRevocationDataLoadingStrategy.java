@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
  * This class fetches firstly CRL response, if not available, tries OCSP and returns the first succeeded result
  *
  */
-public class CRLFirstAndOCSPRevocationSource extends AbstractCompositeRevocationSource {
+public class CRLFirstRevocationDataLoadingStrategy extends RevocationDataLoadingStrategy {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CRLFirstAndOCSPRevocationSource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CRLFirstRevocationDataLoadingStrategy.class);
 
     @Override
     public RevocationToken<Revocation> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {

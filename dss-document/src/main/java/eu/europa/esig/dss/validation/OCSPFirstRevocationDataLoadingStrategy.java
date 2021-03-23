@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
  * NOTE: This implementation is use by default for revocation retrieving
  *
  */
-public class OCSPFirstAndCRLRevocationSource extends AbstractCompositeRevocationSource {
+public class OCSPFirstRevocationDataLoadingStrategy extends RevocationDataLoadingStrategy {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OCSPFirstAndCRLRevocationSource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OCSPFirstRevocationDataLoadingStrategy.class);
 
     @Override
     public RevocationToken<Revocation> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {

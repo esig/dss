@@ -71,22 +71,21 @@ public interface CertificateVerifier {
 	void setOcspSource(final RevocationSource<OCSP> ocspSource);
 
 	/**
-	 * Returns a composite revocation source associated with this verifier.
+	 * Returns a revocation data loading strategy associated with this verifier.
 	 *
-	 * @return the used revocation source to fetch OCSP or CRL for validating certificates
+	 * @return the defined strategy to fetch OCSP or CRL for certificate validation
 	 */
-	CompositeRevocationSource getCompositeRevocationSource();
+	RevocationDataLoadingStrategy getRevocationDataLoadingStrategy();
 
 	/**
-	 * Defines a composite revocation source associated with this verifier,
-	 * used to fetch OCSP or CRL for validating certificates.
+	 * Defines a strategy used to fetch OCSP or CRL for certificate validation.
 	 *
-	 * Default: {@code OCSPFirstAndCRLRevocationSource} is used to extract OCSP token first and CRL after
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategy} is used to extract OCSP token first and CRL after
 	 *
-	 * @param compositeRevocationSource
-	 *                   {@link CompositeRevocationSource}
+	 * @param revocationDataLoadingStrategy
+	 *                   {@link RevocationDataLoadingStrategy}
 	 */
-	void setCompositeRevocationSource(final CompositeRevocationSource compositeRevocationSource);
+	void setRevocationDataLoadingStrategy(final RevocationDataLoadingStrategy revocationDataLoadingStrategy);
 
 	/**
 	 * Returns the trusted certificate sources associated with this verifier. These
