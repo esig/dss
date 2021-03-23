@@ -75,7 +75,8 @@ public class XPointerValidationTest extends AbstractXAdESTestValidation {
 		assertEquals(1, signatureScopes.size());
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 		assertEquals(SignatureScopeType.PARTIAL, xmlSignatureScope.getScope());
-		assertNotNull(xmlSignatureScope.getDescription());
+		assertEquals("XPointer query to element with Id 'SignedObject-1516693867353' with transformations.",
+				xmlSignatureScope.getDescription());
 		XmlSignerData xPointerSignerData = xmlSignatureScope.getSignerData();
 		
 		List<SignerDataWrapper> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();

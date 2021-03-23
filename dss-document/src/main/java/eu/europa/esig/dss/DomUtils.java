@@ -92,6 +92,9 @@ public final class DomUtils {
 	/** The 'xpointer' with id opener */
 	private static final String XP_WITH_ID_OPEN = "#xpointer(id(";
 
+	/** The 'xpointer' referring the root document element */
+	private static final String XP_ROOT = "#xpointer(/)";
+
 	/** The staring binaries of an XML file */
 	private static final byte[] xmlPreamble = new byte[] { '<' };
 
@@ -759,6 +762,17 @@ public final class DomUtils {
 
         return null;
     }
+
+	/**
+	 * This method checks if the XPointer refers the document root.
+	 * See {@code org.apache.xml.security.utils.resolver.implementations.ResolverXPointer}
+	 *
+	 * @param uri {@link String} URI to verify
+	 * @return TRUE if the XPointer refers the document root, FALSE otherwise
+	 */
+	public static boolean isRootXPointer(String uri) {
+		return XP_ROOT.equals(uri);
+	}
 
 	/**
 	 * Creates an element with the given namespace
