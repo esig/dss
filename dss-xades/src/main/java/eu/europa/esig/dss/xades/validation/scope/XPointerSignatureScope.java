@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.validation.scope;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeWithTransformations;
 
 import java.util.List;
@@ -64,7 +63,7 @@ public class XPointerSignatureScope extends SignatureScopeWithTransformations {
 			sb.append(getName());
 			sb.append("'");
 		}
-		return addTransformationDescription(sb.toString());
+		return addTransformationIfNeeded(sb.toString());
 	}
 
 	@Override

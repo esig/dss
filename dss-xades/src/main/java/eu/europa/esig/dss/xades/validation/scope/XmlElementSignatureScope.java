@@ -45,10 +45,7 @@ public class XmlElementSignatureScope extends SignatureScopeWithTransformations 
 	@Override
 	public String getDescription() {
 		String description = "The XML element with ID '" + getName() + "'";
-		if (isTransformationsNotEmpty()) {
-			description = addTransformationDescription(description);
-		}
-		return description;
+		return addTransformationIfNeeded(description);
 	}
 
 	@Override

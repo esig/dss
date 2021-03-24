@@ -55,10 +55,7 @@ public class XmlRootSignatureScope extends XmlElementSignatureScope {
     @Override
     public String getDescription() {
         String description = "The full XML file";
-        if (Utils.isCollectionNotEmpty(getTransformations())) {
-        	description = addTransformationDescription(description);
-        }
-        return description;
+        return addTransformationIfNeeded(description);
     }
 
 	@Override

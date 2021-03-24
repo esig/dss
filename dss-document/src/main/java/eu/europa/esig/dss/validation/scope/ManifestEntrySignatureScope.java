@@ -51,10 +51,7 @@ public class ManifestEntrySignatureScope extends SignatureScopeWithTransformatio
 		} else {
 			description = String.format("The File Manifest Entry with name '%s' from a Manifest with name '%s'", getName(), manifestName);
 		}
-		if (isTransformationsNotEmpty()) {
-			description = addTransformationDescription(description);
-		}
-		return description;
+		return addTransformationIfNeeded(description);
 	}
 
 	@Override
