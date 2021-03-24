@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.sav;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -39,6 +40,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndica
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentHintsCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampMessageImprintCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
@@ -136,6 +138,11 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		// content-timestamp
 		item = item.setNextItem(contentTimestamp());
 
+		// content-timestamp message-imprint
+		for (TimestampWrapper contentTimestamp : token.getContentTimestamps()) {
+			item = item.setNextItem(contentTimestampMessageImprint(contentTimestamp));
+		}
+
 		// countersignature
 		item = item.setNextItem(countersignature());
 
@@ -202,6 +209,11 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	private ChainItem<XmlSAV> contentTimestamp() {
 		LevelConstraint constraint = validationPolicy.getContentTimestampConstraint(context);
 		return new ContentTimestampCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> contentTimestampMessageImprint(TimestampWrapper contentTimestamp) {
+		LevelConstraint constraint = validationPolicy.getContentTimestampMessageImprintConstraint(context);
+		return new ContentTimestampMessageImprintCheck(i18nProvider, result, contentTimestamp, constraint);
 	}
 
 	private ChainItem<XmlSAV> countersignature() {

@@ -38,6 +38,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
@@ -5253,6 +5254,79 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertTrue(signCertFound);
 		assertTrue(caCertFound);
 		assertTrue(rootCertFound);
+	}
+
+	@Test
+	public void signatureWithFailedContentTstTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/sig-with-content-tst.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		xmlDiagnosticData.getUsedTimestamps().get(0).getDigestMatchers().get(0).setDataIntact(false);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = detailedReport.getSignatures().get(0).getTimestamps();
+		assertEquals(1, timestamps.size());
+
+		XmlValidationProcessTimestamp validationProcessTimestamp = timestamps.get(0).getValidationProcessTimestamp();
+		assertEquals(Indication.FAILED, validationProcessTimestamp.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, validationProcessTimestamp.getConclusion().getSubIndication());
+	}
+
+	@Test
+	public void signatureWithFailedContentTstFailSAVTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/sig-with-content-tst.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlTimestamp xmlContentTimestamp = xmlDiagnosticData.getUsedTimestamps().get(0);
+		xmlContentTimestamp.getDigestMatchers().get(0).setDataIntact(false);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getSignedAttributes().setContentTimeStampMessageImprint(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_SAV_DMICTSTMCMI_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+
+		XmlSAV sav = signatureBBB.getSAV();
+		assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+
+		boolean contentTstMessageImprintCheckFound = false;
+		for (XmlConstraint constraint : sav.getConstraint()) {
+			if (MessageTag.BBB_SAV_DMICTSTMCMI.getId().equals(constraint.getName().getKey())) {
+				assertEquals(xmlContentTimestamp.getId(), constraint.getId());
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_SAV_DMICTSTMCMI_ANS.getId(), constraint.getError().getKey());
+				contentTstMessageImprintCheckFound = true;
+			}
+		}
+		assertTrue(contentTstMessageImprintCheckFound);
 	}
 
 	@Test

@@ -173,14 +173,23 @@ public interface ValidationPolicy {
 	LevelConstraint getSignerLocationConstraint(Context context);
 
 	/**
-	 * Indicates if the signed property: content-time-stamp should be checked. If ContentTimeStamp element is absent
-	 * within the constraint file then null is
-	 * returned.
+	 * Indicates if the signed property: content-time-stamp should be checked.
+	 * If ContentTimeStamp element is absent within the constraint file then null is returned.
 	 *
 	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if ContentTimeStamp element is present in the constraint file, null otherwise.
 	 */
 	LevelConstraint getContentTimestampConstraint(Context context);
+
+	/**
+	 * Indicates if the signed property: content-time-stamp message-imprint should be checked.
+	 * If ContentTimeStampMessageImprint element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ContentTimeStampMessageImprint element is present in the constraint file,
+	 *                                 null otherwise.
+	 */
+	LevelConstraint getContentTimestampMessageImprintConstraint(Context context);
 
 	/**
 	 * Indicates if the unsigned property: claimed-role should be checked. If ClaimedRoles element is absent within the

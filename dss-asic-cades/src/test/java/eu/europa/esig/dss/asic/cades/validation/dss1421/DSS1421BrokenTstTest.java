@@ -76,8 +76,9 @@ public class DSS1421BrokenTstTest extends AbstractASiCWithCAdESTestValidation {
 				assertFalse(validMessageImprint);
 				assertTrue(timestamp.isMessageImprintDataFound());
 				assertFalse(timestamp.isMessageImprintDataIntact());
+				assertTrue(timestamp.isSignatureIntact());
+				assertFalse(timestamp.isSignatureValid());
 			}
-			assertTrue(timestamp.isSignatureValid());
 		}
 		assertEquals(1, archiveTimestampCounter);
 	}

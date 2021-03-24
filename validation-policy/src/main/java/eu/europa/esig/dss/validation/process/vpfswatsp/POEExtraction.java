@@ -120,11 +120,19 @@ public class POEExtraction {
 	 * @param timestamp {@link TimestampWrapper} to extract POE from
 	 */
 	public void extractPOE(TimestampWrapper timestamp) {
-		List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
-		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
-			POE poe = new POE(timestamp);
-			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-				addPOE(xmlTimestampedObject.getToken().getId(), poe);
+		/**
+		 * 5.6.2.3.4 Processing (5.6.2.3 POE extraction)
+		 *
+		 * 1) The building block shall determine the set S of references to objects and
+		 * objects that are part of the signature and are protected by the time-stamp.
+		 */
+		if (timestamp.isMessageImprintDataFound() && timestamp.isMessageImprintDataIntact()) {
+			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+			if (Utils.isCollectionNotEmpty(timestampedObjects)) {
+				POE poe = new POE(timestamp);
+				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
+					addPOE(xmlTimestampedObject.getToken().getId(), poe);
+				}
 			}
 		}
 	}

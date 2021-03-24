@@ -116,10 +116,10 @@ public class DetachedTimestampValidatorTest {
 		assertFalse(timestampWrapper.isMessageImprintDataFound());
 		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 		assertTrue(timestampWrapper.isSignatureIntact());
-		assertTrue(timestampWrapper.isSignatureValid());
+		assertFalse(timestampWrapper.isSignatureValid());
 
 		validator = SignedDocumentValidator.fromDocument(timestamp);
-		validator.setDetachedContents(new ArrayList<DSSDocument>());
+		validator.setDetachedContents(new ArrayList<>());
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 		diagnosticData = reports.getDiagnosticData();
@@ -127,7 +127,7 @@ public class DetachedTimestampValidatorTest {
 		assertFalse(timestampWrapper.isMessageImprintDataFound());
 		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 		assertTrue(timestampWrapper.isSignatureIntact());
-		assertTrue(timestampWrapper.isSignatureValid());
+		assertFalse(timestampWrapper.isSignatureValid());
 
 		validator = SignedDocumentValidator.fromDocument(timestamp);
 		validator.setDetachedContents(Arrays.asList(new InMemoryDocument("Wrong data".getBytes(StandardCharsets.UTF_8))));
@@ -138,7 +138,7 @@ public class DetachedTimestampValidatorTest {
 		assertTrue(timestampWrapper.isMessageImprintDataFound());
 		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 		assertTrue(timestampWrapper.isSignatureIntact());
-		assertTrue(timestampWrapper.isSignatureValid());
+		assertFalse(timestampWrapper.isSignatureValid());
 	}
 
 	@Test
@@ -153,7 +153,7 @@ public class DetachedTimestampValidatorTest {
 		assertFalse(timestampWrapper.isMessageImprintDataFound());
 		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 		assertTrue(timestampWrapper.isSignatureIntact());
-		assertTrue(timestampWrapper.isSignatureValid());
+		assertFalse(timestampWrapper.isSignatureValid());
 	}
 
 	@Test

@@ -48,10 +48,19 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
+/**
+ * Provides a user-friendly interface for dealing with JAXB {@code XmlTimestamp} object
+ */
 public class TimestampWrapper extends AbstractTokenProxy {
 
+	/** The wrapped XmlTimestamp */
 	private final XmlTimestamp timestamp;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param timestamp {@link XmlTimestamp}
+	 */
 	public TimestampWrapper(XmlTimestamp timestamp) {
 		Objects.requireNonNull(timestamp, "XmlTimestamp cannot be null!");
 		this.timestamp = timestamp;
@@ -77,38 +86,50 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestamp.getSigningCertificate();
 	}
 
-	/**
-	 * Returns FoundCertificatesProxy to access embedded certificates
-	 * 
-	 * @return {@link FoundCertificatesProxy}
-	 */
 	@Override
 	public FoundCertificatesProxy foundCertificates() {
 		return new FoundCertificatesProxy(timestamp.getFoundCertificates());
 	}
 
-	/**
-	 * Returns FoundRevocationsProxy to access embedded revocation data
-	 * 
-	 * @return {@link FoundRevocationsProxy}
-	 */
 	@Override
 	public FoundRevocationsProxy foundRevocations() {
 		return new FoundRevocationsProxy(timestamp.getFoundRevocations());
 	}
 
+	/**
+	 * Returns the type of the timestamp
+	 *
+	 * @return {@link TimestampType}
+	 */
 	public TimestampType getType() {
 		return timestamp.getType();
 	}
 	
+	/**
+	 * Returns archive timestamp type, if applicable
+	 *
+	 * NOTE: returns null for non archive timestamps
+	 *
+	 * @return {@link ArchiveTimestampType}
+	 */
 	public ArchiveTimestampType getArchiveTimestampType() {
 		return timestamp.getArchiveTimestampType();
 	}
 
+	/**
+	 * Returns the indicated production time of the timestamp
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getProductionTime() {
 		return timestamp.getProductionTime();
 	}
 
+	/**
+	 * Returns message-imprint {@code XmlDigestMatcher}
+	 *
+	 * @return {@link XmlDigestMatcher}
+	 */
 	public XmlDigestMatcher getMessageImprint() {
 		for (XmlDigestMatcher digestMatcher : getDigestMatchers()) {
 			if (DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
@@ -118,6 +139,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Indicates if the message-imprint is found (all the required data for message-imprint computation is present)
+	 *
+	 * @return TRUE if the message-imprint data is found, FALSE otherwise
+	 */
 	public boolean isMessageImprintDataFound() {
 		XmlDigestMatcher messageImprint = getMessageImprint();
 		if (messageImprint != null) {
@@ -126,6 +152,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return false;
 	}
 
+	/**
+	 * Indicates if the message-imprint is intact (matches the computed message-imprint)
+	 *
+	 * @return TRUE if the message-imprint data is intact, FALSE otherwise
+	 */
 	public boolean isMessageImprintDataIntact() {
 		XmlDigestMatcher messageImprint = getMessageImprint();
 		if (messageImprint != null) {
@@ -134,6 +165,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return false;
 	}
 
+	/**
+	 * Gets name of the timestamp file, when applicable
+	 *
+	 * @return {@link String} file name
+	 */
 	public String getFilename() {
 		return timestamp.getTimestampFilename();
 	}
@@ -253,6 +289,12 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestamps;
 	}
 
+	/**
+	 * Indicates if the signing certificate reference is present within the timestamp token and
+	 * matches the actual signing certificate
+	 *
+	 * @return TRUE if the signing certificate is unambiguously identified, FALSE otherwise
+	 */
 	public boolean isSigningCertificateIdentified() {
 		CertificateWrapper signingCertificate = getSigningCertificate();
 		CertificateRefWrapper signingCertificateReference = getSigningCertificateReference();
@@ -330,6 +372,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestamp.getBase64Encoded();
 	}
 
+	/**
+	 * Returns digest algorithm and value of the timestamp token binaries, when defined
+	 *
+	 * @return {@link XmlDigestAlgoAndValue}
+	 */
 	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
 		return timestamp.getDigestAlgoAndValue();
 	}
@@ -346,6 +393,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestamp.getPDFRevision();
 	}
 	
+	/**
+	 * Indicates if any PDF modifications have been detected
+	 *
+	 * @return TRUE if any potential PDF modifications have been detected between different revisions, FALSE otherwise
+	 */
 	public boolean arePdfModificationsDetected() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		return arePdfModificationsDetected(pdfRevision);
@@ -416,6 +468,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestamp.getSignerInformationStore();
 	}
 
+	/**
+	 * Returns /Name parameter value
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignerName() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
@@ -424,6 +481,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns /Type parameter value
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignatureDictionaryType() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
@@ -432,6 +494,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns /Filter parameter value
+	 *
+	 * @return {@link String}
+	 */
 	public String getFilter() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
@@ -440,6 +507,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns /SubFilter parameter value
+	 *
+	 * @return {@link String}
+	 */
 	public String getSubFilter() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
@@ -448,6 +520,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns /ContactInfo parameter value
+	 *
+	 * @return {@link String}
+	 */
 	public String getContactInfo() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
@@ -456,6 +533,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns /Reason parameter value
+	 *
+	 * @return {@link String}
+	 */
 	public String getReason() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
@@ -464,6 +546,11 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return null;
 	}
 	
+	/**
+	 * Returns /ByteRange parameter value
+	 *
+	 * @return {@link String}
+	 */
 	public List<BigInteger> getSignatureByteRange() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {

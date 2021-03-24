@@ -270,6 +270,11 @@
 					<xsd:documentation>Checks the presence of a content-timestamp attribute</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ContentTimeStampMessageImprint" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the message imprint validity for present content-timestamps</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	

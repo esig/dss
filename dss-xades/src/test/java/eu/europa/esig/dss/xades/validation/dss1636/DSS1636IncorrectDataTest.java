@@ -69,7 +69,7 @@ public class DSS1636IncorrectDataTest extends AbstractXAdESTestValidation {
 		assertTrue(timestampWrapper.isMessageImprintDataFound());
 		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 		assertTrue(timestampWrapper.isSignatureIntact());
-		assertTrue(timestampWrapper.isSignatureValid());
+		assertFalse(timestampWrapper.isSignatureValid());
 	}
 	
 	@Override

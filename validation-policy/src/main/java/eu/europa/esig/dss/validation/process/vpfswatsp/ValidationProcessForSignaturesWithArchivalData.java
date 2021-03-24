@@ -218,8 +218,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 						 * If it returns PASSED and the cryptographic hash function used in the time-stamp is considered
 						 * reliable at the generation time of the time-stamp, the long term validation process shall
 						 * perform the POE extraction process and shall add the returned POEs to the set of POEs
-						 * continue with
-						 * step 5a using the next timestamp attribute.
+						 * continue with step 5a using the next timestamp attribute.
 						 */
 						if (isValid(psvResult) && isValid(davResult)) {
 							poe.extractPOE(newestTimestamp);

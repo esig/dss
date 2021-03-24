@@ -35,7 +35,7 @@ public class JAdESLevelTBrokenSigTstTest extends AbstractJAdESTestValidation {
         assertTrue(timestampWrapper.isMessageImprintDataFound());
         assertFalse(timestampWrapper.isMessageImprintDataIntact());
         assertTrue(timestampWrapper.isSignatureIntact());
-        assertTrue(timestampWrapper.isSignatureValid()); // TODO : change the behaviour to false
+        assertFalse(timestampWrapper.isSignatureValid());
     }
 
 }

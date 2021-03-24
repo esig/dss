@@ -97,7 +97,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	private SecureRandomProvider secureRandomProvider;
 
 	/**
-	 * Set the {@code SecureRandomProvider}. Allows to modify a custom behavior for signing of encrypted documents.
+	 * Set the {@code SecureRandomProvider}. Allows modifying a custom behavior for signing of encrypted documents.
 	 * 
 	 * @param secureRandomProvider {@link SecureRandomProvider}
 	 */
@@ -109,10 +109,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	/**
 	 * Constructor for the PdfBoxSignatureService
 	 * 
-	 * @param serviceMode current instance is used to generate DocumentTypestamp or
+	 * @param serviceMode current instance is used to generate DocumentTimestamp or
 	 *                    Signature signature layer
 	 * @param signatureDrawerFactory
-	 *                               drawer factory implementation to be used
+	 *                    drawer factory implementation to be used
 	 * 
 	 */
 	public PdfBoxSignatureService(PDFServiceMode serviceMode, PdfBoxSignatureDrawerFactory signatureDrawerFactory) {

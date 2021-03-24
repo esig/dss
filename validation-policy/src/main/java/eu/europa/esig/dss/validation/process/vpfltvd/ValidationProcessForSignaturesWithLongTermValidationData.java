@@ -213,6 +213,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 		/*
 		 * 3) Signature time-stamp validation:
+		 *
 		 * a) For each time-stamp token in the set of signature time-stamp tokens, the process shall check that the
 		 * message imprint has been generated according to the corresponding signature format specification
 		 * verification. If the verification fails, the process shall remove the token from the set.
@@ -431,21 +432,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> signatureTimestamps) {
 		Set<TimestampWrapper> result = new HashSet<>();
 		for (TimestampWrapper timestampWrapper : signatureTimestamps) {
-			XmlBasicBuildingBlocks bbbTST = bbbs.get(timestampWrapper.getId());
-			if (bbbTST != null) {
-				// PVA : if OK message imprint is validated in SVA of timestamp (depending of
-				// constraint.xml)
-				XmlCV cv = bbbTST.getCV();
-				if (cv != null) {
-					XmlConclusion conclusion = cv.getConclusion();
-					if (Indication.PASSED.equals(conclusion.getIndication())) {
-						result.add(timestampWrapper);
-					}
-				} else {
-					LOG.warn("Cryptographic validation (CV) for timestamp is required !");
-				}
+			if (timestampWrapper.isMessageImprintDataFound() && timestampWrapper.isMessageImprintDataIntact()) {
+				result.add(timestampWrapper);
 			} else {
-				LOG.warn("Cannot find tsp validation info for tsp {}", timestampWrapper.getId());
+				LOG.warn("The message-imprint check failed for signature time-stamp token with Id '{}'",
+						timestampWrapper.getId());
 			}
 		}
 		return result;
@@ -516,13 +507,13 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime,
 			Indication currentIndication, SubIndication currentSubIndication) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
-		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlValidationProcessLongTermData>(i18nProvider, result, 
+		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(i18nProvider, result,
 				bestSignatureTime, signingCertificate, currentIndication, currentSubIndication, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
-		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlValidationProcessLongTermData>(i18nProvider, result, 
+		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(i18nProvider, result,
 				bestSignatureTime, signingCertificate, getFailLevelConstraint());
 	}
 

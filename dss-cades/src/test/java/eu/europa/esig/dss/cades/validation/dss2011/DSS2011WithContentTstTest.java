@@ -80,7 +80,7 @@ public class DSS2011WithContentTstTest extends AbstractCAdESTestValidation {
 			assertFalse(timestamp.isMessageImprintDataFound());
 			assertFalse(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureIntact());
-			assertTrue(timestamp.isSignatureValid());
+			assertFalse(timestamp.isSignatureValid());
 		}
 	}
 	

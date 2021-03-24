@@ -938,6 +938,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 
+	@Override
+	public LevelConstraint getContentTimestampMessageImprintConstraint(Context context) {
+		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
+		if (signedAttributeConstraints != null) {
+			return signedAttributeConstraints.getContentTimeStampMessageImprint();
+		}
+		return null;
+	}
+
 	private CertificateConstraints getSigningCertificateByContext(Context context) {
 		return getCertificateConstraints(context, SubContext.SIGNING_CERT);
 	}

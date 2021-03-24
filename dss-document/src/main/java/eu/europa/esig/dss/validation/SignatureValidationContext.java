@@ -797,7 +797,7 @@ public class SignatureValidationContext implements ValidationContext {
 	public boolean checkAllTimestampsValid() {
 		Set<String> invalidTimestampIds = new HashSet<>();
 		for (TimestampToken timestampToken : processedTimestamps) {
-			if (!timestampToken.isSignatureValid() || !timestampToken.isMessageImprintDataFound() ||
+			if (!timestampToken.isSignatureIntact() || !timestampToken.isMessageImprintDataFound() ||
 					!timestampToken.isMessageImprintDataIntact()) {
 				invalidTimestampIds.add(timestampToken.getDSSIdAsString());
 			}
