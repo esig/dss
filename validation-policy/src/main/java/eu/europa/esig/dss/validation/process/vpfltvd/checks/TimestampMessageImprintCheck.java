@@ -15,7 +15,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 public abstract class TimestampMessageImprintCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** The timestamp to check */
-    private final TimestampWrapper timestamp;
+    protected final TimestampWrapper timestamp;
 
     /**
      * Default constructor

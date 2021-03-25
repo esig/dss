@@ -22,7 +22,6 @@ package eu.europa.esig.dss.validation.process.vpfltvd;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -32,6 +31,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -44,7 +44,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
@@ -68,7 +67,9 @@ import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBef
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.SignatureTimestampMessageImprintCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampBasicSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
 import org.slf4j.Logger;
@@ -210,31 +211,53 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			}
 		}
 		
+		List<TimestampWrapper> filteredTimestamps = new ArrayList<>();
 
 		/*
 		 * 3) Signature time-stamp validation:
-		 *
-		 * a) For each time-stamp token in the set of signature time-stamp tokens, the process shall check that the
-		 * message imprint has been generated according to the corresponding signature format specification
-		 * verification. If the verification fails, the process shall remove the token from the set.
 		 */
-		Set<TimestampWrapper> allowedTimestamps = filterValidSignatureTimestamps(currentSignature.getTLevelTimestamps());
+		List<TimestampWrapper> signatureTimestamps = currentSignature.getTLevelTimestamps();
 
-		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
+		if (Utils.isCollectionNotEmpty(signatureTimestamps)) {
 
 			/*
-			 * b) Time-stamp token validation: For each time-stamp token remaining in the set of signature time-stamp
-			 * tokens, the process shall perform the time-stamp validation process as per clause 5.4:
-			 * 
-			 * If PASSED is returned and if the returned generation time is before best-signature-time, the process
-			 * shall set best-signature-time to this date and shall try the next token.
+			 * a) For each time-stamp token in the set of signature time-stamp tokens, the process shall check that the
+			 * message imprint has been generated according to the corresponding signature format specification
+			 * verification. If the verification fails, the process shall remove the token from the set.
 			 */
-			for (TimestampWrapper timestampWrapper : allowedTimestamps) {
-				Date productionTime = timestampWrapper.getProductionTime();
-				if (isAcceptableTimestampValidation(timestampWrapper) && productionTime.before(bestSignatureTime.getTime())) {
-					bestSignatureTime = getProofOfExistence(timestampWrapper);
+			for (TimestampWrapper timestampWrapper : signatureTimestamps) {
+
+				item = item.setNextItem(signatureTimestampMessageImprint(timestampWrapper));
+
+				if (timestampWrapper.isMessageImprintDataFound() && timestampWrapper.isMessageImprintDataIntact()) {
+
+					/*
+					 * b) Time-stamp token validation: For each time-stamp token remaining in the set of signature
+					 * time-stamp tokens, the process shall perform the time-stamp validation process as per clause 5.4:
+					 *
+					 * If PASSED is returned and if the returned generation time is before best-signature-time,
+					 * the process shall set best-signature-time to this date and shall try the next token.
+					 */
+					XmlValidationProcessTimestamp timestampValidationProcess = getTimestampValidationProcess(timestampWrapper.getId());
+					if (timestampValidationProcess != null) {
+						item = item.setNextItem(timestampBasicSignatureValidation(timestampWrapper, timestampValidationProcess));
+					}
+
+					if (isValid(timestampValidationProcess)) {
+
+						filteredTimestamps.add(timestampWrapper);
+
+						Date productionTime = timestampWrapper.getProductionTime();
+						if (productionTime.before(bestSignatureTime.getTime())) {
+							bestSignatureTime = getProofOfExistence(timestampWrapper);
+						}
+
+					}
+
 				}
+
 			}
+
 		}
 
 		/*
@@ -303,7 +326,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			
 		}
 
-		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
+		if (Utils.isCollectionNotEmpty(filteredTimestamps)) {
 			/*
 			 * e) For each time-stamp token remaining in the set of signature time-stamp tokens, the process shall check
 			 * the coherence in the values of the times indicated in the time-stamp tokens. They shall be posterior to
@@ -321,7 +344,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			 * 5) Handling Time-stamp delay: If the signature contains a signature time-stamp token and the validation
 			 * constraints specify a time-stamp delay:
 			 */
-			List<TimestampWrapper> signatureTimestamps = currentSignature.getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP);
 			
 			if (!signatureTimestamps.isEmpty() && policy.getTimestampDelayConstraint() != null) {
 				/*
@@ -379,6 +401,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		result.setProofOfExistence(bestSignatureTime);
 	}
 
+	private ChainItem<XmlValidationProcessLongTermData> isAcceptableBasicSignatureValidation() {
+		return new AcceptableBasicSignatureValidationCheck(i18nProvider, result, basicSignatureValidation, getFailLevelConstraint());
+	}
+
 	private ChainItem<XmlValidationProcessLongTermData> revocationBasicBuildingBlocksValid(CertificateRevocationWrapper revocationData) {
 		XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationData.getId());
 		if (revocationBBB == null) {
@@ -390,25 +416,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> revocationDataConsistent(CertificateWrapper certificate, CertificateRevocationWrapper revocationData) {
 		return new RevocationConsistentWithIdCheck(i18nProvider, result, certificate, revocationData, getWarnLevelConstraint());
 	}
-	
-	private boolean isRevocationDataConsistent(CertificateWrapper certificate, CertificateRevocationWrapper revocationData) {
-		XmlBasicBuildingBlocks signatureBBB = bbbs.get(currentSignature.getId());
-		if (signatureBBB.getXCV() != null) {
-			for (XmlSubXCV subXCV : signatureBBB.getXCV().getSubXCV()) {
-				if (certificate.getId().equals(subXCV.getId()) && 
-						subXCV.getRFC() != null && revocationData.getId().equals(subXCV.getRFC().getId())) {
-					// RFC is performed only for consistent revocation
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private SubContext getSubContext(CertificateWrapper certificateWrapper) {
-		return currentSignature.getSigningCertificate().getId().equals(certificateWrapper.getId()) ?
-				SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
-	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDataAvailable(RevocationWrapper revocationData, 
 			CertificateWrapper certificateWrapper, Context context, SubContext subContext) {
@@ -416,43 +423,14 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, certificateWrapper, revocationData, constraint);
 	}
 
-	private XmlProofOfExistence getCurrentTime() {
-		XmlProofOfExistence xpoe = new XmlProofOfExistence();
-		xpoe.setTime(currentDate);
-		return xpoe;
+	private ChainItem<XmlValidationProcessLongTermData> signatureTimestampMessageImprint(TimestampWrapper timestampWrapper) {
+		return new SignatureTimestampMessageImprintCheck(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
 	}
 
-	private XmlProofOfExistence getProofOfExistence(TimestampWrapper timestampWrapper) {
-		XmlProofOfExistence xpoe = new XmlProofOfExistence();
-		xpoe.setTime(timestampWrapper.getProductionTime());
-		xpoe.setTimestampId(timestampWrapper.getId());
-		return xpoe;
-	}
-
-	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> signatureTimestamps) {
-		Set<TimestampWrapper> result = new HashSet<>();
-		for (TimestampWrapper timestampWrapper : signatureTimestamps) {
-			if (timestampWrapper.isMessageImprintDataFound() && timestampWrapper.isMessageImprintDataIntact()) {
-				result.add(timestampWrapper);
-			} else {
-				LOG.warn("The message-imprint check failed for signature time-stamp token with Id '{}'",
-						timestampWrapper.getId());
-			}
-		}
-		return result;
-	}
-	
-	private boolean isAcceptableTimestampValidation(TimestampWrapper timestamp) {
-		for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
-			if (timestamp.getId().equals(xmlTimestamp.getId()) && isValid(xmlTimestamp.getValidationProcessTimestamp())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private ChainItem<XmlValidationProcessLongTermData> isAcceptableBasicSignatureValidation() {
-		return new AcceptableBasicSignatureValidationCheck(i18nProvider, result, basicSignatureValidation, getFailLevelConstraint());
+	private ChainItem<XmlValidationProcessLongTermData> timestampBasicSignatureValidation(
+			TimestampWrapper timestampWrapper, XmlValidationProcessTimestamp timestampValidationResult) {
+		return new TimestampBasicSignatureValidationCheck<>(i18nProvider, result, timestampWrapper,
+				timestampValidationResult, getWarnLevelConstraint());
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> revocationIsFresh(ChainItem<XmlValidationProcessLongTermData> item, 
@@ -614,6 +592,60 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		}
 		return item;
 	}
+
+	private boolean isRevocationDataConsistent(CertificateWrapper certificate, CertificateRevocationWrapper revocationData) {
+		XmlBasicBuildingBlocks signatureBBB = bbbs.get(currentSignature.getId());
+		if (signatureBBB.getXCV() != null) {
+			for (XmlSubXCV subXCV : signatureBBB.getXCV().getSubXCV()) {
+				if (certificate.getId().equals(subXCV.getId()) &&
+						subXCV.getRFC() != null && revocationData.getId().equals(subXCV.getRFC().getId())) {
+					// RFC is performed only for consistent revocation
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private SubContext getSubContext(CertificateWrapper certificateWrapper) {
+		return currentSignature.getSigningCertificate().getId().equals(certificateWrapper.getId()) ?
+				SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+	}
+
+	private XmlProofOfExistence getCurrentTime() {
+		XmlProofOfExistence poe = new XmlProofOfExistence();
+		poe.setTime(currentDate);
+		return poe;
+	}
+
+	private XmlProofOfExistence getProofOfExistence(TimestampWrapper timestampWrapper) {
+		XmlProofOfExistence xpoe = new XmlProofOfExistence();
+		xpoe.setTime(timestampWrapper.getProductionTime());
+		xpoe.setTimestampId(timestampWrapper.getId());
+		return xpoe;
+	}
+
+	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> signatureTimestamps) {
+		Set<TimestampWrapper> result = new HashSet<>();
+		for (TimestampWrapper timestampWrapper : signatureTimestamps) {
+			if (timestampWrapper.isMessageImprintDataFound() && timestampWrapper.isMessageImprintDataIntact()) {
+				result.add(timestampWrapper);
+			} else {
+				LOG.warn("The message-imprint check failed for signature time-stamp token with Id '{}'",
+						timestampWrapper.getId());
+			}
+		}
+		return result;
+	}
+	
+	private XmlValidationProcessTimestamp getTimestampValidationProcess(String timestampId) {
+		for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
+			if (timestampId.equals(xmlTimestamp.getId())) {
+				return xmlTimestamp.getValidationProcessTimestamp();
+			}
+		}
+		return null;
+	}
 	
 	private boolean isCryptoConstraintFailureNoPoe(XmlConclusion conclusion) {
 		return Indication.INDETERMINATE.equals(conclusion.getIndication()) && 
@@ -630,6 +662,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			if (isMessageCollectingRequired(constraint.getId())) {
 				super.collectMessages(conclusion, constraint);
 			}
+		} else if (XmlBlockType.TST_BBB.equals(constraint.getBlockType())) {
+			// skip validation for TSTs (will be catched in LTA)
 		} else {
 			super.collectMessages(conclusion, constraint);
 		}

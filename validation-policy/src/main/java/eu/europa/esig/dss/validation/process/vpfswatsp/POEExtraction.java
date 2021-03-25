@@ -64,7 +64,7 @@ public class POEExtraction {
 	private Map<String, List<POE>> poeMap = new HashMap<>();
 
 	/**
-	 * Instantiates a contolTime POE for all used tokens
+	 * Instantiates a controlTime POE for all used tokens
 	 * 
 	 * @param diagnosticData {@link DiagnosticData} containing all tokens to initialize the POE for
 	 * @param controlTime {@link Date} defining the time of POE

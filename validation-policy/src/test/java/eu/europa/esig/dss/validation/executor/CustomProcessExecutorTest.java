@@ -439,6 +439,72 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		// Sig TST is broken -> best signing time is not updated
 		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+		XmlValidationProcessTimestamp validationProcessTimestamp = xmlSignature.getTimestamps().get(0).getValidationProcessTimestamp();
+		assertEquals(Indication.FAILED, validationProcessTimestamp.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, validationProcessTimestamp.getConclusion().getSubIndication());
+
+		XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
+		boolean sigTstMessageImprintCheckFound = false;
+		for (XmlConstraint constraint : validationProcessLongTermData.getConstraint()) {
+			if (MessageTag.ADEST_DMISTSTMCMI.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_DMISTSTMCMI_ANS.getId(), constraint.getWarning().getKey());
+				sigTstMessageImprintCheckFound = true;
+			}
+		}
+		assertTrue(sigTstMessageImprintCheckFound);
+
+		validateBestSigningTimes(reports);
+		checkReports(reports);
+	}
+
+	@Test
+	public void testDSS1686BrokenSigTimestampSkipDigestMatcherCheck() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/DSS-1686/dss-1686-broken-signature-timestamp.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		BasicSignatureConstraints timestampBasicSignatureConstraints = validationPolicy.getTimestampConstraints()
+				.getBasicSignatureConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.WARN);
+
+		timestampBasicSignatureConstraints.setReferenceDataExistence(levelConstraint);
+		timestampBasicSignatureConstraints.setReferenceDataIntact(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+		XmlValidationProcessTimestamp validationProcessTimestamp = xmlSignature.getTimestamps().get(0).getValidationProcessTimestamp();
+		assertEquals(Indication.INDETERMINATE, validationProcessTimestamp.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessTimestamp.getConclusion().getSubIndication());
+
+		XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
+		boolean sigTstMessageImprintCheckFound = false;
+		for (XmlConstraint constraint : validationProcessLongTermData.getConstraint()) {
+			if (MessageTag.ADEST_DMISTSTMCMI.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_DMISTSTMCMI_ANS.getId(), constraint.getWarning().getKey());
+				sigTstMessageImprintCheckFound = true;
+			}
+		}
+		assertTrue(sigTstMessageImprintCheckFound);
+
 		validateBestSigningTimes(reports);
 		checkReports(reports);
 	}
