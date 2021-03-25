@@ -336,6 +336,7 @@
 			<xs:enumeration value="PSV" />
 			<xs:enumeration value="PCV" />
 			<xs:enumeration value="VTS" />
+			<xs:enumeration value="TST_PSV" />
 		</xs:restriction>
 	</xs:simpleType>
 

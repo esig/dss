@@ -30,6 +30,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
@@ -80,6 +81,22 @@ public class ValidationProcessUtils {
 						|| SubIndication.TRY_LATER.equals(conclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())));
+	}
+
+	/**
+	 * Checks if the given conclusion is allowed as a basic timestamp validation in order to continue
+	 * the validation process with Archival Data
+	 *
+	 * @param conclusion {@link XmlConclusion} to validate
+	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
+	 */
+	public static boolean isAllowedBasicTimestampValidation(XmlConclusion conclusion) {
+		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
+						|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())));
 	}
 	
 	/**
@@ -210,6 +227,29 @@ public class ValidationProcessUtils {
 		default:
 			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!",
 					digestMatcher.getType()));
+		}
+	}
+
+	/**
+	 * Returns MessageTag associated with the given timestamp type
+	 *
+	 * @param timestampType {@link TimestampType} to get related MessageTag for
+	 * @return {@link MessageTag}
+	 */
+	public static MessageTag getTimestampTypeMessageTag(TimestampType timestampType) {
+		if (timestampType.isContentTimestamp()) {
+			return MessageTag.TST_TYPE_CONTENT_TST;
+		} else if (timestampType.isSignatureTimestamp()) {
+			return MessageTag.TST_TYPE_SIGNATURE_TST;
+		} else if (timestampType.isValidationDataTimestamp()) {
+			return MessageTag.TST_TYPE_VD_TST;
+		} else if (timestampType.isDocumentTimestamp()) {
+			return MessageTag.TST_TYPE_DOC_TST;
+		} else if (timestampType.isArchivalTimestamp()) {
+			return MessageTag.TST_TYPE_ARCHIVE_TST;
+		} else {
+			throw new IllegalArgumentException(
+					String.format("The TimestampType '%s' is not supported!", timestampType));
 		}
 	}
 

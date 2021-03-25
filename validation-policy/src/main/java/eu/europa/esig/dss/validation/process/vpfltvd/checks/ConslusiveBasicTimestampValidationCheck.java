@@ -12,7 +12,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
-public class TimestampBasicSignatureValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+public class ConslusiveBasicTimestampValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** The timestamp to check */
     private final TimestampWrapper timestamp;
@@ -29,9 +29,9 @@ public class TimestampBasicSignatureValidationCheck<T extends XmlConstraintsConc
      * @param timestampValidationResult {@link XmlValidationProcessTimestamp}
      * @param constraint {@link LevelConstraint}
      */
-    public TimestampBasicSignatureValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
-                                                  XmlValidationProcessTimestamp timestampValidationResult,
-                                                  LevelConstraint constraint) {
+    public ConslusiveBasicTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
+                                                   XmlValidationProcessTimestamp timestampValidationResult,
+                                                   LevelConstraint constraint) {
         super(i18nProvider, result, constraint, timestamp.getId());
         this.timestamp = timestamp;
         this.timestampValidationResult = timestampValidationResult;
@@ -50,7 +50,8 @@ public class TimestampBasicSignatureValidationCheck<T extends XmlConstraintsConc
     @Override
     protected String buildAdditionalInfo() {
         String date = ValidationProcessUtils.getFormattedDate(timestamp.getProductionTime());
-        return i18nProvider.getMessage(MessageTag.TIMESTAMP_VALIDATION, timestamp.getId(), date);
+        return i18nProvider.getMessage(MessageTag.TIMESTAMP_VALIDATION,
+                ValidationProcessUtils.getTimestampTypeMessageTag(timestamp.getType()), timestamp.getId(), date);
     }
 
     @Override

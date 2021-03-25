@@ -40,7 +40,6 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndica
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentHintsCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampMessageImprintCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
@@ -48,6 +47,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
 
 import java.util.Date;
 
@@ -213,7 +213,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	private ChainItem<XmlSAV> contentTimestampMessageImprint(TimestampWrapper contentTimestamp) {
 		LevelConstraint constraint = validationPolicy.getContentTimestampMessageImprintConstraint(context);
-		return new ContentTimestampMessageImprintCheck(i18nProvider, result, contentTimestamp, constraint);
+		return new TimestampMessageImprintCheck(i18nProvider, result, contentTimestamp, constraint);
 	}
 
 	private ChainItem<XmlSAV> countersignature() {

@@ -65,13 +65,13 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshn
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.ConslusiveBasicTimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.SignatureTimestampMessageImprintCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampBasicSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -227,7 +227,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			 */
 			for (TimestampWrapper timestampWrapper : signatureTimestamps) {
 
-				item = item.setNextItem(signatureTimestampMessageImprint(timestampWrapper));
+				item = item.setNextItem(timestampMessageImprint(timestampWrapper));
 
 				if (timestampWrapper.isMessageImprintDataFound() && timestampWrapper.isMessageImprintDataIntact()) {
 
@@ -423,13 +423,13 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, certificateWrapper, revocationData, constraint);
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> signatureTimestampMessageImprint(TimestampWrapper timestampWrapper) {
-		return new SignatureTimestampMessageImprintCheck(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
+	private ChainItem<XmlValidationProcessLongTermData> timestampMessageImprint(TimestampWrapper timestampWrapper) {
+		return new TimestampMessageImprintCheck(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampBasicSignatureValidation(
 			TimestampWrapper timestampWrapper, XmlValidationProcessTimestamp timestampValidationResult) {
-		return new TimestampBasicSignatureValidationCheck<>(i18nProvider, result, timestampWrapper,
+		return new ConslusiveBasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
 				timestampValidationResult, getWarnLevelConstraint());
 	}
 	
@@ -663,7 +663,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				super.collectMessages(conclusion, constraint);
 			}
 		} else if (XmlBlockType.TST_BBB.equals(constraint.getBlockType())) {
-			// skip validation for TSTs (will be catched in LTA)
+			// skip validation for TSTs
 		} else {
 			super.collectMessages(conclusion, constraint);
 		}

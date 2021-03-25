@@ -331,21 +331,33 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		
+		int basicValidationTSTPassedCounter = 0;
 		int basicValidationTSTFailedCounter = 0;
 		for (String timestampId : timestampIds) {
-			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
-			if (!Indication.PASSED.equals(timestampValidationIndication)) {
-				assertNotNull(detailedReport.getTimestampValidationSubIndication(timestampId));
-				for (XmlConstraint constraint : constraints) {
-					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
+			for (XmlConstraint constraint : constraints) {
+				if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
+					if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
 						assertEquals(XmlStatus.OK, constraint.getStatus());
-						basicValidationTSTFailedCounter++;
+
+					} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+						if (XmlStatus.OK.equals(constraint.getStatus())) {
+							++basicValidationTSTPassedCounter;
+						} else {
+							++basicValidationTSTFailedCounter;
+						}
+
+					} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+
+					} else if (MessageTag.ARCH_ICHFCRLPOET.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
 					}
 				}
 			}
 			assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(timestampId));
 			assertNull(detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
 		}
+		assertEquals(1, basicValidationTSTPassedCounter);
 		assertEquals(2, basicValidationTSTFailedCounter);
 
 		validateBestSigningTimes(reports);
@@ -448,9 +460,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
 		boolean sigTstMessageImprintCheckFound = false;
 		for (XmlConstraint constraint : validationProcessLongTermData.getConstraint()) {
-			if (MessageTag.ADEST_DMISTSTMCMI.getId().equals(constraint.getName().getKey())) {
+			if (MessageTag.BBB_SAV_DMICTSTMCMI.getId().equals(constraint.getName().getKey())) {
 				assertEquals(XmlStatus.WARNING, constraint.getStatus());
-				assertEquals(MessageTag.ADEST_DMISTSTMCMI_ANS.getId(), constraint.getWarning().getKey());
+				assertEquals(MessageTag.BBB_SAV_DMICTSTMCMI_ANS.getId(), constraint.getWarning().getKey());
 				sigTstMessageImprintCheckFound = true;
 			}
 		}
@@ -497,9 +509,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
 		boolean sigTstMessageImprintCheckFound = false;
 		for (XmlConstraint constraint : validationProcessLongTermData.getConstraint()) {
-			if (MessageTag.ADEST_DMISTSTMCMI.getId().equals(constraint.getName().getKey())) {
+			if (MessageTag.BBB_SAV_DMICTSTMCMI.getId().equals(constraint.getName().getKey())) {
 				assertEquals(XmlStatus.WARNING, constraint.getStatus());
-				assertEquals(MessageTag.ADEST_DMISTSTMCMI_ANS.getId(), constraint.getWarning().getKey());
+				assertEquals(MessageTag.BBB_SAV_DMICTSTMCMI_ANS.getId(), constraint.getWarning().getKey());
 				sigTstMessageImprintCheckFound = true;
 			}
 		}
@@ -551,18 +563,119 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		Reports reports = executor.execute();
 
+		SimpleReport simpleReport = reports.getSimpleReport();
+		// Sig TST + archival TST are broken -> unable to process the past signature
+		// validation + POE extraction
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		int basicValidationTSTFailedCounter = 0;
+		int basicValidationTSTPassedCounter = 0;
+
 		DetailedReport detailedReport = reports.getDetailedReport();
-		XmlBasicBuildingBlocks basicBuildingBlockSigTimestamp = detailedReport
-				.getBasicBuildingBlockById("T-B40B46167579BA169C72C8EA45F4316382614B5034B23114BFD160E3CED8CD68");
-		assertNotNull(basicBuildingBlockSigTimestamp);
-		assertEquals(Indication.FAILED, basicBuildingBlockSigTimestamp.getConclusion().getIndication());
-		assertEquals(SubIndication.HASH_FAILURE, basicBuildingBlockSigTimestamp.getConclusion().getSubIndication());
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures()
+				.get(0).getValidationProcessArchivalData();
+		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		for (String timestampId : timestampIds) {
+			for (XmlConstraint constraint : constraints) {
+				if (timestampId.equals(constraint.getId())) {
+					if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+						if (XmlStatus.OK.equals(constraint.getStatus())) {
+							assertEquals(Indication.PASSED,
+									detailedReport.getBasicBuildingBlocksIndication(timestampId));
+							++basicValidationTSTPassedCounter;
+						} else {
+							assertEquals(Indication.FAILED,
+									detailedReport.getBasicBuildingBlocksIndication(timestampId));
+							assertEquals(SubIndication.HASH_FAILURE,
+									detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
+							++basicValidationTSTFailedCounter;
+						}
+					} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					}
+				}
+			}
+		}
+		assertEquals(2, basicValidationTSTFailedCounter);
+		assertEquals(1, basicValidationTSTPassedCounter);
+
+		validateBestSigningTimes(reports);
+		checkReports(reports);
+	}
+
+	@Test
+	public void testDSS1686BrokenSigAndArchivalTimestampSkipDigestMatcherCheck() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/DSS-1686/dss-1686-broken-signature-and-archival-timestamp.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		BasicSignatureConstraints timestampBasicConstraints = validationPolicy.getTimestampConstraints().getBasicSignatureConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.WARN);
+
+		timestampBasicConstraints.setReferenceDataExistence(levelConstraint);
+		timestampBasicConstraints.setReferenceDataIntact(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		// Sig TST + archival TST are broken -> unable to process the past signature
 		// validation + POE extraction
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		int basicValidationTSTFailedCounter = 0;
+		int basicValidationTSTPassedCounter = 0;
+
+		int messageImprintCheckFailedCounter = 0;
+		int messageImprintCheckPassedCounter = 0;
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures()
+				.get(0).getValidationProcessArchivalData();
+		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		for (String timestampId : timestampIds) {
+			for (XmlConstraint constraint : constraints) {
+				if (timestampId.equals(constraint.getId())) {
+					if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+						if (XmlStatus.OK.equals(constraint.getStatus())) {
+							++basicValidationTSTPassedCounter;
+						} else {
+							++basicValidationTSTFailedCounter;
+						}
+					} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					} else if (MessageTag.ARCH_ICHFCRLPOET.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					} else if (MessageTag.BBB_SAV_DMICTSTMCMI.getId().equals(constraint.getName().getKey())) {
+						if (XmlStatus.OK.equals(constraint.getStatus())) {
+							++messageImprintCheckPassedCounter;
+						} else {
+							++messageImprintCheckFailedCounter;
+						}
+					}
+				}
+			}
+			assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(timestampId));
+		}
+		assertEquals(2, basicValidationTSTFailedCounter);
+		assertEquals(1, basicValidationTSTPassedCounter);
+		assertEquals(2, messageImprintCheckFailedCounter);
+		assertEquals(1, messageImprintCheckPassedCounter);
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -599,7 +712,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	@Test
 	public void testDSS1686noPOE() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/DSS-1686/dss-1686-noPOE.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/DSS-1686/dss-1686-noPOE.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -624,27 +738,29 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		
-		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures().get(0).getValidationProcessArchivalData();
-		
-		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
-		
-		List<String> timestampIds = detailedReport.getTimestampIds();
 		int basicValidationTSTFailedCounter = 0;
+		int pastValidationTSTFailedCounter = 0;
+
+		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures().get(0).getValidationProcessArchivalData();
+		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
+		List<String> timestampIds = detailedReport.getTimestampIds();
 		for (String timestampId : timestampIds) {
-			Indication timestampValidationIndication = detailedReport.getTimestampValidationIndication(timestampId);
-			if (!Indication.PASSED.equals(timestampValidationIndication)) {
-				assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getTimestampValidationSubIndication(timestampId));
-				for (XmlConstraint constraint : constraints) {
-					if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
-						assertEquals(XmlStatus.WARNING, constraint.getStatus());
-						basicValidationTSTFailedCounter++;
-					}
+			for (XmlConstraint constraint : constraints) {
+				if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+				} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					basicValidationTSTFailedCounter++;
+				} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					pastValidationTSTFailedCounter++;
 				}
 			}
 			assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(timestampId));
 			assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
 		}
 		assertEquals(1, basicValidationTSTFailedCounter);
+		assertEquals(1, pastValidationTSTFailedCounter);
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);

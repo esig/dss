@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
@@ -30,17 +31,18 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * Checks if timestamp's past validation is acceptable
  */
 public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchivalData> {
 
+	/** The validated timestamp */
+	private TimestampWrapper timestamp;
+
 	/** Past signature validation */
 	private XmlPSV xmlPSV;
-
-	/** Signature acceptance validation */
-	private XmlSAV xmlSAV;
 
 	/** Current Indication */
 	private Indication indication;
@@ -57,15 +59,19 @@ public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchi
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationProcessArchivalData}
 	 * @param xmlPSV {@link XmlPSV}
-	 * @param xmlSAV {@link XmlSAV}
 	 * @param timestamp {@link TimestampWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public PastTimestampValidation(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, XmlPSV xmlPSV,
-								   XmlSAV xmlSAV, TimestampWrapper timestamp, LevelConstraint constraint) {
+								   TimestampWrapper timestamp, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, timestamp.getId() + PSV_BLOCK_SUFFIX);
+		this.timestamp = timestamp;
 		this.xmlPSV = xmlPSV;
-		this.xmlSAV = xmlSAV;
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.TST_PSV;
 	}
 
 	@Override
@@ -73,10 +79,6 @@ public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchi
 		if (!isValid(xmlPSV)) {
 			indication = xmlPSV.getConclusion().getIndication();
 			subIndication = xmlPSV.getConclusion().getSubIndication();
-			return false;
-		} else if (!isValid(xmlSAV)) {
-			indication = xmlSAV.getConclusion().getIndication();
-			subIndication = xmlSAV.getConclusion().getSubIndication();
 			return false;
 		}
 		return true;
@@ -90,6 +92,13 @@ public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchi
 	@Override
 	protected MessageTag getErrorMessageTag() {
 		return MessageTag.PSV_IPTVC_ANS;
+	}
+
+	@Override
+	protected String buildAdditionalInfo() {
+		String date = ValidationProcessUtils.getFormattedDate(timestamp.getProductionTime());
+		return i18nProvider.getMessage(MessageTag.TIMESTAMP_VALIDATION,
+				ValidationProcessUtils.getTimestampTypeMessageTag(timestamp.getType()), timestamp.getId(), date);
 	}
 
 	@Override

@@ -7,21 +7,25 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampMessageImprintCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ContentTimestampMessageImprintCheckTest extends AbstractTestCheck {
+public class TimestampMessageImprintCheckTest extends AbstractTestCheck {
 
     @Test
     public void validTest() throws Exception {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
+        xmlTimestamp.setType(TimestampType.CONTENT_TIMESTAMP);
+        xmlTimestamp.setProductionTime(new Date());
 
         XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
         digestMatcher.setType(DigestMatcherType.MESSAGE_IMPRINT);
@@ -33,9 +37,9 @@ public class ContentTimestampMessageImprintCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSAV result = new XmlSAV();
-        ContentTimestampMessageImprintCheck ctmic = new ContentTimestampMessageImprintCheck(
+        TimestampMessageImprintCheck tmic = new TimestampMessageImprintCheck(
                 i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
-        ctmic.execute();
+        tmic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -45,6 +49,8 @@ public class ContentTimestampMessageImprintCheckTest extends AbstractTestCheck {
     @Test
     public void failedTest() throws Exception {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
+        xmlTimestamp.setType(TimestampType.CONTENT_TIMESTAMP);
+        xmlTimestamp.setProductionTime(new Date());
 
         XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
         digestMatcher.setType(DigestMatcherType.MESSAGE_IMPRINT);
@@ -56,9 +62,9 @@ public class ContentTimestampMessageImprintCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSAV result = new XmlSAV();
-        ContentTimestampMessageImprintCheck ctmic = new ContentTimestampMessageImprintCheck(
+        TimestampMessageImprintCheck tmic = new TimestampMessageImprintCheck(
                 i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
-        ctmic.execute();
+        tmic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());

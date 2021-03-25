@@ -1,18 +1,22 @@
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * Checks message-imprint validity for a timestamp token
  */
-public abstract class TimestampMessageImprintCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+public class TimestampMessageImprintCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** The timestamp to check */
     protected final TimestampWrapper timestamp;
@@ -34,6 +38,23 @@ public abstract class TimestampMessageImprintCheck<T extends XmlConstraintsConcl
     @Override
     protected boolean process() {
         return timestamp.isMessageImprintDataFound() && timestamp.isMessageImprintDataIntact();
+    }
+
+    @Override
+    protected MessageTag getMessageTag() {
+        return MessageTag.BBB_SAV_DMICTSTMCMI;
+    }
+
+    @Override
+    protected MessageTag getErrorMessageTag() {
+        return MessageTag.BBB_SAV_DMICTSTMCMI_ANS;
+    }
+
+    @Override
+    protected String buildAdditionalInfo() {
+        String date = ValidationProcessUtils.getFormattedDate(timestamp.getProductionTime());
+        return i18nProvider.getMessage(MessageTag.TIMESTAMP_VALIDATION,
+                ValidationProcessUtils.getTimestampTypeMessageTag(timestamp.getType()), timestamp.getId(), date);
     }
 
     @Override

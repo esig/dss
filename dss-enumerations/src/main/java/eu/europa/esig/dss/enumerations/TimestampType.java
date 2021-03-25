@@ -96,6 +96,15 @@ public enum TimestampType {
 	}
 
 	/**
+	 * Checks if the timestamp type is a document timestamp (used for PAdES)
+	 *
+	 * @return TRUE if the type is a document timestamp, FALSE otherwise
+	 */
+	public boolean isDocumentTimestamp() {
+		return DOCUMENT_TIMESTAMP == this;
+	}
+
+	/**
 	 * Checks if the timestamp type is an archive timestamp
 	 * 
 	 * @return TRUE if the type is an archive timestamp, FALSE otherwise
