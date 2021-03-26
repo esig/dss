@@ -53,7 +53,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.AcceptableBasicTim
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.MessageImprintDigestAlgorithmValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastTimestampValidation;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastTimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
 
 import java.util.Comparator;
@@ -345,7 +345,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastTimestampValidation(TimestampWrapper timestamp, XmlPSV xmlPSV) {
-		return new PastTimestampValidation(i18nProvider, result, xmlPSV, timestamp, getWarnLevelConstraint());
+		return new PastTimestampValidationCheck(i18nProvider, result, xmlPSV, timestamp, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> messageImprintDigestAlgorithm(

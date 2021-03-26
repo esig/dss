@@ -36,7 +36,7 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 /**
  * Checks if timestamp's past validation is acceptable
  */
-public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchivalData> {
+public class PastTimestampValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
 
 	/** The validated timestamp */
 	private TimestampWrapper timestamp;
@@ -62,8 +62,8 @@ public class PastTimestampValidation extends ChainItem<XmlValidationProcessArchi
 	 * @param timestamp {@link TimestampWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public PastTimestampValidation(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, XmlPSV xmlPSV,
-								   TimestampWrapper timestamp, LevelConstraint constraint) {
+	public PastTimestampValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, XmlPSV xmlPSV,
+										TimestampWrapper timestamp, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, timestamp.getId() + PSV_BLOCK_SUFFIX);
 		this.timestamp = timestamp;
 		this.xmlPSV = xmlPSV;
