@@ -25,6 +25,7 @@ import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
@@ -242,7 +243,9 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 				float width = dimensionAndPosition.getImageWidth();
 				float height = dimensionAndPosition.getImageHeight();
 
-				cs.drawImage(imageXObject, xAxis, yAxis, width, height);
+				AnnotationBox imgBox = ImageUtils.adjustImageBox(parameters,
+						imageXObject.getWidth(), imageXObject.getHeight(), xAxis, yAxis, width, height);
+				cs.drawImage(imageXObject, imgBox.getMinX(), imgBox.getMinY(), imgBox.getWidth(), imgBox.getHeight());
 				cs.transform(Matrix.getRotateInstance(
 						((double) 360 - ImageRotationUtils.getRotation(parameters.getRotation())), width, height));
 

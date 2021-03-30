@@ -438,4 +438,96 @@ public class ImageUtils {
 		return diffAmount;
 	}
 
+	public static String IMAGE_PLACING_MODE = "fill";
+
+	/**
+	 * Adjusts the coordinates of an image box so that an image with the
+	 * given dimensions may fit in it by being stretched, scaled or
+	 * centered, according to the placing behaviour specified in
+	 * {@code imageParameters}.
+	 *
+	 * @param imageParameters the signature image parameters
+	 * @param imageWidth the width of the image to fit
+	 * @param imageHeight the heigth of the image to fit
+	 * @param xAxis the lower left X coordinate of the image box
+	 * @param yAxis the lower left Y coordinate of the image box
+	 * @param width the width of the image box
+	 * @param height the height of the image box
+	 * @return a new image box that respects the placing behaviour specified
+	 * in {@code imageParameters}
+	 */
+	public static AnnotationBox adjustImageBox(SignatureImageParameters imageParameters,
+		int imageWidth, int imageHeight, float xAxis, float yAxis, float width, float height) {
+		switch (IMAGE_PLACING_MODE) {
+			case "fill":
+				return new AnnotationBox(xAxis, yAxis, xAxis + width, yAxis + height);
+			case "scale and center":
+				return scaleAndCenter(imageWidth, imageHeight, xAxis, yAxis, width, height);
+			case "center":
+				if (imageWidth > width || imageHeight > height) {
+					return scaleAndCenter(imageWidth, imageHeight, xAxis, yAxis, width, height);
+				} else {
+					return center(imageWidth, imageHeight, xAxis, yAxis, width, height);
+				}
+			default:
+				throw new DSSException("Image placing mode not supported");
+		}
+	}
+
+	/**
+	 * Scales and centers an image with the given dimensions into a given
+	 * image box. The returned image box will occupy as much as possible of
+	 * the original image box while maitaining the aspect ratio of the
+	 * original image.
+	 *
+	 * @param imageWidth the width of the image to fit
+	 * @param imageHeight the heigth of the image to fit
+	 * @param xAxis the lower left X coordinate of the image box
+	 * @param yAxis the lower left Y coordinate of the image box
+	 * @param width the width of the image box
+	 * @param height the height of the image box
+	 * @return a new image box that is scaled and centered to fit the
+	 * original image box
+	 */
+	public static AnnotationBox scaleAndCenter(int imageWidth, int imageHeight, float xAxis, float yAxis, float width, float height) {
+		double imageRatio = imageWidth / (double) imageHeight;
+		double boxRatio = width / (double) height;
+
+		int scaledWidth, scaledHeight;
+		if (imageRatio < boxRatio) {
+			scaledHeight = (int) height;
+			scaledWidth = (int) (height * imageRatio);
+		} else {
+			scaledWidth = (int) width;
+			scaledHeight = (int) (width / imageRatio);
+		}
+
+		return center(scaledWidth, scaledHeight, xAxis, yAxis, width, height);
+	}
+
+	/**
+	 * Centers an image with the given dimensions into a given image box.
+	 * The returned image box will have the exact same dimensions as the
+	 * original image while being centered in the original image
+	 * box.<br><br>
+	 * NOTE: This method does not validate dimensions thus, if the original
+	 * image is larger than than the original image box, the resulting image
+	 * box will have it's borders outside of the original image box.
+	 *
+	 * @param imageWidth the width of the image to fit
+	 * @param imageHeight the heigth of the image to fit
+	 * @param xAxis the lower left X coordinate of the image box
+	 * @param yAxis the lower left Y coordinate of the image box
+	 * @param width the width of the image box
+	 * @param height the height of the image box
+	 * @return a new image box that is centered to fit the original image
+	 * box
+	 */
+	public static AnnotationBox center(int imageWidth, int imageHeight, float xAxis, float yAxis, float width, float height) {
+		float centeredX = xAxis + (width - imageWidth) / 2f;
+		float centeredY = yAxis + (height - imageHeight) / 2f;
+
+		return new AnnotationBox(centeredX, centeredY, centeredX + imageWidth, centeredY + imageHeight);
+	}
+
 }
