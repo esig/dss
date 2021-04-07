@@ -47,15 +47,6 @@ public class DetailedReportXmlDefinerTest {
 	}
 
 	@Test
-	public void getHtmlBootstrap3Templates() throws IOException, TransformerConfigurationException {
-		Templates htmlTemplates = DetailedReportXmlDefiner.getHtmlBootstrap3Templates();
-		assertNotNull(htmlTemplates);
-		assertNotNull(htmlTemplates.newTransformer());
-
-		assertNotNull(DetailedReportXmlDefiner.getHtmlBootstrap3Templates());
-	}
-
-	@Test
 	public void getHtmlBootstrap4Templates() throws IOException, TransformerConfigurationException {
 		Templates htmlTemplates = DetailedReportXmlDefiner.getHtmlBootstrap4Templates();
 		assertNotNull(htmlTemplates);

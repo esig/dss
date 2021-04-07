@@ -40,20 +40,19 @@ public class StylesheetSnippet {
 		XmlSimpleReport xmlSimpleReport = new XmlSimpleReport();
 		try {
 			// tag::demo[]
-			String bootstrap3Report = SimpleReportFacade.newFacade().generateHtmlBootstrap3Report(xmlSimpleReport);
+			String bootstrap4Report = SimpleReportFacade.newFacade().generateHtmlReport(xmlSimpleReport);
 			// end::demo[]
 		} catch (Exception e) {
 			// catch the exception
 		}
 		
-		
 		String simpleReport = null;
 		// tag::custom[]
 		try (Writer writer = new StringWriter()) {
-			Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
+			Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
 			// specify custom parameters if needed
 			transformer.transform(new StreamSource(new StringReader(simpleReport)), new StreamResult(writer));
-			String bootstrap3Report = writer.toString();
+			String bootstrap4Report = writer.toString();
 		} 
 		// end::custom[]
 		catch (Exception e) {

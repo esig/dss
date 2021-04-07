@@ -2282,15 +2282,17 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 
 === Report stylesheets
 
-The report modules (namely: `dss-simple-report-jaxb`, `dss-simple-certificate-report-jaxb` and `dss-detailed-report-jaxb`) contain two XSLT style sheets for final reports generation:
+The report modules (namely: `dss-simple-report-jaxb`, `dss-simple-certificate-report-jaxb` and `dss-detailed-report-jaxb`) contain two XSLT style sheets each for final reports generation:
 
- * Bootstrap 3 XSLT;
- * Bootstrap 4 XSLT.
+ * Bootstrap 4 XSLT for HTML report;
+ * PDF XSLT for PDF report.
+
+NOTE: Since DSS 5.9 only Bootstrap 4 XSLT is provided within the framework for HTML report generation.
  
-By default, in DSS since version 5.6 the style sheet for Bootstrap 4 is used. In order to generate a report with a selected style sheet you need to call a relevant method in a Facade class (see classes definition above):
+In order to generate a report with a selected style sheet you need to call a relevant method in a Facade class (see classes definition above):
 
 [source,java,indent=0]
-.Bootstrap 3 generation
+.HTML report generation
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/StylesheetSnippet.java[tags=demo]
 ----
@@ -2298,7 +2300,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Stylesheet
 Otherwise, in case if you need to customize the transformer, you can create a report by using an XmlDefiner:
 
 [source,java,indent=0]
-.Bootstrap 3 custom generation
+.Custom report generation
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/StylesheetSnippet.java[tags=custom]
 ----

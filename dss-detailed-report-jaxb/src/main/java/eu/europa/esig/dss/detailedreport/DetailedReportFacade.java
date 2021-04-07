@@ -126,64 +126,6 @@ public class DetailedReportFacade extends AbstractJaxbFacade<XmlDetailedReport> 
 	}
 
 	/**
-	 * Generates a Bootstrap 3 Detailed report
-	 *
-	 * @param detailedReport {@link XmlDetailedReport} JAXB report
-	 * @return {@link String} Bootstrap 4 HTML report
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 * @throws JAXBException if an JAXBException occurs
-	 */
-	public String generateHtmlBootstrap3Report(XmlDetailedReport detailedReport) throws IOException, TransformerException, JAXBException {
-		try (StringWriter stringWriter = new StringWriter()) {
-			generateHtmlBootstrap3Report(detailedReport, new StreamResult(stringWriter));
-			return stringWriter.toString();
-		}
-	}
-
-	/**
-	 * Generates a Bootstrap 3 Detailed report and writes to {@code result}
-	 *
-	 * @param detailedReport {@link XmlDetailedReport} JAXB report
-	 * @param result {@link Result} to embed the report to
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 * @throws JAXBException if an JAXBException occurs
-	 */
-	public void generateHtmlBootstrap3Report(XmlDetailedReport detailedReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = DetailedReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
-		transformer.transform(new JAXBSource(getJAXBContext(), wrap(detailedReport)), result);
-	}
-
-	/**
-	 * Generates a Bootstrap 3 Detailed report from a string
-	 *
-	 * @param marshalledDetailedReport {@link String} the marshalled detailed report
-	 * @return {@link String} Bootstrap 4 HTML report
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 */
-	public String generateHtmlBootstrap3Report(String marshalledDetailedReport) throws IOException, TransformerException {
-		try (StringWriter stringWriter = new StringWriter()) {
-			generateHtmlBootstrap3Report(marshalledDetailedReport, new StreamResult(stringWriter));
-			return stringWriter.toString();
-		}
-	}
-
-	/**
-	 * Generates a Bootstrap 3 Detailed report from a string and writes to {@code result}
-	 *
-	 * @param marshalledDetailedReport {@link String} the marshalled detailed report
-	 * @param result {@link Result} to embed the report to
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 */
-	public void generateHtmlBootstrap3Report(String marshalledDetailedReport, Result result) throws IOException, TransformerException {
-		Transformer transformer = DetailedReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
-		transformer.transform(new StreamSource(new StringReader(marshalledDetailedReport)), result);
-	}
-
-	/**
 	 * Generates a PDF Detailed report
 	 *
 	 * @param detailedReport {@link XmlDetailedReport} JAXB report

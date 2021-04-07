@@ -124,64 +124,6 @@ public class SimpleCertificateReportFacade extends AbstractJaxbFacade<XmlSimpleC
 		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
 		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
 	}
-
-    /**
-     * Generates a Bootstrap 3 Simple Certificate report
-	 *
-	 * @param simpleCertificateReport {@link XmlSimpleCertificateReport}
-	 * @return {@link String}
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 * @throws JAXBException if an JAXBException occurs
-     */
-	public String generateHtmlBootstrap3Report(XmlSimpleCertificateReport simpleCertificateReport) throws IOException, TransformerException, JAXBException {
-		try (StringWriter stringWriter = new StringWriter()) {
-			generateHtmlBootstrap3Report(simpleCertificateReport, new StreamResult(stringWriter));
-			return stringWriter.toString();
-		}
-	}
-
-	/**
-	 * Generates a Bootstrap 3 Simple Certificate report
-	 *
-	 * @param simpleCertificateReport {@link XmlSimpleCertificateReport}
-	 * @param result {@link Result} to write the report into
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 * @throws JAXBException if an JAXBException occurs
-	 */
-	public void generateHtmlBootstrap3Report(XmlSimpleCertificateReport simpleCertificateReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
-		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleCertificateReport)), result);
-	}
-
-	/**
-	 * Generates a Bootstrap 3 Simple Certificate report
-	 *
-	 * @param marshalledSimpleCertificateReport {@link String} marshalled report
-	 * @return {@link String}
-	 * @throws IOException if IOException occurs
-	 * @throws TransformerException if TransformerException occurs
-	 */
-	public String generateHtmlBootstrap3Report(String marshalledSimpleCertificateReport) throws IOException, TransformerException {
-		try (StringWriter stringWriter = new StringWriter()) {
-			generateHtmlBootstrap3Report(marshalledSimpleCertificateReport, new StreamResult(stringWriter));
-			return stringWriter.toString();
-		}
-	}
-
-	/**
-	 * Generates a Bootstrap 3 Simple Certificate report
-	 *
-	 * @param marshalledSimpleCertificateReport {@link String} marshalled report
-	 * @param result {@link Result} to write the report into
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 */
-	public void generateHtmlBootstrap3Report(String marshalledSimpleCertificateReport, Result result) throws IOException, TransformerException {
-		Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
-		transformer.transform(new StreamSource(new StringReader(marshalledSimpleCertificateReport)), result);
-	}
 	
     /**
      * Generates a PDF Detailed report

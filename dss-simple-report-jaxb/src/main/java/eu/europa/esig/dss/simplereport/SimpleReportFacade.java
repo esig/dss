@@ -126,64 +126,6 @@ public class SimpleReportFacade extends AbstractJaxbFacade<XmlSimpleReport> {
 	}
 
 	/**
-	 * Generates a Bootstrap 3 Simple report
-	 *
-	 * @param simpleReport {@link XmlSimpleReport}
-	 * @return {@link String}
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 * @throws JAXBException if an JAXBException occurs
-	 */
-	public String generateHtmlBootstrap3Report(XmlSimpleReport simpleReport) throws IOException, TransformerException, JAXBException {
-		try (StringWriter stringWriter = new StringWriter()) {
-			generateHtmlBootstrap3Report(simpleReport, new StreamResult(stringWriter));
-			return stringWriter.toString();
-		}
-	}
-
-	/**
-	 * Generates a Bootstrap 3 Simple report
-	 *
-	 * @param simpleReport {@link XmlSimpleReport}
-	 * @param result {@link Result} to write the report into
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 * @throws JAXBException if an JAXBException occurs
-	 */
-	public void generateHtmlBootstrap3Report(XmlSimpleReport simpleReport, Result result) throws IOException, TransformerException, JAXBException {
-		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
-		transformer.transform(new JAXBSource(getJAXBContext(), wrap(simpleReport)), result);
-	}
-
-	/**
-	 * Generates a Bootstrap 3 Simple report
-	 *
-	 * @param marshalledSimpleReport {@link String} marshalled report
-	 * @return {@link String}
-	 * @throws IOException if IOException occurs
-	 * @throws TransformerException if TransformerException occurs
-	 */
-	public String generateHtmlBootstrap3Report(String marshalledSimpleReport) throws IOException, TransformerException {
-		try (StringWriter stringWriter = new StringWriter()) {
-			generateHtmlBootstrap3Report(marshalledSimpleReport, new StreamResult(stringWriter));
-			return stringWriter.toString();
-		}
-	}
-
-	/**
-	 * Generates a Bootstrap 3 Simple report
-	 *
-	 * @param marshalledSimpleReport {@link String} marshalled report
-	 * @param result {@link Result} to write the report into
-	 * @throws IOException if an IOException occurs
-	 * @throws TransformerException if an TransformerException occurs
-	 */
-	public void generateHtmlBootstrap3Report(String marshalledSimpleReport, Result result) throws IOException, TransformerException {
-		Transformer transformer = SimpleReportXmlDefiner.getHtmlBootstrap3Templates().newTransformer();
-		transformer.transform(new StreamSource(new StringReader(marshalledSimpleReport)), result);
-	}
-
-	/**
 	 * Generates a PDF Simple report
 	 *
 	 * @param simpleReport {@link XmlSimpleReport}

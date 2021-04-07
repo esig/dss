@@ -41,9 +41,13 @@ import java.io.InputStream;
  */
 public final class DetailedReportXmlDefiner {
 
+	/** The XSD Detailed Report schema */
 	private static final String DETAILED_REPORT_SCHEMA_LOCATION = "/xsd/DetailedReport.xsd";
-	private static final String DETAILED_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/detailed-report.xslt";
+
+	/** The XSLT for Bootstrap 4 HTML generation path */
 	private static final String DETAILED_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/detailed-report-bootstrap4.xslt";
+
+	/** The XSLT for PDF detailed report generation path */
 	private static final String DETAILED_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/detailed-report.xslt";
 
 	private DetailedReportXmlDefiner() {
@@ -65,13 +69,6 @@ public final class DetailedReportXmlDefiner {
 	 * NOTE: Thread-safe
 	 */
 	private static Schema schema;
-
-	/**
-	 * The cached Bootstrap 3 HTML template
-	 *
-	 * NOTE: Thread-safe
-	 */
-	private static Templates htmlBootstrap3Templates;
 
 	/**
 	 * The cached Bootstrap 4 HTML template
@@ -115,20 +112,6 @@ public final class DetailedReportXmlDefiner {
 			}
 		}
 		return schema;
-	}
-
-	/**
-	 * Gets the HTML Bootstrap 3 template
-	 *
-	 * @return {@link Templates}
-	 * @throws TransformerConfigurationException if an TransformerConfigurationException occurs
-	 * @throws IOException if an IOException occurs
-	 */
-	public static Templates getHtmlBootstrap3Templates() throws TransformerConfigurationException, IOException {
-		if (htmlBootstrap3Templates == null) {
-			htmlBootstrap3Templates = loadTemplates(DETAILED_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION);
-		}
-		return htmlBootstrap3Templates;
 	}
 
 	/**

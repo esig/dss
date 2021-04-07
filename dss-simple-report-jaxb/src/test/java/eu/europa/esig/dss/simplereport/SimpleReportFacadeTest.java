@@ -58,9 +58,6 @@ public class SimpleReportFacadeTest {
 
 		String htmlReport = facade.generateHtmlReport(simpleReport);
 		assertNotNull(htmlReport);
-
-		htmlReport = facade.generateHtmlBootstrap3Report(simpleReport);
-		assertNotNull(htmlReport);
 	}
 
 }

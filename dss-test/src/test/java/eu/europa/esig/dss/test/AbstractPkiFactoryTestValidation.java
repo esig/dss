@@ -1615,23 +1615,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			fail(message);
 		}
 
-		/* Bootstrap 3 Simple Report */
-		try {
-			assertNotNull(simpleReportFacade.generateHtmlBootstrap3Report(marshalledSimpleReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
-			assertNotNull(simpleReportFacade.generateHtmlBootstrap3Report(reports.getSimpleReportJaxb()));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
 		/* PDF Simple Report */
 		try (StringWriter sw = new StringWriter()) {
 			simpleReportFacade.generatePdfReport(marshalledSimpleReport, new StreamResult(sw));
@@ -1674,23 +1657,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		try {
 			assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		/* Bootstrap 3 Detailed Report */
-		try {
-			assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(marshalledDetailedReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
-			assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(reports.getDetailedReportJaxb()));
 		} catch (Exception e) {
 			String message = "Unable to generate the html detailed report from the jaxb source";
 			LOG.error(message, e);

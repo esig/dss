@@ -69,16 +69,12 @@ public class CertificateValidatorTest {
 		assertNotNull(marshalled);
 		assertNotNull(simpleCertificateReportFacade.generateHtmlReport(marshalled));
 		assertNotNull(simpleCertificateReportFacade.generateHtmlReport(reports.getSimpleReportJaxb()));
-		assertNotNull(simpleCertificateReportFacade.generateHtmlBootstrap3Report(marshalled));
-		assertNotNull(simpleCertificateReportFacade.generateHtmlBootstrap3Report(reports.getSimpleReportJaxb()));
 
 		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
 		String marshalledDetailedReport = detailedReportFacade.marshall(reports.getDetailedReportJaxb(), true);
 		assertNotNull(marshalledDetailedReport);
 		assertNotNull(detailedReportFacade.generateHtmlReport(marshalledDetailedReport));
 		assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
-		assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(marshalledDetailedReport));
-		assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(reports.getDetailedReportJaxb()));
 	}
 
 	@Test
