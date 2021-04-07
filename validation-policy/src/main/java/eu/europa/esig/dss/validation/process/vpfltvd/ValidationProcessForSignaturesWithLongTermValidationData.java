@@ -701,4 +701,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		collectAllMessages(conclusion, xmlBasicBuildingBlocks.getConclusion());
 	}
 
+	@Override
+	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		if (!ValidationProcessUtils.isAllowedBasicSignatureValidation(basicSignatureValidation.getConclusion())) {
+			super.collectAllMessages(conclusion, basicSignatureValidation.getConclusion());
+		}
+	}
+
 }

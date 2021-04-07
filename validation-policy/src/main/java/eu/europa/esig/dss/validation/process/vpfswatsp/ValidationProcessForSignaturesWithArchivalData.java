@@ -409,4 +409,11 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		}
 	}
 
+	@Override
+	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		if (!ValidationProcessUtils.isAllowedValidationWithLongTermData(validationProcessLongTermData.getConclusion())) {
+			super.collectAllMessages(conclusion, validationProcessLongTermData.getConclusion());
+		}
+	}
+
 }

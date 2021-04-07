@@ -704,7 +704,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(timestampProductionDate, bestSignatureTime);
 
 		List<Message> errors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
-		assertEquals(6, errors.size());
+		assertEquals(4, errors.size());
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -817,6 +817,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		List<Message> errors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
 		assertTrue(checkMessageValuePresence(errors, i18nProvider.getMessage(MessageTag.BBB_CV_IAFS_ANS)));
+		assertFalse(checkMessageValuePresence(errors, i18nProvider.getMessage(MessageTag.LTV_ABSV_ANS)));
+		assertFalse(checkMessageValuePresence(errors, i18nProvider.getMessage(MessageTag.ARCH_LTVV_ANS)));
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -1452,8 +1454,10 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_CV_IRDOI_ANS)));
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.LTV_ABSV_ANS)));
-		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.ARCH_LTVV_ANS)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
@@ -4258,11 +4262,11 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				i18nProvider.getMessage(MessageTag.BBB_XCV_OCSP_NO_CHECK_ANS)));
 
 		XmlConstraintsConclusion highestConclusion = detailedReport.getHighestConclusion(detailedReport.getFirstSignatureId());
-		assertTrue(checkMessageValuePresence(convert(highestConclusion.getConclusion().getErrors()),
+		assertFalse(checkMessageValuePresence(convert(highestConclusion.getConclusion().getErrors()),
 				i18nProvider.getMessage(MessageTag.ARCH_LTVV_ANS)));
-		assertFalse(checkMessageValuePresence(convert(highestConclusion.getConclusion().getErrors()),
+		assertTrue(checkMessageValuePresence(convert(highestConclusion.getConclusion().getErrors()),
 				i18nProvider.getMessage(MessageTag.BBB_XCV_IRDPFC_ANS)));
-		assertFalse(checkMessageValuePresence(convert(highestConclusion.getConclusion().getErrors()),
+		assertTrue(checkMessageValuePresence(convert(highestConclusion.getConclusion().getWarnings()),
 				i18nProvider.getMessage(MessageTag.BBB_XCV_OCSP_NO_CHECK_ANS)));
 
 		SimpleReport simpleReport = reports.getSimpleReport();
@@ -4270,7 +4274,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				i18nProvider.getMessage(MessageTag.BBB_XCV_IRDPFC_ANS)));
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.BBB_XCV_OCSP_NO_CHECK_ANS)));
-		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.ARCH_LTVV_ANS)));
 
 	}
