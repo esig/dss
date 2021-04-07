@@ -33,7 +33,6 @@ import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -76,17 +75,7 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 	 * @param tlXmlDocument {@link DSSDocument} Trusted List XML document to be signed
 	 */
 	public TrustedListSignatureParametersBuilder(CertificateToken signingCertificate, DSSDocument tlXmlDocument) {
-		this(signingCertificate, new LinkedList<>(), tlXmlDocument);
-	}
-	/**
-	 * The default constructor to build Signature Parameters for a Trusted List signing with respect to ETSI TS 119 612
-	 * 
-	 * @param signingCertificate {@link CertificateToken} to be used for a signature creation
-	 * @param certificateChain a list of {@link CertificateToken}s representing a certificate chain
-	 * @param tlXmlDocument {@link DSSDocument} Trusted List XML document to be signed
-	 */
-	public TrustedListSignatureParametersBuilder(CertificateToken signingCertificate, List<CertificateToken> certificateChain, DSSDocument tlXmlDocument) {
-		super(signingCertificate, certificateChain);
+		super(signingCertificate);
 		this.tlXmlDocument = tlXmlDocument;
 	}
 

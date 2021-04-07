@@ -924,7 +924,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/XAdES132On
 
 === Sign a Trusted List
 
-The standard ETSI TS 119 612 specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization,...). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
+The standard ETSI TS 119 612 specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization, etc.). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
 
 [source,java,indent=0]
 .Sign a Trusted List with the TrustedListSignatureParametersBuilder
