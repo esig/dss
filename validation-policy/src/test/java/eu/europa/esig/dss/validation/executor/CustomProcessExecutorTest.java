@@ -725,7 +725,14 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(diagnosticData.getValidationDate(), bestSignatureTime);
 
 		List<Message> errors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
-		assertEquals(4, errors.size());
+		assertEquals(3, errors.size());
+
+		assertTrue(checkMessageValuePresence(errors,
+				i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_ANR, DigestAlgorithm.SHA1, MessageTag.ACCM_POS_SIG_SIG)));
+		assertTrue(checkMessageValuePresence(errors,
+				i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_ANR, DigestAlgorithm.SHA1, MessageTag.ACCM_POS_REVOC_SIG)));
+		assertTrue(checkMessageValuePresence(errors, i18nProvider.getMessage(MessageTag.BBB_CV_IRDOF_ANS)));
+		assertFalse(checkMessageValuePresence(errors, i18nProvider.getMessage(MessageTag.BBB_XCV_SUB_ANS)));
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -753,7 +760,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		Date bestSignatureTime = simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId());
 		assertEquals(validationDate, bestSignatureTime);
 
-		assertEquals(4, simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()).size());
+		assertEquals(3, simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()).size());
 		assertEquals(2, simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId())
 				.get(0).getAdESValidationDetails().getError().size());
 
