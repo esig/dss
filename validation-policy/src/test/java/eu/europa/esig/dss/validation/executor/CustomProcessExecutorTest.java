@@ -408,7 +408,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		List<Message> errors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
 		assertTrue(checkMessageValuePresence(errors, i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS)));
@@ -717,11 +717,12 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 		
 		Date timestampProductionDate = diagnosticData.getSignatures().get(0).getFoundTimestamps().get(0).getTimestamp().getProductionTime();
 		Date bestSignatureTime = simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId());
-		assertEquals(timestampProductionDate, bestSignatureTime);
+		assertNotEquals(timestampProductionDate, bestSignatureTime);
+		assertEquals(diagnosticData.getValidationDate(), bestSignatureTime);
 
 		List<Message> errors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
 		assertEquals(4, errors.size());
@@ -5533,6 +5534,77 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 		}
 		assertTrue(contentTstMessageImprintCheckFound);
+	}
+
+	@Test
+	public void validBLevelBestSignatureTimeTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data-lta.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlTimestamp signatureTst = xmlDiagnosticData.getUsedTimestamps().get(0);
+		XmlTimestamp arcTst = xmlDiagnosticData.getUsedTimestamps().get(1);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(signatureTst.getProductionTime(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+		assertNotEquals(arcTst.getProductionTime(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+		assertNotEquals(xmlDiagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void validBLevelBrokenSigTstBestSignatureTimeTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data-lta.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlTimestamp signatureTst = xmlDiagnosticData.getUsedTimestamps().get(0);
+		XmlTimestamp arcTst = xmlDiagnosticData.getUsedTimestamps().get(1);
+
+		signatureTst.getBasicSignature().setSignatureIntact(false);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertNotEquals(signatureTst.getProductionTime(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+		assertEquals(arcTst.getProductionTime(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+		assertNotEquals(xmlDiagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void validBLevelTwoBrokenTstsBestSignatureTimeTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data-lta.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlTimestamp signatureTst = xmlDiagnosticData.getUsedTimestamps().get(0);
+		XmlTimestamp arcTst = xmlDiagnosticData.getUsedTimestamps().get(1);
+
+		signatureTst.getBasicSignature().setSignatureIntact(false);
+		arcTst.getBasicSignature().setSignatureIntact(false);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertNotEquals(signatureTst.getProductionTime(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+		assertNotEquals(arcTst.getProductionTime(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+		assertEquals(xmlDiagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 	}
 
 	@Test
