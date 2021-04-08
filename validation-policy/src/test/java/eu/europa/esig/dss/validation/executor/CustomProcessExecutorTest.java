@@ -37,6 +37,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
@@ -325,10 +326,29 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				SignatureQualification.forURI(signatureValidationReport.getSignatureQuality().getSignatureQualityInformation().get(0)));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
-		
-		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures().get(0).getValidationProcessArchivalData();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(xmlSignature.getId());
+
+		XmlValidationProcessBasicSignature validationProcessBasicSignature = xmlSignature.getValidationProcessBasicSignature();
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
+
+		assertEquals(signatureBBB.getConclusion().getIndication(),
+				validationProcessArchivalData.getConclusion().getIndication());
+		assertEquals(signatureBBB.getConclusion().getSubIndication(),
+				validationProcessArchivalData.getConclusion().getSubIndication());
+		assertTrue(signatureBBB.getConclusion().getErrors().containsAll(
+				validationProcessBasicSignature.getConclusion().getErrors()));
+		assertTrue(signatureBBB.getConclusion().getWarnings().containsAll(
+				validationProcessBasicSignature.getConclusion().getWarnings()));
+
+		assertNotNull(signatureBBB.getPSV());
+		assertTrue(signatureBBB.getConclusion().getErrors().containsAll(
+				signatureBBB.getPSV().getConclusion().getErrors()));
+		assertTrue(signatureBBB.getConclusion().getWarnings().containsAll(
+				signatureBBB.getPSV().getConclusion().getWarnings()));
+
 		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
-		
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		
 		int basicValidationTSTPassedCounter = 0;

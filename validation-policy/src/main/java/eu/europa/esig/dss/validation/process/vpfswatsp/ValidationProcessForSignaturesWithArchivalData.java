@@ -154,16 +154,23 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * -- Otherwise, the SVA shall go to step 4.
 		 * - If the validation outputs one of the following indications/sub-indications:
 		 * INDETERMINATE/REVOKED_NO_POE, INDETERMINATE/REVOKED_CA_NO_POE,
-		 * INDETERMINATE/OUT_OF_BOUNDS_NO_POE or
+		 * INDETERMINATE/OUT_OF_BOUNDS_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED or
 		 * INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE, the long term validation process
 		 * shall go to the next step.
 		 * - In all other cases, the long term validation process shall fail with returned code and information.
 		 */
 		ChainItem<XmlValidationProcessArchivalData> item = firstItem = longTermValidation();
 		result.setProofOfExistence(validationProcessLongTermData.getProofOfExistence());
-		if (isValid(validationProcessLongTermData)) {
+
+		if (!ValidationProcessUtils.isAllowedValidationWithLongTermData(validationProcessLongTermData.getConclusion())) {
 			return;
 		}
+
+		/*
+		 * NOTE 5: Steps 4) and 5) below are not part of the validation process per se,
+		 * but are present to collect POEs for steps 6) and 7).
+		 */
+		// NOTE: we continue in order to obtain a proper best-signature-time
 		
 		/*
 		 * 4) The process shall add the best-signature-time returned in step 3 
@@ -232,7 +239,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 									poe, currentTime, policy, Context.TIMESTAMP);
 							XmlPSV psvResult = psv.execute();
 							bbbTsp.setPSV(psvResult);
-							bbbTsp.setConclusion(psvResult.getConclusion());
+							enrichBBBWithPSVConclusion(bbbTsp, psvResult);
 
 							item = item.setNextItem(pastTimestampValidation(newestTimestamp, psvResult));
 
@@ -278,6 +285,14 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 			
 		}
 
+		POE bestSignatureTime = poe.getLowestPOE(signature.getId());
+		result.setProofOfExistence(toXmlProofOfExistence(bestSignatureTime));
+
+		if (isValid(validationProcessLongTermData)) {
+			// skip past signature validation when basic validation succeeded
+			return;
+		}
+
 		/*
 		 * 6) Past signature validation: the long term validation process shall perform the past signature validation
 		 * process with the following inputs: the signature, the status indication/sub-indication returned in step 2,
@@ -286,14 +301,20 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * to the next step. Otherwise, the long term validation process shall return the indication/sub-indication and
 		 * associated explanations returned from the past signature validation process.
 		 */
-		item = item.setNextItem(pastSignatureValidation(currentContext));
-		
+		XmlBasicBuildingBlocks sigBBB = bbbs.get(signature.getId());
+		PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, signature, bbbs, poe, currentTime,
+				policy, currentContext);
+		XmlPSV psvResult = psv.execute();
+		sigBBB.setPSV(psvResult);
+		enrichBBBWithPSVConclusion(sigBBB, psvResult);
+
+		item = item.setNextItem(pastSignatureValidation(psvResult));
+
 		/*
 		 * 7) The SVA shall determine from the set of POEs the earliest time the existence of the signature can be proved
 		 */
-		POE bestSignatureTime = poe.getLowestPOE(signature.getId());
-		result.setProofOfExistence(toXmlProofOfExistence(bestSignatureTime));
-		
+		// done after step 5)
+
 		/*
 		 * 8) The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the following
 		 * inputs:
@@ -304,7 +325,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * is repeated here for the earliest time the signature is known to have existed to e.g. check if the algorithms
 		 * were reliable at that time. Signature elements constraints have already been dealt with in step 2 and need
 		 * not be rechecked.
-		 * If the signature acceptance validation process returns PASSED, the SVA shall go to the next step. 
+		 * If the signature acceptance validation process returns PASSED, the SVA shall go to the next step.
 		 */
 		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime.getTime(), currentContext));
 
@@ -323,9 +344,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	}
 
-	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(Context currentContext) {
-		return new PastSignatureValidationCheck(i18nProvider, result, signature, bbbs, poe, currentTime, policy,
-				currentContext, getFailLevelConstraint());
+	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(XmlPSV xmlPSV) {
+		return new PastSignatureValidationCheck(i18nProvider, result, signature, xmlPSV, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> longTermValidation() {
@@ -345,7 +365,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastTimestampValidation(TimestampWrapper timestamp, XmlPSV xmlPSV) {
-		return new PastTimestampValidationCheck(i18nProvider, result, xmlPSV, timestamp, getWarnLevelConstraint());
+		return new PastTimestampValidationCheck(i18nProvider, result, timestamp, xmlPSV, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> messageImprintDigestAlgorithm(
@@ -362,6 +382,16 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(i18nProvider, diagnosticData, bestSignatureTime, signature, context, policy);
 		XmlSAV savResult = sav.execute();
 		return new SignatureAcceptanceValidationResultCheck<>(i18nProvider, result, savResult, getFailLevelConstraint());
+	}
+
+	private void enrichBBBWithPSVConclusion(XmlBasicBuildingBlocks bbb, XmlPSV psv) {
+		XmlConclusion bbbConclusion = bbb.getConclusion();
+		XmlConclusion psvConclusion = psv.getConclusion();
+		bbbConclusion.setIndication(psvConclusion.getIndication());
+		bbbConclusion.setSubIndication(psvConclusion.getSubIndication());
+		bbbConclusion.getErrors().addAll(psvConclusion.getErrors());
+		bbbConclusion.getWarnings().addAll(psvConclusion.getWarnings());
+		bbbConclusion.getInfos().addAll(psvConclusion.getInfos());
 	}
 
 	private XmlProofOfExistence toXmlProofOfExistence(POE poe) {
