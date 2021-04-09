@@ -22,7 +22,6 @@ package eu.europa.esig.dss.validation.process.vpfbs.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -31,15 +30,12 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractBasicBuildingBlocksCheck;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * Validates signature's basic building blocks
  */
 public class SignatureBasicBuildingBlocksCheck extends AbstractBasicBuildingBlocksCheck<XmlValidationProcessBasicSignature> {
-
-	private final XmlBasicBuildingBlocks signatureBBB;
 
 	/**
 	 * Default constructor
@@ -55,7 +51,6 @@ public class SignatureBasicBuildingBlocksCheck extends AbstractBasicBuildingBloc
 											 DiagnosticData diagnosticData, XmlBasicBuildingBlocks signatureBBB,
 											 Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
 		super(i18nProvider, result, diagnosticData, signatureBBB, bbbs, constraint);
-		this.signatureBBB = signatureBBB;
 
 		result.setProofOfExistence(getCurrentTime(diagnosticData));
 	}
@@ -79,11 +74,6 @@ public class SignatureBasicBuildingBlocksCheck extends AbstractBasicBuildingBloc
 	@Override
 	protected MessageTag getErrorMessageTag() {
 		return MessageTag.ADEST_ROBVPIIC_ANS;
-	}
-
-	@Override
-	protected List<XmlMessage> getPreviousErrors() {
-		return signatureBBB.getConclusion().getErrors();
 	}
 
 }

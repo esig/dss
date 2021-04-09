@@ -51,6 +51,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -63,14 +64,17 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRoleOfPSP;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -725,14 +729,14 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(diagnosticData.getValidationDate(), bestSignatureTime);
 
 		List<Message> errors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
-		assertEquals(3, errors.size());
+		assertEquals(4, errors.size());
 
 		assertTrue(checkMessageValuePresence(errors,
 				i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_ANR, DigestAlgorithm.SHA1, MessageTag.ACCM_POS_SIG_SIG)));
 		assertTrue(checkMessageValuePresence(errors,
 				i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_ANR, DigestAlgorithm.SHA1, MessageTag.ACCM_POS_REVOC_SIG)));
 		assertTrue(checkMessageValuePresence(errors, i18nProvider.getMessage(MessageTag.BBB_CV_IRDOF_ANS)));
-		assertFalse(checkMessageValuePresence(errors, i18nProvider.getMessage(MessageTag.BBB_XCV_SUB_ANS)));
+		assertTrue(checkMessageValuePresence(errors, i18nProvider.getMessage(MessageTag.BBB_XCV_SUB_ANS)));
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -760,7 +764,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		Date bestSignatureTime = simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId());
 		assertEquals(validationDate, bestSignatureTime);
 
-		assertEquals(3, simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()).size());
+		assertEquals(4, simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()).size());
 		assertEquals(2, simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId())
 				.get(0).getAdESValidationDetails().getError().size());
 
@@ -5612,6 +5616,62 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotEquals(signatureTst.getProductionTime(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 		assertNotEquals(arcTst.getProductionTime(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
 		assertEquals(xmlDiagnosticData.getValidationDate(), simpleReport.getBestSignatureTime(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void multipleBBBErrorMessagesTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+		List<XmlChainItem> certificateChain = xmlSignature.getCertificateChain();
+		for (XmlChainItem chainItem : certificateChain) {
+			XmlCertificate certificate = chainItem.getCertificate();
+			certificate.setTrusted(false);
+			certificate.setSources(Arrays.asList(CertificateSourceType.OTHER));
+		}
+		xmlSignature.getBasicSignature().setSignatureIntact(false);
+		XmlStructuralValidation xmlStructuralValidation = new XmlStructuralValidation();
+		xmlStructuralValidation.setValid(false);
+		xmlSignature.setStructuralValidation(xmlStructuralValidation);
+
+		XmlTimestamp contentTst = xmlDiagnosticData.getUsedTimestamps().get(0);
+		contentTst.getBasicSignature().setSignatureIntact(false);
+
+		List<XmlRelatedCertificate> relatedCertificates = contentTst.getFoundCertificates().getRelatedCertificates();
+		for (XmlRelatedCertificate certificate : relatedCertificates) {
+			certificate.getCertificateRefs().clear();
+		}
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CRYPTO_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CCCBB_SIG_ANS)));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_SAV_ISSV_ANS)));
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp xmlTimestamp =
+				simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId()).get(0);
+
+		assertEquals(Indication.FAILED, xmlTimestamp.getIndication());
+		assertEquals(SubIndication.SIG_CRYPTO_FAILURE, xmlTimestamp.getSubIndication());
+		assertTrue(checkMessageValuePresence(convertMessages(xmlTimestamp.getAdESValidationDetails().getError()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CCCBB_TSP_ANS)));
+		assertTrue(checkMessageValuePresence(convertMessages(xmlTimestamp.getAdESValidationDetails().getError()),
+				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+		assertTrue(checkMessageValuePresence(convertMessages(xmlTimestamp.getAdESValidationDetails().getWarning()),
+				i18nProvider.getMessage(MessageTag.BBB_ICS_ISASCP_ANS)));
 	}
 
 	@Test

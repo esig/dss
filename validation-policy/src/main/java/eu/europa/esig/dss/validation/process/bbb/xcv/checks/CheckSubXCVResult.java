@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -30,9 +29,6 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Checks if the SubXCV validation result is valid
@@ -83,14 +79,6 @@ public class CheckSubXCVResult extends ChainItem<XmlXCV> {
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return subResult.getConclusion().getSubIndication();
-	}
-
-	@Override
-	protected List<XmlMessage> getPreviousErrors() {
-		if (subResult != null && subResult.getConclusion() != null) {
-			return subResult.getConclusion().getErrors();
-		}
-		return Collections.emptyList();
 	}
 
 }
