@@ -164,6 +164,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * be proven that a signature has existed.
 		 */
 		XmlProofOfExistence bestSignatureTime = getCurrentTime();
+		result.setProofOfExistence(bestSignatureTime);
 
 		/*
 		 * 2) Signature validation: the process shall perform the validation process for Basic Signatures as per
@@ -178,6 +179,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * process for Basic Signatures. 
 		 */
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
+
+		if (!ValidationProcessUtils.isAllowedBasicSignatureValidation(basicSignatureValidation.getConclusion())) {
+			return;
+		}
 		
 		/* Revocation BBBs analysis */
 		certificateRevocationMap = new LinkedHashMap<>();
@@ -699,6 +704,13 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		super.collectMessages(conclusion, constraint);
 		XmlBasicBuildingBlocks xmlBasicBuildingBlocks = bbbs.get(constraint.getId());
 		collectAllMessages(conclusion, xmlBasicBuildingBlocks.getConclusion());
+	}
+
+	@Override
+	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		if (!ValidationProcessUtils.isAllowedBasicSignatureValidation(basicSignatureValidation.getConclusion())) {
+			super.collectAllMessages(conclusion, basicSignatureValidation.getConclusion());
+		}
 	}
 
 }

@@ -98,6 +98,22 @@ public class ValidationProcessUtils {
 						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 						|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())));
 	}
+
+	/**
+	 * Checks if the given conclusion is allowed as a validation process with a long-term validation data
+	 * in order to continue the validation process with Archival Data
+	 *
+	 * @param conclusion {@link XmlConclusion} to validate
+	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
+	 */
+	public static boolean isAllowedValidationWithLongTermData(XmlConclusion conclusion) {
+		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
+					|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())));
+	}
 	
 	/**
 	 * Returns a revocation data used for basic signature validation

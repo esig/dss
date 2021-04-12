@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -28,6 +29,10 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Checks if the long-term validation check is acceptable
@@ -63,10 +68,7 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 			ltvIndication = longTermValidationResult.getConclusion().getIndication();
 			ltvSubIndication = longTermValidationResult.getConclusion().getSubIndication();
 
-			return Indication.PASSED.equals(ltvIndication) || (Indication.INDETERMINATE.equals(ltvIndication)
-					&& (SubIndication.REVOKED_NO_POE.equals(ltvSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(ltvSubIndication)
-							|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(ltvSubIndication) || SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(ltvSubIndication)
-							|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(ltvSubIndication)));
+			return ValidationProcessUtils.isAllowedValidationWithLongTermData(longTermValidationResult.getConclusion());
 		}
 		return false;
 	}
@@ -89,6 +91,14 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return ltvSubIndication;
+	}
+
+	@Override
+	protected List<XmlMessage> getPreviousErrors() {
+		if (longTermValidationResult != null && longTermValidationResult.getConclusion() != null) {
+			return longTermValidationResult.getConclusion().getErrors();
+		}
+		return Collections.emptyList();
 	}
 
 }

@@ -21,15 +21,20 @@
 package eu.europa.esig.dss.validation.process.vpftsp;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.vpftsp.checks.TimestampBasicBuildingBlocksCheck;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -85,6 +90,21 @@ public class ValidationProcessForTimeStamp extends Chain<XmlValidationProcessTim
 			throw new IllegalStateException(String.format("Missing Basic Building Blocks result for token '%s'", timestamp.getId()));
 		}
 		return new TimestampBasicBuildingBlocksCheck(i18nProvider, result, diagnosticData, timestampBBB, bbbs, getFailLevelConstraint());
+	}
+
+	@Override
+	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+		super.collectMessages(conclusion, constraint);
+
+		XmlBasicBuildingBlocks timestampBBB = bbbs.get(timestamp.getId());
+		List<XmlMessage> warnings = timestampBBB.getConclusion().getWarnings();
+		if (Utils.isCollectionNotEmpty(warnings)) {
+			conclusion.getWarnings().addAll(warnings);
+		}
+		List<XmlMessage> infos = timestampBBB.getConclusion().getInfos();
+		if (Utils.isCollectionNotEmpty(infos)) {
+			conclusion.getInfos().addAll(infos);
+		}
 	}
 
 }

@@ -42,7 +42,6 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -68,9 +67,6 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 
 	/** The validation subIndication */
 	private SubIndication subIndication;
-
-	/** List of errors */
-	private final List<XmlMessage> errors = new ArrayList<>();
 
 	/**
 	 * Default constructor
@@ -109,7 +105,6 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			if (!Indication.PASSED.equals(fcConclusion.getIndication())) {
 				indication = Indication.FAILED;
 				subIndication = SubIndication.FORMAT_FAILURE;
-				errors.addAll(fcConclusion.getErrors());
 				return false;
 			}
 		}
@@ -129,7 +124,6 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 				&& SubIndication.NO_SIGNING_CERTIFICATE_FOUND.equals(iscConclusion.getSubIndication())) {
 			indication = iscConclusion.getIndication();
 			subIndication = iscConclusion.getSubIndication();
-			errors.addAll(iscConclusion.getErrors());
 			return false;
 		}
 
@@ -146,7 +140,6 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 			if (Indication.INDETERMINATE.equals(vciConclusion.getIndication())) {
 				indication = vciConclusion.getIndication();
 				subIndication = vciConclusion.getSubIndication();
-				errors.addAll(vciConclusion.getErrors());
 				return false;
 			}
 		}
@@ -190,7 +183,6 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 
 			x509ValidationStatus.setIndication(xcvConclusion.getIndication());
 			x509ValidationStatus.setSubIndication(xcvConclusion.getSubIndication());
-			errors.addAll(xcvConclusion.getErrors());
 
 			if (Indication.INDETERMINATE.equals(xcvConclusion.getIndication()) && SubIndication.REVOKED_NO_POE.equals(xcvConclusion.getSubIndication())) {
 				SignatureWrapper currentSignature = diagnosticData.getSignatureById(tokenBBBs.getId());
@@ -278,7 +270,6 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 		} else {
 			indication = cvConclusion.getIndication();
 			subIndication = cvConclusion.getSubIndication();
-			errors.addAll(cvConclusion.getErrors());
 			return false;
 		}
 
@@ -342,13 +333,11 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 
 			indication = Indication.INDETERMINATE;
 			subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE;
-			errors.addAll(savConclusion.getErrors());
 			return false;
 
 		} else if (!Indication.PASSED.equals(savConclusion.getIndication())) {
 			indication = savConclusion.getIndication();
 			subIndication = savConclusion.getSubIndication();
-			errors.addAll(savConclusion.getErrors());
 			return false;
 		}
 
@@ -409,7 +398,7 @@ public abstract class AbstractBasicBuildingBlocksCheck<T extends XmlConstraintsC
 
 	@Override
 	protected List<XmlMessage> getPreviousErrors() {
-		return errors;
+		return tokenBBBs.getConclusion().getErrors();
 	}
 
 }

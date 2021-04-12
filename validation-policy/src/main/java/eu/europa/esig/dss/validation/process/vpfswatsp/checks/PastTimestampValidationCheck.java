@@ -36,52 +36,29 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 /**
  * Checks if timestamp's past validation is acceptable
  */
-public class PastTimestampValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
+public class PastTimestampValidationCheck extends AbstractPastTokenValidationCheck {
 
 	/** The validated timestamp */
 	private TimestampWrapper timestamp;
-
-	/** Past signature validation */
-	private XmlPSV xmlPSV;
-
-	/** Current Indication */
-	private Indication indication;
-
-	/** Current SubIndication */
-	private SubIndication subIndication;
-
-	/** Past signature validation suffic */
-	private static final String PSV_BLOCK_SUFFIX = "-PSV";
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationProcessArchivalData}
-	 * @param xmlPSV {@link XmlPSV}
 	 * @param timestamp {@link TimestampWrapper}
+	 * @param xmlPSV {@link XmlPSV}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public PastTimestampValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, XmlPSV xmlPSV,
-										TimestampWrapper timestamp, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint, timestamp.getId() + PSV_BLOCK_SUFFIX);
+	public PastTimestampValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
+										TimestampWrapper timestamp, XmlPSV xmlPSV, LevelConstraint constraint) {
+		super(i18nProvider, result, timestamp, xmlPSV, constraint);
 		this.timestamp = timestamp;
-		this.xmlPSV = xmlPSV;
 	}
 
 	@Override
 	protected XmlBlockType getBlockType() {
 		return XmlBlockType.TST_PSV;
-	}
-
-	@Override
-	protected boolean process() {
-		if (!isValid(xmlPSV)) {
-			indication = xmlPSV.getConclusion().getIndication();
-			subIndication = xmlPSV.getConclusion().getSubIndication();
-			return false;
-		}
-		return true;
 	}
 
 	@Override
@@ -99,16 +76,6 @@ public class PastTimestampValidationCheck extends ChainItem<XmlValidationProcess
 		String date = ValidationProcessUtils.getFormattedDate(timestamp.getProductionTime());
 		return i18nProvider.getMessage(MessageTag.TIMESTAMP_VALIDATION,
 				ValidationProcessUtils.getTimestampTypeMessageTag(timestamp.getType()), timestamp.getId(), date);
-	}
-
-	@Override
-	protected Indication getFailedIndicationForConclusion() {
-		return indication;
-	}
-
-	@Override
-	protected SubIndication getFailedSubIndicationForConclusion() {
-		return subIndication;
 	}
 
 }

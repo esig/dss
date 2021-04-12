@@ -20,53 +20,21 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
-
-import java.util.Date;
-import java.util.Map;
 
 /**
  * Checks if the past signature validation result is acceptable
  */
-public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
-
-	/** The validated signature */
-	private final SignatureWrapper signature;
-
-	/** Map of all BBBs */
-	private final Map<String, XmlBasicBuildingBlocks> bbbs;
-
-	/** POE container */
-	private final POEExtraction poe;
-
-	/** Validation time */
-	private final Date currentTime;
-
-	/** Validation policy */
-	private final ValidationPolicy policy;
-
-	/** Validation context */
-	private final Context context;
-
-	/** Indication */
-	private Indication indication;
-
-	/** SubIndication */
-	private SubIndication subIndication;
+public class PastSignatureValidationCheck extends AbstractPastTokenValidationCheck {
 
 	/**
 	 * Default constructor
@@ -74,47 +42,17 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationProcessArchivalData}
 	 * @param signature {@link SignatureWrapper}
-	 * @param bbbs map of all BBBs
-	 * @param poe {@link POEExtraction}
-	 * @param currentTime {@link Date}
-	 * @param policy {@link ValidationPolicy}
-	 * @param context {@link Context}
+	 * @param xmlPSV {@link XmlPSV}
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public PastSignatureValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
-										SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs,
-										POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context,
-										LevelConstraint constraint) {
-		super(i18nProvider, result, constraint, signature.getId());
-
-		this.signature = signature;
-		this.bbbs = bbbs;
-		this.poe = poe;
-		this.currentTime = currentTime;
-		this.policy = policy;
-		this.context = context;
+										SignatureWrapper signature, XmlPSV xmlPSV, LevelConstraint constraint) {
+		super(i18nProvider, result, signature, xmlPSV, constraint);
 	}
 
 	@Override
 	protected XmlBlockType getBlockType() {
 		return XmlBlockType.PSV;
-	}
-
-	@Override
-	protected boolean process() {
-		XmlBasicBuildingBlocks tokenBBB = bbbs.get(signature.getId());
-		PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, signature, bbbs, poe, currentTime, policy, context);
-		XmlPSV psvResult = psv.execute();
-		tokenBBB.setPSV(psvResult);
-		tokenBBB.setConclusion(psvResult.getConclusion());
-
-		if (isValid(psvResult)) {
-			return true;
-		} else {
-			indication = psvResult.getConclusion().getIndication();
-			subIndication = psvResult.getConclusion().getSubIndication();
-			return false;
-		}
 	}
 
 	@Override
@@ -125,16 +63,6 @@ public class PastSignatureValidationCheck extends ChainItem<XmlValidationProcess
 	@Override
 	protected MessageTag getErrorMessageTag() {
 		return MessageTag.PSV_IPSVC_ANS;
-	}
-
-	@Override
-	protected Indication getFailedIndicationForConclusion() {
-		return indication;
-	}
-
-	@Override
-	protected SubIndication getFailedSubIndicationForConclusion() {
-		return subIndication;
 	}
 
 }
