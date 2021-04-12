@@ -39,8 +39,10 @@ import java.util.stream.Collectors;
 
 /**
  * Checks if a signing certificate reference is present and valid
+ * (all signingCertificate references refer the signature certificate chain)
+ *
  */
-public class SigningCertificateReferenceCheck extends ChainItem<XmlSAV> {
+public class SigningCertificateReferencesValidityCheck extends ChainItem<XmlSAV> {
 
 	/** The signature to check */
 	private final SignatureWrapper signature;
@@ -53,8 +55,8 @@ public class SigningCertificateReferenceCheck extends ChainItem<XmlSAV> {
 	 * @param signature {@link SignatureWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public SigningCertificateReferenceCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
-											LevelConstraint constraint) {
+	public SigningCertificateReferencesValidityCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+													 LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 	}

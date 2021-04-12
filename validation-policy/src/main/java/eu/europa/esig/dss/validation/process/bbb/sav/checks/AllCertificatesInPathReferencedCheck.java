@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 /**
  * Checks if all certificates in the path have the corresponding signing certificate references
  */
-public class CertificatePathCheck extends ChainItem<XmlSAV> {
+public class AllCertificatesInPathReferencedCheck extends ChainItem<XmlSAV> {
 
 	/** The signature to check */
 	private final SignatureWrapper signature;
@@ -51,8 +51,8 @@ public class CertificatePathCheck extends ChainItem<XmlSAV> {
 	 * @param signature {@link SignatureWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public CertificatePathCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
-								LevelConstraint constraint) {
+	public AllCertificatesInPathReferencedCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+												LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 	}

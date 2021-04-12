@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -32,7 +32,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Checks if the only one reference to the signing certificate reference is present
  */
-public class UnicitySigningCertificateAttributeCheck extends ChainItem<XmlISC> {
+public class UnicitySigningCertificateAttributeCheck extends ChainItem<XmlSAV> {
 
 	/** The token to verify */
 	private final TokenProxy token;
@@ -41,11 +41,11 @@ public class UnicitySigningCertificateAttributeCheck extends ChainItem<XmlISC> {
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
-	 * @param result {@link XmlISC}
+	 * @param result {@link XmlSAV}
 	 * @param token {@link TokenProxy}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public UnicitySigningCertificateAttributeCheck(I18nProvider i18nProvider, XmlISC result, TokenProxy token,
+	public UnicitySigningCertificateAttributeCheck(I18nProvider i18nProvider, XmlSAV result, TokenProxy token,
 												   LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.token = token;
@@ -73,7 +73,7 @@ public class UnicitySigningCertificateAttributeCheck extends ChainItem<XmlISC> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.NO_SIGNING_CERTIFICATE_FOUND;
+		return SubIndication.SIG_CONSTRAINTS_FAILURE;
 	}
 
 }
