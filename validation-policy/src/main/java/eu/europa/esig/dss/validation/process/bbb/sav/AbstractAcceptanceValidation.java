@@ -31,14 +31,19 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateAttributePresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.isc.checks.UnicitySigningCertificateAttributeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.CryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.AllCertificatesInPathReferencedCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferencesValidityCheck;
 
 import java.util.Date;
 import java.util.List;
@@ -81,6 +86,26 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		this.currentTime = currentTime;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
+	}
+
+	protected ChainItem<XmlSAV> signingCertificateAttributePresent() {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateAttributePresentConstraint(context);
+		return new SigningCertificateAttributePresentCheck(i18nProvider, result, token, constraint);
+	}
+
+	protected ChainItem<XmlSAV> unicitySigningCertificateAttribute() {
+		LevelConstraint constraint = validationPolicy.getUnicitySigningCertificateAttributeConstraint(context);
+		return new UnicitySigningCertificateAttributeCheck(i18nProvider, result, token, constraint);
+	}
+
+	protected ChainItem<XmlSAV> signingCertificateReferencesValidity() {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint(context);
+		return new SigningCertificateReferencesValidityCheck(i18nProvider, result, token, constraint);
+	}
+
+	protected ChainItem<XmlSAV> allCertificatesInPathReferenced() {
+		LevelConstraint constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint(context);
+		return new AllCertificatesInPathReferencedCheck(i18nProvider, result, token, constraint);
 	}
 
 	protected ChainItem<XmlSAV> cryptographic() {

@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -41,6 +35,11 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.AllCertificatesInPathReferencedCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 
@@ -163,6 +162,33 @@ public class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck 
 		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateOne);
 		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateTwo);
 		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateThree);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		scrc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void oneReferenceTest() throws Exception {
+		XmlSignature sig = new XmlSignature();
+		sig.setFoundCertificates(new XmlFoundCertificates());
+
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-2"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-3"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-4"));
+
+		XmlRelatedCertificate xmlRelatedCertificateOne = getXmlRelatedCertificate("C-Id-1");
+		xmlRelatedCertificateOne.getCertificateRefs().add(getSigningCertificateRef());
+
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateOne);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);

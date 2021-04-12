@@ -236,7 +236,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 						else {
 
 							PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, newestTimestamp, bbbs,
-									poe, currentTime, policy, Context.TIMESTAMP);
+									timestampValidation.getConclusion(), poe, currentTime, policy, Context.TIMESTAMP);
 							XmlPSV psvResult = psv.execute();
 							bbbTsp.setPSV(psvResult);
 							enrichBBBWithPSVConclusion(bbbTsp, psvResult);
@@ -302,8 +302,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * associated explanations returned from the past signature validation process.
 		 */
 		XmlBasicBuildingBlocks sigBBB = bbbs.get(signature.getId());
-		PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, signature, bbbs, poe, currentTime,
-				policy, currentContext);
+		PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, signature, bbbs,
+				validationProcessLongTermData.getConclusion(), poe, currentTime, policy, currentContext);
 		XmlPSV psvResult = psv.execute();
 		sigBBB.setPSV(psvResult);
 		enrichBBBWithPSVConclusion(sigBBB, psvResult);

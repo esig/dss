@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.Date;
 
@@ -55,7 +57,21 @@ public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	@Override
 	protected void initChain() {
-		firstItem = cryptographic();
+
+		ChainItem<XmlSAV> item = firstItem = signingCertificateAttributePresent();
+
+		// See {@code SignatureAcceptanceValidation.initChain()}
+		if (token.isSigningCertificateReferencePresent()) {
+
+			item = item.setNextItem(unicitySigningCertificateAttribute());
+
+			item = item.setNextItem(signingCertificateReferencesValidity());
+
+			item = item.setNextItem(allCertificatesInPathReferenced());
+
+		}
+
+		item = item.setNextItem(cryptographic());
 	}
 
 }

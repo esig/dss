@@ -187,17 +187,17 @@
 			</xsd:element>
 			<xsd:element name="UnicitySigningCertificate" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks the unicity of the signingCertificate (V1/V2) attribute</xsd:documentation>
+					<xsd:documentation>Checks the unicity of the signingCertificate (V1/V2) attribute (if the signingCertificate reference unique)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SigningCertificateRefersCertificateChain" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks is the signingCertificate (V1/V2) attribute covers only those certificates present in the certificate chain</xsd:documentation>
+					<xsd:documentation>Checks is the signingCertificate (V1/V2) attribute covers only those which are present in the certificate chain</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="ReferencesToAllCertificateChainPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>If the signingCertificate (V1/V2) attribute contains more than one reference, checks if the whole certificate chain is covered</xsd:documentation>
+					<xsd:documentation>Checks if all certificates in the chain are referenced by the signingCertificate (V1/V2) attribute, when present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="CertDigestPresent" type="LevelConstraint" minOccurs="0">
@@ -208,11 +208,6 @@
 			<xsd:element name="CertDigestMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if any signing certificate digest match with the found signer</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="AllCertDigestsMatch" type="LevelConstraint" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Checks if all signing certificate digests match with the found signer (v1/v2)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="IssuerSerialMatch" type="LevelConstraint" minOccurs="0">

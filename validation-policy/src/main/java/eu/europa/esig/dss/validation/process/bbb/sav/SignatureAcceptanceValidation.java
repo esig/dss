@@ -33,9 +33,6 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateAttributePresentCheck;
-import eu.europa.esig.dss.validation.process.bbb.isc.checks.UnicitySigningCertificateAttributeCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.AllCertificatesInPathReferencedCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
@@ -46,7 +43,6 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferencesValidityCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
@@ -91,29 +87,30 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 
 		item = item.setNextItem(signingCertificateAttributePresent());
 
-		// not relevant for timestamps RFC 5816
-		item = item.setNextItem(unicitySigningCertificateAttribute());
-		
-		/*
-		 * 5.2.8.4.2.1 Processing signing certificate reference constraint
-		 * 
-		 * If the Signing Certificate Identifier attribute contains references to 
-		 * other certificates in the path, the building block shall check each of 
-		 * the certificates in the certification path against these references.
-		 * 
-		 * When this property contains one or more references to certificates other than
-		 * those present in the certification path, the building block shall return 
-		 * the indication INDETERMINATE with the sub-indication SIG_CONSTRAINTS_FAILURE.
-		 */
-		item = item.setNextItem(signingCertificateReferencesValidity());
-		
-		/*
-		 * When one or more certificates in the certification path are not referenced 
-		 * by this property, and the signature policy mandates references to all 
-		 * the certificates in the certification path to be present, the building block shall 
-		 * return the indication INDETERMINATE with the sub-indication SIG_CONSTRAINTS_FAILURE.
-		 */
-		item = item.setNextItem(allCertificatesInPathReferenced());
+		if (token.isSigningCertificateReferencePresent()) {
+			/*
+			 * 5.2.8.4.2.1 Processing signing certificate reference constraint
+			 *
+			 * If the Signing Certificate Identifier attribute contains references to
+			 * other certificates in the path, the building block shall check each of
+			 * the certificates in the certification path against these references.
+			 *
+			 * When this property contains one or more references to certificates other than
+			 * those present in the certification path, the building block shall return
+			 * the indication INDETERMINATE with the sub-indication SIG_CONSTRAINTS_FAILURE.
+			 */
+			item = item.setNextItem(unicitySigningCertificateAttribute());
+
+			item = item.setNextItem(signingCertificateReferencesValidity());
+
+			/*
+			 * When one or more certificates in the certification path are not referenced
+			 * by this property, and the signature policy mandates references to all
+			 * the certificates in the certification path to be present, the building block shall
+			 * return the indication INDETERMINATE with the sub-indication SIG_CONSTRAINTS_FAILURE.
+			 */
+			item = item.setNextItem(allCertificatesInPathReferenced());
+		}
 
 		// signing-time
 		item = item.setNextItem(signingTime());
@@ -166,26 +163,6 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	private ChainItem<XmlSAV> structuralValidation() {
 		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint(context);
 		return new StructuralValidationCheck(i18nProvider, result, token, constraint);
-	}
-
-	private ChainItem<XmlSAV> signingCertificateAttributePresent() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateAttributePresentConstraint(context);
-		return new SigningCertificateAttributePresentCheck(i18nProvider, result, token, constraint);
-	}
-
-	private ChainItem<XmlSAV> unicitySigningCertificateAttribute() {
-		LevelConstraint constraint = validationPolicy.getUnicitySigningCertificateAttributeConstraint(context);
-		return new UnicitySigningCertificateAttributeCheck(i18nProvider, result, token, constraint);
-	}
-
-	private ChainItem<XmlSAV> signingCertificateReferencesValidity() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint(context);
-		return new SigningCertificateReferencesValidityCheck(i18nProvider, result, token, constraint);
-	}
-
-	private ChainItem<XmlSAV> allCertificatesInPathReferenced() {
-		LevelConstraint constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint(context);
-		return new AllCertificatesInPathReferencedCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signingTime() {

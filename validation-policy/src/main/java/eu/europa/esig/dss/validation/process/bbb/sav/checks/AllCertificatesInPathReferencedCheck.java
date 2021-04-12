@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -40,35 +40,33 @@ import java.util.stream.Collectors;
  */
 public class AllCertificatesInPathReferencedCheck extends ChainItem<XmlSAV> {
 
-	/** The signature to check */
-	private final SignatureWrapper signature;
+	/** The token to check */
+	private final TokenProxy token;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlSAV}
-	 * @param signature {@link SignatureWrapper}
+	 * @param token {@link TokenProxy}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public AllCertificatesInPathReferencedCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+	public AllCertificatesInPathReferencedCheck(I18nProvider i18nProvider, XmlSAV result, TokenProxy token,
 												LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-		this.signature = signature;
+		this.token = token;
 	}
 
 	@Override
 	protected boolean process() {
-		if (signature.getSigningCertificateReferences().size() > 1) {
-			List<RelatedCertificateWrapper> relatedSigningCertificates = signature.foundCertificates()
-					.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-			List<String> signingCertificateIds = relatedSigningCertificates.stream().map(c -> c.getId()).collect(Collectors.toList());
-			
-			for (CertificateWrapper certificate : signature.getCertificateChain()) {
-				if (!signingCertificateIds.contains(certificate.getId())) {
-					// certificate in the certificate path is not covered by a signing certificate reference
-					return false;
-				}
+		List<RelatedCertificateWrapper> relatedSigningCertificates = token.foundCertificates()
+				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		List<String> signingCertificateIds = relatedSigningCertificates.stream().map(c -> c.getId()).collect(Collectors.toList());
+
+		for (CertificateWrapper certificate : token.getCertificateChain()) {
+			if (!signingCertificateIds.contains(certificate.getId())) {
+				// certificate in the certificate path is not covered by a signing certificate reference
+				return false;
 			}
 		}
 		return true;

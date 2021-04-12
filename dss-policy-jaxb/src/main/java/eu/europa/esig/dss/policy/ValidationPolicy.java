@@ -653,15 +653,6 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getSigningCertificateDigestValueMatchConstraint(Context context);
 
-	/**
-	 * Indicates if all signing certificate reference digests match the signing certificate
-	 *
-	 * @param context {@link Context}
-	 * @return {@code LevelConstraint} if AllCertDigestsMatch for a given context element is present in the constraint
-	 *         file, null otherwise.
-	 */
-    LevelConstraint getAllSigningCertificateDigestValuesMatchConstraint(Context context);
-
     /**
 	 * Indicates if the signing certificate reference's issuer serial matches
 	 *

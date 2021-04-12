@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
@@ -66,6 +66,9 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	/** Map of all BBBs */
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
+	/** Current conclusion */
+	private final XmlConclusion currentConclusion;
+
 	/** POE container */
 	private final POEExtraction poe;
 
@@ -84,16 +87,18 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param token {@link TokenProxy}
 	 * @param bbbs map of all BBSs
+	 * @param currentConclusion {@link XmlConclusion}
 	 * @param poe {@link POEExtraction}
 	 * @param currentTime {@link Date}
 	 * @param policy {@link ValidationPolicy}
 	 * @param context {@link Context}
 	 */
-	public PastSignatureValidation(I18nProvider i18nProvider, TokenProxy token, Map<String, XmlBasicBuildingBlocks> bbbs, 
-			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
+	public PastSignatureValidation(I18nProvider i18nProvider, TokenProxy token, Map<String, XmlBasicBuildingBlocks> bbbs,
+			XmlConclusion currentConclusion, POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
 		super(i18nProvider, new XmlPSV());
 		this.token = token;
 		this.bbbs = bbbs;
+		this.currentConclusion = currentConclusion;
 		this.poe = poe;
 		this.currentTime = currentTime;
 		this.policy = policy;
@@ -109,9 +114,6 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	protected void initChain() {
 
 		XmlBasicBuildingBlocks tokenBBB = bbbs.get(token.getId());
-		final Indication currentTimeIndication = tokenBBB.getConclusion().getIndication();
-		final SubIndication currentTimeSubIndication = tokenBBB.getConclusion().getSubIndication();
-		final List<XmlMessage> currentTimeErrors = tokenBBB.getConclusion().getErrors();
 
 		PastCertificateValidation pcv = new PastCertificateValidation(i18nProvider, token, tokenBBB, poe, currentTime, policy, context);
 		XmlPCV pcvResult = pcv.execute();
@@ -139,8 +141,9 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			 * If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE or INDETERMINATE/
 			 * REVOKED_CA_NO_POE, the building block shall return PASSED.
 			 */
-			if (Indication.INDETERMINATE.equals(currentTimeIndication)
-					&& (SubIndication.REVOKED_NO_POE.equals(currentTimeSubIndication) || SubIndication.REVOKED_CA_NO_POE.equals(currentTimeSubIndication))) {
+			if (Indication.INDETERMINATE.equals(currentConclusion.getIndication())
+					&& (SubIndication.REVOKED_NO_POE.equals(currentConclusion.getSubIndication())
+							|| SubIndication.REVOKED_CA_NO_POE.equals(currentConclusion.getSubIndication()))) {
 				item = item.setNextItem(poeExist());
 				return;
 			}
@@ -156,15 +159,17 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			 * after the issuance date and before the expiration date of the signing certificate, the building block shall return
 			 * the status indication PASSED.
 			 */
-			else if (Indication.INDETERMINATE.equals(currentTimeIndication) && (SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentTimeSubIndication)
-					|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(currentTimeSubIndication))) {
+			else if (Indication.INDETERMINATE.equals(currentConclusion.getIndication())
+					&& (SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentConclusion.getSubIndication())
+							|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(currentConclusion.getSubIndication()))) {
 
 				Date bestSignatureTime = poe.getLowestPOETime(token.getId());
 				CertificateWrapper signingCertificate = token.getSigningCertificate();
 
-				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
-				item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime, signingCertificate,
-						currentTimeSubIndication));
+				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(
+						bestSignatureTime, signingCertificate));
+				item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(
+						bestSignatureTime, signingCertificate, currentConclusion.getSubIndication()));
 				return;
 			}
 
@@ -176,7 +181,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * uses this algorithm (or key size) at a time before the time up to which the algorithm in question was
 		 * considered secure, the building block shall return the status indication PASSED.
 		 */
-		if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
+		if (Indication.INDETERMINATE.equals(currentConclusion.getIndication())
+				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentConclusion.getSubIndication())) {
 			CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(context);
 			
 			// check signature or timestamp itself
@@ -200,12 +206,12 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * 4) In all other cases, the building block shall return the current time indication/ sub-indication together
 		 * with an explanation of the failure.
 		 */
-		item = item.setNextItem(currentTimeIndicationCheck(currentTimeIndication, currentTimeSubIndication, currentTimeErrors));
+		item = item.setNextItem(currentTimeIndicationCheck());
 	}
 
-	private ChainItem<XmlPSV> currentTimeIndicationCheck(Indication currentTimeIndication, SubIndication currentTimeSubIndication,
-			List<XmlMessage> currentTimeErrors) {
-		return new CurrentTimeIndicationCheck(i18nProvider, result, currentTimeIndication, currentTimeSubIndication, currentTimeErrors, getFailLevelConstraint());
+	private ChainItem<XmlPSV> currentTimeIndicationCheck() {
+		return new CurrentTimeIndicationCheck(i18nProvider, result, currentConclusion.getIndication(),
+				currentConclusion.getSubIndication(), currentConclusion.getErrors(), getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> pastCertificateValidationAcceptableCheck(XmlPCV pcvResult) {

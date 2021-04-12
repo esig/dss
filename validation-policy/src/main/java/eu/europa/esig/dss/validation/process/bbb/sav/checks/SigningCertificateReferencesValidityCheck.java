@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -44,26 +44,26 @@ import java.util.stream.Collectors;
  */
 public class SigningCertificateReferencesValidityCheck extends ChainItem<XmlSAV> {
 
-	/** The signature to check */
-	private final SignatureWrapper signature;
+	/** The token to check */
+	private final TokenProxy token;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlSAV}
-	 * @param signature {@link SignatureWrapper}
+	 * @param token {@link TokenProxy}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public SigningCertificateReferencesValidityCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+	public SigningCertificateReferencesValidityCheck(I18nProvider i18nProvider, XmlSAV result, TokenProxy token,
 													 LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-		this.signature = signature;
+		this.token = token;
 	}
 
 	@Override
 	protected boolean process() {
-		FoundCertificatesProxy foundCertificates = signature.foundCertificates();
+		FoundCertificatesProxy foundCertificates = token.foundCertificates();
 		
 		// 1) Check orphan references presence
 		List<CertificateRefWrapper> orphanSigningCertificateRefs = foundCertificates.getOrphanCertificateRefsByRefOrigin(
@@ -77,7 +77,7 @@ public class SigningCertificateReferencesValidityCheck extends ChainItem<XmlSAV>
 		List<RelatedCertificateWrapper> relatedSigningCertificates = foundCertificates.getRelatedCertificatesByRefOrigin(
 				CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
-		List<String> certificateChainIds = signature.getCertificateChain().stream().map(c -> c.getId()).collect(Collectors.toList());
+		List<String> certificateChainIds = token.getCertificateChain().stream().map(c -> c.getId()).collect(Collectors.toList());
 		
 		for (RelatedCertificateWrapper signingCertificate : relatedSigningCertificates) {
 			if (!certificateChainIds.contains(signingCertificate.getId())) {
