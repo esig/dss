@@ -45,7 +45,7 @@ public class XAdESDoubleATest extends AbstractXAdESTestSignature {
 
         extendParameters = new XAdESSignatureParameters();
         extendParameters.setDetachedContents(Arrays.asList(documentToSign));
-        extendParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+        extendParameters.setSignatureLevel(SignatureLevel.XAdES_A);
 
         service = new XAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
@@ -113,7 +113,7 @@ public class XAdESDoubleATest extends AbstractXAdESTestSignature {
 
     @Override
     protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-        assertEquals(SignatureLevel.XAdES_BASELINE_LTA, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+        assertEquals(SignatureLevel.XAdES_A, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
         assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
         assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
     }

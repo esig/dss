@@ -46,7 +46,7 @@ public class XAdESExtensionCToXLDifferentTSATest extends XAdESExtensionCToXLTest
             assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(
                     CertificateOrigin.CERTIFICATE_VALUES).size());
 
-        } else if (SignatureLevel.XAdES_BASELINE_LT.equals(signatureFormat)) {
+        } else if (SignatureLevel.XAdES_XL.equals(signatureFormat)) {
             assertEquals(5, foundCertificates.getRelatedCertificatesByRefOrigin(
                     CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
             assertEquals(0, foundCertificates.getOrphanCertificatesByRefOrigin(
@@ -74,7 +74,7 @@ public class XAdESExtensionCToXLDifferentTSATest extends XAdESExtensionCToXLTest
             assertEquals(0, foundRevocations.getRelatedRevocationsByOrigin(
                     RevocationOrigin.REVOCATION_VALUES).size());
 
-        } else if (SignatureLevel.XAdES_BASELINE_LT.equals(signatureFormat)) {
+        } else if (SignatureLevel.XAdES_XL.equals(signatureFormat)) {
             assertEquals(1, foundRevocations.getRelatedRevocationsByRefOrigin(
                     RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
             assertEquals(0, foundRevocations.getOrphanRevocationsByRefOrigin(

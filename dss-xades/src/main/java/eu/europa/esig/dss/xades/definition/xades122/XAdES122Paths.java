@@ -99,6 +99,17 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getSignerRolePath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
+				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNER_ROLE);
+	}
+
+	@Override
+	public String getSignerRoleV2Path() {
+		return null;
+	}
+
+	@Override
 	public String getClaimedRolePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNER_ROLE, XAdES122Element.CLAIMED_ROLES, XAdES122Element.CLAIMED_ROLE);
@@ -129,6 +140,12 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	public String getSignedDataObjectPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_DATA_OBJECT_PROPERTIES);
+	}
+
+	@Override
+	public String getDataObjectFormat() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
+				XAdES122Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES122Element.DATA_OBJECT_FORMAT);
 	}
 
 	@Override
@@ -238,6 +255,11 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	public String getEncapsulatedCertificateValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.CERTIFICATE_VALUES, XAdES122Element.ENCAPSULATED_X509_CERTIFICATE);
+	}
+
+	@Override
+	public String getAttrAuthoritiesCertValuesPath() {
+		return null;
 	}
 
 	@Override
@@ -483,6 +505,26 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentQualifyingPropertiesPath() {
 		return fromCurrentPosition(XAdES122Element.QUALIFYING_PROPERTIES);
+	}
+
+	@Override
+	public String getCurrentDescription() {
+		return fromCurrentPosition(XAdES122Element.DESCRIPTION);
+	}
+
+	@Override
+	public String getCurrentObjectIdentifier() {
+		return fromCurrentPosition(XAdES122Element.OBJECT_IDENTIFIER);
+	}
+
+	@Override
+	public String getCurrentMimeType() {
+		return fromCurrentPosition(XAdES122Element.MIME_TYPE);
+	}
+
+	@Override
+	public String getCurrentEncoding() {
+		return fromCurrentPosition(XAdES122Element.ENCODING);
 	}
 
 	@Override

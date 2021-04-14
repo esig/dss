@@ -20,16 +20,17 @@
  */
 package eu.europa.esig.dss.xades.validation.dss2278;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class XAdESWithMultipleSignatureTimeStampsTest extends AbstractXAdESTestValidation {
 
@@ -50,4 +51,9 @@ public class XAdESWithMultipleSignatureTimeStampsTest extends AbstractXAdESTestV
 		}
 	}
 
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		// BASELINE-T level shall contain only one tst inside SignatureTimeStamp element
+		assertEquals(SignatureLevel.XAdES_BASELINE_B, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
 }

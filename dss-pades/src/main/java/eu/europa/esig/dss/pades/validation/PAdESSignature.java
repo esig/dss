@@ -37,6 +37,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
@@ -186,6 +187,11 @@ public class PAdESSignature extends CAdESSignature {
 		} else {
 			return SignatureLevel.PDF_NOT_ETSI;
 		}
+	}
+
+	@Override
+	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
+		return new PAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 
 	@Override

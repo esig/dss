@@ -20,23 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import org.bouncycastle.asn1.BERTags;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -54,6 +37,22 @@ import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.bouncycastle.asn1.BERTags;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
 public class XAdESWithPemEncodedCrlTest extends AbstractXAdESTestSignature {
@@ -118,13 +117,7 @@ public class XAdESWithPemEncodedCrlTest extends AbstractXAdESTestSignature {
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		SignatureLevel expectedLevel = signatureParameters.getSignatureLevel();
-		if (SignatureLevel.XAdES_XL.equals(expectedLevel)) {
-			expectedLevel = SignatureLevel.XAdES_BASELINE_LT;
-		} else if (SignatureLevel.XAdES_A.equals(expectedLevel)) {
-			expectedLevel = SignatureLevel.XAdES_BASELINE_LTA;
-		}
-		assertEquals(expectedLevel, signature.getSignatureFormat());
+		assertEquals(signatureParameters.getSignatureLevel(), signature.getSignatureFormat());
 	}
 	
 	@Override

@@ -83,7 +83,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * The offline copy of a CertificateVerifier
 	 */
-	private CertificateVerifier offlineCertificateVerifier;
+	protected CertificateVerifier offlineCertificateVerifier;
 
 	/**
 	 * The certificate source of a signing certificate
@@ -139,6 +139,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * Unique signature identifier
 	 */
 	protected SignatureIdentifier signatureIdentifier;
+
+	/**
+	 * Performs a conformance check for the signature to a given profile
+	 */
+	private BaselineRequirementsChecker baselineRequirementsChecker;
 	
 	/**
 	 * Returns a builder to define and build a signature Id
@@ -209,13 +214,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public ListCertificateSource getCompleteCertificateSource() {
 		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
 		certificateSource.addAll(getTimestampSource().getTimestampCertificateSources());
-		certificateSource.addAll(getCounterSignaturesCertificateSource());
-		return certificateSource;
-	}
-	
-	public ListCertificateSource getCertificateSourcesExceptLastArchiveTimestamp() {
-		ListCertificateSource certificateSource = new ListCertificateSource(getCertificateSource());
-		certificateSource.addAll(getTimestampSource().getTimestampCertificateSourcesExceptLastArchiveTimestamp());
 		certificateSource.addAll(getCounterSignaturesCertificateSource());
 		return certificateSource;
 	}
@@ -576,12 +574,40 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	/**
+	 * Returns a cached instance of the {@code BaselineRequirementsChecker}
+	 *
+	 * @return {@link BaselineRequirementsChecker}
+	 */
+	protected BaselineRequirementsChecker getBaselineRequirementsChecker() {
+		if (baselineRequirementsChecker == null) {
+			baselineRequirementsChecker = createBaselineRequirementsChecker();
+		}
+		return baselineRequirementsChecker;
+	}
+
+	/**
+	 * Instantiates a {@code BaselineRequirementsChecker} according to the signature format
+	 *
+	 * @return {@link BaselineRequirementsChecker}
+	 */
+	protected abstract BaselineRequirementsChecker createBaselineRequirementsChecker();
+
+	/**
+	 * Checks if the signature is conformant to AdES-BASELINE-B level
+	 *
+	 * @return TRUE if the B-level is present, FALSE otherwise
+	 */
+	public boolean hasBProfile() {
+		return getBaselineRequirementsChecker().hasBaselineBProfile();
+	}
+
+	/**
 	 * Checks if the T-level is present in the signature
 	 *
 	 * @return TRUE if the T-level is present, FALSE otherwise
 	 */
 	public boolean hasTProfile() {
-		return Utils.isCollectionNotEmpty(getSignatureTimestamps());
+		return getBaselineRequirementsChecker().hasBaselineTProfile();
 	}
 
 	/**
@@ -590,49 +616,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * @return TRUE if the LT-level is present, FALSE otherwise
 	 */
 	public boolean hasLTProfile() {
-		ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
-		boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
-		boolean allSelfSigned = certificateFound && certificateSources.isAllSelfSigned();
-
-		boolean emptyCRLs = getCompleteCRLSource().getAllRevocationBinaries().isEmpty();
-		boolean emptyOCSPs = getCompleteOCSPSource().getAllRevocationBinaries().isEmpty();
-		boolean emptyRevocation = emptyCRLs && emptyOCSPs;
-
-		boolean minimalLTRequirement = !allSelfSigned && !emptyRevocation;
-		if (minimalLTRequirement) {
-			// check presence of all revocation data
-			return isAllRevocationDataPresent(certificateSources);
-		}
-		return minimalLTRequirement;
-	}
-
-	private boolean isAllRevocationDataPresent(ListCertificateSource certificateSources) {
-		SignatureValidationContext validationContext = new SignatureValidationContext();
-		offlineCertificateVerifier.setSignatureCRLSource(getCompleteCRLSource());
-		offlineCertificateVerifier.setSignatureOCSPSource(getCompleteOCSPSource());
-		offlineCertificateVerifier.setSignatureCertificateSource(getCompleteCertificateSource());
-		validationContext.initialize(offlineCertificateVerifier);
-
-		List<CertificateValidity> certificateValidityList = getCandidatesForSigningCertificate()
-				.getCertificateValidityList();
-		for (CertificateValidity certificateValidity : certificateValidityList) {
-			if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
-				validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
-			}
-		}
-
-		for (final CertificateToken certificate : certificateSources.getAllCertificateTokens()) {
-			validationContext.addCertificateTokenForVerification(certificate);
-		}
-		validationContext.validate();
-		return validationContext.checkAllRequiredRevocationDataPresent();
-	}
-	
-	@Override
-	public boolean areAllSelfSignedCertificates() {
-		ListCertificateSource certificateSources = getCompleteCertificateSource();
-		boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
-		return certificateFound && certificateSources.isAllSelfSigned();
+		return getBaselineRequirementsChecker().hasBaselineLTProfile();
 	}
 
 	/**
@@ -641,7 +625,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * @return TRUE if the LTA-level is present, FALSE otherwise
 	 */
 	public boolean hasLTAProfile() {
-		return Utils.isCollectionNotEmpty(getArchiveTimestamps());
+		return getBaselineRequirementsChecker().hasBaselineLTAProfile();
+	}
+
+	@Override
+	public boolean areAllSelfSignedCertificates() {
+		ListCertificateSource certificateSources = getCompleteCertificateSource();
+		boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
+		return certificateFound && certificateSources.isAllSelfSigned();
 	}
 	
 	@Override

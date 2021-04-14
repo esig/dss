@@ -51,14 +51,14 @@ public class XAdESConsecutiveExtensionCToAPrettyPrintTest extends AbstractXAdESC
 	protected SignatureLevel getThirdSignSignatureLevel() {
 		signatureParameters.setPrettyPrint(true);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_XL);
-		return SignatureLevel.XAdES_BASELINE_LT;
+		return SignatureLevel.XAdES_XL;
 	}
 
 	@Override
 	protected SignatureLevel getFourthSignSignatureLevel() {
 		signatureParameters.setPrettyPrint(false);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_A);
-		return SignatureLevel.XAdES_BASELINE_LTA;
+		return SignatureLevel.XAdES_A;
 	}	
 
 }

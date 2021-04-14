@@ -26,7 +26,7 @@ public class XAdESExtensionXToXLTest extends AbstractXAdESTestExtension {
         if (SignatureLevel.XAdES_X.equals(diagnosticData.getFirstSignatureFormat())) {
             super.verifySourcesAndDiagnosticDataWithOrphans(advancedSignatures, diagnosticData);
 
-        } else if (SignatureLevel.XAdES_BASELINE_LT.equals(diagnosticData.getFirstSignatureFormat())) {
+        } else if (SignatureLevel.XAdES_XL.equals(diagnosticData.getFirstSignatureFormat())) {
             super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
 
         } else {
@@ -36,7 +36,7 @@ public class XAdESExtensionXToXLTest extends AbstractXAdESTestExtension {
 
     @Override
     protected void checkFinalLevel(DiagnosticData diagnosticData) {
-        assertEquals(SignatureLevel.XAdES_BASELINE_LT, diagnosticData.getFirstSignatureFormat());
+        assertEquals(SignatureLevel.XAdES_XL, diagnosticData.getFirstSignatureFormat());
     }
 
 }

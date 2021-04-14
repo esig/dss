@@ -473,9 +473,21 @@ public final class DomUtils {
 	 * @return true if the current node has any filled child node
 	 */
 	public static boolean isNotEmpty(final Node xmlNode, final String xPathString) {
-		// xpath suffix allows to skip text nodes and empty lines
-		NodeList nodeList = getNodeList(xmlNode, xPathString + "/child::node()[not(self::text())]");
-		return (nodeList != null) && (nodeList.getLength() > 0);
+		return getNodesAmount(xmlNode, xPathString + "/child::node()[not(self::text())]") > 0;
+	}
+
+	/**
+	 * Returns an amount of found nodes matching the {@code xPathString}
+	 *
+	 * @param xmlNode
+	 *            the current node
+	 * @param xPathString
+	 *            the expected child node
+	 * @return an amount of returned nodes
+	 */
+	public static int getNodesAmount(final Node xmlNode, final String xPathString) {
+		final NodeList list = getNodeList(xmlNode, xPathString);
+		return list.getLength();
 	}
 
 	/**

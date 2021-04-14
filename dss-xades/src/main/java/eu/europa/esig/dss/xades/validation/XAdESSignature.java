@@ -43,7 +43,6 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
@@ -761,13 +760,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		throw new DSSException("The action is not supported for XAdES!");
 	}
 
-	/**
-	 * Checks the presence of ... segment in the signature, what is the proof -B profile existence
-	 *
-	 * @return true if B Profile is detected
-	 */
-	public boolean hasBProfile() {
-		return DomUtils.isNotEmpty(signatureElement, xadesPaths.getSignedSignaturePropertiesPath());
+	@Override
+	protected XAdESBaselineRequirementsChecker getBaselineRequirementsChecker() {
+		return (XAdESBaselineRequirementsChecker) super.getBaselineRequirementsChecker();
+	}
+
+	@Override
+	protected XAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
+		return new XAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 
 	/**
@@ -777,14 +777,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return true if C Profile is detected
 	 */
 	public boolean hasCProfile() {
-		final boolean certRefs = DomUtils.isNotEmpty(signatureElement, xadesPaths.getCompleteCertificateRefsPath());
-		final boolean certRefsV2 = DomUtils.isNotEmpty(signatureElement, xadesPaths.getCompleteCertificateRefsV2Path());
-
-		ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
-		boolean allSelfSigned = certificateSources.isAllSelfSigned();
-
-		final boolean revocationRefs = DomUtils.isNotEmpty(signatureElement, xadesPaths.getCompleteRevocationRefsPath());
-		return (certRefs || certRefsV2) && (allSelfSigned || revocationRefs);
+		return getBaselineRequirementsChecker().hasExtendedCProfile();
 	}
 
 	/**
@@ -793,9 +786,25 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return true if the -X extension is present
 	 */
 	public boolean hasXProfile() {
-		final boolean sigAndRefsTst = DomUtils.isNotEmpty(signatureElement, xadesPaths.getSigAndRefsTimestampPath());
-		final boolean sigAndRefsTstV2 = DomUtils.isNotEmpty(signatureElement, xadesPaths.getSigAndRefsTimestampV2Path());
-		return sigAndRefsTst || sigAndRefsTstV2;
+		return getBaselineRequirementsChecker().hasExtendedXProfile();
+	}
+
+	/**
+	 * Checks the presence of CertificateValues/RevocationValues segment in the signature, what is the proof -XL profile existence
+	 *
+	 * @return true if the -XL extension is present
+	 */
+	public boolean hasXLProfile() {
+		return getBaselineRequirementsChecker().hasExtendedXLProfile();
+	}
+
+	/**
+	 * Checks the presence of ArchiveTimeStamp element in the signature, what is the proof -A profile existence
+	 *
+	 * @return true if the -A extension is present
+	 */
+	public boolean hasAProfile() {
+		return getBaselineRequirementsChecker().hasExtendedAProfile();
 	}
 
 	@Override
@@ -1029,8 +1038,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, canonicalizedSignedInfo));
 	}
 
-	private Element getSignedInfo() {
-		return DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNED_INFO_PATH);
+	/**
+	 * Returns the ds:SignedInfo element
+	 *
+	 * @return {@link Element} ds:SignedInfo
+	 */
+	public Element getSignedInfo() {
+		try {
+			return DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNED_INFO_PATH);
+		} catch (DSSException e) {
+			LOG.warn(String.format("Unable to extract ds:SignedInfo element! Reason : %s.", e.getMessage()), e);
+			return null;
+		}
 	}
 	
 	/**
@@ -1277,10 +1296,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			return SignatureLevel.XAdES_BASELINE_LT;
 		} else if (hasCProfile()) {
-			if (hasXProfile()) {
+			if (!hasXProfile()) {
+				return SignatureLevel.XAdES_C;
+			}
+			if (!hasXLProfile()) {
 				return SignatureLevel.XAdES_X;
 			}
-			return SignatureLevel.XAdES_C;
+			if (hasAProfile()) {
+				return SignatureLevel.XAdES_A;
+			}
+			return SignatureLevel.XAdES_XL;
 		} else {
 			return SignatureLevel.XAdES_BASELINE_T;
 		}

@@ -115,6 +115,13 @@ public interface XAdESPaths {
 	String getSignaturePolicyIdentifier();
 
 	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRole"
+	 *
+	 * @return {@link String} path
+	 */
+	String getSignerRolePath();
+
+	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRole/xades:ClaimedRoles/xades:ClaimedRole"
 	 *
 	 * @return {@link String} path
@@ -127,6 +134,13 @@ public interface XAdESPaths {
 	 * @return {@link String} path
 	 */
 	String getSignedAssertionPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRoleV2"
+	 *
+	 * @return {@link String} path
+	 */
+	String getSignerRoleV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRoleV2/xades:ClaimedRoles/xades:ClaimedRole"
@@ -155,6 +169,13 @@ public interface XAdESPaths {
 	 * @return {@link String} path
 	 */
 	String getSignedDataObjectPropertiesPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat"
+	 *
+	 * @return {@link String} path
+	 */
+	String getDataObjectFormat();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat/xades:MimeType"
@@ -295,6 +316,13 @@ public interface XAdESPaths {
 	 * @return {@link String} path
 	 */
 	String getEncapsulatedCertificateValuesPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttrAuthoritiesCertValues"
+	 *
+	 * @return {@link String} path
+	 */
+	String getAttrAuthoritiesCertValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttrAuthoritiesCertValues/xades:EncapsulatedX509Certificate"
@@ -563,6 +591,34 @@ public interface XAdESPaths {
 	 * @return {@link String} path
 	 */
 	String getCurrentDocumentationReference();
+
+	/**
+	 * Gets path "./xades:Description"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentDescription();
+
+	/**
+	 * Gets path "./xades:ObjectIdentifier"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentObjectIdentifier();
+
+	/**
+	 * Gets path "./xades:MimeType"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentMimeType();
+
+	/**
+	 * Gets path "./xades:Encoding"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentEncoding();
 
 	// --------------------------- Policy
 

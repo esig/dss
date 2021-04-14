@@ -19,12 +19,12 @@ public class XAdESExtensionAToATest extends AbstractXAdESTestExtension {
 
     @Override
     protected void checkOriginalLevel(DiagnosticData diagnosticData) {
-        assertEquals(SignatureLevel.XAdES_BASELINE_LTA, diagnosticData.getFirstSignatureFormat());
+        assertEquals(SignatureLevel.XAdES_A, diagnosticData.getFirstSignatureFormat());
     }
 
     @Override
     protected void checkFinalLevel(DiagnosticData diagnosticData) {
-        assertEquals(SignatureLevel.XAdES_BASELINE_LTA, diagnosticData.getFirstSignatureFormat());
+        assertEquals(SignatureLevel.XAdES_A, diagnosticData.getFirstSignatureFormat());
     }
 
 }
