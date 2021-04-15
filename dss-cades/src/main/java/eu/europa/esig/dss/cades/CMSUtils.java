@@ -271,6 +271,21 @@ public final class CMSUtils {
 	}
 
 	/**
+	 * Returns a signed attribute with the given {@code oid} from {@code signerInformation} if present
+	 *
+	 * @param signerInformation {@link SignerInformation} containing signed attributes
+	 * @param oid {@link ASN1ObjectIdentifier} oid of the element to extract
+	 * @return {@link Attribute} with the given OID
+	 */
+	public static Attribute getSignedAttribute(final SignerInformation signerInformation, ASN1ObjectIdentifier oid) {
+		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
+		if (signedAttributes == null) {
+			return null;
+		}
+		return signedAttributes.get(oid);
+	}
+
+	/**
 	 * Returns an unsigned attribute by its given {@code oid}
 	 * @param signerInformation {@link SignerInformation} to get attribute from
 	 * @param oid {@link ASN1ObjectIdentifier} of the target attribute

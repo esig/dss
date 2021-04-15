@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
@@ -8,6 +9,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -140,6 +142,39 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
             return false;
         }
         return true;
+    }
+
+    /**
+     * Checks if the given collection of {@code CertificateToken}s contains the signing certificate for the signature
+     *
+     * @param certificateTokens a collection of {@link CertificateToken}s
+     * @return TRUE if the given collection of certificate contains teh signing certificate, FALSE otherwise
+     */
+    protected boolean containsSigningCertificate(Collection<CertificateToken> certificateTokens) {
+        CertificateToken signingCertificate = signature.getSigningCertificateToken();
+        for (CertificateToken certificate : certificateTokens) {
+            if (certificate.equals(signingCertificate)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the signature contains a SignaturePolicyIdentifier
+     * containing a hash used to digest the signature policy
+     *
+     * @return TRUE if the SignaturePolicyIdentifier hash is present, FALSE otherwise
+     */
+    protected boolean isSignaturePolicyIdentifierHashPresent() {
+        SignaturePolicy signaturePolicyIdentifier = signature.getSignaturePolicy();
+        if (signaturePolicyIdentifier != null) {
+            Digest digest = signaturePolicyIdentifier.getDigest();
+            if (digest != null && digest.getAlgorithm() != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

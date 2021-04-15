@@ -1296,16 +1296,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			return SignatureLevel.XAdES_BASELINE_LT;
 		} else if (hasCProfile()) {
-			if (!hasXProfile()) {
-				return SignatureLevel.XAdES_C;
+			if (hasXLProfile()) {
+				if (hasAProfile()) {
+					return SignatureLevel.XAdES_A;
+				}
+				if (hasXProfile()) {
+					return SignatureLevel.XAdES_XL;
+				}
 			}
-			if (!hasXLProfile()) {
+			if (hasXProfile()) {
 				return SignatureLevel.XAdES_X;
 			}
-			if (hasAProfile()) {
-				return SignatureLevel.XAdES_A;
-			}
-			return SignatureLevel.XAdES_XL;
+			return SignatureLevel.XAdES_C;
 		} else {
 			return SignatureLevel.XAdES_BASELINE_T;
 		}

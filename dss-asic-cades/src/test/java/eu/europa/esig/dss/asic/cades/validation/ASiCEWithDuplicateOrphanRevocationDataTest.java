@@ -89,7 +89,7 @@ public class ASiCEWithDuplicateOrphanRevocationDataTest extends AbstractASiCWith
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertEquals(SignatureLevel.CAdES_101733_C, signatureWrapper.getSignatureFormat());
+		assertEquals(SignatureLevel.CAdES_C, signatureWrapper.getSignatureFormat());
 	}
 
 }

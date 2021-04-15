@@ -681,6 +681,8 @@ public final class DomUtils {
 		String id = uri;
 		if (startsFromHash(uri)) {
 			id = id.substring(1);
+		} else if (DomUtils.isXPointerQuery(uri)) {
+			id = DomUtils.getXPointerId(uri);
 		}
 		return id;
 	}
@@ -741,7 +743,11 @@ public final class DomUtils {
 		if (decodedUri == null) {
 			return false;
 		}
-		final String[] parts = getId(decodedUri).split("\\s");
+		String uri = decodedUri;
+		if (startsFromHash(uri)) {
+			uri = uri.substring(1);
+		}
+		final String[] parts = uri.split("\\s");
 		int ii = 0;
 		for (; ii < parts.length - 1; ++ii) {
 			if (!parts[ii].endsWith(")") || !parts[ii].startsWith(XNS_OPEN)) {

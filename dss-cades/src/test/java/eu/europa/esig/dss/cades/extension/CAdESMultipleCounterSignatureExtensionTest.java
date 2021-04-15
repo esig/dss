@@ -38,6 +38,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -49,8 +51,20 @@ public class CAdESMultipleCounterSignatureExtensionTest extends AbstractCAdESTes
 	private CertificateVerifier certificateVerifier;
 	private CAdESService service;
 	
+	private DSSDocument documentToExtend;
+	
 	@BeforeEach
 	public void init() {
+		documentToExtend = new FileDocument("src/test/resources/validation/signedFile.pdf.p7s");
+
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(documentToExtend);
+		CertificateToken signingCertificate = validator.getSignatures().get(0).getSigningCertificateToken();
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(signingCertificate.getNotAfter());
+		calendar.add(Calendar.MONTH, -1);
+		Date tstTime = calendar.getTime();
+
 		certificateVerifier = getCompleteCertificateVerifier();
 		certificateVerifier.setCheckRevocationForUntrustedChains(true);
 		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
@@ -63,14 +77,13 @@ public class CAdESMultipleCounterSignatureExtensionTest extends AbstractCAdESTes
 		commonTrustedCertificateSource.addCertificate(rootCert);
 		certificateVerifier.addTrustedCertSources(commonTrustedCertificateSource);
 		service = new CAdESService(certificateVerifier);
-		service.setTspSource(getUsedTSPSourceAtExtensionTime());
+		service.setTspSource(getGoodTsaByTime(tstTime));
 	}
 	
 	@Test
 	@Override
 	public void extendAndVerify() throws Exception {
-		DSSDocument signedDocument = new FileDocument("src/test/resources/validation/signedFile.pdf.p7s");
-		DSSDocument extendedDocument = extendSignature(signedDocument);
+		DSSDocument extendedDocument = extendSignature(documentToExtend);
 		verify(extendedDocument);
 	}
 	

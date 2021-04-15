@@ -2,7 +2,6 @@ package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
@@ -135,19 +134,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         // SignaturePolicyStore (Cardinality 0 or 1, conditioned presence requirement (m))
         int signaturePolicyStoreAmount = getNumberOfOccurrences(signatureElement, xadesPaths.getSignaturePolicyStorePath());
         if (signaturePolicyStoreAmount == 1) {
-            boolean requirementM = false;
-            NodeList signaturePolicyIdentifierList = DomUtils.getNodeList(signatureElement, xadesPaths.getSignaturePolicyIdentifier());
-            if (signaturePolicyIdentifierList.getLength() == 1) {
-                Element signaturePolicyIdentifier = (Element) signaturePolicyIdentifierList.item(0);
-                Element signaturePolicyId = DomUtils.getElement(signaturePolicyIdentifier, xadesPaths.getCurrentSignaturePolicyId());
-                if (signaturePolicyId != null) {
-                    Element sigPolicyHash = DomUtils.getElement(signaturePolicyIdentifier, xadesPaths.getCurrentSignaturePolicyDigestAlgAndValue());
-                    if (sigPolicyHash != null) {
-                        requirementM = true;
-                    }
-                }
-            }
-            if (!requirementM) {
+            if (!isSignaturePolicyIdentifierHashPresent()) {
                 LOG.warn("SignaturePolicyStore shall not be present for XAdES-BASELINE-B signature with not defined " +
                         "SignaturePolicyIdentifier/SigPolicyHash (requirement (m))!");
             }
@@ -168,20 +155,10 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             }
         }
         // Additional requirement (a)
-        CertificateToken signingCertificateToken = signature.getSigningCertificateToken();
-        if (signingCertificateToken != null) {
-            boolean signingCertificatePresentInKeyInfo = false;
-            for (CertificateToken certificate : signature.getCertificateSource().getKeyInfoCertificates()) {
-                if (signingCertificateToken.equals(certificate)) {
-                    signingCertificatePresentInKeyInfo = true;
-                    break;
-                }
-            }
-            if (!signingCertificatePresentInKeyInfo) {
-                LOG.warn("Signing certificate shall be present in ds:KeyInfo/ds:X509Data/ds:X509Certificate " +
-                        "for XAdES-BASELINE-B signature (requirement (a))!");
-                return false;
-            }
+        if (!containsSigningCertificate(signature.getCertificateSource().getKeyInfoCertificates())) {
+            LOG.warn("Signing certificate shall be present in ds:KeyInfo/ds:X509Data/ds:X509Certificate " +
+                    "for XAdES-BASELINE-B signature (requirement (a))!");
+            return false;
         }
         // Additional requirement (d)
         final Element signedInfo = signature.getSignedInfo();
@@ -325,9 +302,9 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     /**
-     * Checks if the signature has a corresponding Extended-C profile
+     * Checks if the signature has a corresponding XAdES-C profile
      *
-     * @return TRUE if the signature has a Extended-C profile, FALSE otherwise
+     * @return TRUE if the signature has a XAdES-C profile, FALSE otherwise
      */
     public boolean hasExtendedCProfile() {
         ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
@@ -340,9 +317,9 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsPath()) +
                 getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsV2Path()) != completeCompleteCertificateRefsAmount) {
             if (allSelfSigned) {
-                LOG.warn("CompleteCertificateRefs(V2) shall not be present for XAdES-C signature with all self-signed certificates (cardinality == 0})!");
+                LOG.debug("CompleteCertificateRefs(V2) shall not be present for XAdES-C signature with all self-signed certificates (cardinality == 0})!");
             } else {
-                LOG.warn("CompleteCertificateRefs(V2) shall be present for XAdES-C signature (cardinality == 1})!");
+                LOG.debug("CompleteCertificateRefs(V2) shall be present for XAdES-C signature (cardinality == 1})!");
             }
             return false;
         }
@@ -350,9 +327,9 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         int completeRevocationRefsExpectedAmount = allSelfSigned ? 0 : 1;
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteRevocationRefsPath()) != completeRevocationRefsExpectedAmount) {
             if (allSelfSigned) {
-                LOG.warn("CompleteRevocationRefs shall not be present for XAdES-C signature with all self-signed certificates (cardinality == 0})!");
+                LOG.debug("CompleteRevocationRefs shall not be present for XAdES-C signature with all self-signed certificates (cardinality == 0})!");
             } else {
-                LOG.warn("CompleteRevocationRefs shall be present for XAdES-C signature (cardinality == 1})!");
+                LOG.debug("CompleteRevocationRefs shall be present for XAdES-C signature (cardinality == 1})!");
             }
             return false;
         }
@@ -360,9 +337,9 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     /**
-     * Checks if the signature has a corresponding Extended-X profile
+     * Checks if the signature has a corresponding XAdES-X profile
      *
-     * @return TRUE if the signature has a Extended-X profile, FALSE otherwise
+     * @return TRUE if the signature has a XAdES-X profile, FALSE otherwise
      */
     public boolean hasExtendedXProfile() {
         Element signatureElement = signature.getSignatureElement();
@@ -373,16 +350,16 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         final boolean sigAndRefsTst = DomUtils.isNotEmpty(signatureElement, xadesPaths.getSigAndRefsTimestampPath());
         final boolean sigAndRefsTstV2 = DomUtils.isNotEmpty(signatureElement, xadesPaths.getSigAndRefsTimestampV2Path());
         if (!refsOnlyTst && !refsOnlyTstV2 && !sigAndRefsTst && !sigAndRefsTstV2) {
-            LOG.warn("Either RefsOnlyTimestamp(V2) or SigAndRefsTimestamp(V2) shall be present for XAdES-X signature)!");
+            LOG.debug("Either RefsOnlyTimestamp(V2) or SigAndRefsTimestamp(V2) shall be present for XAdES-X signature)!");
             return false;
         }
         return true;
     }
 
     /**
-     * Checks if the signature has a corresponding Extended-XL profile
+     * Checks if the signature has a corresponding XAdES-XL profile
      *
-     * @return TRUE if the signature has a Extended-XL profile, FALSE otherwise
+     * @return TRUE if the signature has a XAdES-XL profile, FALSE otherwise
      */
     public boolean hasExtendedXLProfile() {
         // minimal LT requirement check
@@ -390,12 +367,12 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     /**
-     * Checks if the signature has a corresponding Extended-A profile
+     * Checks if the signature has a corresponding XAdES-A profile
      *
-     * @return TRUE if the signature has a Extended-A profile, FALSE otherwise
+     * @return TRUE if the signature has a XAdES-A profile, FALSE otherwise
      */
     public boolean hasExtendedAProfile() {
-        // minimal LT requirement check
+        // minimal LTA requirement check
         return super.hasBaselineLTAProfile();
     }
 

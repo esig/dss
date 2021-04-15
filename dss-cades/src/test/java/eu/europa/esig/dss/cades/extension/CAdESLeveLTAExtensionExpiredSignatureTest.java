@@ -76,6 +76,12 @@ public class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTest
     }
 
     @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        // certificate-values shall not be present
+        assertEquals(SignatureLevel.CAdES_A, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+    }
+
+    @Override
     protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
         // skip
     }

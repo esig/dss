@@ -511,13 +511,14 @@
 			<xs:enumeration value="XAdES-BASELINE-T" />
 			<xs:enumeration value="XAdES-BASELINE-B" />
 			<xs:enumeration value="CMS-NOT-ETSI" />
+			<xs:enumeration value="CAdES-C" />
+			<xs:enumeration value="CAdES-X" />
+			<xs:enumeration value="CAdES-XL" />
+			<xs:enumeration value="CAdES-A" />
 			<xs:enumeration value="CAdES-BASELINE-LTA" />
 			<xs:enumeration value="CAdES-BASELINE-LT" />
 			<xs:enumeration value="CAdES-BASELINE-T" />
 			<xs:enumeration value="CAdES-BASELINE-B" />
-			<xs:enumeration value="CAdES-101733-C" />
-			<xs:enumeration value="CAdES-101733-X" />
-			<xs:enumeration value="CAdES-101733-A" />
 			<xs:enumeration value="PDF-NOT-ETSI" />
 			<xs:enumeration value="PAdES-BASELINE-LTA" />
 			<xs:enumeration value="PAdES-BASELINE-LT" />
