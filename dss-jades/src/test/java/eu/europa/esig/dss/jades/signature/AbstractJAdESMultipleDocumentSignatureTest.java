@@ -20,30 +20,15 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jose4j.json.JsonUtil;
-import org.jose4j.jwx.HeaderParameterNames;
-import org.jose4j.jwx.Headers;
-import org.jose4j.lang.JoseException;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -56,6 +41,20 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.jwx.HeaderParameterNames;
+import org.jose4j.jwx.Headers;
+import org.jose4j.lang.JoseException;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJAdESMultipleDocumentSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> {
 	
@@ -83,8 +82,8 @@ public abstract class AbstractJAdESMultipleDocumentSignatureTest extends Abstrac
 				Set<String> keySet = signedHeaders.keySet();
 				assertTrue(Utils.isCollectionNotEmpty(keySet));
 				for (String signedPropertyName : keySet) {
-					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(signedPropertyName) || 
-							DSSJsonUtils.getCriticalHeaderExceptions().contains(signedPropertyName));
+					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(signedPropertyName) ||
+							DSSJsonUtils.isCriticalHeaderException(signedPropertyName));
 				}
 				
 				Object crit = signedHeaders.get(HeaderParameterNames.CRITICAL);
@@ -94,7 +93,7 @@ public abstract class AbstractJAdESMultipleDocumentSignatureTest extends Abstrac
 				assertTrue(Utils.isCollectionNotEmpty(critArray));
 				for (String critItem : critArray) {
 					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(critItem));
-					assertFalse(DSSJsonUtils.getCriticalHeaderExceptions().contains(critItem));
+					assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
 				}
 				
 			} catch (JoseException e) {

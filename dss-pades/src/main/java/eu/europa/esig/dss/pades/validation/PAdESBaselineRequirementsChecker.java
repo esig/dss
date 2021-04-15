@@ -13,6 +13,11 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Performs checks according to EN 319 142-1 v1.1.1
+ * "6.3 PAdES baseline signatures"
+ *
+ */
 public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsChecker {
 
     private static final Logger LOG = LoggerFactory.getLogger(PAdESBaselineRequirementsChecker.class);

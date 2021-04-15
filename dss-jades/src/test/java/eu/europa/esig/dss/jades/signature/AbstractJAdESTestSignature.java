@@ -105,8 +105,8 @@ public abstract class AbstractJAdESTestSignature
 				Set<String> keySet = signedHeaders.keySet();
 				assertTrue(Utils.isCollectionNotEmpty(keySet));
 				for (String signedPropertyName : keySet) {
-					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(signedPropertyName) || 
-							DSSJsonUtils.getCriticalHeaderExceptions().contains(signedPropertyName));
+					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(signedPropertyName) ||
+							DSSJsonUtils.isCriticalHeaderException(signedPropertyName));
 				}
 				
 				Object crit = signedHeaders.get(HeaderParameterNames.CRITICAL);
@@ -116,7 +116,7 @@ public abstract class AbstractJAdESTestSignature
 				assertTrue(Utils.isCollectionNotEmpty(critArray));
 				for (String critItem : critArray) {
 					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(critItem));
-					assertFalse(DSSJsonUtils.getCriticalHeaderExceptions().contains(critItem));
+					assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
 				}
 				
 			} catch (JoseException e) {

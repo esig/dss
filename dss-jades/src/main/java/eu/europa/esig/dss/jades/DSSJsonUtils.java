@@ -329,12 +329,14 @@ public class DSSJsonUtils {
 	}
 
 	/**
-	 * Returns set of critical header exceptions (see RFC 7515)
-	 * 
-	 * @return set of critical header exception strings
+	 * Checks if the given {@code headerName} is a critical header exception
+	 * (shall not be incorporated within 'crit' header). See RFC 7515
+	 *
+	 * @param headerName {@link String} header name to check
+	 * @return TRUE if the header is critical header exception, FALSE otherwise
 	 */
-	public static Set<String> getCriticalHeaderExceptions() {
-		return criticalHeaderExceptions;
+	public static boolean isCriticalHeaderException(String headerName) {
+		return criticalHeaderExceptions.contains(headerName);
 	}
 	
 	/**

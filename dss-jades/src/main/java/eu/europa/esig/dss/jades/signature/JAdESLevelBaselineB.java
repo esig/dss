@@ -54,7 +54,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * The class builds a JOSE header according to EN 119-182
@@ -246,11 +245,10 @@ public class JAdESLevelBaselineB {
 		 * occur as Header Parameter names within the JOSE Header in the "crit"
 		 * list. Producers MUST NOT use the empty list "[]" as the "crit" value.
 		 */
-		Set<String> criticalHeaderExceptions = DSSJsonUtils.getCriticalHeaderExceptions();
 		
 		List<String> criticalHeaderNames = new ArrayList<>();
 		for (String header : signedProperties.keySet()) {
-			if (!criticalHeaderExceptions.contains(header)) {
+			if (!DSSJsonUtils.isCriticalHeaderException(header)) {
 				criticalHeaderNames.add(header);
 			}
 		}
