@@ -29,6 +29,7 @@ public final class PAdESConstants {
 	public static final String SIGNATURE_DEFAULT_FILTER = "Adobe.PPKLite";
 	public static final String SIGNATURE_DEFAULT_SUBFILTER = "ETSI.CAdES.detached";
 	public static final String SIGNATURE_PKCS7_SUBFILTER = "adbe.pkcs7.detached";
+	public static final String SIGNATURE_PKCS7_SHA1_SUBFILTER = "adbe.pkcs7.sha1";
 
 	public static final String TIMESTAMP_TYPE = "DocTimeStamp";
 	public static final String TIMESTAMP_DEFAULT_FILTER = "Adobe.PPKLite";

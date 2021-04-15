@@ -229,7 +229,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     @Override
     public boolean hasBaselineTProfile() {
-        if (!super.hasBaselineTProfile()) {
+        if (!minimalTRequirement()) {
             return false;
         }
         Element signatureElement = signature.getSignatureElement();
@@ -250,7 +250,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     @Override
     public boolean hasBaselineLTProfile() {
-        if (!super.hasBaselineLTProfile()) {
+        if (!minimalLTRequirement()) {
             return false;
         }
         Element signatureElement = signature.getSignatureElement();
@@ -299,6 +299,11 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean hasBaselineLTAProfile() {
+        return minimalLTARequirement();
     }
 
     /**
@@ -362,8 +367,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
      * @return TRUE if the signature has a XAdES-XL profile, FALSE otherwise
      */
     public boolean hasExtendedXLProfile() {
-        // minimal LT requirement check
-        return super.hasBaselineLTProfile();
+        return minimalLTRequirement();
     }
 
     /**
@@ -372,8 +376,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
      * @return TRUE if the signature has a XAdES-A profile, FALSE otherwise
      */
     public boolean hasExtendedAProfile() {
-        // minimal LTA requirement check
-        return super.hasBaselineLTAProfile();
+        return minimalLTARequirement();
     }
 
     private int getNumberOfOccurrences(Element element, String xPath) {

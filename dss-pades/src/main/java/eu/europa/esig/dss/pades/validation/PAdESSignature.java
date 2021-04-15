@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -158,35 +157,36 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
-		if (hasCAdESDetachedSubFilter()) {
-			if (hasLTProfile() && hasDSSDictionary()) {
-				if (hasLTAProfile()) {
-					return SignatureLevel.PAdES_BASELINE_LTA;
-				}
-				if (hasTProfile()) {
-					return SignatureLevel.PAdES_BASELINE_LT;
-				}
+		if (hasBProfile()) {
+			if (!hasTProfile()) {
+				return SignatureLevel.PAdES_BASELINE_B;
 			}
-			if (hasTProfile()) {
+			if (!hasLTProfile()) {
 				return SignatureLevel.PAdES_BASELINE_T;
 			}
-			return SignatureLevel.PAdES_BASELINE_B;
-		} else if (hasPKCS7SubFilter()) {
-			if (hasLTProfile()) {
-				if (hasLTAProfile()) {
-					return SignatureLevel.PKCS7_LTA;
-				}
-				if (hasTProfile()) {
-					return SignatureLevel.PKCS7_LT;
-				}
+			if (hasLTAProfile()) {
+				return SignatureLevel.PAdES_BASELINE_LTA;
 			}
-			if (hasTProfile()) {
+			return SignatureLevel.PAdES_BASELINE_LT;
+		} else if (hasPKCS7Profile()) {
+			if (!hasPKCS7TProfile()) {
+				return SignatureLevel.PKCS7_B;
+			}
+			if (!hasPKCS7LTProfile()) {
 				return SignatureLevel.PKCS7_T;
 			}
-			return SignatureLevel.PKCS7_B;
+			if (hasPKCS7LTAProfile()) {
+				return SignatureLevel.PKCS7_LTA;
+			}
+			return SignatureLevel.PKCS7_LT;
 		} else {
 			return SignatureLevel.PDF_NOT_ETSI;
 		}
+	}
+
+	@Override
+	protected PAdESBaselineRequirementsChecker getBaselineRequirementsChecker() {
+		return (PAdESBaselineRequirementsChecker) super.getBaselineRequirementsChecker();
 	}
 
 	@Override
@@ -194,33 +194,49 @@ public class PAdESSignature extends CAdESSignature {
 		return new PAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 
-	@Override
-	public boolean hasTProfile() {
-		if (super.hasTProfile()) {
-			return true;
-		}
-		return Utils.isCollectionNotEmpty(getDocumentTimestamps());
+	/**
+	 * Checks the presence of PKCS#7 corresponding SubFilter
+	 *
+	 * @return true if PKCS#7 Profile is detected
+	 */
+	public boolean hasPKCS7Profile() {
+		return getBaselineRequirementsChecker().hasPKCS7Profile();
 	}
 
-	@Override
-	public boolean hasLTAProfile() {
-		List<TimestampToken> documentTimestamps = getDocumentTimestamps();
-		if (Utils.isCollectionNotEmpty(documentTimestamps)) {
-			for (TimestampToken timestampToken : documentTimestamps) {
-				if (coversLTLevelData(timestampToken)) {
-					return true;
-				}
-			}
-		}
-		return false;
+	/**
+	 * Checks the presence of a signature-time-stamp
+	 *
+	 * @return true if PKCS#7-T Profile is detected
+	 */
+	public boolean hasPKCS7TProfile() {
+		return getBaselineRequirementsChecker().hasPKCS7TProfile();
 	}
 
-	private boolean coversLTLevelData(TimestampToken timestampToken) {
-		return ArchiveTimestampType.PAdES.equals(timestampToken.getArchiveTimestampType());
+	/**
+	 * Checks the presence of a validation data
+	 *
+	 * @return true if PKCS#7-LT Profile is detected
+	 */
+	public boolean hasPKCS7LTProfile() {
+		return getBaselineRequirementsChecker().hasPKCS7LTProfile();
 	}
 
-	private boolean hasDSSDictionary() {
-		return getDssDictionary() != null;
+	/**
+	 * Checks the presence of an archive-time-stamp
+	 *
+	 * @return true if PKCS#7-LTA Profile is detected
+	 */
+	public boolean hasPKCS7LTAProfile() {
+		return getBaselineRequirementsChecker().hasPKCS7LTAProfile();
+	}
+
+	/**
+	 * Checks the presence of ArchiveTimeStamp element in the signature, what is the proof -A profile existence
+	 *
+	 * @return true if the -A extension is present
+	 */
+	public boolean hasAProfile() {
+		return getBaselineRequirementsChecker().hasExtendedAProfile();
 	}
 
 	/**

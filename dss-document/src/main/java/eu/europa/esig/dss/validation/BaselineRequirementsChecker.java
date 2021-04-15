@@ -54,7 +54,28 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
      *
      * @return TRUE if the signature has a BASELINE-T profile, FALSE otherwise
      */
-    public boolean hasBaselineTProfile() {
+    public abstract boolean hasBaselineTProfile();
+
+    /**
+     * Checks if the signature has a corresponding BASELINE-LT profile
+     *
+     * @return TRUE if the signature has a BASELINE-LT profile, FALSE otherwise
+     */
+    public abstract boolean hasBaselineLTProfile();
+
+    /**
+     * Checks if the signature has a corresponding BASELINE-LTA profile
+     *
+     * @return TRUE if the signature has a BASELINE-LTA profile, FALSE otherwise
+     */
+    public abstract boolean hasBaselineLTAProfile();
+
+    /**
+     * Checks the minimal requirement to satisfy T-profile for AdES signatures
+     *
+     * @return TRUE if the signature has a T-profile, FALSE otherwise
+     */
+    protected boolean minimalTRequirement() {
         // SignatureTimeStamp (Cardinality >= 1)
         if (Utils.isCollectionEmpty(signature.getSignatureTimestamps())) {
             LOG.trace("SignatureTimeStamp shall be present for BASELINE-T signature (cardinality >= 1)!");
@@ -64,7 +85,7 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         if (signingCertificate != null) {
             for (TimestampToken timestampToken : signature.getSignatureTimestamps()) {
                 if (!timestampToken.getCreationDate().before(signingCertificate.getNotAfter())) {
-                    LOG.warn("SignatureTimeStamp shall be generated before the signing certificate expiration for BASELINE-B signature!");
+                    LOG.warn("SignatureTimeStamp shall be generated before the signing certificate expiration for BASELINE-T signature!");
                     return false;
                 }
             }
@@ -73,11 +94,11 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     }
 
     /**
-     * Checks if the signature has a corresponding BASELINE-LT profile
+     * Checks the minimal requirement to satisfy LT-profile for AdES signatures
      *
-     * @return TRUE if the signature has a BASELINE-LT profile, FALSE otherwise
+     * @return TRUE if the signature has an LT-profile, FALSE otherwise
      */
-    public boolean hasBaselineLTProfile() {
+    public boolean minimalLTRequirement() {
         Objects.requireNonNull(offlineCertificateVerifier, "offlineCertificateVerifier cannot be null!");
 
         ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
@@ -132,11 +153,11 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     }
 
     /**
-     * Checks if the signature has a corresponding BASELINE-LTA profile
+     * Checks the minimal requirement to satisfy LTA-profile for AdES signatures
      *
-     * @return TRUE if the signature has a BASELINE-LTA profile, FALSE otherwise
+     * @return TRUE if the signature has an LTA-profile, FALSE otherwise
      */
-    public boolean hasBaselineLTAProfile() {
+    public boolean minimalLTARequirement() {
         if (Utils.isCollectionEmpty(signature.getArchiveTimestamps())) {
             LOG.trace("ArchiveTimeStamp shall be present for BASELINE-LTA signature (cardinality >= 1)!");
             return false;
