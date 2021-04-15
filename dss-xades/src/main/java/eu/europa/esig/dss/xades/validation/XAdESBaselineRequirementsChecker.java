@@ -78,7 +78,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         // SigningCertificate/SigningCertificateV2 (Cardinality == 1)
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificatePath()) +
                 getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificateV2Path()) != 1) {
-            LOG.warn("SigningCertificate(V2) shall be present for XAdES-BASELINE-B signature (cardinality 1)!");
+            LOG.warn("SigningCertificate(V2) shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }
         // DataObjectFormat (Cardinality >= 0)
@@ -200,11 +200,12 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         // Additional requirement (i)
         List<Reference> references = signature.getReferences();
         for (Reference reference : references) {
-            if (DSSXMLUtils.isSignedProperties(reference, xadesPaths) ||
+            if ((DomUtils.startsFromHash(reference.getURI()) || DomUtils.isXPointerQuery(reference.getURI())) &&
+                    (DSSXMLUtils.isSignedProperties(reference, xadesPaths) ||
                     DSSXMLUtils.isCounterSignatureReferenceType(reference.getType()) ||
                     DSSXMLUtils.isManifestReferenceType(reference.getType()) ||
                     DSSXMLUtils.isKeyInfoReference(reference, signatureElement) ||
-                    DSSXMLUtils.isSignaturePropertiesReference(reference, signatureElement)) {
+                    DSSXMLUtils.isSignaturePropertiesReference(reference, signatureElement))) {
                 continue;
             }
             String referenceId = reference.getId();

@@ -18,6 +18,7 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
@@ -190,18 +191,23 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     @Override
     public boolean hasBaselineLTAProfile() {
-        if (!minimalLTARequirement()) {
+        List<TimestampToken> timestampTokens = new ArrayList<>();
+        timestampTokens.addAll(signature.getArchiveTimestamps());
+        timestampTokens.addAll(signature.getDetachedTimestamps());
+        if (Utils.isCollectionEmpty(timestampTokens)) {
+            LOG.trace("ArchiveTimeStamp shall be present for CAdES-BASELINE-LTA signature (cardinality >= 1)!");
             return false;
         }
-        // archive-time-stamp-v3 (Cardinality == 0)
-        boolean archiveTstV3Found = false;
-        for (TimestampToken timestampToken : signature.getArchiveTimestamps()) {
-            if (ArchiveTimestampType.CAdES_V3.equals(timestampToken.getArchiveTimestampType())) {
-                archiveTstV3Found = true;
+        // archive-time-stamp-v3 / detached timestamps (Cardinality >= 1)
+        boolean validArcTstFound = false;
+        for (TimestampToken timestampToken : timestampTokens) {
+            if (ArchiveTimestampType.CAdES_V3.equals(timestampToken.getArchiveTimestampType()) ||
+                    ArchiveTimestampType.CAdES_DETACHED.equals(timestampToken.getArchiveTimestampType())) {
+                validArcTstFound = true;
                 break;
             }
         }
-        if (!archiveTstV3Found) {
+        if (!validArcTstFound) {
             LOG.warn("archive-time-stamp-v3 attribute shall be present " +
                     "for CAdES-BASELINE-LTA signature (cardinality == 1)!");
             return false;
@@ -262,7 +268,14 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
      * @return TRUE if the signature has a CAdES-A profile, FALSE otherwise
      */
     public boolean hasExtendedAProfile() {
-        return minimalLTARequirement();
+        List<TimestampToken> timestampTokens = new ArrayList<>();
+        timestampTokens.addAll(signature.getArchiveTimestamps());
+        timestampTokens.addAll(signature.getDetachedTimestamps());
+        if (Utils.isCollectionEmpty(timestampTokens)) {
+            LOG.trace("ArchiveTimeStamp shall be present for CAdES-A signature (cardinality >= 1)!");
+            return false;
+        }
+        return true;
     }
 
 }
