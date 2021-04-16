@@ -27,6 +27,7 @@ import eu.europa.esig.dss.pades.signature.suite.InvisibleSignatureFieldSignTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESAllSelfSignedCertsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleLTAValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCustomTimeZoneTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBExternalSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBHugeTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBLoopTest;
@@ -77,7 +78,8 @@ import org.junit.runner.RunWith;
 		PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class, CertificateConflictTest.class, ProtectedDocumentsSignatureTest.class,
 		PAdESTwoSignersLTALevelTest.class, PAdESWithPemEncodedCrlTest.class, PAdESSignatureParametersSerializationTest.class,
 		PAdESSignedAssertionTest.class, PAdESLevelLTAAndLevelTTest.class, PAdESLevelTNotTrustedTSPTest.class,
-		PAdESLevelLTANotTrustedTSPTest.class, PAdESSignWithRevokedCertTest.class, PAdESLevelLTASignRevokedSigWithPOETest.class })
+		PAdESLevelLTANotTrustedTSPTest.class, PAdESSignWithRevokedCertTest.class, PAdESLevelLTASignRevokedSigWithPOETest.class,
+		PAdESLevelBCustomTimeZoneTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

@@ -77,7 +77,6 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -319,8 +318,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			// the signing date, needed for valid signature
 			final Calendar cal = Calendar.getInstance();
-			final Date signingDate = parameters.getSigningDate();
-			cal.setTime(signingDate);
+			cal.setTime(signatureParameters.getSigningDate());
+			cal.setTimeZone(signatureParameters.getSigningTimeZone());
 			signature.setSignDate(cal);
 		}
 		

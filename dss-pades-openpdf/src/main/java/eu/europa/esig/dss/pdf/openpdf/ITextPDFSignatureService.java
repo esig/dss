@@ -162,6 +162,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				sap.setCertificationLevel(permission.getCode());
 			}
 
+			cal.setTimeZone(signatureParameters.getSigningTimeZone());
 			signatureDictionary.put(PdfName.M, new PdfDate(cal));
 		}
 
