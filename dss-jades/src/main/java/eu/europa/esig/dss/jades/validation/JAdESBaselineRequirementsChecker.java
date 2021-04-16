@@ -37,7 +37,7 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         Headers headers = jws.getHeaders();
         JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
         // alg (Cardinality == 1)
-        if (headers.getObjectHeaderValue(HeaderParameterNames.CONTENT_TYPE) == null) {
+        if (headers.getObjectHeaderValue(HeaderParameterNames.ALGORITHM) == null) {
             LOG.warn("alg header shall be present for JAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }

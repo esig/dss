@@ -1017,11 +1017,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
 		return new JAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
-
-	@Override
-	public boolean hasBProfile() {
-		return getSigningTime() != null && getSignatureAlgorithm() != null;
-	}
 	
 	@Override
 	protected List<String> validateStructure() {
