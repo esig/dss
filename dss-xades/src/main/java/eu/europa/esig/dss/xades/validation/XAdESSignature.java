@@ -396,7 +396,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return signaturePolicy;
 		}
 		
-		final Element policyIdentifier = DomUtils.getElement(signatureElement, xadesPaths.getSignaturePolicyIdentifier());
+		final Element policyIdentifier = DomUtils.getElement(signatureElement, xadesPaths.getSignaturePolicyIdentifierPath());
 		if (policyIdentifier != null) {
 			// There is a policy
 			final Element policyId = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyId());

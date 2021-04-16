@@ -28,10 +28,10 @@ public class XAdESLevelXv2Test extends XAdESLevelXTest {
         XAdES132Paths paths = new XAdES132Paths();
 
         Node signature = signaturesList.item(0);
-        NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificatePath());
+        NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificateChildren());
         assertEquals(0, signingCertificateList.getLength());
 
-        NodeList signingCertificateV2List = DomUtils.getNodeList(signature, paths.getSigningCertificateV2Path());
+        NodeList signingCertificateV2List = DomUtils.getNodeList(signature, paths.getSigningCertificateV2Children());
         assertEquals(1, signingCertificateV2List.getLength());
 
         NodeList completeCertificateRefsList = DomUtils.getNodeList(signature, paths.getCompleteCertificateRefsPath());

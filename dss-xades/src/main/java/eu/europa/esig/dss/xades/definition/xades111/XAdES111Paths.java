@@ -83,11 +83,22 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getSigningCertificatePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
+				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNING_CERTIFICATE);
+	}
+
+	@Override
+	public String getSigningCertificateChildren() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
 				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNING_CERTIFICATE, XAdES111Element.CERT);
 	}
 
 	@Override
 	public String getSigningCertificateV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getSigningCertificateV2Children() {
 		return null;
 	}
 
@@ -103,7 +114,7 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public String getSignaturePolicyIdentifier() {
+	public String getSignaturePolicyIdentifierPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
 				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNATURE_POLICY_IDENTIFIER);
 	}

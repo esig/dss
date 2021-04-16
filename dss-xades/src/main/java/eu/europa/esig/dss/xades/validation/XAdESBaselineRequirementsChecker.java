@@ -127,7 +127,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         // CounterSignature (Cardinality >= 0)
         // AllDataObjectsTimeStamp (Cardinality >= 0)
         // SignaturePolicyIdentifier (Cardinality 0 or 1)
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignaturePolicyIdentifier()) > 1) {
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignaturePolicyIdentifierPath()) > 1) {
             LOG.warn("Only one SignaturePolicyIdentifier may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
             return false;
         }
@@ -263,7 +263,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         }
         // CompleteCertificateRefs/CompleteCertificateRefsV2 (Cardinality == 0)
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsPath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsV2CertPath()) > 0) {
+                getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsV2Path()) > 0) {
             LOG.warn("CompleteCertificateRefs(V2) shall not be present for XAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }

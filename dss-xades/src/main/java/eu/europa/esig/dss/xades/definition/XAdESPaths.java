@@ -80,18 +80,32 @@ public interface XAdESPaths {
 	String getSigningTimePath();
 
 	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate/xades:Cert"
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate"
 	 *
 	 * @return {@link String} path
 	 */
 	String getSigningCertificatePath();
 
 	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificateV2/xades:Cert"
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate/xades:Cert"
+	 *
+	 * @return {@link String} path
+	 */
+	String getSigningCertificateChildren();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificateV2"
 	 *
 	 * @return {@link String} path
 	 */
 	String getSigningCertificateV2Path();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificateV2/xades:Cert"
+	 *
+	 * @return {@link String} path
+	 */
+	String getSigningCertificateV2Children();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignatureProductionPlace"
@@ -112,7 +126,7 @@ public interface XAdESPaths {
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignaturePolicyIdentifier();
+	String getSignaturePolicyIdentifierPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRole"
