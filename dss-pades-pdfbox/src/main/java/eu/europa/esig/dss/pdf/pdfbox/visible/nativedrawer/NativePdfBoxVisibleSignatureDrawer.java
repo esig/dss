@@ -241,12 +241,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 				float yAxis = dimensionAndPosition.getImageY();
 				float width = dimensionAndPosition.getImageWidth();
 				float height = dimensionAndPosition.getImageHeight();
-				if (!parameters.getTextParameters().isEmpty()) {
-					xAxis *= dimensionAndPosition.getxDpiRatio();
-					yAxis *= dimensionAndPosition.getyDpiRatio();
-					width *= dimensionAndPosition.getxDpiRatio();
-					height *= dimensionAndPosition.getyDpiRatio();
-				}
 
 				cs.drawImage(imageXObject, xAxis, yAxis, width, height);
 				cs.transform(Matrix.getRotateInstance(
