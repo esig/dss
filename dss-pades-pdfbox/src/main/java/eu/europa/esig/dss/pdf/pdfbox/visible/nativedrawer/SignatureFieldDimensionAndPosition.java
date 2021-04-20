@@ -188,11 +188,11 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	}
 	
 	public void paddingShift(float padding) {
-		this.textX += CommonDrawerUtils.toDpiAxisPoint(padding / CommonDrawerUtils.getTextScaleFactor(getxDpi()), getxDpi()) * 
-				CommonDrawerUtils.getTextScaleFactor(imageDpi);
+		float nonZeroDpi = CommonDrawerUtils.getDpi(imageDpi);
+		float scaledPadding = CommonDrawerUtils.toDpiAxisPoint(padding, nonZeroDpi);
+		this.textX += scaledPadding;
 		// minus, because PDF starts to count from bottom
-		this.textY -= CommonDrawerUtils.toDpiAxisPoint(padding / CommonDrawerUtils.getTextScaleFactor(getyDpi()), getyDpi()) * 
-				CommonDrawerUtils.getTextScaleFactor(imageDpi);
+		this.textY -= scaledPadding;
 	}
 
 	@Override
