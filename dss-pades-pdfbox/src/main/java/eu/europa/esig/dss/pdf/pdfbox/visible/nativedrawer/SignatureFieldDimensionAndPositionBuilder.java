@@ -65,6 +65,11 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	private static final String NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
 	private static final String NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
 
+	private static final int DEFAULT_DPI = CommonDrawerUtils.getDpi(null);
+
+	private int xDpi;
+	private int yDpi;
+
 	/**
 	 * Default constructor
 	 *
@@ -101,13 +106,16 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			ImageAndResolution imageAndResolution;
 			try {
 				imageAndResolution = ImageUtils.readDisplayMetadata(imageParameters.getImage());
+				xDpi = imageAndResolution.getxDpi();
+				yDpi = imageAndResolution.getyDpi();
 			} catch (Exception e) {
 				LOG.warn("Cannot access the image metadata : {}. Returns default info.", e.getMessage());
-				imageAndResolution = new ImageAndResolution(imageParameters.getImage(), imageParameters.getDpi(),
-						imageParameters.getDpi());
+				xDpi = imageParameters.getDpi();
+				yDpi = imageParameters.getDpi();
 			}
-			dimensionAndPosition.setImageAndResolution(imageAndResolution);
-			dimensionAndPosition.setImageDpi(imageParameters.getDpi());
+		} else {
+			xDpi = DEFAULT_DPI;
+			yDpi = DEFAULT_DPI;
 		}
 	}
 
@@ -118,10 +126,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 
 		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
 		if (fieldParameters.getWidth() == 0) {
-			imageWidth *= CommonDrawerUtils.getPageScaleFactor(dimensionAndPosition.getxDpi());
+			imageWidth *= CommonDrawerUtils.getPageScaleFactor(xDpi);
 		}
 		if (fieldParameters.getHeight() == 0) {
-			imageHeight *= CommonDrawerUtils.getPageScaleFactor(dimensionAndPosition.getyDpi());
+			imageHeight *= CommonDrawerUtils.getPageScaleFactor(yDpi);
 		}
 
 		float width = imageWidth;
@@ -191,7 +199,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
 
 			dimensionAndPosition.setTextWidth(textWidth);
 			dimensionAndPosition.setTextHeight(textHeight);
-			dimensionAndPosition.paddingShift(textParameters.getPadding());
+			Integer imageDpi = imageParameters.getImage() != null ? imageParameters.getDpi() : DEFAULT_DPI;
+			dimensionAndPosition.paddingShift(textParameters.getPadding(), imageDpi);
 		}
 
 		int rotation = ImageRotationUtils.getRotation(imageParameters.getRotation(), page);
