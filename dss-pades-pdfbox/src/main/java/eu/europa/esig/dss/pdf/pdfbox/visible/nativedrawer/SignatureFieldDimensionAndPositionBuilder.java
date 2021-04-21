@@ -219,28 +219,28 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				CommonDrawerUtils.toDpiAxisPoint(textParameters.getPadding(), imageParameters.getDpi()));
 	}
 
-	private void textImageVerticalAlignment(double height, double imageHeight, float textHeight) {
+	private void textImageVerticalAlignment(float height, float imageHeight, float textHeight) {
 		SignerTextVerticalAlignment verticalAlignment = imageParameters.getTextParameters()
 				.getSignerTextVerticalAlignment();
 		switch (verticalAlignment) {
 		case TOP:
-			dimensionAndPosition.setTextY((float) (height - textHeight));
-			dimensionAndPosition.setImageY((float) (height - imageHeight));
+			dimensionAndPosition.setTextY(height - textHeight);
+			dimensionAndPosition.setImageY(height - imageHeight);
 			break;
 		case BOTTOM:
 			dimensionAndPosition.setTextY(0);
 			dimensionAndPosition.setImageY(0);
 			break;
 		case MIDDLE:
-			dimensionAndPosition.setTextY((float) (height - textHeight) / 2);
-			dimensionAndPosition.setImageY((float) (height - imageHeight) / 2);
+			dimensionAndPosition.setTextY((height - textHeight) / 2);
+			dimensionAndPosition.setImageY((height - imageHeight) / 2);
 			break;
 		default:
 			throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + verticalAlignment);
 		}
 	}
 
-	private void textImageHorizontalAlignment(double width, double imageWidth, float textWidth) {
+	private void textImageHorizontalAlignment(float width, float imageWidth, float textWidth) {
 		SignerTextHorizontalAlignment horizontalAlignment = imageParameters.getTextParameters()
 				.getSignerTextHorizontalAlignment();
 		switch (horizontalAlignment) {
@@ -249,12 +249,12 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			dimensionAndPosition.setImageX(0);
 			break;
 		case RIGHT:
-			dimensionAndPosition.setTextX((float) (width - textWidth));
-			dimensionAndPosition.setImageX((float) (width - imageWidth));
+			dimensionAndPosition.setTextX(width - textWidth);
+			dimensionAndPosition.setImageX(width - imageWidth);
 			break;
 		case CENTER:
-			dimensionAndPosition.setTextX((float) (width - textWidth) / 2);
-			dimensionAndPosition.setImageX((float) (width - imageWidth) / 2);
+			dimensionAndPosition.setTextX((width - textWidth) / 2);
+			dimensionAndPosition.setImageX((width - imageWidth) / 2);
 			break;
 		default:
 			throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + horizontalAlignment);
