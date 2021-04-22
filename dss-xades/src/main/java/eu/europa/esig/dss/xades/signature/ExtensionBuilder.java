@@ -28,9 +28,9 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -68,12 +68,37 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	protected Element unsignedSignaturePropertiesDom;
 
 	/**
+	 * The used document validator
+	 */
+	protected XMLDocumentValidator documentValidator;
+
+	/**
 	 * Default constructor
 	 *
 	 * @param certificateVerifier {@code CertificateVerifier}
 	 */
 	protected ExtensionBuilder(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
+	}
+
+	/**
+	 * Initializes all variables to be used for signature extension
+	 *
+	 * @param signature {@link XAdESSignature}
+	 */
+	protected XAdESSignature initializeSignatureBuilder(XAdESSignature signature) {
+		xadesSignature = signature;
+		currentSignatureDom = xadesSignature.getSignatureElement();
+
+		xadesPaths = xadesSignature.getXAdESPaths();
+
+		// We ensure that all XML segments needed for the construction of the extension -T are present.
+		// If a segment does not exist then it is created.
+		ensureUnsignedProperties();
+		ensureUnsignedSignatureProperties();
+		ensureSignedDataObjectProperties();
+
+		return xadesSignature;
 	}
 
 	/**
@@ -243,20 +268,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			}
 		}
 		return xadesNamespace;
-	}
-
-	/**
-	 * Returns a {@code NodeList} of signatures to be extended. Throws an extension if no valid signatures found
-	 *
-	 * @param documentDom {@link Document} with signatures to be extended
-	 * @return {@link NodeList} of signatures
-	 */
-	protected NodeList getSignaturesNodeListToExtend(Document documentDom) {
-		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDom);
-		if (signatureNodeList.getLength() == 0) {
-			throw new DSSException("There is no signature to extend!");
-		}
-		return signatureNodeList;
 	}
 	
 }

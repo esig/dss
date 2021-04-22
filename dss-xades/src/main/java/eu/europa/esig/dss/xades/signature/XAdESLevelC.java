@@ -30,11 +30,12 @@ import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
-import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;
@@ -43,6 +44,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Contains XAdES-C profile aspects
@@ -72,16 +74,20 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	 * There SHALL be at most <b>one occurrence of CompleteRevocationRefs and CompleteCertificateRefs</b> properties in
 	 * the signature. Old references must be removed.
 	 *
-	 * @see XAdESLevelBaselineT#extendSignatureTag()
+	 * @see XAdESLevelBaselineT#extendSignatures(List<AdvancedSignature>)
 	 */
 	@Override
-	protected void extendSignatureTag() throws DSSException {
-		super.extendSignatureTag();
+	protected void extendSignatures(List<AdvancedSignature> signatures) {
+		super.extendSignatures(signatures);
 
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		// for XL-level it is required to re-initialize refs
-		if (!xadesSignature.hasCProfile() || SignatureLevel.XAdES_C.equals(signatureLevel) ||
-				SignatureLevel.XAdES_XL.equals(signatureLevel)) {
+		// Reset sources
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+
+			// for XL-level it is required to re-initialize refs
+			if (!cLevelExtensionRequired(params.getSignatureLevel())) {
+				continue;
+			}
 
 			// Data sources can already be loaded in memory (force reload)
 			xadesSignature.resetCertificateSource();
@@ -89,15 +95,25 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			xadesSignature.resetTimestampSource();
 
 			assertExtendSignatureToCPossible();
+		}
 
-			Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+		// Perform signature validation
+		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
 
-			final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+		// Append ValidationData
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+
+			if (!cLevelExtensionRequired(params.getSignatureLevel())) {
+				continue;
+			}
 
 			String indent = removeOldCertificateRefs();
 			removeOldRevocationRefs();
 
-			ValidationDataForInclusion validationDataForInclusion = getValidationDataForCLevelInclusion(validationContext);
+			ValidationData validationDataForInclusion = getValidationDataForCLevelInclusion(validationDataContainer, signature);
+
+			Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 			// XAdES-C: complete certificate references
 			// <xades:CompleteCertificateRefs>
@@ -108,7 +124,8 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			// XAdES-C: complete revocation references
 			// <xades:CompleteRevocationRefs>
-			if (Utils.isCollectionNotEmpty(validationContext.getProcessedRevocations())) {
+			if (Utils.isCollectionNotEmpty(validationDataForInclusion.getCrlTokens()) ||
+					Utils.isCollectionNotEmpty(validationDataForInclusion.getOcspTokens())) {
 				final Element completeRevocationRefsDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom,
 						getXadesNamespace(), getCurrentXAdESElements().getElementCompleteRevocationRefs());
 				incorporateCRLRefs(completeRevocationRefsDom, validationDataForInclusion.getCrlTokens());
@@ -117,6 +134,12 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
 		}
+
+	}
+
+	private boolean cLevelExtensionRequired(SignatureLevel signatureLevel) {
+		return !xadesSignature.hasCProfile() || SignatureLevel.XAdES_C.equals(signatureLevel) ||
+				SignatureLevel.XAdES_XL.equals(signatureLevel);
 	}
 
 	private String removeOldCertificateRefs() {
@@ -173,11 +196,11 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		}
 	}
 
-	private ValidationDataForInclusion getValidationDataForCLevelInclusion(final ValidationContext validationContext) {
-		return new ValidationDataForInclusionBuilder(
-				validationContext, xadesSignature.getCompleteCertificateSource())
-				.excludeCertificateTokens(getCertificateTokensForExclusion())
-				.build();
+	private ValidationData getValidationDataForCLevelInclusion(final ValidationDataContainer validationDataContainer,
+															   final AdvancedSignature signature) {
+		ValidationData validationData = validationDataContainer.getValidationData(signature);
+		validationData.excludeCertificateTokens(getCertificateTokensForExclusion());
+		return validationData;
 	}
 
 	private Collection<CertificateToken> getCertificateTokensForExclusion() {

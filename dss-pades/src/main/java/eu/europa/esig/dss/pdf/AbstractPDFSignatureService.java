@@ -34,6 +34,9 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
+import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
+import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
+import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
 import eu.europa.esig.dss.pades.validation.PdfModification;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
@@ -45,7 +48,9 @@ import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
@@ -55,12 +60,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -274,8 +279,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
-		return addDssDictionary(document, callbacks, null);
+	public DSSDocument addDssDictionary(DSSDocument document,
+										ValidationDataContainer validationDataForInclusion) {
+		return addDssDictionary(document, validationDataForInclusion, null);
 	}
 
 	@Override
@@ -458,45 +464,43 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				&& !PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter);
 	}
 
-	/**
-	 * This method builds a Map of known Objects (extracted from previous DSS
-	 * Dictionaries). This map will be used to avoid duplicate the same objects
-	 * between layers.
-	 * 
-	 * @param callbacks a list of {@link DSSDictionaryCallback}s
-	 * @return a map of built objects and their ids
-	 */
-	protected Map<String, Long> buildKnownObjects(List<DSSDictionaryCallback> callbacks) {
+	protected Map<String, Long> buildKnownObjects(Collection<AdvancedSignature> signatures) {
 		Map<String, Long> result = new HashMap<>();
-		for (DSSDictionaryCallback callback : callbacks) {
 
-			Map<Long, CertificateToken> storedCertificates = callback.getStoredCertificates();
-			for (Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
-				String tokenKey = getTokenDigest(certEntry.getValue());
-				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
-					result.put(tokenKey, certEntry.getKey());
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			for (AdvancedSignature signature : signatures) {
+				PAdESCertificateSource certSource = (PAdESCertificateSource) signature.getCertificateSource();
+				Map<Long, CertificateToken> storedCertificates = certSource.getCertificateMap();
+				for (Map.Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
+					String tokenKey = getTokenDigest(certEntry.getValue());
+					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+						result.put(tokenKey, certEntry.getKey());
+					}
 				}
-			}
 
-			Map<Long, BasicOCSPResp> storedOcspResps = callback.getStoredOcspResps();
-			for (Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
-				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(ocspEntry.getValue());
-				String tokenKey = Utils
-						.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp)));
-				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
-					result.put(tokenKey, ocspEntry.getKey());
+				PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
+				Map<Long, BasicOCSPResp> storedOcspResps = ocspSource.getOcspMap();
+				for (Map.Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
+					final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(ocspEntry.getValue());
+					String tokenKey = Utils.toBase64(DSSUtils.digest(
+							DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp)));
+					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+						result.put(tokenKey, ocspEntry.getKey());
+					}
 				}
-			}
 
-			Map<Long, CRLBinary> storedCrls = callback.getStoredCrls();
-			for (Entry<Long, CRLBinary> crlEntry : storedCrls.entrySet()) {
-				String tokenKey = Utils
-						.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, crlEntry.getValue().getBinaries()));
-				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
-					result.put(tokenKey, crlEntry.getKey());
+				PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
+				Map<Long, CRLBinary> storedCrls = crlSource.getCrlMap();
+				for (Map.Entry<Long, CRLBinary> crlEntry : storedCrls.entrySet()) {
+					String tokenKey = Utils.toBase64(DSSUtils.digest(
+							DigestAlgorithm.SHA256, crlEntry.getValue().getBinaries()));
+					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+						result.put(tokenKey, crlEntry.getKey());
+					}
 				}
 			}
 		}
+
 		return result;
 	}
 

@@ -22,26 +22,19 @@ package eu.europa.esig.dss.pades.signature;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
-import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
-import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * PAdES Baseline LT signature
@@ -86,20 +79,13 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		}
 
 		signatures = pdfDocumentValidator.getSignatures();
+		assertExtendSignaturePossible(signatures);
 
-		// create DSS dictionary (order is important to know the original object
-		// streams)
-		List<DSSDictionaryCallback> callbacks = new LinkedList<>();
-		for (final AdvancedSignature signature : signatures) {
-			if (signature instanceof PAdESSignature) {
-				PAdESSignature padesSignature = (PAdESSignature) signature;
-				assertExtendSignaturePossible(padesSignature);
-				callbacks.add(validate(padesSignature));
-			}
-		}
+		List<TimestampToken> detachedTimestamps = pdfDocumentValidator.getDetachedTimestamps();
+		ValidationDataContainer validationData = pdfDocumentValidator.getValidationData(signatures, detachedTimestamps);
 
 		final PDFSignatureService signatureService = newPdfSignatureService();
-		return signatureService.addDssDictionary(document, callbacks, parameters.getPasswordProtection());
+		return signatureService.addDssDictionary(document, validationData);
 
 	}
 	
@@ -116,38 +102,13 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		timestamps.addAll(signature.getDocumentTimestamps());
 		return Utils.isCollectionEmpty(timestamps);
 	}
-	
-	private void assertExtendSignaturePossible(PAdESSignature padesSignature) throws DSSException {
-		if (padesSignature.areAllSelfSignedCertificates()) {
-			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+
+	private void assertExtendSignaturePossible(List<AdvancedSignature> signatures) {
+		for (AdvancedSignature signature : signatures) {
+			if (signature.areAllSelfSignedCertificates()) {
+				throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+			}
 		}
-	}
-
-	/**
-	 * Validates the signature and returns the DSS dictionary to be created
-	 *
-	 * @param signature {@link PAdESSignature} to validate
-	 * @return {@link DSSDictionaryCallback}
-	 */
-	protected DSSDictionaryCallback validate(PAdESSignature signature) {
-
-		final ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
-		
-		final ValidationDataForInclusionBuilder validationDataForInclusionBuilder = 
-				new ValidationDataForInclusionBuilder(validationContext, signature.getCompleteCertificateSource());
-		final ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
-		
-		DSSDictionaryCallback validationCallback = new DSSDictionaryCallback();
-		validationCallback.setSignature(signature);
-
-		Set<CertificateToken> certificatesForInclusion = validationDataForInclusion.getCertificateTokens();
-		// DSS dictionary includes current certs + discovered with AIA,...
-		validationCallback.setCertificates(certificatesForInclusion);
-
-		validationCallback.setCrls(validationDataForInclusion.getCrlTokens());
-		validationCallback.setOcsps(validationDataForInclusion.getOcspTokens());
-
-		return validationCallback;
 	}
 
 }

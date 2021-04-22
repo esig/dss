@@ -40,11 +40,11 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
-import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
@@ -54,17 +54,14 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -116,68 +113,66 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			LOG.info("====> Extending: {}", (dssDocument.getName() == null ? "IN MEMORY DOCUMENT" : dssDocument.getName()));
 		}
 
-		documentDom = DomUtils.buildDOM(dssDocument);
-		final NodeList signatureNodeList = getSignaturesNodeListToExtend(documentDom);
+		documentValidator = new XMLDocumentValidator(dssDocument);
+		documentValidator.setCertificateVerifier(certificateVerifier);
+		documentValidator.setDetachedContents(params.getDetachedContents());
+
+		documentDom = documentValidator.getRootElement();
+
+		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+
+		if (Utils.isCollectionEmpty(signatures)) {
+			throw new DSSException("There is no signature to extend!");
+		}
 
 		// In the case of the enveloped signature we have a specific treatment:<br>
 		// we will just extend the signature that is being created (during creation process)
-		String signatureId = null;
+		List<AdvancedSignature> signaturesToExtend = signatures;
 		
 		final Operation operationKind = context.getOperationKind();
 		if (SIGNING.equals(operationKind)) {
-			signatureId = params.getDeterministicId();
-		}
-		
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+			String signatureId = params.getDeterministicId();
 
-			currentSignatureDom = (Element) signatureNodeList.item(ii);
-			
-			final String currentSignatureId = currentSignatureDom.getAttribute(XMLDSigAttribute.ID.getAttributeName());
-			if ((signatureId != null) && !signatureId.equals(currentSignatureId)) {
-				continue;
+			for (AdvancedSignature signature : signatures) {
+				if (!signatureId.equals(signature.getId())) {
+					signaturesToExtend = Arrays.asList(signature);
+				}
 			}
-			
-			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
-			xadesSignature.setDetachedContents(params.getDetachedContents());
-			xadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
-			extendSignatureTag();
-			
 		}
+
+		extendSignatures(signaturesToExtend);
+
 		return createXmlDocument();
 	}
 
 	/**
-	 * Extends the signature to a desired level. This method is overridden by other profiles.<br>
+	 * Extends signatures to a desired level.<br>
+	 * This method is overridden by other profiles.<br>
 	 * For -T profile adds the SignatureTimeStamp element which contains a single HashDataInfo element that refers to
 	 * the ds:SignatureValue element of the [XMLDSIG] signature. The timestamp token is obtained from TSP source.<br>
 	 * Adds {@code <SignatureTimeStamp>} segment into {@code <UnsignedSignatureProperties>} element.
 	 */
-	protected void extendSignatureTag() {
+	protected void extendSignatures(List<AdvancedSignature> signatures) {
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
 
-		assertExtendSignatureToTPossible();
-		
-		xadesPaths = xadesSignature.getXAdESPaths();
+			assertExtendSignatureToTPossible();
+			assertSignatureValid(xadesSignature);
 
-		// We ensure that all XML segments needed for the construction of the extension -T are present.
-		// If a segment does not exist then it is created.
-		ensureUnsignedProperties();
-		ensureUnsignedSignatureProperties();
-		ensureSignedDataObjectProperties();
-		assertSignatureValid(xadesSignature);
-		
-		Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+			Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-		// The timestamp must be added only if there is no one or the extension -T level is being created
-		if (!xadesSignature.hasTProfile() || XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
+			// The timestamp must be added only if there is no one or the extension -T level is being created
+			if (!xadesSignature.hasTProfile() || XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
 
-			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
-			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
-			final byte[] canonicalizedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
-			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
-			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalizedValue);
-			createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
-			
-			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
+				final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+				final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
+				final byte[] canonicalizedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
+				final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
+				final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalizedValue);
+				createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
+
+				unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
+			}
 		}
 	}
 
@@ -203,18 +198,33 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	}
 	
 	/**
-	 * Returns a XAdES ValidationDataForInclusion (LT-, XL- level)
+	 * Returns a XAdES ValidationData for Inclusion (LT-, XL- level)
 	 * 
-	 * @param validationContext a signature {@link ValidationContext}
-	 * @return {@link ValidationDataForInclusion}
+	 * @param validationDataContainer {@link ValidationDataContainer}
+	 * @param signature {@link AdvancedSignature} to extract validation data for
+	 * @return {@link ValidationData}
 	 */
-	protected ValidationDataForInclusion getValidationDataForInclusion(final ValidationContext validationContext) {
-		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = 
-				new ValidationDataForInclusionBuilder(validationContext, xadesSignature.getCompleteCertificateSource())
-				.excludeCertificateTokens(xadesSignature.getCertificateSource().getCertificates())
-				.excludeCRLs(xadesSignature.getCRLSource().getAllRevocationBinaries())
-				.excludeOCSPs(xadesSignature.getOCSPSource().getAllRevocationBinaries());
-		return validationDataForInclusionBuilder.build();
+	protected ValidationData getValidationDataForInclusion(final ValidationDataContainer validationDataContainer,
+														   final AdvancedSignature signature) {
+		ValidationData validationDataForInclusion = new ValidationData();
+
+		ValidationData signatureValidationData = validationDataContainer.getValidationData(signature);
+		validationDataForInclusion.addValidationData(signatureValidationData);
+
+		for (TimestampToken timestampToken : signature.getAllTimestamps()) {
+			ValidationData timestampValidationData = validationDataContainer.getValidationData(timestampToken);
+			validationDataForInclusion.addValidationData(timestampValidationData);
+		}
+		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
+			ValidationData counterSignatureValidationData = validationDataContainer.getValidationData(counterSignature);
+			validationDataForInclusion.addValidationData(counterSignatureValidationData);
+		}
+
+		validationDataForInclusion.excludeCertificateTokens(xadesSignature.getCertificateSource().getCertificates());
+		validationDataForInclusion.excludeCRLTokens(xadesSignature.getCRLSource().getAllRevocationBinaries());
+		validationDataForInclusion.excludeOCSPTokens(xadesSignature.getOCSPSource().getAllRevocationBinaries());
+
+		return validationDataForInclusion;
 	}
 
 	/**
@@ -437,15 +447,15 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	/**
 	 * This method incorporates the timestamp validation data in the signature
 	 *
-	 * @param validationDataForInclusion {@link ValidationDataForInclusion} to be included into the signature
+	 * @param validationDataForInclusion {@link ValidationData} to be included into the signature
 	 */
-	protected void incorporateTimestampValidationData(final ValidationDataForInclusion validationDataForInclusion, String indent) {
+	protected void incorporateTimestampValidationData(final ValidationData validationDataForInclusion, String indent) {
 
-		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
-		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
-		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
+		if (!validationDataForInclusion.isEmpty()) {
 
-		if (Utils.isCollectionNotEmpty(certificateValuesToAdd) || Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
+			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+			Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+			Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 
 			final Element timeStampValidationDataDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(),
 					XAdES141Element.TIMESTAMP_VALIDATION_DATA);

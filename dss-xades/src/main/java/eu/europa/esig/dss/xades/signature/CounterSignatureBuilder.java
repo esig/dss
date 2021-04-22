@@ -32,13 +32,11 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -46,8 +44,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
@@ -82,8 +80,10 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	public DSSDocument getCanonicalizedSignatureValue(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
 		params = parameters;
 
-		documentDom = DomUtils.buildDOM(signatureDocument);
-		xadesSignature = extractSignatureById(documentDom, parameters);
+		documentValidator = new XMLDocumentValidator(signatureDocument);
+		documentDom = documentValidator.getRootElement();
+
+		xadesSignature = extractSignatureById(parameters);
 
 		Element signatureValueElement = getSignatureValueElement(xadesSignature);
 		byte[] canonicalizedSignatureValue = DSSXMLUtils.canonicalizeSubtree(
@@ -105,10 +105,11 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	 * @return {@link DSSReference} for incorporation into a counter signature
 	 */
 	public DSSReference buildCounterSignatureDSSReference(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
-		documentDom = DomUtils.buildDOM(signatureDocument);
-		xadesSignature = extractSignatureById(documentDom, parameters);
+		documentValidator = new XMLDocumentValidator(signatureDocument);
+		documentDom = documentValidator.getRootElement();
 
-		xadesPaths = xadesSignature.getXAdESPaths();
+		xadesSignature = extractSignatureById(parameters);
+		initializeSignatureBuilder(xadesSignature);
 		
 		DSSReference reference = new DSSReference();
 		byte[] signatureElementBinaries = DSSXMLUtils.serializeNode(xadesSignature.getSignatureElement());
@@ -143,13 +144,11 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 			XAdESCounterSignatureParameters parameters) {
 		params = parameters;
 
-		documentDom = DomUtils.buildDOM(signatureDocument);
-		xadesSignature = extractSignatureById(documentDom, parameters);
-		currentSignatureDom = xadesSignature.getSignatureElement();
-		xadesPaths = xadesSignature.getXAdESPaths();
+		documentValidator = new XMLDocumentValidator(signatureDocument);
+		documentDom = documentValidator.getRootElement();
 
-		ensureUnsignedProperties();
-		ensureUnsignedSignatureProperties();
+		xadesSignature = extractSignatureById(parameters);
+		initializeSignatureBuilder(xadesSignature);
 		
 		Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 		
@@ -178,19 +177,15 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		counterSignatureElement.appendChild(adopted);
 	}
 	
-	private XAdESSignature extractSignatureById(Document documentDom, XAdESCounterSignatureParameters parameters) {
+	private XAdESSignature extractSignatureById(XAdESCounterSignatureParameters parameters) {
 		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
 			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 		}
-		
-		final NodeList signatureNodeList = getSignaturesNodeListToExtend(documentDom);
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
-			Element signatureDom = (Element) signatureNodeList.item(ii);
-			XAdESSignature signature = new XAdESSignature(signatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
-			signature.setDetachedContents(parameters.getDetachedContents());
-			
-			XAdESSignature signatureById = getSignatureOrItsCounterSignatureById(signature, parameters.getSignatureIdToCounterSign());
+
+		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		for (AdvancedSignature signature : signatures) {
+			XAdESSignature signatureById = getSignatureOrItsCounterSignatureById((XAdESSignature) signature, parameters.getSignatureIdToCounterSign());
 			if (signatureById != null) {
 				return signatureById;
 			}

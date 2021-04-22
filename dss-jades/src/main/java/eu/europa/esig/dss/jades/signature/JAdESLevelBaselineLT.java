@@ -34,12 +34,11 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -84,7 +83,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		removeOldCertificateValues(jadesSignature, etsiUHeader);
 		removeOldRevocationValues(jadesSignature, etsiUHeader);
 
-		final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature,
+		final ValidationData validationDataForInclusion = getValidationDataForInclusion(jadesSignature,
 				validationContext);
 
 		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
@@ -93,8 +92,8 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 			etsiUHeader.addComponent(JAdESHeaderParameterNames.X_VALS, xVals,
 					params.isBase64UrlEncodedEtsiUComponents());
 		}
-		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
-		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
+		Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+		Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 		if (Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
 			JsonObject rVals = getRVals(crlsToAdd, ocspsToAdd);
 			etsiUHeader.addComponent(JAdESHeaderParameterNames.R_VALS, rVals,
@@ -117,10 +116,10 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	 *
 	 * @param jadesSignature {@link JAdESSignature} to get validation data to be included for
 	 * @param validationContext {@link ValidationContext} used to process the signature
-	 * @return {@link ValidationDataForInclusion}
+	 * @return {@link ValidationData}
 	 */
-	protected ValidationDataForInclusion getValidationDataForInclusion(JAdESSignature jadesSignature,
-																	   ValidationContext validationContext) {
+	protected ValidationData getValidationDataForInclusion(JAdESSignature jadesSignature,
+                                                           ValidationContext validationContext) {
 		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = new ValidationDataForInclusionBuilder(
 				validationContext, jadesSignature.getCompleteCertificateSource())
 						.excludeCertificateTokens(jadesSignature.getCertificateSource().getCertificates())
@@ -157,11 +156,11 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	/**
 	 * Builds and returns 'rVals' JsonObject
 	 * 
-	 * @param crlsToAdd  a list of {@link CRLToken}s to add
-	 * @param ocspsToAdd a list of {@link OCSPToken}s to add
+	 * @param crlsToAdd  a set of {@link CRLToken}s to add
+	 * @param ocspsToAdd a set of {@link OCSPToken}s to add
 	 * @return {@link JsonObject} 'rVals' object
 	 */
-	protected JsonObject getRVals(List<CRLToken> crlsToAdd, List<OCSPToken> ocspsToAdd) {
+	protected JsonObject getRVals(Set<CRLToken> crlsToAdd, Set<OCSPToken> ocspsToAdd) {
 		JsonObject rValsObject = new JsonObject();
 		if (Utils.isCollectionNotEmpty(crlsToAdd)) {
 			rValsObject.put(JAdESHeaderParameterNames.CRL_VALS, getCrlVals(crlsToAdd));
@@ -173,7 +172,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JSONArray getCrlVals(List<CRLToken> crlsToAdd) {
+	private JSONArray getCrlVals(Set<CRLToken> crlsToAdd) {
 		JSONArray array = new JSONArray();
 		for (CRLToken crlToken : crlsToAdd) {
 			JSONObject pkiOb = new JSONObject();
@@ -184,7 +183,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JSONArray getOcspVals(List<OCSPToken> ocspsToAdd) {
+	private JSONArray getOcspVals(Set<OCSPToken> ocspsToAdd) {
 		JSONArray array = new JSONArray();
 		for (OCSPToken ocspToken : ocspsToAdd) {
 			JSONObject pkiOb = new JSONObject();

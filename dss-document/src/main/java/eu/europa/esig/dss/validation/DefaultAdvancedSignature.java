@@ -330,29 +330,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
 
+		// TODO: the method is to be deleted
+
 		final ValidationContext validationContext = new SignatureValidationContext();
-		certificateVerifier.setSignatureCRLSource(getCompleteCRLSource());
-		certificateVerifier.setSignatureOCSPSource(getCompleteOCSPSource());
-		certificateVerifier.setSignatureCertificateSource(getCompleteCertificateSource());
 		
 		validationContext.initialize(certificateVerifier);
 
-		// Add resolved certificates
-		List<CertificateValidity> certificateValidities = getCandidatesForSigningCertificate().getCertificateValidityList();
-		if (Utils.isCollectionNotEmpty(certificateValidities)) {
-			for (CertificateValidity certificateValidity : certificateValidities) {
-				if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
-					validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
-				}
-			}
-		}
+		validationContext.addSignatureForVerification(this);
 
-		final List<CertificateToken> certificates = getCertificates();
-		for (final CertificateToken certificate : certificates) {
-			validationContext.addCertificateTokenForVerification(certificate);
-		}
-		prepareTimestamps(validationContext);
-		prepareCounterSignatures(validationContext);
 		validationContext.validate();
 
 		validationContext.checkAllTimestampsValid();

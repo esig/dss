@@ -25,9 +25,11 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -54,45 +56,57 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	 * - CertificateValues element and<br>
 	 * - RevocationValues element.
 	 *
-	 * @see XAdESLevelX#extendSignatureTag()
+	 * @see XAdESLevelBaselineT#extendSignatures(List<AdvancedSignature>)
 	 */
 	@Override
-	protected void extendSignatureTag() throws DSSException {
-		super.extendSignatureTag();
-		
-		if (xadesSignature.hasLTAProfile()) {
-			return;
+	protected void extendSignatures(List<AdvancedSignature> signatures) {
+		super.extendSignatures(signatures);
+
+		// Reset sources
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			if (xadesSignature.hasLTAProfile()) {
+				continue;
+			}
+
+			// Data sources can already be loaded in memory (force reload)
+			xadesSignature.resetCertificateSource();
+			xadesSignature.resetRevocationSources();
+			xadesSignature.resetTimestampSource();
+
+			assertExtendSignatureToLTPossible();
+
+			/**
+			 * In all cases the -LT level need to be regenerated.
+			 */
+			checkSignatureIntegrity();
 		}
 
-		// Data sources can already be loaded in memory (force reload)
-		xadesSignature.resetCertificateSource();
-		xadesSignature.resetRevocationSources();
-		xadesSignature.resetTimestampSource();
+		// Perform signature validation
+		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
 
-		assertExtendSignatureToLTPossible();
-		Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+		// Append ValidationData
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			if (xadesSignature.hasLTAProfile()) {
+				continue;
+			}
 
-		/**
-		 * In all cases the -LT level need to be regenerated.
-		 */
-		checkSignatureIntegrity();
+			Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+			String indent = removeOldCertificateValues();
+			removeOldRevocationValues();
 
-		// must be executed before data removing
-		final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+			ValidationData validationDataForInclusion = getValidationDataForInclusion(validationDataContainer, signature);
 
-		String indent = removeOldCertificateValues();
-		removeOldRevocationValues();
-		
-		ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(validationContext);
+			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+			Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+			Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 
-		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
-		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
-		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
-		
-		incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
-		incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
-		
-		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
+			incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
+			incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
+
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
+		}
 	}
 
 	/**

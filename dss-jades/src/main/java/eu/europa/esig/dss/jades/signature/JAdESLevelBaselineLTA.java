@@ -39,7 +39,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
 import org.jose4j.json.internal.json_simple.JSONArray;
 
 import java.util.Collections;
@@ -73,7 +73,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 			final ValidationContext validationContext = jadesSignature.getSignatureValidationContext(certificateVerifier);
 			removeLastTimestampValidationData(jadesSignature, etsiUHeader);
 			
-			final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature, validationContext);
+			final ValidationData validationDataForInclusion = getValidationDataForInclusion(jadesSignature, validationContext);
 			if (!validationDataForInclusion.isEmpty()) {
 				JsonObject tstVd = getTstVd(validationDataForInclusion);
 				etsiUHeader.addComponent(JAdESHeaderParameterNames.TST_VD, tstVd,
@@ -95,10 +95,10 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		jadesSignature.resetRevocationSources();
 	}
 
-	private JsonObject getTstVd(final ValidationDataForInclusion validationDataForInclusion) {
+	private JsonObject getTstVd(final ValidationData validationDataForInclusion) {
 		Set<CertificateToken> certificateTokens = validationDataForInclusion.getCertificateTokens();
-		List<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
-		List<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
+		Set<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
+		Set<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
 		
 		JsonObject tstVd = new JsonObject();
 		if (Utils.isCollectionNotEmpty(certificateTokens)) {

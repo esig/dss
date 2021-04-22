@@ -56,7 +56,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -372,7 +372,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		ManifestFile lastManifestFile = getLastManifestFile(manifests);
 		DSSDocument lastTimestamp = getLastTimestampDocument(lastManifestFile, timestamps);
 		if (lastTimestamp != null) {
-			ValidationDataForInclusion validationDataForInclusion =
+			ValidationData validationDataForInclusion =
 					new ASiCWithCAdESValidationDataForInclusionBuilder(certificateVerifier).setLastManifestFile(lastManifestFile)
 							.setLastTimestampDocument(lastTimestamp).setSignatures(signatures).setTimestamps(timestamps)
 							.setManifests(manifests).build();
@@ -443,7 +443,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return DSSUtils.getDocumentWithLastName(timestamps);
 	}
 
-	private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationDataForInclusion validationDataForInclusion,
+	private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationData validationDataForInclusion,
 										List<DSSDocument> detachedContents) {
 		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
 		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);

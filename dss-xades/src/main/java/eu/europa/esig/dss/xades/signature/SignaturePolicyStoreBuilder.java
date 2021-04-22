@@ -27,24 +27,21 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -78,15 +75,10 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 
 		params = new XAdESSignatureParameters();
 
-		documentDom = DomUtils.buildDOM(signatureDocument);
-		final NodeList signatureNodeList = getSignaturesNodeListToExtend(documentDom);
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
-			currentSignatureDom = (Element) signatureNodeList.item(ii);
-
-			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
-
-			xadesPaths = xadesSignature.getXAdESPaths();
-			
+		documentValidator = new XMLDocumentValidator(signatureDocument);
+		documentDom = documentValidator.getRootElement();
+		for (AdvancedSignature signature : documentValidator.getSignatures()) {
+			XAdESSignature xadesSignature = initializeSignatureBuilder((XAdESSignature) signature);
 			final String currentSignatureId = xadesSignature.getDAIdentifier();
 
 			ensureUnsignedProperties();

@@ -25,9 +25,11 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -50,46 +52,57 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 	/**
 	 * Adds CertificateValues and RevocationValues segments to UnsignedSignatureProperties.<br>
-	 * 
+	 *
 	 * An XML electronic signature MAY contain at most one:<br>
 	 * - CertificateValues element and<br>
 	 * - RevocationValues element.
 	 *
-	 * @see XAdESLevelX#extendSignatureTag()
+	 * @see XAdESLevelBaselineT#extendSignatures(List<AdvancedSignature>)
 	 */
 	@Override
-	protected void extendSignatureTag() throws DSSException {
-		/* Go up to -X */
-		super.extendSignatureTag();
+	protected void extendSignatures(List<AdvancedSignature> signatures) {
+		super.extendSignatures(signatures);
 
-		if (xadesSignature.hasLTAProfile()) {
-			return;
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			if (xadesSignature.hasLTAProfile()) {
+				continue;
+			}
+
+			// NOTE: do not force sources reload for certificate and revocation sources
+			// in order to ensure the same validation data as on -C level
+			xadesSignature.resetTimestampSource();
+
+			assertExtendSignatureToXLPossible();
+
+			checkSignatureIntegrity();
 		}
 
-		// NOTE: do not force sources reload for certificate and revocation sources
-		// in order to ensure the same validation data as on -C level
-		xadesSignature.resetTimestampSource();
+		// Perform signature validation
+		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
 
-		assertExtendSignatureToXLPossible();
-		Element levelXUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			if (xadesSignature.hasLTAProfile()) {
+				continue;
+			}
 
-		checkSignatureIntegrity();
+			Element levelXUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+			String indent = removeOldCertificateValues();
+			removeOldRevocationValues();
 
-		final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+			final ValidationData validationDataForInclusion = getValidationDataForInclusion(validationDataContainer, signature);
 
-		String indent = removeOldCertificateValues();
-		removeOldRevocationValues();
+			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+			Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+			Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 
-		final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(validationContext);
+			incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
+			incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
 
-		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
-		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
-		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXUnsignedProperties);
+		}
 
-		incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
-		incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
-
-		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXUnsignedProperties);
 	}
 
 	/**

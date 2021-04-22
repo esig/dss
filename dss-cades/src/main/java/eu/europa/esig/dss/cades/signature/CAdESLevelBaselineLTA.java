@@ -32,7 +32,7 @@ import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
@@ -127,7 +127,7 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 						.excludeCertificateTokens(cadesSignature.getCompleteCertificateSource().getAllCertificateTokens())
 						.excludeCRLs(cadesSignature.getCompleteCRLSource().getAllRevocationBinaries())
 						.excludeOCSPs(cadesSignature.getCompleteOCSPSource().getAllRevocationBinaries());
-				ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
+				ValidationData validationDataForInclusion = validationDataForInclusionBuilder.build();
 				unsignedAttributes = addValidationData(unsignedAttributes, validationDataForInclusion, parameters.getDetachedContents());
 				signerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 			} catch (IOException | CMSException | TSPException e) {
@@ -148,7 +148,7 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 		return cmsSignedData;
 	}
 	
-	private AttributeTable addValidationData(AttributeTable unsignedAttributes, final ValidationDataForInclusion validationDataForInclusion,
+	private AttributeTable addValidationData(AttributeTable unsignedAttributes, final ValidationData validationDataForInclusion,
 			final List<DSSDocument> detachedContents) throws IOException, CMSException, TSPException {
 		TimeStampToken timestampTokenToExtend = getLastArchiveTimestamp(unsignedAttributes);
 		if (timestampTokenToExtend != null) {

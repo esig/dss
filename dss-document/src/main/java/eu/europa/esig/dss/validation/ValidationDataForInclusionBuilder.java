@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,8 +52,8 @@ public class ValidationDataForInclusionBuilder {
 	/** The ValidationContext to access and validation certificate chains */
 	private final ValidationContext validationContext;
 
-	/** The merged certificate source */
-	private final ListCertificateSource completeCertificateSource;
+	/** The certificates to be included */
+	private final Collection<CertificateToken> certificatesForInclusion;
 
 	/** The certificate tokens to be excluded from the inclusion */
 	private Collection<CertificateToken> excludeCertificateTokens;
@@ -71,7 +72,18 @@ public class ValidationDataForInclusionBuilder {
 	 */
 	public ValidationDataForInclusionBuilder(final ValidationContext validationContext, final ListCertificateSource completeCertificateSource) {
 		this.validationContext = validationContext;
-		this.completeCertificateSource = completeCertificateSource;
+		this.certificatesForInclusion = completeCertificateSource.getAllCertificateTokens();
+	}
+
+	/**
+	 * The default constructor
+	 *
+	 * @param validationContext a signature/timestamp {@link ValidationContext}
+	 * @param certificatesForInclusion a list of {@link CertificateToken}s to be included
+	 */
+	public ValidationDataForInclusionBuilder(final ValidationContext validationContext, final Collection<CertificateToken> certificatesForInclusion) {
+		this.validationContext = validationContext;
+		this.certificatesForInclusion = certificatesForInclusion;
 	}
 	
 	/**
@@ -108,16 +120,25 @@ public class ValidationDataForInclusionBuilder {
 	}
 
 	/**
+	 * Creates a new instance of {@code ValidationDataForInclusion}
+	 *
+	 * @return {@link ValidationData}
+	 */
+	protected ValidationData instantiateValidationDataForInclusion() {
+		return new ValidationData();
+	}
+
+	/**
 	 * Creates a ValidationDataForInclusion for a signature/timestamp
 	 * 
-	 * @return {@link ValidationDataForInclusion}
+	 * @return {@link ValidationData}
 	 */
-	public ValidationDataForInclusion build() {
-		ValidationDataForInclusion validationDataForInclusion = new ValidationDataForInclusion();
+	public ValidationData build() {
+		ValidationData validationDataForInclusion = instantiateValidationDataForInclusion();
 		Set<CertificateToken> validationCertificates = getValidationCertificates();
-		validationDataForInclusion.setCrlTokens(getCRLsForInclusion(validationCertificates));
-		validationDataForInclusion.setOcspTokens(getOCSPsForInclusion(validationCertificates));
-		validationDataForInclusion.setCertificateTokens(getCertificatesForInclusion(validationCertificates));
+//		validationDataForInclusion.setCrlTokens(getCRLsForInclusion(validationCertificates));
+//		validationDataForInclusion.setOcspTokens(getOCSPsForInclusion(validationCertificates));
+//		validationDataForInclusion.setCertificateTokens(getCertificatesForInclusion(validationCertificates));
 		return validationDataForInclusion;
 	}
 	
@@ -128,19 +149,19 @@ public class ValidationDataForInclusionBuilder {
 	 * @return set of certificates which public keys not yet present within the signature
 	 */
 	private Set<CertificateToken> getValidationCertificates() {
-		Set<CertificateToken> certificatesForInclusion = completeCertificateSource.getAllCertificateTokens();
+		Set<CertificateToken> result = new HashSet<>(certificatesForInclusion);
 		// avoid adding of cross-certificates to the list
-		final Collection<EntityIdentifier> publicKeys = DSSUtils.getEntityIdentifierList(certificatesForInclusion);
+		final Collection<EntityIdentifier> publicKeys = DSSUtils.getEntityIdentifierList(result);
 		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
 			if (!publicKeys.contains(certificateToken.getEntityKey())) {
-				certificatesForInclusion.add(certificateToken);
+				result.add(certificateToken);
 				publicKeys.add(certificateToken.getEntityKey());
 			} else {
 				LOG.debug("Certificate Token with Id : [{}] has not been added for inclusion. "
 						+ "The same public key is already present!", certificateToken.getDSSIdAsString());
 			}
 		}
-		return certificatesForInclusion;
+		return result;
 	}
 	
 	/**
@@ -163,9 +184,9 @@ public class ValidationDataForInclusionBuilder {
 	 *            {@link CertificateToken} contains all the certificate tokens used in the validation
 	 * @return list of {@link CRLToken}s to be included to the signature
 	 */
-	private List<CRLToken> getCRLsForInclusion(final Set<CertificateToken> validationCertificates) {
+	private Set<CRLToken> getCRLsForInclusion(final Set<CertificateToken> validationCertificates) {
 
-		final List<CRLToken> crlTokens = new ArrayList<>();
+		final Set<CRLToken> crlTokens = new HashSet<>();
 		List<String> revocationIds = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(excludeCRLs)) {
 			revocationIds = excludeCRLs.stream().map(r -> r.asXmlId()).collect(Collectors.toList());
@@ -189,9 +210,9 @@ public class ValidationDataForInclusionBuilder {
 	 *            {@link CertificateToken} contains all the certificate tokens used in the validation
 	 * @return list of {@link OCSPToken}s to be included to the signature
 	 */
-	private List<OCSPToken> getOCSPsForInclusion(final Set<CertificateToken> validationCertificates) {
+	private Set<OCSPToken> getOCSPsForInclusion(final Set<CertificateToken> validationCertificates) {
 		
-		final List<OCSPToken> ocspTokens = new ArrayList<>();
+		final Set<OCSPToken> ocspTokens = new HashSet<>();
 		List<String> revocationIds = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(excludeOCSPs)) {
 			revocationIds = excludeOCSPs.stream().map(r -> r.asXmlId()).collect(Collectors.toList());

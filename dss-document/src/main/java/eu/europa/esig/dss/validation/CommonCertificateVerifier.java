@@ -91,24 +91,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private DataLoader dataLoader;
 
 	/**
-	 * This variable contains the {@code ListRevocationSource} extracted from the
-	 * signatures to validate.
-	 */
-	private ListRevocationSource<CRL> signatureCRLSource;
-
-	/**
-	 * This variable contains the {@code ListRevocationSource} extracted from the
-	 * signatures to validate.
-	 */
-	private ListRevocationSource<OCSP> signatureOCSPSource;
-	
-	/**
-	 * This variable contains the {@code ListCertificateSource} extracted from the
-	 * signatures to validate.
-	 */
-	private ListCertificateSource signatureCertificateSource;
-
-	/**
 	 * This variable set the default Digest Algorithm what will be used for calculation
 	 * of digests for validation tokens and signed data
 	 * Default: SHA256
@@ -328,36 +310,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
-	}
-
-	@Override
-	public ListRevocationSource<CRL> getSignatureCRLSource() {
-		return signatureCRLSource;
-	}
-
-	@Override
-	public void setSignatureCRLSource(final ListRevocationSource<CRL> signatureCRLSource) {
-		this.signatureCRLSource = signatureCRLSource;
-	}
-
-	@Override
-	public ListRevocationSource<OCSP> getSignatureOCSPSource() {
-		return signatureOCSPSource;
-	}
-
-	@Override
-	public void setSignatureOCSPSource(final ListRevocationSource<OCSP> signatureOCSPSource) {
-		this.signatureOCSPSource = signatureOCSPSource;
-	}
-
-	@Override
-	public ListCertificateSource getSignatureCertificateSource() {
-		return signatureCertificateSource;
-	}
-
-	@Override
-	public void setSignatureCertificateSource(ListCertificateSource signatureCertificateSource) {
-		this.signatureCertificateSource = signatureCertificateSource;
 	}
 
 	@Override

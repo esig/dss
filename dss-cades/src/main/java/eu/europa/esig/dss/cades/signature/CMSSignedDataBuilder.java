@@ -31,7 +31,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
@@ -299,12 +299,12 @@ public class CMSSignedDataBuilder {
 	/**
 	 * Extends the provided {@code cmsSignedData} with the required validation data
 	 * @param cmsSignedData {@link CMSSignedData} to be extended
-	 * @param validationDataForInclusion the {@link ValidationDataForInclusion} to be included into the cmsSignedData
+	 * @param validationDataForInclusion the {@link ValidationData} to be included into the cmsSignedData
 	 * @param detachedContents list of detached {@link DSSDocument}s
 	 * @return extended {@link CMSSignedData}
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, ValidationDataForInclusion validationDataForInclusion, 
+	public CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, ValidationData validationDataForInclusion,
 			List<DSSDocument> detachedContents) {
 
 		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();
@@ -318,7 +318,7 @@ public class CMSSignedDataBuilder {
 
 		Store<X509CRLHolder> crlsStore = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> newCrlsStore = new HashSet<>(crlsStore.getMatches(null));
-		final List<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
+		final Set<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
 		for (final CRLToken crlToken : crlTokens) {
 			final X509CRLHolder x509CRLHolder = getX509CrlHolder(crlToken);
 			newCrlsStore.add(x509CRLHolder);
@@ -327,7 +327,7 @@ public class CMSSignedDataBuilder {
 
 		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<>(otherRevocationInfoFormatStoreBasic.getMatches(null));
-		final List<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
+		final Set<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
 		for (final OCSPToken ocspToken : ocspTokens) {
 			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
 			if (basicOCSPResp != null) {

@@ -2,7 +2,6 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -132,19 +130,13 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     private boolean isAllRevocationDataPresent(ListCertificateSource certificateSources,
                                                CertificateVerifier offlineCertificateVerifier) {
         SignatureValidationContext validationContext = new SignatureValidationContext();
-        offlineCertificateVerifier.setSignatureCRLSource(signature.getCompleteCRLSource());
-        offlineCertificateVerifier.setSignatureOCSPSource(signature.getCompleteOCSPSource());
-        offlineCertificateVerifier.setSignatureCertificateSource(signature.getCompleteCertificateSource());
         validationContext.initialize(offlineCertificateVerifier);
 
-        List<CertificateValidity> certificateValidityList = signature.getCandidatesForSigningCertificate()
-                .getCertificateValidityList();
-        for (CertificateValidity certificateValidity : certificateValidityList) {
-            if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
-                validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
-            }
-        }
+        validationContext.addDocumentCertificateSource(signature.getCompleteCertificateSource());
+        validationContext.addDocumentCRLSource(signature.getCompleteCRLSource());
+        validationContext.addDocumentOCSPSource(signature.getCompleteOCSPSource());
 
+        // add only the selected certificates for the offline validation
         for (final CertificateToken certificate : certificateSources.getAllCertificateTokens()) {
             validationContext.addCertificateTokenForVerification(certificate);
         }

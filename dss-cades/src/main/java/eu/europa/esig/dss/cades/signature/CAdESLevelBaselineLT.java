@@ -28,7 +28,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -77,7 +77,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 												CAdESSignatureParameters parameters) {
 		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
 		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = getValidationDataForInclusionBuilder(cadesSignature);
-		ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
+		ValidationData validationDataForInclusion = validationDataForInclusionBuilder.build();
 		return extendWithValidationData(cmsSignedData, validationDataForInclusion, parameters.getDetachedContents());
 	}
 	
@@ -96,12 +96,12 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 	 * Extends the {@code cmsSignedData} with the LT-level (validation data)
 	 *
 	 * @param cmsSignedData {@link CMSSignedData} to extend
-	 * @param validationDataForInclusion {@link ValidationDataForInclusion} to include
+	 * @param validationDataForInclusion {@link ValidationData} to include
 	 * @param detachedContents a list of {@link DSSDocument} detached documents (only one is allowed)
 	 * @return extended {@link CMSSignedData}
 	 */
 	protected CMSSignedData extendWithValidationData(CMSSignedData cmsSignedData,
-													 ValidationDataForInclusion validationDataForInclusion,
+													 ValidationData validationDataForInclusion,
 													 List<DSSDocument> detachedContents) {
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		cmsSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion, detachedContents);

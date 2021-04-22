@@ -17,7 +17,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.cms.CMSSignedData;
@@ -124,10 +124,10 @@ public class ASiCWithCAdESValidationDataForInclusionBuilder {
     /**
      * Builds {@code ValidationDataForInclusion}
      *
-     * @return {@link ValidationDataForInclusion}
+     * @return {@link ValidationData}
      */
-    public ValidationDataForInclusion build() {
-        ValidationDataForInclusion validationDataForInclusion = new ValidationDataForInclusion();
+    public ValidationData build() {
+        ValidationData validationDataForInclusion = new ValidationData();
         List<TimestampToken> timestampTokens = createTimestampTokensFromDocuments();
 
         if (lastManifestFile != null && ASiCUtils.coversSignature(lastManifestFile)) {
@@ -152,7 +152,7 @@ public class ASiCWithCAdESValidationDataForInclusionBuilder {
                             documentToValidate = DSSUtils.getDocumentWithName(timestamps, fileName);
                         }
                         if (documentToValidate != null) {
-                            ValidationDataForInclusion validationDataForDocument = getValidationDataForDocument(
+                            ValidationData validationDataForDocument = getValidationDataForDocument(
                                     documentToValidate, timestampTokens);
                             populateValidationDataForInclusion(validationDataForInclusion, validationDataForDocument);
                         }
@@ -161,7 +161,7 @@ public class ASiCWithCAdESValidationDataForInclusionBuilder {
             }
 
         } else if (lastTimestampDocument != null) {
-            ValidationDataForInclusion validationDataForDocument = getValidationDataForDocument(
+            ValidationData validationDataForDocument = getValidationDataForDocument(
                     lastTimestampDocument, timestampTokens);
             populateValidationDataForInclusion(validationDataForInclusion, validationDataForDocument);
 
@@ -173,7 +173,7 @@ public class ASiCWithCAdESValidationDataForInclusionBuilder {
         return validationDataForInclusion;
     }
 
-    private ValidationDataForInclusion getValidationDataForDocument(DSSDocument document, List<TimestampToken> timestampTokens) {
+    private ValidationData getValidationDataForDocument(DSSDocument document, List<TimestampToken> timestampTokens) {
         CAdESSignature signature = createSignature(document);
         List<TimestampToken> archiveTimestampTokens = getTimestampsCoveringTheSignature(timestampTokens, document.getName());
         populateExternalTimestamps(signature, archiveTimestampTokens);
@@ -242,7 +242,7 @@ public class ASiCWithCAdESValidationDataForInclusionBuilder {
         return cadesSignature;
     }
 
-    private ValidationDataForInclusion getValidationDataForSignature(CAdESSignature signature) {
+    private ValidationData getValidationDataForSignature(CAdESSignature signature) {
         try {
             ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
             ValidationDataForInclusionBuilder validationDataForInclusionBuilder =
@@ -261,7 +261,7 @@ public class ASiCWithCAdESValidationDataForInclusionBuilder {
             }
 
             // return empty
-            return new ValidationDataForInclusion();
+            return new ValidationData();
         }
     }
 
@@ -280,8 +280,8 @@ public class ASiCWithCAdESValidationDataForInclusionBuilder {
         return null;
     }
 
-    private void populateValidationDataForInclusion(final ValidationDataForInclusion validationDataForInclusion,
-                                                    ValidationDataForInclusion dataToAdd) {
+    private void populateValidationDataForInclusion(final ValidationData validationDataForInclusion,
+                                                    ValidationData dataToAdd) {
         Collection<EntityIdentifier> publicKeyIdentifiers = DSSUtils.getEntityIdentifierList(
                 validationDataForInclusion.getCertificateTokens());
         for (CertificateToken certificateToken : dataToAdd.getCertificateTokens()) {

@@ -44,6 +44,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAAndLevelTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignRevokedSigWithPOETest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTATest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTCRLCounterTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTWrongAIATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTNotTrustedTSPTest;
@@ -79,7 +80,7 @@ import org.junit.runner.RunWith;
 		PAdESTwoSignersLTALevelTest.class, PAdESWithPemEncodedCrlTest.class, PAdESSignatureParametersSerializationTest.class,
 		PAdESSignedAssertionTest.class, PAdESLevelLTAAndLevelTTest.class, PAdESLevelTNotTrustedTSPTest.class,
         PAdESLevelLTANotTrustedTSPTest.class, PAdESSignWithRevokedCertTest.class, PAdESLevelLTASignRevokedSigWithPOETest.class,
-		PAdESLevelBCustomTimeZoneTest.class })
+		PAdESLevelBCustomTimeZoneTest.class, PAdESLevelLTCRLCounterTest.class })
 public class ITextPAdESSignatureSuiteTest {
 
 }
