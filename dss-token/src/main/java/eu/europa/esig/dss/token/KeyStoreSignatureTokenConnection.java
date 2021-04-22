@@ -103,12 +103,12 @@ public class KeyStoreSignatureTokenConnection extends AbstractKeyStoreTokenConne
 	}
 
 	@Override
-	KeyStore getKeyStore() {
+	protected KeyStore getKeyStore() {
 		return keyStore;
 	}
 
 	@Override
-	PasswordProtection getKeyProtectionParameter() {
+	protected PasswordProtection getKeyProtectionParameter() {
 		return password;
 	}
 

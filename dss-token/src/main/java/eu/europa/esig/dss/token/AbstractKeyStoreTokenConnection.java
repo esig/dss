@@ -41,14 +41,14 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 	 *
 	 * @return {@link KeyStore}
 	 */
-	abstract KeyStore getKeyStore() throws DSSException;
+	protected abstract KeyStore getKeyStore() throws DSSException;
 
 	/**
 	 * Gets the password protection
 	 *
 	 * @return {@link PasswordProtection}
 	 */
-	abstract PasswordProtection getKeyProtectionParameter();
+	protected abstract PasswordProtection getKeyProtectionParameter();
 
 	@Override
 	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {

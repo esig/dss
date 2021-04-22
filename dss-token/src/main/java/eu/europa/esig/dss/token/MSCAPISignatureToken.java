@@ -34,7 +34,7 @@ import java.security.KeyStore.PasswordProtection;
 public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 
 	@Override
-	KeyStore getKeyStore() throws DSSException {
+	protected KeyStore getKeyStore() throws DSSException {
 		KeyStore keyStore = null;
 		try {
 			keyStore = KeyStore.getInstance("Windows-MY");
@@ -46,7 +46,7 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 	}
 
 	@Override
-	PasswordProtection getKeyProtectionParameter() {
+	protected PasswordProtection getKeyProtectionParameter() {
 		return new PasswordProtection("nimp".toCharArray());
 	}
 

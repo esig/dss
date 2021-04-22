@@ -306,7 +306,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	}
 
 	@Override
-	KeyStore getKeyStore() throws DSSException {
+	protected KeyStore getKeyStore() throws DSSException {
 		try {
 			KeyStore keyStore = KeyStore.getInstance(SUN_PKCS11_KEYSTORE_TYPE, getProvider());
 			keyStore.load(new KeyStore.LoadStoreParameter() {
@@ -347,7 +347,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	}
 
 	@Override
-	PasswordProtection getKeyProtectionParameter() {
+	protected PasswordProtection getKeyProtectionParameter() {
 		return null;
 	}
 
