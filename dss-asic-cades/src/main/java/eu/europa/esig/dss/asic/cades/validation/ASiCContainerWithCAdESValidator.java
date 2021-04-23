@@ -78,7 +78,14 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	public boolean isSupported(DSSDocument dssDocument) {
 		if (ASiCUtils.isZip(dssDocument)) {
 			List<String> filenames = ZipUtils.getInstance().extractEntryNames(dssDocument);
-			return ASiCUtils.isASiCWithCAdES(filenames);
+			if (ASiCUtils.isASiCWithCAdES(filenames)) {
+				return true;
+			}
+			if (ASiCUtils.isASiCWithXAdES(filenames) ||
+					(ASiCUtils.areFilesContainMimetype(filenames) && ASiCUtils.isContainerOpenDocument(dssDocument))) {
+				return false;
+			}
+			return true;
 		}
 		return false;
 	}

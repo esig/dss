@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {
 
@@ -51,6 +51,7 @@ public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {
 		documents.add(new FileDocument("src/test/resources/validation/libreoffice.odt"));
 		documents.add(new FileDocument("src/test/resources/validation/open-document-signed.odt"));
 		documents.add(new FileDocument("src/test/resources/validation/open-document-resigned.odt"));
+		documents.add(new FileDocument("src/test/resources/signable/asic_xades.zip"));
 		return documents;
 	}
 

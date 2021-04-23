@@ -20,26 +20,32 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OpenDocumentValidationTest {
 
 	@Test
 	public void odt() {
-		FileDocument doc = new FileDocument("src/test/resources/signable/open-document-signed.odt");
+		FileDocument doc = new FileDocument("src/test/resources/validation/open-document-signed.odt");
 		DSSException exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
 		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
 
 	@Test
 	public void odp() {
+		FileDocument doc = new FileDocument("src/test/resources/validation/open-document-signed.odp");
+		DSSException exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
+		assertEquals("Document format not recognized/handled", exception.getMessage());
+	}
+
+	@Test
+	public void odpNotSigned() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/open-document.odp");
 		DSSException exception = assertThrows(DSSException.class, () -> SignedDocumentValidator.fromDocument(doc));
 		assertEquals("Document format not recognized/handled", exception.getMessage());

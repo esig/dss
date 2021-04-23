@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.extension.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -35,12 +28,18 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ASiCsCAdESExtensionOpenDocumentTest extends PKIFactoryAccess {
 	
 	@Test
 	public void test() {
-		DSSDocument documentToExtend = new FileDocument("src/test/resources/signable/open-document-signed.odt");
+		DSSDocument documentToExtend = new FileDocument("src/test/resources/validation/open-document-signed.odt");
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

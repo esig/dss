@@ -299,6 +299,17 @@ public final class ASiCUtils {
 
 		return (preamble[0] == 'P') && (preamble[1] == 'K');
 	}
+
+	/**
+	 * Checks if the extracted filenames represent an ASiC with XAdES content
+	 *
+	 * @param filenames a list of {@link String} file names to check
+	 * @return TRUE if the filenames represent an ASiC with XAdES content, FALSE
+	 *         otherwise
+	 */
+	public static boolean isASiCWithXAdES(List<String> filenames) {
+		return areFilesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION);
+	}
 	
 	/**
 	 * Checks if the extracted filenames represent an ASiC with CAdES content
@@ -333,6 +344,30 @@ public final class ASiCUtils {
 	}
 
 	/**
+	 * Checks if the archive represents an OpenDocument
+	 *
+	 * @param archiveContainer {@link DSSDocument} an archive to verify
+	 * @return TRUE if the archive contains an OpenDocument mimetype, FALSE otherwise
+	 */
+	public static boolean isContainerOpenDocument(final DSSDocument archiveContainer) {
+		DSSDocument mimetype = getMimetypeDocument(archiveContainer);
+		if (mimetype != null && ASiCUtils.isOpenDocument(mimetype)) {
+			return true;
+		}
+		return false;
+	}
+
+	private static DSSDocument getMimetypeDocument(DSSDocument dssDocument) {
+		List<DSSDocument> documents = ZipUtils.getInstance().extractContainerContent(dssDocument);
+		for (DSSDocument document : documents) {
+			if (ASiCUtils.isMimetype(document.getName())) {
+				return document;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Checks if the mimeType document defines an OpenDocument
 	 * 
 	 * @param mimeTypeDoc {@link DSSDocument} mimetype file extracted from an ASiC
@@ -343,6 +378,22 @@ public final class ASiCUtils {
 		MimeType mimeType = getMimeType(mimeTypeDoc);
 		if (mimeTypeDoc != null) {
 			return isOpenDocumentMimeType(mimeType);
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the list of filenames contains a mimetype file
+	 *
+	 * @param filenames a list of filenames to check
+	 * @return TRUE if the list of filenames contains a mimetype file,
+	 *         FALSE otherwise
+	 */
+	public static boolean areFilesContainMimetype(List<String> filenames) {
+		for (String filename : filenames) {
+			if (isMimetype(filename)) {
+				return true;
+			}
 		}
 		return false;
 	}
