@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -60,11 +48,22 @@ import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
-	private static String FILE1 = "src/test/resources/sample.xml";
-	private static String FILE2 = "src/test/resources/sampleISO.xml";
+	private static final String FILE1 = "src/test/resources/sample.xml";
+	private static final String FILE2 = "src/test/resources/sampleISO.xml";
 
 	@Test
 	public void multiDocsEnveloping() throws Exception {

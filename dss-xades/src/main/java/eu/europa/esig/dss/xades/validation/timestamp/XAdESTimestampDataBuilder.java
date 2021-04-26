@@ -91,39 +91,92 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		if (!timeStampType.isContentTimestamp()) {
 			return null;
 		}
-
-		if (!checkTimestampTokenIncludes(timestampToken)) {
-			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
-		}
 		if (references.isEmpty()) {
 			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
 		}
 
+		switch (timeStampType) {
+			case ALL_DATA_OBJECTS_TIMESTAMP:
+				return getAllDataObjectsTimestampData(timestampToken);
+			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
+				return getIndividualDataObjectsTimestampData(timestampToken);
+			default:
+				throw new DSSException(String.format("The content timestamp of type '%s' is not supported!", timeStampType));
+		}
+	}
+
+	/**
+	 * Returns the computed message-imprint for xades132:AllDataObjectsTimestamp token
+	 * 
+	 * @param timestampToken {@link TimestampToken}
+	 * @return {@link DSSDocument} message-imprint
+	 */
+	protected DSSDocument getAllDataObjectsTimestampData(final TimestampToken timestampToken) {
 		final String canonicalizationMethod = timestampToken.getCanonicalizationMethod();
-		final List<TimestampInclude> includes = timestampToken.getTimestampIncludes();
 
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 			for (final Reference reference : references) {
-				if (isContentTimestampedReference(reference, timeStampType, includes)) {
+				if (!DSSXMLUtils.isSignedProperties(reference, xadesPaths)) {
 					byte[] referenceBytes = getReferenceBytes(reference, canonicalizationMethod);
 					outputStream.write(referenceBytes);
 				}
 			}
 			byte[] byteArray = outputStream.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("IndividualDataObjectsTimestampData/AllDataObjectsTimestampData bytes:");
+				LOG.trace("AllDataObjectsTimestampData bytes:");
 				LOG.trace(new String(byteArray));
 			}
 			return new InMemoryDocument(byteArray);
 		} catch (IOException | XMLSecurityException e) {
 			if (LOG.isDebugEnabled()) {
-				LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. Reason : {}", e.getMessage(), e);
+				LOG.warn("Unable to extract AllDataObjectsTimestampData. Reason : {}", e.getMessage(), e);
 			} else {
-				LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. Reason : {}", e.getMessage());
+				LOG.warn("Unable to extract AllDataObjectsTimestampData. Reason : {}", e.getMessage());
 			}
 		}
 		return null;
+	}
 
+	/**
+	 * Returns the computed message-imprint for xades132:IndividualDataObjectsTimestamp token
+	 *
+	 * @param timestampToken {@link TimestampToken}
+	 * @return {@link DSSDocument} message-imprint
+	 */
+	protected DSSDocument getIndividualDataObjectsTimestampData(final TimestampToken timestampToken) {
+		if (!checkTimestampTokenIncludes(timestampToken)) {
+			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
+		}
+
+		final String canonicalizationMethod = timestampToken.getCanonicalizationMethod();
+		final List<TimestampInclude> includes = timestampToken.getTimestampIncludes();
+
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			for (final TimestampInclude include : includes) {
+				Reference reference = getCorrespondingReference(include, references);
+				if (reference != null) {
+					byte[] referenceBytes = getReferenceBytes(reference, canonicalizationMethod);
+					outputStream.write(referenceBytes);
+				} else {
+
+					LOG.warn("No ds:Reference found corresponding to an IndividualDataObjectsTimestamp include with URI '{}'!",
+							include.getURI());
+				}
+			}
+			byte[] byteArray = outputStream.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("IndividualDataObjectsTimestampData bytes:");
+				LOG.trace(new String(byteArray));
+			}
+			return new InMemoryDocument(byteArray);
+		} catch (IOException | XMLSecurityException e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to extract IndividualDataObjectsTimestampData. Reason : {}", e.getMessage(), e);
+			} else {
+				LOG.warn("Unable to extract IndividualDataObjectsTimestampData. Reason : {}", e.getMessage());
+			}
+		}
+		return null;
 	}
 	
 	private byte[] getReferenceBytes(final Reference reference, final String canonicalizationMethod) throws XMLSecurityException {
@@ -150,7 +203,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * these Include elements has its referenceData set to false, the method returns false
 	 *
 	 * @param timestampToken {@link TimestampToken}
-	 * @return TRUE all timestamp includes hasve referencedData attribute set to true, FALSE otherwise
+	 * @return TRUE all timestamp includes have referencedData attribute set to true, FALSE otherwise
 	 */
 	private boolean checkTimestampTokenIncludes(final TimestampToken timestampToken) {
 		final List<TimestampInclude> timestampIncludes = timestampToken.getTimestampIncludes();
@@ -164,19 +217,14 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		return true;
 	}
 
-	private boolean isContentTimestampedReference(Reference reference, TimestampType timeStampType, List<TimestampInclude> includes) {
-		if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
-			// All references are covered except the one referencing the SignedProperties
-			return !DSSXMLUtils.isSignedProperties(reference, xadesPaths);
-		} else {
-			for (TimestampInclude timestampInclude : includes) {
-				String id = timestampInclude.getURI();
-				if (reference.getId().equals(id)) {
-					return true;
-				}
+	private Reference getCorrespondingReference(TimestampInclude timestampInclude, List<Reference> references) {
+		String uri = timestampInclude.getURI();
+		for (Reference reference : references) {
+			if (uri.equals(reference.getId())) {
+				return reference;
 			}
-			return false;
 		}
+		return null;
 	}
 
 	@Override
