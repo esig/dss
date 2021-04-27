@@ -44,7 +44,9 @@ import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -121,11 +123,18 @@ public class TimestampToken extends Token {
 	private ArchiveTimestampType archiveTimestampType;
 
 	/**
-	 * This attribute is used for XAdES timestamps. It indicates the canonicalization method used before creating the
-	 * digest.
+	 * This attribute is used for XAdES timestamps. It indicates the canonicalization method
+	 * used for message-imprint computation.
+	 *
+	 * NOTE: Used for XAdES/JAdES only
 	 */
 	private String canonicalizationMethod;
 
+	/**
+	 * Identifies a TSA issued the timestamp token
+	 *
+	 * NOTE: Takes a value only for a successfully validated token
+	 */
 	private X500Principal tsaX500Principal;
 
 	/**
@@ -672,6 +681,24 @@ public class TimestampToken extends Token {
 	 */
 	public AttributeTable getUnsignedAttributes() {
 		return timeStamp.getUnsignedAttributes();
+	}
+
+	/**
+	 * Returns a TSTInfo.tsa attribute identifying the timestamp issuer, when attribute is present
+	 *
+	 * @return {@link GeneralName}
+	 */
+	public X500Principal getTSTInfoTsa() {
+		GeneralName tsaGeneralName = timeStamp.getTimeStampInfo().getTsa();
+		if (tsaGeneralName != null) {
+			try {
+				X500Name x500Name = X500Name.getInstance(tsaGeneralName.getName());
+				return new X500Principal(x500Name.getEncoded());
+			} catch (IOException e) {
+				LOG.warn("Unable to decode TSTInfo.tsa attribute value to X500Principal. Reason : {}", e.getMessage(), e);
+			}
+		}
+		return null;
 	}
 
 	/**

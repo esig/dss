@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
@@ -47,6 +40,13 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Provides a user-friendly interface for dealing with JAXB {@code XmlTimestamp} object
@@ -466,6 +466,46 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 */
 	public List<XmlSignerInfo> getSignatureInformationStore() {
 		return timestamp.getSignerInformationStore();
+	}
+
+	/**
+	 * Checks if the tsa field of TSTInfo is present
+	 *
+	 * @return TRUE if the TSTInfo.tsa is present, FALSE otherwise
+	 */
+	public boolean isTSAGeneralNamePresent() {
+		return timestamp.getTSAGeneralName() != null;
+	}
+
+	/**
+	 * Get TSA General Name value
+	 *
+	 * @return {@link String} representing a TSTInfo.tsa field when present, null otherwise
+	 */
+	public String getTSAGeneralNameValue() {
+		if (isTSAGeneralNamePresent()) {
+			return timestamp.getTSAGeneralName().getValue();
+		}
+		return null;
+	}
+
+	/**
+	 * Checks if the content of TSTInfo.tsa field matches the timestamp's issuer distinguishing name,
+	 * without taking order into account
+	 *
+	 * @return TRUE if the TSTInfo.tsa field value matches the timestamp's issuer name, FALSE otherwise
+	 */
+	public boolean isTSAGeneralNameMatch() {
+		return isTSAGeneralNamePresent() && timestamp.getTSAGeneralName().isContentMatch();
+	}
+
+	/**
+	 * Checks if the content and the order of TSTInfo.tsa field match the timestamp's issuer distinguishing name
+	 *
+	 * @return TRUE if the TSTInfo.tsa field value and order match the timestamp's issuer name, FALSE otherwise
+	 */
+	public boolean isTSAGeneralNameOrderMatch() {
+		return isTSAGeneralNamePresent() && timestamp.getTSAGeneralName().isOrderMatch();
 	}
 
 	/**

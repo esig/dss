@@ -229,6 +229,7 @@
 			<CertDigestPresent Level="WARN" />
 			<IssuerSerialMatch Level="WARN" />
 		</SignedAttributes>
+		<TSAGeneralNameContentMatch Level="WARN" />
 	</Timestamp>
 	<Revocation>
         <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />

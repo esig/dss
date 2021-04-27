@@ -321,6 +321,21 @@
 					<xsd:documentation>Group of checks on the signed attributes/properties</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="TSAGeneralNamePresent" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if a TSTInfo.tsa field is present for a timestamp</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TSAGeneralNameContentMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if a TSTInfo.tsa field's value matches the timestamp's issuer distinguishing name when present</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TSAGeneralNameOrderMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if a TSTInfo.tsa field's value and order matches the timestamp's issuer distinguishing name when present</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

@@ -71,6 +71,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTSAGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
@@ -5710,6 +5711,158 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
 		assertTrue(checkMessageValuePresence(convertMessages(xmlTimestamp.getAdESValidationDetails().getWarning()),
 				i18nProvider.getMessage(MessageTag.BBB_ICS_ISASCP_ANS)));
+	}
+
+	@Test
+	public void tstInfoTsaFieldOrderDoesNotMatchTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/dss-2155.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		TimestampConstraints timestampConstraints = validationPolicy.getTimestampConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		timestampConstraints.setTSAGeneralNamePresent(levelConstraint);
+		timestampConstraints.setTSAGeneralNameContentMatch(levelConstraint);
+		timestampConstraints.setTSAGeneralNameOrderMatch(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps =
+				simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureTimestamps.size());
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp timestamp = signatureTimestamps.get(0);
+		assertEquals(Indication.INDETERMINATE, timestamp.getIndication());
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, timestamp.getSubIndication());
+		assertTrue(Utils.isCollectionEmpty(timestamp.getAdESValidationDetails().getInfo()));
+		assertTrue(Utils.isCollectionEmpty(timestamp.getAdESValidationDetails().getWarning()));
+		assertEquals(1, timestamp.getAdESValidationDetails().getError().size());
+		assertEquals(MessageTag.BBB_TAV_DTSAOM_ANS.getId(),
+				timestamp.getAdESValidationDetails().getError().get(0).getKey());
+	}
+
+	@Test
+	public void tstInfoTsaFieldValueDoesNotMatchFailLevelTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/dss-2155.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlTimestamp xmlTimestamp = xmlDiagnosticData.getUsedTimestamps().get(0);
+		XmlTSAGeneralName tsaGeneralName = xmlTimestamp.getTSAGeneralName();
+		tsaGeneralName.setContentMatch(false);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		TimestampConstraints timestampConstraints = validationPolicy.getTimestampConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		timestampConstraints.setTSAGeneralNamePresent(levelConstraint);
+		timestampConstraints.setTSAGeneralNameContentMatch(levelConstraint);
+		timestampConstraints.setTSAGeneralNameOrderMatch(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps =
+				simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureTimestamps.size());
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp timestamp = signatureTimestamps.get(0);
+		assertEquals(Indication.INDETERMINATE, timestamp.getIndication());
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, timestamp.getSubIndication());
+		assertTrue(Utils.isCollectionEmpty(timestamp.getAdESValidationDetails().getInfo()));
+		assertTrue(Utils.isCollectionEmpty(timestamp.getAdESValidationDetails().getWarning()));
+		assertEquals(1, timestamp.getAdESValidationDetails().getError().size());
+		assertEquals(MessageTag.BBB_TAV_DTSAVM_ANS.getId(),
+				timestamp.getAdESValidationDetails().getError().get(0).getKey());
+	}
+
+	@Test
+	public void tstInfoTsaFieldValueNotPresentFailLevelTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/dss-2155.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlTimestamp xmlTimestamp = xmlDiagnosticData.getUsedTimestamps().get(0);
+		xmlTimestamp.setTSAGeneralName(null);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		TimestampConstraints timestampConstraints = validationPolicy.getTimestampConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		timestampConstraints.setTSAGeneralNamePresent(levelConstraint);
+		timestampConstraints.setTSAGeneralNameContentMatch(levelConstraint);
+		timestampConstraints.setTSAGeneralNameOrderMatch(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps =
+				simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureTimestamps.size());
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp timestamp = signatureTimestamps.get(0);
+		assertEquals(Indication.INDETERMINATE, timestamp.getIndication());
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, timestamp.getSubIndication());
+		assertTrue(Utils.isCollectionEmpty(timestamp.getAdESValidationDetails().getInfo()));
+		assertTrue(Utils.isCollectionEmpty(timestamp.getAdESValidationDetails().getWarning()));
+		assertEquals(1, timestamp.getAdESValidationDetails().getError().size());
+		assertEquals(MessageTag.BBB_TAV_ITSAP_ANS.getId(),
+				timestamp.getAdESValidationDetails().getError().get(0).getKey());
+	}
+
+	@Test
+	public void tstInfoTsaFieldValueNotPresentSkipTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/dss-2155.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlTimestamp xmlTimestamp = xmlDiagnosticData.getUsedTimestamps().get(0);
+		xmlTimestamp.setTSAGeneralName(null);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		TimestampConstraints timestampConstraints = validationPolicy.getTimestampConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		timestampConstraints.setTSAGeneralNameContentMatch(levelConstraint);
+		timestampConstraints.setTSAGeneralNameOrderMatch(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps =
+				simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureTimestamps.size());
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp timestamp = signatureTimestamps.get(0);
+		assertEquals(Indication.INDETERMINATE, timestamp.getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, timestamp.getSubIndication());
 	}
 
 	@Test

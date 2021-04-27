@@ -772,6 +772,32 @@ public interface ValidationPolicy {
 	TimeConstraint getTimestampDelayConstraint();
 
 	/**
+	 * Indicates if the timestamp's TSTInfo.tsa field is present
+	 *
+	 * @return {@code LevelConstraint} if TSAGeneralNamePresent for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTimestampTSAGeneralNamePresent();
+
+	/**
+	 * Indicates if the timestamp's TSTInfo.tsa field's value matches the timestamp's issuer distinguishing name
+	 * when present
+	 *
+	 * @return {@code LevelConstraint} if TSAGeneralNameContentMatch for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTimestampTSAGeneralNameContentMatch();
+
+	/**
+	 * Indicates if the timestamp's TSTInfo.tsa field's value and order match the timestamp's issuer distinguishing name
+	 * when present
+	 *
+	 * @return {@code LevelConstraint} if TSAGeneralNameOrderMatch for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTimestampTSAGeneralNameOrderMatch();
+
+	/**
 	 * Returns RevocationTimeAgainstBestSignatureTime constraint if present in the policy, null otherwise
 	 *
 	 * @return {@code LevelConstraint} if RevocationTimeAgainstBestSignatureTime element is present

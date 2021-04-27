@@ -683,7 +683,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertTrue(timestampWrapper.isSigningCertificateIdentified());
 				assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
 				assertTrue(timestampWrapper.isSigningCertificateReferenceUnique());
-				
+
+				if (timestampWrapper.isTSAGeneralNamePresent()) {
+					assertTrue(timestampWrapper.isTSAGeneralNameMatch());
+					assertTrue(timestampWrapper.isTSAGeneralNameOrderMatch());
+				}
+
 				CertificateRefWrapper signingCertificateReference = timestampWrapper.getSigningCertificateReference();
 				assertNotNull(signingCertificateReference);
 				assertTrue(signingCertificateReference.isDigestValuePresent());

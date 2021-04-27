@@ -620,6 +620,15 @@
 		</xs:sequence>
 		<xs:attribute name="Current" type="xs:boolean" use="optional" /> <!-- The framework handles only one (first) SignerInfo !!! -->
 	</xs:complexType>
+
+	<xs:complexType name="TSAGeneralName">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="contentMatch" type="xs:boolean" use="required" />
+				<xs:attribute name="orderMatch" type="xs:boolean" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	
 	<xs:complexType name="CommitmentTypeIndications">
 		<xs:sequence>
@@ -815,6 +824,7 @@
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 					<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" />
+					<xs:element name="TSAGeneralName" type="TSAGeneralName" minOccurs="0" />
 					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" /> <!-- PAdES Doc Timestamps -->
 					
 					<xs:element name="FoundCertificates" type="FoundCertificates" />

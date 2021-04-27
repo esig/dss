@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Hello world.pdf</DocumentName>
+    <ValidationDate>2021-04-27T12:50:43</ValidationDate>
+    <Signatures>
+        <Signature Id="S-A89E6EE34611565E5C2E4C9A468EDFE614A0CE1B1CDB084C9FDCD65FB1AB2F02">
+            <SignatureFilename></SignatureFilename>
+            <ClaimedSigningTime>2020-07-22T10:04:38</ClaimedSigningTime>
+            <SignatureFormat>PKCS7-T</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>vs510NMzFwNDZ5mBffyFaewBQ+uPOCt2GLOmP+r6Kus=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-EE74CF93C00DD106D4D47EC455215326ACEFF13D0FBD20B851B1E9CFB67C2820"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-EE74CF93C00DD106D4D47EC455215326ACEFF13D0FBD20B851B1E9CFB67C2820"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>EMAILADDRESS=test@nsdl.com, CN=test@nsdl.com, OU=DSC Sign, O=NSDL Pvt Ltd, L=Pune, ST=Maha, C=IN</IssuerName>
+                    <SerialNumber>11294315177857377639</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature1</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <SignerName>Devendra T. Rane</SignerName>
+                    <Type>Sig</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>adbe.pkcs7.detached</SubFilter>
+                    <Location>Mumbai, India</Location>
+                    <Reason>Esign Testing</Reason>
+                    <SignatureByteRange>0 186286 205232 4288</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-EE74CF93C00DD106D4D47EC455215326ACEFF13D0FBD20B851B1E9CFB67C2820">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-99A2A2FE9A6D506AD381E0B3E794863DFCBFC53E7FED0487B275B3DD38C2648A"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-03B47ED57106018E05781BE2D9574F0F80D61DB5CC25BEBBF1921ED242850C74">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>2ocUZiEe5E5QZeLtKhFP2SgUySyw2fCsHtL2QhT5Suk=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ssq28hSI9B5pKKnDgchmfHw7gBgPQs9gE53gcw8EZz4=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>Kezf0E2QFY0KySo6QLo631bl0QAJa+b6BzRYHg5S9N2QBj1gUYN/mqWfxIJAhHcqOY5Hb84o6yJH/USVfMjNZrUAh8RUfm+kdfY/r1+xj1R+TtlByo0ZnpVOIjkQOEBnWfOD6ZE1NC8RqfohclhK1WNaCdXJyDdKFuxmUWIxPIliv3AQh/YiejSP4/RUVzKpsirh7FGtd7Mu8IsDSVI6i86ae+qOQ7YsQB4wtpWqApZsWHhhSXSlM+nMjtJ+KAyjzsry/aCazb5325GLs6ho8sLSkRIljp3FUiNVlTZJMPWM+m85Pnx/OCd24akypX8okMiAT9grdRwSzAOPdk/GSg==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-EE74CF93C00DD106D4D47EC455215326ACEFF13D0FBD20B851B1E9CFB67C2820">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#160d74657374406e73646c2e636f6d,cn=test@nsdl.com,ou=dsc sign,o=nsdl pvt ltd,l=pune,st=maha,c=in</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#160d74657374406e73646c2e636f6d,CN=test@nsdl.com,OU=DSC Sign,O=NSDL Pvt Ltd,L=Pune,ST=Maha,C=IN</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#160d74657374406e73646c2e636f6d,cn=test@nsdl.com,ou=dsc sign,o=nsdl pvt ltd,l=pune,st=maha,c=in</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#160d74657374406e73646c2e636f6d,CN=test@nsdl.com,OU=DSC Sign,O=NSDL Pvt Ltd,L=Pune,ST=Maha,C=IN</IssuerDistinguishedName>
+            <SerialNumber>11294315177857377639</SerialNumber>
+            <CommonName>test@nsdl.com</CommonName>
+            <Locality>Pune</Locality>
+            <State>Maha</State>
+            <CountryName>IN</CountryName>
+            <OrganizationName>NSDL Pvt Ltd</OrganizationName>
+            <OrganizationalUnit>DSC Sign</OrganizationalUnit>
+            <Email>test@nsdl.com</Email>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2028-06-26T14:02:46</NotAfter>
+            <NotBefore>2018-06-29T14:02:46</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-67A47F50CD907C4BC6C87E49F15F88399824A59A2BCA2F21EDB6956C6BE8C113</EntityKey>
+            <KeyUsageBits/>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>7nTPk8AN0QbU1H7EVSFTJqzv8T0PvSC4UbHpz7Z8KCA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F5E4DFBE5784FC8DC6F4919D556356C885F0618CDB86F10D2C4B26AE014248C9">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#160f6e73646c406e73646c2e636f2e696e,cn=nsdl,ou=nsdl,o=nsdl,l=nsdl,st=mh,c=in</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#160f6e73646c406e73646c2e636f2e696e,CN=NSDL,OU=NSDL,O=NSDL,L=NSDL,ST=MH,C=IN</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#160f6e73646c406e73646c2e636f2e696e,cn=nsdl,ou=nsdl,o=nsdl,l=nsdl,st=mh,c=in</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#160f6e73646c406e73646c2e636f2e696e,CN=NSDL,OU=NSDL,O=NSDL,L=NSDL,ST=MH,C=IN</IssuerDistinguishedName>
+            <SerialNumber>477903694638006414480694309866778282068632594210</SerialNumber>
+            <CommonName>NSDL</CommonName>
+            <Locality>NSDL</Locality>
+            <State>MH</State>
+            <CountryName>IN</CountryName>
+            <OrganizationName>NSDL</OrganizationName>
+            <OrganizationalUnit>NSDL</OrganizationalUnit>
+            <Email>nsdl@nsdl.co.in</Email>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2021-07-23T11:07:59</NotAfter>
+            <NotBefore>2020-07-23T11:07:59</NotBefore>
+            <PublicKeySize>1024</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-99D740BF6735D0602EC70888A2CC2709176935F73C6F44DD523FBC59EEA130</EntityKey>
+            <KeyUsageBits/>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>9eTfvleE/I3G9JGdVWNWyIXwYYzbhvENLEsmrgFCSMk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations/>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-99A2A2FE9A6D506AD381E0B3E794863DFCBFC53E7FED0487B275B3DD38C2648A">
+            <ProductionTime>2020-07-24T05:41:00</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>UFQtU6XNr2OR8YtJWW6M1doNjok=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F5E4DFBE5784FC8DC6F4919D556356C885F0618CDB86F10D2C4B26AE014248C9"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F5E4DFBE5784FC8DC6F4919D556356C885F0618CDB86F10D2C4B26AE014248C9"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>EMAILADDRESS=nsdl@nsdl.co.in, CN=NSDL, OU=NSDL, O=NSDL, L=NSDL, ST=MH, C=IN</IssuerName>
+                    <SerialNumber>477903694638006414480694309866778282068632594210</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="false">C=IN,ST=MH,L=NSDL,O=NSDL,OU=NSDL,CN=NSDL,1.2.840.113549.1.9.1=#160f6e73646c406e73646c2e636f2e696e</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-F5E4DFBE5784FC8DC6F4919D556356C885F0618CDB86F10D2C4B26AE014248C9">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIGSMHqkeDB2MQswCQYDVQQGEwJJTjELMAkGA1UECAwCTUgxDTALBgNVBAcMBE5TREwxDTALBgNVBAoMBE5TREwxDTALBgNVBAsMBE5TREwxDTALBgNVBAMMBE5TREwxHjAcBgkqhkiG9w0BCQEWD25zZGxAbnNkbC5jby5pbgIUU7XxXTXPBh408sY4YNz1UelO5yI=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>9eTfvleE/I3G9JGdVWNWyIXwYYzbhvENLEsmrgFCSMk=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-03B47ED57106018E05781BE2D9574F0F80D61DB5CC25BEBBF1921ED242850C74" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-A89E6EE34611565E5C2E4C9A468EDFE614A0CE1B1CDB084C9FDCD65FB1AB2F02" Category="SIGNATURE"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>maKi/pptUGrTgeCz55SGPfy/xT5/7QSHsnWz3TjCZIo=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-03B47ED57106018E05781BE2D9574F0F80D61DB5CC25BEBBF1921ED242850C74">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>wGgMzdBSPA4RHdqrK9smdxdoof+9p1tUKhFSMr9tKqM=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

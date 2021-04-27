@@ -40,8 +40,6 @@
 				</KeyUsage>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-				<Qualification Level="WARN" />
-				<SupportedByQSCD Level="WARN" />
 				<IssuedToLegalPerson Level="INFORM" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>

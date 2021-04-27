@@ -434,6 +434,7 @@
                     <SerialNumber>500</SerialNumber>
                 </SignerInfo>
             </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-tsa</TSAGeneralName>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-F4380C158895458073303D9C612EA12CBAEDFA79F3EC607DBAEDF8D3935A720A">
                     <Origin>SIGNED_DATA</Origin>

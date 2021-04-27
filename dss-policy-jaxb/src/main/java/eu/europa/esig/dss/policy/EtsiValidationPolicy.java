@@ -903,6 +903,33 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getTimestampTSAGeneralNamePresent() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTSAGeneralNamePresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTimestampTSAGeneralNameContentMatch() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTSAGeneralNameContentMatch();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTimestampTSAGeneralNameOrderMatch() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTSAGeneralNameOrderMatch();
+		}
+		return null;
+	}
+
+	@Override
 	public TimeConstraint getRevocationFreshnessConstraint() {
 		RevocationConstraints revocationConstraints = getRevocationConstraints();
 		if (revocationConstraints != null) {

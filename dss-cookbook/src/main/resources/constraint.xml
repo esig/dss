@@ -161,8 +161,6 @@
 	</SignatureConstraints>
 	<Timestamp>
 		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />
-		<MessageImprintDataFound Level="FAIL" />
-		<MessageImprintDataIntact Level="FAIL" />
 		<RevocationTimeAgainstBestSignatureTime	Level="FAIL" />
 		<BestSignatureTimeBeforeExpirationDateOfSigningCertificate Level="FAIL" />
 		<Coherence Level="WARN" />
@@ -251,6 +249,7 @@
 				</AcceptableDigestAlgo>
 			</Cryptographic>
 		</BasicSignatureConstraints>
+		<TSAGeneralNameContentMatch Level="WARN" />
 	</Timestamp>
 	<Revocation>
 		<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />

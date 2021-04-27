@@ -42,6 +42,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTSAGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -51,7 +52,6 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -61,9 +61,11 @@ import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
@@ -79,6 +81,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampTokenComparator;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
+import javax.security.auth.x500.X500Principal;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -834,6 +837,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
 		xmlTimestampToken.setSignerInformationStore(
 				getXmlSignerInformationStore(timestampToken.getSignerInformationStoreInfos()));
+		xmlTimestampToken.setTSAGeneralName(getXmlTSAGeneralName(timestampToken));
 
 		final CandidatesForSigningCertificate candidatesForSigningCertificate = timestampToken
 				.getCandidatesForSigningCertificate();
@@ -928,6 +932,25 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 				signerInfos.add(getXmlSignerInfo(certificateIdentifier));
 			}
 			return signerInfos;
+		}
+		return null;
+	}
+
+	protected XmlTSAGeneralName getXmlTSAGeneralName(TimestampToken timestampToken) {
+		X500Principal tstInfoTsa = timestampToken.getTSTInfoTsa();
+		if (tstInfoTsa != null) {
+			XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();
+
+			X500PrincipalHelper x500PrincipalHelper = new X500PrincipalHelper(tstInfoTsa);
+			xmlTSAGeneralName.setValue(x500PrincipalHelper.getRFC2253());
+
+			X500Principal issuerX500Principal = timestampToken.getIssuerX500Principal();
+			if (issuerX500Principal != null) {
+				xmlTSAGeneralName.setContentMatch(DSSASN1Utils.x500PrincipalAreEquals(tstInfoTsa, issuerX500Principal));
+				xmlTSAGeneralName.setOrderMatch(tstInfoTsa.equals(issuerX500Principal));
+			}
+
+			return xmlTSAGeneralName;
 		}
 		return null;
 	}
