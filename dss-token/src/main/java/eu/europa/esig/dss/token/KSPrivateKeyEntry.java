@@ -89,11 +89,7 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 		return certificateChain;
 	}
 
-	/**
-	 * Get the private key
-	 * 
-	 * @return the private key
-	 */
+	@Override
 	public PrivateKey getPrivateKey() {
 		return privateKey;
 	}

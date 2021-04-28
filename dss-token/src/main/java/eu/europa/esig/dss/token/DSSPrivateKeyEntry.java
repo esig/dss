@@ -23,11 +23,20 @@ package eu.europa.esig.dss.token;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import java.security.PrivateKey;
 
 /**
- * Interface for a PrivateKey.
+ * Interface for a PrivateKeyEntry.
+ * @see java.security.KeyStore.PrivateKeyEntry
  */
 public interface DSSPrivateKeyEntry {
+
+	/**
+	 * Get the private key
+	 *
+	 * @return the private key
+	 */
+	PrivateKey getPrivateKey();
 
 	/**
 	 * Retrieve the signing certificate
