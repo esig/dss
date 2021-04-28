@@ -176,7 +176,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setDataLoader(null);
+		certificateVerifier.setAIASource(null);
 		certificateVerifier.setCrlSource(null);
 		certificateVerifier.setOcspSource(null);
 		certificateVerifier.setTrustedCertSources(trustedCertSource);

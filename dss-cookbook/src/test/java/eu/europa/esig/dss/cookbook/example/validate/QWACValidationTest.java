@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
-
-import org.apache.http.conn.ssl.TrustAllStrategy;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -38,13 +31,21 @@ import eu.europa.esig.dss.service.http.commons.SSLCertificateLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.x509.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.validation.CertificateValidator;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.OnlineAIASource;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class QWACValidationTest {
 
@@ -52,6 +53,8 @@ public class QWACValidationTest {
 	public void test() {
 
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		AIASource aiaSource = new OnlineAIASource();
 		RevocationSource<OCSP> ocspSource = new OnlineOCSPSource();
 		RevocationSource<CRL> crlSource = new OnlineCRLSource();
 
@@ -73,7 +76,7 @@ public class QWACValidationTest {
 		// Thirdly, we need to configure the CertificateVerifier
 		CertificateVerifier cv = new CommonCertificateVerifier();
 		cv.setTrustedCertSources(trustedListsCertificateSource); // configured trusted list certificate source
-		cv.setDataLoader(dataLoader); // configured AIA Access
+		cv.setAIASource(aiaSource); // configured AIA Access
 		cv.setOcspSource(ocspSource); // configured OCSP Access
 		cv.setCrlSource(crlSource); // configured CRL Access
 

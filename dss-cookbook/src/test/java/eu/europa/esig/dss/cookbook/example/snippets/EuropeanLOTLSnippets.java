@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
@@ -56,7 +48,15 @@ import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.OnlineAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class EuropeanLOTLSnippets {
 	
@@ -76,10 +76,9 @@ public class EuropeanLOTLSnippets {
 		job.setTrustedListCertificateSource(trustedListsCertificateSource);
 		job.onlineRefresh();
 		commonCertificateVerifier.setTrustedCertSources(trustedListsCertificateSource);
-		CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
 		commonCertificateVerifier.setCrlSource(new OnlineCRLSource());
 		commonCertificateVerifier.setOcspSource(new OnlineOCSPSource());
-		commonCertificateVerifier.setDataLoader(commonsDataLoader);
+		commonCertificateVerifier.setAIASource(new OnlineAIASource());
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(
 				new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml"));

@@ -23,12 +23,12 @@ package eu.europa.esig.dss.xades.extension;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.OnlineAIASource;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +55,7 @@ public class XAdESExtensionTToLTANotTrustedTSPTest extends AbstractXAdESTestExte
     @Override
     protected XAdESService getSignatureServiceToExtend() {
         CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-        certificateVerifier.setDataLoader(new CommonsDataLoader());
+        certificateVerifier.setAIASource(new OnlineAIASource());
         certificateVerifier.setCrlSource(new OnlineCRLSource());
         certificateVerifier.setOcspSource(new OnlineOCSPSource());
 

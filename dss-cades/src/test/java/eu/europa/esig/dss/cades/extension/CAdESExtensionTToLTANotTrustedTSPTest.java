@@ -24,12 +24,12 @@ import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.OnlineAIASource;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -55,7 +55,7 @@ public class CAdESExtensionTToLTANotTrustedTSPTest extends AbstractCAdESTestExte
     @Override
     protected CAdESService getSignatureServiceToExtend() {
         CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-        certificateVerifier.setDataLoader(new CommonsDataLoader());
+        certificateVerifier.setAIASource(new OnlineAIASource());
         certificateVerifier.setCrlSource(new OnlineCRLSource());
         certificateVerifier.setOcspSource(new OnlineOCSPSource());
 

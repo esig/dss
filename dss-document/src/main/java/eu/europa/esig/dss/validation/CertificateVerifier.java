@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -153,20 +154,44 @@ public interface CertificateVerifier {
 	void setAdjunctCertSources(final ListCertificateSource adjunctListCertificateSource);
 
 	/**
-	 * The data loader used to access AIA certificate source.
-	 *
-	 * @return the used data loaded to load AIA resources and policy files
-	 */
-	DataLoader getDataLoader();
-
-	/**
 	 * The data loader used to access AIA certificate source. If this property is
 	 * not set the default {@code CommonsHttpDataLoader} is created.
 	 *
 	 * @param dataLoader
 	 *                   the used data loaded to load AIA resources and policy files
+	 * @deprecated since v5.9
+	 *
+	 * Please, use the following code to define the {@code AIASource}:
+	 * {@code
+	 *       AIASource aiaSource = new OnlineAIASource(dataLoader);
+	 * 		 certificateVerifier.setAIASource(aiaSource);
+	 * }
+	 *
+	 * And the code to define a {@code DataLoader} for signature policy loading:
+	 * {@code
+	 *       SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+	 *       signaturePolicyProvider.setDataLoader(dataLoader);
+	 * 		 documentValidator.setSignaturePolicyProvider(signaturePolicyProvider);
+	 * }
 	 */
+	@Deprecated
 	void setDataLoader(final DataLoader dataLoader);
+
+	/**
+	 * Gets the AIASource used to load a {@code eu.europa.esig.dss.model.x509.CertificateToken}'s issuer
+	 * by defined AIA URI(s) within the token
+	 *
+	 * @return aiaSource {@link AIASource}
+	 */
+	AIASource getAIASource();
+
+	/**
+	 * Sets the AIASource used to load a {@code eu.europa.esig.dss.model.x509.CertificateToken}'s issuer
+	 * by defined AIA URI(s) within the token
+	 *
+	 * @param aiaSource {@link AIASource}
+	 */
+	void setAIASource(final AIASource aiaSource);
 
 	/**
 	 * This method returns the CRL source (information extracted from signatures).

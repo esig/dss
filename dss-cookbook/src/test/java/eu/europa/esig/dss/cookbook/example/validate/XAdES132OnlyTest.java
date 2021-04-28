@@ -20,20 +20,18 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class XAdES132OnlyTest {
 
@@ -41,7 +39,7 @@ public class XAdES132OnlyTest {
 	public void test() {
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		certificateVerifier.setAIASource(null);
 		FileDocument xmlDocument = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 
 		// tag::demo[]

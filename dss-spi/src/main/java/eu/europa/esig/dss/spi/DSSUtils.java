@@ -30,7 +30,6 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -266,9 +265,9 @@ public final class DSSUtils {
 	 * Loads a collection of certificates from a p7c source
 	 *
 	 * @param is {@link InputStream} p7c
-	 * @return a collection of {@link CertificateToken}s
+	 * @return a list of {@link CertificateToken}s
 	 */
-	public static Collection<CertificateToken> loadCertificateFromP7c(InputStream is) {
+	public static List<CertificateToken> loadCertificateFromP7c(InputStream is) {
 		return loadCertificates(is);
 	}
 
@@ -326,53 +325,6 @@ public final class DSSUtils {
 	public static CertificateToken loadCertificateFromBase64EncodedString(final String base64Encoded) {
 		final byte[] bytes = Utils.fromBase64(base64Encoded);
 		return loadCertificate(bytes);
-	}
-
-	/**
-	 * This method loads the potential issuer certificate(s) from the given locations (AIA).
-	 * 
-	 * @param cert
-	 *            certificate for which the issuer(s) should be loaded
-	 * @param loader
-	 *            the data loader to use
-	 * @return a list of potential issuers
-	 */
-	public static Collection<CertificateToken> loadPotentialIssuerCertificates(final CertificateToken cert, final DataLoader loader) {
-		List<String> urls = DSSASN1Utils.getCAAccessLocations(cert);
-
-		if (Utils.isCollectionEmpty(urls)) {
-			LOG.info("There is no AIA extension for certificate download.");
-			return Collections.emptyList();
-		}
-		if (loader == null) {
-			LOG.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : {})", urls);
-			return Collections.emptyList();
-		}
-
-		for (String url : urls) {
-			LOG.debug("Loading certificate(s) from {}", url);
-			byte[] bytes = null;
-			try {
-				bytes = loader.get(url);
-			} catch (Exception e) {
-				LOG.warn("Unable to download certificate from '{}': {}", url, e.getMessage());
-				continue;
-			}
-			if (Utils.isArrayNotEmpty(bytes)) {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
-				}
-				try (InputStream is = new ByteArrayInputStream(bytes)) {
-					return loadCertificates(is);
-				} catch (Exception e) {
-					LOG.warn("Unable to parse certificate(s) from AIA (url: {}) : {}", url, e.getMessage());
-				}
-			} else {
-				LOG.warn("Empty content from {}.", url);
-			}
-		}
-
-		return Collections.emptyList();
 	}
 
 	/**

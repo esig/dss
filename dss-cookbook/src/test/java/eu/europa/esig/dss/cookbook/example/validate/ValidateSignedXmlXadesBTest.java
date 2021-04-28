@@ -20,18 +20,11 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -39,8 +32,14 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.OnlineAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * How to validate a XAdES-BASELINE-B signature.
@@ -62,7 +61,7 @@ public class ValidateSignedXmlXadesBTest {
 		// We can inject several sources. eg: OCSP, CRL, AIA, trusted lists
 
 		// Capability to download resources from AIA
-		cv.setDataLoader(new CommonsDataLoader());
+		cv.setAIASource(new OnlineAIASource());
 
 		// Capability to request OCSP Responders
 		cv.setOcspSource(new OnlineOCSPSource());

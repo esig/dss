@@ -34,7 +34,7 @@ import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.x509.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
@@ -45,6 +45,7 @@ import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.token.KeyStoreSignatureTokenConnection;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.OnlineAIASource;
 import org.h2.jdbcx.JdbcDataSource;
 
 import java.io.ByteArrayInputStream;
@@ -154,7 +155,7 @@ public abstract class PKIFactoryAccess {
 	
 	protected CertificateVerifier getCertificateVerifierWithoutTrustSources() {
 		CertificateVerifier cv = new CommonCertificateVerifier();
-		cv.setDataLoader(getFileCacheDataLoader());
+		cv.setAIASource(cacheAIASource());
 		cv.setCrlSource(cacheCRLSource());
 		cv.setOcspSource(cacheOCSPSource());
 		return cv;
@@ -162,9 +163,15 @@ public abstract class PKIFactoryAccess {
 
 	protected CertificateVerifier getOfflineCertificateVerifier() {
 		CertificateVerifier cv = new CommonCertificateVerifier();
-		cv.setDataLoader(new IgnoreDataLoader());
+		cv.setAIASource(null);
 		cv.setTrustedCertSources(getTrustedCertificateSource());
 		return cv;
+	}
+
+	private AIASource cacheAIASource() {
+		OnlineAIASource aiaSource = new OnlineAIASource();
+		aiaSource.setDataLoader(getFileCacheDataLoader());
+		return aiaSource;
 	}
 	
 	private JdbcCacheCRLSource cacheCRLSource() {

@@ -22,8 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.AIASource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -45,20 +44,20 @@ public class AIACertificateSource extends CommonCertificateSource {
 	/** The certificate token to get issuer for */
 	private final CertificateToken certificate;
 
-	/** The DataLoader to use to access the certificate by AIA */
-	private final DataLoader dataLoader;
+	/** Used to access the issuer certificates by AIA */
+	private final AIASource aiaSource;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param certificate {@link CertificateToken} to get the issuer for
-	 * @param dataLoader {@link DataLoader} to use to obtain the issuer certificate
+	 * @param aiaSource {@link AIASource} to obtain the issuer certificate
 	 */
-	public AIACertificateSource(CertificateToken certificate, DataLoader dataLoader) {
+	public AIACertificateSource(final CertificateToken certificate, final AIASource aiaSource) {
 		Objects.requireNonNull(certificate, "The certificate cannot be null");
-		Objects.requireNonNull(dataLoader, "The data loader cannot be null");
+		Objects.requireNonNull(aiaSource, "The aiaSource cannot be null");
 		this.certificate = certificate;
-		this.dataLoader = dataLoader;
+		this.aiaSource = aiaSource;
 	}
 
 	/**
@@ -69,7 +68,8 @@ public class AIACertificateSource extends CommonCertificateSource {
 	 */
 	public CertificateToken getIssuerFromAIA() {
 		LOG.info("Retrieving {} certificate's issuer using AIA.", certificate.getAbbreviation());
-		Collection<CertificateToken> candidates = DSSUtils.loadPotentialIssuerCertificates(certificate, dataLoader);
+
+		Collection<CertificateToken> candidates = aiaSource.getCertificatesByAIA(certificate);
 		if (Utils.isCollectionNotEmpty(candidates)) {
 			// The potential issuers might support 3 known scenarios:
 			// - issuer certificate with single entry
@@ -114,21 +114,16 @@ public class AIACertificateSource extends CommonCertificateSource {
 					return null;
 				}
 				commonPublicKey = candidatePublicKey;
-				bestMatch = candidate;
+				if (bestMatch == null) {
+					bestMatch = candidate;
+				}
+
 			} else if (!candidatePublicKey.equals(commonPublicKey)) {
 				return null;
-			} else if (isTrusted(bestMatch)) {
-				continue;
-			}
 
-//			Set<CertificateToken> tokensSet = validationCertificatePool.get(candidate.getSubject());
-//			for (CertificateToken pooledToken : tokensSet) {
-//				if (pooledToken.getPublicKey().equals(commonPublicKey) && isTrusted(pooledToken)) {
-//					bestMatch = pooledToken;
-//					certificate.isSignedBy(pooledToken);
-//					break;
-//				}
-//			}
+			} else if (isTrusted(candidate)) {
+				bestMatch = candidate;
+			}
 		}
 
 		return bestMatch;

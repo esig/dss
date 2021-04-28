@@ -48,7 +48,7 @@ public class CertificateVerifierBuilder {
 		CertificateVerifier copy = new CommonCertificateVerifier(true);
 		if (certificateVerifier != null) {
 			copy.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
-			copy.setDataLoader(certificateVerifier.getDataLoader());
+			copy.setAIASource(certificateVerifier.getAIASource());
 			copy.setCrlSource(certificateVerifier.getCrlSource());
 			copy.setOcspSource(certificateVerifier.getOcspSource());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
