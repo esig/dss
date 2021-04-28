@@ -31,6 +31,11 @@ public enum Protocol {
 	/** Protocol name */
 	private final String name;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String} of the protocol
+	 */
 	Protocol(final String name) {
 		this.name = name;
 	}

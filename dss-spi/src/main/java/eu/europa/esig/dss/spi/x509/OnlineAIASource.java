@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.spi.x509;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -6,19 +6,19 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
-import eu.europa.esig.dss.spi.x509.AIASource;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * The class is used to download issuer certificates by AIA from remote sources
@@ -78,19 +78,19 @@ public class OnlineAIASource implements AIASource {
     }
 
     @Override
-    public List<CertificateToken> getCertificatesByAIA(final CertificateToken certificateToken) {
+    public Set<CertificateToken> getCertificatesByAIA(final CertificateToken certificateToken) {
         List<String> urls = DSSASN1Utils.getCAAccessLocations(certificateToken);
 
         if (Utils.isCollectionEmpty(urls)) {
             LOG.info("There is no AIA extension for certificate download.");
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
         if (dataLoader == null) {
             LOG.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : {})", urls);
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
 
-        List<CertificateToken> allCertificates = new ArrayList<>();
+        Set<CertificateToken> allCertificates = new LinkedHashSet<>();
 
         for (String url : urls) {
             if (!isUrlAccepted(url)) {
