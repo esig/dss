@@ -129,7 +129,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	}
 
 	@Override
-	public final List<String> initRevocationTokenKey(CertificateToken certificateToken) {
+	protected final List<String> initRevocationTokenKeys(CertificateToken certificateToken) {
 		return DSSRevocationUtils.getOcspRevocationTokenKeys(certificateToken);
 	}
 

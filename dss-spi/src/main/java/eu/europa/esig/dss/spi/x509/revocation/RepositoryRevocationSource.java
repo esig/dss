@@ -30,8 +30,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Allows storing and retrieving of revocation data to/from a repository (e.g.
- * database)
+ * Allows storing and retrieving of revocation data to/from a repository
+ * (e.g. database)
  *
  * @param <R> {@code CRL} or {@code OCSP}
  */
@@ -41,6 +41,9 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 
 	private static final long serialVersionUID = 8116937707098957391L;
 
+	/**
+	 * Data source used to access a revocation token that is not present in the repository
+	 */
 	protected OnlineRevocationSource<R> proxiedSource;
 
 	/**
@@ -60,10 +63,11 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	
 	/**
 	 * Initialize a list of revocation token keys {@link String} from the given {@link CertificateToken}
+	 *
 	 * @param certificateToken {@link CertificateToken}
 	 * @return list of {@link String} revocation keys
 	 */
-	public abstract List<String> initRevocationTokenKey(CertificateToken certificateToken);
+	protected abstract List<String> initRevocationTokenKeys(CertificateToken certificateToken);
 	
 	/**
 	 * Finds a RevocationToken in the cache
@@ -178,7 +182,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 			return null;
 		}
 
-		final List<String> keys = initRevocationTokenKey(certificateToken);
+		final List<String> keys = initRevocationTokenKeys(certificateToken);
 		if (forceRefresh) {
 			LOG.info("Cache is skipped to retrieve the revocation token for certificate '{}'", certificateToken.getDSSIdAsString());
 		} else {

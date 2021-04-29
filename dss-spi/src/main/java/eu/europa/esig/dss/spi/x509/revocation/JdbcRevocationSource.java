@@ -20,19 +20,17 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
 /**
  * Abstract class to retrieve token from a JDBC datasource
@@ -45,6 +43,9 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 
 	private static final long serialVersionUID = 8752226611048306095L;
 
+	/**
+	 * SQL DataSource to be used by the JdbcRevocationSource
+	 */
 	protected transient DataSource dataSource;
 	
 	/**

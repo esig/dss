@@ -101,7 +101,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 	private static final String SQL_FIND_REMOVE = "DELETE FROM CACHED_CRL WHERE ID = ?";
 	
 	/**
-	 * Used to drop the OCSP cache table
+	 * Used to drop the cache table
 	 */
 	private static final String SQL_DROP_TABLE = "DROP TABLE CACHED_CRL";
 	
@@ -136,7 +136,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 	 * @return revocation token key {@link String}
 	 */
 	@Override
-	public List<String> initRevocationTokenKey(CertificateToken certificateToken) {
+	protected List<String> initRevocationTokenKeys(CertificateToken certificateToken) {
 		return DSSRevocationUtils.getCRLRevocationTokenKeys(certificateToken);
 	}
 
