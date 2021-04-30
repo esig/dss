@@ -199,8 +199,6 @@ public class SignatureFieldDimensionAndPositionBuilder {
 
 			dimensionAndPosition.setTextWidth(textWidth);
 			dimensionAndPosition.setTextHeight(textHeight);
-			Integer imageDpi = imageParameters.getImage() != null ? imageParameters.getDpi() : DEFAULT_DPI;
-			dimensionAndPosition.paddingShift(textParameters.getPadding(), imageDpi);
 		}
 
 		int rotation = ImageRotationUtils.getRotation(imageParameters.getRotation(), page);

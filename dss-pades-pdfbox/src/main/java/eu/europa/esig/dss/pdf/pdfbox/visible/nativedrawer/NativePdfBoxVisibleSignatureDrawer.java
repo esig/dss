@@ -281,9 +281,10 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			float lineHeight = pdfBoxFontMetrics.getHeight(textParameters.getText(), textParameters.getFont().getSize());
 			cs.setLeading(lineHeight);
 
-			cs.newLineAtOffset(dimensionAndPosition.getTextX(),
+			float scaledPadding = CommonDrawerUtils.toDpiAxisPoint(textParameters.getPadding(), parameters.getDpi());
+			cs.newLineAtOffset(dimensionAndPosition.getTextX() + scaledPadding,
 					// align vertical position
-					dimensionAndPosition.getTextHeight() + dimensionAndPosition.getTextY() - fontSize);
+					dimensionAndPosition.getTextHeight() + dimensionAndPosition.getTextY() - scaledPadding - fontSize);
 
 			float previousOffset = 0;
 			for (String str : strings) {
@@ -292,12 +293,12 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 				switch (textParameters.getSignerTextHorizontalAlignment()) {
 				case RIGHT:
 					offsetX = dimensionAndPosition.getTextWidth() - stringWidth
-							- textSizeWithDpi(textParameters.getPadding() * 2)
+							- (2 * scaledPadding)
 							- previousOffset;
 					break;
 				case CENTER:
 					offsetX = (dimensionAndPosition.getTextWidth() - stringWidth) / 2
-							- textSizeWithDpi(textParameters.getPadding())
+							- scaledPadding
 							- previousOffset;
 					break;
 				default:
@@ -317,17 +318,10 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			SignatureFieldDimensionAndPosition dimensionAndPosition) throws IOException {
 		if (textParameters.getBackgroundColor() != null) {
 			PDRectangle rect = new PDRectangle(
-					dimensionAndPosition.getTextX()
-							- textSizeWithDpi(textParameters.getPadding()),
-					dimensionAndPosition.getTextY()
-							+ textSizeWithDpi(textParameters.getPadding()),
+					dimensionAndPosition.getTextX(), dimensionAndPosition.getTextY(),
 					dimensionAndPosition.getTextWidth(), dimensionAndPosition.getTextHeight());
 			setBackground(cs, textParameters.getBackgroundColor(), rect);
 		}
-	}
-
-	private float textSizeWithDpi(float size) {
-		return CommonDrawerUtils.toDpiAxisPoint(size, parameters.getDpi());
 	}
 
 	/**

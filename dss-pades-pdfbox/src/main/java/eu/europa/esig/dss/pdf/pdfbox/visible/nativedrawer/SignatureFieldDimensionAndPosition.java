@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
 import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 
 public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldAppearance {
@@ -145,13 +144,6 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 
 	public void setGlobalRotation(int globalRotation) {
 		this.globalRotation = globalRotation;
-	}
-	
-	public void paddingShift(float padding, Integer imageDpi) {
-		float scaledPadding = CommonDrawerUtils.toDpiAxisPoint(padding, imageDpi);
-		this.textX += scaledPadding;
-		// minus, because PDF starts to count from bottom
-		this.textY -= scaledPadding;
 	}
 
 	@Override
