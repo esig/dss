@@ -20,18 +20,18 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
 
 public class OCSPSourceSnippet {
 
@@ -72,7 +72,8 @@ public class OCSPSourceSnippet {
 
 		// tag::demo-cached[]
 		JdbcCacheOCSPSource cacheOCSPSource = new JdbcCacheOCSPSource();
-		cacheOCSPSource.setDataSource(dataSource);
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		cacheOCSPSource.setJdbcCacheConnector(jdbcCacheConnector);
 		cacheOCSPSource.setProxySource(onlineOCSPSource);
 		Long threeMinutes = (long) (60 * 3);
 		cacheOCSPSource.setDefaultNextUpdateDelay(threeMinutes); // default nextUpdateDelay (if not defined in the revocation data)

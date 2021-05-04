@@ -184,7 +184,8 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 
 		final List<String> keys = initRevocationTokenKeys(certificateToken);
 		if (forceRefresh) {
-			LOG.info("Cache is skipped to retrieve the revocation token for certificate '{}'", certificateToken.getDSSIdAsString());
+			LOG.info("Cache is skipped to retrieve the revocation token for certificate with Id '{}'",
+					certificateToken.getDSSIdAsString());
 		} else {
 			RevocationToken<R> cachedRevocationToken = extractRevocationFromCacheSource(certificateToken, issuerCertificateToken, keys);
 			if (cachedRevocationToken != null) {
@@ -211,7 +212,8 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 			final RevocationToken<R> revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
 			if (revocationToken != null) {
 				if (isNotExpired(revocationToken, issuerCertificateToken)) {
-					LOG.info("Revocation token for certificate '{}' is loaded from the cache", certificateToken.getDSSIdAsString());
+					LOG.info("Revocation token for certificate with Id '{}' has been loaded from the cache",
+							certificateToken.getDSSIdAsString());
 					return revocationToken;
 				} else {
 					LOG.debug("Revocation token is expired");
@@ -228,10 +230,12 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	}
 	
 	/**
-	 * Extracts a {@link RevocationToken} from the defined proxiedSource and inserts/updates its in the cache Source if needed
+	 * Extracts a {@link RevocationToken} from the defined proxiedSource and inserts/updates its
+	 * in the cache source if required.
+	 *
 	 * @param certificateToken {@link CertificateToken} to extract the revocation token for
 	 * @param issuerCertificateToken {@link CertificateToken} of the issuer
-	 * @param keys - list of keys, that can be used as unique identifications of the revocation entry
+	 * @param keys - list of keys that can be used as unique identifications of the revocation entry
 	 * @return {@link RevocationToken}
 	 */
 	private RevocationToken<R> extractAndInsertRevocationTokenFromProxiedSource(final CertificateToken certificateToken,

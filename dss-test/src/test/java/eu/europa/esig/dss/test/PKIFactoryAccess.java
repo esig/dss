@@ -32,12 +32,15 @@ import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
+import eu.europa.esig.dss.service.x509.aia.JdbcCacheAIASource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
@@ -45,7 +48,6 @@ import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.token.KeyStoreSignatureTokenConnection;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import org.h2.jdbcx.JdbcDataSource;
 
 import java.io.ByteArrayInputStream;
@@ -146,7 +148,7 @@ public abstract class PKIFactoryAccess {
 
 	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier cv = new CommonCertificateVerifier();
-		cv.setDataLoader(getFileCacheDataLoader());
+		cv.setAIASource(cacheAIASource());
 		cv.setCrlSource(cacheCRLSource());
 		cv.setOcspSource(cacheOCSPSource());
 		cv.setTrustedCertSources(getTrustedCertificateSource());
@@ -169,6 +171,19 @@ public abstract class PKIFactoryAccess {
 	}
 
 	private AIASource cacheAIASource() {
+		JdbcCacheAIASource cacheAIASource = new JdbcCacheAIASource();
+		cacheAIASource.setProxySource(onlineAIASource());
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		cacheAIASource.setJdbcCacheConnector(jdbcCacheConnector);
+		try {
+			cacheAIASource.initTable();
+		} catch (SQLException e) {
+			throw new DSSException("Cannot initialize table for AIA certificate source.", e);
+		}
+		return cacheAIASource;
+	}
+
+	private DefaultAIASource onlineAIASource() {
 		DefaultAIASource aiaSource = new DefaultAIASource();
 		aiaSource.setDataLoader(getFileCacheDataLoader());
 		return aiaSource;
@@ -177,7 +192,8 @@ public abstract class PKIFactoryAccess {
 	private JdbcCacheCRLSource cacheCRLSource() {
 		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
 		cacheCRLSource.setProxySource(onlineCrlSource());
-		cacheCRLSource.setDataSource(dataSource);
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		cacheCRLSource.setJdbcCacheConnector(jdbcCacheConnector);
 		cacheCRLSource.setDefaultNextUpdateDelay(3 * 24 * 60 * 60l); // 3 days
 		try {
 			cacheCRLSource.initTable();
@@ -196,7 +212,8 @@ public abstract class PKIFactoryAccess {
 	private JdbcCacheOCSPSource cacheOCSPSource() {
 		JdbcCacheOCSPSource cacheOCSPSource = new JdbcCacheOCSPSource();
 		cacheOCSPSource.setProxySource(onlineOcspSource());
-		cacheOCSPSource.setDataSource(dataSource);
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		cacheOCSPSource.setJdbcCacheConnector(jdbcCacheConnector);
 		cacheOCSPSource.setDefaultNextUpdateDelay(3 * 60l); // 3 minutes
 		try {
 			cacheOCSPSource.initTable();

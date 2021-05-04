@@ -129,6 +129,11 @@ public class DefaultAIASource implements AIASource {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("{} certificate(s) loaded from '{}'", loadedCertificates.size(), url);
                     }
+
+                    String aiaCertificateKey = DSSUtils.getSHA1Digest(url);
+                    for (CertificateToken aiaCertificate : loadedCertificates) {
+                        aiaCertificate.setAiaCertificateKey(aiaCertificateKey);
+                    }
                     allCertificates.addAll(loadedCertificates);
 
                 } catch (Exception e) {

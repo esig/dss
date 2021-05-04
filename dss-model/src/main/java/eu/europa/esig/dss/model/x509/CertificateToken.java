@@ -20,6 +20,15 @@
  */
 package eu.europa.esig.dss.model.x509;
 
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.identifier.CertificateTokenIdentifier;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+
+import javax.security.auth.x500.X500Principal;
 import java.math.BigInteger;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
@@ -32,16 +41,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import javax.security.auth.x500.X500Principal;
-
-import eu.europa.esig.dss.enumerations.KeyUsageBit;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureValidity;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.identifier.CertificateTokenIdentifier;
-import eu.europa.esig.dss.model.identifier.EntityIdentifier;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
 /**
  * Whenever the signature validation process encounters an {@link java.security.cert.X509Certificate} a certificateToken
@@ -72,6 +71,11 @@ public class CertificateToken extends Token {
 	 * Cached list of KeyUsageBit
 	 */
 	private List<KeyUsageBit> keyUsageBits;
+
+	/**
+	 * The internal variable indicating an AIA URI the certificate has been obtained from, when applicable
+	 */
+	private String aiaCertificateKey;
 
 	/**
 	 * Creates a CertificateToken wrapping the provided X509Certificate.
@@ -364,6 +368,24 @@ public class CertificateToken extends Token {
 	 */
 	public byte[] getSignature() {
 		return x509Certificate.getSignature();
+	}
+
+	/**
+	 * Returns the AIA certificate key
+	 *
+	 * @return {@link String} key
+	 */
+	public String getAiaCertificateKey() {
+		return aiaCertificateKey;
+	}
+
+	/**
+	 * Sets the AIA certificate key
+	 *
+	 * @param aiaCertificateKey {@link String}
+	 */
+	public void setAiaCertificateKey(String aiaCertificateKey) {
+		this.aiaCertificateKey = aiaCertificateKey;
 	}
 
 	@Override
