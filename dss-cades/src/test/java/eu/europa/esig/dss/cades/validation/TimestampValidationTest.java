@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
@@ -48,7 +48,7 @@ public class TimestampValidationTest {
 
 	private CertificateVerifier getOfflineCertificateVerifier() {
 		CertificateVerifier cv = new CommonCertificateVerifier();
-		cv.setAIASource(new OnlineAIASource(new IgnoreDataLoader()));
+		cv.setAIASource(new DefaultAIASource(new IgnoreDataLoader()));
 		return cv;
 	}
 

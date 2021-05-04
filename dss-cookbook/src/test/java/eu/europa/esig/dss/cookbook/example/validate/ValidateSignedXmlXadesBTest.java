@@ -32,7 +32,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
@@ -61,7 +61,7 @@ public class ValidateSignedXmlXadesBTest {
 		// We can inject several sources. eg: OCSP, CRL, AIA, trusted lists
 
 		// Capability to download resources from AIA
-		cv.setAIASource(new OnlineAIASource());
+		cv.setAIASource(new DefaultAIASource());
 
 		// Capability to request OCSP Responders
 		cv.setOcspSource(new OnlineOCSPSource());

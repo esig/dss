@@ -34,7 +34,7 @@ import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.x509.AIASource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
@@ -45,7 +45,7 @@ import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.token.KeyStoreSignatureTokenConnection;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import org.h2.jdbcx.JdbcDataSource;
 
 import java.io.ByteArrayInputStream;
@@ -169,7 +169,7 @@ public abstract class PKIFactoryAccess {
 	}
 
 	private AIASource cacheAIASource() {
-		OnlineAIASource aiaSource = new OnlineAIASource();
+		DefaultAIASource aiaSource = new DefaultAIASource();
 		aiaSource.setDataLoader(getFileCacheDataLoader());
 		return aiaSource;
 	}

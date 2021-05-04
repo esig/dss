@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.spi.x509;
+package eu.europa.esig.dss.spi.x509.aia;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -24,9 +24,9 @@ import java.util.Set;
  * The class is used to download issuer certificates by AIA from remote sources
  *
  */
-public class OnlineAIASource implements AIASource {
+public class DefaultAIASource implements AIASource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OnlineAIASource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultAIASource.class);
 
     /**
      * The used {@code DataLoader} to download data
@@ -35,6 +35,7 @@ public class OnlineAIASource implements AIASource {
 
     /**
      * Collection of protocols to be accepted and used by the source
+     *
      * Default: all protocols are accepted (FILE, HTTP, HTTPS, LDAP, FTP).
      */
     private Collection<Protocol> acceptedProtocols = Arrays.asList(Protocol.values());
@@ -43,14 +44,14 @@ public class OnlineAIASource implements AIASource {
      * Empty constructor.
      * Instantiates a {@code NativeHTTPDataLoader} as a default data loader
      */
-    public OnlineAIASource() {
+    public DefaultAIASource() {
         this(new NativeHTTPDataLoader());
     }
 
     /**
      * Default constructor with a defined {@code DataLoader}
      */
-    public OnlineAIASource(DataLoader dataLoader) {
+    public DefaultAIASource(DataLoader dataLoader) {
         Objects.requireNonNull(dataLoader, "dataLoader cannot be null!");
         this.dataLoader = dataLoader;
     }

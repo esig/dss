@@ -37,7 +37,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -63,7 +63,7 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(TSA_CA_URL, Utils.fromBase64(TSA_CA));
 		DataLoader dataLoader = new MemoryDataLoader(dataMap);
-		certificateVerifier.setAIASource(new OnlineAIASource(dataLoader));
+		certificateVerifier.setAIASource(new DefaultAIASource(dataLoader));
 		certificateVerifier.setCrlSource(new OnlineCRLSource());
 		certificateVerifier.setOcspSource(new OnlineOCSPSource());
 	}

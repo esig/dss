@@ -32,7 +32,7 @@ import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +55,7 @@ public class PAdESLevelLTANotTrustedTSPTest extends AbstractPAdESTestSignature {
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
-        certificateVerifier.setAIASource(new OnlineAIASource());
+        certificateVerifier.setAIASource(new DefaultAIASource());
         certificateVerifier.setCrlSource(new OnlineCRLSource());
         certificateVerifier.setOcspSource(new OnlineOCSPSource());
 

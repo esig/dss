@@ -30,7 +30,7 @@ import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +58,7 @@ public class XAdESLevelTNotTrustedTSPTest extends AbstractXAdESTestSignature {
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
-        certificateVerifier.setAIASource(new OnlineAIASource());
+        certificateVerifier.setAIASource(new DefaultAIASource());
         certificateVerifier.setCrlSource(new OnlineCRLSource());
         certificateVerifier.setOcspSource(new OnlineOCSPSource());
 

@@ -29,7 +29,7 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +50,7 @@ public class DKExpectedSigCertTest extends AbstractDKTestCertificate {
 			CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
 			certSource.addCertificate(EXPECTED_SIG_CERT);
 			certificateVerifier.setTrustedCertSources(certSource);
-			certificateVerifier.setAIASource(new OnlineAIASource(getMemoryDataLoader()));
+			certificateVerifier.setAIASource(new DefaultAIASource(getMemoryDataLoader()));
 			validator.setCertificateVerifier(certificateVerifier);
 			validator.setProcessExecutor(fixedTime());
 			return validator;

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.x509.AIASource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -163,7 +163,7 @@ public interface CertificateVerifier {
 	 *
 	 * Please, use the following code to define the {@code AIASource}:
 	 * {@code
-	 *       AIASource aiaSource = new OnlineAIASource(dataLoader);
+	 *       AIASource aiaSource = new DefaultAIASource(dataLoader);
 	 * 		 certificateVerifier.setAIASource(aiaSource);
 	 * }
 	 *

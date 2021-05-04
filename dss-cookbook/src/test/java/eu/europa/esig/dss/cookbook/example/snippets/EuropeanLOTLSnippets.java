@@ -48,7 +48,7 @@ import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -78,7 +78,7 @@ public class EuropeanLOTLSnippets {
 		commonCertificateVerifier.setTrustedCertSources(trustedListsCertificateSource);
 		commonCertificateVerifier.setCrlSource(new OnlineCRLSource());
 		commonCertificateVerifier.setOcspSource(new OnlineOCSPSource());
-		commonCertificateVerifier.setAIASource(new OnlineAIASource());
+		commonCertificateVerifier.setAIASource(new DefaultAIASource());
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(
 				new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml"));

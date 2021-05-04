@@ -31,14 +31,14 @@ import eu.europa.esig.dss.service.http.commons.SSLCertificateLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.x509.AIASource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.validation.CertificateValidator;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ public class QWACValidationTest {
 
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
 
-		AIASource aiaSource = new OnlineAIASource();
+		AIASource aiaSource = new DefaultAIASource();
 		RevocationSource<OCSP> ocspSource = new OnlineOCSPSource();
 		RevocationSource<CRL> crlSource = new OnlineCRLSource();
 

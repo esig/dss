@@ -1,12 +1,12 @@
-package eu.europa.esig.dss.service.x509;
+package eu.europa.esig.dss.service.x509.aia;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.Protocol;
-import eu.europa.esig.dss.spi.x509.AIASource;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OnlineAIASourceTest {
+public class DefaultAIASourceTest {
 
     private static CertificateToken certificateWithAIA;
 
@@ -32,7 +32,7 @@ public class OnlineAIASourceTest {
 
     @Test
     public void testLoadIssuer() {
-        AIASource aiaSource = new OnlineAIASource();
+        AIASource aiaSource = new DefaultAIASource();
         Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificateWithAIA);
         assertTrue(Utils.isCollectionNotEmpty(issuers));
         boolean foundIssuer = false;
@@ -46,14 +46,14 @@ public class OnlineAIASourceTest {
 
     @Test
     public void setNullDataLoaderTest() {
-        OnlineAIASource aiaSource = new OnlineAIASource();
+        DefaultAIASource aiaSource = new DefaultAIASource();
         Exception exception = assertThrows(NullPointerException.class, () -> aiaSource.setDataLoader(null));
         assertEquals("dataLoader cannot be null!", exception.getMessage());
     }
 
     @Test
     public void emptyAcceptedProtocolsTest() {
-        OnlineAIASource aiaSource = new OnlineAIASource();
+        DefaultAIASource aiaSource = new DefaultAIASource();
         aiaSource.setAcceptedProtocols(Collections.emptySet());
         Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificateWithAIA);
         assertTrue(Utils.isCollectionEmpty(issuers));
@@ -62,7 +62,7 @@ public class OnlineAIASourceTest {
     @Test
     public void testLoadIssuerNoAIA() {
         CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.crt"));
-        OnlineAIASource aiaSource = new OnlineAIASource();
+        DefaultAIASource aiaSource = new DefaultAIASource();
         Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificate);
         assertTrue(Utils.isCollectionEmpty(issuers));
         assertTrue(certificate.isCA());
@@ -73,7 +73,7 @@ public class OnlineAIASourceTest {
         CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/sk_ca.cer"));
         MockCommonsDataLoader dataLoader = new MockCommonsDataLoader();
 
-        OnlineAIASource aiaSource = new OnlineAIASource(dataLoader);
+        DefaultAIASource aiaSource = new DefaultAIASource(dataLoader);
 
         Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificate);
         assertEquals(1, issuers.size());

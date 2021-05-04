@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.spi.x509;
+package eu.europa.esig.dss.spi.x509.aia;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 

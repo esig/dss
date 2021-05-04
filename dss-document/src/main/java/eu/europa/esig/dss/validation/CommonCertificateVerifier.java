@@ -28,10 +28,10 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.x509.AIASource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.spi.x509.OnlineAIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
@@ -191,7 +191,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	public CommonCertificateVerifier(final boolean simpleCreationOnly) {
 		LOG.info("+ New CommonCertificateVerifier created.");
 		if (!simpleCreationOnly) {
-			this.aiaSource = new OnlineAIASource();
+			this.aiaSource = new DefaultAIASource();
 		}
 	}
 
@@ -323,7 +323,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Deprecated
 	public void setDataLoader(final DataLoader dataLoader) {
 		LOG.warn("Use of deprecated method setDataLoader(DataLoader)! This method will override the defined AIASource.");
-		aiaSource = new OnlineAIASource(dataLoader);
+		aiaSource = new DefaultAIASource(dataLoader);
 	}
 
 	@Override
