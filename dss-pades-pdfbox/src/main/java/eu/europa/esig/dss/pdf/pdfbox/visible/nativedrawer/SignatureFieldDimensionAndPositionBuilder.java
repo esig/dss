@@ -119,7 +119,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		}
 	}
 
-	private void assignImageBoundaryBox() throws IOException {
+	private void assignImageBoundaryBox() {
 		AnnotationBox imageBoundaryBox = ImageUtils.getImageBoundaryBox(imageParameters);
 		float imageWidth = imageBoundaryBox.getWidth();
 		float imageHeight = imageBoundaryBox.getHeight();
@@ -219,7 +219,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		dimensionAndPosition.setBoxHeight(height);
 	}
 
-	private AnnotationBox computeTextDimension(SignatureImageTextParameters textParameters) throws IOException {
+	private AnnotationBox computeTextDimension(SignatureImageTextParameters textParameters) {
 		float properSize = textParameters.getFont().getSize()
 				* ImageUtils.getScaleFactor(imageParameters.getZoom()); // scale text block
 
