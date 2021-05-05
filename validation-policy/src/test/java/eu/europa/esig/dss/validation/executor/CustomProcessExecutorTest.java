@@ -5866,6 +5866,36 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void opeDocumentCoverageTest() throws Exception {
+		// see DSS-2448
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_open_document.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
+
+		MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
+		multiValuesConstraint.setLevel(Level.FAIL);
+		multiValuesConstraint.getId().add("application/vnd.oasis.opendocument.text");
+		containerConstraints.setAcceptableMimeTypeFileContent(multiValuesConstraint);
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		containerConstraints.setAllFilesSigned(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
 	public void diagDataNotNull() throws Exception {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(null);
