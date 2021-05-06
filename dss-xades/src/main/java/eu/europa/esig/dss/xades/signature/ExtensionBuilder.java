@@ -85,6 +85,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 * Initializes all variables to be used for signature extension
 	 *
 	 * @param signature {@link XAdESSignature}
+	 * @return {@link XAdESSignature}
 	 */
 	protected XAdESSignature initializeSignatureBuilder(XAdESSignature signature) {
 		xadesSignature = signature;

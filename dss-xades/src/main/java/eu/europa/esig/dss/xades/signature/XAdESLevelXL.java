@@ -57,25 +57,31 @@ public class XAdESLevelXL extends XAdESLevelX {
 	 * - CertificateValues element and<br>
 	 * - RevocationValues element.
 	 *
-	 * @see XAdESLevelBaselineT#extendSignatures(List<AdvancedSignature>)
+	 * @see XAdESLevelX#extendSignatures(List)
 	 */
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
+
+		boolean xlLevelRequired = false;
 
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
 			if (xadesSignature.hasLTAProfile()) {
 				continue;
 			}
+			
+			checkSignatureIntegrity();
 
 			// NOTE: do not force sources reload for certificate and revocation sources
 			// in order to ensure the same validation data as on -C level
 			xadesSignature.resetTimestampSource();
 
-			assertExtendSignatureToXLPossible();
+			xlLevelRequired = true;
+		}
 
-			checkSignatureIntegrity();
+		if (!xlLevelRequired) {
+			return;
 		}
 
 		// Perform signature validation
@@ -87,9 +93,12 @@ public class XAdESLevelXL extends XAdESLevelX {
 				continue;
 			}
 
-			Element levelXUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+			assertExtendSignatureToXLPossible();
+
 			String indent = removeOldCertificateValues();
 			removeOldRevocationValues();
+
+			Element levelXUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 			final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
 

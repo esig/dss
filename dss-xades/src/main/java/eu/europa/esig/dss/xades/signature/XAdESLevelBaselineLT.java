@@ -56,11 +56,13 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	 * - CertificateValues element and<br>
 	 * - RevocationValues element.
 	 *
-	 * @see XAdESLevelBaselineT#extendSignatures(List<AdvancedSignature>)
+	 * @see XAdESLevelBaselineT#extendSignatures(List)
 	 */
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
+
+		boolean ltLevelRequired = false;
 
 		// Reset sources
 		for (AdvancedSignature signature : signatures) {
@@ -69,17 +71,21 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 				continue;
 			}
 
+			/**
+			 * In all cases the -LT level need to be regenerated.
+			 */
+			checkSignatureIntegrity();
+
 			// Data sources can already be loaded in memory (force reload)
 			xadesSignature.resetCertificateSource();
 			xadesSignature.resetRevocationSources();
 			xadesSignature.resetTimestampSource();
 
-			assertExtendSignatureToLTPossible();
+			ltLevelRequired = true;
+		}
 
-			/**
-			 * In all cases the -LT level need to be regenerated.
-			 */
-			checkSignatureIntegrity();
+		if (!ltLevelRequired) {
+			return;
 		}
 
 		// Perform signature validation
@@ -92,9 +98,13 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 				continue;
 			}
 
-			Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+			// shall be called after source re-generation and validation data inclusion
+			assertExtendSignatureToLTPossible();
+
 			String indent = removeOldCertificateValues();
 			removeOldRevocationValues();
+
+			Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 			ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
 

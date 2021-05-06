@@ -60,7 +60,7 @@ public class XAdESLevelX extends XAdESLevelC {
 	 *
 	 * A XAdES-X form MAY contain several SigAndRefsTimeStamp elements, obtained from different TSAs.
 	 *
-	 * @see XAdESLevelBaselineT#extendSignatures(List<AdvancedSignature>)
+	 * @see XAdESLevelC#extendSignatures(List)
 	 */
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
@@ -75,9 +75,9 @@ public class XAdESLevelX extends XAdESLevelC {
 
 			assertExtendSignatureToXPossible();
 
-			final Element levelCUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
-
 			removeOldTimestamps();
+
+			final Element levelCUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();

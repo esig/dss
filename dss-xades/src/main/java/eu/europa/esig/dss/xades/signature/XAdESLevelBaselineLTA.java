@@ -51,26 +51,40 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	 * (messageImprint) is computed on the XAdES-LT form of the electronic signature and the signed data objects.<br>
 	 *
 	 * A XAdES-LTA form MAY contain several ArchiveTimeStamp elements.
+	 *
+	 * @see XAdESLevelBaselineLT#extendSignatures(List)
 	 */
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
 
+		boolean addTimestampValidationData = false;
+
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			checkSignatureIntegrity();
+
+			if (xadesSignature.hasLTAProfile()) {
+				addTimestampValidationData = true;
+			}
+		}
+
 		// Perform signature validation
-		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
+		ValidationDataContainer validationDataContainer = null;
+		if (addTimestampValidationData) {
+			validationDataContainer = documentValidator.getValidationData(signatures);
+		}
 
 		// Append LTA-level (+ ValidationData)
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
+
 			assertExtendSignatureToLTAPossible();
 
 			Element levelLTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-			if (xadesSignature.hasLTAProfile()) {
-				checkSignatureIntegrity();
-
+			if (xadesSignature.hasLTAProfile() && addTimestampValidationData) {
 				String indent = removeLastTimestampValidationData();
-
 				ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
 				incorporateTimestampValidationData(validationDataForInclusion, indent);
 			}

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
 import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
@@ -793,43 +792,6 @@ public class DSSJsonUtils {
 		jwsJsonSerializationObject.getSignatures().add(jws);
 		jwsJsonSerializationObject.setPayload(jws.getSignedPayload());
 		return jwsJsonSerializationObject;
-	}
-
-	/**
-	 * Converts the {@code DSSDocument} to {@link JWSJsonSerializationObject}, if not possible returns null
-	 *
-	 * @param jadesDocument Compact {@link DSSDocument} to convert
-	 * @return {@link JWSJsonSerializationObject} if able to convert, null otherwise
-	 */
-	public static JWSJsonSerializationObject toJWSJsonSerializationObject(DSSDocument jadesDocument) {
-		try {
-			JWSCompactSerializationParser jwsCompactSerializationParser = new JWSCompactSerializationParser(jadesDocument);
-			if (jwsCompactSerializationParser.isSupported()) {
-				JWS jws = jwsCompactSerializationParser.parse();
-				JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObject(jws);
-				jwsJsonSerializationObject.setJWSSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
-				return jwsJsonSerializationObject;
-			}
-		} catch (Exception e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Unable to parse a compact JWS signature from the document with name '{}'. Reason : {}",
-						jadesDocument.getName(), e.getMessage(), e);
-			}
-		}
-
-		try {
-			JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(jadesDocument);
-			if (jwsJsonSerializationParser.isSupported()) {
-				return jwsJsonSerializationParser.parse();
-			}
-		} catch (Exception e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Unable to parse signatures in the provided document with name '{}'. Reason : {}",
-						jadesDocument.getName(), e.getMessage(), e);
-			}
-		}
-
-		return null;
 	}
 
 	/**

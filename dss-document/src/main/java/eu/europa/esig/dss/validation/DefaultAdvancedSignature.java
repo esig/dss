@@ -322,39 +322,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	/**
-	 * This method validates the signing certificate and all timestamps.
-	 *
-	 * @param certificateVerifier {@link CertificateVerifier}
-	 * @return signature validation context containing all certificates and
-	 *         revocation data used during the validation process.
-	 */
-	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
-
-		// TODO: the method is to be deleted
-
-		final ValidationContext validationContext = new SignatureValidationContext();
-		
-		validationContext.initialize(certificateVerifier);
-
-		validationContext.addSignatureForVerification(this);
-
-		validationContext.validate();
-
-		validationContext.checkAllTimestampsValid();
-		validationContext.checkAllRequiredRevocationDataPresent();
-		validationContext.checkAllPOECoveredByRevocationData();
-		validationContext.checkAllCertificatesValid();
-
-		CertificateToken signingCertificateToken = getSigningCertificateToken();
-		if (signingCertificateToken != null) {
-			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
-			validationContext.checkSignatureNotExpired(signingCertificateToken);
-		}
-
-		return validationContext;
-	}
-
-	/**
 	 * Returns an unmodifiable list of all certificate tokens encapsulated in the
 	 * signature
 	 * 

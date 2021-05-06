@@ -74,11 +74,13 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	 * There SHALL be at most <b>one occurrence of CompleteRevocationRefs and CompleteCertificateRefs</b> properties in
 	 * the signature. Old references must be removed.
 	 *
-	 * @see XAdESLevelBaselineT#extendSignatures(List<AdvancedSignature>)
+	 * @see XAdESLevelBaselineT#extendSignatures(List)
 	 */
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
+
+		boolean cLevelRequired = false;
 
 		// Reset sources
 		for (AdvancedSignature signature : signatures) {
@@ -94,7 +96,11 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			xadesSignature.resetRevocationSources();
 			xadesSignature.resetTimestampSource();
 
-			assertExtendSignatureToCPossible();
+			cLevelRequired = true;
+		}
+
+		if (!cLevelRequired) {
+			return;
 		}
 
 		// Perform signature validation
@@ -103,10 +109,11 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		// Append ValidationData
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-
 			if (!cLevelExtensionRequired(params.getSignatureLevel())) {
 				continue;
 			}
+
+			assertExtendSignatureToCPossible();
 
 			String indent = removeOldCertificateRefs();
 			removeOldRevocationRefs();
@@ -198,7 +205,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 	private ValidationData getValidationDataForCLevelInclusion(final ValidationDataContainer validationDataContainer,
 															   final AdvancedSignature signature) {
-		ValidationData validationData = validationDataContainer.getValidationData(signature);
+		ValidationData validationData = validationDataContainer.getAllValidationDataForSignature(signature);
 		validationData.excludeCertificateTokens(getCertificateTokensForExclusion());
 		return validationData;
 	}

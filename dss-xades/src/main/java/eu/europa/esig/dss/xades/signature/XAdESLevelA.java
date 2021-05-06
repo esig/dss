@@ -51,25 +51,36 @@ public class XAdESLevelA extends XAdESLevelXL {
 	 *
 	 * A XAdES-A form MAY contain several ArchiveTimeStamp elements.
 	 *
-	 * @see XAdESLevelBaselineT#extendSignatures(List<AdvancedSignature>)
+	 * @see XAdESLevelXL#extendSignatures(List)
 	 */
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
 
+		boolean addTimestampValidationData = false;
+
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			assertExtendSignatureToAPossible();
+			checkSignatureIntegrity();
+
+			if (xadesSignature.hasLTAProfile()) {
+				addTimestampValidationData = true;
+			}
+		}
+
 		// Perform signature validation
-		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
+		ValidationDataContainer validationDataContainer = null;
+		if (addTimestampValidationData) {
+			validationDataContainer = documentValidator.getValidationData(signatures);
+		}
 
 		// Append LTA-level (+ ValidationData)
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			assertExtendSignatureToAPossible();
-
 			Element levelXLUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-			if (xadesSignature.hasLTAProfile()) {
-				checkSignatureIntegrity();
-
+			if (xadesSignature.hasLTAProfile() && addTimestampValidationData) {
 				// must be executed before data removing
 				String indent = removeLastTimestampValidationData();
 

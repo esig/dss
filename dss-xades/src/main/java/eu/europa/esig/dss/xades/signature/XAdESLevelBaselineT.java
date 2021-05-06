@@ -44,7 +44,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
@@ -151,6 +150,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * For -T profile adds the SignatureTimeStamp element which contains a single HashDataInfo element that refers to
 	 * the ds:SignatureValue element of the [XMLDSIG] signature. The timestamp token is obtained from TSP source.<br>
 	 * Adds {@code <SignatureTimeStamp>} segment into {@code <UnsignedSignatureProperties>} element.
+	 *
+	 * @param signatures a list of {@link AdvancedSignature}s to extend
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		for (AdvancedSignature signature : signatures) {
@@ -374,6 +375,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 	/**
 	 * This method removes old certificate values from the unsigned signature properties element.
+	 *
+	 * @return {@link String} indent
 	 */
 	protected String removeOldCertificateValues() {
 		String text = null;
@@ -418,6 +421,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * This method incorporates the timestamp validation data in the signature
 	 *
 	 * @param validationDataForInclusion {@link ValidationData} to be included into the signature
+	 * @param indent {@link String}
 	 */
 	protected void incorporateTimestampValidationData(final ValidationData validationDataForInclusion, String indent) {
 
