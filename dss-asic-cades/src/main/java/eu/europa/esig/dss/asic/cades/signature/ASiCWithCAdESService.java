@@ -377,7 +377,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 							.setLastTimestampDocument(lastTimestamp).setSignatures(signatures).setTimestamps(timestamps)
 							.setManifests(manifests).build();
 
-			DSSDocument extendedTimestamp = extendTimestamp(lastTimestamp, validationDataForInclusion, originalSignedDocuments);
+			DSSDocument extendedTimestamp = extendTimestamp(lastTimestamp, validationDataForInclusion);
 			// a newer version of the timestamp must be created
 			timestamps.remove(lastTimestamp);
 			extendedDocuments.add(extendedTimestamp);
@@ -443,12 +443,10 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return DSSUtils.getDocumentWithLastName(timestamps);
 	}
 
-	private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationData validationDataForInclusion,
-										List<DSSDocument> detachedContents) {
+	private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationData validationDataForInclusion) {
 		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
 		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion,
-				detachedContents);
+		CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion);
 		return new InMemoryDocument(DSSASN1Utils.getEncoded(extendedCMSSignedData), archiveTimestamp.getName(), MimeType.TST);
 	}
 

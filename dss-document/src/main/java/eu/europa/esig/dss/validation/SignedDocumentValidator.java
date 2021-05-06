@@ -461,8 +461,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param detachedTimestamps a collection of detached {@link TimestampToken}s
 	 * @return {@link ValidationContext}
 	 */
-	protected ValidationContext prepareValidationContext(final Collection<AdvancedSignature> signatures,
-														 final Collection<TimestampToken> detachedTimestamps) {
+	protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
+			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps) {
 		ValidationContext validationContext = new SignatureValidationContext();
 		prepareSignatureValidationContext(validationContext, signatures);
 		prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
@@ -480,17 +480,21 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public ValidationDataContainer getValidationData(Collection<AdvancedSignature> signatures) {
+	public <T extends AdvancedSignature> ValidationDataContainer getValidationData(Collection<T> signatures) {
 		return getValidationData(signatures, Collections.emptyList());
 	}
 
 	@Override
-	public ValidationDataContainer getValidationData(Collection<AdvancedSignature> signatures, Collection<TimestampToken> detachedTimestamps) {
+	public <T extends AdvancedSignature> ValidationDataContainer getValidationData(Collection<T> signatures,
+																				   Collection<TimestampToken> detachedTimestamps) {
+		if (Utils.isCollectionEmpty(signatures) && Utils.isCollectionEmpty(detachedTimestamps)) {
+			throw new DSSException("At least one signature or a timestamp shall be provided to extract the validation data!");
+		}
 
 		ValidationContext validationContext = prepareValidationContext(signatures, detachedTimestamps);
 		validateContext(validationContext);
 
-		assertSignaturesValid(signatures,validationContext);
+		assertSignaturesValid(signatures, validationContext);
 
 		ValidationDataContainer validationDataContainer = new ValidationDataContainer();
 		for (AdvancedSignature signature : signatures) {
@@ -513,7 +517,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return validationDataContainer;
 	}
 
-	private void assertSignaturesValid(Collection<AdvancedSignature> signatures, ValidationContext validationContext) {
+	private <T extends AdvancedSignature> void assertSignaturesValid(Collection<T> signatures,
+																	 ValidationContext validationContext) {
 
 		validationContext.checkAllTimestampsValid();
 		validationContext.checkAllRequiredRevocationDataPresent();
@@ -615,7 +620,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *                          a collection of all {@link AdvancedSignature}s to be
 	 *                          validated
 	 */
-	protected void prepareSignatureValidationContext(final ValidationContext validationContext, final Collection<AdvancedSignature> allSignatures) {
+	protected <T extends AdvancedSignature> void prepareSignatureValidationContext(
+			final ValidationContext validationContext, final Collection<T> allSignatures) {
 		prepareSignatureForVerification(validationContext, allSignatures);
 		processSignaturesValidation(allSignatures);
 	}
@@ -627,7 +633,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *                          the validators for: certificates, timestamps and
 	 *                          revocation data.
 	 */
-	protected void prepareSignatureForVerification(final ValidationContext validationContext, final Collection<AdvancedSignature> allSignatureList) {
+	protected <T extends AdvancedSignature> void prepareSignatureForVerification(
+			final ValidationContext validationContext, final Collection<T> allSignatureList) {
 		for (final AdvancedSignature signature : allSignatureList) {
 			validationContext.addSignatureForVerification(signature);
 		}
@@ -770,7 +777,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void processSignaturesValidation(Collection<AdvancedSignature> allSignatureList) {
+	public <T extends AdvancedSignature>  void processSignaturesValidation(Collection<T> allSignatureList) {
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSignatureIntegrity();
 		}
@@ -784,7 +791,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *                      SignatureScope list
 	 */
 	@Override
-	public void findSignatureScopes(Collection<AdvancedSignature> allSignatures) {
+	public <T extends AdvancedSignature> void findSignatureScopes(Collection<T> allSignatures) {
 		for (final AdvancedSignature signature : allSignatures) {
 			signature.findSignatureScope(signatureScopeFinder);
 		}

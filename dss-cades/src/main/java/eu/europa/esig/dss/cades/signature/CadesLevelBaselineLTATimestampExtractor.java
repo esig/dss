@@ -104,8 +104,15 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		excludedAttributesFromAtsHashIndex.add(id_aa_ets_certValues);
 		excludedAttributesFromAtsHashIndex.add(id_aa_ets_revocationValues);
 	}
-	
-	public CadesLevelBaselineLTATimestampExtractor(final CMSSignedData cmsSignedData, final Collection<CertificateToken> certificates) {
+
+	/**
+	 * Constructor with a custom collection of certificates
+	 *
+	 * @param cmsSignedData {@link CMSSignedData}
+	 * @param certificates a collection of {@link CertificateToken}s
+	 */
+	public CadesLevelBaselineLTATimestampExtractor(final CMSSignedData cmsSignedData,
+												   final Collection<CertificateToken> certificates) {
 		this.cmsSignedData = cmsSignedData;
 		this.certificates = certificates;
 	}
@@ -195,8 +202,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * time-stamp is requested, shall be included in certificatesHashIndex. No other
 	 * hash value shall be included in this field.
 	 *
-	 * @return
-	 * @throws eu.europa.esig.dss.model.DSSException
+	 * @return {@link ASN1Sequence}
 	 */
 	private ASN1Sequence getCertificatesHashIndex() {
 
@@ -222,8 +228,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * time-stamp is requested, shall be included in certificatesHashIndex. No other
 	 * hash value shall be included in this field.
 	 *
-	 * @return
-	 * @throws eu.europa.esig.dss.model.DSSException
+	 * @return {@link ASN1Sequence}
 	 */
 	private ASN1Sequence getVerifiedCertificatesHashIndex(final ASN1Sequence timestampHashIndex) {
 
@@ -256,8 +261,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * shall be included in crlsHashIndex. No other hash values shall be included in
 	 * this field.
 	 *
-	 * @return
-	 * @throws eu.europa.esig.dss.model.DSSException
+	 * @return {@link ASN1Sequence}
 	 */
 	@SuppressWarnings("unchecked")
 	private ASN1Sequence getCRLsHashIndex() {
@@ -296,8 +300,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * shall be included in crlsHashIndex. No other hash values shall be included in
 	 * this field.
 	 *
-	 * @return
-	 * @throws eu.europa.esig.dss.model.DSSException
+	 * @return {@link ASN1Sequence}
 	 */
 	@SuppressWarnings("unchecked")
 	private ASN1Sequence getVerifiedCRLsHashIndex(final ASN1Sequence timestampHashIndex) {
@@ -350,7 +353,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 *
 	 * @param signerInformation {@link SignerInformation}
 	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} of the ats-hash-index table version to create
-	 * @return
+	 * @return {@link ASN1Sequence}
 	 */
 	private ASN1Sequence getUnsignedAttributesHashIndex(SignerInformation signerInformation, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 
@@ -445,7 +448,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	/**
 	 * Extract the Unsigned Attribute Archive Timestamp Cert Hash Index from a timestampToken
 	 *
-	 * @param atsHashIndexValue
+	 * @param atsHashIndexValue {@link ASN1Sequence}
 	 * @return {@link AlgorithmIdentifier}
 	 */
 	private AlgorithmIdentifier getAlgorithmIdentifier(final ASN1Sequence atsHashIndexValue) {
@@ -463,7 +466,16 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 	}
 
-	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, byte[] originalDocumentDigest) {
+	/**
+	 * Computes a message-imprint for an archive-time-stamp-v3
+	 *
+	 * @param signerInformation {@link SignerInformation}
+	 * @param atsHashIndexAttribute {@link Attribute}
+	 * @param originalDocumentDigest signed document digest
+	 * @return message-imprint
+	 */
+	public byte[] getArchiveTimestampV3MessageImprint(SignerInformation signerInformation,
+													  Attribute atsHashIndexAttribute, byte[] originalDocumentDigest) {
 		final byte[] encodedContentType = getEncodedContentType(cmsSignedData); // OID
 		final byte[] signedDataDigest = originalDocumentDigest;
 		final byte[] encodedFields = getSignedFields(signerInformation);
@@ -488,7 +500,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	/**
 	 * 1) The SignedData.encapContentInfo.eContentType.
 	 *
-	 * @param cmsSignedData
+	 * @param cmsSignedData {@link CMSSignedData}
 	 * @return cmsSignedData.getSignedContentTypeOID() as DER encoded
 	 */
 	private byte[] getEncodedContentType(final CMSSignedData cmsSignedData) {
@@ -502,8 +514,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * signature within the SignedData.signerInfos’s item corresponding to the signature being archive
 	 * time-stamped, in their order of appearance.
 	 *
-	 * @param signerInformation
-	 * @return
+	 * @param signerInformation {@link SignerInformation}
+	 * @return a byte array
 	 */
 	private byte[] getSignedFields(final SignerInformation signerInformation) {
 
@@ -533,4 +545,5 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		return DSSUtils.concatenate(derEncodedVersion, derEncodedSid, derEncodedDigestAlgorithm, derEncodedSignedAttributes,
 				derEncodedDigestEncryptionAlgorithm, derEncodedEncryptedDigest);
 	}
+
 }

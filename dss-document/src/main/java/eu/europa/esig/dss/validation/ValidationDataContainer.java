@@ -106,4 +106,33 @@ public class ValidationDataContainer {
         return true;
     }
 
+    /**
+     * Returns a complete validation data for a signature, including the data for
+     * incorporated timestamps and/or counter-signatures
+     *
+     * @param signature {@link AdvancedSignature} to extract validation data for
+     * @return {@link ValidationData}
+     */
+    public ValidationData getCompleteValidationDataForSignature(final AdvancedSignature signature) {
+        ValidationData validationDataForInclusion = new ValidationData();
+
+        ValidationData signatureValidationData = getValidationData(signature);
+        validationDataForInclusion.addValidationData(signatureValidationData);
+
+        for (TimestampToken timestampToken : signature.getAllTimestamps()) {
+            ValidationData timestampValidationData = getValidationData(timestampToken);
+            validationDataForInclusion.addValidationData(timestampValidationData);
+        }
+        for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
+            ValidationData counterSignatureValidationData = getValidationData(counterSignature);
+            validationDataForInclusion.addValidationData(counterSignatureValidationData);
+        }
+
+        validationDataForInclusion.excludeCertificateTokens(signature.getCertificateSource().getCertificates());
+        validationDataForInclusion.excludeCRLTokens(signature.getCRLSource().getAllRevocationBinaries());
+        validationDataForInclusion.excludeOCSPTokens(signature.getOCSPSource().getAllRevocationBinaries());
+
+        return validationDataForInclusion;
+    }
+
 }

@@ -30,32 +30,18 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestFile;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
-import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
-import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
-import org.bouncycastle.cert.X509CRLHolder;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.jcajce.JcaCertStore;
+import eu.europa.esig.dss.validation.ValidationData;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.operator.DigestCalculatorProvider;
-import org.bouncycastle.util.CollectionStore;
-import org.bouncycastle.util.Encodable;
-import org.bouncycastle.util.Store;
 
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -105,7 +91,7 @@ public class CAdESCounterSignatureBuilder {
 
 		if (Utils.isCollectionNotEmpty(updatedSignerInfo)) {
 			CMSSignedData updatedCMSSignedData = CMSSignedData.replaceSigners(originalCMSSignedData, new SignerInformationStore(updatedSignerInfo));
-			updatedCMSSignedData = addNewCertificates(updatedCMSSignedData, originalCMSSignedData, parameters);
+			updatedCMSSignedData = addNewCertificates(updatedCMSSignedData, parameters);
 			return new CMSSignedDocument(updatedCMSSignedData);
 		} else {
 			throw new DSSException("No updated signed info");
@@ -147,49 +133,17 @@ public class CAdESCounterSignatureBuilder {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private CMSSignedData addNewCertificates(CMSSignedData updatedCMSSignedData, CMSSignedData originalCMSSignedData,
-			CAdESCounterSignatureParameters parameters) {
-		final List<CertificateToken> certificateTokens = new LinkedList<>();
-		Store<X509CertificateHolder> certificatesStore = originalCMSSignedData.getCertificates();
-		final Collection<X509CertificateHolder> certificatesMatches = certificatesStore.getMatches(null);
-		for (final X509CertificateHolder certificatesMatch : certificatesMatches) {
-			final CertificateToken token = DSSASN1Utils.getCertificate(certificatesMatch);
-			if (!certificateTokens.contains(token)) {
-				certificateTokens.add(token);
-			}
-		}
+	private CMSSignedData addNewCertificates(CMSSignedData updatedCMSSignedData, CAdESCounterSignatureParameters parameters) {
+		ValidationData validationDataToAdd = new ValidationData();
 
 		BaselineBCertificateSelector certificateSelectors = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> newCertificates = certificateSelectors.getCertificates();
 		for (CertificateToken certificateToken : newCertificates) {
-			if (!certificateTokens.contains(certificateToken)) {
-				certificateTokens.add(certificateToken);
-			}
+			validationDataToAdd.addToken(certificateToken);
 		}
 
-		final Collection<X509Certificate> certs = new ArrayList<>();
-		for (final CertificateToken certificateInChain : certificateTokens) {
-			certs.add(certificateInChain.getCertificate());
-		}
-		
-		Store<X509CRLHolder> crlsStore = originalCMSSignedData.getCRLs();
-		final Collection<Encodable> crls = new HashSet<>(crlsStore.getMatches(null));
-		Store ocspBasicStore = originalCMSSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-		for (Object ocsp : ocspBasicStore.getMatches(null)) {
-			crls.add(new OtherRevocationInfoFormat(OCSPObjectIdentifiers.id_pkix_ocsp_basic, (ASN1Encodable) ocsp));
-		}
-		Store ocspResponseStore = originalCMSSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
-		for (Object ocsp : ocspResponseStore.getMatches(null)) {
-			crls.add(new OtherRevocationInfoFormat(CMSObjectIdentifiers.id_ri_ocsp_response, (ASN1Encodable) ocsp));
-		}
-
-		try {
-			JcaCertStore jcaCertStore = new JcaCertStore(certs);
-			return CMSSignedData.replaceCertificatesAndCRLs(updatedCMSSignedData, jcaCertStore, originalCMSSignedData.getAttributeCertificates(),
-					new CollectionStore(crls));
-		} catch (Exception e) {
-			throw new DSSException("Unable to create the JcaCertStore", e);
-		}
+		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
+		return cmsSignedDataBuilder.extendCMSSignedData(updatedCMSSignedData, validationDataToAdd);
 	}
 
 	private SignerInformationStore generateCounterSignature(SignerInformation signerInformation,

@@ -71,7 +71,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 
 				String indent = removeLastTimestampValidationData();
 
-				ValidationData validationDataForInclusion = getValidationDataForInclusion(validationDataContainer, signature);
+				ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
 				incorporateTimestampValidationData(validationDataForInclusion, indent);
 			}
 

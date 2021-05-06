@@ -196,36 +196,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	public void setTspSource(final TSPSource tspSource) {
 		this.tspSource = tspSource;
 	}
-	
-	/**
-	 * Returns a XAdES ValidationData for Inclusion (LT-, XL- level)
-	 * 
-	 * @param validationDataContainer {@link ValidationDataContainer}
-	 * @param signature {@link AdvancedSignature} to extract validation data for
-	 * @return {@link ValidationData}
-	 */
-	protected ValidationData getValidationDataForInclusion(final ValidationDataContainer validationDataContainer,
-														   final AdvancedSignature signature) {
-		ValidationData validationDataForInclusion = new ValidationData();
-
-		ValidationData signatureValidationData = validationDataContainer.getValidationData(signature);
-		validationDataForInclusion.addValidationData(signatureValidationData);
-
-		for (TimestampToken timestampToken : signature.getAllTimestamps()) {
-			ValidationData timestampValidationData = validationDataContainer.getValidationData(timestampToken);
-			validationDataForInclusion.addValidationData(timestampValidationData);
-		}
-		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
-			ValidationData counterSignatureValidationData = validationDataContainer.getValidationData(counterSignature);
-			validationDataForInclusion.addValidationData(counterSignatureValidationData);
-		}
-
-		validationDataForInclusion.excludeCertificateTokens(xadesSignature.getCertificateSource().getCertificates());
-		validationDataForInclusion.excludeCRLTokens(xadesSignature.getCRLSource().getAllRevocationBinaries());
-		validationDataForInclusion.excludeOCSPTokens(xadesSignature.getOCSPSource().getAllRevocationBinaries());
-
-		return validationDataForInclusion;
-	}
 
 	/**
 	 * This method incorporates all certificates passed as parameter :

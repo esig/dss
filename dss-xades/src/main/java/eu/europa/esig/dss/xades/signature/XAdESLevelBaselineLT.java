@@ -96,7 +96,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 			String indent = removeOldCertificateValues();
 			removeOldRevocationValues();
 
-			ValidationData validationDataForInclusion = getValidationDataForInclusion(validationDataContainer, signature);
+			ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
 
 			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
 			Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
