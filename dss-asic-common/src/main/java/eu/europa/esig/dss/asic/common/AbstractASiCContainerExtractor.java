@@ -79,6 +79,7 @@ public abstract class AbstractASiCContainerExtractor {
 
 	private ASiCExtractResult zipParsing(DSSDocument asicContainer) throws IOException {
 		ASiCExtractResult result = new ASiCExtractResult();
+		result.setAsicContainer(asicContainer);
 
 		List<DSSDocument> documents = ZipUtils.getInstance().extractContainerContent(asicContainer);
 		if (Utils.isCollectionEmpty(documents)) {

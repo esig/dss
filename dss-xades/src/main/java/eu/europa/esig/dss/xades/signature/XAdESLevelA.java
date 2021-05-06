@@ -73,7 +73,7 @@ public class XAdESLevelA extends XAdESLevelXL {
 				// must be executed before data removing
 				String indent = removeLastTimestampValidationData();
 
-				ValidationData validationDataForInclusion = getValidationDataForInclusion(validationDataContainer, signature);
+				final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
 				incorporateTimestampValidationData(validationDataForInclusion, indent);
 			}
 			incorporateArchiveTimestamp();

@@ -61,6 +61,12 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 	}
 
 	@Override
+	public DSSDocument getAsicContainer() {
+		// no container is available for this class
+		return null;
+	}
+
+	@Override
 	public String getSignatureFilename() {
 		return getSignatureFileName();
 	}

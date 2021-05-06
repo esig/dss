@@ -110,7 +110,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
-    protected ValidationContext prepareValidationContext(Collection<AdvancedSignature> signatures, Collection<TimestampToken> detachedTimestamps) {
+    protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(Collection<T> signatures, Collection<TimestampToken> detachedTimestamps) {
         ValidationContext validationContext = super.prepareValidationContext(signatures, detachedTimestamps);
         List<PdfDssDict> dssDictionaries = getDssDictionaries();
         prepareDssDictionaryValidationContext(validationContext, dssDictionaries);

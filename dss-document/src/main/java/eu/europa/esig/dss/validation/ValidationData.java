@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
@@ -56,6 +57,9 @@ public class ValidationData {
 
 	/** List of OCSP tokens */
 	private final Set<OCSPToken> ocspTokens = new HashSet<>();
+
+	/** Internal set of containing public keys */
+	private final Set<EntityIdentifier> storedPublicKeys = new HashSet<>();
 
 	/**
 	 * Gets certificate tokens to be included into the signature
@@ -96,6 +100,7 @@ public class ValidationData {
 			if (!containsCertificateToken(certificateToken)) {
 				boolean added = certificateTokens.add(certificateToken);
 				if (added) {
+					storedPublicKeys.add(certificateToken.getEntityKey());
 					LOG.trace(String.format("CertificateToken with Id '{}' has been added to the ValidationData instance",
 							token.getDSSIdAsString()));
 					return true;
@@ -140,7 +145,7 @@ public class ValidationData {
 	}
 
 	private boolean containsCertificateToken(CertificateToken certificateTokenToAdd) {
-		return certificateTokens.contains(certificateTokenToAdd);
+		return certificateTokens.contains(certificateTokenToAdd) || storedPublicKeys.contains(certificateTokenToAdd.getEntityKey());
 	}
 
 	private boolean containsCRLToken(CRLToken crlTokenToAdd) {
@@ -186,7 +191,20 @@ public class ValidationData {
 	public void excludeCertificateTokens(Collection<CertificateToken> certificateTokensToExclude) {
 		if (Utils.isCollectionNotEmpty(certificateTokensToExclude)) {
 			for (CertificateToken certificateToken : certificateTokensToExclude) {
-				certificateTokens.remove(certificateToken);
+				if (containsCertificateToken(certificateToken)) {
+					storedPublicKeys.remove(certificateToken.getEntityKey());
+					excludeWithEntityKey(certificateToken.getEntityKey());
+				}
+			}
+		}
+	}
+
+	private void excludeWithEntityKey(EntityIdentifier entityIdentifier) {
+		Iterator<CertificateToken> iterator = certificateTokens.iterator();
+		while (iterator.hasNext()) {
+			CertificateToken certToken = iterator.next();
+			if (entityIdentifier.equals(certToken.getEntityKey())) {
+				iterator.remove();
 			}
 		}
 	}

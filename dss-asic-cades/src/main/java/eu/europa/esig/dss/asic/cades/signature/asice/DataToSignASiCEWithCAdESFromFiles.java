@@ -55,6 +55,12 @@ public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWi
 	}
 
 	@Override
+	public DSSDocument getAsicContainer() {
+		// no container is available for this class
+		return null;
+	}
+
+	@Override
 	public DSSDocument getToBeSigned() {
 		if (toBeSigned == null) {
 			toBeSigned = getASiCManifest(filesToBeSigned, Collections.<DSSDocument>emptyList(),
