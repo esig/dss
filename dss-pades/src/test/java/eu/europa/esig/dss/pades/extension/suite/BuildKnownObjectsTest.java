@@ -18,35 +18,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
+package eu.europa.esig.dss.pades.extension.suite;
 
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import org.junit.jupiter.api.Test;
 
-public abstract class AbstractBuildKnownObjectsTest extends PKIFactoryAccess {
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class BuildKnownObjectsTest extends PKIFactoryAccess {
 
 	/**
 	 * Duplicate streams
@@ -59,7 +59,6 @@ public abstract class AbstractBuildKnownObjectsTest extends PKIFactoryAccess {
 	 * 
 	 * @throws IOException
 	 */
-
 	@Test
 	public void buildKnownObjects() throws IOException {
 
@@ -94,9 +93,13 @@ public abstract class AbstractBuildKnownObjectsTest extends PKIFactoryAccess {
 		trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIEPzCCA6igAwIBAgIEBycUMzANBgkqhkiG9w0BAQUFADB1MQswCQYDVQQGEwJVUzEYMBYGA1UEChMPR1RFIENvcnBvcmF0aW9uMScwJQYDVQQLEx5HVEUgQ3liZXJUcnVzdCBTb2x1dGlvbnMsIEluYy4xIzAhBgNVBAMTGkdURSBDeWJlclRydXN0IEdsb2JhbCBSb290MB4XDTA3MDMyMTE0MjAxN1oXDTE3MDMwNzE0MTk0M1owXDELMAkGA1UEBhMCQkUxHDAaBgNVBAoTE0NlcnRpcG9zdCBzLmEuL24udi4xLzAtBgNVBAMTJkNlcnRpcG9zdCBFLVRydXN0IFByaW1hcnkgUXVhbGlmaWVkIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAriDSeNuaoHKcBFIlLG1S2NcniTOg4bLV+zB1ay1/HGeODucfEt8XeRi7tBtv+D11G55nN/Dx+g917YadAwShKHAtPLJroHNR4zWpdKUIPpSFJzYqqnJk/HfudpQccuu/Msd3A2olggkFr19gPH+sG7yS6Dx0Wc7xfFQtOK6W8KxvoTMMIVoBuiMgW6CGAtVT3EkfqDKzrztGO7bvnzmzOAvneor2KPmnb1ApyHlYi0nSpdiFflbxaRV4RBE116VUPqtmJdLb4xjxLivicSMJN2RDQnQylnfel6LploacJUQJ1AGdUX4ztwlE5YCXDWRbdxiXpUupnhCdh/pWp88KfQIDAQABo4IBbzCCAWswEgYDVR0TAQH/BAgwBgEB/wIBATBTBgNVHSAETDBKMEgGCSsGAQQBsT4BADA7MDkGCCsGAQUFBwIBFi1odHRwOi8vd3d3LnB1YmxpYy10cnVzdC5jb20vQ1BTL09tbmlSb290Lmh0bWwwDgYDVR0PAQH/BAQDAgEGMIGJBgNVHSMEgYEwf6F5pHcwdTELMAkGA1UEBhMCVVMxGDAWBgNVBAoTD0dURSBDb3Jwb3JhdGlvbjEnMCUGA1UECxMeR1RFIEN5YmVyVHJ1c3QgU29sdXRpb25zLCBJbmMuMSMwIQYDVQQDExpHVEUgQ3liZXJUcnVzdCBHbG9iYWwgUm9vdIICAaUwRQYDVR0fBD4wPDA6oDigNoY0aHR0cDovL3d3dy5wdWJsaWMtdHJ1c3QuY29tL2NnaS1iaW4vQ1JMLzIwMTgvY2RwLmNybDAdBgNVHQ4EFgQU8Hj5B3cQu9weoa55+zAQ28Y0+BcwDQYJKoZIhvcNAQEFBQADgYEALyAT1dejn45tPABj1Lp0QfUo1TJAvE9NDcMVcbe8bXYNOlmFaG7jHvUcSBkODYbuHzc6Ziwu0IEbb97Xt7JuY3E7XUsCZVEM0CVAc3G/XR16eVoAB95VuHoaxYaDDaAEoG2rAHOEAUsvpGp3MFKA3QDHDyMI5cAVsNUI1r5jUgQ="));
 		certificateVerifier.setTrustedCertSources(trustedCertSource);
-		
-		PAdESLevelBaselineLT lt = new PAdESLevelBaselineLT(getGoodTsa(), certificateVerifier, new ServiceLoaderPdfObjFactory());
-		DSSDocument extendSignature = lt.extendSignatures(dssDocument, new PAdESSignatureParameters());
+
+		PAdESService padesService = new PAdESService(certificateVerifier);
+		padesService.setTspSource(getGoodTsa());
+
+		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
+		DSSDocument extendSignature = padesService.extendDocument(dssDocument, parameters);
 		
 		validator = new PDFDocumentValidator(extendSignature);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());

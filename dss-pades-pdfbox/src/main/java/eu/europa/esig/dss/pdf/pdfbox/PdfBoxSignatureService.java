@@ -49,7 +49,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -470,13 +469,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			ValidationData validationDataToAdd = new ValidationData();
 
-			ValidationData signatureValidationData = validationDataForInclusion.getValidationData(signature);
+			ValidationData signatureValidationData = validationDataForInclusion.getAllValidationDataForSignature(signature);
 			validationDataToAdd.addValidationData(signatureValidationData);
-
-			for (TimestampToken timestampToken : signature.getAllTimestamps()) {
-				ValidationData timestampValidationData = validationDataForInclusion.getValidationData(timestampToken);
-				validationDataToAdd.addValidationData(timestampValidationData);
-			}
 
 			if (!validationDataToAdd.isEmpty()) {
 				Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
@@ -529,25 +523,25 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		// avoid duplicate CRLs
 		List<String> currentObjIds = new ArrayList<>();
 		for (Token token : tokens) {
-			String digest = getTokenDigest(token);
-			if (!currentObjIds.contains(digest)) {
-				Long objectNumber = knownObjects.get(digest);
+			String tokenKey = getTokenKey(token);
+			if (!currentObjIds.contains(tokenKey)) {
+				Long objectNumber = knownObjects.get(tokenKey);
 				if (objectNumber == null) {
-					COSStream stream = streams.get(digest);
+					COSStream stream = streams.get(tokenKey);
 					if (stream == null) {
 						stream = pdDocument.getDocument().createCOSStream();
 						try (OutputStream unfilteredStream = stream.createOutputStream()) {
 							unfilteredStream.write(token.getEncoded());
 							unfilteredStream.flush();
 						}
-						streams.put(digest, stream);
+						streams.put(tokenKey, stream);
 					}
 					array.add(stream);
 				} else {
 					COSObject foundCosObject = getByObjectNumber(pdDocument, objectNumber);
 					array.add(foundCosObject);
 				}
-				currentObjIds.add(digest);
+				currentObjIds.add(tokenKey);
 			}
 		}
 		return array;

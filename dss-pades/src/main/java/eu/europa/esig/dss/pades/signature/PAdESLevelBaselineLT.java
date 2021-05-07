@@ -85,8 +85,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		ValidationDataContainer validationData = pdfDocumentValidator.getValidationData(signatures, detachedTimestamps);
 
 		final PDFSignatureService signatureService = newPdfSignatureService();
-		return signatureService.addDssDictionary(document, validationData);
-
+		return signatureService.addDssDictionary(document, validationData, parameters.getPasswordProtection());
 	}
 	
 	private PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, PAdESSignatureParameters parameters) {

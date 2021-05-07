@@ -68,7 +68,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -343,13 +342,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				for (AdvancedSignature signature : signatures) {
 					ValidationData validationDataToAdd = new ValidationData();
 
-					ValidationData signatureValidationData = validationDataForInclusion.getValidationData(signature);
+					ValidationData signatureValidationData = validationDataForInclusion.getAllValidationDataForSignature(signature);
 					validationDataToAdd.addValidationData(signatureValidationData);
-
-					for (TimestampToken timestampToken : signature.getAllTimestamps()) {
-						ValidationData timestampValidationData = validationDataForInclusion.getValidationData(timestampToken);
-						validationDataToAdd.addValidationData(timestampValidationData);
-					}
 
 					if (!validationDataToAdd.isEmpty()) {
 						PdfArray ocsp = new PdfArray();
@@ -421,8 +415,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	private PdfObject getPdfObjectForToken(Token token, Map<String, Long> knownObjects, PdfReader reader, PdfWriter writer)
 			throws IOException {
-		String digest = getTokenDigest(token);
-		Long objectNumber = knownObjects.get(digest);
+		String tokenKey = getTokenKey(token);
+		Long objectNumber = knownObjects.get(tokenKey);
 		if (objectNumber == null) {
 			PdfStream ps = new PdfStream(token.getEncoded());
 			return writer.addToBody(ps, false).getIndirectReference();

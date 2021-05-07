@@ -24,7 +24,6 @@ import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.alert.status.Status;
 import eu.europa.esig.dss.crl.CRLBinary;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -45,14 +44,13 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
-import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ByteRange;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -472,7 +470,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				PAdESCertificateSource certSource = (PAdESCertificateSource) signature.getCertificateSource();
 				Map<Long, CertificateToken> storedCertificates = certSource.getCertificateMap();
 				for (Map.Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
-					String tokenKey = getTokenDigest(certEntry.getValue());
+					String tokenKey = getTokenKey(certEntry.getValue());
 					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
 						result.put(tokenKey, certEntry.getKey());
 					}
@@ -481,9 +479,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
 				Map<Long, BasicOCSPResp> storedOcspResps = ocspSource.getOcspMap();
 				for (Map.Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
-					final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(ocspEntry.getValue());
-					String tokenKey = Utils.toBase64(DSSUtils.digest(
-							DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp)));
+					final OCSPResponseBinary ocspResponseBinary = OCSPResponseBinary.build(ocspEntry.getValue());
+					String tokenKey = ocspResponseBinary.getDSSId().asXmlId();
 					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
 						result.put(tokenKey, ocspEntry.getKey());
 					}
@@ -492,8 +489,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
 				Map<Long, CRLBinary> storedCrls = crlSource.getCrlMap();
 				for (Map.Entry<Long, CRLBinary> crlEntry : storedCrls.entrySet()) {
-					String tokenKey = Utils.toBase64(DSSUtils.digest(
-							DigestAlgorithm.SHA256, crlEntry.getValue().getBinaries()));
+					String tokenKey = crlEntry.getValue().asXmlId();
 					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
 						result.put(tokenKey, crlEntry.getKey());
 					}
@@ -505,13 +501,16 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	/**
-	 * Gets SHA-256 digest of the token
+	 * Gets a token key (DSS Id or EntityKey Id for a CertificateToken)
 	 *
 	 * @param token {@link Token}
 	 * @return {@link String} base64 encoded SHA-256 digest
 	 */
-	protected String getTokenDigest(Token token) {
-		return Utils.toBase64(token.getDigest(DigestAlgorithm.SHA256));
+	protected String getTokenKey(Token token) {
+		if (token instanceof CertificateToken) {
+			return ((CertificateToken) token).getEntityKey().asXmlId();
+		}
+		return token.getDSSIdAsString();
 	}
 
 	/**
