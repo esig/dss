@@ -20,15 +20,13 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.validation.ByteRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.validation.ByteRange;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * This comparator is used to sort signatures by ByteRange
@@ -60,16 +58,23 @@ public class PdfSignatureDictionaryComparator implements Comparator<PdfSignature
 		int end2 = byteRange2.getFirstPartEnd();
 
         if ((begin1 >= begin2) && (length1 < end2)) {
-			// 1st byterange envelops the whole 2nd byterange
+			// 2nd byterange envelops the whole 1st byterange
 			return -1;
         } else if ((begin2 >= begin1) && (length2 < end1)) {
-			// 2nd byterange envelops the whole 1st byterange
+			// 1st byterange envelops the whole 2nd byterange
 			return 1;
         } else if (byteRange1.equals(byteRange2)) {
             LOG.warn("More than one signature with the same byte range !");
             return o1.getSigningDate().compareTo(o2.getSigningDate());
 		} else {
-			throw new DSSException("Strange byte ranges (ByteRange : " + byteRange1 + " / ByteRange : " + byteRange2 + ")");
+			LOG.warn("Strange byte ranges (ByteRange : {} / ByteRange : {})", byteRange1, byteRange2);
+			if (end1 < end2) {
+				return -1;
+			} else if (end1 > end2) {
+				return 1;
+			} else {
+				return o1.getSigningDate().compareTo(o2.getSigningDate());
+			}
 		}
 	}
 

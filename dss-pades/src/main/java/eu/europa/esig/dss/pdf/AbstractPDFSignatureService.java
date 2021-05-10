@@ -209,7 +209,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					final byte[] cms = signatureDictionary.getContents();
 					byte[] revisionContent = DSSUtils.EMPTY_BYTE_ARRAY;
 					if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, fieldNames)) {
-						LOG.warn("Signature {} is skipped. SIWA detected !", fieldNames);
+						LOG.warn("Signature {} is invalid. SIWA detected !", fieldNames);
 					} else {
 						revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
 					}

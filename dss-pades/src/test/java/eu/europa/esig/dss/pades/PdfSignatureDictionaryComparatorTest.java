@@ -20,8 +20,12 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pdf.PdfSignatureDictionaryComparator;
+import eu.europa.esig.dss.validation.ByteRange;
+import org.bouncycastle.cms.CMSSignedData;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,14 +35,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.bouncycastle.cms.CMSSignedData;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.pdf.PdfSignatureDictionaryComparator;
-import eu.europa.esig.dss.validation.ByteRange;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PdfSignatureDictionaryComparatorTest {
 	
@@ -48,7 +45,9 @@ public class PdfSignatureDictionaryComparatorTest {
 	private MockPdfSignatureDictionary mock0bis;
 	private MockPdfSignatureDictionary mock1;
 	private MockPdfSignatureDictionary mock2;
-	private MockPdfSignatureDictionary strange;
+	private MockPdfSignatureDictionary nonZero;
+	private MockPdfSignatureDictionary strange1;
+	private MockPdfSignatureDictionary strange2;
 
 	@BeforeEach
 	public void init() throws ParseException {
@@ -60,11 +59,14 @@ public class PdfSignatureDictionaryComparatorTest {
 		 */
 
         mock0 = new MockPdfSignatureDictionary(new int[] { 0, 91747, 124517, 723 }, sdf.parse("2002-01-01"));
-        strange = new MockPdfSignatureDictionary(new int[] { 40000, 120000, 140000, 500 }); // length = 100 500
+        nonZero = new MockPdfSignatureDictionary(new int[] { 40000, 120000, 140000, 500 }); // length = 100 500
 		mock1 = new MockPdfSignatureDictionary(new int[] { 0, 126092, 158862, 626 });
 		mock2 = new MockPdfSignatureDictionary(new int[] { 0, 160367, 193137, 642 });
 
         mock0bis = new MockPdfSignatureDictionary(new int[] { 0, 91747, 124517, 723 }, sdf.parse("2004-01-01"));
+
+		strange1 = new MockPdfSignatureDictionary(new int[] { 0, 269649, 298181, 5165 });
+		strange2 = new MockPdfSignatureDictionary(new int[] { 0, 300055, 337945, 519 });
 	}
 
 	@Test
@@ -130,16 +132,13 @@ public class PdfSignatureDictionaryComparatorTest {
 	public void testNotZero() {
 		List<PdfSignatureDictionary> listToSort = new ArrayList<>();
 
-		listToSort.add(strange);
+		listToSort.add(nonZero);
 		listToSort.add(mock0);
 
-		PdfSignatureDictionaryComparator pdfSignatureDictionaryComparator = new PdfSignatureDictionaryComparator();
+		Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
 
-		Exception exception = assertThrows(DSSException.class,
-				() -> Collections.sort(listToSort, pdfSignatureDictionaryComparator));
-		assertEquals(
-				"Strange byte ranges (ByteRange : [0, 91747, 124517, 723] / ByteRange : [40000, 120000, 140000, 500])",
-				exception.getMessage());
+		assertEquals(mock0, listToSort.get(0));
+		assertEquals(nonZero, listToSort.get(1));
 	}
 
 	@Test
@@ -154,6 +153,19 @@ public class PdfSignatureDictionaryComparatorTest {
 		assertEquals(sig, listToSort.get(0));
 		assertEquals(archivalTST1, listToSort.get(1));
 		assertEquals(archivalTST2, listToSort.get(2));
+	}
+
+	@Test
+	public void testStrange() {
+		List<PdfSignatureDictionary> listToSort = new ArrayList<>();
+
+		listToSort.add(strange1);
+		listToSort.add(strange2);
+
+		Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
+
+		assertEquals(strange1, listToSort.get(0));
+		assertEquals(strange2, listToSort.get(1));
 	}
 
 	private class MockPdfSignatureDictionary implements PdfSignatureDictionary {
