@@ -54,13 +54,18 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf,
 			DSSPrivateKeyEntry keyEntry) throws DSSException {
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm,
-				digestAlgorithm, mgf);
+		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
+		return sign(toBeSigned, signatureAlgorithm, keyEntry);
+	}
+
+	@Override
+	public SignatureValue sign(ToBeSigned toBeSigned, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry)
+			throws DSSException {
 		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
 		final byte[] bytes = toBeSigned.getBytes();
 		AlgorithmParameterSpec param = null;
-		if (mgf != null) {
-			param = createPSSParam(digestAlgorithm);
+		if (signatureAlgorithm.getMaskGenerationFunction() != null) {
+			param = createPSSParam(signatureAlgorithm.getDigestAlgorithm());
 		}
 
 		try {
@@ -76,26 +81,38 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 	@Override
 	public SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException {
-		return signDigest(digest, null, keyEntry);
+		return signDigest(digest, (MaskGenerationFunction) null, keyEntry);
 	}
 
 	@Override
 	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
 			throws DSSException {
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithmNONE = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, null,
-				mgf);
-		final String javaSignatureAlgorithm = signatureAlgorithmNONE.getJCEId();
+		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm, mgf);
+		return signDigest(digest, signatureAlgorithm, keyEntry);
+	}
+
+	@Override
+	public SignatureValue signDigest(Digest digest, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry)
+			throws DSSException {
+		if (signatureAlgorithm.getDigestAlgorithm() != null && signatureAlgorithm.getDigestAlgorithm() != digest.getAlgorithm()) {
+			throw new DSSException(String.format("The DigestAlgorithm '%s' provided withing a SignatureAlgorithm " +
+					"does not match the one used to compute the Digest : '%s'!",
+					signatureAlgorithm.getDigestAlgorithm(), digest.getAlgorithm()));
+		}
+		final String javaSignatureAlgorithm = getRawSignatureAlgorithm(
+				signatureAlgorithm.getEncryptionAlgorithm(), signatureAlgorithm.getMaskGenerationFunction()).getJCEId();
 		final byte[] digestedBytes = digest.getValue();
 		AlgorithmParameterSpec param = null;
-		if (mgf != null) {
+		if (signatureAlgorithm.getMaskGenerationFunction() != null) {
 			param = createPSSParam(digest.getAlgorithm());
 		}
 
 		try {
 			final byte[] signatureValue = sign(digestedBytes, javaSignatureAlgorithm, param, keyEntry);
 			SignatureValue value = new SignatureValue();
-			value.setAlgorithm(SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digest.getAlgorithm(), mgf));
+			value.setAlgorithm(getSignatureAlgorithm(signatureAlgorithm.getEncryptionAlgorithm(), digest.getAlgorithm(),
+					signatureAlgorithm.getMaskGenerationFunction()));
 			value.setValue(signatureValue);
 			return value;
 		} catch (Exception e) {
@@ -104,7 +121,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	}
 
 	private byte[] sign(final byte[] bytes, final String javaSignatureAlgorithm, final AlgorithmParameterSpec param,
-			final DSSPrivateKeyEntry keyEntry) throws GeneralSecurityException {
+						final DSSPrivateKeyEntry keyEntry) throws GeneralSecurityException {
 		if (!(keyEntry instanceof KSPrivateKeyEntry)) {
 			throw new IllegalArgumentException("Only KSPrivateKeyEntry are supported");
 		}
@@ -116,6 +133,47 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
 		signature.update(bytes);
 		return signature.sign();
+	}
+
+	/**
+	 * This method returns a SignatureAlgorithm for the given configuration.
+	 * Throws an exception if no algorithm is found.
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 * @return {@link SignatureAlgorithm}
+	 */
+	private SignatureAlgorithm getSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm, DigestAlgorithm digestAlgorithm,
+													 MaskGenerationFunction maskGenerationFunction) {
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(
+				encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+		if (signatureAlgorithm == null) {
+			throw new DSSException(String.format("The SignatureAlgorithm is not found for the given configuration " +
+					"[EncryptionAlgorithm: %s; DigestAlgorithm: %s; MaskGenerationFunction: %s]",
+					encryptionAlgorithm, digestAlgorithm, maskGenerationFunction));
+		}
+		return signatureAlgorithm;
+	}
+
+	/**
+	 * This method returns a RAW SignatureAlgorithm with null DigestAlgorithm value,
+	 * because the data to be signed is already digested
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 * @return {@link SignatureAlgorithm}
+	 */
+	private SignatureAlgorithm getRawSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm,
+														MaskGenerationFunction maskGenerationFunction) {
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(
+				encryptionAlgorithm, null, maskGenerationFunction);
+		if (signatureAlgorithm == null) {
+			throw new DSSException(String.format("The SignatureAlgorithm for digest signing is not found for the given configuration " +
+							"[EncryptionAlgorithm: %s; MaskGenerationFunction: %s]",
+					encryptionAlgorithm, maskGenerationFunction));
+		}
+		return signatureAlgorithm;
 	}
 
 	/**
