@@ -193,7 +193,7 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
         final DigestAlgorithm messageImprintDigestAlgorithm = timestampToken.getMessageImprint().getAlgorithm();
         byte[] originalDocumentDigest = getOriginalDocumentDigest(messageImprintDigestAlgorithm);
         if (originalDocumentDigest != null) {
-            byte[] archiveTimestampDataV3 = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
+            byte[] archiveTimestampDataV3 = timestampExtractor.getArchiveTimestampV3MessageImprint(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
             return new InMemoryDocument(archiveTimestampDataV3);
         }
 		LOG.error("The original document is not found for TimestampToken with Id '{}'! "

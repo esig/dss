@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
+import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.validation.scope.JAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -37,6 +38,9 @@ import java.util.List;
 public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractJWSDocumentValidator.class);
+
+	/** Cached copy of JWS Json Serialization object */
+	private JWSJsonSerializationObject jwsJsonSerializationObject;
 
 	/**
 	 * Empty constructor
@@ -64,5 +68,24 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 			return Collections.emptyList();
 		}
 	}
+
+	/**
+	 * Gets the {@code JWSJsonSerializationObject}
+	 *
+	 * @return {@link JWSJsonSerializationObject}
+	 */
+	public JWSJsonSerializationObject getJwsJsonSerializationObject() {
+		if (jwsJsonSerializationObject == null) {
+			jwsJsonSerializationObject = buildJwsJsonSerializationObject();
+		}
+		return jwsJsonSerializationObject;
+	}
+
+	/**
+	 * Builds a {@code JWSJsonSerializationObject}
+	 *
+	 * @return {@link JWSJsonSerializationObject}
+	 */
+	protected abstract JWSJsonSerializationObject buildJwsJsonSerializationObject();
 
 }

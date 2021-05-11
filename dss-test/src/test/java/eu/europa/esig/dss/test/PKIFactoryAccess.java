@@ -250,7 +250,7 @@ public abstract class PKIFactoryAccess {
 		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent("belgium.jks")), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
 	}
 	
-	private DataLoader getFileCacheDataLoader() {
+	protected DataLoader getFileCacheDataLoader() {
 		FileCacheDataLoader cacheDataLoader = new FileCacheDataLoader();
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setProxyConfig(getProxyConfig());

@@ -322,54 +322,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	/**
-	 * This method validates the signing certificate and all timestamps.
-	 *
-	 * @param certificateVerifier {@link CertificateVerifier}
-	 * @return signature validation context containing all certificates and
-	 *         revocation data used during the validation process.
-	 */
-	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
-
-		final ValidationContext validationContext = new SignatureValidationContext();
-		certificateVerifier.setSignatureCRLSource(getCompleteCRLSource());
-		certificateVerifier.setSignatureOCSPSource(getCompleteOCSPSource());
-		certificateVerifier.setSignatureCertificateSource(getCompleteCertificateSource());
-		
-		validationContext.initialize(certificateVerifier);
-
-		// Add resolved certificates
-		List<CertificateValidity> certificateValidities = getCandidatesForSigningCertificate().getCertificateValidityList();
-		if (Utils.isCollectionNotEmpty(certificateValidities)) {
-			for (CertificateValidity certificateValidity : certificateValidities) {
-				if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
-					validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
-				}
-			}
-		}
-
-		final List<CertificateToken> certificates = getCertificates();
-		for (final CertificateToken certificate : certificates) {
-			validationContext.addCertificateTokenForVerification(certificate);
-		}
-		prepareTimestamps(validationContext);
-		prepareCounterSignatures(validationContext);
-		validationContext.validate();
-
-		validationContext.checkAllTimestampsValid();
-		validationContext.checkAllRequiredRevocationDataPresent();
-		validationContext.checkAllPOECoveredByRevocationData();
-		validationContext.checkAllCertificatesValid();
-
-		CertificateToken signingCertificateToken = getSigningCertificateToken();
-		if (signingCertificateToken != null) {
-			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
-			validationContext.checkSignatureNotExpired(signingCertificateToken);
-		}
-
-		return validationContext;
-	}
-
-	/**
 	 * Returns an unmodifiable list of all certificate tokens encapsulated in the
 	 * signature
 	 * 

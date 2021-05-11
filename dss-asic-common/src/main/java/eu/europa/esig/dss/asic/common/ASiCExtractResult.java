@@ -31,6 +31,9 @@ import java.util.List;
  */
 public class ASiCExtractResult {
 
+	/** The original ASiC container */
+	private DSSDocument asicContainer;
+
 	/** The container type */
 	private ASiCContainerType containerType;
 
@@ -66,6 +69,24 @@ public class ASiCExtractResult {
 
 	/** The root container document (for OpenDocument) */
 	private DSSDocument rootContainer;
+
+	/**
+	 * Gets the original ASiC container
+	 *
+	 * @return {@link DSSDocument}
+	 */
+	public DSSDocument getAsicContainer() {
+		return asicContainer;
+	}
+
+	/**
+	 * Sets the original ASiC container
+	 *
+	 * @param asicContainer {@link DSSDocument}
+	 */
+	public void setAsicContainer(DSSDocument asicContainer) {
+		this.asicContainer = asicContainer;
+	}
 
 	/**
 	 * Gets the container type

@@ -42,6 +42,7 @@ import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
@@ -121,10 +122,10 @@ public class SignatureValidationContext implements ValidationContext {
 	private Map<CertificateToken, List<CertificateToken>> orderedCertificateChains;
 
 	/** External OCSP source */
-	private RevocationSource<OCSP> ocspSource;
+	private RevocationSource<OCSP> remoteOCSPSource;
 
 	/** External CRL source */
-	private RevocationSource<CRL> crlSource;
+	private RevocationSource<CRL> remoteCRLSource;
 
 	/** This strategy defines the revocation loading logic and returns OCSP or CRL token for a provided certificate */
 	private RevocationDataLoadingStrategy revocationDataLoadingStrategy;
@@ -135,14 +136,14 @@ public class SignatureValidationContext implements ValidationContext {
 	/** External adjunct certificate sources */
 	private ListCertificateSource adjunctCertSources;
 
-	/** CRLs from the signature */
-	private ListRevocationSource<CRL> signatureCRLSource;
+	/** CRLs from the document */
+	private ListRevocationSource<CRL> documentCRLSource = new ListRevocationSource<>();
 
-	/** OCSP from the signature */
-	private ListRevocationSource<OCSP> signatureOCSPSource;
+	/** OCSP from the document */
+	private ListRevocationSource<OCSP> documentOCSPSource = new ListRevocationSource<>();
 
-	/** Certificates from the signature */
-	private ListCertificateSource signatureCertificateSource;
+	/** Certificates from the document */
+	private ListCertificateSource documentCertificateSource = new ListCertificateSource();
 	
 	/** Certificates collected from AIA */
 	private ListCertificateSource aiaCertificateSources = new ListCertificateSource();
@@ -176,16 +177,79 @@ public class SignatureValidationContext implements ValidationContext {
 		Objects.requireNonNull(certificateVerifier);
 
 		this.certificateVerifier = certificateVerifier;
-		this.crlSource = certificateVerifier.getCrlSource();
-		this.ocspSource = certificateVerifier.getOcspSource();
+		this.remoteCRLSource = certificateVerifier.getCrlSource();
+		this.remoteOCSPSource = certificateVerifier.getOcspSource();
 		this.dataLoader = certificateVerifier.getDataLoader();
 		this.revocationDataLoadingStrategy = certificateVerifier.getRevocationDataLoadingStrategy();
-		this.signatureCRLSource = certificateVerifier.getSignatureCRLSource();
-		this.signatureOCSPSource = certificateVerifier.getSignatureOCSPSource();
-		this.signatureCertificateSource = certificateVerifier.getSignatureCertificateSource();
 		this.adjunctCertSources = certificateVerifier.getAdjunctCertSources();
 		this.trustedCertSources = certificateVerifier.getTrustedCertSources();
 		this.checkRevocationForUntrustedChains = certificateVerifier.isCheckRevocationForUntrustedChains();
+	}
+
+	@Override
+	public void addSignatureForVerification(final AdvancedSignature signature) {
+		addDocumentCertificateSource(signature.getCertificateSource());
+		addDocumentCRLSource(signature.getCRLSource());
+		addDocumentOCSPSource(signature.getOCSPSource());
+
+		// Add resolved certificates
+		List<CertificateValidity> certificateValidities = signature.getCandidatesForSigningCertificate().getCertificateValidityList();
+		if (Utils.isCollectionNotEmpty(certificateValidities)) {
+			for (CertificateValidity certificateValidity : certificateValidities) {
+				if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
+					addCertificateTokenForVerification(certificateValidity.getCertificateToken());
+				}
+			}
+		}
+
+		final List<CertificateToken> certificates = signature.getCertificates();
+		for (final CertificateToken certificate : certificates) {
+			addCertificateTokenForVerification(certificate);
+		}
+		prepareTimestamps(signature.getAllTimestamps());
+		prepareCounterSignatures(signature.getCounterSignatures());
+	}
+
+	@Override
+	public void addDocumentCertificateSource(CertificateSource certificateSource) {
+		documentCertificateSource.add(certificateSource);
+	}
+
+	@Override
+	public void addDocumentCertificateSource(ListCertificateSource certificateSource) {
+		documentCertificateSource.addAll(certificateSource);
+	}
+
+	@Override
+	public void addDocumentCRLSource(OfflineRevocationSource<CRL> crlSource) {
+		documentCRLSource.add(crlSource);
+	}
+
+	@Override
+	public void addDocumentCRLSource(ListRevocationSource<CRL> crlSource) {
+		documentCRLSource.addAll(crlSource);
+	}
+
+	@Override
+	public void addDocumentOCSPSource(OfflineRevocationSource<OCSP> ocspSource) {
+		documentOCSPSource.add(ocspSource);
+	}
+
+	@Override
+	public void addDocumentOCSPSource(ListRevocationSource<OCSP> ocspSource) {
+		documentOCSPSource.addAll(ocspSource);
+	}
+
+	private void prepareTimestamps(final List<TimestampToken> timestampTokens) {
+		for (final TimestampToken timestampToken : timestampTokens) {
+			addTimestampTokenForVerification(timestampToken);
+		}
+	}
+
+	private void prepareCounterSignatures(final List<AdvancedSignature> counterSignatures) {
+		for (AdvancedSignature counterSignature : counterSignatures) {
+			addSignatureForVerification(counterSignature);
+		}
 	}
 
 	@Override
@@ -295,7 +359,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private ListCertificateSource getAllCertificateSources() {
 		ListCertificateSource allCertificateSources = new ListCertificateSource();
-		allCertificateSources.addAll(signatureCertificateSource);
+		allCertificateSources.addAll(documentCertificateSource);
 		allCertificateSources.addAll(revocationCertificateSources);
 		allCertificateSources.addAll(aiaCertificateSources);
 		allCertificateSources.addAll(adjunctCertSources);
@@ -448,6 +512,9 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public void addTimestampTokenForVerification(final TimestampToken timestampToken) {
 		if (addTokenForVerification(timestampToken)) {
+			addDocumentCertificateSource(timestampToken.getCertificateSource());
+			addDocumentCRLSource(timestampToken.getCRLSource());
+			addDocumentOCSPSource(timestampToken.getOCSPSource());
 
 			// Inject all certificate chain (needed in case of missing AIA on the TSA with
 			// intermediate CAs)
@@ -542,6 +609,8 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 	}
 
+
+
 	/**
 	 * Retrieves the revocation data from signature (if exists) or from the online
 	 * sources. The issuer certificate must be provided, the underlining library
@@ -572,20 +641,25 @@ public class SignatureValidationContext implements ValidationContext {
 		List<RevocationToken> revocations = new ArrayList<>();
 
 		// ALL Embedded revocation data
-		if (signatureCRLSource != null) {
-			List<RevocationToken<CRL>> revocationTokens = signatureCRLSource.getRevocationTokens(certToken, issuerToken);
+		if (documentCRLSource != null) {
+			List<RevocationToken<CRL>> revocationTokens = documentCRLSource.getRevocationTokens(certToken, issuerToken);
 			for (RevocationToken revocationToken : revocationTokens) {
 				revocations.add(revocationToken);
 				addRevocationTokenForVerification(revocationToken);
 			}
 		}
 
-		if (signatureOCSPSource != null) {
-			List<RevocationToken<OCSP>> revocationTokens = signatureOCSPSource.getRevocationTokens(certToken, issuerToken);
+		if (documentOCSPSource != null) {
+			List<RevocationToken<OCSP>> revocationTokens = documentOCSPSource.getRevocationTokens(certToken, issuerToken);
 			for (RevocationToken revocationToken : revocationTokens) {
 				revocations.add(revocationToken);
 				addRevocationTokenForVerification(revocationToken);
 			}
+		}
+
+		// add processed revocation tokens
+		for (RevocationToken revocationToken : getRelatedRevocationTokens(certToken)) {
+			revocations.add(revocationToken);
 		}
 		
 		if (Utils.isCollectionEmpty(revocations) || isRevocationDataRefreshNeeded(certToken, revocations)) {
@@ -644,8 +718,8 @@ public class SignatureValidationContext implements ValidationContext {
 			currentCertSource = trustedCertSources;
 		} else {
 			LOG.trace("Initializing a revocation verifier for not trusted chain...");
-			currentOCSPSource = ocspSource;
-			currentCRLSource = crlSource;
+			currentOCSPSource = remoteOCSPSource;
+			currentCRLSource = remoteCRLSource;
 		}
 		revocationDataLoadingStrategy.setOcspSource(currentOCSPSource);
 		revocationDataLoadingStrategy.setCrlSource(currentCRLSource);
@@ -657,19 +731,19 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private RevocationSource<OCSP> instantiateOCSPWithTrustServices(CertificateToken trustAnchor) {
 		List<String> alternativeOCSPUrls = getAlternativeOCSPUrls(trustAnchor);
-		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
-			return new AlternateUrlsSourceAdapter<OCSP>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
+		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && remoteOCSPSource instanceof RevocationSourceAlternateUrlsSupport) {
+			return new AlternateUrlsSourceAdapter<OCSP>((RevocationSourceAlternateUrlsSupport) remoteOCSPSource, alternativeOCSPUrls);
 		} else {
-			return ocspSource;
+			return remoteOCSPSource;
 		}
 	}
 
 	private RevocationSource<CRL> instantiateCRLWithTrustServices(CertificateToken trustAnchor) {
 		List<String> alternativeCRLUrls = getAlternativeCRLUrls(trustAnchor);
-		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
-			return new AlternateUrlsSourceAdapter<CRL>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
+		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && remoteCRLSource instanceof RevocationSourceAlternateUrlsSupport) {
+			return new AlternateUrlsSourceAdapter<CRL>((RevocationSourceAlternateUrlsSupport) remoteCRLSource, alternativeCRLUrls);
 		} else {
-			return crlSource;
+			return remoteCRLSource;
 		}
 	}
 
@@ -1060,6 +1134,40 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private <T extends Token> boolean isTrusted(T token) {
 		return token instanceof CertificateToken && trustedCertSources.isTrusted((CertificateToken) token);
+	}
+
+	@Override
+	public ValidationData getValidationData(final AdvancedSignature signature) {
+		return getValidationData(signature.getSigningCertificateToken());
+	}
+
+	@Override
+	public ValidationData getValidationData(final TimestampToken timestampToken) {
+		return getValidationData(getIssuer(timestampToken));
+	}
+
+	private ValidationData getValidationData(final CertificateToken certificateToken) {
+		ValidationData validationData = new ValidationData();
+		if (certificateToken != null) {
+			populateValidationDataRecursively(certificateToken, validationData);
+		}
+		return validationData;
+	}
+
+	private void populateValidationDataRecursively(final Token token, final ValidationData validationData) {
+		boolean added = validationData.addToken(token);
+		if (added) {
+			if (token instanceof CertificateToken) {
+				List<RevocationToken> revocationTokens = getRelatedRevocationTokens((CertificateToken) token);
+				for (RevocationToken revocationToken : revocationTokens) {
+					populateValidationDataRecursively(revocationToken, validationData);
+				}
+			}
+			CertificateToken issuerToken = getIssuer(token);
+			if (issuerToken != null) {
+				populateValidationDataRecursively(issuerToken, validationData);
+			}
+		}
 	}
 
 	/**

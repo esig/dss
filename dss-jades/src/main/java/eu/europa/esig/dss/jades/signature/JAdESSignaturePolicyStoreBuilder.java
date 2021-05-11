@@ -25,15 +25,17 @@ import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JsonObject;
+import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
+import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
-import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
@@ -41,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -72,13 +75,18 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		Objects.requireNonNull(signaturePolicyStore.getSpDocSpecification().getId(), "ID (OID or URI) for SpDocSpecification must be provided");
 		Objects.requireNonNull(signaturePolicyStore.getSignaturePolicyContent(), "Signature policy content must be provided");
 
-		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(document);
-		assertIsJSONSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
+		JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
+		AbstractJWSDocumentValidator documentValidator = documentValidatorFactory.create(document);
 
-		for (JWS signature : jwsJsonSerializationObject.getSignatures()) {
-			assertEtsiUComponentsConsistent(signature, base64UrlInstance);
+		JWSJsonSerializationObject jwsJsonSerializationObject = documentValidator.getJwsJsonSerializationObject();
+		assertJSONSerializationObjectMayBeExtended(jwsJsonSerializationObject);
 
-			JAdESSignature jadesSignature = new JAdESSignature(signature);
+		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+
+		for (AdvancedSignature signature : signatures) {
+			JAdESSignature jadesSignature = (JAdESSignature) signature;
+			assertEtsiUComponentsConsistent(jadesSignature.getJws(), base64UrlInstance);
+
 			extendSignature(jadesSignature, signaturePolicyStore, base64UrlInstance);
 		}
 

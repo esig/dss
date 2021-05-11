@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -32,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import java.util.List;
 
 /**
  * This class represents the implementation of XAdES level -X extension.
@@ -57,23 +60,24 @@ public class XAdESLevelX extends XAdESLevelC {
 	 *
 	 * A XAdES-X form MAY contain several SigAndRefsTimeStamp elements, obtained from different TSAs.
 	 *
-	 * @see XAdESLevelC#extendSignatureTag()
+	 * @see XAdESLevelC#extendSignatures(List)
 	 */
 	@Override
-	protected void extendSignatureTag() throws DSSException {
-		/* Go up to -C */
-		super.extendSignatureTag();
+	protected void extendSignatures(List<AdvancedSignature> signatures) {
+		super.extendSignatures(signatures);
 
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		// for XL-level it is required to re-create SigAndRefsTimeStamp
-		if (!xadesSignature.hasXProfile() || SignatureLevel.XAdES_X.equals(signatureLevel) ||
-				SignatureLevel.XAdES_XL.equals(signatureLevel)) {
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+
+			if (!xLevelExtensionRequired(params.getSignatureLevel())) {
+				continue;
+			}
 
 			assertExtendSignatureToXPossible();
 
-			final Element levelCUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
-
 			removeOldTimestamps();
+
+			final Element levelCUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
@@ -85,6 +89,11 @@ public class XAdESLevelX extends XAdESLevelC {
 			
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelCUnsignedProperties);
 		}
+	}
+
+	private boolean xLevelExtensionRequired(SignatureLevel signatureLevel) {
+		return !xadesSignature.hasXProfile() || SignatureLevel.XAdES_X.equals(signatureLevel) ||
+				SignatureLevel.XAdES_XL.equals(signatureLevel);
 	}
 
 	private void removeOldTimestamps() {

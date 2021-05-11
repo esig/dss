@@ -6,7 +6,6 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
-import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -46,7 +45,6 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
             return false;
         }
         PAdESSignature padesSignature = (PAdESSignature) signature;
-        PdfSignatureRevision pdfRevision = padesSignature.getPdfRevision();
         PdfSignatureDictionary pdfSignatureDictionary = padesSignature.getPdfSignatureDictionary();
         // SPO: entry with the key M in the Signature Dictionary (Cardinality == 1)
         if (pdfSignatureDictionary.getSigningDate() == null) {
@@ -93,7 +91,7 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
         }
         // Additional requirement (l)
         if (!PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(pdfSignatureDictionary.getSubFilter())) {
-            LOG.warn("Entry with a key SubFilter contain a value ETSI.CAdES.detached " +
+            LOG.warn("Entry with a key SubFilter shall contain a value ETSI.CAdES.detached " +
                     "for PAdES-BASELINE-B signature! (requirement (l))");
             return false;
         }

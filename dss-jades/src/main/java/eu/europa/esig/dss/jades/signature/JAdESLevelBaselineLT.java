@@ -31,10 +31,12 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
@@ -57,48 +59,60 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	@Override
-	protected void extendSignature(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
+	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
+		super.extendSignatures(signatures, params);
 
-		super.extendSignature(jadesSignature, params);
-		
-		if (jadesSignature.hasLTAProfile()) {
+		boolean ltLevelRequired = false;
+
+		// Reset sources
+		for (AdvancedSignature signature : signatures) {
+			JAdESSignature jadesSignature = (JAdESSignature) signature;
+			if (jadesSignature.hasLTAProfile()) {
+				continue;
+			}
+
+			/**
+			 * In all cases the -LT level need to be regenerated.
+			 */
+			checkSignatureIntegrity(jadesSignature);
+
+			// Data sources can already be loaded in memory (force reload)
+			jadesSignature.resetCertificateSource();
+			jadesSignature.resetRevocationSources();
+			jadesSignature.resetTimestampSource();
+
+			ltLevelRequired = true;
+		}
+
+		if (!ltLevelRequired) {
 			return;
 		}
 
-		// Data sources can already be loaded in memory (force reload)
-		jadesSignature.resetCertificateSource();
-		jadesSignature.resetRevocationSources();
-		jadesSignature.resetTimestampSource();
+		// Perform signature validation
+		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
 
-		assertExtendSignatureToLTPossible(jadesSignature, params);
-		JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
+		// Append ValidationData
+		for (AdvancedSignature signature : signatures) {
+			JAdESSignature jadesSignature = (JAdESSignature) signature;
+			if (jadesSignature.hasLTAProfile()) {
+				continue;
+			}
 
-		/**
-		 * In all cases the -LT level need to be regenerated.
-		 */
-		checkSignatureIntegrity(jadesSignature);
+			assertExtendSignatureToLTPossible(jadesSignature, params);
 
-		// must be executed before data removing
-		final ValidationContext validationContext = jadesSignature.getSignatureValidationContext(certificateVerifier);
+			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
 
-		removeOldCertificateValues(jadesSignature, etsiUHeader);
-		removeOldRevocationValues(jadesSignature, etsiUHeader);
+			removeOldCertificateValues(jadesSignature, etsiUHeader);
+			removeOldRevocationValues(jadesSignature, etsiUHeader);
 
-		final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature,
-				validationContext);
+			final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
 
-		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
-		if (Utils.isCollectionNotEmpty(certificateValuesToAdd)) {
-			JSONArray xVals = getXVals(certificateValuesToAdd);
-			etsiUHeader.addComponent(JAdESHeaderParameterNames.X_VALS, xVals,
-					params.isBase64UrlEncodedEtsiUComponents());
-		}
-		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
-		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
-		if (Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
-			JsonObject rVals = getRVals(crlsToAdd, ocspsToAdd);
-			etsiUHeader.addComponent(JAdESHeaderParameterNames.R_VALS, rVals,
-					params.isBase64UrlEncodedEtsiUComponents());
+			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+			Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+			Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
+
+			incorporateXVals(etsiUHeader, certificateValuesToAdd, params.isBase64UrlEncodedEtsiUComponents());
+			incorporateRVals(etsiUHeader, crlsToAdd, ocspsToAdd, params.isBase64UrlEncodedEtsiUComponents());
 		}
 	}
 
@@ -117,10 +131,10 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	 *
 	 * @param jadesSignature {@link JAdESSignature} to get validation data to be included for
 	 * @param validationContext {@link ValidationContext} used to process the signature
-	 * @return {@link ValidationDataForInclusion}
+	 * @return {@link ValidationData}
 	 */
-	protected ValidationDataForInclusion getValidationDataForInclusion(JAdESSignature jadesSignature,
-																	   ValidationContext validationContext) {
+	protected ValidationData getValidationDataForInclusion(JAdESSignature jadesSignature,
+                                                           ValidationContext validationContext) {
 		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = new ValidationDataForInclusionBuilder(
 				validationContext, jadesSignature.getCompleteCertificateSource())
 						.excludeCertificateTokens(jadesSignature.getCertificateSource().getCertificates())
@@ -155,13 +169,27 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	/**
+	 * Incorporates the provided set of certificates into {@code etsiUHeader}
+	 *
+	 * @param etsiUHeader {@link JAdESEtsiUHeader} to update
+	 * @param certificateValuesToAdd a set of {@link CertificateToken}s to add
+	 * @param base64UrlEncoded if members of the etsiU array shall be base64UrlEncoded
+	 */
+	protected void incorporateXVals(JAdESEtsiUHeader etsiUHeader, Set<CertificateToken> certificateValuesToAdd, boolean base64UrlEncoded) {
+		if (Utils.isCollectionNotEmpty(certificateValuesToAdd)) {
+			JSONArray xVals = getXVals(certificateValuesToAdd);
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.X_VALS, xVals, base64UrlEncoded);
+		}
+	}
+
+	/**
 	 * Builds and returns 'rVals' JsonObject
 	 * 
-	 * @param crlsToAdd  a list of {@link CRLToken}s to add
-	 * @param ocspsToAdd a list of {@link OCSPToken}s to add
+	 * @param crlsToAdd  a set of {@link CRLToken}s to add
+	 * @param ocspsToAdd a set of {@link OCSPToken}s to add
 	 * @return {@link JsonObject} 'rVals' object
 	 */
-	protected JsonObject getRVals(List<CRLToken> crlsToAdd, List<OCSPToken> ocspsToAdd) {
+	protected JsonObject getRVals(Set<CRLToken> crlsToAdd, Set<OCSPToken> ocspsToAdd) {
 		JsonObject rValsObject = new JsonObject();
 		if (Utils.isCollectionNotEmpty(crlsToAdd)) {
 			rValsObject.put(JAdESHeaderParameterNames.CRL_VALS, getCrlVals(crlsToAdd));
@@ -173,7 +201,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JSONArray getCrlVals(List<CRLToken> crlsToAdd) {
+	private JSONArray getCrlVals(Set<CRLToken> crlsToAdd) {
 		JSONArray array = new JSONArray();
 		for (CRLToken crlToken : crlsToAdd) {
 			JSONObject pkiOb = new JSONObject();
@@ -184,7 +212,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JSONArray getOcspVals(List<OCSPToken> ocspsToAdd) {
+	private JSONArray getOcspVals(Set<OCSPToken> ocspsToAdd) {
 		JSONArray array = new JSONArray();
 		for (OCSPToken ocspToken : ocspsToAdd) {
 			JSONObject pkiOb = new JSONObject();
@@ -192,6 +220,22 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 			array.add(pkiOb);
 		}
 		return array;
+	}
+
+	/**
+	 * Incorporates the provided set of certificates into {@code etsiUHeader}
+	 *
+	 * @param etsiUHeader {@link JAdESEtsiUHeader} to update
+	 * @param crlsToAdd a set of {@link CRLToken}s to add
+	 * @param ocspsToAdd a set of {@link OCSPToken}s to add
+	 * @param base64UrlEncoded if members of the etsiU array shall be base64UrlEncoded
+	 */
+	protected void incorporateRVals(JAdESEtsiUHeader etsiUHeader, Set<CRLToken> crlsToAdd,
+									Set<OCSPToken> ocspsToAdd, boolean base64UrlEncoded) {
+		if (Utils.isCollectionNotEmpty(crlsToAdd) || Utils.isCollectionNotEmpty(ocspsToAdd)) {
+			JsonObject rVals = getRVals(crlsToAdd, ocspsToAdd);
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.R_VALS, rVals, base64UrlEncoded);
+		}
 	}
 
 	/**

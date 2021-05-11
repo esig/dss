@@ -23,6 +23,11 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -59,6 +64,13 @@ public interface ValidationContext {
 	Date getCurrentTime();
 
 	/**
+	 * Adds a new signature to collect the information to verify.
+	 *
+	 * @param signature {@link AdvancedSignature} to extract data to be verified
+	 */
+	void addSignatureForVerification(final AdvancedSignature signature);
+
+	/**
 	 * Adds a new revocation token to the list of tokens to verify. If the
 	 * revocation token has already been added then it is ignored.
 	 *
@@ -84,6 +96,50 @@ public interface ValidationContext {
 	 *            {@code TimestampToken} timestamp token to verify
 	 */
 	void addTimestampTokenForVerification(final TimestampToken timestampToken);
+
+
+	/**
+	 * Adds an extracted certificate source to the used list of sources
+	 *
+	 * @param certificateSource {@link CertificateSource}
+	 */
+	void addDocumentCertificateSource(CertificateSource certificateSource);
+
+
+	/**
+	 * Adds a list certificate source to the used list of sources
+	 *
+	 * @param certificateSource {@link ListCertificateSource}
+	 */
+	void addDocumentCertificateSource(ListCertificateSource certificateSource);
+
+	/**
+	 * Adds an extracted CRL source to the used list of sources
+	 *
+	 * @param crlSource {@link OfflineRevocationSource} for CRL
+	 */
+	void addDocumentCRLSource(OfflineRevocationSource<CRL> crlSource);
+
+	/**
+	 * Adds a list CRL source to the used list of sources
+	 *
+	 * @param crlSource {@link ListRevocationSource} for CRL
+	 */
+	void addDocumentCRLSource(ListRevocationSource<CRL> crlSource);
+
+	/**
+	 * Adds an extracted OCSP source to the used list of sources
+	 *
+	 * @param ocspSource {@link OfflineRevocationSource} for OCSP
+	 */
+	void addDocumentOCSPSource(OfflineRevocationSource<OCSP> ocspSource);
+
+	/**
+	 * Adds a listd OCSP source to the used list of sources
+	 *
+	 * @param ocspSource {@link ListRevocationSource} for OCSP
+	 */
+	void addDocumentOCSPSource(ListRevocationSource<OCSP> ocspSource);
 
 	/**
 	 * Carries out the validation process in recursive manner for not yet checked
@@ -194,5 +250,21 @@ public interface ValidationContext {
 	 * @return The list of CertificateToken(s)
 	 */
 	Set<TimestampToken> getProcessedTimestamps();
+
+	/**
+	 * Returns a validation data for the given signature's certificate chain
+	 *
+	 * @param signature {@link AdvancedSignature} to extract validation data for
+	 * @return {@link ValidationData}
+	 */
+	ValidationData getValidationData(final AdvancedSignature signature);
+
+	/**
+	 * Returns a validation data for the given timestampToken's certificate chain
+	 *
+	 * @param timestampToken {@link TimestampToken} to extract validation data for
+	 * @return {@link ValidationData}
+	 */
+	ValidationData getValidationData(final TimestampToken timestampToken);
 
 }

@@ -22,34 +22,22 @@ package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
-import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
-import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.tsp.TSPException;
-import org.bouncycastle.tsp.TimeStampToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
@@ -66,8 +54,6 @@ import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
  */
 public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLTA.class);
-
 	/**
 	 * The default constructor
 	 *
@@ -79,132 +65,28 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 	}
 
 	@Override
-	protected CMSSignedData preExtendCMSSignedData(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters) {
-		/*
-		 * ETSI EN 319 122-1 V1.1.1 (2016-04), chapter "5.5.3 The archive-time-stamp-v3 attribute":
-		 * 
-		 * The present document specifies two strategies for the inclusion of validation data, 
-		 * depending on whether attributes for long term availability, as defined in different 
-		 * versions of ETSI TS 101 733 [1], have already been added to the SignedData:
-		 * 
-		 * - If none of ATSv2 attributes (see clause A.2.4), or an earlier form of archive time-stamp as defined in ETSI
-		 *   TS 101 733 [1] or long-term-validation (see clause A.2.5) attributes is already present in any
-		 *   SignerInfo of the root SignedData, then the new validation material shall be included within the root
-		 *   SignedData.certificates, or SignedData.crls as applicable.
-		 */
-		if (!includesATSv2(cmsSignedData)) {
-			for (SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
-				signerInformation = super.extendSignerInformation(cmsSignedData, signerInformation, parameters);
-				cmsSignedData = super.extendCMSSignedData(cmsSignedData, signerInformation, parameters);
-			}
-		}
-		return cmsSignedData;
-	}
+	protected CMSSignedData extendCMSSignatures(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters, List<String> signatureIdsToExtend) {
+		cmsSignedData = super.extendCMSSignatures(cmsSignedData, parameters, signatureIdsToExtend);
 
-	@Override
-	protected SignerInformation extendSignerInformation(CMSSignedData cmsSignedData, SignerInformation signerInformation,
-			final CAdESSignatureParameters parameters) throws DSSException {
-		signerInformation = super.extendSignerInformation(cmsSignedData, signerInformation, parameters);
-		
-		/*
-		 * If non ATSv2 is present, then the root SignedData is extended in {@code preExtendCMSSignedData(cmsSignedData, parameters)} method
-		 */
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		
-		/* 
-		 * - If an ATSv2, or other earlier form of archive time-stamp or a long-term-validation attribute, is
-		 *   present in any SignerInfo of the root SignedData then the root SignedData.certificates and
-         *   SignedData.crls contents shall not be modified. The new validation material shall be provided within 
-         *   the TimeStampToken of the latest archive time-stamp (which can be an ATSv2 as defined in 
-         *   ETSI TS 101 733 [1], or an ATSv3) or within the latest long-term-validation attribute 
-         *   (defined in ETSI TS 101 733 [1]) already contained in the SignerInfo ...
-		 */
-		if (includesATSv2(cmsSignedData)) {
-			try {
-				// add missing validation data to the previous (last) ArchiveTimestamp
-				CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
-				ValidationDataForInclusionBuilder validationDataForInclusionBuilder = getValidationDataForInclusionBuilder(cadesSignature)
-						.excludeCertificateTokens(cadesSignature.getCompleteCertificateSource().getAllCertificateTokens())
-						.excludeCRLs(cadesSignature.getCompleteCRLSource().getAllRevocationBinaries())
-						.excludeOCSPs(cadesSignature.getCompleteOCSPSource().getAllRevocationBinaries());
-				ValidationDataForInclusion validationDataForInclusion = validationDataForInclusionBuilder.build();
-				unsignedAttributes = addValidationData(unsignedAttributes, validationDataForInclusion, parameters.getDetachedContents());
-				signerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
-			} catch (IOException | CMSException | TSPException e) {
-				LOG.warn("Validation data to a timestamp was not added due the error : {}", e.getMessage());
-			}
-		}
+		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 
-		CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
-		
-		unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
-		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
-	}
-	
-	@Override
-	protected CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation,
-			CAdESSignatureParameters parameters) {
-		// post extension is not required for LTA level
-		return cmsSignedData;
-	}
-	
-	private AttributeTable addValidationData(AttributeTable unsignedAttributes, final ValidationDataForInclusion validationDataForInclusion,
-			final List<DSSDocument> detachedContents) throws IOException, CMSException, TSPException {
-		TimeStampToken timestampTokenToExtend = getLastArchiveTimestamp(unsignedAttributes);
-		if (timestampTokenToExtend != null) {
-			CMSSignedData timestampCMSSignedData = timestampTokenToExtend.toCMSSignedData();
-			CMSSignedData extendedTimestampCMSSignedData = extendWithValidationData(
-					timestampCMSSignedData, validationDataForInclusion, detachedContents);
-					
-			unsignedAttributes = replaceTimeStampAttribute(unsignedAttributes, timestampCMSSignedData, extendedTimestampCMSSignedData);
-		}
-		return unsignedAttributes;
-	}
-	
-	private TimeStampToken getLastArchiveTimestamp(AttributeTable unsignedAttributes) {
-		TimeStampToken lastTimeStampToken = null;
-		TimeStampTokenProductionComparator comparator = new TimeStampTokenProductionComparator();
-		for (TimeStampToken timeStampToken : DSSASN1Utils.findArchiveTimeStampTokens(unsignedAttributes)) {
-			if (lastTimeStampToken == null || comparator.after(timeStampToken, lastTimeStampToken)) {
-				lastTimeStampToken = timeStampToken; 
+		CMSDocumentValidator documentValidator = getDocumentValidator(cmsSignedData, parameters);
+		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+
+		for (AdvancedSignature signature : signatures) {
+			final CAdESSignature cadesSignature = (CAdESSignature) signature;
+			final SignerInformation signerInformation = cadesSignature.getSignerInformation();
+			SignerInformation newSignerInformation = signerInformation;
+
+			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
+				AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+
+				unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
+				newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 			}
+			newSignerInformationList.add(newSignerInformation);
 		}
-		return lastTimeStampToken;
-	}
-	
-	/**
-	 * Returns a new {@code AttributeTable} with a replaced {@code attributeToReplace} by {@code attributeToAdd} 
-	 * 
-	 * @param attributeTable {@link AttributeTable} to replace value in
-	 * @param attributeToReplace {@link CMSSignedData} to be replaced
-	 * @param attributeToAdd {@link CMSSignedData} to replace by
-	 * @return a new {@link AttributeTable}
-	 * @throws IOException in case of encoding error
-	 * @throws CMSException in case of CMSException
-	 */
-	private AttributeTable replaceTimeStampAttribute(AttributeTable attributeTable, CMSSignedData attributeToReplace, 
-			CMSSignedData attributeToAdd) throws IOException, CMSException {
-		ASN1EncodableVector newAsn1EncodableVector = new ASN1EncodableVector();
-		Attribute[] attributes = attributeTable.toASN1Structure().getAttributes();
-		for (Attribute attribute : attributes) {
-			Attribute attibuteToAdd = attribute;
-			if (DSSASN1Utils.isArchiveTimeStampToken(attribute)) {
-				try {
-					// ContentInfo binaries have to be compared, therefore CMSSignedData creation is required
-					CMSSignedData cmsSignedData = DSSASN1Utils.getCMSSignedData(attribute);
-					if (CMSUtils.isCMSSignedDataEqual(attributeToReplace, cmsSignedData)) {
-						ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(attributeToAdd.getEncoded());
-						attibuteToAdd = new Attribute(attribute.getAttrType(), new DERSet(asn1Primitive));
-					}
-				} catch (Exception e) {
-					LOG.warn("Unable to build a CMSSignedData object from an unsigned attribute. Reason : {}", e.getMessage(), e);
-					// we free to continue with the original object, 
-					// because it would not be possible to extend the attribute anyway
-				}
-			}
-			newAsn1EncodableVector.add(attibuteToAdd);
-		}
-		return new AttributeTable(newAsn1EncodableVector);		
+		return replaceSigners(cmsSignedData, newSignerInformationList);
 	}
 
 	/**
@@ -240,7 +122,7 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 		ASN1ObjectIdentifier atsHashIndexTableIdentifier = getAtsHashIndexTableIdentifier(parameters);
 		final Attribute atsHashIndexAttribute = timestampExtractor.getAtsHashIndex(signerInformation, timestampDigestAlgorithm, atsHashIndexTableIdentifier);
 
-		final byte[] encodedToTimestamp = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
+		final byte[] encodedToTimestamp = timestampExtractor.getArchiveTimestampV3MessageImprint(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
 
 		final ASN1Object timeStampAttributeValue = getTimeStampAttributeValue(encodedToTimestamp, timestampDigestAlgorithm,
 				atsHashIndexAttribute);
@@ -254,15 +136,6 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 		} else {
 			return id_aa_ATSHashIndexV3;
 		}
-	}
-	
-	private boolean includesATSv2(CMSSignedData cmsSignedData) {
-		for (SignerInformation signerInformation : cmsSignedData.getSignerInfos()) {
-			if (CMSUtils.containsATSTv2(signerInformation)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

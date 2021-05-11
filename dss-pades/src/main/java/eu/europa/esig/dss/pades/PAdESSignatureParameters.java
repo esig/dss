@@ -220,7 +220,7 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	/**
 	 * The id/name of the signature field which should be signed
 	 * 
-	 * Deprecated. Use {@code getImageParameters().getFieldParameters().setSignatureFieldId(signatureFieldId)}
+	 * Deprecated. Use {@code getImageParameters().getFieldParameters().setFieldId(signatureFieldId)}
 	 * 
 	 * @param signatureFieldId {@link String} id of a signature field to be used
 	 */

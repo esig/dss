@@ -21,21 +21,20 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * Holds level LTA aspects of XAdES
  *
  */
 public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
-
-	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineLTA.class);
 
 	/**
 	 * The default constructor for XAdESLevelBaselineLTA.
@@ -52,29 +51,47 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	 * (messageImprint) is computed on the XAdES-LT form of the electronic signature and the signed data objects.<br>
 	 *
 	 * A XAdES-LTA form MAY contain several ArchiveTimeStamp elements.
+	 *
+	 * @see XAdESLevelBaselineLT#extendSignatures(List)
 	 */
 	@Override
-	protected void extendSignatureTag() throws DSSException {
+	protected void extendSignatures(List<AdvancedSignature> signatures) {
+		super.extendSignatures(signatures);
 
-		// check if -LT is present
-		super.extendSignatureTag();
-		
-		assertExtendSignatureToLTAPossible();
-		
-		Element levelLTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
-		if (xadesSignature.hasLTAProfile()) {
+		boolean addTimestampValidationData = false;
+
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
 			checkSignatureIntegrity();
 
-			// must be executed before data removing
-			final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
-			String indent = removeLastTimestampValidationData();
-			
-			ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(validationContext);
-			incorporateTimestampValidationData(validationDataForInclusion, indent);
+			if (xadesSignature.hasLTAProfile()) {
+				addTimestampValidationData = true;
+			}
 		}
-		incorporateArchiveTimestamp();
-		
-		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelLTUnsignedProperties);
+
+		// Perform signature validation
+		ValidationDataContainer validationDataContainer = null;
+		if (addTimestampValidationData) {
+			validationDataContainer = documentValidator.getValidationData(signatures);
+		}
+
+		// Append LTA-level (+ ValidationData)
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+
+			assertExtendSignatureToLTAPossible();
+
+			Element levelLTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+
+			if (xadesSignature.hasLTAProfile() && addTimestampValidationData) {
+				String indent = removeLastTimestampValidationData();
+				ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
+				incorporateTimestampValidationData(validationDataForInclusion, indent);
+			}
+
+			incorporateArchiveTimestamp();
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelLTUnsignedProperties);
+		}
 	}
 
 	private void assertExtendSignatureToLTAPossible() {

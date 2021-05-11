@@ -31,6 +31,13 @@ import java.util.List;
 public interface GetDataToSignASiCWithCAdESHelper extends GetDataToSignHelper {
 
 	/**
+	 * Returns the original ASiC container document
+	 *
+	 * @return {@link DSSDocument}
+	 */
+	DSSDocument getAsicContainer();
+
+	/**
 	 * Returns a signed file document
 	 *
 	 * NOTE: In CMS/CAdES, only one file can be signed

@@ -160,7 +160,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected abstract List<ManifestFile> getManifestFilesDescriptions();
 
 	@Override
-	protected List<AdvancedSignature> getAllSignatures() {
+	public List<AdvancedSignature> getAllSignatures() {
 
 		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 

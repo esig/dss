@@ -27,11 +27,12 @@ import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JsonObject;
+import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
 import eu.europa.esig.dss.jades.validation.JAdESAttributeIdentifier;
+import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
-import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -56,11 +57,16 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	 * @return {@link DSSDocument} extracted SignatureValue
 	 */
 	public DSSDocument getSignatureValueToBeSigned(DSSDocument signatureDocument, JAdESCounterSignatureParameters parameters) {
-		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(signatureDocument);
-		assertIsJSONSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
 
-		JAdESSignature jadesSignature = (JAdESSignature) extractSignatureById(jwsJsonSerializationObject,
-				parameters.getSignatureIdToCounterSign());
+		JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
+		AbstractJWSDocumentValidator documentValidator = documentValidatorFactory.create(signatureDocument);
+
+		JWSJsonSerializationObject jwsJsonSerializationObject = documentValidator.getJwsJsonSerializationObject();
+		assertJSONSerializationObjectMayBeExtended(jwsJsonSerializationObject);
+
+		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+
+		JAdESSignature jadesSignature = (JAdESSignature) extractSignatureById(signatures, parameters.getSignatureIdToCounterSign());
 		return new InMemoryDocument(jadesSignature.getSignatureValue());
 	}
 	
@@ -74,11 +80,16 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	 */
 	public DSSDocument buildEmbeddedCounterSignature(DSSDocument signatureDocument, DSSDocument counterSignature, 
 			JAdESCounterSignatureParameters parameters) {
-		JWSJsonSerializationObject jwsJsonSerializationObject = toJWSJsonSerializationObjectToExtend(signatureDocument);
-		assertIsJSONSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
 
-		JAdESSignature jadesSignature = (JAdESSignature) extractSignatureById(jwsJsonSerializationObject,
-				parameters.getSignatureIdToCounterSign());
+		JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
+		AbstractJWSDocumentValidator documentValidator = documentValidatorFactory.create(signatureDocument);
+
+		JWSJsonSerializationObject jwsJsonSerializationObject = documentValidator.getJwsJsonSerializationObject();
+		assertJSONSerializationObjectMayBeExtended(jwsJsonSerializationObject);
+
+		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+
+		JAdESSignature jadesSignature = (JAdESSignature) extractSignatureById(signatures, parameters.getSignatureIdToCounterSign());
 		assertEtsiUComponentsConsistent(jadesSignature.getJws(), parameters.isBase64UrlEncodedEtsiUComponents());
 
 		Object cSig = getCSig(counterSignature, parameters.getJwsSerializationType());
@@ -141,25 +152,18 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 		jadesSignature.setMasterCSigComponent(cSigAttribute);
 	}
 	
-	private AdvancedSignature extractSignatureById(JWSJsonSerializationObject jwsJsonSerializationObject,
-			String signatureId) {
-		if (!jwsJsonSerializationObject.isValid()) {
-			throw new DSSException(String.format("Counter signature is not supported for invalid RFC 7515 files "
-					+ "(shall be a Serializable JAdES signature). Reason(s) : %s",
-					jwsJsonSerializationObject.getStructuralValidationErrors()));
-		}
+	private AdvancedSignature extractSignatureById(List<AdvancedSignature> signatures, String signatureId) {
+
 		if (Utils.isStringEmpty(signatureId)) {
 			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 		}
-		
-		List<JWS> jwsSignatures = jwsJsonSerializationObject.getSignatures();
-		if (Utils.isCollectionEmpty(jwsSignatures)) {
+
+		if (Utils.isCollectionEmpty(signatures)) {
 			throw new DSSException("The provided signatureDocument does not contain JAdES Signatures!");
 		}
-		for (JWS jws : jwsSignatures) {
-			JAdESSignature jadesSignature = new JAdESSignature(jws);
-			AdvancedSignature signatureById = getSignatureOrItsCounterSignature(jadesSignature, signatureId);
+		for (AdvancedSignature signature : signatures) {
+			AdvancedSignature signatureById = getSignatureOrItsCounterSignature((JAdESSignature) signature, signatureId);
 			if (signatureById != null) {
 				return signatureById;
 			}

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESArchiveManifestBuilder;
+import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESExtractResultUtils;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
@@ -38,6 +39,7 @@ import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
+import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -54,9 +56,11 @@ import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -121,7 +125,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 
 	@Override
-	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters, SignatureValue signatureValue) {
+	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters,
+									SignatureValue signatureValue) {
 		Objects.requireNonNull(toSignDocuments, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
@@ -136,6 +141,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertSignaturePossible(dataToSignHelper, asicParameters);
 
+		DSSDocument documentToExtend = dataToSignHelper.getAsicContainer();
 		List<DSSDocument> signatures = dataToSignHelper.getSignatures();
 		List<DSSDocument> manifests = dataToSignHelper.getManifestFiles();
 		List<DSSDocument> archiveManifests = dataToSignHelper.getArchiveManifestFiles();
@@ -166,9 +172,12 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			}
 		}
 		extendedDocuments.add(signature);
+		if (documentToExtend == null) {
+			documentToExtend = signature;
+		}
 
 		if (addASiCArchiveManifest) {
-			extendWithArchiveManifest(signatures, archiveManifests, manifests, timestamps, dataToSignHelper.getSignedDocuments(), 
+			extendWithArchiveManifest(documentToExtend, archiveManifests, manifests, timestamps, dataToSignHelper.getSignedDocuments(),
 					extendedDocuments, parameters.getArchiveTimestampParameters().getDigestAlgorithm());
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
@@ -206,7 +215,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			DSSDocument toTimestampDocument = toTimestampDocuments.get(0);
 			extractCurrentArchive(toTimestampDocument);
 
-			extendWithArchiveManifest(getEmbeddedSignatures(), getEmbeddedArchiveManifests(), getEmbeddedManifests(), 
+			extendWithArchiveManifest(toTimestampDocument, getEmbeddedArchiveManifests(), getEmbeddedManifests(),
 					getEmbeddedTimestamps(), getEmbeddedSignedDocuments(), extendedDocuments, parameters.getDigestAlgorithm());
 
 			DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toTimestampDocument, extendedDocuments,
@@ -302,8 +311,9 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 
 		if (addASiCEArchiveManifest) {
-			extendWithArchiveManifest(getEmbeddedSignatures(), getEmbeddedArchiveManifests(), getEmbeddedManifests(), getEmbeddedTimestamps(),
-					getEmbeddedSignedDocuments(), extendedDocuments, parameters.getDigestAlgorithm());
+			extendWithArchiveManifest(toExtendDocument, getEmbeddedArchiveManifests(),
+					getEmbeddedManifests(), getEmbeddedTimestamps(), getEmbeddedSignedDocuments(),
+					extendedDocuments, parameters.getDigestAlgorithm());
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
@@ -361,8 +371,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 	}
 
-	private void extendWithArchiveManifest(List<DSSDocument> signatures, List<DSSDocument> archiveManifests, 
-			List<DSSDocument> manifests, List<DSSDocument> timestamps, List<DSSDocument> originalSignedDocuments, 
+	private void extendWithArchiveManifest(DSSDocument toExtendDocument, List<DSSDocument> archiveManifests,
+			List<DSSDocument> manifests, List<DSSDocument> timestamps, List<DSSDocument> originalSignedDocuments,
 			List<DSSDocument> extendedDocuments, DigestAlgorithm digestAlgorithm) {
 
 		// shall be computed on the first step, before timestamp extension/creation
@@ -372,12 +382,30 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		ManifestFile lastManifestFile = getLastManifestFile(manifests);
 		DSSDocument lastTimestamp = getLastTimestampDocument(lastManifestFile, timestamps);
 		if (lastTimestamp != null) {
-			ValidationDataForInclusion validationDataForInclusion =
-					new ASiCWithCAdESValidationDataForInclusionBuilder(certificateVerifier).setLastManifestFile(lastManifestFile)
-							.setLastTimestampDocument(lastTimestamp).setSignatures(signatures).setTimestamps(timestamps)
-							.setManifests(manifests).build();
+			ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(toExtendDocument);
+			validator.setCertificateVerifier(certificateVerifier);
+			List<AdvancedSignature> allSignatures = validator.getAllSignatures();
+			List<TimestampToken> detachedTimestamps = validator.getDetachedTimestamps();
+			if (Utils.isCollectionNotEmpty(extendedDocuments)) {
+				for (DSSDocument documentToExtend : extendedDocuments) {
+					allSignatures.addAll(new CMSDocumentValidator(documentToExtend).getSignatures());
+				}
+			}
 
-			DSSDocument extendedTimestamp = extendTimestamp(lastTimestamp, validationDataForInclusion, originalSignedDocuments);
+			ValidationDataContainer validationDataContainer = validator.getValidationData(allSignatures, detachedTimestamps);
+			ValidationData allValidationData = validationDataContainer.getAllValidationData();
+			for (AdvancedSignature signature : allSignatures) {
+				allValidationData.excludeCertificateTokens(signature.getCompleteCertificateSource().getAllCertificateTokens());
+				allValidationData.excludeCRLTokens(signature.getCompleteCRLSource().getAllRevocationBinaries());
+				allValidationData.excludeOCSPTokens(signature.getCompleteOCSPSource().getAllRevocationBinaries());
+			}
+			for (TimestampToken timestampToken : detachedTimestamps) {
+				allValidationData.excludeCertificateTokens(timestampToken.getCertificateSource().getCertificates());
+				allValidationData.excludeCRLTokens(timestampToken.getCRLSource().getAllRevocationBinaries());
+				allValidationData.excludeOCSPTokens(timestampToken.getOCSPSource().getAllRevocationBinaries());
+			}
+
+			DSSDocument extendedTimestamp = extendTimestamp(lastTimestamp, allValidationData);
 			// a newer version of the timestamp must be created
 			timestamps.remove(lastTimestamp);
 			extendedDocuments.add(extendedTimestamp);
@@ -443,12 +471,10 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return DSSUtils.getDocumentWithLastName(timestamps);
 	}
 
-	private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationDataForInclusion validationDataForInclusion,
-										List<DSSDocument> detachedContents) {
+	private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationData validationDataForInclusion) {
 		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
 		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion,
-				detachedContents);
+		CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion);
 		return new InMemoryDocument(DSSASN1Utils.getEncoded(extendedCMSSignedData), archiveTimestamp.getName(), MimeType.TST);
 	}
 

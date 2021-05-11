@@ -37,9 +37,10 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.jose4j.json.internal.json_simple.JSONArray;
 
 import java.util.Collections;
@@ -61,32 +62,47 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 	}
 	
 	@Override
-	protected void extendSignature(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
-		super.extendSignature(jadesSignature, params);
-		
-		assertExtendSignatureToLTAPossible(jadesSignature, params);
-		checkSignatureIntegrity(jadesSignature);
-		
-		JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-		if (jadesSignature.hasLTAProfile()) {
-			// must be executed before data removing
-			final ValidationContext validationContext = jadesSignature.getSignatureValidationContext(certificateVerifier);
-			removeLastTimestampValidationData(jadesSignature, etsiUHeader);
-			
-			final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature, validationContext);
-			if (!validationDataForInclusion.isEmpty()) {
-				JsonObject tstVd = getTstVd(validationDataForInclusion);
-				etsiUHeader.addComponent(JAdESHeaderParameterNames.TST_VD, tstVd,
-						params.isBase64UrlEncodedEtsiUComponents());
+	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
+		super.extendSignatures(signatures, params);
+
+		boolean addTimestampValidationData = false;
+
+		for (AdvancedSignature signature : signatures) {
+			JAdESSignature jadesSignature = (JAdESSignature) signature;
+			assertExtendSignatureToLTAPossible(jadesSignature, params);
+			checkSignatureIntegrity(jadesSignature);
+
+			if (jadesSignature.hasLTAProfile()) {
+				addTimestampValidationData = true;
 			}
 		}
-		
-		TimestampBinary timestampBinary = getArchiveTimestamp(jadesSignature, params);
-		JsonObject arcTst = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary),
-				params.getArchiveTimestampParameters().getCanonicalizationMethod());
-		etsiUHeader.addComponent(JAdESHeaderParameterNames.ARC_TST, arcTst,
-				params.isBase64UrlEncodedEtsiUComponents());
-		
+
+		// Perform signature validation
+		ValidationDataContainer validationDataContainer = null;
+		if (addTimestampValidationData) {
+			validationDataContainer = documentValidator.getValidationData(signatures);
+		}
+
+		for (AdvancedSignature signature : signatures) {
+			JAdESSignature jadesSignature = (JAdESSignature) signature;
+			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
+
+			if (jadesSignature.hasLTAProfile()) {
+				removeLastTimestampValidationData(jadesSignature, etsiUHeader);
+
+				final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
+				if (!validationDataForInclusion.isEmpty()) {
+					JsonObject tstVd = getTstVd(validationDataForInclusion);
+					etsiUHeader.addComponent(JAdESHeaderParameterNames.TST_VD, tstVd, params.isBase64UrlEncodedEtsiUComponents());
+				}
+			}
+
+			TimestampBinary timestampBinary = getArchiveTimestamp(jadesSignature, params);
+			JsonObject arcTst = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary),
+					params.getArchiveTimestampParameters().getCanonicalizationMethod());
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.ARC_TST, arcTst,
+					params.isBase64UrlEncodedEtsiUComponents());
+		}
 	}
 
 	private void removeLastTimestampValidationData(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
@@ -95,10 +111,10 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		jadesSignature.resetRevocationSources();
 	}
 
-	private JsonObject getTstVd(final ValidationDataForInclusion validationDataForInclusion) {
+	private JsonObject getTstVd(final ValidationData validationDataForInclusion) {
 		Set<CertificateToken> certificateTokens = validationDataForInclusion.getCertificateTokens();
-		List<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
-		List<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
+		Set<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
+		Set<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
 		
 		JsonObject tstVd = new JsonObject();
 		if (Utils.isCollectionNotEmpty(certificateTokens)) {

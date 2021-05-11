@@ -169,54 +169,6 @@ public interface CertificateVerifier {
 	void setDataLoader(final DataLoader dataLoader);
 
 	/**
-	 * This method returns the CRL source (information extracted from signatures).
-	 * 
-	 * @return the CRL sources from the signature
-	 */
-	ListRevocationSource<CRL> getSignatureCRLSource();
-
-	/**
-	 * This method allows to set the CRL source (information extracted from
-	 * signatures).
-	 *
-	 * @param signatureCRLSource
-	 *                           the CRL sources from the signature
-	 */
-	void setSignatureCRLSource(final ListRevocationSource<CRL> signatureCRLSource);
-
-	/**
-	 * This method returns the OCSP source (information extracted from signatures).
-	 * 
-	 * @return the OCSP sources from the signatures
-	 */
-	ListRevocationSource<OCSP> getSignatureOCSPSource();
-
-	/**
-	 * This method allows to set the OCSP source (information extracted from
-	 * signatures).
-	 *
-	 * @param signatureOCSPSource
-	 *                            the OCSP sources from the signature
-	 */
-	void setSignatureOCSPSource(final ListRevocationSource<OCSP> signatureOCSPSource);
-
-	/**
-	 * This method returns the Certificate Source (information extracted from
-	 * signatures)
-	 * 
-	 * @return the certificate sources from the signatures
-	 */
-	ListCertificateSource getSignatureCertificateSource();
-
-	/**
-	 * This method allows to set the Certificate source (information extracted from
-	 * signatures).
-	 *
-	 * @param signatureCertificateSource the Certificate sources from the signatures
-	 */
-	void setSignatureCertificateSource(ListCertificateSource signatureCertificateSource);
-
-	/**
 	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use
 	 */

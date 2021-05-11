@@ -22,7 +22,6 @@ package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 /**
  * Loads the relevant Validator to process a given JAdES signature
@@ -45,7 +44,7 @@ public class JAdESDocumentValidatorFactory implements DocumentValidatorFactory {
 	}
 
 	@Override
-	public SignedDocumentValidator create(DSSDocument document) {
+	public AbstractJWSDocumentValidator create(DSSDocument document) {
 
 		JWSCompactDocumentValidator compactValidator = new JWSCompactDocumentValidator();
 		if (compactValidator.isSupported(document)) {

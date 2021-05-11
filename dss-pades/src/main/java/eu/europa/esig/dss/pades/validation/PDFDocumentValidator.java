@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.PAdESUtils;
@@ -38,10 +37,8 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
@@ -113,29 +110,11 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
-    protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
-
-        List<AdvancedSignature> allSignatures = getAllSignatures();
-        List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
+    protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(Collection<T> signatures, Collection<TimestampToken> detachedTimestamps) {
+        ValidationContext validationContext = super.prepareValidationContext(signatures, detachedTimestamps);
         List<PdfDssDict> dssDictionaries = getDssDictionaries();
-
-        ListRevocationSource<CRL> listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps, dssDictionaries);
-        ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps,
-                dssDictionaries);
-        ListCertificateSource listCertificateSource = mergeCertificateSource(allSignatures, detachedTimestamps,
-                dssDictionaries);
-
-        prepareCertificateVerifier(listCRLSource, listOCSPSource, listCertificateSource);
-
-        prepareSignatureValidationContext(validationContext, allSignatures);
-        prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
-        populateFromDssDictionaries(validationContext, dssDictionaries);
-
-        if (!skipValidationContextExecution) {
-            validateContext(validationContext);
-        }
-
-        return createDiagnosticDataBuilder(validationContext, allSignatures, listCRLSource, listOCSPSource);
+        prepareDssDictionaryValidationContext(validationContext, dssDictionaries);
+        return validationContext;
     }
 
     @Override
@@ -143,18 +122,12 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
         return new PAdESDiagnosticDataBuilder();
     }
 
-    /**
-     * Merges the CRL sources
-     *
-     * @param allSignatures a collection of {@link AdvancedSignature}s
-     * @param timestampTokens a collection of {@link TimestampToken}s
-     * @param dssDictionaries a collection of {@link PdfDssDict}s
-     * @return merged {@link ListRevocationSource}
-     */
+    @Override
     protected ListRevocationSource<CRL> mergeCRLSources(Collection<AdvancedSignature> allSignatures,
-                                                        Collection<TimestampToken> timestampTokens,
-                                                        Collection<PdfDssDict> dssDictionaries) {
-        ListRevocationSource<CRL> listCRLSource = mergeCRLSources(allSignatures, timestampTokens);
+                                                        Collection<TimestampToken> timestampTokens) {
+        ListRevocationSource<CRL> listCRLSource = super.mergeCRLSources(allSignatures, timestampTokens);
+
+        List<PdfDssDict> dssDictionaries = getDssDictionaries();
         if (Utils.isCollectionNotEmpty(dssDictionaries)) {
             for (PdfDssDict dssDictionary : dssDictionaries) {
                 listCRLSource.add(new PdfDssDictCRLSource(dssDictionary));
@@ -163,18 +136,12 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
         return listCRLSource;
     }
 
-    /**
-     * Merges the OCSP sources
-     *
-     * @param allSignatures a collection of {@link AdvancedSignature}s
-     * @param timestampTokens a collection of {@link TimestampToken}s
-     * @param dssDictionaries a collection of {@link PdfDssDict}s
-     * @return merged {@link ListRevocationSource}
-     */
+    @Override
     protected ListRevocationSource<OCSP> mergeOCSPSources(Collection<AdvancedSignature> allSignatures,
-                                                          Collection<TimestampToken> timestampTokens,
-                                                          Collection<PdfDssDict> dssDictionaries) {
-        ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, timestampTokens);
+                                                          Collection<TimestampToken> timestampTokens) {
+        ListRevocationSource<OCSP> listOCSPSource = super.mergeOCSPSources(allSignatures, timestampTokens);
+
+        List<PdfDssDict> dssDictionaries = getDssDictionaries();
         if (Utils.isCollectionNotEmpty(dssDictionaries)) {
             for (PdfDssDict dssDictionary : dssDictionaries) {
                 listOCSPSource.add(new PdfDssDictOCSPSource(dssDictionary));
@@ -189,32 +156,12 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      * @param validationContext {@link ValidationContext} to enrich
      * @param dssDicts a list of {@link PdfDssDict}s
      */
-    protected void populateFromDssDictionaries(final ValidationContext validationContext, List<PdfDssDict> dssDicts) {
+    protected void prepareDssDictionaryValidationContext(final ValidationContext validationContext, List<PdfDssDict> dssDicts) {
         for (PdfDssDict dssDict : dssDicts) {
-            for (CertificateToken certificateToken : dssDict.getCERTs().values()) {
-                validationContext.addCertificateTokenForVerification(certificateToken);
-            }
+            validationContext.addDocumentCertificateSource(new PdfDssDictCertificateSource(dssDict));
+            validationContext.addDocumentCRLSource(new PdfDssDictCRLSource(dssDict));
+            validationContext.addDocumentOCSPSource(new PdfDssDictOCSPSource(dssDict));
         }
-    }
-
-    /**
-     * Merges the certificate tokens sources
-     *
-     * @param allSignatureList a collection of {@link AdvancedSignature}s
-     * @param detachedTimestamps a collection of {@link TimestampToken}s
-     * @param dssDictionaries a collection of {@link PdfDssDict}s
-     * @return merged {@link ListRevocationSource}
-     */
-    protected ListCertificateSource mergeCertificateSource(final Collection<AdvancedSignature> allSignatureList,
-                                                           Collection<TimestampToken> detachedTimestamps,
-                                                           List<PdfDssDict> dssDictionaries) {
-        ListCertificateSource allCertificatesSource = mergeCertificateSource(allSignatureList, detachedTimestamps);
-        if (Utils.isCollectionNotEmpty(dssDictionaries)) {
-            for (PdfDssDict dssDictionary : dssDictionaries) {
-                allCertificatesSource.add(new PdfDssDictCertificateSource(dssDictionary));
-            }
-        }
-        return allCertificatesSource;
     }
 
     @Override

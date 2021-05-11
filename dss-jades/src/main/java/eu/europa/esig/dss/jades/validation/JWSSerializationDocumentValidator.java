@@ -23,6 +23,7 @@ package eu.europa.esig.dss.jades.validation;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import org.slf4j.Logger;
@@ -87,8 +88,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 		if (signatures == null) {
 			signatures = new ArrayList<>();
 			
-			JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(document);
-			JWSJsonSerializationObject jwsJsonSerializationObject = jwsJsonSerializationParser.parse();
+			JWSJsonSerializationObject jwsJsonSerializationObject = getJwsJsonSerializationObject();
 			
 			List<JWS> foundSignatures = jwsJsonSerializationObject.getSignatures();
 			LOG.info("{} signature(s) found", Utils.collectionSize(foundSignatures));
@@ -102,6 +102,15 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 			}
 		}
 		return signatures;
+	}
+
+	@Override
+	protected JWSJsonSerializationObject buildJwsJsonSerializationObject() {
+		JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(document);
+		if (jwsJsonSerializationParser.isSupported()) {
+			return jwsJsonSerializationParser.parse();
+		}
+		throw new DSSException("The given document is not supported by JWSSerializationDocumentValidator!");
 	}
 
 }
