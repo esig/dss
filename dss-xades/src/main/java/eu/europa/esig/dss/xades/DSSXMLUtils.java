@@ -498,9 +498,10 @@ public final class DSSXMLUtils {
 	 *             if any error is encountered
 	 */
 	public static byte[] canonicalize(final String canonicalizationMethod, final byte[] toCanonicalizeBytes) throws DSSException {
-		try {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
-			return c14n.canonicalize(toCanonicalizeBytes);
+			c14n.canonicalize(toCanonicalizeBytes, baos, true);
+			return baos.toByteArray();
 		} catch (Exception e) {
 			throw new DSSException("Cannot canonicalize the binaries", e);
 		}
@@ -516,10 +517,11 @@ public final class DSSXMLUtils {
 	 *            {@code Node} to canonicalize
 	 * @return array of canonicalized bytes
 	 */
-	public static byte[] canonicalizeSubtree(String canonicalizationMethod, final Node node) {
-		try {
+	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
-			return c14n.canonicalizeSubtree(node);
+			c14n.canonicalizeSubtree(node, baos);
+			return baos.toByteArray();
 		} catch (Exception e) {
 			throw new DSSException("Cannot canonicalize the subtree", e);
 		}

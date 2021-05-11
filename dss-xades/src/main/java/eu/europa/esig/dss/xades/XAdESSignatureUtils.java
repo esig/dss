@@ -78,11 +78,11 @@ public final class XAdESSignatureUtils {
 	
 	private static DSSDocument getReferenceDocument(Reference reference, XAdESSignature signature) {
 		DSSDocument document = getDSObject(reference, signature);
-		if (document != null)  {
+		if (document != null) {
 			return document;
 		}
 		document = getDSManifest(reference, signature);
-		if (document != null)  {
+		if (document != null) {
 			return document;
 		}
 

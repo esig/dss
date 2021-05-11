@@ -78,11 +78,9 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -753,11 +751,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
 		byte[] byteArray = DSSUtils.toByteArray(doc);
 		if (toBeCanonicalized) {
-			try {
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 				// we canonicalize to ignore the header (which is not covered by the signature)
 				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
-				byteArray = c14n.canonicalize(byteArray);
-			} catch (XMLSecurityException | ParserConfigurationException | IOException | SAXException e) {
+				c14n.canonicalize(byteArray, baos, true);
+				byteArray = baos.toByteArray();
+			} catch (XMLSecurityException | IOException e) {
 				// Not always able to canonicalize (more than one file can be covered (XML +
 				// something else) )
 			}

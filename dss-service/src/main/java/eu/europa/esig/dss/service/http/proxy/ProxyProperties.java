@@ -114,7 +114,7 @@ public class ProxyProperties {
 	}
 
 	/**
-	 * Returns the excluded hosts (can be seperated by ',', ';' or ' ')
+	 * Returns the excluded hosts (can be separated by ',', ';' or ' ')
 	 * 
 	 * @return the excluded hosts
 	 */
@@ -123,10 +123,10 @@ public class ProxyProperties {
 	}
 
 	/**
-	 * Set the excluded hosts (can be seperated by ',', ';' or ' ')
+	 * Set the excluded hosts (can be separated by ',', ';' or ' ')
 	 * 
 	 * @param excludedHosts
-	 *            the excluded hosts (can be seperated by ',', ';' or ' ')
+	 *            the excluded hosts (can be separated by ',', ';' or ' ')
 	 */
 	public void setExcludedHosts(String excludedHosts) {
 		this.excludedHosts = excludedHosts;

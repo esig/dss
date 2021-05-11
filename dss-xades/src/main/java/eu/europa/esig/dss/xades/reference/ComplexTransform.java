@@ -77,7 +77,7 @@ public abstract class ComplexTransform extends AbstractTransform {
 		}
 		try {
 			final XMLSignatureInput xmlSignatureInput = getXMLSignatureInput(node);
-			final XMLSignatureInput xmlSignatureInputOut = transformObject.performTransform(xmlSignatureInput);
+			final XMLSignatureInput xmlSignatureInputOut = transformObject.performTransform(xmlSignatureInput, true);
 			return xmlSignatureInputOut.getBytes();
 		} catch (IOException | XMLSecurityException e) {
 			throw new DSSException(String.format("Cannot process transformation [%s] on the given DOM object. Reason : [%s]", 
