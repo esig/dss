@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -26,13 +28,15 @@ public abstract class RepositoryAIASource implements AIASource, Serializable {
     /**
      * Data source is used to access certificate tokens that are not present in the repository
      */
-    protected AIASource proxiedSource;
+    protected OnlineAIASource proxiedSource;
 
     /**
-    * Sets a source to access an AIA in case the requested certificates are not present in the repository
-    *
-    */
-    public void setProxySource(AIASource proxiedSource) {
+     * Sets a source to access an AIA in case the requested certificates are not present in the repository
+     *
+     * @param proxiedSource {@link OnlineAIASource}
+     *               a source to be used to download the data when no relevant certificates is found in the repository
+     */
+    public void setProxySource(OnlineAIASource proxiedSource) {
         this.proxiedSource = proxiedSource;
     }
 
@@ -95,13 +99,21 @@ public abstract class RepositoryAIASource implements AIASource, Serializable {
             }
         }
 
-        Set<CertificateToken> certificatesByAIA = proxiedSource.getCertificatesByAIA(certificateToken);
-        if (Utils.isCollectionNotEmpty(certificatesByAIA)) {
-            for (CertificateToken aiaCertificate : certificatesByAIA) {
-                LOG.info("AIA Certificate token with Id '{}' is added into the cache", aiaCertificate.getDSSIdAsString());
-                insertCertificate(aiaCertificate);
+        Set<CertificateToken> certificatesByAIA = new HashSet<>();
+
+        List<OnlineAIASource.CertificatesAndAIAUrl> certificatesAndAIAUrls = proxiedSource.getCertificatesAndAIAUrls(certificateToken);
+        if (Utils.isCollectionNotEmpty(certificatesAndAIAUrls)) {
+            for (OnlineAIASource.CertificatesAndAIAUrl certificatesByAiaUrl : certificatesAndAIAUrls) {
+                String aiaUrl = certificatesByAiaUrl.getAiaUrl();
+                List<CertificateToken> certificateTokens = certificatesByAiaUrl.getCertificates();
+                if (Utils.isCollectionNotEmpty(certificateTokens)) {
+                    insertCertificates(aiaUrl, certificateTokens);
+                    certificatesByAIA.addAll(certificateTokens);
+                    LOG.info("Certificate tokens with AIA '{}' are added into the cache", aiaUrl);
+                }
             }
         }
+
         return certificatesByAIA;
     }
 
@@ -127,7 +139,7 @@ public abstract class RepositoryAIASource implements AIASource, Serializable {
     }
 
     private Set<CertificateToken> extractAIAFromCacheSource(List<String> aiaKeys) {
-        Set<CertificateToken> certificateTokens = new HashSet<>();
+        Set<CertificateToken> certificateTokens = new LinkedHashSet<>();
         for (String key : aiaKeys) {
             certificateTokens.addAll(findCertificates(key));
         }
@@ -145,9 +157,10 @@ public abstract class RepositoryAIASource implements AIASource, Serializable {
     /**
      * This method allows inserting of a certificate into the DB
      *
-     * @param aiaCertificate {@link CertificateToken} to insert
+     * @param aiaUrl {@link String} AIA Url used to download the certificates
+     * @param certificateTokens a collection of {@link CertificateToken}s to insert
      */
-    protected abstract void insertCertificate(final CertificateToken aiaCertificate);
+    protected abstract void insertCertificates(final String aiaUrl, final Collection<CertificateToken> certificateTokens);
 
     /**
      * This method removes the certificates from DB with the given aiaKey

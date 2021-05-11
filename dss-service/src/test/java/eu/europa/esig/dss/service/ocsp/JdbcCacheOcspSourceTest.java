@@ -84,14 +84,12 @@ public class JdbcCacheOcspSourceTest {
 		ocspSource.setDefaultNextUpdateDelay(180L); // cache expiration in 180 seconds
 		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(revocationToken);
-		assertNotNull(revocationToken.getRevocationTokenKey());
 		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 		requestTime = new Date();
 
 		// check real {@code findRevocation()} method behavior
 		OCSPToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
-		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 		assertEquals(revocationToken.getAbbreviation(), savedRevocationToken.getAbbreviation());
 		assertEquals(revocationToken.getCreationDate(), savedRevocationToken.getCreationDate());
 		assertEquals(revocationToken.getDSSIdAsString(), savedRevocationToken.getDSSIdAsString());

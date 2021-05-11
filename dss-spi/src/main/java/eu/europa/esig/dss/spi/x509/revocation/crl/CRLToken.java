@@ -80,7 +80,6 @@ public class CRLToken extends RevocationToken<CRL> {
 	}
 
 	private void initInfo() {
-		this.revocationTokenKey = crlValidity.getKey();
 		this.signatureAlgorithm = crlValidity.getSignatureAlgorithm();
 		this.thisUpdate = crlValidity.getThisUpdate();
 		this.productionDate = crlValidity.getThisUpdate(); // dates are equals in case of CRL

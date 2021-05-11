@@ -130,8 +130,8 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	protected abstract Collection<JdbcCacheConnector.JdbcResultRequest> getRevocationDataExtractRequests();
 
 	@Override
-	protected void removeRevocation(RevocationToken<R> token) {
-		jdbcCacheConnector.execute(getRemoveRevocationTokenEntryQuery(), token.getRevocationTokenKey());
+	protected void removeRevocation(final String revocationTokenKey) {
+		jdbcCacheConnector.execute(getRemoveRevocationTokenEntryQuery(), revocationTokenKey);
 	}
 
 	/**

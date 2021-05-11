@@ -81,31 +81,36 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	 * @return
 	 * 		  {@link RevocationToken} object
 	 */
-	protected abstract RevocationToken<R> findRevocation(String key, CertificateToken certificateToken, CertificateToken issuerCertToken);
+	protected abstract RevocationToken<R> findRevocation(final String key, CertificateToken certificateToken,
+														 CertificateToken issuerCertToken);
 	
 	/**
 	 * Inserts a new RevocationToken into the cache
 	 *
+	 * @param revocationKey
+	 *            {@link String}
 	 * @param token
 	 *            {@link RevocationToken}
 	 */
-	protected abstract void insertRevocation(RevocationToken<R> token);
+	protected abstract void insertRevocation(final String revocationKey, final RevocationToken<R> token);
 	
 	/**
 	 * Updates the RevocationToken into cache
 	 *
+	 * @param revocationKey
+	 *            {@link String}
 	 * @param token
 	 *            {@link RevocationToken}
 	 */
-	protected abstract void updateRevocation(RevocationToken<R> token);
+	protected abstract void updateRevocation(final String revocationKey, final RevocationToken<R> token);
 
 	/**
-	 * Removes the RevocationToken from cache
+	 * Removes the RevocationToken from cache with the given key
 	 *
-	 * @param token
-	 *            {@link RevocationToken}
+	 * @param revocationKey
+	 *            {@link String}
 	 */
-	protected abstract void removeRevocation(RevocationToken<R> token);
+	protected abstract void removeRevocation(final String revocationKey);
 	
 	/**
 	 * Sets the default next update delay for the cached files in seconds. If
@@ -218,7 +223,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 				} else {
 					LOG.debug("Revocation token is expired");
 					if (removeExpired) {
-						removeRevocation(revocationToken);
+						removeRevocation(key);
 						keyIterator.remove();
 					}
 				}
@@ -245,18 +250,36 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 			LOG.warn("Proxied revocation source is not initialized for the called RevocationSource!");
 			return null;
 		}
-		final RevocationToken<R> newToken = proxiedSource.getRevocationToken(certificateToken, issuerCertificateToken);
-		if (newToken != null && newToken.isValid()) {
-			if (!keys.contains(newToken.getRevocationTokenKey())) {
-				LOG.info("Revocation token for certificate '{}' is added into the cache", certificateToken.getDSSIdAsString());
-				insertRevocation(newToken);
-			} else {
-				LOG.info("Revocation token for certificate '{}' is updated in the cache", certificateToken.getDSSIdAsString());
-				updateRevocation(newToken);
+
+		RevocationToken<R> newToken = null;
+
+		OnlineRevocationSource.RevocationTokenAndUrl<R> revocationTokenAndUrl =
+				proxiedSource.getRevocationTokenAndUrl(certificateToken, issuerCertificateToken);
+		if (revocationTokenAndUrl != null) {
+			newToken = revocationTokenAndUrl.getRevocationToken();
+			if (newToken.isValid()) {
+				String revocationTokenKey = getRevocationTokenKey(certificateToken, revocationTokenAndUrl.getUrlString());
+				if (!keys.contains(revocationTokenKey)) {
+					insertRevocation(revocationTokenKey, newToken);
+					LOG.info("Revocation token for certificate '{}' is added into the cache", certificateToken.getDSSIdAsString());
+				} else {
+					updateRevocation(revocationTokenKey, newToken);
+					LOG.info("Revocation token for certificate '{}' is updated in the cache", certificateToken.getDSSIdAsString());
+				}
 			}
 		}
 		return newToken;
 	}
+
+	/**
+	 * Gets a unique revocation token identifier used to store the revocation token
+	 * for this {@code certificateToken} within a repository
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @param urlString {@link String} representing a URL used to download the revocation token from
+	 * @return {@link String} revocation token key
+	 */
+	protected abstract String getRevocationTokenKey(CertificateToken certificateToken, String urlString);
 
 	/**
 	 * Checks if the nextUpdate date is currently valid with respect of

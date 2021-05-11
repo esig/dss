@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +25,7 @@ import java.util.Set;
  * The class is used to download issuer certificates by AIA from remote sources
  *
  */
-public class DefaultAIASource implements AIASource {
+public class DefaultAIASource implements OnlineAIASource {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultAIASource.class);
 
@@ -50,17 +51,15 @@ public class DefaultAIASource implements AIASource {
 
     /**
      * Default constructor with a defined {@code DataLoader}
+     *
+     * @param dataLoader {@link DataLoader} to be used
      */
     public DefaultAIASource(DataLoader dataLoader) {
         Objects.requireNonNull(dataLoader, "dataLoader cannot be null!");
         this.dataLoader = dataLoader;
     }
 
-    /**
-     * The data loader to be used to download a certificate token by AIA
-     *
-     * @param dataLoader {@link DataLoader}
-     */
+    @Override
     public void setDataLoader(DataLoader dataLoader) {
         Objects.requireNonNull(dataLoader, "dataLoader cannot be null!");
         this.dataLoader = dataLoader;
@@ -80,18 +79,34 @@ public class DefaultAIASource implements AIASource {
 
     @Override
     public Set<CertificateToken> getCertificatesByAIA(final CertificateToken certificateToken) {
+        List<CertificatesAndAIAUrl> certificatesAndAIAUrls = getCertificatesAndAIAUrls(certificateToken);
+        if (Utils.isCollectionNotEmpty(certificatesAndAIAUrls)) {
+            final Set<CertificateToken> allCertificates = new LinkedHashSet<>();
+            for (CertificatesAndAIAUrl certificatesByAiaUrl : certificatesAndAIAUrls) {
+                final List<CertificateToken> certificates = certificatesByAiaUrl.getCertificates();
+                if (Utils.isCollectionNotEmpty(certificates)) {
+                    allCertificates.addAll(certificates);
+                }
+            }
+            return allCertificates;
+        }
+        return Collections.emptySet();
+    }
+    
+    @Override
+    public List<CertificatesAndAIAUrl> getCertificatesAndAIAUrls(CertificateToken certificateToken) {
         List<String> urls = DSSASN1Utils.getCAAccessLocations(certificateToken);
 
         if (Utils.isCollectionEmpty(urls)) {
             LOG.info("There is no AIA extension for certificate download.");
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
         if (dataLoader == null) {
             LOG.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : {})", urls);
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
 
-        Set<CertificateToken> allCertificates = new LinkedHashSet<>();
+        final List<CertificatesAndAIAUrl> certificatesAndAIAUrls = new ArrayList<>();
 
         for (String url : urls) {
             if (!isUrlAccepted(url)) {
@@ -120,21 +135,17 @@ public class DefaultAIASource implements AIASource {
                 continue;
             }
 
+            List<CertificateToken> loadedCertificates = Collections.emptyList();
+
             if (Utils.isArrayNotEmpty(bytes)) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
                 }
                 try (InputStream is = new ByteArrayInputStream(bytes)) {
-                    List<CertificateToken> loadedCertificates = DSSUtils.loadCertificateFromP7c(is);
+                    loadedCertificates = DSSUtils.loadCertificateFromP7c(is);
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("{} certificate(s) loaded from '{}'", loadedCertificates.size(), url);
                     }
-
-                    String aiaCertificateKey = DSSUtils.getSHA1Digest(url);
-                    for (CertificateToken aiaCertificate : loadedCertificates) {
-                        aiaCertificate.setAiaCertificateKey(aiaCertificateKey);
-                    }
-                    allCertificates.addAll(loadedCertificates);
 
                 } catch (Exception e) {
                     String errorMessage = "Unable to parse certificate(s) from AIA (url: {}) : {}";
@@ -148,9 +159,11 @@ public class DefaultAIASource implements AIASource {
             } else {
                 LOG.warn("Empty content from {}.", url);
             }
+
+            certificatesAndAIAUrls.add(new CertificatesAndAIAUrl(url, loadedCertificates));
         }
 
-        return allCertificates;
+        return certificatesAndAIAUrls;
     }
 
     private boolean isUrlAccepted(String url) {

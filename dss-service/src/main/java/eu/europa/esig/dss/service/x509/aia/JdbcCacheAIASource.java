@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,9 +32,9 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
 
     /**
      * Used in the init method to create the table, if not existing:
-     * ID (char80, DSS Id), AIA url key (char40 = SHA1 length) and DATA (blob)
+     * ID (char40 = unique cert+aia Id), AIA url key (char40 = SHA1 length) and DATA (blob)
      */
-    private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE AIA_CERTIFICATES (ID CHAR(80), AIA CHAR(40), DATA BLOB)";
+    private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE AIA_CERTIFICATES (ID CHAR(40), AIA CHAR(40), DATA BLOB)";
 
     /**
      * Used in the find method to select a certificate via the ID
@@ -91,8 +91,8 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
 
     static {
         findCertificatesRequests = new ArrayList<>();
-        findCertificatesRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_DATA, byte[].class));
         findCertificatesRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_AIA, String.class));
+        findCertificatesRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_DATA, byte[].class));
 
         findAIAKeysRequests = new ArrayList<>();
         findAIAKeysRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_AIA, String.class));
@@ -121,13 +121,12 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
 
     private Set<CertificateToken> buildCertificatesFromResult(Collection<JdbcCacheConnector.JdbcResultRecord> records) {
         try {
-            Set<CertificateToken> certificateTokens = new HashSet<>();
+            Set<CertificateToken> certificateTokens = new LinkedHashSet<>();
             for (JdbcCacheConnector.JdbcResultRecord record : records) {
                 byte[] binaries = (byte[]) record.get(SQL_FIND_QUERY_DATA);
                 if (Utils.isArrayNotEmpty(binaries)) {
                     CertificateToken certificateToken = DSSUtils.loadCertificate(binaries);
                     if (certificateToken != null) {
-                        certificateToken.setAiaCertificateKey((String) record.get(SQL_FIND_QUERY_AIA));
                         certificateTokens.add(certificateToken);
                     }
                 }
@@ -141,10 +140,22 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
     }
 
     @Override
-    protected void insertCertificate(final CertificateToken certificate) {
-        jdbcCacheConnector.execute(SQL_FIND_INSERT,
-                certificate.getDSSIdAsString(), certificate.getAiaCertificateKey(), certificate.getEncoded());
-        LOG.debug("AIA Certificate with Id '{}' successfully inserted in DB", certificate.getDSSIdAsString());
+    protected void insertCertificates(final String aiaUrl, final Collection<CertificateToken> certificateTokens) {
+        if (Utils.isCollectionNotEmpty(certificateTokens)) {
+            for (CertificateToken certificate : certificateTokens) {
+                jdbcCacheConnector.execute(SQL_FIND_INSERT, getUniqueCertificateAiaId(certificate, aiaUrl),
+                        getAiaUrlIdentifier(aiaUrl), certificate.getEncoded());
+                LOG.debug("AIA Certificate with Id '{}' successfully inserted in DB", certificate.getDSSIdAsString());
+            }
+        }
+    }
+
+    private String getUniqueCertificateAiaId(final CertificateToken certificateToken, String aiaUrl) {
+        return DSSUtils.getSHA1Digest(certificateToken.getDSSIdAsString() + aiaUrl);
+    }
+
+    private String getAiaUrlIdentifier(final String aiaUrl) {
+        return DSSUtils.getSHA1Digest(aiaUrl);
     }
 
     @Override

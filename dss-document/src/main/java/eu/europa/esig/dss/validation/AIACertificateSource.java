@@ -121,8 +121,10 @@ public class AIACertificateSource extends CommonCertificateSource {
 			} else if (!candidatePublicKey.equals(commonPublicKey)) {
 				return null;
 
-			} else if (isTrusted(candidate)) {
+			}
+			if (candidate.isValidOn(certificate.getCreationDate())) {
 				bestMatch = candidate;
+				break;
 			}
 		}
 

@@ -525,7 +525,7 @@ public class CommonsDataLoader implements DataLoader {
 					LOG.debug("The retrieved content from URL [{}] is empty. Continue with other URLs...", urlString);
 					continue;
 				}
-				return new DataAndUrl(bytes, urlString);
+				return new DataAndUrl(urlString, bytes);
 			} catch (Exception e) {
 				LOG.warn("Cannot obtain data using '{}' : {}", urlString, e.getMessage());
 				exceptions.put(urlString, e);

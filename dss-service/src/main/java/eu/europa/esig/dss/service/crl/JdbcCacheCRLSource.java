@@ -107,9 +107,9 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 
 	static {
 		findCRLRequests = new ArrayList<>();
+		findCRLRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_ID, String.class));
 		findCRLRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_DATA, byte[].class));
 		findCRLRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_ISSUER, byte[].class));
-		findCRLRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_ID, String.class));
 	}
 	
 	@Override
@@ -161,7 +161,6 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 			CertificateToken cachedIssuerCertificate = DSSUtils.loadCertificate((byte[]) record.get(SQL_FIND_QUERY_ISSUER));
 
 			final CRLValidity cached = CRLUtils.buildCRLValidity(crlBinary, cachedIssuerCertificate);
-			cached.setKey((String) record.get(SQL_FIND_QUERY_ID));
 			cached.setIssuerToken(cachedIssuerCertificate);
 			
 			CRLToken crlToken = new CRLToken(certificateToken, cached);
@@ -174,34 +173,22 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 		}
 	}
 
-	/**
-	 * Insert a new CRL into the cache
-	 *
-	 * @param token
-	 *            {@link CRLToken}
-	 */
 	@Override
-	protected void insertRevocation(final RevocationToken<CRL> token) {
+	protected void insertRevocation(final String revocationKey, final RevocationToken<CRL> token) {
 		CRLToken crlToken = (CRLToken) token;
 		CRLValidity crlValidity = crlToken.getCrlValidity();
 
-		jdbcCacheConnector.execute(SQL_FIND_INSERT, token.getRevocationTokenKey(), crlValidity.getDerEncoded(),
+		jdbcCacheConnector.execute(SQL_FIND_INSERT, revocationKey, crlValidity.getDerEncoded(),
 				crlValidity.getIssuerToken().getEncoded());
 	}
 
-	/**
-	 * Update the cache with the CRL
-	 *
-	 * @param token
-	 *            {@link CRLToken}
-	 */
 	@Override
-	protected void updateRevocation(RevocationToken<CRL> token) {
+	protected void updateRevocation(final String revocationKey, final RevocationToken<CRL> token) {
 		CRLToken crlToken = (CRLToken) token;
 		CRLValidity crlValidity = crlToken.getCrlValidity();
 
 		jdbcCacheConnector.execute(SQL_FIND_UPDATE, crlValidity.getDerEncoded(), crlValidity.getIssuerToken().getEncoded(),
-				token.getRevocationTokenKey());
+				revocationKey);
 	}
 
 	@Override
@@ -214,4 +201,9 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 		return (CRLToken) super.getRevocationToken(certificateToken, issuerCertificateToken, forceRefresh);
 	}
 	
+	@Override
+	protected String getRevocationTokenKey(CertificateToken certificateToken, String urlString) {
+		return DSSRevocationUtils.getCRLRevocationTokenKey(urlString);
+	}
+
 }

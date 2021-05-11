@@ -29,7 +29,6 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
@@ -123,23 +122,64 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 		if (certificateToken == null) {
 			return null;
 		}
-		if (issuerToken == null) {
-			return null;
-		}
 
 		if (Utils.isCollectionNotEmpty(alternativeUrls)) {
 			LOG.info("CRL alternative urls : {}", alternativeUrls);
 		}
 
-		final String dssIdAsString = certificateToken.getDSSIdAsString();
 		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
 		if (Utils.isCollectionEmpty(crlUrls) && Utils.isCollectionEmpty(alternativeUrls)) {
-			LOG.debug("No CRL location found for {}", dssIdAsString);
+			LOG.debug("No CRL location found for {}", certificateToken.getDSSIdAsString());
 			return null;
 		}
 		crlUrls.addAll(alternativeUrls);
 
+		RevocationTokenAndUrl<CRL> revocationTokenAndUrl = getRevocationTokenAndUrl(certificateToken, issuerToken, crlUrls);
+		if (revocationTokenAndUrl != null) {
+			return (CRLToken) revocationTokenAndUrl.getRevocationToken();
+		} else {
+			LOG.debug("No CRL has been downloaded for a CertificateToken with Id '{}' from a list of urls : {}",
+					certificateToken.getDSSIdAsString(), crlUrls);
+			return null;
+		}
+	}
+
+	@Override
+	public RevocationTokenAndUrl<CRL> getRevocationTokenAndUrl(CertificateToken certificateToken, CertificateToken issuerToken) {
+		Objects.requireNonNull(dataLoader, "DataLoader is not provided !");
+
+		if (certificateToken == null) {
+			return null;
+		}
+
+		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
+		if (Utils.isCollectionEmpty(crlUrls)) {
+			LOG.debug("No CRL location found for {}", certificateToken.getDSSIdAsString());
+			return null;
+		}
+
+		return getRevocationTokenAndUrl(certificateToken, issuerToken, crlUrls);
+	}
+
+	/**
+	 * Extracts a CRL token for a {@code certificateToken} from the given list of {@code crlUrls}
+	 *
+	 * @param certificateToken {@link CertificateToken} to get a CRL token for
+	 * @param issuerToken {@link CertificateToken} issued the {@code certificateToken}
+	 * @param crlUrls a list of {@link String} URLs to use to access a CRL token
+	 * @return {@link RevocationTokenAndUrl}
+	 */
+	protected RevocationTokenAndUrl<CRL> getRevocationTokenAndUrl(CertificateToken certificateToken,
+																  CertificateToken issuerToken, List<String> crlUrls) {
+		Objects.requireNonNull(dataLoader, "DataLoader is not provided !");
+		if (issuerToken == null) {
+			return null;
+		}
+		if (Utils.isCollectionEmpty(crlUrls)) {
+			return null;
+		}
 		prioritize(crlUrls);
+
 		final DataLoader.DataAndUrl dataAndUrl = downloadCrl(crlUrls);
 		if (dataAndUrl == null) {
 			return null;
@@ -150,8 +190,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 			crlToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
 			crlToken.setSourceURL(dataAndUrl.getUrlString());
-			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.getUrlString()));
-			return crlToken;
+			return new RevocationTokenAndUrl<>(dataAndUrl.getUrlString(), crlToken);
 		} catch (Exception e) {
 			LOG.warn("Unable to parse/validate the CRL (url: {}) : {}", dataAndUrl.getUrlString(), e.getMessage(), e);
 			return null;

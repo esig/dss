@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.extension.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.extension.AbstractASiCWithCAdESTestExtension;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -57,6 +46,17 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // see DSS-1805
 public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTestExtension {
@@ -196,7 +196,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
 						calendar.add(Calendar.MINUTE, -1);
 						String requestDate = DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DEFAULT_DATE_FORMAT);
 						String newUrl = url.replace("/pki-factory/crl/good-ca.crl", "/pki-factory/crl/" + requestDate + "/true/good-ca.crl");
-						return new DataAndUrl(super.get(newUrl), url);
+						return new DataAndUrl(url, super.get(newUrl));
 					}
 				}
 			}

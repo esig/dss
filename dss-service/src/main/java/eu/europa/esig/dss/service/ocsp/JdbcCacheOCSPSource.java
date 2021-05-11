@@ -36,7 +36,6 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
 
 import java.io.IOException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,9 +54,9 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	private static final String SQL_INIT_CHECK_EXISTENCE = "SELECT COUNT(*) FROM CACHED_OCSP";
 
 	/**
-	 * Used in the init method to create the table, if not existing: ID (char40
-	 * = SHA1 length) and DATA (blob)
-	 */
+	 * Used in the init method to create the table, if not existing:
+	 * ID (char40 = SHA1 length), DATA (blob = OCSP binaries) and LOC (varchar(200) = location url)
+ 	 */
 	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_OCSP (ID VARCHAR(100), DATA BLOB, LOC VARCHAR(200))";
 
 	/**
@@ -66,8 +65,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	private static final String SQL_FIND_QUERY = "SELECT * FROM CACHED_OCSP WHERE ID = ?";
 
 	/**
-	 * Used in the find method when selecting the OCSP via the id to get the
-	 * DATA (blob) from the resultSet
+	 * Used in the find method when selecting the OCSP via the id to get the DATA (blob) from the resultSet
 	 */
 	private static final String SQL_FIND_QUERY_DATA = "DATA";
 
@@ -79,14 +77,12 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	/**
 	 * Used via the find method to insert a new record
 	 */
-	private static final String SQL_FIND_INSERT = "INSERT INTO CACHED_OCSP (ID, DATA, LOC) "
-			+ "VALUES (?, ?, ?)";
+	private static final String SQL_FIND_INSERT = "INSERT INTO CACHED_OCSP (ID, DATA, LOC) VALUES (?, ?, ?)";
 
 	/**
 	 * Used via the find method to update an existing record via the id
 	 */
-	private static final String SQL_FIND_UPDATE = "UPDATE CACHED_OCSP SET DATA = ?, LOC = ? "
-			+ "WHERE ID = ?";
+	private static final String SQL_FIND_UPDATE = "UPDATE CACHED_OCSP SET DATA = ?, LOC = ? WHERE ID = ?";
 	
 	/**
 	 * Used via the find method to remove an existing record by the id
@@ -163,17 +159,9 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 		}
 	}
 
-	/**
-	 * Stores the supplied new OCSP <code>token</code> for the given
-	 * <code>key</code>.
-	 *
-	 * @param token
-	 *            OCSP token
-	 */
 	@Override
-	protected void insertRevocation(RevocationToken<OCSP> token) {
-		Object sourceUrl = token.getSourceURL() != null ? token.getSourceURL() : Types.VARCHAR;
-		jdbcCacheConnector.execute(SQL_FIND_INSERT, token.getRevocationTokenKey(), token.getEncoded(), sourceUrl);
+	protected void insertRevocation(final String revocationKey, final RevocationToken<OCSP> token) {
+		jdbcCacheConnector.execute(SQL_FIND_INSERT, revocationKey, token.getEncoded(), token.getSourceURL());
 	}
 
 	/**
@@ -184,9 +172,8 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	 *            new OCSP token
 	 */
 	@Override
-	protected void updateRevocation(final RevocationToken<OCSP> token) {
-		Object sourceUrl = token.getSourceURL() != null ? token.getSourceURL() : Types.VARCHAR;
-		jdbcCacheConnector.execute(SQL_FIND_UPDATE, token.getEncoded(), sourceUrl);
+	protected void updateRevocation(final String revocationKey, final RevocationToken<OCSP> token) {
+		jdbcCacheConnector.execute(SQL_FIND_UPDATE, token.getEncoded(), token.getSourceURL(), revocationKey);
 	}
 
 	@Override
@@ -199,4 +186,9 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 		return (OCSPToken) super.getRevocationToken(certificateToken, issuerCertificateToken, forceRefresh);
 	}
 	
+	@Override
+	protected String getRevocationTokenKey(CertificateToken certificateToken, String urlString) {
+		return DSSRevocationUtils.getOcspRevocationKey(certificateToken, urlString);
+	}
+
 }

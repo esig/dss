@@ -55,7 +55,7 @@ public class MemoryDataLoader implements DataLoader {
 		for (String url : urlStrings) {
 			byte[] data = get(url);
 			if (data != null) {
-				return new DataAndUrl(data, url);
+				return new DataAndUrl(url, data);
 			}
 		}
 		throw new DSSException(String.format("A content for URLs [%s] does not exist!", urlStrings));

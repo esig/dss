@@ -121,6 +121,7 @@ public class JdbcCacheConnector {
      * This method allows table creation, removal and existence check
      *
      * @param query {@link String} the query
+     * @return TRUE if the query has been executed successfully, FALSE otherwise
      */
     public boolean tableQuery(final String query) {
         Connection c = null;

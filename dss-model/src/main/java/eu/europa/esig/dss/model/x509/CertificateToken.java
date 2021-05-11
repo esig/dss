@@ -73,11 +73,6 @@ public class CertificateToken extends Token {
 	private List<KeyUsageBit> keyUsageBits;
 
 	/**
-	 * The internal variable indicating an AIA URI the certificate has been obtained from, when applicable
-	 */
-	private String aiaCertificateKey;
-
-	/**
 	 * Creates a CertificateToken wrapping the provided X509Certificate.
 	 *
 	 * @param x509Certificate
@@ -368,24 +363,6 @@ public class CertificateToken extends Token {
 	 */
 	public byte[] getSignature() {
 		return x509Certificate.getSignature();
-	}
-
-	/**
-	 * Returns the AIA certificate key
-	 *
-	 * @return {@link String} key
-	 */
-	public String getAiaCertificateKey() {
-		return aiaCertificateKey;
-	}
-
-	/**
-	 * Sets the AIA certificate key
-	 *
-	 * @param aiaCertificateKey {@link String}
-	 */
-	public void setAiaCertificateKey(String aiaCertificateKey) {
-		this.aiaCertificateKey = aiaCertificateKey;
 	}
 
 	@Override
