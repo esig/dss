@@ -252,6 +252,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	/**
 	 * This method process the signature validation on the given {@code allSignatureList}
 	 * 
+	 * @param <T> {@link AdvancedSignature} implementation
 	 * @param allSignatureList a collection of {@link AdvancedSignature}s to be validated
 	 */
 	<T extends AdvancedSignature> void processSignaturesValidation(Collection<T> allSignatureList);
@@ -259,6 +260,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	/**
 	 * Finds SignatureScopes for a list of signatures
 	 *
+	 * @param <T> {@link AdvancedSignature} implementation
 	 * @param currentValidatorSignatures a collection of {@link AdvancedSignature}s
 	 */
 	<T extends AdvancedSignature> void findSignatureScopes(Collection<T> currentValidatorSignatures);
@@ -266,6 +268,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	/**
 	 * Extracts a validation data for provided collection of signatures
 	 *
+	 * @param <T> {@link AdvancedSignature} implementation
 	 * @param signatures a collection of {@link AdvancedSignature}s
 	 * @return {@link ValidationDataContainer}
 	 */
@@ -274,6 +277,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	/**
 	 * Extracts a validation data for provided collection of signatures and/or timestamps
 	 *
+	 * @param <T> {@link AdvancedSignature} implementation
 	 * @param signatures a collection of {@link AdvancedSignature}s
 	 * @param detachedTimestamps a collection of detached {@link TimestampToken}s
 	 * @return {@link ValidationDataContainer}

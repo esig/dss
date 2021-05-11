@@ -457,6 +457,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * Initializes and fills {@code ValidationContext} with necessary data sources
 	 * 
+	 * @param <T> {@link AdvancedSignature} implementation
 	 * @param signatures a collection of {@link AdvancedSignature}s
 	 * @param detachedTimestamps a collection of detached {@link TimestampToken}s
 	 * @return {@link ValidationContext}
@@ -611,9 +612,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Prepares the {@code validationContext} for signature validation process and
-	 * returns a list of signatures to validate
+	 * Prepares the {@code validationContext} for signature validation process
 	 *
+	 * @param <T>
+	 *                          {@link AdvancedSignature} implementation
 	 * @param validationContext
 	 *                          {@link ValidationContext}
 	 * @param allSignatures
@@ -627,6 +629,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
+	 * This method prepares a {@code SignatureValidationContext} for signatures validation
+	 *
+	 * @param <T>
+	 *                          {@link AdvancedSignature} implementation
 	 * @param allSignatureList  {@code Collection} of {@code AdvancedSignature}s to
 	 *                          validate including the countersignatures
 	 * @param validationContext {@code ValidationContext} is the implementation of

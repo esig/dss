@@ -177,7 +177,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * @param cmsSignedData {@link CMSSignedData} containing the signatures to be extended
 	 * @param parameters {@link CAdESSignatureParameters}
 	 * @param signatureIdsToExtend a list of {@link String} signature Ids to be extended
-	 * @return
+	 * @return {@link CMSSignedData}
 	 */
 	protected abstract CMSSignedData extendCMSSignatures(CMSSignedData cmsSignedData,
 												CAdESSignatureParameters parameters,
