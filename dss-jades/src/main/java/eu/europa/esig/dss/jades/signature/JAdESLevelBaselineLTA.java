@@ -87,7 +87,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
 
-			if (jadesSignature.hasLTAProfile()) {
+			if (jadesSignature.hasLTAProfile() && addTimestampValidationData) {
 				removeLastTimestampValidationData(jadesSignature, etsiUHeader);
 
 				final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
