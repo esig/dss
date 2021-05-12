@@ -3,11 +3,13 @@ package eu.europa.esig.dss.token;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
@@ -22,7 +24,9 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SignDigestDSASignatureAlgorithmTest {
@@ -90,6 +94,22 @@ public class SignDigestDSASignatureAlgorithmTest {
 
             // Sig values are not equals like with RSA. (random number is generated on
             // signature creation)
+        }
+    }
+
+    @Test
+    public void testSignWithWrongSignatureAlgorithm() throws IOException {
+        try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/good-dsa-user.p12",
+                new PasswordProtection("ks-password".toCharArray()))) {
+            List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
+            KSPrivateKeyEntry entry = (KSPrivateKeyEntry) keys.get(0);
+
+            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
+
+            Exception exception = assertThrows(DSSException.class, () ->
+                    signatureToken.sign(toBeSigned, SignatureAlgorithm.ECDSA_SHA256, entry));
+            assertEquals("The provided SignatureAlgorithm 'ECDSA with SHA256' cannot be used to sign with " +
+                    "the token's implied EncryptionAlgorithm 'DSA'", exception.getMessage());
         }
     }
 

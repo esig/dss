@@ -142,6 +142,13 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 		}
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String} algorithm name
+	 * @param oid {@link String} algorithm OID
+	 * @param padding {@link String} algorithm padding
+	 */
 	EncryptionAlgorithm(String name, String oid, String padding) {
 		this.name = name;
 		this.oid = oid;
@@ -174,6 +181,34 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 	 */
 	public String getPadding() {
 		return padding;
+	}
+
+	/**
+	 * Verifies if the provided {@code encryptionAlgorithm} is equivalent to the current one.
+	 * Equivalent means the same token key can be used for signature creation with both algorithms.
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm} to check
+	 * @return TRUE if the algorithms are equivalent, FALSE otherwise
+	 */
+	public boolean isEquivalent(EncryptionAlgorithm encryptionAlgorithm) {
+		if (this == encryptionAlgorithm) {
+			return true;
+		}
+		if (this.isEcDSAFamily() && encryptionAlgorithm.isEcDSAFamily()) {
+			return true;
+		}
+		if (this.isEdDSAFamily() && encryptionAlgorithm.isEdDSAFamily()) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isEcDSAFamily() {
+		return ECDSA == this || PLAIN_ECDSA == this;
+	}
+
+	private boolean isEdDSAFamily() {
+		return X25519 == this || X448 == this || EDDSA == this;
 	}
 
 }
