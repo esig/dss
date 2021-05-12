@@ -20,6 +20,16 @@
  */
 package eu.europa.esig.dss.cookbook;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,17 +38,10 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * This application can be used to create a certificate keyStore
+ *
+ */
 public class CreateKeyStoreApp {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CreateKeyStoreApp.class);
@@ -47,6 +50,12 @@ public class CreateKeyStoreApp {
 	private static final String KEYSTORE_TYPE = "PKCS12";
 	private static final String KEYSTORE_FILEPATH = "target/keystore.p12";
 
+	/**
+	 * Main method
+	 *
+	 * @param args not applicable
+	 * @throws Exception if an exception occurs
+	 */
 	public static void main(String[] args) throws Exception {
 
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource((InputStream) null, KEYSTORE_TYPE, getKeystorePassword());

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.jaxb.common;
 
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.Schema;
@@ -36,6 +37,9 @@ import java.util.Objects;
 public final class XmlDefinerUtils {
 	
 	private static XmlDefinerUtils singleton;
+
+	/** Builds the secure version of {@code javax.xml.parsers.DocumentBuilderFactory} */
+	private DocumentBuilderFactoryBuilder secureDocumentBuilderFactoryBuilder = DocumentBuilderFactoryBuilder.getSecureDocumentBuilderFactoryBuilder();
 
 	/** Builds the secure version of {@code TransformerFactory} */
 	private TransformerFactoryBuilder secureTransformerFactoryBuilder = TransformerFactoryBuilder.getSecureTransformerBuilder();
@@ -56,6 +60,24 @@ public final class XmlDefinerUtils {
 			singleton = new XmlDefinerUtils();
 		}
 		return singleton;
+	}
+
+	/**
+	 * Sets a pre-configured builder to instantiate a {@code DocumentBuilderFactory}
+	 *
+	 * @param documentBuilderFactoryBuilder {@link DocumentBuilderFactoryBuilder}
+	 */
+	public void setDocumentBuilderFactoryBuilder(DocumentBuilderFactoryBuilder documentBuilderFactoryBuilder) {
+		this.secureDocumentBuilderFactoryBuilder = documentBuilderFactoryBuilder;
+	}
+
+	/**
+	 * Returns a DocumentBuilderFactory with enabled security features
+	 *
+	 * @return {@link DocumentBuilderFactory}
+	 */
+	public DocumentBuilderFactory getSecureDocumentBuilderFactory() {
+		return secureDocumentBuilderFactoryBuilder.build();
 	}
 	
 	/**

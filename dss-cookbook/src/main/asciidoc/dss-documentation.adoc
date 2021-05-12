@@ -2210,6 +2210,7 @@ WARNING: We strongly do not recommend disabling of security features and usage o
 
 The configuration is available for the following classes:
 
+ * `javax.xml.parsers.DocumentBuilderFactory` with a `DocumentBuilderFactoryBuilder` - builds a DOM document object from the obtained XML file and creates a new Document;
  * `javax.xml.transform.TransformerFactory` with a `TransformerFactoryBuilder` - loads XML templates and builds DOM objects;
  * `javax.xml.validation.SchemaFactory` with a `SchemaFactoryBuilder` - loads XML Schema;
  * `javax.xml.validation.Validator` with a `ValidatorConfigurator` - configures a validator to validate an XML document against an XML Schema. 
@@ -2222,15 +2223,17 @@ All the classes can be configured with the following methods (example for `Trans
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecuritiesConfigTest.java[tags=demo]
 ----
 
-The `javax.xml.parsers.DocumentBuilderFactory` in `DomUtils`, which allows you to parse and create XML `Document` object, also can be configured with the methods:
- 
+The `javax.xml.parsers.DocumentBuilderFactory`, that allows XML files parsing and creation of DOM `Document` object, can be configured with the following methods:
+
+NOTE: Since DSS 5.9 the configuration of `javax.xml.parsers.DocumentBuilderFactory` has been moved from `DomUtils` to a new singleton class `DocumentBuilderFactoryBuilder`.
+
 [source,java,indent=0]
 .DocumentBuilderFactory configuration
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecuritiesConfigTest.java[tags=dbf]
 ----
 
-The classes `XmlDefinerUtils` and `DomUtils` are singletons, therefore all changes performed on the instances will applied on all calls of the related methods.
+The class `XmlDefinerUtils` is a singleton, therefore all changes performed on the instance will have an impact to all calls of the related methods.
 
 == JAXB modules
 

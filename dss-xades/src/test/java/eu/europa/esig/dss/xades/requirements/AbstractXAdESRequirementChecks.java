@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.requirements;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -32,7 +33,6 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -47,16 +47,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSignature {
 
-	private static DocumentBuilderFactory dbf;
 	protected static XPath xpath;
 
 	protected Document document;
 
 	@BeforeAll
 	public static void initClass() {
-		dbf = DocumentBuilderFactory.newInstance();
-		dbf.setNamespaceAware(true);
-
 		XPathFactory f = XPathFactory.newInstance();
 		xpath = f.newXPath();
 		xpath.setNamespaceContext(new NamespaceContext() {
@@ -93,7 +89,7 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 		super.onDocumentSigned(byteArray);
 		
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(byteArray)) {
-			DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+			DocumentBuilder documentBuilder = DomUtils.getSecureDocumentBuilderFactory().newDocumentBuilder();
 			document = documentBuilder.parse(bais);
 			
 			checkX509CertificatePresent();

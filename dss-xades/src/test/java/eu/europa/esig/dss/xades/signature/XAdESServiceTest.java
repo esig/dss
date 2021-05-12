@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -45,7 +46,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -135,7 +135,8 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setReferences(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setRootDocument(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
+        signatureParameters.setRootDocument(DomUtils.getSecureDocumentBuilderFactory()
+				.newDocumentBuilder().newDocument());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setSignatureTimestampParameters(new XAdESTimestampParameters());

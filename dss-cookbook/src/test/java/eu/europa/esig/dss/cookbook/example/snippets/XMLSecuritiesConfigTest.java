@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.jaxb.common.DocumentBuilderFactoryBuilder;
+import eu.europa.esig.dss.jaxb.common.TransformerFactoryBuilder;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerFactory;
 
-import org.junit.jupiter.api.Test;
-import org.slf4j.event.Level;
-
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.alert.LogOnStatusAlert;
-import eu.europa.esig.dss.jaxb.common.TransformerFactoryBuilder;
-import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class XMLSecuritiesConfigTest {
 	
@@ -68,11 +67,20 @@ public class XMLSecuritiesConfigTest {
 
 		// tag::dbf[]
 		
+		// returns a configured secure instance of {@link DocumentBuilderFactoryBuilder}
+		DocumentBuilderFactoryBuilder documentBuilderFactoryBuilder = DocumentBuilderFactoryBuilder.getSecureDocumentBuilderFactoryBuilder();
+
 		// allows enabling of a feature
-		DomUtils.enableFeature("http://xml.org/sax/features/external-general-entities");
+		documentBuilderFactoryBuilder.enableFeature("http://xml.org/sax/features/external-general-entities");
 		
 		// allows disabling of a feature
-		DomUtils.disableFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd");
+		documentBuilderFactoryBuilder.disableFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd");
+
+		// allows to set an attribute
+		documentBuilderFactoryBuilder.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+
+		// sets the DocumentBuilderFactoryBuilder (will be applied for all calls)
+		xmlDefinerUtils.setDocumentBuilderFactoryBuilder(documentBuilderFactoryBuilder);
 		
 		// end::dbf[]
 		

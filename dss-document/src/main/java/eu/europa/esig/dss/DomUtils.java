@@ -104,9 +104,6 @@ public final class DomUtils {
 	private DomUtils() {
 	}
 
-	/** The used DocumentBuilderFactory */
-	private static DocumentBuilderFactory dbFactory;
-
 	/** The used XPathFactory */
 	private static final XPathFactory factory = XPathFactory.newInstance();
 
@@ -115,61 +112,6 @@ public final class DomUtils {
 
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
-
-		dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setNamespaceAware(true);
-		dbFactory.setXIncludeAware(false);
-		dbFactory.setExpandEntityReferences(false);
-
-		// disable external entities details :
-		// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
-		setSecurityFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-		setSecurityFeature("http://xml.org/sax/features/external-general-entities", false);
-		setSecurityFeature("http://xml.org/sax/features/external-parameter-entities", false);
-		setSecurityFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-	}
-	
-	/**
-	 * Enables a feature for the DocumentBuilderFactory
-	 *
-	 * @param feature {@link String} feature name (URL) to enable
-	 * @throws ParserConfigurationException if an exception occurs
-	 */
-	public static void enableFeature(String feature) throws ParserConfigurationException {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Enabling DocumentBuilderFactory feature [{}]...", feature);
-		}
-		setFeature(feature, true);
-	}
-
-	/**
-	 * Disables a feature for the DocumentBuilderFactory
-	 *
-	 * @param feature {@link String} feature name (URL) to disable
-	 * @throws ParserConfigurationException if an exception occurs
-	 */
-	public static void disableFeature(String feature) throws ParserConfigurationException {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Disabling DocumentBuilderFactory feature [{}]...", feature);
-		}
-		setFeature(feature, false);
-	}
-
-	private static void setSecurityFeature(String property, boolean enable) {
-		try {
-			setFeature(property, enable);
-		} catch (ParserConfigurationException e) {
-			String message = String.format("SECURITY : unable to set feature %s = %s (more details in LOG debug)", property, enable);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug(message, e);
-			} else {
-				LOG.warn(message);
-			}
-		}
-	}
-
-	private static void setFeature(String property, boolean enable) throws ParserConfigurationException {
-		dbFactory.setFeature(property, enable);
 	}
 
 	/**
@@ -181,6 +123,15 @@ public final class DomUtils {
 	 */
 	public static boolean registerNamespace(final DSSNamespace namespace) {
 		return namespacePrefixMapper.registerNamespace(namespace.getPrefix(), namespace.getUri());
+	}
+
+	/**
+	 * This method returns a new instance of DocumentBuilderFactory with configured security features
+	 *
+	 * @return an instance of DocumentBuilderFactory with enabled security features
+	 */
+	public static DocumentBuilderFactory getSecureDocumentBuilderFactory() {
+		return XmlDefinerUtils.getInstance().getSecureDocumentBuilderFactory();
 	}
 
 	/**
@@ -232,7 +183,7 @@ public final class DomUtils {
 	 */
 	public static Document buildDOM() {
 		try {
-			return dbFactory.newDocumentBuilder().newDocument();
+			return getSecureDocumentBuilderFactory().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
 			throw new DSSException(e);
 		}
@@ -331,7 +282,7 @@ public final class DomUtils {
 	 */
 	public static Document buildDOM(final InputStream inputStream) {
 		try (InputStream is = inputStream) {
-			return dbFactory.newDocumentBuilder().parse(is);
+			return getSecureDocumentBuilderFactory().newDocumentBuilder().parse(is);
 		} catch (Exception e) {
 			throw new DSSException("Unable to parse content (XML expected)", e);
 		}
