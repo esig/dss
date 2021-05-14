@@ -25,7 +25,6 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.JKSSignatureToken;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore.PasswordProtection;
 import java.text.DateFormat;
@@ -44,7 +43,7 @@ public class JksCertificateInformation {
 	 * @param args not applicable
 	 * @throws Exception if an exception occurs
 	 */
-	public static void main(final String[] args) throws IOException {
+	public static void main(final String[] args) throws Exception {
 
 		try (InputStream is = new FileInputStream("src/main/resources/keystore.jks");
 				JKSSignatureToken jksSignatureToken = new JKSSignatureToken(is, new PasswordProtection("dss-password".toCharArray()))) {

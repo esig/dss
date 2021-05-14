@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -34,7 +33,6 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -48,7 +46,7 @@ public class SignXmlXadesBWithMSCAPI {
 	 * @param args not applicable
 	 * @throws Exception if an exception occurs
 	 */
-	public static void main(String[] args) throws DSSException, IOException {
+	public static void main(String[] args) throws Exception {
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
 		DSSDocument toSignDocument = new FileDocument("src/main/resources/xml_example.xml");
