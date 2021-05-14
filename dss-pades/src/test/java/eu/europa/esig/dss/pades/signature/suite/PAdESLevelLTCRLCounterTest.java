@@ -10,6 +10,7 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -46,7 +47,7 @@ public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
 
         certificateVerifier = getOfflineCertificateVerifier();
         certificateVerifier.setCrlSource(new OnlineCRLSourceCounter());
-        certificateVerifier.setDataLoader(getFileCacheDataLoader());
+        certificateVerifier.setAIASource(new DefaultAIASource(getFileCacheDataLoader()));
 
         service = new PAdESService(certificateVerifier);
 

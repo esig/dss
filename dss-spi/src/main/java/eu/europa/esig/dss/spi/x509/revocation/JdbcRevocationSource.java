@@ -90,15 +90,15 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	/**
 	 * Sets {@code DataSource}
 	 *
-	 * Deprecated. Use {@code setJdbcCacheConnector(jdbcCacheConnector)}
-	 *
 	 * @param dataSource
 	 *            the dataSource to set
+	 *
+	 * @deprecated since 5.9. Use {@code setJdbcCacheConnector(jdbcCacheConnector)}
 	 */
 	@Deprecated
 	public void setDataSource(final DataSource dataSource) {
 		this.jdbcCacheConnector = new JdbcCacheConnector(dataSource);
-		LOG.info("Use of deprecated method setDataSource(dataSource). Use setJdbcCacheConnector(jdbcCacheConnector) instead");
+		LOG.info("Use of deprecated method setDataSource(dataSource). Use setJdbcCacheConnector(jdbcCacheConnector) instead.");
 	}
 
 	/**
