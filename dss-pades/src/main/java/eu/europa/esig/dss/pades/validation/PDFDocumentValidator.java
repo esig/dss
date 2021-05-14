@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.PAdESUtils;
@@ -37,6 +38,7 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ListRevocationSource;
@@ -158,7 +160,11 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      */
     protected void prepareDssDictionaryValidationContext(final ValidationContext validationContext, List<PdfDssDict> dssDicts) {
         for (PdfDssDict dssDict : dssDicts) {
-            validationContext.addDocumentCertificateSource(new PdfDssDictCertificateSource(dssDict));
+            PdfDssDictCertificateSource dssDictCertificateSource = new PdfDssDictCertificateSource(dssDict);
+            for (CertificateToken certificateToken : dssDictCertificateSource.getCertificates()) {
+                validationContext.addCertificateTokenForVerification(certificateToken);
+            }
+            validationContext.addDocumentCertificateSource(dssDictCertificateSource);
             validationContext.addDocumentCRLSource(new PdfDssDictCRLSource(dssDict));
             validationContext.addDocumentOCSPSource(new PdfDssDictOCSPSource(dssDict));
         }
@@ -168,13 +174,31 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     public List<AdvancedSignature> getSignatures() {
         final List<AdvancedSignature> signatures = new ArrayList<>();
 
-        for (PdfRevision pdfRevision : getRevisions()) {
+        final ListCertificateSource dssCertificateSource = new ListCertificateSource();
+        final ListRevocationSource<CRL> dssCRLSource = new ListRevocationSource<>();
+        final ListRevocationSource<OCSP> dssOCSPSource = new ListRevocationSource<>();
+
+        List<PdfRevision> revisions = getRevisions();
+        revisions = Utils.reverseList(revisions);
+        for (PdfRevision pdfRevision : revisions) {
+            if (pdfRevision instanceof PdfDocDssRevision) {
+                PdfDssDict dssDictionary = ((PdfDocDssRevision) pdfRevision).getDssDictionary();
+                dssCertificateSource.add(new PdfDssDictCertificateSource(dssDictionary));
+                dssCRLSource.add(new PdfDssDictCRLSource(dssDictionary));
+                dssOCSPSource.add(new PdfDssDictOCSPSource(dssDictionary));
+            }
+        }
+
+        for (PdfRevision pdfRevision : revisions) {
             if (pdfRevision instanceof PdfSignatureRevision) {
                 PdfSignatureRevision pdfSignatureRevision = (PdfSignatureRevision) pdfRevision;
                 try {
                     final PAdESSignature padesSignature = new PAdESSignature(pdfSignatureRevision, documentRevisions);
                     padesSignature.setSignatureFilename(document.getName());
                     padesSignature.setSigningCertificateSource(signingCertificateSource);
+                    padesSignature.setDssCertificateSource(dssCertificateSource);
+                    padesSignature.setDssCRLSource(dssCRLSource);
+                    padesSignature.setDssOCSPSource(dssOCSPSource);
                     padesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
                     signatures.add(padesSignature);
 
@@ -185,7 +209,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
             }
         }
-        return Utils.reverseList(signatures);
+        return signatures;
     }
 
     @Override

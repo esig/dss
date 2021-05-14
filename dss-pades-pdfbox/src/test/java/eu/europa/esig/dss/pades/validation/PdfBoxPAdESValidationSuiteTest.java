@@ -44,6 +44,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureRefe
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultiplePagesAnnotationsOverlapTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOCSPSigningCertificateTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOutOfByteRangeTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESOverwrittenDSSDictTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSameBorderAnnotationsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleCorruptedTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleValidationTest;
@@ -96,7 +97,7 @@ import org.junit.runner.RunWith;
 		PAdESWithOcspFromDssRevisionTest.class, PAdESInvalidDigestAlgorithmTest.class, DSS2023Test.class, DSS2025Test.class, DSS2116WithPAdESTest.class,
 		PAdESExtendedToTLevelTest.class, DSS2199Test.class, PAdESSameBorderAnnotationsTest.class, PAdESMultiplePagesAnnotationsOverlapTest.class,
 		PAdESWithAddedPageTest.class, PAdESWithRemovedPagesTest.class, DSS2258Test.class, TimestampedAndSignedTest.class, DSS2155Test.class,
-		DSS2451Test.class })
+		DSS2451Test.class, PAdESOverwrittenDSSDictTest.class })
 public class PdfBoxPAdESValidationSuiteTest {
 
 }

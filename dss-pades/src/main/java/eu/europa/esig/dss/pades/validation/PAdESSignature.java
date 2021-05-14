@@ -26,17 +26,21 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
+import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
@@ -57,8 +61,17 @@ public class PAdESSignature extends CAdESSignature {
 	/** Represents the corresponding PDF revision */
 	private final PdfSignatureRevision pdfSignatureRevision;
 
-	/** contains a complete list of validating document revisions */
+	/** Contains a complete list of validating document revisions */
 	private final List<PdfRevision> documentRevisions;
+
+	/** Represents a certificate source obtained from DSS/VRI revisions */
+	private ListCertificateSource dssCertificateSource;
+
+	/** Represents a CRL source obtained from DSS/VRI revisions */
+	private ListRevocationSource<CRL> dssCRLSource;
+
+	/** Represents an OCSP source obtained from DSS/VRI revisions */
+	private ListRevocationSource<OCSP> dssOCSPSource;
 
 	/**
 	 * The default constructor for PAdESSignature.
@@ -73,6 +86,33 @@ public class PAdESSignature extends CAdESSignature {
 		this.pdfSignatureRevision = pdfSignatureRevision;
 		this.documentRevisions = documentRevisions;
 		this.detachedContents = Arrays.asList(pdfSignatureRevision.getSignedData());
+	}
+
+	/**
+	 * Sets a joint DSS/VRI Certificate Source
+	 *
+	 * @param dssCertificateSource {@link ListCertificateSource}
+	 */
+	public void setDssCertificateSource(ListCertificateSource dssCertificateSource) {
+		this.dssCertificateSource = dssCertificateSource;
+	}
+
+	/**
+	 * Sets a joint DSS/VRI CRL Source
+	 *
+	 * @param dssCRLSource {@link ListRevocationSource}
+	 */
+	public void setDssCRLSource(ListRevocationSource<CRL> dssCRLSource) {
+		this.dssCRLSource = dssCRLSource;
+	}
+
+	/**
+	 * Sets a joint DSS/VRI OCSP Source
+	 *
+	 * @param dssOCSPSource {@link ListRevocationSource}
+	 */
+	public void setDssOCSPSource(ListRevocationSource<OCSP> dssOCSPSource) {
+		this.dssOCSPSource = dssOCSPSource;
 	}
 
 	@Override
@@ -105,6 +145,33 @@ public class PAdESSignature extends CAdESSignature {
 			signatureOCSPSource = new PAdESOCSPSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureOCSPSource;
+	}
+
+	@Override
+	public ListCertificateSource getCompleteCertificateSource() {
+		ListCertificateSource completeCertificateSource = super.getCompleteCertificateSource();
+		if (dssCertificateSource != null) {
+			completeCertificateSource.addAll(dssCertificateSource);
+		}
+		return completeCertificateSource;
+	}
+
+	@Override
+	public ListRevocationSource<CRL> getCompleteCRLSource() {
+		ListRevocationSource<CRL> completeCRLSource = super.getCompleteCRLSource();
+		if (dssCRLSource != null) {
+			completeCRLSource.addAll(dssCRLSource);
+		}
+		return completeCRLSource;
+	}
+
+	@Override
+	public ListRevocationSource<OCSP> getCompleteOCSPSource() {
+		ListRevocationSource<OCSP> completeOCSPSource = super.getCompleteOCSPSource();
+		if (dssOCSPSource != null) {
+			completeOCSPSource.addAll(dssOCSPSource);
+		}
+		return completeOCSPSource;
 	}
 
 	@Override

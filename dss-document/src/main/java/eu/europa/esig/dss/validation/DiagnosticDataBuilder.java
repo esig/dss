@@ -1422,14 +1422,14 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * Retrieves all the qualifiers for which the corresponding conditionEntry is
-	 * true.
+	 * Retrieves all the qualifiers for which the corresponding conditionEntry is true.
 	 *
-	 * @param certificateToken
-	 * @return
+	 * @param serviceInfoStatus {@link TrustServiceStatusAndInformationExtensions}
+	 * @param certificateToken {@link CertificateToken}
+	 * @return a list of {@link String} qualifiers
 	 */
 	private List<String> getQualifiers(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
-			CertificateToken certificateToken) {
+									   CertificateToken certificateToken) {
 		LOG.trace("--> GET_QUALIFIERS()");
 		List<String> list = new ArrayList<>();
 		final List<ConditionForQualifiers> conditionsForQualifiers = serviceInfoStatus.getConditionsForQualifiers();
