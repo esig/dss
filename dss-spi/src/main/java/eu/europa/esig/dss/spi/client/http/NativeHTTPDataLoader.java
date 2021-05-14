@@ -88,7 +88,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 			try {
 				final byte[] bytes = get(urlString);
 				if (bytes != null) {
-					return new DataAndUrl(bytes, urlString);
+					return new DataAndUrl(urlString, bytes);
 				}
 			} catch (Exception e) {
 				LOGGER.warn("Impossible to obtain data using {}", urlString, e);

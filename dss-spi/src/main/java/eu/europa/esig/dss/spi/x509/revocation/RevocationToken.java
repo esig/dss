@@ -96,11 +96,6 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	protected RevocationReason reason;
 	
 	/**
-	 * Revocation Token Key, used for {@link RevocationToken} identification (i.e. id in DB)
-	 */
-	protected String revocationTokenKey;
-	
-	/**
 	 * Returns the Revocation Token type (CRL or OCSP)
 	 * 
 	 * @return {@link RevocationType} of the token
@@ -232,22 +227,6 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	 */
 	public RevocationReason getReason() {
 		return reason;
-	}
-	
-	/**
-	 * Returns compiled revocation token key
-	 * @return {@link String} key
-	 */
-	public String getRevocationTokenKey() {
-		return revocationTokenKey;
-	}
-	
-	/**
-	 * Sets the value for revocationTokenKey
-	 * @param key {@link String}
-	 */
-	public void setRevocationTokenKey(String key) {
-		this.revocationTokenKey = key;
 	}
 	
 	/**	

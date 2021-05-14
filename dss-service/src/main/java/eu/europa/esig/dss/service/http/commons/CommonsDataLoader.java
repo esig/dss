@@ -128,7 +128,7 @@ public class CommonsDataLoader implements DataLoader {
 	/** The default SSL protocol */
 	private static final String DEFAULT_SSL_PROTOCOL = "TLSv1.2";
 
-	/** The list of accepted statuses for a successfull connection */
+	/** The list of accepted statuses for a successful connection */
 	private static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
 
 	/** The content type value */
@@ -525,7 +525,7 @@ public class CommonsDataLoader implements DataLoader {
 					LOG.debug("The retrieved content from URL [{}] is empty. Continue with other URLs...", urlString);
 					continue;
 				}
-				return new DataAndUrl(bytes, urlString);
+				return new DataAndUrl(urlString, bytes);
 			} catch (Exception e) {
 				LOG.warn("Cannot obtain data using '{}' : {}", urlString, e.getMessage());
 				exceptions.put(urlString, e);

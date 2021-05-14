@@ -20,24 +20,23 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategy;
-import org.slf4j.event.Level;
-
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategy;
+import org.slf4j.event.Level;
 
 public class CertificateVerifierSnippet {
 
 	public static void main(String[] args) {
 
-		DataLoader dataLoader = null;
+		AIASource aiaSource = null;
 		CertificateSource adjunctCertSource = null;
 		CertificateSource trustedCertSource = null;
 		CRLSource crlSource = null;
@@ -47,9 +46,8 @@ public class CertificateVerifierSnippet {
 
 		CertificateVerifier cv = new CommonCertificateVerifier();
 
-		// This data loader is used to collect certificates from external resources
-		// (AIA)
-		cv.setDataLoader(dataLoader);
+		// The AIA source is used to collect certificates from external resources (AIA)
+		cv.setAIASource(aiaSource);
 
 		// The adjunct certificate source is used to provide missing intermediate certificates
 		// (not trusted certificates)

@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
@@ -99,9 +99,9 @@ public class SignatureValidationContext implements ValidationContext {
 	private CertificateVerifier certificateVerifier;
 
 	/**
-	 * The data loader used to access AIA certificate source.
+	 * Used to access certificate by AIA.
 	 */
-	private DataLoader dataLoader;
+	private AIASource aiaSource;
 
 	/** Map of tokens defining if they have been processed yet */
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<>();
@@ -179,7 +179,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.certificateVerifier = certificateVerifier;
 		this.remoteCRLSource = certificateVerifier.getCrlSource();
 		this.remoteOCSPSource = certificateVerifier.getOcspSource();
-		this.dataLoader = certificateVerifier.getDataLoader();
+		this.aiaSource = certificateVerifier.getAIASource();
 		this.revocationDataLoadingStrategy = certificateVerifier.getRevocationDataLoadingStrategy();
 		this.adjunctCertSources = certificateVerifier.getAdjunctCertSources();
 		this.trustedCertSources = certificateVerifier.getTrustedCertSources();
@@ -335,10 +335,10 @@ public class SignatureValidationContext implements ValidationContext {
 		Set<CertificateToken> candidates = getIssuersFromSources(token, allCertificateSources);
 		issuerCertificateToken = getTokenIssuerFromCandidates(token, candidates);
 
-		if ((issuerCertificateToken == null) && (token instanceof CertificateToken) && dataLoader != null) {
-			AIACertificateSource aiaSource = new AIACertificateSource((CertificateToken) token, dataLoader);
-			aiaCertificateSources.add(aiaSource);
-			issuerCertificateToken = aiaSource.getIssuerFromAIA();
+		if ((issuerCertificateToken == null) && (token instanceof CertificateToken) && aiaSource != null) {
+			final AIACertificateSource aiaCertificateSource = new AIACertificateSource((CertificateToken) token, aiaSource);
+			issuerCertificateToken = aiaCertificateSource.getIssuerFromAIA();
+			aiaCertificateSources.add(aiaCertificateSource);
 		}
 		
 		if ((issuerCertificateToken == null) && (token instanceof OCSPToken)) {

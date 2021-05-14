@@ -27,11 +27,11 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +58,7 @@ public class CAdESLevelLTANotTrustedTSPTest extends AbstractCAdESTestSignature {
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
-        certificateVerifier.setDataLoader(new CommonsDataLoader());
+        certificateVerifier.setAIASource(new DefaultAIASource());
         certificateVerifier.setCrlSource(new OnlineCRLSource());
         certificateVerifier.setOcspSource(new OnlineOCSPSource());
 

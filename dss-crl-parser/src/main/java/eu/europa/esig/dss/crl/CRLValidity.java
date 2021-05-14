@@ -86,9 +86,6 @@ public class CRLValidity {
 
 	/** The 'thisUpdate' date value */
 	private Date thisUpdate;
-
-	/** The internal key used for Database storing */
-	private String key;
 	
 	/**
 	 * Default constructor
@@ -116,24 +113,6 @@ public class CRLValidity {
 	 */
 	public InputStream toCRLInputStream() {
 		return new ByteArrayInputStream(getDerEncoded());
-	}
-
-	/**
-	 * Gets the internal CRL key
-	 *
-	 * @return {@link String}
-	 */
-	public String getKey() {
-		return key;
-	}
-
-	/**
-	 * Sets the internal CRL key
-	 *
-	 * @param key {@link String}
-	 */
-	public void setKey(String key) {
-		this.key = key;
 	}
 
 	/**

@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -63,12 +62,12 @@ public class DSSUtilsTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(DSSUtilsTest.class);
 
-	private static CertificateToken certificateWithAIA;
+	private static CertificateToken certificate;
 
 	@BeforeAll
 	public static void init() {
-		certificateWithAIA = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
-		assertNotNull(certificateWithAIA);
+		certificate = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
+		assertNotNull(certificate);
 	}
 
 	@Test
@@ -102,20 +101,6 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void testLoadIssuer() {
-		Collection<CertificateToken> issuers = DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
-		assertNotNull(issuers);
-		assertFalse(issuers.isEmpty());
-		boolean foundIssuer = false;
-		for (CertificateToken issuer : issuers) {
-			if (certificateWithAIA.isSignedBy(issuer)) {
-				foundIssuer = true;
-			}
-		}
-		assertTrue(foundIssuer);
-	}
-
-	@Test
 	public void testDontSkipCertificatesWhenMultipleAreFoundInP7c() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/certchain.p7c")) {
 			DSSException exception = assertThrows(DSSException.class, () -> DSSUtils.loadCertificate(fis));
@@ -134,18 +119,6 @@ public class DSSUtilsTest {
 	public void testLoadP7cNotPEM() throws DSSException, IOException {
 		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/AdobeCA.p7c"));
 		assertTrue(Utils.isCollectionNotEmpty(certs));
-	}
-
-	@Test
-	public void testLoadIssuerEmptyDataLoader() {
-		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, null).isEmpty());
-	}
-
-	@Test
-	public void testLoadIssuerNoAIA() {
-		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
-		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificate, new NativeHTTPDataLoader()).isEmpty());
-		assertTrue(certificate.isCA());
 	}
 
 	@Test
@@ -188,18 +161,18 @@ public class DSSUtilsTest {
 
 	@Test
 	public void convertToPEM() {
-		String convertToPEM = DSSUtils.convertToPEM(certificateWithAIA);
+		String convertToPEM = DSSUtils.convertToPEM(certificate);
 
 		assertFalse(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(convertToPEM.getBytes())));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
-		assertEquals(certificate, certificateWithAIA);
+		assertEquals(certificate, DSSUtilsTest.certificate);
 
 		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
 		assertTrue(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(certDER)));
 
 		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
-		assertEquals(certificate2, certificateWithAIA);
+		assertEquals(certificate2, DSSUtilsTest.certificate);
 	}
 
 	@Test
@@ -270,16 +243,16 @@ public class DSSUtilsTest {
 
 		Date d1 = calendar.getTime();
 
-		String deterministicId = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		String deterministicId = DSSUtils.getDeterministicId(d1, certificate.getDSSId());
 		assertNotNull(deterministicId);
-		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificate.getDSSId());
 		assertEquals(deterministicId, deterministicId2);
-		assertNotNull(DSSUtils.getDeterministicId(null, certificateWithAIA.getDSSId()));
+		assertNotNull(DSSUtils.getDeterministicId(null, certificate.getDSSId()));
 
 		calendar.add(Calendar.MILLISECOND, 1);
 		Date d2 = calendar.getTime();
 
-		String deterministicId3 = DSSUtils.getDeterministicId(d2, certificateWithAIA.getDSSId());
+		String deterministicId3 = DSSUtils.getDeterministicId(d2, certificate.getDSSId());
 		
 		assertNotEquals(deterministicId2, deterministicId3);
 	}

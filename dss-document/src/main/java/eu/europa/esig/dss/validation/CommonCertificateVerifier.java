@@ -28,9 +28,10 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
@@ -86,9 +87,10 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private RevocationDataLoadingStrategy revocationDataLoadingStrategy = new OCSPFirstRevocationDataLoadingStrategy();
 
 	/**
-	 * The data loader used to access AIA certificate source.
+	 * The AIA source used to download a certificate's issuer by the AIA URI(s)
+	 * defining within a certificate.
 	 */
-	private DataLoader dataLoader;
+	private AIASource aiaSource;
 
 	/**
 	 * This variable set the default Digest Algorithm what will be used for calculation
@@ -166,12 +168,12 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * only a profile -B signatures can be created.
 	 *
 	 * @param simpleCreationOnly
-	 *            if true the {@code CommonCertificateVerifier} will not contain {@code DataLoader}.
+	 *            if true the {@code CommonCertificateVerifier} will not contain {@code AIASource}.
 	 */
 	public CommonCertificateVerifier(final boolean simpleCreationOnly) {
 		LOG.info("+ New CommonCertificateVerifier created.");
 		if (!simpleCreationOnly) {
-			dataLoader = new NativeHTTPDataLoader();
+			this.aiaSource = new DefaultAIASource();
 		}
 	}
 
@@ -184,20 +186,17 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 *            contains the reference to the {@code OCSPSource}.
 	 * @param ocspSource
 	 *            contains the reference to the {@code CRLSource}.
-	 * @param dataLoader
-	 *            contains the reference to a data loader used to access AIA certificate source.
+	 * @param aiaSource
+	 *            used to access AIA certificate source.
 	 */
-	public CommonCertificateVerifier(final List<CertificateSource> trustedCertSources, final CRLSource crlSource, final OCSPSource ocspSource,
-			final DataLoader dataLoader) {
+	public CommonCertificateVerifier(final List<CertificateSource> trustedCertSources, final CRLSource crlSource,
+									 final OCSPSource ocspSource, final AIASource aiaSource) {
 
 		LOG.info("+ New CommonCertificateVerifier created with parameters.");
 		this.trustedCertSources = new ListCertificateSource(trustedCertSources);
 		this.crlSource = crlSource;
 		this.ocspSource = ocspSource;
-		this.dataLoader = dataLoader;
-		if (dataLoader == null) {
-			LOG.warn("DataLoader is null. It's required to access AIA certificate source");
-		}
+		this.aiaSource = aiaSource;
 	}
 
 	@Override
@@ -303,13 +302,20 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public DataLoader getDataLoader() {
-		return dataLoader;
+	@Deprecated
+	public void setDataLoader(final DataLoader dataLoader) {
+		LOG.warn("Use of deprecated method setDataLoader(DataLoader)! This method will override the defined AIASource.");
+		aiaSource = new DefaultAIASource(dataLoader);
 	}
 
 	@Override
-	public void setDataLoader(final DataLoader dataLoader) {
-		this.dataLoader = dataLoader;
+	public AIASource getAIASource() {
+		return aiaSource;
+	}
+
+	@Override
+	public void setAIASource(final AIASource aiaSource) {
+		this.aiaSource = aiaSource;
 	}
 
 	@Override

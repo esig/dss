@@ -34,7 +34,6 @@ import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -42,7 +41,6 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -86,7 +84,7 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 
 				validator.setDetachedContents(detachedContents);
 
-				CommonCertificateVerifier certificateVerifier = getCertificateVerifier(pdDocument);
+				CommonCertificateVerifier certificateVerifier = getCertificateVerifier();
 
 				validator.setCertificateVerifier(certificateVerifier);
 
@@ -140,7 +138,7 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 
 				validator.setDetachedContents(detachedContents);
 
-				CommonCertificateVerifier certificateVerifier = getCertificateVerifier(pdDocument);
+				CommonCertificateVerifier certificateVerifier = getCertificateVerifier();
 
 				validator.setCertificateVerifier(certificateVerifier);
 
@@ -189,7 +187,7 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 
 				validator.setDetachedContents(detachedContents);
 
-				CommonCertificateVerifier certificateVerifier = getCertificateVerifier(pdDocument);
+				CommonCertificateVerifier certificateVerifier = getCertificateVerifier();
 
 				validator.setCertificateVerifier(certificateVerifier);
 
@@ -214,10 +212,10 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 		}
 	}
 	
-	private CommonCertificateVerifier getCertificateVerifier(PdfDocumentReader documentReader) throws IOException {
+	private CommonCertificateVerifier getCertificateVerifier() {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSources(getTrustedCertSource());
-		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		certificateVerifier.setAIASource(null);
 		certificateVerifier.setOcspSource(new OnlineOCSPSource());
 		certificateVerifier.setCrlSource(new OnlineCRLSource());
 		return certificateVerifier;

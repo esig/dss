@@ -20,7 +20,17 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,17 +40,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.reports.CertificateReports;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MultiThreadsCertificateValidatorTest {
 
@@ -88,7 +88,7 @@ public class MultiThreadsCertificateValidatorTest {
 			CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 
 			// cache for AIA
-			certificateVerifier.setDataLoader(new DataLoader() {
+			certificateVerifier.setAIASource(new DefaultAIASource(new DataLoader() {
 
 				@Override
 				public byte[] get(String url) {
@@ -119,7 +119,7 @@ public class MultiThreadsCertificateValidatorTest {
 					throw new DSSException("Not implemented");
 				}
 
-			});
+			}));
 
 			cv.setCertificateVerifier(certificateVerifier);
 			return cv.validate();

@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.dkcert;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.text.ParseException;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -32,7 +27,13 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.text.ParseException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DKOtherCertTest extends AbstractDKTestCertificate {
 	
@@ -44,7 +45,7 @@ public class DKOtherCertTest extends AbstractDKTestCertificate {
 			CommonTrustedCertificateSource certSource = new CommonTrustedCertificateSource();
 			certSource.addCertificate(WRONG);
 			certificateVerifier.setTrustedCertSources(certSource);
-			certificateVerifier.setDataLoader(getMemoryDataLoader());
+			certificateVerifier.setAIASource(new DefaultAIASource(getMemoryDataLoader()));
 			validator.setCertificateVerifier(certificateVerifier);
 			validator.setProcessExecutor(fixedTime());
 			return validator;

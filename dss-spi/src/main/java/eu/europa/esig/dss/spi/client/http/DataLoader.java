@@ -34,27 +34,56 @@ public interface DataLoader extends Serializable {
 	/**
 	 * This is an internal class used to model the couple data and url used to obtain this data.
 	 */
-	public static class DataAndUrl {
+	class DataAndUrl {
 
 		/**
 		 * Url used to obtain data.
 		 */
-		private String urlString;
+		private final String urlString;
 
 		/**
 		 * Obtained data.
 		 */
-		private byte[] data;
+		private final byte[] data;
 
+		/**
+		 * Default constructor
+		 *
+		 * @param urlString {@link String} url
+		 * @param data a byte array
+		 *
+		 * @deprecated since DSS 5.9. Use {@code DataAndUrl(urlString, data)} instead.
+		 */
+		@Deprecated
 		public DataAndUrl(final byte[] data, final String urlString) {
-			this.data = data;
+			this(urlString, data);
+		}
+
+		/**
+		 * Default constructor
+		 *
+		 * @param urlString {@link String} url
+		 * @param data a byte array
+		 */
+		public DataAndUrl(final String urlString, final byte[] data) {
 			this.urlString = urlString;
+			this.data = data;
 		}
 		
+		/**
+		 * Gets the URL string used to download the data
+		 *
+		 * @return {@link String}
+		 */
 		public String getUrlString() {
 			return urlString;
 		}
 		
+		/**
+		 * Gets the downloaded data
+		 *
+		 * @return a byte array
+		 */
 		public byte[] getData() {
 			return data;
 		}

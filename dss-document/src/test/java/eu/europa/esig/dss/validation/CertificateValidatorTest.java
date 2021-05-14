@@ -29,7 +29,6 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -111,7 +110,7 @@ public class CertificateValidatorTest {
 
 		CertificateValidator cv = CertificateValidator.fromCertificate(cert);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		certificateVerifier.setAIASource(null);
 		cv.setCertificateVerifier(certificateVerifier);
 
 		CertificateReports reports = cv.validate();

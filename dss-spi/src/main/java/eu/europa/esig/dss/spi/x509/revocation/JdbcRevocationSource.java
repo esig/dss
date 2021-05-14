@@ -20,19 +20,16 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import javax.sql.DataSource;
-
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
+import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.Revocation;
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  * Abstract class to retrieve token from a JDBC datasource
@@ -45,7 +42,10 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 
 	private static final long serialVersionUID = 8752226611048306095L;
 
-	protected transient DataSource dataSource;
+	/**
+	 * Connects to SQL database and performs queries
+	 */
+	protected transient JdbcCacheConnector jdbcCacheConnector;
 	
 	/**
 	 * Returns CREATE_TABLE sql query
@@ -79,62 +79,59 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	
 	/**
 	 * Build {@link RevocationToken} from the obtained {@link ResultSet}
-	 * @param rs {@link ResultSet} answer from DB
+	 * @param record represent the extract record row
 	 * @param certificateToken {@link CertificateToken} of certificate to get revocation data for
 	 * @param issuerCertificateToken {@link CertificateToken} if issuer of the certificateToken
 	 * @return {@link RevocationToken}
 	 */
-	protected abstract RevocationToken<R> buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken,
-			CertificateToken issuerCertificateToken) throws RevocationException;
+	protected abstract RevocationToken<R> buildRevocationTokenFromResult(JdbcCacheConnector.JdbcResultRecord record,
+			CertificateToken certificateToken,CertificateToken issuerCertificateToken) throws RevocationException;
 
 	/**
+	 * Sets {@code DataSource}
+	 *
+	 * Deprecated. Use {@code setJdbcCacheConnector(jdbcCacheConnector)}
+	 *
 	 * @param dataSource
 	 *            the dataSource to set
 	 */
+	@Deprecated
 	public void setDataSource(final DataSource dataSource) {
-		this.dataSource = dataSource;
+		this.jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		LOG.info("Use of deprecated method setDataSource(dataSource). Use setJdbcCacheConnector(jdbcCacheConnector) instead");
+	}
+
+	/**
+	 * Sets the SQL connection DataSource
+	 *
+	 * @param jdbcCacheConnector {@link JdbcCacheConnector}
+	 */
+	public void setJdbcCacheConnector(JdbcCacheConnector jdbcCacheConnector) {
+		this.jdbcCacheConnector = jdbcCacheConnector;
 	}
 	
 	@Override
-	protected RevocationToken<R> findRevocation(final String key, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
-		Connection c = null;
-		PreparedStatement s = null;
-		ResultSet rs = null;
-		try {
-			c = dataSource.getConnection();
-			s = c.prepareStatement(getFindRevocationQuery());
-			s.setString(1, key);
-			rs = s.executeQuery();
-			if (rs.next()) {
-				return buildRevocationTokenFromResult(rs, certificateToken, issuerCertificateToken);
-			}
-			c.commit();
-		} catch (final SQLException e) {
-			LOG.error("Unable to select CRL from the DB", e);
-			rollback(c);
-		} finally {
-			closeQuietly(c, s, rs);
+	protected RevocationToken<R> findRevocation(final String key, final CertificateToken certificateToken,
+												final CertificateToken issuerCertificateToken) {
+		Collection<JdbcCacheConnector.JdbcResultRecord> records = jdbcCacheConnector.select(
+				getFindRevocationQuery(), getRevocationDataExtractRequests(), key);
+		LOG.debug("Record obtained : {}", records.size());
+		if (records.size() == 1) {
+			return buildRevocationTokenFromResult(records.iterator().next(), certificateToken, issuerCertificateToken);
 		}
 		return null;
 	}
 
+	/**
+	 * Returns a request to find a revocation data
+	 *
+	 * @return a collection of {@link JdbcCacheConnector.JdbcResultRequest}
+	 */
+	protected abstract Collection<JdbcCacheConnector.JdbcResultRequest> getRevocationDataExtractRequests();
+
 	@Override
-	protected void removeRevocation(RevocationToken<R> token) {
-		Connection c = null;
-		PreparedStatement s = null;
-		try {
-			c = dataSource.getConnection();
-			s = c.prepareStatement(getRemoveRevocationTokenEntryQuery());
-			s.setString(1, token.getRevocationTokenKey());
-			s.executeUpdate();
-			c.commit();
-			LOG.debug("Revocation token with key '{}' successfully removed from DB", token.getRevocationTokenKey());
-		} catch (final SQLException e) {
-			LOG.error("Unable to remove Revocation token from the DB", e);
-			rollback(c);
-		} finally {
-			closeQuietly(c, s, null);
-		}
+	protected void removeRevocation(final String revocationTokenKey) {
+		jdbcCacheConnector.execute(getRemoveRevocationTokenEntryQuery(), revocationTokenKey);
 	}
 
 	/**
@@ -154,39 +151,21 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	}
 	
 	private void createTable() throws SQLException {
-		Connection c = null;
-		Statement s = null;
-		try {
-			c = dataSource.getConnection();
-			s = c.createStatement();
-			s.executeUpdate(getCreateTableQuery());
-			c.commit();
-		} catch (final SQLException e) {
-			rollback(c);
-			throw e;
-		} finally {
-			closeQuietly(c, s, null);
-		}
+		jdbcCacheConnector.executeThrowable(getCreateTableQuery());
 	}
 
+	/**
+	 * Verifies if the table exists
+	 *
+	 * @return TRUE if the table exists, FALSE otherwise
+	 */
 	public boolean isTableExists() {
-		Connection c = null;
-		Statement s = null;
-		boolean tableExists;
-		try {
-			c = dataSource.getConnection();
-			s = c.createStatement();
-			tableExists = s.execute(getTableExistenceQuery());
-		} catch (final SQLException e) {
-			tableExists = false;
-		} finally {
-			closeQuietly(c, s, null);
-		}
-		return tableExists;
+		return jdbcCacheConnector.tableQuery(getTableExistenceQuery());
 	}
 
 	/**
 	 * Removes table from DB
+	 *
 	 * @throws SQLException in case of error
 	 */
 	public void destroyTable() throws SQLException {
@@ -201,99 +180,7 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	}
 	
 	private void dropTable() throws SQLException {
-		Connection c = null;
-		Statement s = null;
-		try {
-			c = dataSource.getConnection();
-			s = c.createStatement();
-			s.execute(getDeleteTableQuery());
-			c.commit();
-		} catch (SQLException e) {
-			rollback(c);
-			throw e;
-		} finally {
-			closeQuietly(c, s, null);
-		}
-	}
-	
-	/**
-	 * Rollaback transaction for the given {@link Connection}
-	 * @param c {@link Connection}
-	 */
-	protected void rollback(final Connection c) {
-		if (c != null) {
-			try {
-				LOG.warn("Transaction is being rolled back");
-				c.rollback();
-			} catch (final SQLException e) {
-				LOG.error("Unable to rollback", e);
-			}
-		}
-	}
-
-	/**
-	 * Close the statement and connection and resultset without throwing the
-	 * exception
-	 *
-	 * @param c
-	 *            the connection
-	 * @param s
-	 *            the statement
-	 * @param rs
-	 *            the ResultSet
-	 */
-	protected void closeQuietly(final Connection c, final Statement s, final ResultSet rs) {
-		closeQuietly(rs);
-		closeQuietly(s);
-		closeQuietly(c);
-	}
-
-	/**
-	 *  Close the connection without throwing the exception
-	 *  
-	 * @param c
-	 * 			the connection
-	 */
-	private void closeQuietly(final Connection c) {
-		try {
-			if (c != null) {
-				c.close();
-			}
-		} catch (final SQLException e) {
-			// purposely empty
-		}
-	}
-
-	/**
-	 *  Close the statement without throwing the exception
-	 *  
-	 * @param s
-	 * 			the statement
-	 */
-	private void closeQuietly(final Statement s) {
-		try {
-			if (s != null) {
-				s.close();
-			}
-		} catch (final SQLException e) {
-			// purposely empty
-		}
-	}
-
-	/**
-	 *  Close the ResultSet without throwing the exception
-	 *  
-	 * @param rs
-	 * 			the ResultSet
-	 */
-	private void closeQuietly(final ResultSet rs) {
-		try {
-			if (rs != null) {
-				rs.close();
-			}
-		} catch (final SQLException e) {
-			// purposely empty
-		}
+		jdbcCacheConnector.executeThrowable(getDeleteTableQuery());
 	}
 
 }

@@ -20,29 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.io.StringWriter;
-import java.security.PublicKey;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Objects;
-
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
-import org.bouncycastle.asn1.isismtt.ISISMTTObjectIdentifiers;
-import org.bouncycastle.asn1.isismtt.ocsp.CertHash;
-import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.RevokedStatus;
-import org.bouncycastle.cert.ocsp.SingleResp;
-import org.bouncycastle.cert.ocsp.UnknownStatus;
-import org.bouncycastle.operator.ContentVerifierProvider;
-import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationReason;
@@ -60,6 +37,27 @@ import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.isismtt.ISISMTTObjectIdentifiers;
+import org.bouncycastle.asn1.isismtt.ocsp.CertHash;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.RevokedStatus;
+import org.bouncycastle.cert.ocsp.SingleResp;
+import org.bouncycastle.cert.ocsp.UnknownStatus;
+import org.bouncycastle.operator.ContentVerifierProvider;
+import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.x500.X500Principal;
+import java.io.StringWriter;
+import java.security.PublicKey;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).
@@ -217,14 +215,6 @@ public class OCSPToken extends RevocationToken<OCSP> {
 			signatureAlgorithm = SignatureAlgorithm.forOidAndParams(oid, sigAlgParams);
 		}
 		return signatureAlgorithm;
-	}
-	
-	@Override
-	public String getRevocationTokenKey() {
-		if (revocationTokenKey == null) {
-			revocationTokenKey = DSSRevocationUtils.getOcspRevocationKey(relatedCertificate, sourceURL);
-		}
-		return revocationTokenKey;
 	}
 
 	public BasicOCSPResp getBasicOCSPResp() {

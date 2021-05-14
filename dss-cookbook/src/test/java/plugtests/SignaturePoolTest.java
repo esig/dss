@@ -57,6 +57,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -176,12 +177,15 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setDataLoader(null);
+		certificateVerifier.setAIASource(null);
 		certificateVerifier.setCrlSource(null);
 		certificateVerifier.setOcspSource(null);
 		certificateVerifier.setTrustedCertSources(trustedCertSource);
-		
 		validator.setCertificateVerifier(certificateVerifier);
+		
+		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+		signaturePolicyProvider.setDataLoader(null);
+		validator.setSignaturePolicyProvider(signaturePolicyProvider);
 		
 		return validator;
 	}

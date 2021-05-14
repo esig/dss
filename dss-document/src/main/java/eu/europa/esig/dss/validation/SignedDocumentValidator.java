@@ -36,6 +36,7 @@ import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -682,8 +683,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
 		if (signaturePolicyProvider == null) {
+			LOG.info("Default SignaturePolicyProvider instantiated with NativeHTTPDataLoader.");
 			signaturePolicyProvider = new SignaturePolicyProvider();
-			signaturePolicyProvider.setDataLoader(certificateVerifier.getDataLoader());
+			signaturePolicyProvider.setDataLoader(new NativeHTTPDataLoader());
 		}
 		return signaturePolicyProvider;
 	}

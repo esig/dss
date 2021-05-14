@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.io.Serializable;
-import java.security.PublicKey;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+
+import java.io.Serializable;
+import java.security.PublicKey;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The validation of a certificate requires to access some other certificates from multiple sources (Trusted List, Trust
@@ -128,6 +128,11 @@ public interface CertificateSource extends Serializable {
 	 */
 	Set<CertificateToken> findTokensFromCertRef(CertificateRef certificateRef);
 
+	/**
+	 * Returns a list of certificates grouped by their public keys
+	 *
+	 * @return a list of {@link CertificateSourceEntity}s
+	 */
 	List<CertificateSourceEntity> getEntities();
 
 	/**
