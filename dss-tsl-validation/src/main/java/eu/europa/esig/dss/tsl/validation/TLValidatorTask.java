@@ -37,6 +37,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
@@ -89,6 +90,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		xmlDocumentValidator.setEnableEtsiValidationReport(false); // Ignore ETSI VR
 		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
 		xmlDocumentValidator.setSkipValidationContextExecution(true); // Only need to validate against the trusted certificate source
+		xmlDocumentValidator.setSignaturePolicyProvider(new SignaturePolicyProvider()); // ignore signature policy loading
 
 		// To increase the security: the default {@code XAdESPaths} is used.
 		List<XAdESPaths> xadesPathsHolders = xmlDocumentValidator.getXAdESPathsHolder();
