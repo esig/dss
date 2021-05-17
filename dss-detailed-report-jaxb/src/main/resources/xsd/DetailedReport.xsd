@@ -329,6 +329,7 @@
 			<xs:enumeration value="SIG_BBB" />
 			<xs:enumeration value="REV_BBB" />
 			<xs:enumeration value="TST_BBB" />
+			<xs:enumeration value="CNT_TST_BBB" />
 			<xs:enumeration value="RAC" />
 			<xs:enumeration value="RFC" />
 			<xs:enumeration value="SUB_XCV" />

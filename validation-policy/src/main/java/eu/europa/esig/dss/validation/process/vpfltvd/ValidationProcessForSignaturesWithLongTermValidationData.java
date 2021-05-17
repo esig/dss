@@ -65,30 +65,24 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshn
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.ConslusiveBasicTimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationCheck;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Data
  */
 public class ValidationProcessForSignaturesWithLongTermValidationData extends Chain<XmlValidationProcessLongTermData> {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForSignaturesWithLongTermValidationData.class);
 
 	/** Basic signature validation conclusion */
 	private final XmlConstraintsConclusion basicSignatureValidation;
@@ -434,7 +428,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampBasicSignatureValidation(
 			TimestampWrapper timestampWrapper, XmlValidationProcessTimestamp timestampValidationResult) {
-		return new ConslusiveBasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
+		return new BasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
 				timestampValidationResult, getWarnLevelConstraint());
 	}
 	
@@ -629,19 +623,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		xpoe.setTimestampId(timestampWrapper.getId());
 		return xpoe;
 	}
-
-	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> signatureTimestamps) {
-		Set<TimestampWrapper> result = new HashSet<>();
-		for (TimestampWrapper timestampWrapper : signatureTimestamps) {
-			if (timestampWrapper.isMessageImprintDataFound() && timestampWrapper.isMessageImprintDataIntact()) {
-				result.add(timestampWrapper);
-			} else {
-				LOG.warn("The message-imprint check failed for signature time-stamp token with Id '{}'",
-						timestampWrapper.getId());
-			}
-		}
-		return result;
-	}
 	
 	private XmlValidationProcessTimestamp getTimestampValidationProcess(String timestampId) {
 		for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
@@ -709,7 +690,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	@Override
 	protected void collectAdditionalMessages(XmlConclusion conclusion) {
 		if (!ValidationProcessUtils.isAllowedBasicSignatureValidation(basicSignatureValidation.getConclusion())) {
-			super.collectAllMessages(conclusion, basicSignatureValidation.getConclusion());
+			conclusion.getWarnings().addAll(basicSignatureValidation.getConclusion().getWarnings());
+			conclusion.getInfos().addAll(basicSignatureValidation.getConclusion().getInfos());
 		}
 	}
 

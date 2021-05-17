@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.vpfltvd.checks;
+package eu.europa.esig.dss.validation.process.vpftsp.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
@@ -12,7 +12,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
-public class ConslusiveBasicTimestampValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+public class BasicTimestampValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** The timestamp to check */
     private final TimestampWrapper timestamp;
@@ -29,9 +29,9 @@ public class ConslusiveBasicTimestampValidationCheck<T extends XmlConstraintsCon
      * @param timestampValidationResult {@link XmlValidationProcessTimestamp}
      * @param constraint {@link LevelConstraint}
      */
-    public ConslusiveBasicTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
-                                                   XmlValidationProcessTimestamp timestampValidationResult,
-                                                   LevelConstraint constraint) {
+    public BasicTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
+                                         XmlValidationProcessTimestamp timestampValidationResult,
+                                         LevelConstraint constraint) {
         super(i18nProvider, result, constraint, timestamp.getId());
         this.timestamp = timestamp;
         this.timestampValidationResult = timestampValidationResult;
