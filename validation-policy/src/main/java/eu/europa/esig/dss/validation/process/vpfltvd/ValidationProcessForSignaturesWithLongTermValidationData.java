@@ -27,6 +27,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationBasicValidation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
@@ -65,7 +66,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshn
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationBasicBuildingBlocksCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDataAcceptableCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
@@ -188,7 +189,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			CertificateRevocationWrapper latestCertificateRevocation = null;
 			for (CertificateRevocationWrapper revocationData : certificateWrapper.getCertificateRevocationData()) {
 				
-				item = item.setNextItem(revocationBasicBuildingBlocksValid(revocationData));
+				item = item.setNextItem(revocationBasicValidationAcceptable(revocationData));
 				
 				XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationData.getId());
 				if (ValidationProcessUtils.isAllowedBasicSignatureValidation(revocationBBB.getConclusion())) {
@@ -404,12 +405,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new AcceptableBasicSignatureValidationCheck(i18nProvider, result, basicSignatureValidation, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> revocationBasicBuildingBlocksValid(CertificateRevocationWrapper revocationData) {
-		XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationData.getId());
-		if (revocationBBB == null) {
-			throw new IllegalStateException(String.format("Missing Basic Building Blocks result for token '%s'", revocationData.getId()));
-		}
-		return new RevocationBasicBuildingBlocksCheck(i18nProvider, result, diagnosticData, revocationBBB, bbbs, getWarnLevelConstraint());
+	private ChainItem<XmlValidationProcessLongTermData> revocationBasicValidationAcceptable(CertificateRevocationWrapper revocationData) {
+		RevocationBasicValidationProcess rbvp = new RevocationBasicValidationProcess(i18nProvider, diagnosticData, revocationData, bbbs);
+		XmlRevocationBasicValidation revocationBasicValidationResult = rbvp.execute();
+		return new RevocationDataAcceptableCheck(i18nProvider, result, revocationBasicValidationResult, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDataConsistent(CertificateWrapper certificate, CertificateRevocationWrapper revocationData) {

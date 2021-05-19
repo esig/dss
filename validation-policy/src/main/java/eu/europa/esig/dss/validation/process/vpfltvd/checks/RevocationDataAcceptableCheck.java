@@ -20,41 +20,61 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationBasicValidation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.bbb.AbstractBasicBuildingBlocksCheck;
-
-import java.util.Map;
+import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
- * Validates revocation BBBs
+ * Verifies the result of a basic revocation validation process
+ *
  */
-public class RevocationBasicBuildingBlocksCheck extends AbstractBasicBuildingBlocksCheck<XmlValidationProcessLongTermData> {
+public class RevocationDataAcceptableCheck extends ChainItem<XmlValidationProcessLongTermData> {
+
+	/**
+	 * The revocation basic validation result
+	 */
+	private final XmlRevocationBasicValidation revocationBasicValidation;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationProcessLongTermData}
-	 * @param diagnosticData {@link DiagnosticData}
-	 * @param revocationBBB {@link XmlBasicBuildingBlocks}
-	 * @param bbbs map of all BBBs
+	 * @param revocationBasicValidation {@link XmlRevocationBasicValidation}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public RevocationBasicBuildingBlocksCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result,
-											  DiagnosticData diagnosticData, XmlBasicBuildingBlocks revocationBBB,
-											  Map<String, XmlBasicBuildingBlocks> bbbs, LevelConstraint constraint) {
-		super(i18nProvider, result, diagnosticData, revocationBBB, bbbs, constraint);
+	public RevocationDataAcceptableCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result,
+										 XmlRevocationBasicValidation revocationBasicValidation, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, revocationBasicValidation.getId());
+		this.revocationBasicValidation = revocationBasicValidation;
 	}
 
 	@Override
 	protected XmlBlockType getBlockType() {
 		return XmlBlockType.REV_BBB;
+	}
+
+	@Override
+	protected boolean process() {
+		return revocationBasicValidation.getConclusion() != null &&
+				ValidationProcessUtils.isAllowedBasicSignatureValidation(revocationBasicValidation.getConclusion());
+	}
+
+	@Override
+	protected Indication getFailedIndicationForConclusion() {
+		return revocationBasicValidation.getConclusion().getIndication();
+	}
+
+	@Override
+	protected SubIndication getFailedSubIndicationForConclusion() {
+		return revocationBasicValidation.getConclusion().getSubIndication();
 	}
 
 	@Override

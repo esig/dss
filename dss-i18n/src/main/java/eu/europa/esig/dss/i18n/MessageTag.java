@@ -655,6 +655,8 @@ public enum MessageTag {
 
 	VPFLTVD,
 
+	VPFRVC,
+
 	VPFSWATSP,
 
 	VPFTSP,

@@ -172,6 +172,14 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="RevocationBasicValidation">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="Id" type="xs:string" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
 	<xs:complexType name="ValidationProcessArchivalData">	
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
