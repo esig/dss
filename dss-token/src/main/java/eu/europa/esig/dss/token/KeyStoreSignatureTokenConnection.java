@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.model.DSSException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.DestroyFailedException;
 import java.io.ByteArrayInputStream;
@@ -35,6 +37,8 @@ import java.security.KeyStore.PasswordProtection;
  * Connection to a key store
  */
 public class KeyStoreSignatureTokenConnection extends AbstractKeyStoreTokenConnection {
+
+	private static final Logger LOG = LoggerFactory.getLogger(KeyStoreSignatureTokenConnection.class);
 
 	/** The KeyStore */
 	private final KeyStore keyStore;

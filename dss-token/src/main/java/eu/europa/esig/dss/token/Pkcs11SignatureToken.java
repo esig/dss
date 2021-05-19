@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.model.DSSException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -42,6 +44,8 @@ import java.util.UUID;
  * PKCS11 token with callback
  */
 public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
+
+	private static final Logger LOG = LoggerFactory.getLogger(Pkcs11SignatureToken.class);
 
 	/** The type of the PKCS11 KeyStore */
 	private static final String SUN_PKCS11_KEYSTORE_TYPE = "PKCS11";

@@ -44,7 +44,7 @@ import java.util.Objects;
  */
 public abstract class AbstractSignatureTokenConnection implements SignatureTokenConnection {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
 
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
