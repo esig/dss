@@ -139,8 +139,9 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		// if text is present
 		if (!textParameters.isEmpty()) {
 
+			float scaledPadding = CommonDrawerUtils.toDpiAxisPoint(textParameters.getPadding(), imageParameters.getDpi());
 			// native implementation uses dpi-independent font
-			AnnotationBox textBox = computeTextDimension(textParameters);
+			AnnotationBox textBox = computeTextDimension(textParameters, scaledPadding);
 			float textWidth = textBox.getWidth();
 			float textHeight = textBox.getHeight();
 
@@ -166,7 +167,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				if (fieldParameters.getHeight() == 0) {
 					height = Math.max(height, textHeight);
 				}
-				dimensionAndPosition.setTextX(width - textWidth);
+				dimensionAndPosition.setTextBoxX(width - textWidth);
 				textImageVerticalAlignment(height, imageHeight, textHeight);
 				break;
 			case TOP:
@@ -178,7 +179,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				} else {
 					imageHeight -= imageParameters.getImage() != null || height == 0 ? textHeight : 0;
 				}
-				dimensionAndPosition.setTextY(height - textHeight);
+				dimensionAndPosition.setTextBoxY(height - textHeight);
 				textImageHorizontalAlignment(width, imageWidth, textWidth);
 				break;
 			case BOTTOM:
@@ -197,10 +198,13 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				break;
 			}
 
-			dimensionAndPosition.setTextWidth(textWidth);
-			dimensionAndPosition.setTextHeight(textHeight);
-			Integer imageDpi = imageParameters.getImage() != null ? imageParameters.getDpi() : DEFAULT_DPI;
-			dimensionAndPosition.paddingShift(textParameters.getPadding(), imageDpi);
+			dimensionAndPosition.setTextBoxWidth(textWidth);
+			dimensionAndPosition.setTextBoxHeight(textHeight);
+
+			dimensionAndPosition.setTextX(dimensionAndPosition.getTextBoxX() + scaledPadding);
+			dimensionAndPosition.setTextY(dimensionAndPosition.getTextBoxY() + scaledPadding);
+			dimensionAndPosition.setTextWidth(dimensionAndPosition.getTextBoxWidth() - 2 * scaledPadding);
+			dimensionAndPosition.setTextHeight(dimensionAndPosition.getTextBoxHeight() - 2 * scaledPadding);
 		}
 
 		int rotation = ImageRotationUtils.getRotation(imageParameters.getRotation(), page);
@@ -219,13 +223,13 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		dimensionAndPosition.setBoxHeight(height);
 	}
 
-	private AnnotationBox computeTextDimension(SignatureImageTextParameters textParameters) {
+	private AnnotationBox computeTextDimension(SignatureImageTextParameters textParameters, float scaledPadding) {
 		float properSize = textParameters.getFont().getSize()
 				* ImageUtils.getScaleFactor(imageParameters.getZoom()); // scale text block
 
 		PdfBoxFontMetrics pdfBoxFontMetrics = new PdfBoxFontMetrics(pdFont);
 		return pdfBoxFontMetrics.computeTextBoundaryBox(textParameters.getText(), properSize,
-				CommonDrawerUtils.toDpiAxisPoint(textParameters.getPadding(), imageParameters.getDpi()));
+				scaledPadding);
 	}
 
 	private void textImageVerticalAlignment(float height, float imageHeight, float textHeight) {
@@ -233,15 +237,15 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				.getSignerTextVerticalAlignment();
 		switch (verticalAlignment) {
 		case TOP:
-			dimensionAndPosition.setTextY(height - textHeight);
+			dimensionAndPosition.setTextBoxY(height - textHeight);
 			dimensionAndPosition.setImageY(height - imageHeight);
 			break;
 		case BOTTOM:
-			dimensionAndPosition.setTextY(0);
+			dimensionAndPosition.setTextBoxY(0);
 			dimensionAndPosition.setImageY(0);
 			break;
 		case MIDDLE:
-			dimensionAndPosition.setTextY((height - textHeight) / 2);
+			dimensionAndPosition.setTextBoxY((height - textHeight) / 2);
 			dimensionAndPosition.setImageY((height - imageHeight) / 2);
 			break;
 		default:
@@ -254,15 +258,15 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				.getSignerTextHorizontalAlignment();
 		switch (horizontalAlignment) {
 		case LEFT:
-			dimensionAndPosition.setTextX(0);
+			dimensionAndPosition.setTextBoxX(0);
 			dimensionAndPosition.setImageX(0);
 			break;
 		case RIGHT:
-			dimensionAndPosition.setTextX(width - textWidth);
+			dimensionAndPosition.setTextBoxX(width - textWidth);
 			dimensionAndPosition.setImageX(width - imageWidth);
 			break;
 		case CENTER:
-			dimensionAndPosition.setTextX((width - textWidth) / 2);
+			dimensionAndPosition.setTextBoxX((width - textWidth) / 2);
 			dimensionAndPosition.setImageX((width - imageWidth) / 2);
 			break;
 		default:

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
 import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 
 public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldAppearance {
@@ -40,6 +39,11 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	private float textY = 0;
 	private float textWidth = 0;
 	private float textHeight = 0;
+	
+	private float textBoxX = 0;
+	private float textBoxY = 0;
+	private float textBoxWidth = 0;
+	private float textBoxHeight = 0;
 	
 	private int globalRotation;
 
@@ -139,19 +143,44 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 		this.textHeight = textHeight;
 	}
 
+	public float getTextBoxX() {
+		return textBoxX;
+	}
+	
+	public void setTextBoxX(float textBoxX) {
+		this.textBoxX = textBoxX;
+	}
+	
+	public float getTextBoxY() {
+		return textBoxY;
+	}
+	
+	public void setTextBoxY(float textBoxY) {
+		this.textBoxY = textBoxY;
+	}
+	
+	public float getTextBoxWidth() {
+		return textBoxWidth;
+	}
+	
+	public void setTextBoxWidth(float textBoxWidth) {
+		this.textBoxWidth = textBoxWidth;
+	}
+	
+	public float getTextBoxHeight() {
+		return textBoxHeight;
+	}
+	
+	public void setTextBoxHeight(float textBoxHeight) {
+		this.textBoxHeight = textBoxHeight;
+	}
+
 	public int getGlobalRotation() {
 		return globalRotation;
 	}
 
 	public void setGlobalRotation(int globalRotation) {
 		this.globalRotation = globalRotation;
-	}
-	
-	public void paddingShift(float padding, Integer imageDpi) {
-		float scaledPadding = CommonDrawerUtils.toDpiAxisPoint(padding, imageDpi);
-		this.textX += scaledPadding;
-		// minus, because PDF starts to count from bottom
-		this.textY -= scaledPadding;
 	}
 
 	@Override

@@ -292,12 +292,10 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 				switch (textParameters.getSignerTextHorizontalAlignment()) {
 				case RIGHT:
 					offsetX = dimensionAndPosition.getTextWidth() - stringWidth
-							- textSizeWithDpi(textParameters.getPadding() * 2)
 							- previousOffset;
 					break;
 				case CENTER:
 					offsetX = (dimensionAndPosition.getTextWidth() - stringWidth) / 2
-							- textSizeWithDpi(textParameters.getPadding())
 							- previousOffset;
 					break;
 				default:
@@ -317,17 +315,10 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			SignatureFieldDimensionAndPosition dimensionAndPosition) throws IOException {
 		if (textParameters.getBackgroundColor() != null) {
 			PDRectangle rect = new PDRectangle(
-					dimensionAndPosition.getTextX()
-							- textSizeWithDpi(textParameters.getPadding()),
-					dimensionAndPosition.getTextY()
-							+ textSizeWithDpi(textParameters.getPadding()),
-					dimensionAndPosition.getTextWidth(), dimensionAndPosition.getTextHeight());
+					dimensionAndPosition.getTextBoxX(), dimensionAndPosition.getTextBoxY(),
+					dimensionAndPosition.getTextBoxWidth(), dimensionAndPosition.getTextBoxHeight());
 			setBackground(cs, textParameters.getBackgroundColor(), rect);
 		}
-	}
-
-	private float textSizeWithDpi(float size) {
-		return CommonDrawerUtils.toDpiAxisPoint(size, parameters.getDpi());
 	}
 
 	/**
