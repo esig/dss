@@ -56,8 +56,8 @@
 		<jakarta.rs-api.version>2.1.6</jakarta.rs-api.version>
 		<jakarta.ws-api.version>2.3.2</jakarta.ws-api.version>
 
-		<junit.platform.version>1.7.0</junit.platform.version>
-		<junit.jupiter.version>5.7.0</junit.jupiter.version>
+		<junit.platform.version>1.7.2</junit.platform.version>
+		<junit.jupiter.version>5.7.2</junit.jupiter.version>
 		
 		<awaitility.version>4.0.3</awaitility.version>
 		<mockito.version>3.3.3</mockito.version>
