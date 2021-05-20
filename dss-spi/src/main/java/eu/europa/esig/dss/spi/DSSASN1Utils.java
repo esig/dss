@@ -89,9 +89,9 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.crypto.signers.PlainDSAEncoding;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
-import org.bouncycastle.util.BigIntegers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1581,7 +1581,7 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Converts the ANS.1 binary signature value to the concatenated R || S format
+	 * Converts the ANS.1 binary signature value to the concatenated (plain) R || S format
 	 * 
 	 * NOTE: used in XAdES and JAdES
 	 *
@@ -1592,8 +1592,9 @@ public final class DSSASN1Utils {
 	 * @return the converted signature value
 	 */
 	public static byte[] fromAsn1toSignatureValue(final EncryptionAlgorithm algorithm, byte[] signatureValue) {
-		if ((EncryptionAlgorithm.ECDSA == algorithm || EncryptionAlgorithm.DSA == algorithm) && isAsn1Encoded(signatureValue)) {
-			return fromAsn1ToDsaRS(signatureValue);
+		if ((EncryptionAlgorithm.ECDSA == algorithm || EncryptionAlgorithm.PLAIN_ECDSA == algorithm ||
+				EncryptionAlgorithm.DSA == algorithm) && isAsn1Encoded(signatureValue)) {
+			return toPlainDSASignatureValue(signatureValue);
 		} else {
 			return signatureValue;
 		}
@@ -1610,11 +1611,10 @@ public final class DSSASN1Utils {
 	 * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
 	 * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
 	 */
-	private static byte[] fromAsn1ToDsaRS(byte[] asn1SignatureValue) {
+	public static byte[] toPlainDSASignatureValue(byte[] asn1SignatureValue) {
 
-		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream(); ASN1InputStream is = new ASN1InputStream(asn1SignatureValue)) {
-
-			ASN1Sequence seq = (ASN1Sequence) is.readObject();
+		try {
+			ASN1Sequence seq = (ASN1Sequence) ASN1Primitive.fromByteArray(asn1SignatureValue);
 			if (seq.size() != 2) {
 				throw new IllegalArgumentException("ASN1 Sequence size should be 2 !");
 			}
@@ -1622,29 +1622,13 @@ public final class DSSASN1Utils {
 			ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
 			ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
 
-			byte[] rBytes = BigIntegers.asUnsignedByteArray(r.getValue());
-			int rSize = rBytes.length;
-			byte[] sBytes = BigIntegers.asUnsignedByteArray(s.getValue());
-			int sSize = sBytes.length;
-			int max = Math.max(rSize, sSize);
-			max = max % 2 == 0 ? max : max + 1;
-			leftPad(buffer, max, rBytes);
-			buffer.write(rBytes);
-			leftPad(buffer, max, sBytes);
-			buffer.write(sBytes);
+			BigInteger order = r.getValue().max(s.getValue());
+			order = order.add(BigInteger.ONE);
 
-			return buffer.toByteArray();
+			return PlainDSAEncoding.INSTANCE.encode(order, r.getValue(), s.getValue());
+
 		} catch (Exception e) {
-			throw new DSSException("Unable to convert to xmlDsig : " + e.getMessage(), e);
-		}
-	}
-
-	private static void leftPad(final ByteArrayOutputStream stream, final int size, final byte[] array) {
-		final int diff = size - array.length;
-		if (diff > 0) {
-			for (int i = 0; i < diff; i++) {
-				stream.write(0x00);
-			}
+			throw new DSSException("Unable to convert to plain : " + e.getMessage(), e);
 		}
 	}
 

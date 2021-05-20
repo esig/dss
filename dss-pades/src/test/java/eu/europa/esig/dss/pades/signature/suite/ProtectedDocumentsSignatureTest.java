@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -46,6 +36,15 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 
@@ -114,6 +113,7 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 
 		PAdESSignatureParameters parameters = getParameters();
 		SignatureValue sigValue = new SignatureValue();
+		sigValue.setAlgorithm(parameters.getSignatureAlgorithm());
 		PAdESTimestampParameters timestampParameters = getTimestampParameters();
 
 		assertThrows(InvalidPasswordException.class, () -> service.getContentTimestamp(openProtected, parameters));

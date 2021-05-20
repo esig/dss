@@ -231,6 +231,7 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		Map<SignatureAlgorithm, String> xmlAlgorithms = new EnumMap<>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : XML_ALGORITHMS.entrySet()) {
 			xmlAlgorithms.put(entry.getValue(), entry.getKey());
+			ensurePlainECDSA(xmlAlgorithms, entry.getValue(), entry.getKey());
 		}
 		return xmlAlgorithms;
 	}
@@ -465,6 +466,7 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		final Map<SignatureAlgorithm, String> jsonWebAlgorithms = new EnumMap<>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : JWA_ALGORITHMS.entrySet()) {
 			jsonWebAlgorithms.put(entry.getValue(), entry.getKey());
+			ensurePlainECDSA(jsonWebAlgorithms, entry.getValue(), entry.getKey());
 		}
 		return jsonWebAlgorithms;
 	}
@@ -525,6 +527,12 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGO_MSG, jsonWebAlgorithm));
 		}
 		return algorithm;
+	}
+
+	private static void ensurePlainECDSA(Map<SignatureAlgorithm, String> algMap, SignatureAlgorithm signatureAlgorithm, String key) {
+		if (signatureAlgorithm != null && EncryptionAlgorithm.ECDSA.equals(signatureAlgorithm.getEncryptionAlgorithm())) {
+			algMap.put(SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, signatureAlgorithm.getDigestAlgorithm()), key);
+		}
 	}
 
 	/**
