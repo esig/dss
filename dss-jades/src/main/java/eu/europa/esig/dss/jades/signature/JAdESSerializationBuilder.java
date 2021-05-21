@@ -113,7 +113,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 			assertB64ConfigurationConsistent();
 		}
 
-		byte[] signatureValueBytes = DSSASN1Utils.fromAsn1toSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
+		byte[] signatureValueBytes = DSSASN1Utils.ensurePlainSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
 		jws.setSignature(signatureValueBytes);
 
 		jwsJsonSerializationObject.getSignatures().add(jws);

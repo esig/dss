@@ -169,7 +169,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
 		assertSigningDateInCertificateValidityRange(parameters);
-		signatureValue = ensureSignatureValue(parameters, signatureValue);
+		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		final byte[] encodedData = generateCMSSignedData(toSignDocument, parameters, signatureValue);

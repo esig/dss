@@ -43,8 +43,6 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.crypto.digests.SHAKEDigest;
 import org.bouncycastle.crypto.io.DigestOutputStream;
-import org.bouncycastle.crypto.signers.PlainDSAEncoding;
-import org.bouncycastle.crypto.signers.StandardDSAEncoding;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.io.pem.PemObject;
@@ -69,7 +67,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -79,7 +76,6 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.ECKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1261,16 +1257,12 @@ public final class DSSUtils {
 	 * This method ensures the {@code SignatureValue} has an expected format and converts it when required
 	 *
 	 * @param expectedAlgorithm {@link SignatureAlgorithm} the target SignatureAlgorithm
-	 * @param ecKey {@link ECKey} used to create the {@link SignatureValue}
 	 * @param signatureValue {@link SignatureValue} the obtained SignatureValue
 	 * @return {@link SignatureValue} with the target {@link SignatureAlgorithm}
 	 * @throws IOException if an exception occurs
 	 */
 	public static SignatureValue convertECSignatureValue(SignatureAlgorithm expectedAlgorithm,
-														 ECKey ecKey,
 														 SignatureValue signatureValue) throws IOException {
-		BigInteger order = ecKey.getParams().getOrder();
-
 		SignatureValue newSignatureValue = new SignatureValue();
 		newSignatureValue.setAlgorithm(expectedAlgorithm);
 
@@ -1279,13 +1271,11 @@ public final class DSSUtils {
 		final EncryptionAlgorithm signatureEncryptionAlgorithm = signatureValue.getAlgorithm().getEncryptionAlgorithm();
 		if (EncryptionAlgorithm.ECDSA.equals(expectedEncryptionAlgorithm) &&
 				EncryptionAlgorithm.PLAIN_ECDSA.equals(signatureEncryptionAlgorithm)) {
-			final BigInteger[] values = PlainDSAEncoding.INSTANCE.decode(order, signatureValue.getValue());
-			signatureValueBinaries = StandardDSAEncoding.INSTANCE.encode(order, values[0], values[1]);
+			signatureValueBinaries = DSSASN1Utils.toStandardDSASignatureValue(signatureValue.getValue());
 
 		} else if (EncryptionAlgorithm.PLAIN_ECDSA.equals(expectedEncryptionAlgorithm) &&
 				EncryptionAlgorithm.ECDSA.equals(signatureEncryptionAlgorithm)) {
-			final BigInteger[] values = StandardDSAEncoding.INSTANCE.decode(order, signatureValue.getValue());
-			signatureValueBinaries = PlainDSAEncoding.INSTANCE.encode(order, values[0], values[1]);
+			signatureValueBinaries = DSSASN1Utils.toPlainDSASignatureValue(signatureValue.getValue());
 
 		} else {
 			throw new DSSException(String.format("Not supported conversion from SignatureAlgorithm '%s' defined within SignatureValue " +

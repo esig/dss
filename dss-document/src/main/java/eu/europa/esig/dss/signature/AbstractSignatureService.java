@@ -43,10 +43,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
-import java.security.interfaces.ECPublicKey;
 import java.util.Date;
 import java.util.Objects;
 
@@ -138,30 +136,28 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 	}
 
 	/**
-	 * This method ensures the provided {@code signatureValue} has the expected
-	 * {@code eu.europa.esig.dss.enumerations.SignatureAlgorithm}
+	 * This method ensures the provided {@code signatureValue} has the expected {@code targetSignatureAlgorithm}
 	 *
-	 * @param parameters
-	 *            set of driving signing parameters used to create a new signature
+	 * @param targetSignatureAlgorithm
+	 *            {@link SignatureAlgorithm} to convert the signatureValue to
 	 * @param signatureValue
 	 *            {@link SignatureValue} obtained from a signing token
 	 * @return {@link SignatureValue} with the defined {@code SignatureAlgorithm} in parameters
 	 */
-	protected SignatureValue ensureSignatureValue(SP parameters, SignatureValue signatureValue) {
-		Objects.requireNonNull(parameters.getSignatureAlgorithm(), "The target SignatureAlgorithm shall be defined within SignatureParameters!");
+	protected SignatureValue ensureSignatureValue(SignatureAlgorithm targetSignatureAlgorithm, SignatureValue signatureValue) {
+		Objects.requireNonNull(targetSignatureAlgorithm, "The target SignatureAlgorithm shall be defined within SignatureParameters!");
 
 		if (signatureValue == null) {
 			LOG.debug("The SignatureValue is not provided. Cannot verify the value.");
 			return null;
 		}
 
-		SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
-		if (signatureAlgorithm.equals(signatureValue.getAlgorithm())) {
-			LOG.debug("The created SignatureValue matches the defined target SignatureAlgorithm : '{}'", signatureAlgorithm);
+		if (targetSignatureAlgorithm.equals(signatureValue.getAlgorithm())) {
+			LOG.debug("The created SignatureValue matches the defined target SignatureAlgorithm : '{}'", targetSignatureAlgorithm);
 			return signatureValue;
 		}
 
-		final DigestAlgorithm expectedDigestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
+		final DigestAlgorithm expectedDigestAlgorithm = targetSignatureAlgorithm.getDigestAlgorithm();
 		final DigestAlgorithm signatureDigestAlgorithm = signatureValue.getAlgorithm() != null ?
 				signatureValue.getAlgorithm().getDigestAlgorithm() : null;
 		if (!expectedDigestAlgorithm.equals(signatureDigestAlgorithm)) {
@@ -169,20 +165,11 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 					"does not match the expected value : '%s'", expectedDigestAlgorithm, signatureDigestAlgorithm));
 		}
 
-		if (EncryptionAlgorithm.ECDSA.isEquivalent(signatureAlgorithm.getEncryptionAlgorithm())) {
+		if (EncryptionAlgorithm.ECDSA.isEquivalent(targetSignatureAlgorithm.getEncryptionAlgorithm())) {
 			try {
-				CertificateToken certificateToken = parameters.getSigningCertificate();
-				Objects.requireNonNull(certificateToken, "CertificateToken is required to convert the SignatureValue!");
-
-				PublicKey publicKey = certificateToken.getCertificate().getPublicKey();
-				if (!(publicKey instanceof ECPublicKey)) {
-					throw new DSSException("Conversion of a SignatureValue created with a EC Public Key is only supported!");
-				}
-				ECPublicKey ecPublicKey = (ECPublicKey) publicKey;
-
-				SignatureValue newSignatureValue = DSSUtils.convertECSignatureValue(signatureAlgorithm, ecPublicKey, signatureValue);
+				SignatureValue newSignatureValue = DSSUtils.convertECSignatureValue(targetSignatureAlgorithm, signatureValue);
 				LOG.info("The algorithm '{}' has been obtained from the SignatureValue. The SignatureValue converted to " +
-						"the expected algorithm '{}'.", signatureValue.getAlgorithm(), signatureAlgorithm);
+						"the expected algorithm '{}'.", signatureValue.getAlgorithm(), targetSignatureAlgorithm);
 				return newSignatureValue;
 
 			} catch (IOException e) {
@@ -193,7 +180,7 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 		}
 		throw new DSSException(String.format("The SignatureAlgorithm within the SignatureValue '%s' " +
 				"does not match the expected value : '%s'. Conversion is not supported!",
-				signatureValue.getAlgorithm(), signatureAlgorithm));
+				signatureValue.getAlgorithm(), targetSignatureAlgorithm));
 	}
 
 	/**

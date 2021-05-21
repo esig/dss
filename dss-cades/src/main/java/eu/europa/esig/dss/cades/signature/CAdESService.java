@@ -133,9 +133,9 @@ public class CAdESService extends
 		assertSigningDateInCertificateValidityRange(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
 		assertSignaturePackaging(packaging);
-		signatureValue = ensureSignatureValue(parameters, signatureValue);
-
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
+		signatureValue = ensureSignatureValue(signatureAlgorithm, signatureValue);
+
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
 
@@ -371,7 +371,7 @@ public class CAdESService extends
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
 		assertSigningDateInCertificateValidityRange(parameters);
 		assertCounterSignaturePossible(parameters);
-		signatureValue = ensureSignatureValue(parameters, signatureValue);
+		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
 		CMSSignedData originalCMSSignedData = DSSUtils.toCMSSignedData(signatureDocument);
 		

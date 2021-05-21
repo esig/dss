@@ -69,7 +69,7 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 			incorporatePayload(jws);
 		}
 		String payload = parameters.isBase64UrlEncodedPayload() ? jws.getEncodedPayload() : jws.getUnverifiedPayload();
-		byte[] signatureValueBytes = DSSASN1Utils.fromAsn1toSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
+		byte[] signatureValueBytes = DSSASN1Utils.ensurePlainSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
 		
 		String signatureString = DSSJsonUtils.concatenate(jws.getEncodedHeader(), payload, DSSJsonUtils.toBase64Url(signatureValueBytes));
 		return new InMemoryDocument(signatureString.getBytes());
