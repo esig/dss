@@ -25,10 +25,12 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -40,11 +42,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.Security;
+import java.security.Signature;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.ECPrivateKey;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -411,7 +418,7 @@ public class DSSUtilsTest {
 	}
 	
 	@Test
-	public void stripFirstLeadingOccuranceTest() {
+	public void stripFirstLeadingOccurrenceTest() {
 		assertEquals(null, DSSUtils.stripFirstLeadingOccurrence(null, null));
 		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", null));
 		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", ""));
@@ -421,6 +428,74 @@ public class DSSUtilsTest {
 		assertEquals("", DSSUtils.stripFirstLeadingOccurrence("application/", "application/"));
 		assertEquals("json", DSSUtils.stripFirstLeadingOccurrence("application/json", "application/"));
 		assertEquals("application/json", DSSUtils.stripFirstLeadingOccurrence("application/application/json", "application/"));
+	}
+
+	@Test
+	public void signAndConvertECSignatureValueTest() throws Exception {
+		Security.addProvider(new BouncyCastleProvider());
+		KeyPairGenerator gen = KeyPairGenerator.getInstance("ECDSA");
+		KeyPair pair = gen.generateKeyPair();
+
+		ECPrivateKey ecPrivateKey = (ECPrivateKey) pair.getPrivate();
+		signAndCheckSignatureValue("SHA1withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1), ecPrivateKey);
+		signAndCheckSignatureValue("SHA224withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224), ecPrivateKey);
+		signAndCheckSignatureValue("SHA256withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA256), ecPrivateKey);
+		signAndCheckSignatureValue("SHA384withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384), ecPrivateKey);
+		signAndCheckSignatureValue("SHA512withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA512), ecPrivateKey);
+		signAndCheckSignatureValue("RIPEMD160withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160), ecPrivateKey);
+		signAndCheckSignatureValue("SHA1withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA1), ecPrivateKey);
+		signAndCheckSignatureValue("SHA224withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA224), ecPrivateKey);
+		signAndCheckSignatureValue("SHA256withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256), ecPrivateKey);
+		signAndCheckSignatureValue("SHA384withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA384), ecPrivateKey);
+		signAndCheckSignatureValue("SHA512withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA512), ecPrivateKey);
+		signAndCheckSignatureValue("RIPEMD160withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.RIPEMD160), ecPrivateKey);
+	}
+
+	private void signAndCheckSignatureValue(String javaAlgorithm, SignatureAlgorithm currentAlgorithm,
+										ECPrivateKey ecPrivateKey) throws Exception {
+		Signature s = Signature.getInstance(javaAlgorithm);
+		s.initSign(ecPrivateKey);
+		s.update("Hello world!".getBytes());
+		byte[] originalBinaries = s.sign();
+		assertECSignatureValid(originalBinaries, currentAlgorithm);
+	}
+
+	private void assertECSignatureValid(byte[] originalBinaries, SignatureAlgorithm currentAlgorithm) throws Exception {
+		SignatureValue signatureValue = new SignatureValue();
+		signatureValue.setAlgorithm(currentAlgorithm);
+		signatureValue.setValue(originalBinaries);
+
+		SignatureAlgorithm targetAlgorithm;
+		if (EncryptionAlgorithm.ECDSA.equals(currentAlgorithm.getEncryptionAlgorithm())) {
+			assertTrue(DSSASN1Utils.isAsn1Encoded(originalBinaries));
+			targetAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, currentAlgorithm.getDigestAlgorithm());
+		} else {
+			assertFalse(DSSASN1Utils.isAsn1Encoded(originalBinaries));
+			targetAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, currentAlgorithm.getDigestAlgorithm());
+		}
+
+		SignatureValue convertedSignatureValue = DSSUtils.convertECSignatureValue(targetAlgorithm, null, signatureValue);
+
+		if (EncryptionAlgorithm.ECDSA.equals(targetAlgorithm.getEncryptionAlgorithm())) {
+			assertTrue(DSSASN1Utils.isAsn1Encoded(convertedSignatureValue.getValue()));
+		} else {
+			assertFalse(DSSASN1Utils.isAsn1Encoded(convertedSignatureValue.getValue()));
+		}
+
+		convertedSignatureValue = DSSUtils.convertECSignatureValue(currentAlgorithm, null, convertedSignatureValue);
+		assertTrue(Arrays.equals(originalBinaries, convertedSignatureValue.getValue()));
 	}
 
 }

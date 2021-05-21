@@ -43,8 +43,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
+import java.security.interfaces.ECPublicKey;
 import java.util.Date;
 import java.util.Objects;
 
@@ -170,7 +172,15 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 		if (EncryptionAlgorithm.ECDSA.isEquivalent(signatureAlgorithm.getEncryptionAlgorithm())) {
 			try {
 				CertificateToken certificateToken = parameters.getSigningCertificate();
-				SignatureValue newSignatureValue = DSSUtils.convertECSignatureValue(signatureAlgorithm, certificateToken, signatureValue);
+				Objects.requireNonNull(certificateToken, "CertificateToken is required to convert the SignatureValue!");
+
+				PublicKey publicKey = certificateToken.getCertificate().getPublicKey();
+				if (!(publicKey instanceof ECPublicKey)) {
+					throw new DSSException("Conversion of a SignatureValue created with a EC Public Key is only supported!");
+				}
+				ECPublicKey ecPublicKey = (ECPublicKey) publicKey;
+
+				SignatureValue newSignatureValue = DSSUtils.convertECSignatureValue(signatureAlgorithm, ecPublicKey, signatureValue);
 				LOG.info("The algorithm '{}' has been obtained from the SignatureValue. The SignatureValue converted to " +
 						"the expected algorithm '{}'.", signatureValue.getAlgorithm(), signatureAlgorithm);
 				return newSignatureValue;

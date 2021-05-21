@@ -20,23 +20,21 @@
  */
 package eu.europa.esig.dss.xades.encoding;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.utils.Utils;
+import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.Test;
 
+import javax.xml.bind.DatatypeConverter;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Security;
 import java.security.Signature;
 import java.util.Arrays;
 
-import javax.xml.bind.DatatypeConverter;
-
-import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EncodingASN1SignatureValueTest {
 
@@ -139,7 +137,7 @@ public class EncodingASN1SignatureValueTest {
 	}
 
 	@Test
-	public void testECDSA_CVC_ConcatenatedSignature() throws Exception {
+	public void testECDSA_CVC_ConcatenatedSignature() {
 		assertCvcSignatureValid(
 				"2B9099C9885DDB5BFDA2E9634905B9A63E7E3A6EC87BDC0A89014716B23F00B0AD787FC8D0DCF28F007E7DEC097F30DA892BE2AC61D90997DCDF05740E4D5B0C");
 		assertCvcSignatureValid(

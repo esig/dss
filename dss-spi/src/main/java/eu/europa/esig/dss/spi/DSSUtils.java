@@ -76,11 +76,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
-import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.ECKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1262,22 +1261,15 @@ public final class DSSUtils {
 	 * This method ensures the {@code SignatureValue} has an expected format and converts it when required
 	 *
 	 * @param expectedAlgorithm {@link SignatureAlgorithm} the target SignatureAlgorithm
-	 * @param certificateToken {@link CertificateToken} used to create the {@link SignatureValue}
+	 * @param ecKey {@link ECKey} used to create the {@link SignatureValue}
 	 * @param signatureValue {@link SignatureValue} the obtained SignatureValue
 	 * @return {@link SignatureValue} with the target {@link SignatureAlgorithm}
 	 * @throws IOException if an exception occurs
 	 */
 	public static SignatureValue convertECSignatureValue(SignatureAlgorithm expectedAlgorithm,
-														 CertificateToken certificateToken,
+														 ECKey ecKey,
 														 SignatureValue signatureValue) throws IOException {
-		Objects.requireNonNull(certificateToken, "CertificateToken is required to convert the SignatureValue!");
-
-		PublicKey publicKey = certificateToken.getCertificate().getPublicKey();
-		if (!(publicKey instanceof ECPublicKey)) {
-			throw new DSSException("Conversion of a SignatureValue created with a EC Public Key is only supported!");
-		}
-		ECPublicKey ecPublicKey = (ECPublicKey) publicKey;
-		BigInteger order = ecPublicKey.getParams().getOrder();
+		BigInteger order = ecKey.getParams().getOrder();
 
 		SignatureValue newSignatureValue = new SignatureValue();
 		newSignatureValue.setAlgorithm(expectedAlgorithm);
