@@ -48,10 +48,10 @@ import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.process.qualification.signature.SignatureQualificationBlock;
 import eu.europa.esig.dss.validation.process.qualification.timestamp.TimestampQualificationBlock;
-import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSignature;
+import eu.europa.esig.dss.validation.process.vpfbs.BasicSignatureValidationProcess;
+import eu.europa.esig.dss.validation.process.vpftsp.TimestampBasicValidationProcess;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
-import eu.europa.esig.dss.validation.process.vpftsp.ValidationProcessForTimeStamp;
 import eu.europa.esig.dss.validation.reports.DSSReportException;
 
 import java.io.Serializable;
@@ -122,18 +122,16 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				signatureAnalysis.setCounterSignature(true);
 			}
 
-			XmlConstraintsConclusionWithProofOfExistence validation = executeBasicValidation(signatureAnalysis, signature, bbbs);
+			if (!ValidationLevel.BASIC_SIGNATURES.equals(validationLevel)) {
+				attachedTimestamps.addAll(signature.getTimestampIdsList());
+				signatureAnalysis.getTimestamps().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
+			}
 
-			if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
-				attachedTimestamps.addAll(signature.getTimestampIdsList());
-				signatureAnalysis.getTimestamps().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
-			} else if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
-				attachedTimestamps.addAll(signature.getTimestampIdsList());
-				signatureAnalysis.getTimestamps().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
+			XmlConstraintsConclusionWithProofOfExistence validation = executeBasicValidation(signatureAnalysis, signature, signatureAnalysis.getTimestamps(), bbbs);
+
+			if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
 				validation = executeLongTermValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
-				attachedTimestamps.addAll(signature.getTimestampIdsList());
-				signatureAnalysis.getTimestamps().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
 				executeLongTermValidation(signatureAnalysis, signature, bbbs);
 				validation = executeArchiveValidation(signatureAnalysis, signature, bbbs);
 			}
@@ -174,8 +172,9 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	}
 
 	private XmlValidationProcessBasicSignature executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature,
-			Map<String, XmlBasicBuildingBlocks> bbbs) {
-		ValidationProcessForBasicSignature vpfbs = new ValidationProcessForBasicSignature(i18nProvider, diagnosticData, signature, bbbs);
+			List<XmlTimestamp> xmlTimestamps, Map<String, XmlBasicBuildingBlocks> bbbs) {
+		BasicSignatureValidationProcess vpfbs = new BasicSignatureValidationProcess(
+				i18nProvider, diagnosticData, signature, xmlTimestamps, bbbs);
 		XmlValidationProcessBasicSignature bs = vpfbs.execute();
 		signatureAnalysis.setValidationProcessBasicSignature(bs);
 		return bs;
@@ -193,7 +192,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		XmlTimestamp xmlTimestamp = new XmlTimestamp();
 		xmlTimestamp.setId(timestamp.getId());
 
-		ValidationProcessForTimeStamp vpftsp = new ValidationProcessForTimeStamp(i18nProvider, diagnosticData, timestamp, bbbs);
+		TimestampBasicValidationProcess vpftsp = new TimestampBasicValidationProcess(i18nProvider, diagnosticData, timestamp, bbbs);
 		xmlTimestamp.setValidationProcessTimestamp(vpftsp.execute());
 
 		// Timestamp qualification

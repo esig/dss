@@ -47,7 +47,7 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.MessageImprintDigestAlgorithmValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.ConslusiveBasicTimestampValidationCheck;
+import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.AcceptableBasicTimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
@@ -360,7 +360,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private ChainItem<XmlValidationProcessArchivalData> timestampBasicSignatureValidationConclusive(
 			TimestampWrapper timestampWrapper, XmlValidationProcessTimestamp timestampValidationResult) {
-		return new ConslusiveBasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
+		return new BasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
 				timestampValidationResult, getWarnLevelConstraint());
 	}
 
@@ -442,7 +442,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	@Override
 	protected void collectAdditionalMessages(XmlConclusion conclusion) {
 		if (!ValidationProcessUtils.isAllowedValidationWithLongTermData(validationProcessLongTermData.getConclusion())) {
-			super.collectAllMessages(conclusion, validationProcessLongTermData.getConclusion());
+			conclusion.getWarnings().addAll(validationProcessLongTermData.getConclusion().getWarnings());
+			conclusion.getInfos().addAll(validationProcessLongTermData.getConclusion().getInfos());
 		}
 	}
 
