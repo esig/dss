@@ -23,8 +23,8 @@ package eu.europa.esig.dss.pdf.openpdf.visible;
 import com.lowagie.text.Image;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.DPIUtils;
+import eu.europa.esig.dss.pdf.visible.ImageResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 import java.io.IOException;
@@ -56,12 +56,12 @@ public class ImageOnlyAppearanceRectangleBuilder extends ITextAppearanceRectangl
 		float width = fieldParameters.getWidth();
 		float height = fieldParameters.getHeight();
 		
-		ImageAndResolution ires = ImageUtils.readDisplayMetadata(imageParameters.getImage());
+		ImageResolution ires = ImageUtils.readDisplayMetadata(imageParameters.getImage());
 		if (width == 0) {
-			width = (int) (image.getWidth() * CommonDrawerUtils.getPageScaleFactor(ires.getxDpi()));
+			width = (int) (image.getWidth() * DPIUtils.getPageScaleFactor(ires.getXDpi()));
 		}
 		if (height == 0) {
-			height = (int) (image.getHeight() * CommonDrawerUtils.getPageScaleFactor(ires.getyDpi()));
+			height = (int) (image.getHeight() * DPIUtils.getPageScaleFactor(ires.getYDpi()));
 		}
 		width *= zoom;
 		height *= zoom;

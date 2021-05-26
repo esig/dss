@@ -20,51 +20,45 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
+import eu.europa.esig.dss.pdf.visible.AbstractDSSFontMetrics;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
+/**
+ * Contains font metrics for a Java font
+ */
+public class JavaDSSFontMetrics extends AbstractDSSFontMetrics {
 
-public class SignatureImageAndPosition implements VisualSignatureFieldAppearance {
+	/** Java FontMetrics */
+	private final FontMetrics fontMetrics;
 
-    private final float x;
-    private final float y;
-    private final float width;
-    private final float height;
-
-	private final BufferedImage signatureImage;
-	
-	public SignatureImageAndPosition(final float x, final float y, final float width, final float height, final BufferedImage signatureImage) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.signatureImage = signatureImage;
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-    
-	public float getWidth() {
-		return width;
+	/**
+	 * Default constructor
+	 *
+	 * @param javaFont {@link Font}
+	 */
+	public JavaDSSFontMetrics(Font javaFont) {
+		this.fontMetrics = getFontMetrics(javaFont);
 	}
 
-	public float getHeight() {
-		return height;
+	private static FontMetrics getFontMetrics(Font font) {
+		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+		Graphics g = img.getGraphics();
+		g.setFont(font);
+		FontMetrics fontMetrics = g.getFontMetrics(font);
+		g.dispose();
+		return fontMetrics;
 	}
-
-    public BufferedImage getSignatureImage() {
-        return signatureImage;
-    }
 
 	@Override
-	public AnnotationBox getAnnotationBox() {
-		return new AnnotationBox(x, y, x + width, y + height);
+	public float getWidth(String str, float size) {
+		return fontMetrics.stringWidth(str);
 	}
-    
+
+	@Override
+	public float getHeight(String str, float size) {
+		return fontMetrics.getHeight() / 1.05f; // default height is too large
+	}
+
 }

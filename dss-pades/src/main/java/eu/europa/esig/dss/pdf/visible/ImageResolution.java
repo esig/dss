@@ -18,47 +18,52 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.openpdf.visible;
-
-import com.lowagie.text.pdf.BaseFont;
-
-import eu.europa.esig.dss.pdf.visible.AbstractFontMetrics;
+package eu.europa.esig.dss.pdf.visible;
 
 /**
- * The IText (OpenPDF) implementation of Font metrics
+ * Image horizontal and vertical resolution
+ *
  */
-public class ITextFontMetrics extends AbstractFontMetrics {
+public class ImageResolution {
 
-	/** The OpenPDF font */
-	private final BaseFont baseFont;
+	/** X axis dpi */
+	private int xDpi;
+
+	/** Y axis dpi */
+	private int yDpi;
 
 	/**
 	 * Default constructor
 	 *
-	 * @param baseFont {@link BaseFont}
+	 * @param xDpi X axis dpi
+	 * @param yDpi Y axis dpi
 	 */
-	public ITextFontMetrics(BaseFont baseFont) {
-		this.baseFont = baseFont;
+	public ImageResolution(int xDpi, int yDpi) {
+		this.xDpi = xDpi;
+		this.yDpi = yDpi;
+	}
+
+	/**
+	 * Gets X axis dpi
+	 *
+	 * @return X axis dpi
+	 */
+	public int getXDpi() {
+		return xDpi;
+	}
+
+	/**
+	 * Gets Y axis dpi
+	 *
+	 * @return Y axis dpi
+	 */
+	public int getYDpi() {
+		return yDpi;
 	}
 
 	@Override
-	public float getWidth(String str, float size) {
-		return baseFont.getWidthPoint(str, size);
-	}
-
-	@Override
-	public float getHeight(String str, float size) {
-		float ascent = getAscentPoint(str, size);
-		float descent = getDescentPoint(str, size);
-		return ascent - descent;
-	}
-	
-	public float getAscentPoint(String str, float size) {
-		return baseFont.getAscentPoint(str, size);
-	}
-	
-	public float getDescentPoint(String str, float size) {
-		return baseFont.getDescentPoint(str, size);
+	public String toString() {
+		return "ImageResolution [xDpi=" + xDpi + ", yDpi=" + yDpi + "]";
 	}
 
 }

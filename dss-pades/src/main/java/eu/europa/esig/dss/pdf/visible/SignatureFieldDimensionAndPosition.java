@@ -18,10 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
+package eu.europa.esig.dss.pdf.visible;
 
 import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 
 public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldAppearance {
 	
@@ -46,6 +45,8 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	private float textBoxHeight = 0;
 	
 	private int globalRotation;
+
+	private ImageResolution imageResolution;
 
 	public float getBoxX() {
 		return boxX;
@@ -181,6 +182,14 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 
 	public void setGlobalRotation(int globalRotation) {
 		this.globalRotation = globalRotation;
+	}
+
+	public ImageResolution getImageResolution() {
+		return imageResolution;
+	}
+
+	public void setImageResolution(ImageResolution imageResolution) {
+		this.imageResolution = imageResolution;
 	}
 
 	@Override

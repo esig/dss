@@ -18,37 +18,47 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
+package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
-import eu.europa.esig.dss.pdf.visible.AbstractFontMetrics;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pdf.visible.AbstractDSSFontMetrics;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 
-import java.awt.*;
+import java.io.IOException;
 
 /**
- * Contains font metrics for a Java font
+ * Contains font metrics for a PDFBox font
  */
-public class JavaFontMetrics extends AbstractFontMetrics {
+public class PdfBoxDSSFontMetrics extends AbstractDSSFontMetrics {
 
-	/** Java FontMetrics */
-	private final FontMetrics fontMetrics;
+	/** PdfBox font */
+	private final PDFont pdFont;
 
 	/**
 	 * Default constructor
 	 *
-	 * @param fontMetrics {@link FontMetrics}
+	 * @param pdFont {@link PDFont}
 	 */
-	public JavaFontMetrics(FontMetrics fontMetrics) {
-		this.fontMetrics = fontMetrics;
+	public PdfBoxDSSFontMetrics(PDFont pdFont) {
+		this.pdFont = pdFont;
 	}
 
 	@Override
 	public float getWidth(String str, float size) {
-		return fontMetrics.stringWidth(str);
+		try {
+			return pdFont.getStringWidth(str) / 1000 * size;
+		} catch (IOException e) {
+			throw new DSSException("Unable to compute string width!");
+		}
 	}
 
 	@Override
 	public float getHeight(String str, float size) {
-		return fontMetrics.getHeight();
+		try {
+			return pdFont.getBoundingBox().getHeight() / 1000 * size;
+		} catch (IOException e) {
+			throw new DSSException("Unable to compute string height!");
+		}
 	}
 
 }

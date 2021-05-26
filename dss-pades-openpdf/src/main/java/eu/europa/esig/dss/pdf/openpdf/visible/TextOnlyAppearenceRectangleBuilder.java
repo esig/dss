@@ -27,11 +27,11 @@ import eu.europa.esig.dss.pdf.AnnotationBox;
 
 public class TextOnlyAppearenceRectangleBuilder extends ITextAppearanceRectangleBuilder {
 
-	private final ITextFontMetrics iTextFontMetrics;
+	private final ITextDSSFontMetrics iTextFontMetrics;
 	private final float properSize;
 
 	protected TextOnlyAppearenceRectangleBuilder(SignatureImageParameters imageParameters,
-			ITextFontMetrics iTextFontMetrics, float properSize) {
+                                                 ITextDSSFontMetrics iTextFontMetrics, float properSize) {
 		super(imageParameters);
 		this.iTextFontMetrics = iTextFontMetrics;
 		this.properSize = properSize;

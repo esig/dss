@@ -18,47 +18,37 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
+package eu.europa.esig.dss.pdf.visible;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pdf.visible.AbstractFontMetrics;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-
-import java.io.IOException;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 
 /**
- * Contains font metrics for a PDFBox font
+ * Contains methods for dealing with textual visual signature creation
+ *
  */
-public class PdfBoxFontMetrics extends AbstractFontMetrics {
+public abstract class AbstractDSSFontMetrics implements DSSFontMetrics {
 
-	/** PdfBox font */
-	private final PDFont pdFont;
-
-	/**
-	 * Default constructor
-	 *
-	 * @param pdFont {@link PDFont}
-	 */
-	public PdfBoxFontMetrics(PDFont pdFont) {
-		this.pdFont = pdFont;
+	@Override
+	public String[] getLines(String text) {
+		return text.split("\\r?\\n");
 	}
 
 	@Override
-	public float getWidth(String str, float size) {
-		try {
-			return pdFont.getStringWidth(str) / 1000 * size;
-		} catch (IOException e) {
-			throw new DSSException("Unable to compute string width!");
+	public AnnotationBox computeTextBoundaryBox(String text, float fontSize, float padding) {
+		String[] lines = getLines(text);
+		float width = 0;
+		for (String line : lines) {
+			float lineWidth = getWidth(line, fontSize);
+			if (lineWidth > width) {
+				width = lineWidth;
+			}
 		}
-	}
-
-	@Override
-	public float getHeight(String str, float size) {
-		try {
-			return pdFont.getBoundingBox().getHeight() / 1000 * size;
-		} catch (IOException e) {
-			throw new DSSException("Unable to compute string height!");
-		}
+		float doublePadding = padding * 2;
+		width += doublePadding;
+		float strHeight = getHeight(text, fontSize);
+		float height = (strHeight * lines.length) + doublePadding;
+		
+		return new AnnotationBox(0, 0, width, height);
 	}
 
 }

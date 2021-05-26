@@ -23,11 +23,18 @@ package eu.europa.esig.dss.pdf.pdfbox.visible;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPositionBuilder;
 import eu.europa.esig.dss.utils.Utils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.slf4j.Logger;
@@ -58,21 +65,51 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	/** Contains options of the visual signature */
 	protected SignatureOptions signatureOptions;
 
+	/** Defines signature field dimensions and position */
+	private SignatureFieldDimensionAndPosition dimensionAndPosition;
+
 	@Override
 	public void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException {
-		assertSignatureParamatersAreValid(parameters);
+		assertSignatureParametersAreValid(parameters);
 		this.parameters = parameters;
 		this.document = document;
 		this.signatureOptions = signatureOptions;
 		checkColorSpace(document, parameters.getImage());
 	}
 	
-	private void assertSignatureParamatersAreValid(SignatureImageParameters parameters) {
+	private void assertSignatureParametersAreValid(SignatureImageParameters parameters) {
 		if (parameters == null || parameters.getImage() == null && parameters.getTextParameters().isEmpty()) {
 			throw new DSSException("Neither image nor text parameters are defined!");
 		}
 	}
 	
+	/**
+	 * Builds a signature field dimension and position object
+	 *
+	 * @return {@link SignatureFieldDimensionAndPosition}
+	 * @throws IOException if an exception occurs
+	 */
+	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() throws IOException {
+		if (dimensionAndPosition == null) {
+			PDPage originalPage = document
+					.getPage(parameters.getFieldParameters().getPage() - ImageUtils.DEFAULT_FIRST_PAGE);
+			PDRectangle mediaBox = originalPage.getMediaBox();
+			AnnotationBox pageBox = new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(),
+					mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
+			SignatureFieldDimensionAndPositionBuilder builder = new SignatureFieldDimensionAndPositionBuilder(
+					parameters, getDSSFontMetrics(), pageBox, originalPage.getRotation());
+			dimensionAndPosition = builder.build();
+		}
+		return dimensionAndPosition;
+	}
+
+	/**
+	 * Gets the corresponding {@code eu.europa.esig.dss.pdf.visible.DSSFontMetrics}
+	 *
+	 * @return {@link eu.europa.esig.dss.pdf.visible.DSSFontMetrics}
+	 */
+	protected abstract DSSFontMetrics getDSSFontMetrics();
+
 	/**
 	 * Method to check if the target image's color space is present in the document's catalog
 	 * 

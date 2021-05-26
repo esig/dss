@@ -18,51 +18,47 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.visible;
+package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.io.InputStream;
+import com.lowagie.text.pdf.BaseFont;
 
-import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pdf.visible.AbstractDSSFontMetrics;
 
 /**
- * An InputStream wrapper for an image, and its horizontal and vertical resolution
- * @author pakeyser
+ * The IText (OpenPDF) implementation of Font metrics
  */
-public class ImageAndResolution {
+public class ITextDSSFontMetrics extends AbstractDSSFontMetrics {
 
-	private int xDpi;
-	private int yDpi;
-	private DSSDocument image;
+	/** The OpenPDF font */
+	private final BaseFont baseFont;
 
-	public ImageAndResolution(DSSDocument image, int xDpi, int yDpi) {
-		this.xDpi = xDpi;
-		this.yDpi = yDpi;
-		this.image = image;
-	}
-
-	public int getxDpi() {
-		return xDpi;
-	}
-
-	public int getyDpi() {
-		return yDpi;
-	}
-
-	public float toXPoint(float x) {
-		return CommonDrawerUtils.toDpiAxisPoint(x, xDpi);
-	}
-
-	public float toYPoint(float y) {
-		return CommonDrawerUtils.toDpiAxisPoint(y, yDpi);
+	/**
+	 * Default constructor
+	 *
+	 * @param baseFont {@link BaseFont}
+	 */
+	public ITextDSSFontMetrics(BaseFont baseFont) {
+		this.baseFont = baseFont;
 	}
 
 	@Override
-	public String toString() {
-		return "Resolution [xDpi=" + xDpi + ", yDpi=" + yDpi + "]";
+	public float getWidth(String str, float size) {
+		return baseFont.getWidthPoint(str, size);
 	}
 
-	public InputStream getInputStream() {
-		return image.openStream();
+	@Override
+	public float getHeight(String str, float size) {
+		float ascent = getAscentPoint(str, size);
+		float descent = getDescentPoint(str, size);
+		return ascent - descent;
+	}
+	
+	public float getAscentPoint(String str, float size) {
+		return baseFont.getAscentPoint(str, size);
+	}
+	
+	public float getDescentPoint(String str, float size) {
+		return baseFont.getDescentPoint(str, size);
 	}
 
 }

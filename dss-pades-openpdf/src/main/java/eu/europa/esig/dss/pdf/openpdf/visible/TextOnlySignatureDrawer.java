@@ -43,7 +43,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	
 	private Font iTextFont;
 	
-	private ITextFontMetrics iTextFontMetrics;
+	private ITextDSSFontMetrics iTextFontMetrics;
 	
 	@Override
 	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException {
@@ -53,13 +53,13 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 	@Override
 	public ITextVisualSignatureAppearance buildSignatureFieldBox() {
-		ITextFontMetrics iTextFontMetrics = getITextFontMetrics();
+		ITextDSSFontMetrics iTextFontMetrics = getITextFontMetrics();
 		return new TextOnlyAppearenceRectangleBuilder(parameters, iTextFontMetrics, getProperSize()).build();
 	}
 	
-	private ITextFontMetrics getITextFontMetrics() {
+	private ITextDSSFontMetrics getITextFontMetrics() {
 		if (iTextFontMetrics == null) {
-			iTextFontMetrics = new ITextFontMetrics(iTextFont.getBaseFont());
+			iTextFontMetrics = new ITextDSSFontMetrics(iTextFont.getBaseFont());
 		}
 		return iTextFontMetrics;
 	}
@@ -122,7 +122,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		return size;
 	}
 	
-	private void showText(ITextFontMetrics iTextFontMetrics, Rectangle sigFieldRect) {
+	private void showText(ITextDSSFontMetrics iTextFontMetrics, Rectangle sigFieldRect) {
 		
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
 		String text = textParameters.getText();

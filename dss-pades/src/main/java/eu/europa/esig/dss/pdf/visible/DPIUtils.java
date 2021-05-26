@@ -20,21 +20,39 @@
  */
 package eu.europa.esig.dss.pdf.visible;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+/**
+ * Contains util methods for DPI processing
+ *
+ */
+public class DPIUtils {
 
-public class CommonDrawerUtils {
-
+	/** Default text DPI */
 	private static final int DPI = 300;
+
+	/** Default page DPI */
 	private static final int PDF_DEFAULT_DPI = 72;
-	
-	private CommonDrawerUtils() {
+
+	/**
+	 * Default constructor
+	 */
+	private DPIUtils() {
 	}
-	
+
+	/**
+	 * Returns text DPI (300)
+	 *
+	 * @return text dpi (300)
+	 */
 	public static int getTextDpi() {
 		return DPI;
 	}
 
+	/**
+	 * Gets the given or default of none is provided
+	 *
+	 * @param dpi {@link Integer}
+	 * @return dpi
+	 */
 	public static int getDpi(Integer dpi) {
 		int result = DPI;
 		if (dpi != null && dpi.intValue() > 0) {
@@ -42,32 +60,27 @@ public class CommonDrawerUtils {
 		}
 		return result;
 	}
-	
-	public static float toDpiAxisPoint(float x, float dpi) {
-		return x * PDF_DEFAULT_DPI / dpi;
-	}
-	
+
+	/**
+	 * Converts to full quality with the given DPI respectively to a page DPI
+	 *
+	 * @param x the value to convert
+	 * @param dpi the dpi to use
+	 * @return converted value
+	 */
 	public static float computeProperSize(float x, float dpi) {
 		return x * dpi / PDF_DEFAULT_DPI;
 	}
-	
+
+	/**
+	 * Converts the value to be displayed on a page
+	 *
+	 * @param dpi {@link Integer} of the image/text
+	 * @return the converted page DPI
+	 */
 	public static float getPageScaleFactor(Integer dpi) {
 		float floatDpi = getDpi(dpi);
 		return PDF_DEFAULT_DPI / floatDpi;
-	}
-	
-	public static float getTextScaleFactor(Integer dpi) {
-		float floatDpi = getDpi(dpi);
-		return DPI / floatDpi;
-	}
-
-	public static void initRendering(Graphics2D g) {
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 	}
 
 }

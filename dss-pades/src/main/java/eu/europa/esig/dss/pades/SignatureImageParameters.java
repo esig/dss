@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import eu.europa.esig.dss.pdf.visible.DPIUtils;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -223,7 +223,7 @@ public class SignatureImageParameters implements Serializable {
 	 * @return {@link Integer} dpi value
 	 */
 	public Integer getDpi() {
-		return CommonDrawerUtils.getDpi(dpi);
+		return DPIUtils.getDpi(dpi);
 	}
 
 	/**
