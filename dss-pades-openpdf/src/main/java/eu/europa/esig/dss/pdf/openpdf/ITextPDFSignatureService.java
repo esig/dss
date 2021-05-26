@@ -95,8 +95,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	 * Constructor for the ITextPDFSignatureService
 	 * 
 	 * @param serviceMode
-	 *                               current instance is used to generate
-	 *                               DocumentTypestamp or Signature signature layer
+	 *                               current instance is used to generate a
+	 *                               DocumentTimestamp or Signature signature layer
 	 * @param signatureDrawerFactory
 	 *                               drawer factory implementation to be used
 	 * 
@@ -126,60 +126,61 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private PdfStamper prepareStamper(InputStream pdfData, OutputStream output, PAdESCommonParameters parameters)
 			throws IOException {
-		
-		PdfReader reader = new PdfReader(pdfData, getPasswordBinary(parameters.getPasswordProtection()));
-		PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
-		stp.setIncludeFileID(true);
-		stp.setOverrideFileId(generateFileId(parameters));
+		try (PdfReader reader = new PdfReader(pdfData, getPasswordBinary(parameters.getPasswordProtection()))) {
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(parameters.getSigningDate());
+			PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
+			stp.setIncludeFileID(true);
+			stp.setOverrideFileId(generateFileId(parameters));
 
-		stp.setEnforcedModificationDate(cal);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(parameters.getSigningDate());
 
-		PdfSignatureAppearance sap = stp.getSignatureAppearance();
-		sap.setAcro6Layers(true);
-		
-		SignatureImageParameters sip = parameters.getImageParameters();
-		SignatureFieldParameters fieldParameters = sip.getFieldParameters();
+			stp.setEnforcedModificationDate(cal);
 
-		Item fieldItem = findExistingSignatureField(reader, fieldParameters);
-		if (!sip.isEmpty()) {
-			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(sip);
-			signatureDrawer.init(sip.getFieldParameters().getFieldId(), sip, sap);
-			
-			if (fieldItem == null) {
-				checkVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
-			}
-			
-			signatureDrawer.draw();
-		}
+			PdfSignatureAppearance sap = stp.getSignatureAppearance();
+			sap.setAcro6Layers(true);
 
-		PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
-		if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
-			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
-			
-			CertificationPermission permission = signatureParameters.getPermission();
-			// A document can contain only one signature field that contains a DocMDP
-			// transform method;
-			// it shall be the first signed field in the document.
-			if (permission != null && !containsFilledSignature(reader)) {
-				sap.setCertificationLevel(permission.getCode());
+			SignatureImageParameters imageParameters = parameters.getImageParameters();
+			SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+
+			Item fieldItem = findExistingSignatureField(reader, fieldParameters);
+			if (!imageParameters.isEmpty()) {
+				ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(imageParameters);
+				signatureDrawer.init(imageParameters, reader, sap);
+
+				if (fieldItem == null) {
+					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
+				}
+
+				signatureDrawer.draw();
 			}
 
-			cal.setTimeZone(signatureParameters.getSigningTimeZone());
-			signatureDictionary.put(PdfName.M, new PdfDate(cal));
+			PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
+			if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
+				PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
+
+				CertificationPermission permission = signatureParameters.getPermission();
+				// A document can contain only one signature field that contains a DocMDP
+				// transform method;
+				// it shall be the first signed field in the document.
+				if (permission != null && !containsFilledSignature(reader)) {
+					sap.setCertificationLevel(permission.getCode());
+				}
+
+				cal.setTimeZone(signatureParameters.getSigningTimeZone());
+				signatureDictionary.put(PdfName.M, new PdfDate(cal));
+			}
+
+			sap.setCryptoDictionary(signatureDictionary);
+
+			int csize = parameters.getContentSize();
+			HashMap exc = new HashMap();
+			exc.put(PdfName.CONTENTS, Integer.valueOf((csize * 2) + 2));
+
+			sap.preClose(exc);
+
+			return stp;
 		}
-
-		sap.setCryptoDictionary(signatureDictionary);
-
-		int csize = parameters.getContentSize();
-		HashMap exc = new HashMap();
-		exc.put(PdfName.CONTENTS, Integer.valueOf((csize * 2) + 2));
-
-		sap.preClose(exc);
-
-		return stp;
 	}
 	
 	private Item findExistingSignatureField(PdfReader reader, SignatureFieldParameters fieldParameters) {

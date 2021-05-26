@@ -45,6 +45,7 @@ import java.util.List;
 
 /**
  * The abstract implementation of PDFBox signature drawer
+ *
  */
 public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDrawer, SignatureFieldBoxBuilder {
 
@@ -65,9 +66,6 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	/** Contains options of the visual signature */
 	protected SignatureOptions signatureOptions;
 
-	/** Defines signature field dimensions and position */
-	private SignatureFieldDimensionAndPosition dimensionAndPosition;
-
 	@Override
 	public void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException {
 		assertSignatureParametersAreValid(parameters);
@@ -87,20 +85,14 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	 * Builds a signature field dimension and position object
 	 *
 	 * @return {@link SignatureFieldDimensionAndPosition}
-	 * @throws IOException if an exception occurs
 	 */
-	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() throws IOException {
-		if (dimensionAndPosition == null) {
-			PDPage originalPage = document
-					.getPage(parameters.getFieldParameters().getPage() - ImageUtils.DEFAULT_FIRST_PAGE);
-			PDRectangle mediaBox = originalPage.getMediaBox();
-			AnnotationBox pageBox = new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(),
-					mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
-			SignatureFieldDimensionAndPositionBuilder builder = new SignatureFieldDimensionAndPositionBuilder(
-					parameters, getDSSFontMetrics(), pageBox, originalPage.getRotation());
-			dimensionAndPosition = builder.build();
-		}
-		return dimensionAndPosition;
+	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() {
+		PDPage originalPage = document.getPage(parameters.getFieldParameters().getPage() - ImageUtils.DEFAULT_FIRST_PAGE);
+		PDRectangle mediaBox = originalPage.getMediaBox();
+		AnnotationBox pageBox = new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(),
+				mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
+		return new SignatureFieldDimensionAndPositionBuilder(parameters, getDSSFontMetrics(), pageBox,
+				originalPage.getRotation()).build();
 	}
 
 	/**

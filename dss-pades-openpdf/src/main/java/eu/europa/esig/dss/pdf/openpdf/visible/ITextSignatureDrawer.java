@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
+import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
-
-import java.io.IOException;
 
 /**
  * IText (OpenPDF) visual signature drawer
@@ -33,12 +32,11 @@ public interface ITextSignatureDrawer extends SignatureDrawer {
 
 	/**
 	 * Initializes the drawer
-	 * 
-	 * @param signatureFieldId {@link String}
+	 *
 	 * @param parameters {@link SignatureImageParameters}
+	 * @param reader {@link PdfReader}
 	 * @param appearance {@link PdfSignatureAppearance}
-	 * @throws IOException if an exception occurs
 	 */
-	void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException;
+	void init(SignatureImageParameters parameters, PdfReader reader, PdfSignatureAppearance appearance);
 
 }

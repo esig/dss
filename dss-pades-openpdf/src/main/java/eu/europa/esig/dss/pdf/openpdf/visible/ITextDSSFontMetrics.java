@@ -52,11 +52,25 @@ public class ITextDSSFontMetrics extends AbstractDSSFontMetrics {
 		float descent = getDescentPoint(str, size);
 		return ascent - descent;
 	}
-	
+
+	/**
+	 * Returns the ascent point
+	 *
+	 * @param str {@link String} to get value for
+	 * @param size the size of the string
+	 * @return ascent point
+	 */
 	public float getAscentPoint(String str, float size) {
 		return baseFont.getAscentPoint(str, size);
 	}
-	
+
+	/**
+	 * Returns the descent point
+	 *
+	 * @param str {@link String} to get value for
+	 * @param size the size of the string
+	 * @return descent point
+	 */
 	public float getDescentPoint(String str, float size) {
 		return baseFont.getDescentPoint(str, size);
 	}

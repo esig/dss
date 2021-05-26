@@ -12,8 +12,6 @@ import eu.europa.esig.dss.pdf.AnnotationBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 public class SignatureFieldDimensionAndPositionBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(SignatureFieldDimensionAndPositionBuilder.class);
@@ -60,9 +58,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
      * Builds the {@code SignatureFieldDimensionAndPosition}
      *
      * @return {@link SignatureFieldDimensionAndPosition}
-     * @throws IOException if an exception occurs
      */
-    public SignatureFieldDimensionAndPosition build() throws IOException {
+    public SignatureFieldDimensionAndPosition build() {
         if (dimensionAndPosition == null) {
             dimensionAndPosition = new SignatureFieldDimensionAndPosition();
             initDpi();

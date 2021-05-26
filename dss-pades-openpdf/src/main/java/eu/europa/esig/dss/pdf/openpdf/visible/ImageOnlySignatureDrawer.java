@@ -20,46 +20,33 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.io.IOException;
-
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
-
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.IOException;
+
+/**
+ * iText drawer used for image only visible signature creation
+ *
+ */
 public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
-	
-	private Image image;
-	private ITextVisualSignatureAppearance appearenceRectangle;
 
 	@Override
-	public ITextVisualSignatureAppearance buildSignatureFieldBox() throws IOException {
-		if (appearenceRectangle == null) {
-			Image image = getImage();
-			appearenceRectangle = new ImageOnlyAppearanceRectangleBuilder(parameters, image).build();
-		}
-		return appearenceRectangle;
-	}
-	
-	private Image getImage() throws IOException {
-		if (image == null) {
-			image = Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
-		}
-		return image;
-	}
-
-	@Override
-	public void draw() throws IOException {
-
+	public void draw() {
 		Image image = getImage();
 
 		SignatureFieldParameters fieldParameters = parameters.getFieldParameters();
+		String signatureFieldId = fieldParameters.getFieldId();
 		float width = fieldParameters.getWidth();
 		float height = fieldParameters.getHeight();
 
@@ -71,9 +58,8 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 				height = (int) rect.getHeight();
 			}
 		} else {
-			ITextVisualSignatureAppearance appearenceRectangle = buildSignatureFieldBox();
-			
-			Rectangle iTextRectangle = toITextRectangle(appearenceRectangle);
+			SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
+			Rectangle iTextRectangle = toITextRectangle(dimensionAndPosition);
 			iTextRectangle.setBackgroundColor(parameters.getBackgroundColor());
 			
 			width = iTextRectangle.getWidth();
@@ -96,6 +82,20 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		
 		ct.addElement(table);
 		ct.go();
+	}
+
+	private Image getImage() {
+		try {
+			return Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to read the provided image file. Reason : %s", e.getMessage()), e);
+		}
+	}
+
+	@Override
+	protected DSSFontMetrics getDSSFontMetrics() {
+		// not applicable
+		return null;
 	}
 
 }

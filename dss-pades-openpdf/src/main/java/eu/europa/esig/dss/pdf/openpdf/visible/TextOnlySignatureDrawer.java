@@ -20,57 +20,50 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.DefaultFontMapper;
+import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfTemplate;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * iText drawer used for visual signatures creation with text data only
+ *
+ */
 public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	
+	/**
+	 * Initialized font
+	 *
+	 */
 	private Font iTextFont;
 	
-	private ITextDSSFontMetrics iTextFontMetrics;
-	
 	@Override
-	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException {
-		super.init(signatureFieldId, parameters, appearance);
+	public void init(SignatureImageParameters parameters, PdfReader reader, PdfSignatureAppearance appearance) {
+		super.init(parameters, reader, appearance);
 		this.iTextFont = initFont();
 	}
 
 	@Override
-	public ITextVisualSignatureAppearance buildSignatureFieldBox() {
-		ITextDSSFontMetrics iTextFontMetrics = getITextFontMetrics();
-		return new TextOnlyAppearenceRectangleBuilder(parameters, iTextFontMetrics, getProperSize()).build();
-	}
-	
-	private ITextDSSFontMetrics getITextFontMetrics() {
-		if (iTextFontMetrics == null) {
-			iTextFontMetrics = new ITextDSSFontMetrics(iTextFont.getBaseFont());
-		}
-		return iTextFontMetrics;
-	}
-
-	@Override
 	public void draw() {
-
 		String text = parameters.getTextParameters().getText();
-		
 		appearance.setRender(PdfSignatureAppearance.SignatureRenderDescription);
-		
+
+		String signatureFieldId = parameters.getFieldParameters().getFieldId();
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
 
@@ -78,16 +71,15 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			appearance.setLayer2Text(text);
 			
 		} else {
-			ITextVisualSignatureAppearance appearenceRectangle = buildSignatureFieldBox();
-			Rectangle iTextRectangle = toITextRectangle(appearenceRectangle);
-			
+			SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
+			Rectangle iTextRectangle = toITextRectangle(dimensionAndPosition);
 			appearance.setVisibleSignature(iTextRectangle, parameters.getFieldParameters().getPage()); // defines signature field borders
-			showText(iTextFontMetrics, iTextRectangle);
+			drawText(dimensionAndPosition, iTextRectangle);
 		}
 
 	}
 
-	private Font initFont() throws IOException {
+	private Font initFont() {
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
 		DSSFont dssFont = textParameters.getFont();
 		BaseFont baseFont = getBaseFont(dssFont);
@@ -115,15 +107,15 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			return fontMapper.awtToPdf(dssFont.getJavaFont());
 		}
 	}
-	
-	private float getProperSize() {
-		float size = parameters.getTextParameters().getFont().getSize();
-		size *= ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
-		return size;
+
+	@Override
+	protected ITextDSSFontMetrics getDSSFontMetrics() {
+		return new ITextDSSFontMetrics(iTextFont.getBaseFont());
 	}
 	
-	private void showText(ITextDSSFontMetrics iTextFontMetrics, Rectangle sigFieldRect) {
-		
+	private void drawText(SignatureFieldDimensionAndPosition dimensionAndPosition, Rectangle sigFieldRect) {
+
+		ITextDSSFontMetrics iTextFontMetrics = getDSSFontMetrics();
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
 		String text = textParameters.getText();
 
@@ -143,12 +135,10 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		
 		layer.beginText();
 		
-		// required with iText in order to not cut the bottom part of characters
-		float descentPoint = iTextFontMetrics.getDescentPoint(lines[0], size);
-		
 		// compute initial position
-		float y = boundingRectangle.getHeight() - textParameters.getPadding() - descentPoint;
-		float x = textParameters.getPadding();
+		float x = dimensionAndPosition.getTextX();
+		float y = dimensionAndPosition.getTextY() + dimensionAndPosition.getTextHeight()
+				- iTextFontMetrics.getDescentPoint(lines[0], size);
 		
 		layer.moveText(x, y);
 		layer.newlineText();
@@ -176,6 +166,12 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 		
 		layer.endText();
+	}
+
+	private float getProperSize() {
+		float size = parameters.getTextParameters().getFont().getSize();
+		size *= ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
+		return size;
 	}
 
 }

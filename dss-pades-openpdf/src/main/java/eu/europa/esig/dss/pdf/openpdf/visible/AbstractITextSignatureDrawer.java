@@ -21,20 +21,22 @@
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
-
-import java.io.IOException;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPositionBuilder;
 
 /**
  * The abstract implementation of an IText (OpenPDF) signature drawer
  */
 public abstract class AbstractITextSignatureDrawer implements ITextSignatureDrawer, SignatureFieldBoxBuilder {
 
-	/** The signature field id to be signed */
-	protected String signatureFieldId;
+	/** PdfReader */
+	private PdfReader reader;
 
 	/** Visual signature parameters */
 	protected SignatureImageParameters parameters;
@@ -43,27 +45,55 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	protected PdfSignatureAppearance appearance;
 
 	@Override
-	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException {
-		this.signatureFieldId = signatureFieldId;
+	public void init(SignatureImageParameters parameters, PdfReader reader, PdfSignatureAppearance appearance) {
 		this.parameters = parameters;
+		this.reader = reader;
 		this.appearance = appearance;
 	}
 	
 	/**
-	 * Transforms the given {@code appearanceRectangle} to a {@code com.lowagie.text.Rectangle}
+	 * Builds a signature field dimension and position object
+	 *
+	 * @return {@link SignatureFieldDimensionAndPosition}
+	 */
+	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() {
+		AnnotationBox pageBox = getPageAnnotationBox();
+		int pageRotation = reader.getPageRotation(parameters.getFieldParameters().getPage());
+		return new SignatureFieldDimensionAndPositionBuilder(parameters, getDSSFontMetrics(), pageBox, pageRotation).build();
+	}
+
+	/**
+	 * Returns the associated with the drawer font metrics
+	 *
+	 * @return {@link DSSFontMetrics}
+	 */
+	protected abstract DSSFontMetrics getDSSFontMetrics();
+
+	/**
+	 * Returns the page's box
+	 *
+	 * @return {@link AnnotationBox}
+	 */
+	protected AnnotationBox getPageAnnotationBox() {
+		int pageNumber = parameters.getFieldParameters().getPage();
+		Rectangle rectangle = reader.getPageSize(pageNumber);
+		return new AnnotationBox(0, 0, rectangle.getWidth(), rectangle.getHeight());
+	}
+
+	/**
+	 * Transforms the given {@code dimensionAndPosition} to a {@code com.lowagie.text.Rectangle}
 	 * with the given page size
-	 * 
-	 * @param appearanceRectangle {@link ITextVisualSignatureAppearance}
+	 *
+	 * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition}
 	 * @return {@link com.lowagie.text.Rectangle}
 	 */
-	protected Rectangle toITextRectangle(ITextVisualSignatureAppearance appearanceRectangle) {
-		Rectangle pageRectangle = appearance.getStamper().getReader().getPageSize(parameters.getFieldParameters().getPage());
-		float pageHeight = pageRectangle.getHeight();
-		
-		AnnotationBox annotationBox = appearanceRectangle.getAnnotationBox();
-		annotationBox = annotationBox.toPdfPageCoordinates(pageHeight);
-		
-		return new Rectangle(annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());
+	protected Rectangle toITextRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition) {
+		AnnotationBox pageBox = getPageAnnotationBox();
+		return new Rectangle(dimensionAndPosition.getBoxX(),
+				pageBox.getHeight() - dimensionAndPosition.getBoxY() - dimensionAndPosition.getBoxHeight(),
+				dimensionAndPosition.getBoxX() + dimensionAndPosition.getBoxWidth(),
+				pageBox.getHeight() - dimensionAndPosition.getBoxY(),
+				dimensionAndPosition.getGlobalRotation());
 	}
 
 }

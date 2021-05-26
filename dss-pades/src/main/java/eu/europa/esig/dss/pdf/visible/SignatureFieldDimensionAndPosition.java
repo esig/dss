@@ -22,6 +22,10 @@ package eu.europa.esig.dss.pdf.visible;
 
 import eu.europa.esig.dss.pdf.AnnotationBox;
 
+/**
+ * Defines visual signature field appearance parameters
+ *
+ */
 public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldAppearance {
 	
 	private float boxX = 0;
