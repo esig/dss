@@ -87,6 +87,13 @@
 					<accessExternalSchema>file</accessExternalSchema>
 					<accessExternalDTD>file</accessExternalDTD>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.glassfish.jaxb</groupId>
+						<artifactId>jaxb-runtime</artifactId>
+						<version>2.3.4</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 			<plugin>
