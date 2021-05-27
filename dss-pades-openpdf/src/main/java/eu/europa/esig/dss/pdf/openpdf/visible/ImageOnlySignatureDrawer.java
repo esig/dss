@@ -22,9 +22,6 @@ package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -47,8 +44,12 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 		SignatureFieldParameters fieldParameters = parameters.getFieldParameters();
 		String signatureFieldId = fieldParameters.getFieldId();
+
+		float x = 0;
+		float y = 0;
 		float width = fieldParameters.getWidth();
 		float height = fieldParameters.getHeight();
+		float rotation = 0;
 
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
@@ -59,29 +60,26 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			}
 		} else {
 			SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
+
+			x = dimensionAndPosition.getImageX();
+			y = dimensionAndPosition.getImageY();
+			width = dimensionAndPosition.getImageWidth();
+			height = dimensionAndPosition.getImageHeight();
+			rotation = dimensionAndPosition.getGlobalRotation();
+
 			Rectangle iTextRectangle = toITextRectangle(dimensionAndPosition);
-			iTextRectangle.setBackgroundColor(parameters.getBackgroundColor());
-			
-			width = iTextRectangle.getWidth();
-			height = iTextRectangle.getHeight();
-			
 			appearance.setVisibleSignature(iTextRectangle, fieldParameters.getPage());
 		}
 		
+		image.setAbsolutePosition(x, y);
 		image.scaleAbsolute(width, height);
+		image.setRotationDegrees(rotation);
 
 		PdfTemplate layer = appearance.getLayer(2);
-		ColumnText ct = new ColumnText(layer);
-		ct.setSimpleColumn(0, 0, width, height);
-		
-		PdfPTable table = new PdfPTable(1);
-		table.setWidthPercentage(100);
-		PdfPCell pdfPCell = new PdfPCell(image);
-		pdfPCell.setBorder(Rectangle.NO_BORDER);
-		table.addCell(pdfPCell);
-		
-		ct.addElement(table);
-		ct.go();
+		Rectangle boundingBox = layer.getBoundingBox();
+		boundingBox.setBackgroundColor(parameters.getBackgroundColor());
+		layer.rectangle(boundingBox);
+		layer.addImage(image);
 	}
 
 	private Image getImage() {

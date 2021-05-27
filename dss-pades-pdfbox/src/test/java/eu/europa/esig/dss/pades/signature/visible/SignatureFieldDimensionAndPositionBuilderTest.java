@@ -55,15 +55,15 @@ public class SignatureFieldDimensionAndPositionBuilderTest {
 
             SignatureFieldDimensionAndPosition dimPos = new SignatureFieldDimensionAndPositionBuilder(
                     params, fontMetrics, pageBox, page.getRotation()).build();
-            assertEquals(dimPos.getBoxHeight(), dimPos.getImageY() + dimPos.getImageHeight());
-            assertEquals(dimPos.getBoxWidth(), dimPos.getImageX() + dimPos.getImageWidth());
+            assertEquals(dimPos.getBoxHeight(), dimPos.getImageBoxY() + dimPos.getImageBoxHeight());
+            assertEquals(dimPos.getBoxWidth(), dimPos.getImageBoxX() + dimPos.getImageBoxWidth());
 
             params.getTextParameters().setSignerTextPosition(SignerTextPosition.BOTTOM);
 
             dimPos = new SignatureFieldDimensionAndPositionBuilder(
                     params, fontMetrics, pageBox, page.getRotation()).build();
-            assertEquals(dimPos.getBoxHeight(), dimPos.getImageY() + dimPos.getImageHeight());
-            assertEquals(dimPos.getBoxWidth(), dimPos.getImageX() + dimPos.getImageWidth());
+            assertEquals(dimPos.getBoxHeight(), dimPos.getImageBoxY() + dimPos.getImageBoxHeight());
+            assertEquals(dimPos.getBoxWidth(), dimPos.getImageBoxX() + dimPos.getImageBoxWidth());
 
         } catch (Exception e) {
             fail(e);

@@ -38,6 +38,11 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	private float imageWidth = 0;
 	private float imageHeight = 0;
 	
+	private float imageBoxX = 0;
+	private float imageBoxY = 0;
+	private float imageBoxWidth = 0;
+	private float imageBoxHeight = 0;
+	
 	private float textX = 0;
 	private float textY = 0;
 	private float textWidth = 0;
@@ -100,6 +105,14 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 		this.imageY = imageY;
 	}
 	
+	public float getImageWidth() {
+		return imageWidth;
+	}
+
+	public void setImageWidth(float imageWidth) {
+		this.imageWidth = imageWidth;
+	}
+
 	public float getImageHeight() {
 		return imageHeight;
 	}
@@ -107,13 +120,37 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	public void setImageHeight(float imageHeight) {
 		this.imageHeight = imageHeight;
 	}
-	
-	public float getImageWidth() {
-		return imageWidth;
+
+	public float getImageBoxX() {
+		return imageBoxX;
 	}
 	
-	public void setImageWidth(float imageWidth) {
-		this.imageWidth = imageWidth;
+	public void setImageBoxX(float imageBoxX) {
+		this.imageBoxX = imageBoxX;
+	}
+	
+	public float getImageBoxY() {
+		return imageBoxY;
+	}
+	
+	public void setImageBoxY(float imageBoxY) {
+		this.imageBoxY = imageBoxY;
+	}
+	
+	public float getImageBoxHeight() {
+		return imageBoxHeight;
+	}
+	
+	public void setImageBoxHeight(float imageBoxHeight) {
+		this.imageBoxHeight = imageBoxHeight;
+	}
+	
+	public float getImageBoxWidth() {
+		return imageBoxWidth;
+	}
+	
+	public void setImageBoxWidth(float imageBoxWidth) {
+		this.imageBoxWidth = imageBoxWidth;
 	}
 	
 	public float getTextX() {

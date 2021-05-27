@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pdf.visible;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.utils.Utils;
@@ -213,32 +212,20 @@ public class ImageUtils {
 	}
 
 	/**
-	 * Returns image boundary box. Tries to retrieve explicitly set values in the
-	 * parameters, in other case reads dimensions from the provided image
-	 * 
-	 * @param imageParameters {@link SignatureImageParameters}
+	 * Returns the AnnotationBox for the given image document
+	 *
+	 * @param imageDocument {@link DSSDocument} representing an image
 	 * @return {@link AnnotationBox}
 	 */
-	public static AnnotationBox getImageBoundaryBox(SignatureImageParameters imageParameters) {
-		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
-		float width = fieldParameters.getWidth();
-		float height = fieldParameters.getHeight();
-		float scaleFactor = getScaleFactor(imageParameters.getZoom());
-		if (width == 0 && height == 0) {
-			try {
-				DSSDocument docImage = imageParameters.getImage();
-				if (docImage != null) {
-					try (InputStream is = docImage.openStream()) {
-						BufferedImage bufferedImage = read(is);
-						width = bufferedImage.getWidth();
-						height = bufferedImage.getHeight();
-					}
-				}
-			} catch (IOException e) {
-				LOG.error("Cannot read the given image", e);
-			}
+	public static AnnotationBox getImageBoundaryBox(DSSDocument imageDocument) {
+		try {
+			BufferedImage bufferedImage = readImage(imageDocument);
+			float width = bufferedImage.getWidth();
+			float height = bufferedImage.getHeight();
+			return new AnnotationBox(0, 0, width, height);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Cannot read the given image. Reason : %s}", e.getMessage()), e);
 		}
-		return new AnnotationBox(0, 0, width * scaleFactor, height * scaleFactor);
 	}
 
 	/**
@@ -260,7 +247,7 @@ public class ImageUtils {
 	 */
 	public static BufferedImage readImage(DSSDocument imageDocument) throws IOException {
 		try (InputStream is = imageDocument.openStream()) {
-			return read(is);
+			return readImageInputStream(is);
 		}
 	}
 
@@ -272,7 +259,7 @@ public class ImageUtils {
 	 * @return {@link BufferedImage}
 	 * @throws IOException - in case of InputStream reading error
 	 */
-	public static BufferedImage read(InputStream is) throws IOException {
+	public static BufferedImage readImageInputStream(InputStream is) throws IOException {
 		try (ImageInputStream iis = ImageIO.createImageInputStream(is)) {
 			ImageReader imageReader = getImageReader(iis);
 			imageReader.setInput(iis, true, true);

@@ -4,6 +4,7 @@ import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -64,6 +65,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
             dimensionAndPosition = new SignatureFieldDimensionAndPosition();
             initDpi();
             assignImageBoundaryBox();
+            assignImagePosition();
             alignHorizontally();
             alignVertically();
             rotateSignatureField();
@@ -118,7 +120,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
                     if (fieldParameters.getHeight() == 0) {
                         height = Math.max(height, textHeight);
                     }
-                    dimensionAndPosition.setImageX(width - imageWidth);
+                    dimensionAndPosition.setImageBoxX(width - imageWidth);
                     textImageVerticalAlignment(height, imageHeight, textHeight);
                     break;
                 case RIGHT:
@@ -154,7 +156,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
                     } else {
                         imageHeight -= imageParameters.getImage() != null || height == 0 ? textHeight : 0;
                     }
-                    dimensionAndPosition.setImageY(height - imageHeight);
+                    dimensionAndPosition.setImageBoxY(height - imageHeight);
                     textImageHorizontalAlignment(width, imageWidth, textWidth);
                     break;
                 default:
@@ -179,8 +181,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
         }
         dimensionAndPosition.setGlobalRotation(rotation);
 
-        dimensionAndPosition.setImageWidth(imageWidth);
-        dimensionAndPosition.setImageHeight(imageHeight);
+        dimensionAndPosition.setImageBoxWidth(imageWidth);
+        dimensionAndPosition.setImageBoxHeight(imageHeight);
         dimensionAndPosition.setBoxWidth(width);
         dimensionAndPosition.setBoxHeight(height);
     }
@@ -191,14 +193,27 @@ public class SignatureFieldDimensionAndPositionBuilder {
      * @return {@link AnnotationBox}
      */
     private AnnotationBox getSignatureFieldBoundaryBox() {
-        AnnotationBox imageBoundaryBox = ImageUtils.getImageBoundaryBox(imageParameters);
         SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+        float width = fieldParameters.getWidth();
+        float height = fieldParameters.getHeight();
 
-        float width = imageBoundaryBox.getWidth();
+        float scaleFactor = ImageUtils.getScaleFactor(imageParameters.getZoom());
+        DSSDocument docImage = imageParameters.getImage();
+        if (docImage != null) {
+            AnnotationBox imageBoundaryBox = ImageUtils.getImageBoundaryBox(docImage);
+            dimensionAndPosition.setImageWidth(imageBoundaryBox.getWidth() * scaleFactor);
+            dimensionAndPosition.setImageHeight(imageBoundaryBox.getHeight() * scaleFactor);
+            if (width == 0 && height == 0) {
+                width = imageBoundaryBox.getWidth();
+                height = imageBoundaryBox.getHeight();
+            }
+        }
+        width *= scaleFactor;
+        height *= scaleFactor;
+
         if (fieldParameters.getWidth() == 0) {
             width *= DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getXDpi());
         }
-        float height = imageBoundaryBox.getHeight();
         if (fieldParameters.getHeight() == 0) {
             height *= DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getYDpi());
         }
@@ -218,15 +233,15 @@ public class SignatureFieldDimensionAndPositionBuilder {
         switch (verticalAlignment) {
             case TOP:
                 dimensionAndPosition.setTextBoxY(height - textHeight);
-                dimensionAndPosition.setImageY(height - imageHeight);
+                dimensionAndPosition.setImageBoxY(height - imageHeight);
                 break;
             case BOTTOM:
                 dimensionAndPosition.setTextBoxY(0);
-                dimensionAndPosition.setImageY(0);
+                dimensionAndPosition.setImageBoxY(0);
                 break;
             case MIDDLE:
                 dimensionAndPosition.setTextBoxY((height - textHeight) / 2);
-                dimensionAndPosition.setImageY((height - imageHeight) / 2);
+                dimensionAndPosition.setImageBoxY((height - imageHeight) / 2);
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + verticalAlignment);
@@ -239,18 +254,63 @@ public class SignatureFieldDimensionAndPositionBuilder {
         switch (horizontalAlignment) {
             case LEFT:
                 dimensionAndPosition.setTextBoxX(0);
-                dimensionAndPosition.setImageX(0);
+                dimensionAndPosition.setImageBoxX(0);
                 break;
             case RIGHT:
                 dimensionAndPosition.setTextBoxX(width - textWidth);
-                dimensionAndPosition.setImageX(width - imageWidth);
+                dimensionAndPosition.setImageBoxX(width - imageWidth);
                 break;
             case CENTER:
                 dimensionAndPosition.setTextBoxX((width - textWidth) / 2);
-                dimensionAndPosition.setImageX((width - imageWidth) / 2);
+                dimensionAndPosition.setImageBoxX((width - imageWidth) / 2);
                 break;
             default:
                 throw new IllegalStateException(NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + horizontalAlignment);
+        }
+    }
+
+    private void assignImagePosition() {
+        if (imageParameters.getImage() != null) {
+            switch (imageParameters.getImageScaling()) {
+                case STRETCH:
+                    dimensionAndPosition.setImageX(dimensionAndPosition.getImageBoxX());
+                    dimensionAndPosition.setImageY(dimensionAndPosition.getImageBoxY());
+                    dimensionAndPosition.setImageWidth(dimensionAndPosition.getImageBoxWidth());
+                    dimensionAndPosition.setImageHeight(dimensionAndPosition.getImageBoxHeight());
+                    break;
+
+                case ZOOM_AND_CENTER:
+                    float x, y, width, height;
+                    float imageRatio = dimensionAndPosition.getImageWidth() / dimensionAndPosition.getImageHeight();
+                    float boxRatio = dimensionAndPosition.getImageBoxWidth() / dimensionAndPosition.getImageBoxHeight();
+                    if (imageRatio < boxRatio) {
+                        width = dimensionAndPosition.getImageBoxHeight() * imageRatio;
+                        height = dimensionAndPosition.getImageBoxHeight();
+                        x = dimensionAndPosition.getImageBoxX() + (dimensionAndPosition.getImageBoxWidth() - width) / 2f;
+                        y = dimensionAndPosition.getImageBoxY();
+                    } else {
+                        width = dimensionAndPosition.getImageBoxWidth();
+                        height = dimensionAndPosition.getImageBoxWidth() / imageRatio;
+                        x = dimensionAndPosition.getImageBoxX();
+                        y = dimensionAndPosition.getImageBoxY() + (dimensionAndPosition.getImageBoxHeight() - height) / 2f;
+                    }
+                    dimensionAndPosition.setImageX(x);
+                    dimensionAndPosition.setImageY(y);
+                    dimensionAndPosition.setImageWidth(width);
+                    dimensionAndPosition.setImageHeight(height);
+                    break;
+
+                case CENTER:
+                    dimensionAndPosition.setImageX(dimensionAndPosition.getImageBoxX() +
+                            (dimensionAndPosition.getImageBoxWidth() - dimensionAndPosition.getImageWidth()) / 2f);
+                    dimensionAndPosition.setImageY(dimensionAndPosition.getImageBoxY() +
+                            (dimensionAndPosition.getImageBoxHeight() - dimensionAndPosition.getImageHeight()) / 2f);
+                    break;
+
+                default:
+                    throw new IllegalArgumentException(String.format("The ImageScaling '%s' is not supported!",
+                            imageParameters.getImageScaling()));
+            }
         }
     }
 

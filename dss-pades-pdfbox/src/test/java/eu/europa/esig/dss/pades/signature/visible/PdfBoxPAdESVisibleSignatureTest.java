@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleImageScalingTest;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
@@ -39,11 +40,12 @@ import eu.europa.esig.dss.pades.signature.visible.suite.PAdESWithSignatureVisibl
 import eu.europa.esig.dss.pades.signature.visible.suite.PDFSignatureServiceTest;
 
 @RunWith(JUnitPlatform.class)
-@SelectClasses(value = { PAdESSignatureFieldTest.class, PAdESVisibleSignatureTest.class, PAdESFieldLevelBTest.class, PAdESWithSignatureAndTimestampVisibleTest.class,
-		PAdESWithSignatureVisibleAndTimestampInvisibleTest.class, PAdESWithSignatureInvisibleAndTimestampVisibleTest.class, 
-		PAdESVisibleSignatureWithJavaFontTest.class, PAdESNonLatinCharactersSignatureTest.class, PAdESVisibleZoomRotationTest.class, 
-		PAdESVisibleSignWithSignatureFieldTest.class, PDFSignatureServiceTest.class, PAdESMultipleVisibleSignaturesTest.class,
-		PAdESVisibleWithOverlappingFieldsTest.class })
+@SelectClasses(value = { PAdESSignatureFieldTest.class, PAdESVisibleSignatureTest.class, PAdESFieldLevelBTest.class,
+		PAdESWithSignatureAndTimestampVisibleTest.class, PAdESWithSignatureVisibleAndTimestampInvisibleTest.class,
+		PAdESWithSignatureInvisibleAndTimestampVisibleTest.class, PAdESVisibleSignatureWithJavaFontTest.class,
+		PAdESNonLatinCharactersSignatureTest.class, PAdESVisibleZoomRotationTest.class, PAdESVisibleSignWithSignatureFieldTest.class,
+		PDFSignatureServiceTest.class, PAdESMultipleVisibleSignaturesTest.class, PAdESVisibleWithOverlappingFieldsTest.class,
+		PAdESVisibleImageScalingTest.class })
 public class PdfBoxPAdESVisibleSignatureTest {
 
 }

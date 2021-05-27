@@ -126,9 +126,11 @@ public final class DefaultImageDrawerUtils {
     private static boolean isTransparent(Color... colors) {
         if (colors != null) {
             for (Color color : colors) {
-                int alpha = color.getAlpha();
-                if (alpha < 255) {
-                    return true;
+                if (color != null) {
+                    int alpha = color.getAlpha();
+                    if (alpha < 255) {
+                        return true;
+                    }
                 }
             }
         }
@@ -145,9 +147,6 @@ public final class DefaultImageDrawerUtils {
                                                 final SignatureFieldDimensionAndPosition dimensionAndPosition) {
         try {
             BufferedImage original = ImageUtils.readImage(imageDocument);
-            if (original == null) {
-                return null;
-            }
             return sizeImage(original, (int) DPIUtils.computeProperSize(dimensionAndPosition.getImageWidth(),
                     dimensionAndPosition.getImageResolution().getXDpi()),
                     (int) DPIUtils.computeProperSize(dimensionAndPosition.getImageHeight(),
@@ -211,10 +210,9 @@ public final class DefaultImageDrawerUtils {
         Graphics2D g = result.createGraphics();
         initRendering(g);
 
-        if (imageParameters.getBackgroundColor() != null || textImage != null) {
-            // TODO: execute only when background is defined
-            fillBackground(g, result.getWidth(), result.getHeight(), imageParameters.getBackgroundColor());
-        }
+        // TODO: execute only when background is defined
+        fillBackground(g, result.getWidth(), result.getHeight(), imageParameters.getBackgroundColor());
+
         if (textImage != null) {
             drawImage(g, textImage, DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxX(), xDpi),
                     DPIUtils.computeProperSize(height - dimensionAndPosition.getTextBoxY() - dimensionAndPosition.getTextBoxHeight(), yDpi),

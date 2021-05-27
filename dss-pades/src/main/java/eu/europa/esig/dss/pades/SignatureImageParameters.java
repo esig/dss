@@ -20,14 +20,16 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.visible.DPIUtils;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Parameters for a visible signature creation
@@ -80,6 +82,13 @@ public class SignatureImageParameters implements Serializable {
 	 * Vertical alignment of the visual signature on the pdf page
 	 */
 	private VisualSignatureAlignmentVertical alignmentVertical = VisualSignatureAlignmentVertical.NONE;
+
+	/**
+	 * Defines the image scaling behavior within a signature field with a fixed size
+	 *
+	 * DEFAULT : ImageScaling.STRETCH (stretches the image ib both directions to fill the signature field)
+	 */
+	private ImageScaling imageScaling = ImageScaling.STRETCH;
 
 	/**
 	 * This variable is use to defines the text to generate on the image
@@ -308,6 +317,27 @@ public class SignatureImageParameters implements Serializable {
 		this.alignmentVertical = alignmentVertical;
 	}
 	
+	/**
+	 * Gets the image scaling
+	 *
+	 * @return {@link ImageScaling}
+	 */
+	public ImageScaling getImageScaling() {
+		return imageScaling;
+	}
+
+	/**
+	 * Sets the parameter used to define an image scaling behavior within a signature field
+	 *
+	 * DEFAULT : ImageScaling.STRETCH (stretches the image in both directions in order to fill the signature field)
+	 *
+	 * @param imageScaling {@link ImageScaling}
+	 */
+	public void setImageScaling(ImageScaling imageScaling) {
+		Objects.requireNonNull(imageScaling, "ImageScaling parameter cannot be null!");
+		this.imageScaling = imageScaling;
+	}
+
 	/**
 	 * Checks if the {@code SignatureImageParameters} is empty (no image or text parameters are defined)
 	 * 

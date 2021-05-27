@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
@@ -622,10 +623,60 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		fieldParameters.setWidth(100);
 		fieldParameters.setHeight(150);
 		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.STRETCH);
 
 		signatureParameters.setImageParameters(imageParameters);
 
 		drawAndCompareExplicitly();
+	}
+
+	@Test
+	public void zoomAndCenterTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(150);
+		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+
+		// change directions
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(100);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void centerTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(150);
+		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.CENTER);
+		imageParameters.setBackgroundColor(Color.PINK);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+
+		// change directions
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(100);
+		drawAndCompareVisually();
 	}
 	
 	@Test
@@ -787,6 +838,68 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+	}
+
+	@Test
+	public void imageScalingWithTextAndRotationTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(200);
+		fieldParameters.setHeight(300);
+
+		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+		imageParameters.setBackgroundColor(Color.YELLOW);
+		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Signature");
+		textParameters.setBackgroundColor(Color.WHITE);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+
+		imageParameters.setImageScaling(ImageScaling.CENTER);
+		drawAndCompareVisually();
+
+		// change directions
+		fieldParameters.setWidth(300);
+		fieldParameters.setHeight(200);
+		drawAndCompareVisually();
+
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void imageScalingWithZoomTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(150);
+
+		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.STRETCH);
+		imageParameters.setBackgroundColor(Color.PINK);
+		imageParameters.setZoom(50);
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+		drawAndCompareVisually();
+
+		imageParameters.setImageScaling(ImageScaling.CENTER);
+		drawAndCompareVisually();
 	}
 
 	@Override
