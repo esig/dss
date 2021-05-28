@@ -150,6 +150,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 				if (fieldItem == null) {
 					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
+				} else {
+					signatureDrawer.setSignatureField(fieldItem);
 				}
 
 				signatureDrawer.draw();

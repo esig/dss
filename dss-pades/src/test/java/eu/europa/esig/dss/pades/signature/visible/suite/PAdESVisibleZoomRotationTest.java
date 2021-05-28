@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
+import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -35,12 +36,16 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.Color;
 import java.util.Date;
 
 public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 
 	private final DSSDocument RED_CROSS_IMAGE = new InMemoryDocument(
 			getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG);
+
+	private final DSSDocument PNG_IMAGE = new InMemoryDocument(
+			getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG);
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -97,7 +102,7 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	@Test
 	public void testRotationOnly() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(RED_CROSS_IMAGE);
+		imageParameters.setImage(PNG_IMAGE);
 
 	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 	    fieldParameters.setOriginX(20);
@@ -105,6 +110,7 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	    fieldParameters.setWidth(100);
 	    fieldParameters.setHeight(300);
 	    imageParameters.setFieldParameters(fieldParameters);
+	    imageParameters.setBackgroundColor(Color.PINK);
 		
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
@@ -115,7 +121,7 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	@Test
 	public void testZoomAndRotation() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(RED_CROSS_IMAGE);
+		imageParameters.setImage(PNG_IMAGE);
 
 	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 	    fieldParameters.setOriginX(20);
@@ -123,6 +129,8 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	    fieldParameters.setWidth(100);
 	    fieldParameters.setHeight(300);
 	    imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setBackgroundColor(Color.PINK);
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
 		
 		imageParameters.setZoom(200);
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);

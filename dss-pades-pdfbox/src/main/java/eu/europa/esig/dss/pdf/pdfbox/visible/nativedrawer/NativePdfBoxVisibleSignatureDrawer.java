@@ -55,7 +55,7 @@ import org.apache.pdfbox.util.Matrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -227,8 +227,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 				byte[] bytes = IOUtils.toByteArray(is);
 				PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, image.getName());
 
-				// divide to scale factor, because PdfBox due to the matrix transformation also
-				// changes position parameters of the image
 				float xAxis = dimensionAndPosition.getImageX();
 				float yAxis = dimensionAndPosition.getImageY();
 				float width = dimensionAndPosition.getImageWidth();

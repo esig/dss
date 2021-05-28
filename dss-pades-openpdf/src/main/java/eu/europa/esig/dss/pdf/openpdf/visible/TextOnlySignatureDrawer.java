@@ -60,23 +60,18 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 	@Override
 	public void draw() {
-		String text = parameters.getTextParameters().getText();
 		appearance.setRender(PdfSignatureAppearance.SignatureRenderDescription);
+		SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
 
 		String signatureFieldId = parameters.getFieldParameters().getFieldId();
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
-
-			appearance.setLayer2Font(iTextFont);
-			appearance.setLayer2Text(text);
-			
 		} else {
-			SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
 			Rectangle iTextRectangle = toITextRectangle(dimensionAndPosition);
 			appearance.setVisibleSignature(iTextRectangle, parameters.getFieldParameters().getPage()); // defines signature field borders
-			drawText(dimensionAndPosition, iTextRectangle);
 		}
 
+		drawText(dimensionAndPosition);
 	}
 
 	private Font initFont() {
@@ -113,7 +108,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		return new ITextDSSFontMetrics(iTextFont.getBaseFont());
 	}
 	
-	private void drawText(SignatureFieldDimensionAndPosition dimensionAndPosition, Rectangle sigFieldRect) {
+	private void drawText(SignatureFieldDimensionAndPosition dimensionAndPosition) {
 
 		ITextDSSFontMetrics iTextFontMetrics = getDSSFontMetrics();
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
@@ -123,12 +118,13 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		
 		PdfTemplate layer = appearance.getLayer(2);
 		layer.setFontAndSize(iTextFont.getBaseFont(), size);
-		
-		Rectangle boundingRectangle = new Rectangle(sigFieldRect.getWidth(), sigFieldRect.getHeight()); // defines text field borders
-		boundingRectangle.setBackgroundColor(textParameters.getBackgroundColor());
-		layer.rectangle(boundingRectangle);
-		
-		layer.setBoundingBox(boundingRectangle);
+
+		Rectangle textRectangle = new Rectangle(dimensionAndPosition.getTextBoxX(), dimensionAndPosition.getTextBoxY(),
+				dimensionAndPosition.getTextBoxWidth() + dimensionAndPosition.getTextBoxX(),
+				dimensionAndPosition.getTextBoxHeight() + dimensionAndPosition.getTextBoxY());
+		textRectangle.setBackgroundColor(textParameters.getBackgroundColor());
+		layer.rectangle(textRectangle);
+
 		layer.setColorFill(textParameters.getTextColor());
 		
 		String[] lines = iTextFontMetrics.getLines(text);
@@ -137,8 +133,8 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		
 		// compute initial position
 		float x = dimensionAndPosition.getTextX();
-		float y = dimensionAndPosition.getTextY() + dimensionAndPosition.getTextHeight()
-				- iTextFontMetrics.getDescentPoint(lines[0], size);
+		float y = dimensionAndPosition.getTextY() + dimensionAndPosition.getTextHeight() -
+				iTextFontMetrics.getDescentPoint(lines[0], size);
 		
 		layer.moveText(x, y);
 		layer.newlineText();
@@ -152,10 +148,10 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			float lineWidth = iTextFontMetrics.getWidth(line, size);
 			switch (textParameters.getSignerTextHorizontalAlignment()) {
 				case RIGHT:
-					offsetX = boundingRectangle.getWidth() - lineWidth - textParameters.getPadding() * 2 - previousOffset;
+					offsetX = dimensionAndPosition.getTextBoxWidth() - lineWidth - textParameters.getPadding() * 2 - previousOffset;
 					break;
 				case CENTER:
-					offsetX = (boundingRectangle.getWidth() - lineWidth) / 2 - textParameters.getPadding() - previousOffset;
+					offsetX = (dimensionAndPosition.getTextBoxWidth() - lineWidth) / 2 - textParameters.getPadding() - previousOffset;
 					break;
 				default:
 					break;

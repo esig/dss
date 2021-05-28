@@ -207,6 +207,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
 		textParameters.setText(signature);
+		textParameters.setBackgroundColor(Color.PINK);
 		imageParams.setTextParameters(textParameters);
 
 		signatureParameters.setImageParameters(imageParams);

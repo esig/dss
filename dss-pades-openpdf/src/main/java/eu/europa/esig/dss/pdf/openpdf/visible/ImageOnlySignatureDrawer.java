@@ -26,6 +26,7 @@ import com.lowagie.text.pdf.PdfTemplate;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -45,35 +46,27 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		SignatureFieldParameters fieldParameters = parameters.getFieldParameters();
 		String signatureFieldId = fieldParameters.getFieldId();
 
-		float x = 0;
-		float y = 0;
-		float width = fieldParameters.getWidth();
-		float height = fieldParameters.getHeight();
-		float rotation = 0;
+		SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
 
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
-			Rectangle rect = appearance.getRect();
-			if (rect != null) {
-				width = (int) rect.getWidth();
-				height = (int) rect.getHeight();
-			}
 		} else {
-			SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
-
-			x = dimensionAndPosition.getImageX();
-			y = dimensionAndPosition.getImageY();
-			width = dimensionAndPosition.getImageWidth();
-			height = dimensionAndPosition.getImageHeight();
-			rotation = dimensionAndPosition.getGlobalRotation();
-
 			Rectangle iTextRectangle = toITextRectangle(dimensionAndPosition);
 			appearance.setVisibleSignature(iTextRectangle, fieldParameters.getPage());
 		}
 		
+		float x = dimensionAndPosition.getImageX();
+		float y = dimensionAndPosition.getImageY();
+		float width = dimensionAndPosition.getImageWidth();
+		float height = dimensionAndPosition.getImageHeight();
+
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
+			x = dimensionAndPosition.getImageY();
+			y = dimensionAndPosition.getImageX();
+		}
 		image.setAbsolutePosition(x, y);
 		image.scaleAbsolute(width, height);
-		image.setRotationDegrees(rotation);
+		image.setRotationDegrees(360 - dimensionAndPosition.getGlobalRotation()); // opposite rotation
 
 		PdfTemplate layer = appearance.getLayer(2);
 		Rectangle boundingBox = layer.getBoundingBox();

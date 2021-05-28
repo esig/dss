@@ -36,7 +36,9 @@ import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +68,14 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	/** Contains options of the visual signature */
 	protected SignatureOptions signatureOptions;
 
+	/** The existing signature field */
+	private PDSignatureField pdSignatureField;
+
+	@Override
+	public void setSignatureField(final PDSignatureField pdSignatureField) {
+		this.pdSignatureField = pdSignatureField;
+	}
+
 	@Override
 	public void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException {
 		assertSignatureParametersAreValid(parameters);
@@ -92,7 +102,7 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 		AnnotationBox pageBox = new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(),
 				mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
 		return new SignatureFieldDimensionAndPositionBuilder(parameters, getDSSFontMetrics(), pageBox,
-				originalPage.getRotation()).build();
+				originalPage.getRotation()).setSignatureFieldAnnotationBox(getSignatureFieldAnnotationBox()).build();
 	}
 
 	/**
@@ -148,6 +158,22 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
             }
         }
         return false;
+	}
+
+	private AnnotationBox getSignatureFieldAnnotationBox() {
+		if (pdSignatureField != null) {
+			List<PDAnnotationWidget> widgets = pdSignatureField.getWidgets();
+			if (Utils.isCollectionNotEmpty(widgets)) {
+				PDAnnotationWidget pdAnnotationWidget = widgets.get(0);
+				if (pdAnnotationWidget != null) {
+					PDRectangle rectangle = pdAnnotationWidget.getRectangle();
+					return new AnnotationBox(rectangle.getLowerLeftX(), rectangle.getLowerLeftY(),
+							rectangle.getUpperRightX(), rectangle.getUpperRightY());
+				}
+			}
+
+		}
+		return null;
 	}
 
 }

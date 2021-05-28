@@ -34,6 +34,9 @@ public class SignatureFieldDimensionAndPositionBuilder {
     /** The signature field rectangle */
     private AnnotationBox pageBox;
 
+    /** The annotation box representing a target signature field dimensions when applicable */
+    private AnnotationBox signatureFieldAnnotationBox;
+
     /** Cached {@code SignatureFieldDimensionAndPosition} */
     private SignatureFieldDimensionAndPosition dimensionAndPosition;
 
@@ -56,6 +59,17 @@ public class SignatureFieldDimensionAndPositionBuilder {
     }
 
     /**
+     * This method sets the target annotation box to wrap the signature representation into
+     *
+     * @param signatureFieldAnnotationBox {@link AnnotationBox}
+     * @return this {@link SignatureFieldDimensionAndPositionBuilder}
+     */
+    public SignatureFieldDimensionAndPositionBuilder setSignatureFieldAnnotationBox(AnnotationBox signatureFieldAnnotationBox) {
+        this.signatureFieldAnnotationBox = signatureFieldAnnotationBox;
+        return this;
+    }
+
+    /**
      * Builds the {@code SignatureFieldDimensionAndPosition}
      *
      * @return {@link SignatureFieldDimensionAndPosition}
@@ -64,6 +78,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
         if (dimensionAndPosition == null) {
             dimensionAndPosition = new SignatureFieldDimensionAndPosition();
             initDpi();
+            initRotation();
             assignImageBoundaryBox();
             assignImagePosition();
             alignHorizontally();
@@ -86,6 +101,14 @@ public class SignatureFieldDimensionAndPositionBuilder {
             imageResolution = new ImageResolution(DEFAULT_DPI, DEFAULT_DPI);
         }
         dimensionAndPosition.setImageResolution(imageResolution);
+    }
+
+    private void initRotation() {
+        int rotation = ImageRotationUtils.getRotation(imageParameters.getRotation(), pageRotation);
+        dimensionAndPosition.setGlobalRotation(rotation);
+        if (ImageRotationUtils.isSwapOfDimensionsRequired(rotation)) {
+            pageBox = new AnnotationBox(0, 0, pageBox.getMaxY(), pageBox.getMaxX());
+        }
     }
 
     private void assignImageBoundaryBox() {
@@ -172,14 +195,11 @@ public class SignatureFieldDimensionAndPositionBuilder {
             dimensionAndPosition.setTextHeight(dimensionAndPosition.getTextBoxHeight() - 2 * padding);
         }
 
-        int rotation = ImageRotationUtils.getRotation(imageParameters.getRotation(), pageRotation);
-        if (ImageRotationUtils.isSwapOfDimensionsRequired(rotation)) {
+        if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
             float temp = width;
             width = height;
             height = temp;
-            pageBox = new AnnotationBox(0, 0, pageBox.getMaxY(), pageBox.getMaxX());
         }
-        dimensionAndPosition.setGlobalRotation(rotation);
 
         dimensionAndPosition.setImageBoxWidth(imageWidth);
         dimensionAndPosition.setImageBoxHeight(imageHeight);
@@ -193,9 +213,19 @@ public class SignatureFieldDimensionAndPositionBuilder {
      * @return {@link AnnotationBox}
      */
     private AnnotationBox getSignatureFieldBoundaryBox() {
-        SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
-        float width = fieldParameters.getWidth();
-        float height = fieldParameters.getHeight();
+        float width, height;
+        if (signatureFieldAnnotationBox != null) {
+            width = signatureFieldAnnotationBox.getWidth();
+            height = signatureFieldAnnotationBox.getHeight();
+            if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
+                width = signatureFieldAnnotationBox.getHeight();
+                height = signatureFieldAnnotationBox.getWidth();
+            }
+        } else {
+            SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+            width = fieldParameters.getWidth();
+            height = fieldParameters.getHeight();
+        }
 
         float scaleFactor = ImageUtils.getScaleFactor(imageParameters.getZoom());
         DSSDocument docImage = imageParameters.getImage();
@@ -203,20 +233,18 @@ public class SignatureFieldDimensionAndPositionBuilder {
             AnnotationBox imageBoundaryBox = ImageUtils.getImageBoundaryBox(docImage);
             dimensionAndPosition.setImageWidth(imageBoundaryBox.getWidth() * scaleFactor);
             dimensionAndPosition.setImageHeight(imageBoundaryBox.getHeight() * scaleFactor);
-            if (width == 0 && height == 0) {
+            if (width == 0) {
                 width = imageBoundaryBox.getWidth();
+                width *= DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getXDpi());
+            }
+            if (height == 0) {
                 height = imageBoundaryBox.getHeight();
+                height *= DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getYDpi());
             }
         }
         width *= scaleFactor;
         height *= scaleFactor;
 
-        if (fieldParameters.getWidth() == 0) {
-            width *= DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getXDpi());
-        }
-        if (fieldParameters.getHeight() == 0) {
-            height *= DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getYDpi());
-        }
         return new AnnotationBox(0, 0, width, height);
     }
 

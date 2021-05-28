@@ -208,10 +208,14 @@ public final class DefaultImageDrawerUtils {
         }
         BufferedImage result = getEmptyImage(width, height, xDpi, yDpi, imageType);
         Graphics2D g = result.createGraphics();
+        g.setBackground(new Color(0, 0, 0, 0));
         initRendering(g);
 
-        // TODO: execute only when background is defined
-        fillBackground(g, result.getWidth(), result.getHeight(), imageParameters.getBackgroundColor());
+        // required for non-transparent and text containing pictures to avoid black spaces
+        if (BufferedImage.TYPE_INT_ARGB != imageType || imageParameters.getTextParameters() != null ||
+                imageParameters.getBackgroundColor() != null) {
+            fillBackground(g, result.getWidth(), result.getHeight(), imageParameters.getBackgroundColor());
+        }
 
         if (textImage != null) {
             drawImage(g, textImage, DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxX(), xDpi),

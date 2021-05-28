@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
+import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -38,5 +39,12 @@ public interface ITextSignatureDrawer extends SignatureDrawer {
 	 * @param appearance {@link PdfSignatureAppearance}
 	 */
 	void init(SignatureImageParameters parameters, PdfReader reader, PdfSignatureAppearance appearance);
+
+	/**
+	 * Sets the target signature field where to create the signature
+	 *
+	 * @param signatureFieldItem {@link com.lowagie.text.pdf.AcroFields.Item}
+	 */
+	void setSignatureField(AcroFields.Item signatureFieldItem);
 
 }

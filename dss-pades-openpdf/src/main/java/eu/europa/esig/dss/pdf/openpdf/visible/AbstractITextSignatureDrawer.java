@@ -21,6 +21,10 @@
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -44,6 +48,14 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	/** The visual signature appearance */
 	protected PdfSignatureAppearance appearance;
 
+	/** Defines the target signature field to create the visual signature within */
+	private AcroFields.Item signatureFieldItem;
+
+	@Override
+	public void setSignatureField(AcroFields.Item signatureFieldItem) {
+		this.signatureFieldItem = signatureFieldItem;
+	}
+
 	@Override
 	public void init(SignatureImageParameters parameters, PdfReader reader, PdfSignatureAppearance appearance) {
 		this.parameters = parameters;
@@ -59,7 +71,8 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() {
 		AnnotationBox pageBox = getPageAnnotationBox();
 		int pageRotation = reader.getPageRotation(parameters.getFieldParameters().getPage());
-		return new SignatureFieldDimensionAndPositionBuilder(parameters, getDSSFontMetrics(), pageBox, pageRotation).build();
+		return new SignatureFieldDimensionAndPositionBuilder(parameters, getDSSFontMetrics(), pageBox, pageRotation)
+				.setSignatureFieldAnnotationBox(getSignatureFieldAnnotationBox()).build();
 	}
 
 	/**
@@ -94,6 +107,20 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 				dimensionAndPosition.getBoxX() + dimensionAndPosition.getBoxWidth(),
 				pageBox.getHeight() - dimensionAndPosition.getBoxY(),
 				dimensionAndPosition.getGlobalRotation());
+	}
+
+	private AnnotationBox getSignatureFieldAnnotationBox() {
+		if (signatureFieldItem != null) {
+			PdfDictionary widget = signatureFieldItem.getWidget(0);
+			if (widget != null) {
+				PdfArray rectArray = widget.getAsArray(PdfName.RECT);
+				if (rectArray != null && rectArray.size() == 4) {
+					return new AnnotationBox(rectArray.getAsNumber(0).floatValue(), rectArray.getAsNumber(1).floatValue(),
+							rectArray.getAsNumber(2).floatValue(), rectArray.getAsNumber(3).floatValue());
+				}
+			}
+		}
+		return null;
 	}
 
 }
