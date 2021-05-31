@@ -48,7 +48,7 @@ public final class SignatureValue implements Serializable {
 	 * Default constructor
 	 *
 	 * @param algorithm {@link SignatureAlgorithm}
-	 * @param value the SigntureValue binaries
+	 * @param value the SignatureValue binaries
 	 */
 	public SignatureValue(SignatureAlgorithm algorithm, byte[] value) {
 		this.algorithm = algorithm;

@@ -89,6 +89,8 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.crypto.signers.PlainDSAEncoding;
+import org.bouncycastle.crypto.signers.StandardDSAEncoding;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.BigIntegers;
@@ -1581,74 +1583,6 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Converts the ANS.1 binary signature value to the concatenated R || S format
-	 * 
-	 * NOTE: used in XAdES and JAdES
-	 *
-	 * @param algorithm
-	 *            Encryption algorithm used to create the signatureValue
-	 * @param signatureValue
-	 *            the originally computed signature value
-	 * @return the converted signature value
-	 */
-	public static byte[] fromAsn1toSignatureValue(final EncryptionAlgorithm algorithm, byte[] signatureValue) {
-		if ((EncryptionAlgorithm.ECDSA == algorithm || EncryptionAlgorithm.DSA == algorithm) && isAsn1Encoded(signatureValue)) {
-			return fromAsn1ToDsaRS(signatureValue);
-		} else {
-			return signatureValue;
-		}
-	}
-
-	/**
-	 * Converts an ASN.1 value to a concatenation string of R and S from ECDSA/DSA encryption algorithm
-	 *
-	 * The JAVA JCE ECDSA/DSA Signature algorithm creates ASN.1 encoded (r,s) value pairs.
-	 *
-	 * @param asn1SignatureValue
-	 *            the ASN1 signature value
-	 * @return the decode bytes
-	 * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
-	 * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
-	 */
-	private static byte[] fromAsn1ToDsaRS(byte[] asn1SignatureValue) {
-
-		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream(); ASN1InputStream is = new ASN1InputStream(asn1SignatureValue)) {
-
-			ASN1Sequence seq = (ASN1Sequence) is.readObject();
-			if (seq.size() != 2) {
-				throw new IllegalArgumentException("ASN1 Sequence size should be 2 !");
-			}
-
-			ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
-			ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
-
-			byte[] rBytes = BigIntegers.asUnsignedByteArray(r.getValue());
-			int rSize = rBytes.length;
-			byte[] sBytes = BigIntegers.asUnsignedByteArray(s.getValue());
-			int sSize = sBytes.length;
-			int max = Math.max(rSize, sSize);
-			max = max % 2 == 0 ? max : max + 1;
-			leftPad(buffer, max, rBytes);
-			buffer.write(rBytes);
-			leftPad(buffer, max, sBytes);
-			buffer.write(sBytes);
-
-			return buffer.toByteArray();
-		} catch (Exception e) {
-			throw new DSSException("Unable to convert to xmlDsig : " + e.getMessage(), e);
-		}
-	}
-
-	private static void leftPad(final ByteArrayOutputStream stream, final int size, final byte[] array) {
-		final int diff = size - array.length;
-		if (diff > 0) {
-			for (int i = 0; i < diff; i++) {
-				stream.write(0x00);
-			}
-		}
-	}
-
-	/**
 	 * Checks if the binaries are ASN.1 encoded.
 	 *
 	 * @param binaries
@@ -1662,6 +1596,100 @@ public final class DSSASN1Utils {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Converts the ANS.1 binary signature value to the concatenated (plain) R || S format if required
+	 * 
+	 * NOTE: used in XAdES and JAdES
+	 *
+	 * @param algorithm
+	 *            Encryption algorithm used to create the signatureValue
+	 * @param signatureValue
+	 *            the originally computed signature value
+	 * @return the converted signature value
+	 */
+	public static byte[] ensurePlainSignatureValue(final EncryptionAlgorithm algorithm, byte[] signatureValue) {
+		if ((EncryptionAlgorithm.ECDSA == algorithm || EncryptionAlgorithm.PLAIN_ECDSA == algorithm ||
+				EncryptionAlgorithm.DSA == algorithm) && isAsn1Encoded(signatureValue)) {
+			return toPlainDSASignatureValue(signatureValue);
+		} else {
+			return signatureValue;
+		}
+	}
+
+	/**
+	 * Converts an ASN.1 value to a concatenation string of R and S from ECDSA/DSA encryption algorithm
+	 *
+	 * The JAVA JCE ECDSA/DSA Signature algorithm creates ASN.1 encoded (r,s) value pairs.
+	 *
+	 * @param asn1SignatureValue
+	 *            the ASN1 signature value
+	 * @return the decoded bytes
+	 * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
+	 * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
+	 */
+	public static byte[] toPlainDSASignatureValue(byte[] asn1SignatureValue) {
+		try {
+			BigInteger order = getOrderFromSignatureValue(asn1SignatureValue);
+			final BigInteger[] values = StandardDSAEncoding.INSTANCE.decode(order, asn1SignatureValue);
+			return PlainDSAEncoding.INSTANCE.encode(order, values[0], values[1]);
+
+		} catch (Exception e) {
+			throw new DSSException("Unable to convert to plain : " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Converts a plain {@code signatureValue} to its corresponding ASN.1 format
+	 *
+	 * @param signatureValue
+	 *            the plain signature value
+	 * @return the encoded bytes
+	 * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
+	 * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
+	 */
+	public static byte[] toStandardDSASignatureValue(byte[] signatureValue) {
+		try {
+			BigInteger order = getOrderFromSignatureValue(signatureValue);
+			final BigInteger[] values = PlainDSAEncoding.INSTANCE.decode(order, signatureValue);
+			return StandardDSAEncoding.INSTANCE.encode(order, values[0], values[1]);
+
+		} catch (Exception e) {
+			throw new DSSException("Unable to convert to standard DSA : " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Gets the order parameter corresponding the given {@code signatureValue}
+	 *
+	 * @param signatureValue byte array
+	 * @return {@link BigInteger}
+	 * @throws IOException if an exception occurs
+	 */
+	private static BigInteger getOrderFromSignatureValue(byte[] signatureValue) throws IOException {
+		BigInteger rValue;
+		BigInteger sValue;
+		if (DSSASN1Utils.isAsn1Encoded(signatureValue)) {
+			ASN1Sequence seq = (ASN1Sequence) ASN1Primitive.fromByteArray(signatureValue);
+			if (seq.size() != 2) {
+				throw new IllegalArgumentException("ASN1 Sequence size should be 2!");
+			}
+
+			rValue = ((ASN1Integer) seq.getObjectAt(0)).getValue();
+			sValue = ((ASN1Integer) seq.getObjectAt(1)).getValue();
+
+		} else {
+			if (signatureValue.length % 2 != 0) {
+				throw new IllegalArgumentException("signatureValue binaries length shall be dividable by 2!");
+			}
+			int valueLength = signatureValue.length / 2;
+			rValue = BigIntegers.fromUnsignedByteArray(signatureValue, 0, valueLength);
+			sValue = BigIntegers.fromUnsignedByteArray(signatureValue, valueLength, valueLength);
+		}
+
+		BigInteger max = rValue.max(sValue);
+		return max.add(BigInteger.ONE);
 	}
 
 	/**

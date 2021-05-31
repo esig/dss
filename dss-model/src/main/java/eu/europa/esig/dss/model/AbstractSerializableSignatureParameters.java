@@ -207,11 +207,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		this.signaturePackaging = signaturePackaging;
 	}
 
-	/**
-	 * Get the digest algorithm
-	 * 
-	 * @return the digest algorithm
-	 */
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
@@ -232,6 +227,28 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	/**
+	 * Sets the mask generation function if used with the given SignatureAlgorithm
+	 *
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 */
+	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+		this.maskGenerationFunction = maskGenerationFunction;
+		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
+		}
+	}
+
+	@Override
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		return maskGenerationFunction;
+	}
+
+	@Override
+	public EncryptionAlgorithm getEncryptionAlgorithm() {
+		return encryptionAlgorithm;
+	}
+
+	/**
 	 * This setter should be used only when dealing with web services (or when signing in three steps). Usually the
 	 * encryption algorithm is automatically extrapolated from the private key.
 	 *
@@ -245,39 +262,9 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		}
 	}
 
-	/**
-	 * Sets the mask generation function if used with the given SignatureAlgorithm
-	 *
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
-	 */
-	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		this.maskGenerationFunction = maskGenerationFunction;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
-		}
-	}
-
-	/**
-	 * Get the encryption algorithm
-	 * 
-	 * @return the encryption algorithm.
-	 */
-	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		return encryptionAlgorithm;
-	}
-
-	/**
-	 * Gets the signature algorithm.
-	 *
-	 * @return the signature algorithm
-	 */
+	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		return signatureAlgorithm;
-	}
-
-	@Override
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		return maskGenerationFunction;
 	}
 
 	/**

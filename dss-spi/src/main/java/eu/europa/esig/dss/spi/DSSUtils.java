@@ -21,12 +21,15 @@
 package eu.europa.esig.dss.spi;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.X520Attributes;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -1248,6 +1251,38 @@ public final class DSSUtils {
 			entityIdentifiers.add(certificateToken.getEntityKey());
 		}
 		return entityIdentifiers;
+	}
+
+	/**
+	 * This method ensures the {@code SignatureValue} has an expected format and converts it when required
+	 *
+	 * @param expectedAlgorithm {@link SignatureAlgorithm} the target SignatureAlgorithm
+	 * @param signatureValue {@link SignatureValue} the obtained SignatureValue
+	 * @return {@link SignatureValue} with the target {@link SignatureAlgorithm}
+	 * @throws IOException if an exception occurs
+	 */
+	public static SignatureValue convertECSignatureValue(SignatureAlgorithm expectedAlgorithm,
+														 SignatureValue signatureValue) throws IOException {
+		SignatureValue newSignatureValue = new SignatureValue();
+		newSignatureValue.setAlgorithm(expectedAlgorithm);
+
+		byte[] signatureValueBinaries;
+		final EncryptionAlgorithm expectedEncryptionAlgorithm = expectedAlgorithm.getEncryptionAlgorithm();
+		final EncryptionAlgorithm signatureEncryptionAlgorithm = signatureValue.getAlgorithm().getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.ECDSA.equals(expectedEncryptionAlgorithm) &&
+				EncryptionAlgorithm.PLAIN_ECDSA.equals(signatureEncryptionAlgorithm)) {
+			signatureValueBinaries = DSSASN1Utils.toStandardDSASignatureValue(signatureValue.getValue());
+
+		} else if (EncryptionAlgorithm.PLAIN_ECDSA.equals(expectedEncryptionAlgorithm) &&
+				EncryptionAlgorithm.ECDSA.equals(signatureEncryptionAlgorithm)) {
+			signatureValueBinaries = DSSASN1Utils.toPlainDSASignatureValue(signatureValue.getValue());
+
+		} else {
+			throw new DSSException(String.format("Not supported conversion from SignatureAlgorithm '%s' defined within SignatureValue " +
+					"to the target algorithm '%s'", signatureValue.getAlgorithm(), expectedAlgorithm));
+		}
+		newSignatureValue.setValue(signatureValueBinaries);
+		return newSignatureValue;
 	}
 
 }

@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 import java.io.Serializable;
@@ -80,5 +82,19 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * @return {@link MaskGenerationFunction}
 	 */
 	MaskGenerationFunction getMaskGenerationFunction();
+
+	/**
+	 * Get the encryption algorithm
+	 *
+	 * @return the encryption algorithm.
+	 */
+	EncryptionAlgorithm getEncryptionAlgorithm();
+
+	/**
+	 * Gets the signature algorithm.
+	 *
+	 * @return the signature algorithm
+	 */
+	SignatureAlgorithm getSignatureAlgorithm();
 
 }

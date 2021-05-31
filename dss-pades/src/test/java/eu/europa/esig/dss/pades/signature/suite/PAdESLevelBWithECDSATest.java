@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -30,6 +29,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
 
 public class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
 
@@ -46,6 +46,7 @@ public class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.ECDSA);
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");

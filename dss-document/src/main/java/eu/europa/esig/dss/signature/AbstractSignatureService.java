@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.signature;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -31,12 +34,14 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.Signature;
@@ -128,6 +133,54 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 							"is expired at signing time %s!",
 					notBefore.toString(), notAfter.toString(), signingDate.toString()));
 		}
+	}
+
+	/**
+	 * This method ensures the provided {@code signatureValue} has the expected {@code targetSignatureAlgorithm}
+	 *
+	 * @param targetSignatureAlgorithm
+	 *            {@link SignatureAlgorithm} to convert the signatureValue to
+	 * @param signatureValue
+	 *            {@link SignatureValue} obtained from a signing token
+	 * @return {@link SignatureValue} with the defined {@code SignatureAlgorithm} in parameters
+	 */
+	protected SignatureValue ensureSignatureValue(SignatureAlgorithm targetSignatureAlgorithm, SignatureValue signatureValue) {
+		Objects.requireNonNull(targetSignatureAlgorithm, "The target SignatureAlgorithm shall be defined within SignatureParameters!");
+
+		if (signatureValue == null) {
+			LOG.debug("The SignatureValue is not provided. Cannot verify the value.");
+			return null;
+		}
+
+		if (targetSignatureAlgorithm.equals(signatureValue.getAlgorithm())) {
+			LOG.debug("The created SignatureValue matches the defined target SignatureAlgorithm : '{}'", targetSignatureAlgorithm);
+			return signatureValue;
+		}
+
+		final DigestAlgorithm expectedDigestAlgorithm = targetSignatureAlgorithm.getDigestAlgorithm();
+		final DigestAlgorithm signatureDigestAlgorithm = signatureValue.getAlgorithm() != null ?
+				signatureValue.getAlgorithm().getDigestAlgorithm() : null;
+		if (!expectedDigestAlgorithm.equals(signatureDigestAlgorithm)) {
+			throw new DSSException(String.format("The DigestAlgorithm within the SignatureValue '%s' " +
+					"does not match the expected value : '%s'", expectedDigestAlgorithm, signatureDigestAlgorithm));
+		}
+
+		if (EncryptionAlgorithm.ECDSA.isEquivalent(targetSignatureAlgorithm.getEncryptionAlgorithm())) {
+			try {
+				SignatureValue newSignatureValue = DSSUtils.convertECSignatureValue(targetSignatureAlgorithm, signatureValue);
+				LOG.info("The algorithm '{}' has been obtained from the SignatureValue. The SignatureValue converted to " +
+						"the expected algorithm '{}'.", signatureValue.getAlgorithm(), targetSignatureAlgorithm);
+				return newSignatureValue;
+
+			} catch (IOException e) {
+				throw new DSSException(String.format(
+						"An error occurred during the SignatureValue conversion. Reason : %s", e.getMessage()), e);
+			}
+
+		}
+		throw new DSSException(String.format("The SignatureAlgorithm within the SignatureValue '%s' " +
+				"does not match the expected value : '%s'. Conversion is not supported!",
+				signatureValue.getAlgorithm(), targetSignatureAlgorithm));
 	}
 
 	/**
