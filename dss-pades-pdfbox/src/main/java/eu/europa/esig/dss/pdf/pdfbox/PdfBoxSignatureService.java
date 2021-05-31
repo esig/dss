@@ -227,6 +227,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				if (pdSignatureField == null) {
 					// check signature field position only for new annotations
 					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new PdfBoxDocumentReader(pdDocument), fieldParameters);
+				} else {
+					signatureDrawer.setSignatureField(pdSignatureField);
 				}
 				
 				signatureDrawer.draw();

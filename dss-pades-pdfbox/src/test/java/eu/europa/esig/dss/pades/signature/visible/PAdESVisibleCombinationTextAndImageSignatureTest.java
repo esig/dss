@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
@@ -42,6 +33,14 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
+import java.awt.Color;
+import java.io.IOException;
+import java.util.Date;
 
 @Tag("slow")
 public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTestVisualComparator {
@@ -51,6 +50,8 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	private DSSDocument documentToSign;
 	
 	private String testName;
+
+	private float similarityLimit;
 	
 	@BeforeEach
 	public void init(TestInfo testInfo) {
@@ -65,6 +66,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
 		service = new PAdESService(getOfflineCertificateVerifier());
+		similarityLimit = 0;
 	}
 
 	@Test
@@ -133,6 +135,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	@Test
 	public void testGeneratedImageWithText() throws IOException {
 		SignatureImageParameters imageParameters = createSignatureImageParameters();
+		similarityLimit = 0.993f;
 		signatureParameters.setImageParameters(imageParameters);
 		// image and text on left
 		drawAndCompareVisually();
@@ -159,7 +162,8 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 		fieldParameters.setOriginX(10);
 		fieldParameters.setOriginY(10);
 		imageParameters.setFieldParameters(fieldParameters);
-		
+
+		similarityLimit = 0.990f;
 		drawAndCompareVisually();
 
 		// image and text on right and horizontal align is center with transparent colors with big image
@@ -232,6 +236,14 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	@Override
 	protected PAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
+	}
+
+	@Override
+	protected float getSimilarityLimit() {
+		if (similarityLimit != 0) {
+			return similarityLimit;
+		}
+		return super.getSimilarityLimit();
 	}
 
 }

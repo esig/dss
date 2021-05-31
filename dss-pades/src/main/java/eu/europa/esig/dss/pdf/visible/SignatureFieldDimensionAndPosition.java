@@ -18,11 +18,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
+package eu.europa.esig.dss.pdf.visible;
 
 import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 
+/**
+ * Defines visual signature field appearance parameters
+ *
+ */
 public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldAppearance {
 	
 	private float boxX = 0;
@@ -35,6 +38,11 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	private float imageWidth = 0;
 	private float imageHeight = 0;
 	
+	private float imageBoxX = 0;
+	private float imageBoxY = 0;
+	private float imageBoxWidth = 0;
+	private float imageBoxHeight = 0;
+	
 	private float textX = 0;
 	private float textY = 0;
 	private float textWidth = 0;
@@ -46,6 +54,8 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	private float textBoxHeight = 0;
 	
 	private int globalRotation;
+
+	private ImageResolution imageResolution;
 
 	public float getBoxX() {
 		return boxX;
@@ -95,6 +105,14 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 		this.imageY = imageY;
 	}
 	
+	public float getImageWidth() {
+		return imageWidth;
+	}
+
+	public void setImageWidth(float imageWidth) {
+		this.imageWidth = imageWidth;
+	}
+
 	public float getImageHeight() {
 		return imageHeight;
 	}
@@ -102,13 +120,37 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	public void setImageHeight(float imageHeight) {
 		this.imageHeight = imageHeight;
 	}
-	
-	public float getImageWidth() {
-		return imageWidth;
+
+	public float getImageBoxX() {
+		return imageBoxX;
 	}
 	
-	public void setImageWidth(float imageWidth) {
-		this.imageWidth = imageWidth;
+	public void setImageBoxX(float imageBoxX) {
+		this.imageBoxX = imageBoxX;
+	}
+	
+	public float getImageBoxY() {
+		return imageBoxY;
+	}
+	
+	public void setImageBoxY(float imageBoxY) {
+		this.imageBoxY = imageBoxY;
+	}
+	
+	public float getImageBoxHeight() {
+		return imageBoxHeight;
+	}
+	
+	public void setImageBoxHeight(float imageBoxHeight) {
+		this.imageBoxHeight = imageBoxHeight;
+	}
+	
+	public float getImageBoxWidth() {
+		return imageBoxWidth;
+	}
+	
+	public void setImageBoxWidth(float imageBoxWidth) {
+		this.imageBoxWidth = imageBoxWidth;
 	}
 	
 	public float getTextX() {
@@ -181,6 +223,14 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 
 	public void setGlobalRotation(int globalRotation) {
 		this.globalRotation = globalRotation;
+	}
+
+	public ImageResolution getImageResolution() {
+		return imageResolution;
+	}
+
+	public void setImageResolution(ImageResolution imageResolution) {
+		this.imageResolution = imageResolution;
 	}
 
 	@Override

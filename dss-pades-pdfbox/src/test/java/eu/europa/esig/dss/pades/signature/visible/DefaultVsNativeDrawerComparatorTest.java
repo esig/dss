@@ -20,21 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.io.IOException;
-import java.util.Date;
-
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-
+import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
@@ -56,6 +42,20 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("slow")
 public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
@@ -65,10 +65,13 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 	private DSSDocument documentToSign;
 	
 	private String testName;
+
+	private float similarityLimit;
 	
 	@BeforeEach
 	public void init(TestInfo testInfo) {
 		testName = testInfo.getTestMethod().get().getName();
+		similarityLimit = 0; // use the default one
 	}
 	
 	private void initPdfATest() {
@@ -202,6 +205,8 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
 		service = new PAdESService(getOfflineCertificateVerifier());
+
+		similarityLimit = 0.992f;
 	}
 	
 	@Test
@@ -444,6 +449,8 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 	@Test
 	public void transparentBackgroundTextCenterAndImageBottomTest() throws IOException {
 		SignatureImageParameters imageParameters = createSignatureImageParameters();
+		similarityLimit = 0.987f;
+
 		Color transparent = new Color(0, 0, 0, 0.25f);
 		imageParameters.getTextParameters().setBackgroundColor(transparent);
 		imageParameters.getTextParameters().setTextColor(new Color(0.5f, 0.2f, 0.8f, 0.5f));
@@ -478,6 +485,8 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 	@Test
 	public void multilinesWithDpiTest() throws IOException {
 		SignatureImageParameters imageParameters = createSignatureImageParameters();
+		similarityLimit = 0.990f;
+
 		Color transparent = new Color(0, 0, 0, 0.25f);
 		imageParameters.getTextParameters().setBackgroundColor(transparent);
 		imageParameters.getTextParameters().setTextColor(new Color(0.5f, 0.2f, 0.8f, 0.5f));
@@ -538,6 +547,8 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 	@Test
 	public void rotationTest() throws IOException {
 		initPdfATest();
+		similarityLimit = 0.985f;
+
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png")));
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
@@ -564,7 +575,6 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		testRotation(VisualSignatureRotation.ROTATE_90);
 		testRotation(VisualSignatureRotation.ROTATE_180);
 		testRotation(VisualSignatureRotation.ROTATE_270);
-		
 	}
 	
 	private void testRotation(VisualSignatureRotation visualSignatureRotation) throws IOException {
@@ -613,10 +623,60 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		fieldParameters.setWidth(100);
 		fieldParameters.setHeight(150);
 		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.STRETCH);
 
 		signatureParameters.setImageParameters(imageParameters);
 
 		drawAndCompareExplicitly();
+	}
+
+	@Test
+	public void zoomAndCenterTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(150);
+		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+
+		// change directions
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(100);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void centerTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(150);
+		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.CENTER);
+		imageParameters.setBackgroundColor(Color.PINK);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+
+		// change directions
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(100);
+		drawAndCompareVisually();
 	}
 	
 	@Test
@@ -780,6 +840,89 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 	}
 
+	@Test
+	public void imageScalingWithTextAndRotationTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(200);
+		fieldParameters.setHeight(300);
+
+		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+		imageParameters.setBackgroundColor(Color.YELLOW);
+		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Signature");
+		textParameters.setBackgroundColor(Color.WHITE);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+
+		imageParameters.setImageScaling(ImageScaling.CENTER);
+		drawAndCompareVisually();
+
+		// change directions
+		fieldParameters.setWidth(300);
+		fieldParameters.setHeight(200);
+		drawAndCompareVisually();
+
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void imageScalingWithZoomTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(150);
+
+		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.STRETCH);
+		imageParameters.setBackgroundColor(Color.PINK);
+		imageParameters.setZoom(50);
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+		drawAndCompareVisually();
+
+		imageParameters.setImageScaling(ImageScaling.CENTER);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void zoomAndCenterAndRotationTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(200);
+		fieldParameters.setHeight(300);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+		imageParameters.setBackgroundColor(Color.PINK);
+		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+	}
+
 	@Override
 	protected String getTestName() {
 		return testName;
@@ -800,4 +943,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		return signatureParameters;
 	}
 	
+	@Override
+	public float getSimilarityLimit() {
+		if (similarityLimit != 0) {
+			return similarityLimit;
+		}
+		return super.getSimilarityLimit();
+	}
+
 }

@@ -20,6 +20,22 @@
  */
 package eu.europa.esig.dss.pdf.visible;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -30,27 +46,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.stream.ImageInputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.pades.SignatureFieldParameters;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.utils.Utils;
-
 /**
- * Static utilities that helps in creating ImageAndResolution
+ * Static utilities for image creation and processing
  * 
  * @author pakeyser
  */
@@ -58,8 +55,14 @@ public class ImageUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ImageUtils.class);
 
+	/**
+	 * Contains supported transparent color spaces
+	 */
 	private static final int[] IMAGE_TRANSPARENT_TYPES;
 
+	/**
+	 * Default image DPI
+	 */
 	private static final int DEFAULT_DPI = 96;
 
 	/**
@@ -74,6 +77,9 @@ public class ImageUtils {
 		IMAGE_TRANSPARENT_TYPES = imageAlphaTypes;
 	}
 
+	/**
+	 * Default constructor
+	 */
 	private ImageUtils() {
 	}
 
@@ -82,17 +88,16 @@ public class ImageUtils {
 	 * {@code image}, returns values from {@code imageParameters}
 	 * 
 	 * @param imageParameters {@link SignatureImageParameters}
-	 * @return {@link ImageAndResolution} metadata
+	 * @return {@link ImageResolution} metadata
 	 * @throws IOException in case of image reading error
 	 */
-	public static ImageAndResolution secureReadMetadata(SignatureImageParameters imageParameters) throws IOException {
-		ImageAndResolution imageAndResolution;
+	public static ImageResolution secureReadMetadata(SignatureImageParameters imageParameters) throws IOException {
+		ImageResolution imageAndResolution;
 		try {
 			imageAndResolution = ImageUtils.readDisplayMetadata(imageParameters.getImage());
 		} catch (Exception e) {
 			LOG.warn("Cannot access the image metadata : {}. Returns default info.", e.getMessage());
-			imageAndResolution = new ImageAndResolution(imageParameters.getImage(), imageParameters.getDpi(),
-					imageParameters.getDpi());
+			imageAndResolution = new ImageResolution(imageParameters.getDpi(), imageParameters.getDpi());
 		}
 		return imageAndResolution;
 	}
@@ -101,10 +106,10 @@ public class ImageUtils {
 	 * Reads image's metadata
 	 * 
 	 * @param image {@link DSSDocument} image to read metadata from
-	 * @return {@link ImageAndResolution} metadata
+	 * @return {@link ImageResolution} metadata
 	 * @throws IOException in case of image reading error
 	 */
-	public static ImageAndResolution readDisplayMetadata(DSSDocument image) throws IOException {
+	public static ImageResolution readDisplayMetadata(DSSDocument image) throws IOException {
 		if (isImageWithContentType(image, MimeType.JPEG)) {
 			return readAndDisplayMetadataJPEG(image);
 		} else if (isImageWithContentType(image, MimeType.PNG)) {
@@ -131,7 +136,7 @@ public class ImageUtils {
 		}
 	}
 
-	private static ImageAndResolution readAndDisplayMetadataJPEG(DSSDocument image) throws IOException {
+	private static ImageResolution readAndDisplayMetadataJPEG(DSSDocument image) throws IOException {
 		try (InputStream is = image.openStream(); ImageInputStream iis = ImageIO.createImageInputStream(is)) {
 
 			ImageReader reader = getImageReader("jpeg");
@@ -157,11 +162,11 @@ public class ImageUtils {
 						+ "Using the default dpi with value [{}]", image.getName(), DEFAULT_DPI);
 			}
 
-			return new ImageAndResolution(image, hdpi, vdpi);
+			return new ImageResolution(hdpi, vdpi);
 		}
 	}
 
-	private static ImageAndResolution readAndDisplayMetadataPNG(DSSDocument image) throws IOException {
+	private static ImageResolution readAndDisplayMetadataPNG(DSSDocument image) throws IOException {
 		try (InputStream is = image.openStream(); ImageInputStream iis = ImageIO.createImageInputStream(is)) {
 
 			ImageReader reader = getImageReader("png");
@@ -196,7 +201,7 @@ public class ImageUtils {
 						+ "Using the default dpi with value [{}]", image.getName(), DEFAULT_DPI);
 			}
 
-			return new ImageAndResolution(image, hdpi, vdpi);
+			return new ImageResolution(hdpi, vdpi);
 		}
 	}
 
@@ -207,32 +212,20 @@ public class ImageUtils {
 	}
 
 	/**
-	 * Returns image boundary box. Tries to retrieve explicitly set values in the
-	 * parameters, in other case reads dimensions from the provided image
-	 * 
-	 * @param imageParameters {@link SignatureImageParameters}
+	 * Returns the AnnotationBox for the given image document
+	 *
+	 * @param imageDocument {@link DSSDocument} representing an image
 	 * @return {@link AnnotationBox}
 	 */
-	public static AnnotationBox getImageBoundaryBox(SignatureImageParameters imageParameters) {
-		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
-		float width = fieldParameters.getWidth();
-		float height = fieldParameters.getHeight();
-		float scaleFactor = getScaleFactor(imageParameters.getZoom());
-		if (width == 0 && height == 0) {
-			try {
-				DSSDocument docImage = imageParameters.getImage();
-				if (docImage != null) {
-					try (InputStream is = docImage.openStream()) {
-						BufferedImage bufferedImage = read(is);
-						width = bufferedImage.getWidth();
-						height = bufferedImage.getHeight();
-					}
-				}
-			} catch (IOException e) {
-				LOG.error("Cannot read the given image", e);
-			}
+	public static AnnotationBox getImageBoundaryBox(DSSDocument imageDocument) {
+		try {
+			BufferedImage bufferedImage = readImage(imageDocument);
+			float width = bufferedImage.getWidth();
+			float height = bufferedImage.getHeight();
+			return new AnnotationBox(0, 0, width, height);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Cannot read the given image. Reason : %s}", e.getMessage()), e);
 		}
-		return new AnnotationBox(0, 0, width * scaleFactor, height * scaleFactor);
 	}
 
 	/**
@@ -246,6 +239,19 @@ public class ImageUtils {
 	}
 
 	/**
+	 * Reads the image document and returns a {@code BufferedImage}
+	 *
+	 * @param imageDocument {@link DSSDocument} image document to read
+	 * @return {@link BufferedImage}
+	 * @throws IOException - in case of InputStream reading error
+	 */
+	public static BufferedImage readImage(DSSDocument imageDocument) throws IOException {
+		try (InputStream is = imageDocument.openStream()) {
+			return readImageInputStream(is);
+		}
+	}
+
+	/**
 	 * Reads image from InputStream. Detects and converts CMYK images to RGB if
 	 * needed
 	 * 
@@ -253,7 +259,7 @@ public class ImageUtils {
 	 * @return {@link BufferedImage}
 	 * @throws IOException - in case of InputStream reading error
 	 */
-	public static BufferedImage read(InputStream is) throws IOException {
+	public static BufferedImage readImageInputStream(InputStream is) throws IOException {
 		try (ImageInputStream iis = ImageIO.createImageInputStream(is)) {
 			ImageReader imageReader = getImageReader(iis);
 			imageReader.setInput(iis, true, true);
@@ -348,18 +354,15 @@ public class ImageUtils {
 		return reader;
 	}
 
+	/**
+	 * Checks if the image has a transparent layer
+	 *
+	 * @param bufferedImage {@link BufferedImage}
+	 * @return TRUE if the image has a transparent layer, FALSE otherwise
+	 */
 	public static boolean isTransparent(BufferedImage bufferedImage) {
 		int type = bufferedImage.getType();
 		return Arrays.binarySearch(IMAGE_TRANSPARENT_TYPES, type) > -1;
-	}
-
-	public static int getImageType(final BufferedImage image) {
-		int imageType = BufferedImage.TYPE_INT_RGB;
-		if (ImageUtils.isTransparent(image)) {
-			LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
-			imageType = BufferedImage.TYPE_INT_ARGB;
-		}
-		return imageType;
 	}
 
 	/**

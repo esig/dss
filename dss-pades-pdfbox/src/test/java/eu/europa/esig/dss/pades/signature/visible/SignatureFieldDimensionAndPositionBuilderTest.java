@@ -5,10 +5,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.SignatureFieldDimensionAndPosition;
-import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.SignatureFieldDimensionAndPositionBuilder;
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.PdfBoxDSSFontMetrics;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPositionBuilder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.junit.jupiter.api.Test;
@@ -42,19 +45,25 @@ public class SignatureFieldDimensionAndPositionBuilderTest {
             params.getTextParameters().setText("1234567890");
 
             PDPage page = pdDocument.getPage(0);
+            PDRectangle mediaBox = page.getMediaBox();
+            AnnotationBox pageBox = new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(),
+                    mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
 
             DSSFileFont dssFont = DSSFileFont.initializeDefault();
             PDFont font = PDType0Font.load(pdDocument, dssFont.getInputStream());
+            PdfBoxDSSFontMetrics fontMetrics = new PdfBoxDSSFontMetrics(font);
 
-            SignatureFieldDimensionAndPosition dimPos = new SignatureFieldDimensionAndPositionBuilder(params, page, font).build();
-            assertEquals(dimPos.getBoxHeight(), dimPos.getImageY() + dimPos.getImageHeight());
-            assertEquals(dimPos.getBoxWidth(), dimPos.getImageX() + dimPos.getImageWidth());
+            SignatureFieldDimensionAndPosition dimPos = new SignatureFieldDimensionAndPositionBuilder(
+                    params, fontMetrics, pageBox, page.getRotation()).build();
+            assertEquals(dimPos.getBoxHeight(), dimPos.getImageBoxY() + dimPos.getImageBoxHeight());
+            assertEquals(dimPos.getBoxWidth(), dimPos.getImageBoxX() + dimPos.getImageBoxWidth());
 
             params.getTextParameters().setSignerTextPosition(SignerTextPosition.BOTTOM);
 
-            dimPos = new SignatureFieldDimensionAndPositionBuilder(params, page, font).build();
-            assertEquals(dimPos.getBoxHeight(), dimPos.getImageY() + dimPos.getImageHeight());
-            assertEquals(dimPos.getBoxWidth(), dimPos.getImageX() + dimPos.getImageWidth());
+            dimPos = new SignatureFieldDimensionAndPositionBuilder(
+                    params, fontMetrics, pageBox, page.getRotation()).build();
+            assertEquals(dimPos.getBoxHeight(), dimPos.getImageBoxY() + dimPos.getImageBoxHeight());
+            assertEquals(dimPos.getBoxWidth(), dimPos.getImageBoxX() + dimPos.getImageBoxWidth());
 
         } catch (Exception e) {
             fail(e);

@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.rendering.PDFRenderer;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -45,6 +30,20 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.rendering.PDFRenderer;
+
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 
@@ -58,7 +57,7 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 	/**
 	 * The degree of similarity between generated and original images
 	 */
-	private static final float SIMILARITY_LIMIT = 0.987f;
+	private static final float DEFAULT_SIMILARITY_LIMIT = 0.995f;
 
 	protected abstract String getTestName();
 
@@ -139,7 +138,11 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 	}
 
 	protected void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2) throws IOException {
-		compareVisualSimilarity(doc1, doc2, SIMILARITY_LIMIT);
+		compareVisualSimilarity(doc1, doc2, getSimilarityLimit());
+	}
+
+	protected float getSimilarityLimit() {
+		return DEFAULT_SIMILARITY_LIMIT;
 	}
 
 	protected void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2, float similarityLevel)

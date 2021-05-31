@@ -21,13 +21,18 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.DSSFont;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
-import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
+import java.awt.Font;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
@@ -36,31 +41,44 @@ import java.io.IOException;
  */
 public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
 
-	/** Defines the image and position of the signature */
-	private SignatureImageAndPosition signatureImageAndPosition;
-
 	@Override
-	public SignatureImageAndPosition buildSignatureFieldBox() throws IOException {
-		if (signatureImageAndPosition == null) {
-			// DSS-747. Using the DPI resolution to convert java size to dot
-			ImageAndResolution ires = DefaultDrawerImageUtils.create(parameters);
-			signatureImageAndPosition = new SignatureImageAndPositionBuilder().build(parameters, document, ires);
-		}
-		return signatureImageAndPosition;
+	protected JavaDSSFontMetrics getDSSFontMetrics() {
+		SignatureImageTextParameters textParameters = parameters.getTextParameters();
+		DSSFont dssFont = textParameters.getFont();
+
+		Font javaFont = dssFont.getJavaFont();
+		float properSize = dssFont.getSize()
+				* ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
+		Font properFont = javaFont.deriveFont(properSize);
+
+		return new JavaDSSFontMetrics(properFont);
 	}
 
 	@Override
 	public void draw() throws IOException {
-		SignatureImageAndPosition signatureImageAndPosition = buildSignatureFieldBox();
+		SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
+		BufferedImage image = null;
+		BufferedImage textImage = null;
+		if (parameters.getImage() != null) {
+			image = DefaultImageDrawerUtils.toBufferedImage(parameters.getImage());
+		}
+		if (parameters.getTextParameters() != null && !parameters.getTextParameters().isEmpty()) {
+			textImage = DefaultImageDrawerUtils.createTextImage(parameters, dimensionAndPosition);
+		}
+		if (image == null && textImage == null) {
+			throw new DSSException("Image or text shall be defined in order to build a visual signature!");
+		}
+
+		BufferedImage bufferedImage = DefaultImageDrawerUtils.mergeImages(image, textImage, dimensionAndPosition, parameters);
+		bufferedImage = DefaultImageDrawerUtils.rotate(bufferedImage, dimensionAndPosition.getGlobalRotation());
 
 		int page = parameters.getFieldParameters().getPage();
-		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(document,
-				signatureImageAndPosition.getSignatureImage(), page);
+		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(document, bufferedImage, page);
 
-		visibleSig.xAxis(signatureImageAndPosition.getX());
-		visibleSig.yAxis(signatureImageAndPosition.getY());
-		visibleSig.width(signatureImageAndPosition.getWidth());
-		visibleSig.height(signatureImageAndPosition.getHeight());
+		visibleSig.xAxis(dimensionAndPosition.getBoxX());
+		visibleSig.yAxis(dimensionAndPosition.getBoxY());
+		visibleSig.width(dimensionAndPosition.getBoxWidth());
+		visibleSig.height(dimensionAndPosition.getBoxHeight());
 
 		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
 		signatureProperties.visualSignEnabled(true);

@@ -22,12 +22,12 @@ package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import com.lowagie.text.pdf.BaseFont;
 
-import eu.europa.esig.dss.pdf.visible.AbstractFontMetrics;
+import eu.europa.esig.dss.pdf.visible.AbstractDSSFontMetrics;
 
 /**
  * The IText (OpenPDF) implementation of Font metrics
  */
-public class ITextFontMetrics extends AbstractFontMetrics {
+public class ITextDSSFontMetrics extends AbstractDSSFontMetrics {
 
 	/** The OpenPDF font */
 	private final BaseFont baseFont;
@@ -37,7 +37,7 @@ public class ITextFontMetrics extends AbstractFontMetrics {
 	 *
 	 * @param baseFont {@link BaseFont}
 	 */
-	public ITextFontMetrics(BaseFont baseFont) {
+	public ITextDSSFontMetrics(BaseFont baseFont) {
 		this.baseFont = baseFont;
 	}
 
@@ -52,11 +52,25 @@ public class ITextFontMetrics extends AbstractFontMetrics {
 		float descent = getDescentPoint(str, size);
 		return ascent - descent;
 	}
-	
+
+	/**
+	 * Returns the ascent point
+	 *
+	 * @param str {@link String} to get value for
+	 * @param size the size of the string
+	 * @return ascent point
+	 */
 	public float getAscentPoint(String str, float size) {
 		return baseFont.getAscentPoint(str, size);
 	}
-	
+
+	/**
+	 * Returns the descent point
+	 *
+	 * @param str {@link String} to get value for
+	 * @param size the size of the string
+	 * @return descent point
+	 */
 	public float getDescentPoint(String str, float size) {
 		return baseFont.getDescentPoint(str, size);
 	}

@@ -18,36 +18,52 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.openpdf.visible;
-
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-
-import java.io.IOException;
+package eu.europa.esig.dss.pdf.visible;
 
 /**
- * This class builds a {@code VisualSignatureFieldAppearance} for an IText Signature Drawer
+ * Image horizontal and vertical resolution
  *
  */
-public abstract class ITextAppearanceRectangleBuilder {
+public class ImageResolution {
 
-	/** The visual signature parameters */
-	protected final SignatureImageParameters imageParameters;
-	
+	/** X axis dpi */
+	private int xDpi;
+
+	/** Y axis dpi */
+	private int yDpi;
+
 	/**
-	 * The default constructor
-	 * 
-	 * @param imageParameters {@link SignatureImageParameters}
+	 * Default constructor
+	 *
+	 * @param xDpi X axis dpi
+	 * @param yDpi Y axis dpi
 	 */
-	protected ITextAppearanceRectangleBuilder(SignatureImageParameters imageParameters) {
-		this.imageParameters = imageParameters;
+	public ImageResolution(int xDpi, int yDpi) {
+		this.xDpi = xDpi;
+		this.yDpi = yDpi;
 	}
-	
+
 	/**
-	 * Builds and returns {@code VisualSignatureFieldAppearance}
-	 * 
-	 * @return {@link ITextVisualSignatureAppearance}
-	 * @throws IOException if an exception occurs
+	 * Gets X axis dpi
+	 *
+	 * @return X axis dpi
 	 */
-	public abstract ITextVisualSignatureAppearance build() throws IOException;
+	public int getXDpi() {
+		return xDpi;
+	}
+
+	/**
+	 * Gets Y axis dpi
+	 *
+	 * @return Y axis dpi
+	 */
+	public int getYDpi() {
+		return yDpi;
+	}
+
+	@Override
+	public String toString() {
+		return "ImageResolution [xDpi=" + xDpi + ", yDpi=" + yDpi + "]";
+	}
 
 }

@@ -26,10 +26,11 @@ import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
-import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
-import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -54,7 +55,7 @@ import org.apache.pdfbox.util.Matrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -71,9 +72,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	/** PDFBox font */
 	private PDFont pdFont;
-
-	/** Defines signature field dimensions and position */
-	private SignatureFieldDimensionAndPosition dimensionAndPosition;
 
 	/** Defines the default value for a non-transparent alpha layer */
 	private static final float OPAQUE_VALUE = 0xff;
@@ -106,15 +104,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 
 	@Override
-	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() throws IOException {
-		if (dimensionAndPosition == null) {
-			PDPage originalPage = document
-					.getPage(parameters.getFieldParameters().getPage() - ImageUtils.DEFAULT_FIRST_PAGE);
-			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = new SignatureFieldDimensionAndPositionBuilder(
-					parameters, originalPage, pdFont);
-			dimensionAndPosition = dimensionAndPositionBuilder.build();
-		}
-		return dimensionAndPosition;
+	protected DSSFontMetrics getDSSFontMetrics() {
+		return new PdfBoxDSSFontMetrics(pdFont);
 	}
 
 	@Override
@@ -188,6 +179,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			cs.transform(Matrix.getTranslateInstance(0, -rectangle.getWidth()));
 			break;
 		case ImageRotationUtils.ANGLE_360:
+		case ImageRotationUtils.ANGLE_0:
 			// do nothing
 			break;
 		default:
@@ -235,8 +227,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 				byte[] bytes = IOUtils.toByteArray(is);
 				PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, image.getName());
 
-				// divide to scale factor, because PdfBox due to the matrix transformation also
-				// changes position parameters of the image
 				float xAxis = dimensionAndPosition.getImageX();
 				float yAxis = dimensionAndPosition.getImageY();
 				float width = dimensionAndPosition.getImageWidth();
@@ -274,7 +264,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			cs.setNonStrokingColor(textParameters.getTextColor());
 			setAlphaChannel(cs, textParameters.getTextColor());
 
-			PdfBoxFontMetrics pdfBoxFontMetrics = new PdfBoxFontMetrics(pdFont);
+			PdfBoxDSSFontMetrics pdfBoxFontMetrics = new PdfBoxDSSFontMetrics(pdFont);
 
 			String[] strings = pdfBoxFontMetrics.getLines(textParameters.getText());
 
@@ -283,7 +273,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 			cs.newLineAtOffset(dimensionAndPosition.getTextX(),
 					// align vertical position
-					dimensionAndPosition.getTextHeight() + dimensionAndPosition.getTextY() - fontSize);
+					 dimensionAndPosition.getTextHeight() + dimensionAndPosition.getTextY() - fontSize);
 
 			float previousOffset = 0;
 			for (String str : strings) {
