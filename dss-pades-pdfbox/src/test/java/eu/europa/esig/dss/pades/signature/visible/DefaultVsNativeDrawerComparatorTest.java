@@ -750,7 +750,7 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 
 		signatureParameters.setImageParameters(imageParameters);
 
-		drawAndCompareVisually();
+		drawAndCompareExplicitly();
 	}
 	
 	@Test
@@ -899,6 +899,27 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		drawAndCompareVisually();
 
 		imageParameters.setImageScaling(ImageScaling.CENTER);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void zoomAndCenterAndRotationTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(200);
+		fieldParameters.setHeight(300);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+		imageParameters.setBackgroundColor(Color.PINK);
+		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+		signatureParameters.setImageParameters(imageParameters);
+
 		drawAndCompareVisually();
 	}
 

@@ -60,7 +60,7 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 		BufferedImage image = null;
 		BufferedImage textImage = null;
 		if (parameters.getImage() != null) {
-			image = DefaultImageDrawerUtils.toBufferedImage(parameters.getImage(), dimensionAndPosition);
+			image = DefaultImageDrawerUtils.toBufferedImage(parameters.getImage());
 		}
 		if (parameters.getTextParameters() != null && !parameters.getTextParameters().isEmpty()) {
 			textImage = DefaultImageDrawerUtils.createTextImage(parameters, dimensionAndPosition);

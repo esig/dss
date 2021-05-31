@@ -62,10 +62,11 @@ public final class DefaultImageDrawerUtils {
         }
 
         int textDPI = DPIUtils.getDpi(imageParameters.getDpi());
-        Font font = getJavaFont(imageParameters, textDPI);
         BufferedImage img = new BufferedImage((int) DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxWidth(), textDPI),
                 (int) DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxHeight(), textDPI), imageType);
+
         Graphics2D g = img.createGraphics();
+        Font font = getJavaFont(imageParameters, textDPI);
         g.setFont(font);
 
         // Improve text rendering
@@ -138,20 +139,13 @@ public final class DefaultImageDrawerUtils {
     }
 
     /**
-     * Converts the given image document to {@code BufferedImage} with the given dimension parameters
+     * Reads and converts the given image document to a {@code BufferedImage}
      *
      * @param imageDocument {@link BufferedImage}
-     * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition}
      */
-    public static BufferedImage toBufferedImage(final DSSDocument imageDocument,
-                                                final SignatureFieldDimensionAndPosition dimensionAndPosition) {
+    public static BufferedImage toBufferedImage(final DSSDocument imageDocument) {
         try {
-            BufferedImage original = ImageUtils.readImage(imageDocument);
-            return sizeImage(original, (int) DPIUtils.computeProperSize(dimensionAndPosition.getImageWidth(),
-                    dimensionAndPosition.getImageResolution().getXDpi()),
-                    (int) DPIUtils.computeProperSize(dimensionAndPosition.getImageHeight(),
-                    dimensionAndPosition.getImageResolution().getYDpi()));
-
+            return ImageUtils.readImage(imageDocument);
         } catch (IOException e) {
             throw new DSSException(String.format("An error occurred during image document reading : %s", e.getMessage()), e);
         }
@@ -200,34 +194,44 @@ public final class DefaultImageDrawerUtils {
             xDpi = DPIUtils.getDpi(imageParameters.getDpi());
             yDpi = DPIUtils.getDpi(imageParameters.getDpi());
         }
+
+        float imageWidthRatio = 1f;
+        float imageHeightRatio = 1f;
+        if (image != null) {
+            float widthRatio = (image.getWidth() / dimensionAndPosition.getImageWidth()) * DPIUtils.getPageScaleFactor(xDpi);
+            imageWidthRatio = widthRatio > 1 ? widthRatio : imageWidthRatio;
+            float heightRatio = image.getHeight() / dimensionAndPosition.getImageHeight() * DPIUtils.getPageScaleFactor(yDpi);
+            imageHeightRatio = heightRatio > 1 ? heightRatio : imageHeightRatio;
+        }
+
         float width = dimensionAndPosition.getBoxWidth();
         float height = dimensionAndPosition.getBoxHeight();
         if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
             width =  dimensionAndPosition.getBoxHeight();
             height = dimensionAndPosition.getBoxWidth();
         }
-        BufferedImage result = getEmptyImage(width, height, xDpi, yDpi, imageType);
+        BufferedImage result = getEmptyImage(width * imageWidthRatio, height * imageHeightRatio, xDpi, yDpi, imageType);
         Graphics2D g = result.createGraphics();
-        g.setBackground(new Color(0, 0, 0, 0));
         initRendering(g);
 
         // required for non-transparent and text containing pictures to avoid black spaces
-        if (BufferedImage.TYPE_INT_ARGB != imageType || imageParameters.getTextParameters() != null ||
+        if (BufferedImage.TYPE_INT_ARGB != imageType ||
+                imageParameters.getTextParameters() != null && !imageParameters.getTextParameters().isEmpty() ||
                 imageParameters.getBackgroundColor() != null) {
             fillBackground(g, result.getWidth(), result.getHeight(), imageParameters.getBackgroundColor());
         }
 
         if (textImage != null) {
-            drawImage(g, textImage, DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxX(), xDpi),
-                    DPIUtils.computeProperSize(height - dimensionAndPosition.getTextBoxY() - dimensionAndPosition.getTextBoxHeight(), yDpi),
-                    DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxWidth(), xDpi),
-                    DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxHeight(), yDpi));
+            drawImage(g, textImage, DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxX() * imageWidthRatio, xDpi),
+                    DPIUtils.computeProperSize((height - dimensionAndPosition.getTextBoxY() - dimensionAndPosition.getTextBoxHeight()) * imageHeightRatio, yDpi),
+                    DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxWidth() * imageWidthRatio, xDpi),
+                    DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxHeight() * imageHeightRatio, yDpi));
         }
         if (image != null) {
-            drawImage(g, image, DPIUtils.computeProperSize(dimensionAndPosition.getImageX(), xDpi),
-                    DPIUtils.computeProperSize(height - dimensionAndPosition.getImageY() - dimensionAndPosition.getImageHeight(), yDpi),
-                    DPIUtils.computeProperSize(dimensionAndPosition.getImageWidth(), xDpi),
-                    DPIUtils.computeProperSize(dimensionAndPosition.getImageHeight(), yDpi));
+            drawImage(g, image, DPIUtils.computeProperSize(dimensionAndPosition.getImageX() * imageWidthRatio, xDpi),
+                    DPIUtils.computeProperSize((height - dimensionAndPosition.getImageY() - dimensionAndPosition.getImageHeight()) * imageHeightRatio, yDpi),
+                    DPIUtils.computeProperSize(dimensionAndPosition.getImageWidth() * imageWidthRatio, xDpi),
+                    DPIUtils.computeProperSize(dimensionAndPosition.getImageHeight() * imageHeightRatio, yDpi));
         }
         return result;
     }
