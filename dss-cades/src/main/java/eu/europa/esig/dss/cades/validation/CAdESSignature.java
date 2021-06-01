@@ -284,13 +284,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					ASN1OctetString spDocument = ASN1OctetString.getInstance(sequence.getObjectAt(1));
 					signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(spDocument.getOctets()));
 				} catch (Exception e) {
-					LOG.warn("Unable to extact a SignaturePolicyStore content. 'sigPolicyEncoded OCTET STRING' is expected!");
+					LOG.warn("Unable to extract a SignaturePolicyStore content. 'sigPolicyEncoded OCTET STRING' is expected!");
 				}
 				
 				signaturePolicyStore.setSpDocSpecification(spDocSpecification);
 				return signaturePolicyStore;
 			} else {
-				LOG.warn("Unable to extact a SignaturePolicyStore. The element shall contain two attributes.");
+				LOG.warn("Unable to extract a SignaturePolicyStore. The element shall contain two attributes.");
 			}
 		}
 		return null;
@@ -770,16 +770,21 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		Digest messageDigest = new Digest();
 		messageDigest.setValue(messageDigestValue);
 		messageDigestValidation.setDigest(messageDigest);
+
+		Set<DigestAlgorithm> digestAlgorithmCandidates = new HashSet<>();
+		DigestAlgorithm signerInformationDigestAlgorithm = getDigestAlgorithm();
+		if (signerInformationDigestAlgorithm != null) {
+			digestAlgorithmCandidates.add(signerInformationDigestAlgorithm);
+		}
+		digestAlgorithmCandidates.addAll(getMessageDigestAlgorithms());
 		
-		Set<DigestAlgorithm> messageDigestAlgorithms = getMessageDigestAlgorithms();
-		
-		if (Utils.collectionSize(messageDigestAlgorithms) == 1) {
-			messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
+		if (Utils.collectionSize(digestAlgorithmCandidates) == 1) {
+			messageDigest.setAlgorithm(digestAlgorithmCandidates.iterator().next());
 		}
 
 		if (originalDocument != null) {
 			messageDigestValidation.setFound(true);
-			messageDigestValidation.setIntact(verifyDigestAlgorithm(originalDocument, messageDigestAlgorithms, messageDigest));
+			messageDigestValidation.setIntact(verifyDigestAlgorithm(originalDocument, digestAlgorithmCandidates, messageDigest));
 
 			if (manifestFile != null && 
 					Utils.toBase64(messageDigest.getValue()).equals(manifestFile.getDigestBase64String(messageDigest.getAlgorithm()))) {

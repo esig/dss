@@ -17,6 +17,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
@@ -35,22 +36,30 @@ public class CAdESLevelBCounterSignatureWithPlainECDSATokenTest extends Abstract
     CAdESSignatureParameters signatureParameters;
     CAdESCounterSignatureParameters counterSignatureParameters;
 
-    private static Stream<DigestAlgorithm> data() {
-        List<DigestAlgorithm> args = new ArrayList<>();
+    private static Stream<Arguments> data() {
+        List<Arguments> args = new ArrayList<>();
 
         for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
-            SignatureAlgorithm ecCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
-            SignatureAlgorithm plainEcCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, digestAlgo);
-            if (ecCa != null && Utils.isStringNotBlank(ecCa.getOid()) && plainEcCa != null && Utils.isStringNotBlank(plainEcCa.getOid())) {
-                args.add(digestAlgo);
+            if (isAcceptableDigestAlgo(digestAlgo)) {
+                for (DigestAlgorithm messageDigest : DigestAlgorithm.values()) {
+                    if (isAcceptableDigestAlgo(messageDigest)) {
+                        args.add(Arguments.of(digestAlgo, messageDigest));
+                    }
+                }
             }
         }
         return args.stream();
     }
 
-    @ParameterizedTest(name = "Combination {index} of ECDSA with {0}")
+    private static boolean isAcceptableDigestAlgo(DigestAlgorithm digestAlgo) {
+        SignatureAlgorithm ecCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
+        SignatureAlgorithm plainEcCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, digestAlgo);
+        return ecCa != null && Utils.isStringNotBlank(ecCa.getOid()) && plainEcCa != null && Utils.isStringNotBlank(plainEcCa.getOid());
+    }
+
+    @ParameterizedTest(name = "Combination {index} of signature with digestAlgorithm {0} and counter-signature ECDSA with {1}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo) {
+    public void init(DigestAlgorithm digestAlgo, DigestAlgorithm counterSignatureDigestAlgo) {
         documentToSign = new InMemoryDocument("Hello World".getBytes());
 
         signatureParameters = new CAdESSignatureParameters();
@@ -68,7 +77,7 @@ public class CAdESLevelBCounterSignatureWithPlainECDSATokenTest extends Abstract
         counterSignatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
         counterSignatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.ECDSA);
-        counterSignatureParameters.setDigestAlgorithm(digestAlgo);
+        counterSignatureParameters.setDigestAlgorithm(counterSignatureDigestAlgo);
 
         service = new CAdESService(getOfflineCertificateVerifier());
 
@@ -80,7 +89,7 @@ public class CAdESLevelBCounterSignatureWithPlainECDSATokenTest extends Abstract
         counterSignatureParameters.setSignatureIdToCounterSign(signatureId);
 
         // simulate a token returning PLAIN_ECDSA
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, signatureParameters.getDigestAlgorithm());
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, counterSignatureParameters.getDigestAlgorithm());
         ToBeSigned dataToSign = service.getDataToBeCounterSigned(signatureDocument, counterSignatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureAlgorithm, getPrivateKeyEntry());
         return service.counterSignSignature(signatureDocument, counterSignatureParameters, signatureValue);

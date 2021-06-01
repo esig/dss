@@ -70,6 +70,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 	
@@ -463,7 +464,9 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		diagnosticData = validate(new InMemoryDocument(counterSignedDocument.getBytes()), Arrays.asList(fileToSign));
 		assertEquals(1, diagnosticData.getAllSignatures().size());
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getAllSignatures().iterator().next().getId()));
 		assertEquals(1, diagnosticData.getAllCounterSignatures().size());
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getAllCounterSignatures().iterator().next().getId()));
 	}
 
 	@Test
