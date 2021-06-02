@@ -144,6 +144,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * Performs a conformance check for the signature to a given profile
 	 */
 	private BaselineRequirementsChecker baselineRequirementsChecker;
+
+	/**
+	 * Cached instance of the signing certificate token
+	 */
+	private CertificateToken signingCertificateToken;
 	
 	/**
 	 * Returns a builder to define and build a signature Id
@@ -375,20 +380,25 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public CertificateToken getSigningCertificateToken() {
-		// This ensures that the variable candidatesForSigningCertificate has been initialized
-		CandidatesForSigningCertificate candidatesForSigningCertificate = getCertificateSource()
-				.getCandidatesForSigningCertificate(signingCertificateSource);
-		// This ensures that the variable signatureCryptographicVerification has been initialized
-		signatureCryptographicVerification = getSignatureCryptographicVerification();
-		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
-		if (theCertificateValidity != null) {
-			if (theCertificateValidity.isValid()) {
-				final CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
-				return signingCertificateToken;
+		if (signingCertificateToken == null) {
+			// This ensures that the variable candidatesForSigningCertificate has been initialized
+			CandidatesForSigningCertificate candidatesForSigningCertificate = getCertificateSource()
+					.getCandidatesForSigningCertificate(signingCertificateSource);
+			// This ensures that the variable signatureCryptographicVerification has been initialized
+			signatureCryptographicVerification = getSignatureCryptographicVerification();
+			final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
+			if (theCertificateValidity != null) {
+				if (theCertificateValidity.isValid()) {
+					final CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
+					return signingCertificateToken;
+				}
+			}
+			final CertificateValidity theBestCandidate = candidatesForSigningCertificate.getTheBestCandidate();
+			if (theBestCandidate != null) {
+				signingCertificateToken = theBestCandidate.getCertificateToken();
 			}
 		}
-		final CertificateValidity theBestCandidate = candidatesForSigningCertificate.getTheBestCandidate();
-		return theBestCandidate == null ? null : theBestCandidate.getCertificateToken();
+		return signingCertificateToken;
 	}
 
 	@Override

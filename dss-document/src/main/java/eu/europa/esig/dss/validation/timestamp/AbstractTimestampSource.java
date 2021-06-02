@@ -141,13 +141,23 @@ public abstract class AbstractTimestampSource {
 	protected List<TimestampedReference> createReferencesForCertificates(Collection<CertificateToken> certificates) {
 		final List<TimestampedReference> references = new ArrayList<>();
 		for (CertificateToken certificateToken : certificates) {
-			addReference(references, new TimestampedReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, createReferenceForCertificate(certificateToken));
 		}
 		return references;
 	}
 
 	/**
-	 * Creates a lit of {@code TimestampedReference}s from the identifiers of a given type
+	 * Creates a {@code TimestampedReference} for the provided {@code CertificateToken}
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @return {@link TimestampedReference}
+	 */
+	protected TimestampedReference createReferenceForCertificate(CertificateToken certificateToken) {
+		return createReferenceForIdentifier(certificateToken.getDSSId(), TimestampedObjectType.CERTIFICATE);
+	}
+
+	/**
+	 * Creates a list of {@code TimestampedReference}s from the identifiers of a given type
 	 *
 	 * @param identifiers a collection of {@link Identifier}s
 	 * @param timestampedObjectType {@link TimestampedObjectType} to create references with
@@ -157,9 +167,21 @@ public abstract class AbstractTimestampSource {
 			Collection<? extends Identifier> identifiers, TimestampedObjectType timestampedObjectType) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (Identifier identifier : identifiers) {
-			timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), timestampedObjectType));
+			timestampedReferences.add(createReferenceForIdentifier(identifier, timestampedObjectType));
 		}
 		return timestampedReferences;
+	}
+
+	/**
+	 * Creates a {@code TimestampedReference} for the given identifier
+	 *
+	 * @param identifier {@link Identifier} to create a timestamped reference from
+	 * @param timestampedObjectType {@link TimestampedObjectType} the target timestamped reference type
+	 * @return {@link TimestampedReference}
+	 */
+	protected TimestampedReference createReferenceForIdentifier(Identifier identifier,
+																TimestampedObjectType timestampedObjectType) {
+		return new TimestampedReference(identifier.asXmlId(), timestampedObjectType);
 	}
 
 }

@@ -393,8 +393,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	private void setXmlSigningCertificate(XmlSignature xmlSignature, AdvancedSignature signature) {
-		final CandidatesForSigningCertificate candidatesForSigningCertificate = signature
-				.getCandidatesForSigningCertificate();
+		final CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
 
 		PublicKey signingCertificatePublicKey = null;

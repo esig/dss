@@ -521,18 +521,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private <T extends AdvancedSignature> void assertSignaturesValid(Collection<T> signatures,
 																	 ValidationContext validationContext) {
-
 		validationContext.checkAllTimestampsValid();
 		validationContext.checkAllRequiredRevocationDataPresent();
 		validationContext.checkAllPOECoveredByRevocationData();
 		validationContext.checkAllCertificatesValid();
 
 		for (final AdvancedSignature signature : signatures) {
-			CertificateToken signingCertificateToken = signature.getSigningCertificateToken();
-			if (signingCertificateToken != null) {
-				validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signingCertificateToken);
-				validationContext.checkSignatureNotExpired(signingCertificateToken);
-			}
+			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature);
+			validationContext.checkSignatureNotExpired(signature);
 		}
 	}
 

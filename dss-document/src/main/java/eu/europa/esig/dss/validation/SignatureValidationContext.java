@@ -191,8 +191,13 @@ public class SignatureValidationContext implements ValidationContext {
 		addDocumentCertificateSource(signature.getCertificateSource());
 		addDocumentCRLSource(signature.getCRLSource());
 		addDocumentOCSPSource(signature.getOCSPSource());
+		registerPOE(signature.getId(), currentTime);
 
 		// Add resolved certificates
+		CertificateToken signingCertificate = signature.getSigningCertificateToken();
+		if (signingCertificate != null) {
+			addCertificateTokenForVerification(signingCertificate);
+		}
 		List<CertificateValidity> certificateValidities = signature.getCandidatesForSigningCertificate().getCertificateValidityList();
 		if (Utils.isCollectionNotEmpty(certificateValidities)) {
 			for (CertificateValidity certificateValidity : certificateValidities) {
@@ -1044,12 +1049,13 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate) {
+	public boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(AdvancedSignature signature) {
 		List<String> errors = new ArrayList<>();
+		CertificateToken signingCertificateToken = signature.getSigningCertificateToken();
 		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
 		for (Map.Entry<CertificateToken, List<CertificateToken>> entry : orderedCertificateChains.entrySet()) {
 			CertificateToken firstChainCertificate = entry.getKey();
-			Date bestSignatureTime = firstChainCertificate.equals(signingCertificate) ? getEarliestTimestampTime()
+			Date bestSignatureTime = firstChainCertificate.equals(signingCertificateToken) ? getEarliestTimestampTime()
 					: lastTimestampCertChainDates.get(firstChainCertificate);
 			checkRevocationForCertificateChainAgainstBestSignatureTime(entry.getValue(), bestSignatureTime, errors);
 		}
@@ -1074,18 +1080,21 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public boolean checkSignatureNotExpired(CertificateToken signingCertificate) {
-		boolean signatureNotExpired = verifyCertificateTokenHasPOERecursively(signingCertificate);
-		if (!signatureNotExpired) {
-			Status status = new Status("The signing certificate has been expired and " +
-					"there is no POE during its validity range.", Arrays.asList(signingCertificate.getDSSIdAsString()));
-			certificateVerifier.getAlertOnExpiredSignature().alert(status);
+	public boolean checkSignatureNotExpired(AdvancedSignature signature) {
+		CertificateToken signingCertificate = signature.getSigningCertificateToken();
+		if (signingCertificate != null) {
+			boolean signatureNotExpired = verifyCertificateTokenHasPOERecursively(signingCertificate, poeTimes.get(signature.getId()));
+			if (!signatureNotExpired) {
+				Status status = new Status("The signing certificate has been expired and " +
+						"there is no POE during its validity range.", Arrays.asList(signingCertificate.getDSSIdAsString()));
+				certificateVerifier.getAlertOnExpiredSignature().alert(status);
+			}
+			return signatureNotExpired;
 		}
-		return signatureNotExpired;
+		return true;
 	}
 
-	private boolean verifyCertificateTokenHasPOERecursively(CertificateToken certificateToken) {
-		List<POE> poeTimeList = poeTimes.get(certificateToken.getDSSIdAsString());
+	private boolean verifyCertificateTokenHasPOERecursively(CertificateToken certificateToken, List<POE> poeTimeList) {
 		if (Utils.isCollectionNotEmpty(poeTimeList)) {
 			for (POE poeTime : poeTimeList) {
 				if (certificateToken.isValidOn(poeTime.getTime())) {
@@ -1094,7 +1103,7 @@ public class SignatureValidationContext implements ValidationContext {
 						// check if the timestamp is valid at validation time
 						CertificateToken issuerCertificateToken = getIssuer(timestampToken);
 						if (issuerCertificateToken != null &&
-								verifyCertificateTokenHasPOERecursively(issuerCertificateToken)) {
+								verifyCertificateTokenHasPOERecursively(issuerCertificateToken, poeTimes.get(timestampToken.getDSSIdAsString()))) {
 							return true;
 						}
 					} else {

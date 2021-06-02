@@ -197,13 +197,12 @@ public interface ValidationContext {
 	 * Additionally, an alert can be handled
 	 * {@link CertificateVerifier#setAlertOnNoRevocationAfterBestSignatureTime(eu.europa.esig.dss.alert.StatusAlert)}
 	 * 
-	 * @param signingCertificate {@code CertificateToken} signing certificate of the
-	 *                           signature to be checked
+	 * @param signature {@code AdvancedSignature} signature to be checked
 	 * @return true if the signing certificate is covered with a updated revocation
 	 *         data (after signature-timestamp production time)
 	 * 
 	 */
-	boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate);
+	boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(AdvancedSignature signature);
 
 	/**
 	 * This method verifies if the signing certificate has not been expired yet or has a still valid timestamp
@@ -211,12 +210,11 @@ public interface ValidationContext {
 	 * Additionally, an alert can be handled
 	 * {@link CertificateVerifier#setAlertOnExpiredSignature(eu.europa.esig.dss.alert.StatusAlert)}
 	 *
-	 * @param signingCertificate {@code CertificateToken} signing certificate of the
-	 *                           signature to be checked
+	 * @param signature {@code AdvancedSignature} signature to be verified
 	 * @return true if the signing certificate or its POE(s) not yet expired, false otherwise
 	 *
 	 */
-	boolean checkSignatureNotExpired(CertificateToken signingCertificate);
+	boolean checkSignatureNotExpired(AdvancedSignature signature);
 
 	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
