@@ -299,6 +299,13 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 					candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
 				}
 			}
+		} else if (candidatesForSigningCertificate.isEmpty()) {
+			List<CertificateToken> certificates = signingCertificateSource.getCertificates();
+			LOG.debug("No signing certificate reference found. " +
+					"Resolve all {} certificates from the provided certificate source as signing candidates.", certificates.size());
+			for (CertificateToken certCandidate : certificates) {
+				candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
+			}
 		}
 	}
 

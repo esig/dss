@@ -41,17 +41,17 @@ public class CertificateRefIdentifier extends Identifier {
 		if (certDigest != null) {
 			return certDigest;
 		}
-		CertificateIdentifier certificateIdentifier = certificateRef.getCertificateIdentifier();
-		if (certificateIdentifier != null) {
-			if (certificateIdentifier.getSki() != null) {
-				return new Digest(SKI_DIGEST_ALGO, certificateIdentifier.getSki());
+		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
+		if (signerIdentifier != null) {
+			if (signerIdentifier.getSki() != null) {
+				return new Digest(SKI_DIGEST_ALGO, signerIdentifier.getSki());
 			}
-			byte[] issuerSerialEncoded = certificateIdentifier.getIssuerSerialEncoded();
+			byte[] issuerSerialEncoded = signerIdentifier.getIssuerSerialEncoded();
 			if (issuerSerialEncoded != null) {
 				return new Digest(DIGEST_ALGO, DSSUtils.digest(DIGEST_ALGO, issuerSerialEncoded));
 			}
-			if (certificateIdentifier.getIssuerName() != null) {
-				return new Digest(DIGEST_ALGO, DSSUtils.digest(DIGEST_ALGO, certificateIdentifier.getIssuerName().getEncoded()));
+			if (signerIdentifier.getIssuerName() != null) {
+				return new Digest(DIGEST_ALGO, DSSUtils.digest(DIGEST_ALGO, signerIdentifier.getIssuerName().getEncoded()));
 			} 
 		}
 		ResponderId responderId = certificateRef.getResponderId();

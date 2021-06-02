@@ -67,7 +67,7 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
@@ -924,11 +924,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return xmlBasicSignatureType;
 	}
 
-	protected List<XmlSignerInfo> getXmlSignerInformationStore(Set<CertificateIdentifier> certificateIdentifiers) {
-		if (Utils.isCollectionNotEmpty(certificateIdentifiers)) {
+	protected List<XmlSignerInfo> getXmlSignerInformationStore(Set<SignerIdentifier> signerIdentifiers) {
+		if (Utils.isCollectionNotEmpty(signerIdentifiers)) {
 			List<XmlSignerInfo> signerInfos = new ArrayList<>();
-			for (CertificateIdentifier certificateIdentifier : certificateIdentifiers) {
-				signerInfos.add(getXmlSignerInfo(certificateIdentifier));
+			for (SignerIdentifier signerIdentifier : signerIdentifiers) {
+				signerInfos.add(getXmlSignerInfo(signerIdentifier));
 			}
 			return signerInfos;
 		}

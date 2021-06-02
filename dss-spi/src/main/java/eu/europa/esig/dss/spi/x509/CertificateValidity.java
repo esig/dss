@@ -40,7 +40,7 @@ public class CertificateValidity implements Serializable {
 	
 	private CertificateToken certificateToken;
 	
-	private CertificateIdentifier certificateIdentifier;
+	private SignerIdentifier signerIdentifier;
 	
 	/** CMS Signer id */
 	private boolean signerIdMatch;
@@ -88,12 +88,12 @@ public class CertificateValidity implements Serializable {
 	 * the {@code CertificateIdentifier}. To be used in case of a non AdES
 	 * signature.
 	 *
-	 * @param certificateIdentifier the {@code CertificateIdentifier} associated to
+	 * @param signerIdentifier the {@code CertificateIdentifier} associated to
 	 *                              the signing certificate
 	 */
-	public CertificateValidity(final CertificateIdentifier certificateIdentifier) {
-		Objects.requireNonNull(certificateIdentifier, "CertificateIdentifier cannot be null!");
-		this.certificateIdentifier = certificateIdentifier;
+	public CertificateValidity(final SignerIdentifier signerIdentifier) {
+		Objects.requireNonNull(signerIdentifier, "CertificateIdentifier cannot be null!");
+		this.signerIdentifier = signerIdentifier;
 	}
 
 	/**
@@ -108,19 +108,19 @@ public class CertificateValidity implements Serializable {
 	}
 	
 	/**
-	 * Returns the associated {@link CertificateIdentifier}
+	 * Returns the associated {@link SignerIdentifier}
 	 * NOTE: can return null
 	 * 
-	 * @return {@link CertificateIdentifier}
+	 * @return {@link SignerIdentifier}
 	 */
-	public CertificateIdentifier getSignerInfo() {
+	public SignerIdentifier getSignerInfo() {
 		if (certificateToken == null) {
-			return certificateIdentifier;
+			return signerIdentifier;
 		}
-		CertificateIdentifier certificateIdentifierFromCert = new CertificateIdentifier();
-		certificateIdentifierFromCert.setIssuerName(certificateToken.getIssuerX500Principal());
-		certificateIdentifierFromCert.setSerialNumber(certificateToken.getSerialNumber());
-		return certificateIdentifierFromCert;
+		SignerIdentifier signerIdentifierFromCert = new SignerIdentifier();
+		signerIdentifierFromCert.setIssuerName(certificateToken.getIssuerX500Principal());
+		signerIdentifierFromCert.setSerialNumber(certificateToken.getSerialNumber());
+		return signerIdentifierFromCert;
 	}
 
 	public CertificateToken getCertificateToken() {

@@ -256,16 +256,16 @@ public class ListCertificateSource {
 
 	/**
 	 * This method returns the found {@link CertificateToken} from all
-	 * {@link CertificateSource} for the given {@link CertificateIdentifier}.
+	 * {@link CertificateSource} for the given {@link SignerIdentifier}.
 	 * 
-	 * @param certificateIdentifier the {@link CertificateIdentifier} to find in the
+	 * @param signerIdentifier the {@link SignerIdentifier} to find in the
 	 *                              sources
 	 * @return a Set of found {@link CertificateToken}
 	 */
-	public Set<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier) {
+	public Set<CertificateToken> getByCertificateIdentifier(SignerIdentifier signerIdentifier) {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSource source : sources) {
-			result.addAll(source.getByCertificateIdentifier(certificateIdentifier));
+			result.addAll(source.getBySignerIdentifier(signerIdentifier));
 		}
 		return result;
 	}

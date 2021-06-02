@@ -315,10 +315,6 @@ public class PAdESSignature extends CAdESSignature {
 		return pdfSignatureRevision.getDssDictionary();
 	}
 
-	private boolean hasCAdESDetachedSubFilter() {
-		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
-	}
-
 	private boolean hasPKCS7SubFilter() {
 		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
 	}

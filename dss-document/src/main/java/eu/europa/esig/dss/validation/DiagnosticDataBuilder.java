@@ -92,7 +92,7 @@ import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -501,15 +501,15 @@ public abstract class DiagnosticDataBuilder {
 		return result;
 	}
 
-	protected XmlSignerInfo getXmlSignerInfo(CertificateIdentifier certificateIdentifier) {
+	protected XmlSignerInfo getXmlSignerInfo(SignerIdentifier signerIdentifier) {
 		XmlSignerInfo xmlSignerInfo = new XmlSignerInfo();
-		if (certificateIdentifier.getIssuerName() != null) {
-			xmlSignerInfo.setIssuerName(certificateIdentifier.getIssuerName().toString());
+		if (signerIdentifier.getIssuerName() != null) {
+			xmlSignerInfo.setIssuerName(signerIdentifier.getIssuerName().toString());
 		}
-		xmlSignerInfo.setSerialNumber(certificateIdentifier.getSerialNumber());
-		xmlSignerInfo.setSki(certificateIdentifier.getSki());
-		if (certificateIdentifier.isCurrent()) {
-			xmlSignerInfo.setCurrent(certificateIdentifier.isCurrent());
+		xmlSignerInfo.setSerialNumber(signerIdentifier.getSerialNumber());
+		xmlSignerInfo.setSki(signerIdentifier.getSki());
+		if (signerIdentifier.isCurrent()) {
+			xmlSignerInfo.setCurrent(signerIdentifier.isCurrent());
 		}
 		return xmlSignerInfo;
 	}
@@ -801,14 +801,14 @@ public abstract class DiagnosticDataBuilder {
 		return null;
 	}
 
-	private CertificateToken getCertificateByCertificateIdentifier(final CertificateIdentifier certificateIdentifier) {
-		if (certificateIdentifier == null) {
+	private CertificateToken getCertificateByCertificateIdentifier(final SignerIdentifier signerIdentifier) {
+		if (signerIdentifier == null) {
 			return null;
 		}
 
 		List<CertificateToken> founds = new ArrayList<>();
 		for (CertificateToken cert : usedCertificates) {
-			if (certificateIdentifier.isRelatedToCertificate(cert)) {
+			if (signerIdentifier.isRelatedToCertificate(cert)) {
 				founds.add(cert);
 				if (trustedCertSources.isTrusted(cert)) {
 					return cert;
@@ -933,17 +933,17 @@ public abstract class DiagnosticDataBuilder {
 
 	protected XmlCertificateRef getXmlCertificateRef(CertificateRef ref, CertificateRefOrigin origin) {
 		XmlCertificateRef certificateRef = new XmlCertificateRef();
-		CertificateIdentifier certificateIdentifier = ref.getCertificateIdentifier();
-		if (certificateIdentifier != null) {
-			certificateRef.setIssuerSerial(getXmlIssuerSerial(certificateIdentifier));
+		SignerIdentifier signerIdentifier = ref.getCertificateIdentifier();
+		if (signerIdentifier != null) {
+			certificateRef.setIssuerSerial(getXmlIssuerSerial(signerIdentifier));
 		}
 		Digest refDigest = ref.getCertDigest();
 		ResponderId responderId = ref.getResponderId();
 		if (refDigest != null) {
 			certificateRef
 					.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(refDigest.getAlgorithm(), refDigest.getValue()));
-		} else if (certificateIdentifier != null) {
-			certificateRef.setSerialInfo(getXmlSignerInfo(certificateIdentifier));
+		} else if (signerIdentifier != null) {
+			certificateRef.setSerialInfo(getXmlSignerInfo(signerIdentifier));
 		} else if (responderId != null) {
 			certificateRef.setSerialInfo(getXmlSignerInfo(responderId));
 		}
@@ -1030,9 +1030,9 @@ public abstract class DiagnosticDataBuilder {
 		}
 	}
 
-	private XmlIssuerSerial getXmlIssuerSerial(CertificateIdentifier certificateIdentifier) {
+	private XmlIssuerSerial getXmlIssuerSerial(SignerIdentifier signerIdentifier) {
 		XmlIssuerSerial xmlIssuerSerial = new XmlIssuerSerial();
-		xmlIssuerSerial.setValue(certificateIdentifier.getIssuerSerialEncoded());
+		xmlIssuerSerial.setValue(signerIdentifier.getIssuerSerialEncoded());
 		return xmlIssuerSerial;
 	}
 

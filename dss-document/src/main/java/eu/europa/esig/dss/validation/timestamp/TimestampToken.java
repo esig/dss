@@ -36,7 +36,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -767,9 +767,9 @@ public class TimestampToken extends Token {
 	/**
 	 * Returns a list of found CertificateIdentifier in the SignerInformationStore
 	 * 
-	 * @return a list of {@link CertificateIdentifier}s
+	 * @return a list of {@link SignerIdentifier}s
 	 */
-	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
+	public Set<SignerIdentifier> getSignerInformationStoreInfos() {
 		return getCertificateSource().getAllCertificateIdentifiers();
 	}
 

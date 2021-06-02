@@ -63,6 +63,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESTwoSignersLTALevelTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPSSTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPemEncodedCrlTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithSHA3Test;
+import eu.europa.esig.dss.pades.signature.suite.PDFSignatureWithoutCertificatesTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFTimestampFiltersTest;
 import eu.europa.esig.dss.pades.signature.suite.ProtectedDocumentsSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSignaturesMustHaveDifferentIdTest;
@@ -84,7 +85,7 @@ import org.junit.runner.RunWith;
 		PAdESSignedAssertionTest.class, PAdESLevelLTAAndLevelTTest.class, PAdESLevelTNotTrustedTSPTest.class,
         PAdESLevelLTANotTrustedTSPTest.class, PAdESSignWithRevokedCertTest.class, PAdESLevelLTASignRevokedSigWithPOETest.class,
 		PAdESLevelBCustomTimeZoneTest.class, PAdESLevelLTCRLCounterTest.class, PAdESLevelBWithPlainECDSATest.class,
-		PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class })
+		PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class, PDFSignatureWithoutCertificatesTest.class })
 public class ITextPAdESSignatureSuiteTest {
 
 }

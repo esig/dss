@@ -89,10 +89,10 @@ public interface CertificateSource extends Serializable {
 	 * This method returns the Set of certificates with the
 	 * {@code CertificateIdentifier}
 	 *
-	 * @param certificateIdentifier the certificate identifier to match
+	 * @param signerIdentifier the certificate identifier to match
 	 * @return If no match is found then an empty set is returned.
 	 */
-	Set<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier);
+	Set<CertificateToken> getBySignerIdentifier(SignerIdentifier signerIdentifier);
 
 	/**
 	 * This method returns the Set of certificates with the {@code Digest}

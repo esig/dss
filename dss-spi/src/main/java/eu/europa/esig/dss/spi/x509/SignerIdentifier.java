@@ -20,57 +20,104 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-
-import javax.security.auth.x500.X500Principal;
-
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
+import javax.security.auth.x500.X500Principal;
+import java.math.BigInteger;
+import java.util.Arrays;
 
-public class CertificateIdentifier {
+/**
+ * Represents an ASN.1 SignerId DTO
+ *
+ */
+public class SignerIdentifier {
 
+	/** The X500Principal name of the certificate issue */
 	private X500Principal issuerName;
-	private BigInteger serialNumber;
-	
-	private byte[] ski; // SHA-1 hash of cert's public key (used in OCSP response)
-	
-	private boolean current; // the used CertificateIdentifier for a signature/timestamp
 
+	/** The certificate's serial number */
+	private BigInteger serialNumber;
+
+	/**  SHA-1 hash of certificate's public key (used in OCSP response) */
+	private byte[] ski;
+
+	/** the used CertificateIdentifier for a signature/timestamp */
+	private boolean current;
+
+	/**
+	 * Returns the name of the certificate issuer
+	 *
+	 * @return {@link X500Principal}
+	 */
 	public X500Principal getIssuerName() {
 		return issuerName;
 	}
 
+	/**
+	 * Sets the name of the certificate's issuer
+	 *
+	 * @param name {@link X500Principal}
+	 */
 	public void setIssuerName(X500Principal name) {
 		this.issuerName = name;
 	}
 
+	/**
+	 * Returns the serial number of the signer certificate
+	 *
+	 * @return {@link BigInteger}
+	 */
 	public BigInteger getSerialNumber() {
 		return serialNumber;
 	}
 
+	/**
+	 * Sets serial number of the signer certificate
+	 *
+	 * @param serialNumber {@link BigInteger}
+	 */
 	public void setSerialNumber(BigInteger serialNumber) {
 		this.serialNumber = serialNumber;
 	}
 
+	/**
+	 * Returns SHA-1 of the certificate's public key
+	 *
+	 * @return byte array representation of the SHA-1
+	 */
 	public byte[] getSki() {
 		return ski;
 	}
 
+	/**
+	 * Sets SHA-1 of the certificate's public key
+	 *
+	 * @param ski byte array
+	 */
 	public void setSki(byte[] ski) {
 		this.ski = ski;
 	}
 
+	/**
+	 * Indicates if the SignerIdentifier is related to the current signature
+	 *
+	 * @return TRUE if it is related to the current signature, FALSE otherwise
+	 */
 	public boolean isCurrent() {
 		return current;
 	}
 
+	/**
+	 * Sets if the SignerIdentifier is related to the current signature
+	 *
+	 * @param current if related to the current signature
+	 */
 	public void setCurrent(boolean current) {
 		this.current = current;
 	}
@@ -99,25 +146,42 @@ public class CertificateIdentifier {
 	 * @return TRUE if the certificateToken is related to the SerialInfo, FALSE otherwise
 	 */
 	public boolean isRelatedToCertificate(CertificateToken certificateToken) {
-		CertificateIdentifier id = new CertificateIdentifier();
+		SignerIdentifier id = new SignerIdentifier();
 		id.setIssuerName(certificateToken.getIssuerX500Principal());
 		id.setSerialNumber(certificateToken.getSerialNumber());
 		id.setSki(DSSASN1Utils.getSki(certificateToken));
 		return isEquivalent(id);
 	}
 
-	public boolean isEquivalent(CertificateIdentifier certificateIdentifier) {
+	/**
+	 * Checks if the given {@code signerIdentifier} is equivalent
+	 *
+	 * @param signerIdentifier {@link SignerIdentifier} to compare
+	 * @return TRUE if the given object is equivalent, FALSE otherwise
+	 */
+	public boolean isEquivalent(SignerIdentifier signerIdentifier) {
 		if (issuerName != null && serialNumber != null) {
-			if (!DSSASN1Utils.x500PrincipalAreEquals(issuerName, certificateIdentifier.getIssuerName())) {
+			if (!DSSASN1Utils.x500PrincipalAreEquals(issuerName, signerIdentifier.getIssuerName())) {
 				return false;
 			}
-			if (!serialNumber.equals(certificateIdentifier.getSerialNumber())) {
+			if (!serialNumber.equals(signerIdentifier.getSerialNumber())) {
 				return false;
 			}
 			return true;
 		} else {
-			return Arrays.equals(ski, certificateIdentifier.getSki());
+			return Arrays.equals(ski, signerIdentifier.getSki());
 		}
+	}
+
+	/**
+	 * Checks if the SignerIdentifier is empty or not
+	 *
+	 * NOTE: in some cases the SignerIdentifier can not contain any values
+	 *
+	 * @return TRUE if the {@code SignerIdentifier} is empty, FALSE otherwise
+	 */
+	public boolean isEmpty() {
+		return issuerName == null && serialNumber == null && Utils.isArrayEmpty(ski);
 	}
 
 	@Override
@@ -150,7 +214,7 @@ public class CertificateIdentifier {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		CertificateIdentifier other = (CertificateIdentifier) obj;
+		SignerIdentifier other = (SignerIdentifier) obj;
 		if (issuerName == null) {
 			if (other.issuerName != null) {
 				return false;

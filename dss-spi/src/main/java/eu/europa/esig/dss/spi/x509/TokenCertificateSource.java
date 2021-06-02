@@ -20,6 +20,11 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,11 +36,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
-import eu.europa.esig.dss.enumerations.CertificateOrigin;
-import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.utils.Utils;
-
 /**
  * Represents a source of certificates embedded in a token (signature, timestamp, ocsp response)
  *
@@ -43,7 +43,7 @@ import eu.europa.esig.dss.utils.Utils;
 @SuppressWarnings("serial")
 public abstract class TokenCertificateSource extends CommonCertificateSource {
 
-	private final Map<CertificateIdentifier, List<CertificateOrigin>> certificateIdentifierOrigins = new LinkedHashMap<>();
+	private final Map<SignerIdentifier, List<CertificateOrigin>> certificateIdentifierOrigins = new LinkedHashMap<>();
 	
 	private final Map<CertificateToken, List<CertificateOrigin>> certificateOrigins = new LinkedHashMap<>();
 
@@ -56,13 +56,13 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	/**
 	 * Adds a {@code CertificateIdentifier} with its origin
 	 * 
-	 * @param certificateIdentifier the certificate identifier to be added
+	 * @param signerIdentifier the certificate identifier to be added
 	 * @param origin                the origin of the certificate identifier
 	 */
-	protected void addCertificateIdentifier(CertificateIdentifier certificateIdentifier, CertificateOrigin origin) {
-		Objects.requireNonNull(certificateIdentifier, "The certificate identifier cannot be null");
+	protected void addCertificateIdentifier(SignerIdentifier signerIdentifier, CertificateOrigin origin) {
+		Objects.requireNonNull(signerIdentifier, "The certificate identifier cannot be null");
 		Objects.requireNonNull(origin, "The origin cannot be null");
-		certificateIdentifierOrigins.computeIfAbsent(certificateIdentifier, k -> new ArrayList<>()).add(origin);
+		certificateIdentifierOrigins.computeIfAbsent(signerIdentifier, k -> new ArrayList<>()).add(origin);
 	}
 
 	/**
@@ -124,31 +124,31 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	}
 	
 	/**
-	 * Returns a Set of all {@link CertificateIdentifier}
+	 * Returns a Set of all {@link SignerIdentifier}
 	 * 
 	 * For CAdES/PAdES/Timestamp
 	 * 
-	 * @return a set of {@link CertificateIdentifier}
+	 * @return a set of {@link SignerIdentifier}
 	 */
-	public Set<CertificateIdentifier> getAllCertificateIdentifiers() {
+	public Set<SignerIdentifier> getAllCertificateIdentifiers() {
 		return certificateIdentifierOrigins.keySet();
 	}
 
 	/**
-	 * Returns the current {@link CertificateIdentifier}
+	 * Returns the current {@link SignerIdentifier}
 	 * 
 	 * For CAdES/PAdES/Timestamp
 	 * 
-	 * @return the current {@link CertificateIdentifier} or null
+	 * @return the current {@link SignerIdentifier} or null
 	 */
-	public CertificateIdentifier getCurrentCertificateIdentifier() {
-		CertificateIdentifier current = null;
-		for (CertificateIdentifier certificateIdentifier : certificateIdentifierOrigins.keySet()) {
-			if (certificateIdentifier.isCurrent()) {
+	public SignerIdentifier getCurrentCertificateIdentifier() {
+		SignerIdentifier current = null;
+		for (SignerIdentifier signerIdentifier : getAllCertificateIdentifiers()) {
+			if (signerIdentifier.isCurrent()) {
 				if (current != null) {
 					throw new IllegalStateException("More than one current CertificateIdentifier");
 				}
-				current = certificateIdentifier;
+				current = signerIdentifier;
 			}
 		}
 		return current;
@@ -186,9 +186,9 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		return true;
 	}
 
-	protected CertificateToken getCertificateToken(CertificateIdentifier certificateIdentifier) {
+	protected CertificateToken getCertificateToken(SignerIdentifier signerIdentifier) {
 		for (CertificateToken certificateToken : certificateOrigins.keySet()) {
-			if (certificateIdentifier.isRelatedToCertificate(certificateToken)) {
+			if (signerIdentifier.isRelatedToCertificate(certificateToken)) {
 				return certificateToken;
 			}
 		}

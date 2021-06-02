@@ -20,6 +20,14 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,15 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.identifier.EntityIdentifier;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
 /**
  * This class is the common class for all {@code CertificateSource}. It stores
@@ -195,12 +194,12 @@ public class CommonCertificateSource implements CertificateSource {
 	}
 
 	@Override
-	public Set<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier) {
+	public Set<CertificateToken> getBySignerIdentifier(SignerIdentifier signerIdentifier) {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
 			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
 				// run over all entries to compare with the SN too
-				if (certificateIdentifier.isRelatedToCertificate(certificateToken)) {
+				if (signerIdentifier.isRelatedToCertificate(certificateToken)) {
 					result.add(certificateToken);
 				}
 			}

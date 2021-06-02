@@ -44,7 +44,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
@@ -1066,9 +1066,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * Returns a Set of CertificateIdentifier extracted from a
 	 * SignerInformationStore of CMS Signed Data
 	 * 
-	 * @return a Set of {@link CertificateIdentifier}s
+	 * @return a Set of {@link SignerIdentifier}s
 	 */
-	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
+	public Set<SignerIdentifier> getSignerInformationStoreInfos() {
 		return getCertificateSource().getAllCertificateIdentifiers();
 	}
 

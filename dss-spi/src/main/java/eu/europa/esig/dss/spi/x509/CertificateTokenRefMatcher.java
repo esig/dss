@@ -35,11 +35,11 @@ public class CertificateTokenRefMatcher {
 		}
 
 		Digest certDigest = certificateRef.getCertDigest();
-		CertificateIdentifier certificateIdentifier = certificateRef.getCertificateIdentifier();
+		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
 		ResponderId responderId = certificateRef.getResponderId();
 		if (certDigest != null) {
 			return matchByDigest(certificateToken, certificateRef);
-		} else if (certificateIdentifier != null && certificateIdentifier.isRelatedToCertificate(certificateToken)) {
+		} else if (signerIdentifier != null && signerIdentifier.isRelatedToCertificate(certificateToken)) {
 			return true;
 		} else if (responderId != null && responderId.isRelatedToCertificate(certificateToken)) {
 			return true;
@@ -57,17 +57,17 @@ public class CertificateTokenRefMatcher {
 	}
 
 	public boolean matchBySerialNumber(CertificateToken certificateToken, CertificateRef certificateRef) {
-		CertificateIdentifier certificateIdentifier = certificateRef.getCertificateIdentifier();
-		if (certificateIdentifier != null && certificateIdentifier.getSerialNumber() != null) {
-			return certificateToken.getSerialNumber().equals(certificateIdentifier.getSerialNumber());
+		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
+		if (signerIdentifier != null && signerIdentifier.getSerialNumber() != null) {
+			return certificateToken.getSerialNumber().equals(signerIdentifier.getSerialNumber());
 		}
 		return false;
 	}
 
 	public boolean matchByIssuerName(CertificateToken certificateToken, CertificateRef certificateRef) {
-		CertificateIdentifier certificateIdentifier = certificateRef.getCertificateIdentifier();
-		if (certificateIdentifier != null && certificateIdentifier.getIssuerName() != null) {
-			return DSSASN1Utils.x500PrincipalAreEquals(certificateIdentifier.getIssuerName(), certificateToken.getIssuerX500Principal());
+		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
+		if (signerIdentifier != null && signerIdentifier.getIssuerName() != null) {
+			return DSSASN1Utils.x500PrincipalAreEquals(signerIdentifier.getIssuerName(), certificateToken.getIssuerX500Principal());
 		}
 		return false;
 	}

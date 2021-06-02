@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.security.PublicKey;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
@@ -38,7 +28,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
@@ -47,6 +37,15 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import java.security.PublicKey;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * This class provides the mechanism to retrieve certificates contained in a XAdES signature.
@@ -214,29 +213,38 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 
 	private void resolveFromSource(CertificateSource certificateSource, CandidatesForSigningCertificate candidatesForSigningCertificate) {
 		List<CertificateRef> signingCertificateRefs = getSigningCertificateRefs();
-		for (CertificateRef certificateRef : signingCertificateRefs) {
-			CertificateIdentifier certificateIdentifier = certificateRef.getCertificateIdentifier();
-			if (certificateIdentifier != null) {
-				Set<CertificateToken> certificatesByIdentifier = certificateSource
-						.getByCertificateIdentifier(certificateIdentifier);
-				if (Utils.isCollectionNotEmpty(certificatesByIdentifier)) {
-					LOG.debug("Resolved certificate by certificate identifier");
-					for (CertificateToken certCandidate : certificatesByIdentifier) {
-						candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
+		if (Utils.isCollectionNotEmpty(signingCertificateRefs)) {
+			for (CertificateRef certificateRef : signingCertificateRefs) {
+				SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
+				if (signerIdentifier != null) {
+					Set<CertificateToken> certificatesByIdentifier = certificateSource
+							.getBySignerIdentifier(signerIdentifier);
+					if (Utils.isCollectionNotEmpty(certificatesByIdentifier)) {
+						LOG.debug("Resolved certificate by certificate identifier");
+						for (CertificateToken certCandidate : certificatesByIdentifier) {
+							candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
+						}
+						return;
 					}
-					return;
+				}
+
+				Digest certDigest = certificateRef.getCertDigest();
+				if (certDigest != null) {
+					Set<CertificateToken> certificatesByDigest = certificateSource.getByCertificateDigest(certDigest);
+					if (Utils.isCollectionNotEmpty(certificatesByDigest)) {
+						LOG.debug("Resolved certificate by digest");
+						for (CertificateToken certCandidate : certificatesByDigest) {
+							candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
+						}
+					}
 				}
 			}
-
-			Digest certDigest = certificateRef.getCertDigest();
-			if (certDigest != null) {
-				Set<CertificateToken> certificatesByDigest = certificateSource.getByCertificateDigest(certDigest);
-				if (Utils.isCollectionNotEmpty(certificatesByDigest)) {
-					LOG.debug("Resolved certificate by digest");
-					for (CertificateToken certCandidate : certificatesByDigest) {
-						candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
-					}
-				}
+		} else if (candidatesForSigningCertificate.isEmpty()) {
+			List<CertificateToken> certificates = certificateSource.getCertificates();
+			LOG.debug("No signing certificate reference found. " +
+					"Resolve all {} certificates from the provided certificate source as signing candidates.", certificates.size());
+			for (CertificateToken certCandidate : certificates) {
+				candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
 			}
 		}
 	}

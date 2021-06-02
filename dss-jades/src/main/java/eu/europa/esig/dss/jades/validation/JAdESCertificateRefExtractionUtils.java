@@ -51,7 +51,7 @@ public final class JAdESCertificateRefExtractionUtils {
 			CertificateRef certificateRef = new CertificateRef();
 			certificateRef.setCertDigest(digest);
 			if (issuerSerial != null) {
-				certificateRef.setCertificateIdentifier(DSSASN1Utils.toCertificateIdentifier(issuerSerial));
+				certificateRef.setCertificateIdentifier(DSSASN1Utils.toSignerIdentifier(issuerSerial));
 			}
 			return certificateRef;
 		}
