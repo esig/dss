@@ -139,7 +139,7 @@ public abstract class DiagnosticDataBuilder {
 	protected Set<CertificateToken> usedCertificates;
 
 	/** The revocation used during the validation process */
-	protected Set<RevocationToken<Revocation>> usedRevocations;
+	protected Set<RevocationToken> usedRevocations;
 
 	/** The list of trusted certificate sources */
 	protected ListCertificateSource trustedCertSources = new ListCertificateSource();
@@ -219,7 +219,7 @@ public abstract class DiagnosticDataBuilder {
 	 * @param usedRevocations the used revocation data
 	 * @return the builder
 	 */
-	public DiagnosticDataBuilder usedRevocations(Set<RevocationToken<Revocation>> usedRevocations) {
+	public DiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
 		this.usedRevocations = usedRevocations;
 		return this;
 	}
@@ -362,13 +362,13 @@ public abstract class DiagnosticDataBuilder {
 		}
 	}
 
-	private Collection<XmlRevocation> buildXmlRevocations(Set<RevocationToken<Revocation>> revocations) {
+	private Collection<XmlRevocation> buildXmlRevocations(Set<RevocationToken> revocations) {
 		List<XmlRevocation> builtRevocations = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(revocations)) {
-			List<RevocationToken<Revocation>> tokens = new ArrayList<>(revocations);
+			List<RevocationToken> tokens = new ArrayList<>(revocations);
 			Collections.sort(tokens, new TokenComparator());
 			List<String> uniqueIds = new ArrayList<>(); // CRL can contain multiple entries
-			for (RevocationToken<Revocation> revocationToken : tokens) {
+			for (RevocationToken revocationToken : tokens) {
 				String id = revocationToken.getDSSIdAsString();
 				if (uniqueIds.contains(id)) {
 					continue;

@@ -88,7 +88,7 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * A set of revocation data to process
 	 */
-	private final Set<RevocationToken<Revocation>> processedRevocations = new LinkedHashSet<>();
+	private final Set<RevocationToken<?>> processedRevocations = new LinkedHashSet<>();
 
 	/**
 	 * A set of timestamps to process
@@ -467,12 +467,17 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public void addRevocationTokenForVerification(RevocationToken<Revocation> revocationToken) {
+	public void addRevocationTokenForVerification(RevocationToken revocationToken) {
 		if (addTokenForVerification(revocationToken)) {
 
 			RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
 			if (revocationCertificateSource != null) {
 				revocationCertificateSources.add(revocationCertificateSource);
+			}
+
+			CertificateToken issuerCertificateToken = revocationToken.getIssuerCertificateToken();
+			if (issuerCertificateToken != null) {
+				addCertificateTokenForVerification(issuerCertificateToken);
 			}
 
 			final boolean added = processedRevocations.add(revocationToken);
@@ -914,7 +919,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private List<RevocationToken> getRelatedRevocationTokens(CertificateToken certificateToken) {
 		List<RevocationToken> result = new ArrayList<>();
-		for (RevocationToken<Revocation> revocationToken : processedRevocations) {
+		for (RevocationToken<?> revocationToken : processedRevocations) {
 			if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateId())) {
 				result.add(revocationToken);
 			}
@@ -1116,7 +1121,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public Set<RevocationToken<Revocation>> getProcessedRevocations() {
+	public Set<RevocationToken> getProcessedRevocations() {
 		return Collections.unmodifiableSet(processedRevocations);
 	}
 

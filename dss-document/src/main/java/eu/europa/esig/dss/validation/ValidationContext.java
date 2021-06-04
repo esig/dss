@@ -77,7 +77,7 @@ public interface ValidationContext {
 	 * @param revocationToken an instance of {@code RevocationToken} revocation
 	 *                        tokens to verify
 	 */
-	void addRevocationTokenForVerification(final RevocationToken<Revocation> revocationToken);
+	<R extends Revocation> void addRevocationTokenForVerification(final RevocationToken<R> revocationToken);
 
 	/**
 	 * Adds a new certificate token to the list of tokens to verify. If the certificate token has already been added
@@ -239,7 +239,7 @@ public interface ValidationContext {
 	 *
 	 * @return The list of CertificateToken(s)
 	 */
-	Set<RevocationToken<Revocation>> getProcessedRevocations();
+	Set<RevocationToken> getProcessedRevocations();
 
 	/**
 	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given
