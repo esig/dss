@@ -115,6 +115,13 @@ public interface TimestampSource extends Serializable {
 	ListCertificateSource getTimestampCertificateSourcesExceptLastArchiveTimestamp();
 
 	/**
+	 * Returns a list of all {@code TimestampToken}s except the last archive timestamp
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
+	List<TimestampToken> getAllTimestampsExceptLastArchiveTimestamp();
+
+	/**
 	 * Returns a merged {@code ListRevocationSource} of all embedded timestamp CRL
 	 * sources
 	 * 

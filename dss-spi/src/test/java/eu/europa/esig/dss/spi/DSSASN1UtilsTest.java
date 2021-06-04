@@ -264,6 +264,7 @@ public class DSSASN1UtilsTest {
 		String issuerName2 = "CN=ESTEID-SK 2015,2.5.4.97=#0C0E4E545245452D3130373437303133,O=AS Sertifitseerimiskeskus,C=EE";
 		String issuerName3 = "2.5.4.97=#0C0E4E545245452D3130373437303133,O=AS Sertifitseerimiskeskus,C=EE,CN=ESTEID-SK 2015";
 		String issuerName4 = "2.5.4.97=#0C0E4E545245452D3130373437303133,O=AS Sertifitseerimiskeskus,C=BE,CN=ESTEID-SK 2015";
+		String issuerName5 = "2.5.4.97=#0C0E4E545245452D3130373437303133,O=AS Sertifitseerimiskeskus,CN=ESTEID-SK 2015";
 		X500Principal x500Principal1 = DSSUtils.getX500PrincipalOrNull(issuerName1);
 		assertNotNull(x500Principal1);
 		X500Principal x500Principal2 = DSSUtils.getX500PrincipalOrNull(issuerName2);
@@ -272,9 +273,13 @@ public class DSSASN1UtilsTest {
 		assertNotNull(x500Principal3);
 		X500Principal x500Principal4 = DSSUtils.getX500PrincipalOrNull(issuerName4);
 		assertNotNull(x500Principal4);
+		X500Principal x500Principal5 = DSSUtils.getX500PrincipalOrNull(issuerName5);
+		assertNotNull(x500Principal5);
         assertTrue(DSSASN1Utils.x500PrincipalAreEquals(x500Principal1, x500Principal2));
         assertTrue(DSSASN1Utils.x500PrincipalAreEquals(x500Principal1, x500Principal3));
         assertFalse(DSSASN1Utils.x500PrincipalAreEquals(x500Principal1, x500Principal4));
+        assertFalse(DSSASN1Utils.x500PrincipalAreEquals(x500Principal5, x500Principal4));
+		assertFalse(DSSASN1Utils.x500PrincipalAreEquals(x500Principal4, x500Principal5));
 	}
 
 	@Test

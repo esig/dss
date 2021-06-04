@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +33,8 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -59,14 +60,14 @@ public class CommonCertificateSource implements CertificateSource {
 	 * 
 	 * All entries share the same key pair
 	 */
-	private Map<EntityIdentifier, CertificateSourceEntity> entriesByPublicKeyHash = new HashMap<>();
+	private Map<EntityIdentifier, CertificateSourceEntity> entriesByPublicKeyHash = new LinkedHashMap<>();
 
 	/**
-	 * Map of tokens, the key is the canonicalized SubjectX500Principal
+	 * Map of tokens, the key is the properties map of SubjectX500Principal
 	 * 
-	 * For a same SubjectX500Principal, different key pairs are possible
+	 * For a same SubjectX500Principal, different key pairs (and certificates) are possible
 	 */
-	private Map<String, Set<CertificateToken>> tokensBySubject = new HashMap<>();
+	private Map<Map<String, String>, Set<CertificateToken>> tokensBySubject = new LinkedHashMap<>();
 
 	/**
 	 * The default constructor
@@ -104,8 +105,8 @@ public class CommonCertificateSource implements CertificateSource {
 		}
 
 		synchronized (tokensBySubject) {
-			String key = certificateToAdd.getSubject().getCanonical();
-			tokensBySubject.computeIfAbsent(key, k -> new HashSet<>()).add(certificateToAdd);
+			Map<String, String> propertiesMap = DSSASN1Utils.get(certificateToAdd.getSubject().getPrincipal());
+			tokensBySubject.computeIfAbsent(propertiesMap, k -> new HashSet<>()).add(certificateToAdd);
 		}
 
 		return certificateToAdd;
@@ -115,8 +116,8 @@ public class CommonCertificateSource implements CertificateSource {
 	 * This method removes all certificates from the source
 	 */
 	protected void reset() {
-		entriesByPublicKeyHash = new HashMap<>();
-		tokensBySubject = new HashMap<>();
+		entriesByPublicKeyHash = new LinkedHashMap<>();
+		tokensBySubject = new LinkedHashMap<>();
 	}
 
 	@Override
@@ -186,7 +187,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	@Override
 	public Set<CertificateToken> getBySubject(X500PrincipalHelper subject) {
-		final Set<CertificateToken> tokensSet = tokensBySubject.get(subject.getCanonical());
+		final Set<CertificateToken> tokensSet = tokensBySubject.get(DSSASN1Utils.get(subject.getPrincipal()));
 		if (tokensSet != null) {
 			return tokensSet;
 		}

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
@@ -67,9 +68,9 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -112,6 +113,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	/** The signature policy provider */
 	protected SignaturePolicyProvider signaturePolicyProvider;
+
+	/** The list of all certificate sources */
+	protected ListCertificateSource commonCertificateSource = new ListCertificateSource();
 
 	/** The list of all CRL revocation sources */
 	protected ListRevocationSource<CRL> commonCRLSource = new ListRevocationSource<>();
@@ -206,6 +210,17 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	public SignedDocumentDiagnosticDataBuilder signaturePolicyProvider(
 			SignaturePolicyProvider signaturePolicyProvider) {
 		this.signaturePolicyProvider = signaturePolicyProvider;
+		return this;
+	}
+
+	/**
+	 * Sets a merged Certificate Source
+	 *
+	 * @param completeCertificateSource {@link ListCertificateSource} computed from existing sources
+	 * @return the builder
+	 */
+	public SignedDocumentDiagnosticDataBuilder completeCertificateSource(ListCertificateSource completeCertificateSource) {
+		this.commonCertificateSource = completeCertificateSource;
 		return this;
 	}
 
@@ -680,16 +695,14 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	private <R extends Revocation> void addOrphanRevocations(List<XmlOrphanRevocation> xmlOrphanRevocations,
 			OfflineRevocationSource<R> source) {
-		Map<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> allBinariesWithOrigins = source
-				.getAllRevocationBinariesWithOrigins();
-		for (Entry<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> entry : allBinariesWithOrigins
-				.entrySet()) {
+		Map<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> allBinariesWithOrigins =
+				source.getAllRevocationBinariesWithOrigins();
+		for (Entry<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> entry : allBinariesWithOrigins.entrySet()) {
 			EncapsulatedRevocationTokenIdentifier<R> token = entry.getKey();
 			String tokenId = token.asXmlId();
 			if (!xmlRevocationsMap.containsKey(tokenId)) {
 				XmlOrphanRevocation xmlOrphanRevocation = getXmlOrphanRevocation(token, entry.getValue());
-				xmlOrphanRevocation.getRevocationRefs()
-						.addAll(getXmlRevocationRefs(tokenId, source.findRefsAndOriginsForBinary(token)));
+				xmlOrphanRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(tokenId, source.findRefsAndOriginsForBinary(token)));
 				xmlOrphanRevocations.add(xmlOrphanRevocation);
 			}
 		}
@@ -705,10 +718,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	private <R extends Revocation> void addOrphanRevocationRefs(List<XmlOrphanRevocation> xmlOrphanRevocationRefs,
 			OfflineRevocationSource<R> source, ListRevocationSource<R> allSources) {
-		Map<RevocationRef<R>, Set<RevocationRefOrigin>> orphanRevocationReferencesWithOrigins = source
-				.getOrphanRevocationReferencesWithOrigins();
-		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : orphanRevocationReferencesWithOrigins
-				.entrySet()) {
+		Map<RevocationRef<R>, Set<RevocationRefOrigin>> orphanRevocationReferencesWithOrigins =
+				source.getOrphanRevocationReferencesWithOrigins();
+		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : orphanRevocationReferencesWithOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
 			if (allSources.isOrphan(ref) && sourceDoesNotContainOrphanBinaries(source, ref)) {
 				xmlOrphanRevocationRefs.add(createOrphanRevocationFromRef(ref, entry.getValue()));
@@ -746,6 +758,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	protected <R extends Revocation> XmlOrphanRevocationToken createOrphanTokenFromRevocationIdentifier(
 			EncapsulatedRevocationTokenIdentifier<R> revocationIdentifier) {
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
+		orphanToken.setEncapsulationType(XmlEncapsulationType.BINARIES);
 		orphanToken.setId(identifierProvider.getIdAsString(revocationIdentifier));
 		if (tokenExtractionStrategy.isRevocationData()) {
 			orphanToken.setBase64Encoded(revocationIdentifier.getBinaries());
@@ -754,9 +767,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, digestValue));
 		}
 		if (revocationIdentifier instanceof CRLBinary) {
-			orphanToken.setType(RevocationType.CRL);
+			orphanToken.setRevocationType(RevocationType.CRL);
 		} else {
-			orphanToken.setType(RevocationType.OCSP);
+			orphanToken.setRevocationType(RevocationType.OCSP);
 		}
 		xmlOrphanRevocationTokensMap.put(revocationIdentifier.asXmlId(), orphanToken);
 		return orphanToken;
@@ -767,6 +780,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
 
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
+		orphanToken.setEncapsulationType(XmlEncapsulationType.REFERENCE);
 		orphanToken.setId(identifierProvider.getIdAsString(ref));
 		if (ref.getDigest() != null) {
 			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
@@ -775,11 +789,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 		xmlOrphanRevocation.setToken(orphanToken);
 		if (ref instanceof CRLRef) {
-			orphanToken.setType(RevocationType.CRL);
+			orphanToken.setRevocationType(RevocationType.CRL);
 			xmlOrphanRevocation.setType(RevocationType.CRL);
 			xmlOrphanRevocation.getRevocationRefs().add(getXmlCRLRevocationRef((CRLRef) ref, origins));
 		} else {
-			orphanToken.setType(RevocationType.OCSP);
+			orphanToken.setRevocationType(RevocationType.OCSP);
 			xmlOrphanRevocation.setType(RevocationType.OCSP);
 			xmlOrphanRevocation.getRevocationRefs().add(getXmlOCSPRevocationRef((OCSPRef) ref, origins));
 		}

@@ -40,7 +40,9 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.OrphanRevocationTokenWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -405,7 +407,7 @@ public class ETSIValidationReportBuilder {
 			addCertificate(validationObjectListType, certificate, poeExtraction);
 		}
 		
-		for (OrphanCertificateWrapper orphanCertificate : diagnosticData.getAllOrphanCertificateObjects()) {
+		for (OrphanCertificateTokenWrapper orphanCertificate : diagnosticData.getAllOrphanCertificateObjects()) {
 			addOrphanCertificate(validationObjectListType, orphanCertificate, poeExtraction);
 		}
 
@@ -413,7 +415,7 @@ public class ETSIValidationReportBuilder {
 			addRevocationData(validationObjectListType, revocationData, poeExtraction);
 		}
 		
-		for (OrphanRevocationWrapper orphanRevocation : diagnosticData.getAllOrphanRevocationObjects()) {
+		for (OrphanRevocationTokenWrapper orphanRevocation : diagnosticData.getAllOrphanRevocationObjects()) {
 			addOrphanRevocation(validationObjectListType, orphanRevocation, poeExtraction);
 		}
 
@@ -487,7 +489,7 @@ public class ETSIValidationReportBuilder {
 			poeProvisioning.getValidationObject().add(getVOReference(cert.getId()));
 		}
 		// only created validation objects must be added (not references)
-		List<OrphanCertificateWrapper> allOrphanObjectCertificates = diagnosticData.getAllOrphanCertificateObjects();
+		List<OrphanCertificateTokenWrapper> allOrphanObjectCertificates = diagnosticData.getAllOrphanCertificateObjects();
 		for (OrphanTokenWrapper orphanCert : timestamp.getTimestampedOrphanCertificates()) {
 			if (allOrphanObjectCertificates.contains(orphanCert)) {
 				poeProvisioning.getValidationObject().add(getVOReference(orphanCert.getId()));
@@ -498,7 +500,7 @@ public class ETSIValidationReportBuilder {
 			poeProvisioning.getValidationObject().add(getVOReference(revocation.getId()));
 		}
 		// only created validation objects must be added (not references)
-		List<OrphanRevocationWrapper> allOrphanObjectRevocations = diagnosticData.getAllOrphanRevocationObjects();
+		List<OrphanRevocationTokenWrapper> allOrphanObjectRevocations = diagnosticData.getAllOrphanRevocationObjects();
 		for (OrphanTokenWrapper orphanRevocation : timestamp.getTimestampedOrphanRevocations()) {
 			if (allOrphanObjectRevocations.contains(orphanRevocation)) {
 				poeProvisioning.getValidationObject().add(getVOReference(orphanRevocation.getId()));
@@ -570,7 +572,7 @@ public class ETSIValidationReportBuilder {
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
 
-	private void addOrphanRevocation(ValidationObjectListType validationObjectListType, OrphanRevocationWrapper orphanRevocation, POEExtraction poeExtraction) {
+	private void addOrphanRevocation(ValidationObjectListType validationObjectListType, OrphanRevocationTokenWrapper orphanRevocation, POEExtraction poeExtraction) {
 		ValidationObjectType validationObject = createOrphanToken(orphanRevocation, poeExtraction);
 		if (RevocationType.CRL.equals(orphanRevocation.getRevocationType())) {
 			validationObject.setObjectType(ObjectType.CRL);
@@ -580,7 +582,7 @@ public class ETSIValidationReportBuilder {
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
 	
-	private void addOrphanCertificate(ValidationObjectListType validationObjectListType, OrphanCertificateWrapper orphanCertificate, POEExtraction poeExtraction) {
+	private void addOrphanCertificate(ValidationObjectListType validationObjectListType, OrphanCertificateTokenWrapper orphanCertificate, POEExtraction poeExtraction) {
 		ValidationObjectType orphanCertificateToken = createOrphanToken(orphanCertificate, poeExtraction);
 		orphanCertificateToken.setObjectType(ObjectType.CERTIFICATE);
 		validationObjectListType.getValidationObject().add(orphanCertificateToken);
@@ -945,7 +947,7 @@ public class ETSIValidationReportBuilder {
 		// the creator of the validation report cannot gain access to it), this component shall have one CertID child.
 		
 		if (Utils.isCollectionNotEmpty(orphanCerts)) {
-			List<OrphanCertificateWrapper> allOrphanCertificates = diagnosticData.getAllOrphanCertificateObjects();
+			List<OrphanCertificateTokenWrapper> allOrphanCertificates = diagnosticData.getAllOrphanCertificateObjects();
 			for (OrphanCertificateWrapper orphanCert : orphanCerts) {
 				if (orphanCert != null) {
 					if (Utils.isCollectionNotEmpty(orphanCert.getReferences()) && !allOrphanCertificates.contains(orphanCert)) {
@@ -1008,7 +1010,7 @@ public class ETSIValidationReportBuilder {
 		}
 		
 		if (Utils.isCollectionNotEmpty(orphanRevs)) {
-			List<OrphanRevocationWrapper> allOrphanRevocations = diagnosticData.getAllOrphanRevocationObjects();
+			List<OrphanRevocationTokenWrapper> allOrphanRevocations = diagnosticData.getAllOrphanRevocationObjects();
 			for (OrphanRevocationWrapper orphanRev : orphanRevs) {
 				if (orphanRev != null) {
 					if (Utils.isCollectionNotEmpty(orphanRev.getReferences()) && !allOrphanRevocations.contains(orphanRev)) {

@@ -338,7 +338,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.ORPHAN_CERTIFICATE);
 		for (XmlAbstractToken token : timestampedObjectsByCategory) {
 			if (token instanceof XmlOrphanCertificateToken) {
-				orphanCertificates.add(new OrphanTokenWrapper((XmlOrphanCertificateToken) token));
+				orphanCertificates.add(new OrphanCertificateTokenWrapper((XmlOrphanCertificateToken) token));
 			} else {
 				throw new IllegalArgumentException(
 						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.ORPHAN_CERTIFICATE));
@@ -358,7 +358,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.ORPHAN_REVOCATION);
 		for (XmlAbstractToken token : timestampedObjectsByCategory) {
 			if (token instanceof XmlOrphanRevocationToken) {
-				orphanRevocations.add(new OrphanTokenWrapper((XmlOrphanRevocationToken) token));
+				orphanRevocations.add(new OrphanRevocationTokenWrapper((XmlOrphanRevocationToken) token));
 			} else {
 				throw new IllegalArgumentException(
 						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.ORPHAN_REVOCATION));

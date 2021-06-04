@@ -20,30 +20,30 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.enumerations.RevocationType;
 
-public class OrphanRevocationWrapper extends OrphanTokenWrapper {
-	
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Wrapper for document embedded revocation data
+ *
+ */
+public class OrphanRevocationWrapper extends OrphanRevocationTokenWrapper {
+
+	/** Orphan revocation data */
 	private final XmlOrphanRevocation orphanRevocation;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param orphanRevocation {@link XmlOrphanRevocation}
+	 */
 	public OrphanRevocationWrapper(final XmlOrphanRevocation orphanRevocation) {
 		super(orphanRevocation.getToken());
 		this.orphanRevocation = orphanRevocation;
-	}
-	
-	/**
-	 * Returns a revocation data type (CRL or OCSP)
-	 * 
-	 * @return {@link RevocationType}
-	 */
-	public RevocationType getRevocationType() {
-		return orphanRevocation.getType();
 	}
 	
 	/**

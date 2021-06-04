@@ -20,17 +20,18 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class operates on several {@link CertificateSource} with the composite
@@ -216,7 +217,7 @@ public class ListCertificateSource {
 	 * @return a Set of found {@link CertificateToken}
 	 */
 	public Set<CertificateToken> getByPublicKey(PublicKey publicKey) {
-		Set<CertificateToken> result = new HashSet<>();
+		Set<CertificateToken> result = new LinkedHashSet<>();
 		for (CertificateSource source : sources) {
 			result.addAll(source.getByPublicKey(publicKey));
 		}
@@ -247,7 +248,7 @@ public class ListCertificateSource {
 	 * @return a Set of found {@link CertificateToken}
 	 */
 	public Set<CertificateToken> getBySubject(X500PrincipalHelper subject) {
-		Set<CertificateToken> result = new HashSet<>();
+		Set<CertificateToken> result = new LinkedHashSet<>();
 		for (CertificateSource source : sources) {
 			result.addAll(source.getBySubject(subject));
 		}

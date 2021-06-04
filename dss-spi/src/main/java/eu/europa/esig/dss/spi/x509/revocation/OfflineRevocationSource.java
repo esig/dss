@@ -212,10 +212,18 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
+	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
+	 * present in 'RevocationValues' element
+	 *
+	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getRevocationValuesBinaries() {
+		return getBinariesByOrigin(RevocationOrigin.REVOCATION_VALUES);
+	}
+
+	/**
 	 * Retrieves the list of all {@code RevocationToken}s present in
 	 * 'RevocationValues' element
-	 * 
-	 * NOTE: Applicable only for CAdES and XAdES revocation sources
 	 * 
 	 * @return list of {@code RevocationToken}s
 	 */
@@ -224,10 +232,18 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
+	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
+	 * present in 'AttributeRevocationValues' element
+	 *
+	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getAttributeRevocationValuesBinaries() {
+		return getBinariesByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+	}
+
+	/**
 	 * Retrieves the list of all {@code RevocationToken}s present in
 	 * 'AttributeRevocationValues' element
-	 * 
-	 * NOTE: Applicable only for XAdES revocation source
 	 * 
 	 * @return list of {@code RevocationToken}s
 	 */
@@ -236,10 +252,18 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
+	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
+	 * present in 'TimestampValidationData' element
+	 *
+	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getTimestampValidationDataBinaries() {
+		return getBinariesByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+	}
+
+	/**
 	 * Retrieves the list of all {@code RevocationToken}s present in
 	 * 'TimestampValidationData' element
-	 * 
-	 * NOTE: Applicable only for XAdES revocation source
 	 * 
 	 * @return list of {@code RevocationToken}s
 	 */
@@ -296,8 +320,18 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
-	 * Retrieves the list of all {@code RevocationToken}s present in the ADBE
-	 * element
+	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
+	 * present in the ADBE signed attribute
+	 *
+	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getADBERevocationValuesBinaries() {
+		return getBinariesByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+	}
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in
+	 * the ADBE signed attribute
 	 * 
 	 * NOTE: Applicable only for PAdES revocation source
 	 * 
