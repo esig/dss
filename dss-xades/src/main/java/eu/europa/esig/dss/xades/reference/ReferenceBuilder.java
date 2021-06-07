@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -152,6 +153,8 @@ public class ReferenceBuilder {
 	}
 
 	private DSSReference envelopedDSSReference(DSSDocument document, int index) {
+		assertEnvelopedSignaturePossible(document);
+
 		DSSReference dssReference = new DSSReference();
 		dssReference.setId(referenceIdPrefix + getReferenceId(index));
 		// XMLDSIG : 4.4.3.2
@@ -165,7 +168,8 @@ public class ReferenceBuilder {
 		final List<DSSTransform> dssTransformList = new ArrayList<>();
 
 		// For parallel signatures
-		XPath2FilterEnvelopedSignatureTransform xPathTransform = new XPath2FilterEnvelopedSignatureTransform(signatureParameters.getXmldsigNamespace());
+		XPath2FilterEnvelopedSignatureTransform xPathTransform =
+				new XPath2FilterEnvelopedSignatureTransform(signatureParameters.getXmldsigNamespace());
 		dssTransformList.add(xPathTransform);
 
 		// Canonicalization is the last operation, its better to operate the canonicalization on the smaller document
@@ -176,6 +180,17 @@ public class ReferenceBuilder {
 		dssReference.setTransforms(dssTransformList);
 
 		return dssReference;
+	}
+
+	private void assertEnvelopedSignaturePossible(DSSDocument document) {
+		if (!DomUtils.isDOM(document)) {
+			throw new IllegalArgumentException("Enveloped signature cannot be created. Reason : the provided document is not XML!");
+		}
+		Document dom = DomUtils.buildDOM(document);
+		Element documentElement = dom.getDocumentElement();
+		if (XMLDSigElement.SIGNATURE.isSameTagName(documentElement.getLocalName())) {
+			throw new IllegalArgumentException("Unable to create an enveloped signature for another XML signature document!");
+		}
 	}
 
 	private DSSReference envelopingDSSReference(DSSDocument document, int index) {

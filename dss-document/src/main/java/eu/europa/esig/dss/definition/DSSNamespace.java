@@ -70,4 +70,9 @@ public class DSSNamespace {
 		return this.uri.equals(paramUri);
 	}
 
+	@Override
+	public String toString() {
+		return "DSSNamespace [uri='" + uri + ", prefix='" + prefix + ']';
+	}
+
 }

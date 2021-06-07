@@ -1079,12 +1079,19 @@ public final class DSSXMLUtils {
 				DSSTransform transform = iterator.next();
 				transformedReferenceBytes = transform.getBytesAfterTransformation(nodeToTransform);
 				if (iterator.hasNext()) {
+					if (Utils.isArrayEmpty(transformedReferenceBytes)) {
+						throw new DSSException(String.format(
+								"Unable to perform the next transform. The %s produced an empty output!", transform));
+					}
 					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
 				}
 			}
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Reference bytes after transforms: ");
 				LOG.debug(new String(transformedReferenceBytes));
+			}
+			if (Utils.isArrayEmpty(transformedReferenceBytes)) {
+				LOG.warn("The output of reference transforms processing is an empty byte array!");
 			}
 			return transformedReferenceBytes;
 			
