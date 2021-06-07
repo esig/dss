@@ -405,7 +405,7 @@
         </Timestamp>
     </UsedTimestamps>
     <OrphanTokens>
-        <OrphanCertificate Id="C-D89795E5676AE893F3C3D75B12F3E42CC914ED380189EB280F5D86C914BFDD28">
+        <OrphanCertificate EncapsulationType="REFERENCE" Id="C-D89795E5676AE893F3C3D75B12F3E42CC914ED380189EB280F5D86C914BFDD28">
             <DigestAlgoAndValue>
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>biPNuWfwbT/ahTFsW0c2HNVVQqw=</DigestValue>

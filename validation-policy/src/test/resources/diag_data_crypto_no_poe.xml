@@ -1101,12 +1101,12 @@
         </Timestamp>
     </UsedTimestamps>
     <OrphanTokens>
-        <OrphanRevocation Id="R-CBA257E70FFACAB18685EAA1E4F4F2B4F7B5846CBE7A48DB4AEEEBAAFD14B8BE">
+        <OrphanRevocation EncapsulationType="BINARIES" Id="R-CBA257E70FFACAB18685EAA1E4F4F2B4F7B5846CBE7A48DB4AEEEBAAFD14B8BE">
+            <RevocationType>CRL</RevocationType>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>y6JX5w/6yrGGheqh5PTytPe1hGy+ekjbSu7rqv0UuL4=</DigestValue>
             </DigestAlgoAndValue>
-            <Type>CRL</Type>
         </OrphanRevocation>
     </OrphanTokens>
     <OriginalDocuments>

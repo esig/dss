@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -77,6 +78,12 @@ public class ASiCEWithXAdESDetachedCounterSignatureTest extends AbstractASiCWith
 	@Override
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		// skip check (custom type)
+	}
+
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
+		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
 	}
 
 }

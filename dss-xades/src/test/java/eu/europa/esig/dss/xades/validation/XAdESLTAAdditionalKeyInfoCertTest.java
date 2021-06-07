@@ -20,14 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
@@ -35,7 +28,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
-public class XAdESLTAKeyInfoCertTest extends AbstractXAdESTestValidation {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class XAdESLTAAdditionalKeyInfoCertTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -44,12 +43,9 @@ public class XAdESLTAKeyInfoCertTest extends AbstractXAdESTestValidation {
 	
 	@Override
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
-		super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
-		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		
-		List<RelatedCertificateWrapper> keyInfoCerts = signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO);
-		assertEquals(3, keyInfoCerts.size());
+		assertEquals(2, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+		assertEquals(1, signature.foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
 	}
 	
 	@Override

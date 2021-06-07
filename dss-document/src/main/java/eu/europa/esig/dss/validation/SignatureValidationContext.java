@@ -319,7 +319,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private CertificateToken getIssuer(final Token token) {
 		// Return cached value
-		CertificateToken issuerCertificateToken = tokenIssuerMap.get(token);
+		CertificateToken issuerCertificateToken = getIssuerFromProcessedCertificates(token);
 		if (issuerCertificateToken != null) {
 			return issuerCertificateToken;
 		}
@@ -350,6 +350,17 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		return issuerCertificateToken;
+	}
+
+	private CertificateToken getIssuerFromProcessedCertificates(Token token) {
+		CertificateToken issuerCertificateToken = tokenIssuerMap.get(token);
+		// isSignedBy(...) check is required when a certificates is present in different sources
+		// in order to instantiate a public key of the signer
+		if (issuerCertificateToken != null &&
+				(token.getPublicKeyOfTheSigner() != null || token.isSignedBy(issuerCertificateToken))) {
+			return issuerCertificateToken;
+		}
+		return null;
 	}
 
 	private ListCertificateSource getAllCertificateSources() {

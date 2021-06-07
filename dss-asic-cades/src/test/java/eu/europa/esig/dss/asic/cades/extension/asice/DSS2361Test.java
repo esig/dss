@@ -74,4 +74,10 @@ public class DSS2361Test extends AbstractASiCWithCAdESTestValidation {
         assertEquals(2, signingCertificate.getCertificateRevocationData().size());
     }
 
+    @Override
+    protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+        assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
+        assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
+    }
+
 }

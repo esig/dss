@@ -486,7 +486,7 @@
         </Timestamp>
     </UsedTimestamps>
     <OrphanTokens>
-    	<OrphanCertificate Id="C-9E4C16547587D7B09F551441BBA0D2AFDFA71CE15F734B671B033404A299876E">
+    	<OrphanCertificate EncapsulationType="REFERENCE" Id="C-9E4C16547587D7B09F551441BBA0D2AFDFA71CE15F734B671B033404A299876E">
 			<DigestAlgoAndValue match="false">
 				<DigestMethod>SHA256</DigestMethod>
 				<DigestValue>nkwWVHWH17CfVRRBu6DSr9+nHOFfc0tnGwM0BKKZh24=</DigestValue>

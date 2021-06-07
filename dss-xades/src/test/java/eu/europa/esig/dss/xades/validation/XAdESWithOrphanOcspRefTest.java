@@ -20,20 +20,20 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanRevocationTokenWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class XAdESWithOrphanOcspRefTest extends AbstractXAdESTestValidation {
 
@@ -74,13 +74,13 @@ public class XAdESWithOrphanOcspRefTest extends AbstractXAdESTestValidation {
 		List<RevocationRefWrapper> orphanRevocationRefs = signatureWrapper.foundRevocations().getOrphanRevocationRefs();
 		assertEquals(3, orphanRevocationRefs.size());
 		
-		List<OrphanRevocationWrapper> allOrphanRevocationObjects = diagnosticData.getAllOrphanRevocationObjects();
+		List<OrphanRevocationTokenWrapper> allOrphanRevocationObjects = diagnosticData.getAllOrphanRevocationObjects();
 		assertEquals(1, allOrphanRevocationObjects.size());
-		
-		OrphanRevocationWrapper orphanRevocationWrapper = allOrphanRevocationObjects.get(0);
+
+		OrphanRevocationTokenWrapper orphanRevocationWrapper = allOrphanRevocationObjects.get(0);
 		assertEquals(noDigestOcspRefId, orphanRevocationWrapper.getId());
 		
-		List<OrphanTokenWrapper> allOrphanRevocationReferences = diagnosticData.getAllOrphanRevocationReferences();
+		List<OrphanRevocationTokenWrapper> allOrphanRevocationReferences = diagnosticData.getAllOrphanRevocationReferences();
 		assertEquals(2, allOrphanRevocationReferences.size());
 		
 	}

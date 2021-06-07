@@ -20,22 +20,23 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
-import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2025
 public class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTestValidation {
@@ -52,10 +53,10 @@ public class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTest
 		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
 		assertEquals(1, timestampList.size());
 		TimestampWrapper timestampWrapper = timestampList.get(0);
-		assertNotNull(timestampWrapper.getSigningCertificate());
+		assertNull(timestampWrapper.getSigningCertificate());
 		assertTrue(timestampWrapper.isMessageImprintDataFound());
 		assertTrue(timestampWrapper.isMessageImprintDataIntact());
-		assertTrue(timestampWrapper.isSigningCertificateIdentified());
+		assertFalse(timestampWrapper.isSigningCertificateIdentified());
 		assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
 		assertFalse(timestampWrapper.isSigningCertificateReferenceUnique()); // 2 signing-certificate attributes
 		assertFalse(timestampWrapper.isSignatureValid());
@@ -72,11 +73,11 @@ public class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTest
 		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
 		FoundCertificatesProxy foundCertificates = timestampWrapper.foundCertificates();
 		
-		assertEquals(2, foundCertificates.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-		
-		List<RelatedCertificateWrapper> relatedCertificatesByRefOrigin = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-		assertEquals(1, relatedCertificatesByRefOrigin.size());
-		assertEquals(2, relatedCertificatesByRefOrigin.get(0).getReferences().size());
+		assertEquals(2, foundCertificates.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+
+		List<OrphanCertificateWrapper> orphanCertificatesByRefOrigin = foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		assertEquals(1, orphanCertificatesByRefOrigin.size());
+		assertEquals(2, orphanCertificatesByRefOrigin.get(0).getReferences().size());
 	}
 
 }
