@@ -111,10 +111,10 @@ public class CommonsDataLoader implements DataLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
 	/** The default connection timeout (1 minute) */
-	private static final int TIMEOUT_CONNECTION = 6000;
+	private static final int TIMEOUT_CONNECTION = 60000;
 
 	/** The default socket timeout (1 minute) */
-	private static final int TIMEOUT_SOCKET = 6000;
+	private static final int TIMEOUT_SOCKET = 60000;
 
 	/** The default value of maximum connections in time (20) */
 	private static final int CONNECTIONS_MAX_TOTAL = 20;
