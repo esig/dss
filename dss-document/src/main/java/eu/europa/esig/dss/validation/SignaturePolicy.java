@@ -23,8 +23,8 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
-import org.w3c.dom.Element;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,12 +50,6 @@ public class SignaturePolicy {
 
 	/** The documentation references */
 	private List<String> documentationReferences;
-
-	/** The transforms Element (used in XAdES) */
-	private Element transforms;
-
-	/** The build list of transforms descriptions */
-	private List<String> transformsDescription;
 
 	/**
 	 * Two qualifiers for the signature policy have been identified so far:
@@ -189,41 +183,14 @@ public class SignaturePolicy {
 	}
 
 	/**
-	 * Returns a 'ds:Tranforms' element if found
+	 * Gets a list of Strings describing the 'ds:Transforms' element
 	 * NOTE: XAdES only
 	 * 
-	 * @return 'ds:Tranforms' {@link Element} if found, NULL otherwise
-	 */
-	public Element getTransforms() {
-		return transforms;
-	}
-
-	/**
-	 * Sets a 'ds:Tranforms' node
-	 * 
-	 * @param transforms {@link Element}
-	 */
-	public void setTransforms(Element transforms) {
-		this.transforms = transforms;
-	}
-
-	/**
-	 * Gets a list of Strings describing the 'ds:Tranforms' element
-	 * NOTE: XAdES only
-	 * 
-	 * @return a description of 'ds:Tranforms' if present, null otherwise
+	 * @return a description of 'ds:Transforms' if present, null otherwise
 	 */
 	public List<String> getTransformsDescription() {
-		return transformsDescription;
-	}
-
-	/**
-	 * Sets a list of Strings describing the 'ds:Tranforms' element
-	 * 
-	 * @param transformsDescription a list of Strings describing the 'ds:Transforms' element
-	 */
-	public void setTransformsDescription(List<String> transformsDescription) {
-		this.transformsDescription = transformsDescription;
+		// not applicable by default
+		return Collections.emptyList();
 	}
 
 	/**

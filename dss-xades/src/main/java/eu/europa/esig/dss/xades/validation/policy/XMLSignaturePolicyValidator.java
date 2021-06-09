@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.xades.validation.policy;
 
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
+import eu.europa.esig.dss.xades.validation.XAdESSignaturePolicy;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
@@ -36,6 +39,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.AbstractSignaturePolicyValidator;
 
+import java.io.IOException;
+
 /**
  * Validates an XML Signature Policy
  */
@@ -44,8 +49,7 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 	private static final Logger LOG = LoggerFactory.getLogger(XMLSignaturePolicyValidator.class);
 
 	@Override
-	public boolean canValidate() {
-		SignaturePolicy signaturePolicy = getSignaturePolicy();
+	public boolean canValidate(SignaturePolicy signaturePolicy) {
 		if (signaturePolicy.getPolicyContent() != null) {
 			return DomUtils.startsWithXmlPreamble(signaturePolicy.getPolicyContent());
 		}
@@ -53,59 +57,81 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 	}
 
 	@Override
-	public void validate() {
-		setIdentified(true);
+	public SignaturePolicyValidationResult validate(SignaturePolicy signaturePolicy) {
+		SignaturePolicyValidationResult validationResult = new SignaturePolicyValidationResult();
 
-		SignaturePolicy signaturePolicy = getSignaturePolicy();
-		Digest digest = signaturePolicy.getDigest();
-		
-		if (digest != null) {
-			Digest recalculatedDigest = getComputedDigest(digest.getAlgorithm());
-			if (recalculatedDigest != null) {
-				if (digest.equals(recalculatedDigest)) {
-					setStatus(true);
-					setDigestAlgorithmsEqual(true);
-				} else {
-					addError("general",
-							"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
-									+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
-				}
-			}
-			
-		} else {
-			addError("general", "The policy digest value is not defined.");
-		}
-	}
-	
-	@Override
-	public Digest getComputedDigest(DigestAlgorithm digestAlgorithm) {
-		SignaturePolicy signaturePolicy = getSignaturePolicy();
 		DSSDocument policyContent = signaturePolicy.getPolicyContent();
-		
-		byte[] bytesToBeDigested = null;
-		Element transformsNode = signaturePolicy.getTransforms();
-		if (transformsNode != null) {
+		if (policyContent == null) {
+			validationResult.addError("general", "The signature policy content is not obtained.");
+			return validationResult;
+		}
+		validationResult.setIdentified(true);
+
+		Digest digest = signaturePolicy.getDigest();
+		if (digest == null) {
+			validationResult.addError("general", "The policy digest value is not defined.");
+			return validationResult;
+		}
+		validationResult.setDigestAlgorithmsEqual(true);
+
+		Digest recalculatedDigest = null;
+		Element transforms = null;
+		if (signaturePolicy instanceof XAdESSignaturePolicy) {
+			XAdESSignaturePolicy xadesSignaturePolicy = (XAdESSignaturePolicy) signaturePolicy;
+			transforms = xadesSignaturePolicy.getTransforms();
+		}
+
+		if (transforms != null) {
 			try {
-				Transforms transforms = new Transforms(transformsNode, "");
-				
-				Document document = DomUtils.buildDOM(policyContent);
-				XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(document);
-	
-				XMLSignatureInput xmlSignatureInputOut = transforms.performTransforms(xmlSignatureInput);
-				bytesToBeDigested = xmlSignatureInputOut.getBytes();
-				
+				recalculatedDigest = getDigestAfterTransforms(signaturePolicy.getPolicyContent(),
+						digest.getAlgorithm(), transforms);
 			} catch (Exception e) {
 				String errorMessage = String.format("Unable to perform transforms on an XML Policy. Reason : %s", e.getMessage());
 				LOG.warn(errorMessage, e);
-				addError("xmlProcessing", errorMessage);
-				return null;
+				validationResult.addError("xmlProcessing", errorMessage);
 			}
-			
 		} else {
-			bytesToBeDigested = DSSUtils.toByteArray(policyContent);
+			recalculatedDigest = getComputedDigest(signaturePolicy.getPolicyContent(), digest.getAlgorithm());
 		}
-		
-		return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, bytesToBeDigested));
+		validationResult.setDigest(recalculatedDigest);
+
+		if (recalculatedDigest != null) {
+			if (digest.equals(recalculatedDigest)) {
+				validationResult.setDigestValid(true);
+			} else {
+				validationResult.addError("general",
+						"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
+								+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
+			}
+		}
+
+		return validationResult;
+	}
+
+	/**
+	 * Computes Digests after processing of given {@code transformsElement}
+	 *
+	 * @param policyDocument {@link DSSDocument} policy content
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use to calculate digest
+	 * @param transformsElement {@link Element} ds:Transforms element
+	 * @return {@link Digest} computed on octets obtained after performing of transforms
+	 * @throws XMLSecurityException if an exception occurs during transforms processing
+	 * @throws IOException if an exception occurs during transforms processing result reading
+	 */
+	public Digest getDigestAfterTransforms(DSSDocument policyDocument, DigestAlgorithm digestAlgorithm, Element transformsElement)
+			throws XMLSecurityException, IOException {
+		if (transformsElement != null) {
+			Transforms transforms = new Transforms(transformsElement, "");
+
+			Document document = DomUtils.buildDOM(policyDocument);
+			XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(document);
+
+			XMLSignatureInput xmlSignatureInputOut = transforms.performTransforms(xmlSignatureInput);
+			byte[] bytesToBeDigested = xmlSignatureInputOut.getBytes();
+			return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, bytesToBeDigested));
+		} else {
+			return getComputedDigest(policyDocument, digestAlgorithm);
+		}
 	}
 
 }

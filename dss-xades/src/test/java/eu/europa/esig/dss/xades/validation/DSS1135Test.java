@@ -66,7 +66,7 @@ public class DSS1135Test extends AbstractXAdESTestValidation {
 		String policyUrl = signatureWrapper.getPolicyUrl();
 		assertEquals("http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf", policyUrl);
 		assertTrue(signatureWrapper.isPolicyIdentified());
-		assertTrue(signatureWrapper.isPolicyStatus());
+		assertTrue(signatureWrapper.isPolicyDigestValid());
 	}
 
 }

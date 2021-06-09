@@ -55,7 +55,6 @@ import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -391,11 +390,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public SignaturePolicy getSignaturePolicy() {
-		if (signaturePolicy != null) {
-			return signaturePolicy;
-		}
-		
+	public XAdESSignaturePolicy getSignaturePolicy() {
+		return (XAdESSignaturePolicy) super.getSignaturePolicy();
+	}
+
+	@Override
+	protected XAdESSignaturePolicy buildSignaturePolicy() {
+		XAdESSignaturePolicy xadesSignaturePolicy = null;
+
 		final Element policyIdentifier = DomUtils.getElement(signatureElement, xadesPaths.getSignaturePolicyIdentifierPath());
 		if (policyIdentifier != null) {
 			// There is a policy
@@ -408,47 +410,49 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (!DSSUtils.isUrnOid(policyIdString)) {
 					policyUrlString = DSSUtils.getObjectIdentifier(policyIdString);
 				}
-				
-				signaturePolicy = new SignaturePolicy(policyIdString);
+
+				xadesSignaturePolicy = new XAdESSignaturePolicy(policyIdString);
 
 				final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDigestAlgAndValue()));
-				signaturePolicy.setDigest(digest);
+				xadesSignaturePolicy.setDigest(digest);
 
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPURI());
 				if (policyUrl != null) {
 					policyUrlString = policyUrl.getTextContent();
 					policyUrlString = Utils.trim(policyUrlString);
 				}
+				xadesSignaturePolicy.setUrl(policyUrlString);
 
 				final Element policyDescription = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDescription());
 				if (policyDescription != null && Utils.isStringNotEmpty(policyDescription.getTextContent())) {
-					signaturePolicy.setDescription(policyDescription.getTextContent());
-				}
-				Element docRefsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDocumentationReferences());
-				if (docRefsNode != null) {
-					signaturePolicy.setDocumentationReferences(getDocumentationReferences(docRefsNode));
-				}
-				
-				Element transformsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyTransforms());
-				if (transformsNode != null) {
-					signaturePolicy.setTransforms(transformsNode);
-					
-					TransformsDescriptionBuilder transformsDescriptionBuilder = new TransformsDescriptionBuilder(transformsNode);
-					signaturePolicy.setTransformsDescription(transformsDescriptionBuilder.build());
+					xadesSignaturePolicy.setDescription(policyDescription.getTextContent());
 				}
 
-				signaturePolicy.setUrl(policyUrlString);
-				
+				final Element docRefsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDocumentationReferences());
+				if (docRefsNode != null) {
+					xadesSignaturePolicy.setDocumentationReferences(getDocumentationReferences(docRefsNode));
+				}
+
+				final Element transformsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyTransforms());
+				if (transformsNode != null) {
+					xadesSignaturePolicy.setTransforms(transformsNode);
+				}
+
+				final Element qualifiersNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyQualifiers());
+				if (qualifiersNode != null) {
+					xadesSignaturePolicy.setSigPolicyQualifiers(qualifiersNode);
+				}
+
 			} else {
 				// Implicit policy
 				final Element signaturePolicyImplied = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyImplied());
 				if (signaturePolicyImplied != null) {
-					signaturePolicy = new SignaturePolicy();
+					xadesSignaturePolicy = new XAdESSignaturePolicy();
 				}
 				
 			}
 		}
-		return signaturePolicy;
+		return xadesSignaturePolicy;
 	}
 
 	@Override

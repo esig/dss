@@ -24,6 +24,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.SAMLAssertionNamespace;
@@ -180,6 +181,11 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 */
 	public Document getRootElement() {
 		return rootElement;
+	}
+
+	@Override
+	protected SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
+		return new XAdESSignaturePolicyValidatorLoader();
 	}
 
 }

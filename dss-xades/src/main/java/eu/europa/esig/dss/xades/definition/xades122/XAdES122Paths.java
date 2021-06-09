@@ -444,6 +444,11 @@ public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentSignaturePolicyQualifiers() {
+		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XAdES122Element.SIG_POLICY_QUALIFIERS);
+	}
+
+	@Override
 	public String getCurrentIssuerSerialIssuerNamePath() {
 		return fromCurrentPosition(XAdES122Element.ISSUER_SERIAL, XMLDSigElement.X509_ISSUER_NAME);
 	}

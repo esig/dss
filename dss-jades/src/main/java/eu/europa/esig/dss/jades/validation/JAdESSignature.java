@@ -440,12 +440,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public SignaturePolicy getSignaturePolicy() {
-		if (signaturePolicy != null) {
-			return signaturePolicy;
-		}
-		
+	protected SignaturePolicy buildSignaturePolicy() {
 		Map<String, Object> sigPolicy = (Map<String, Object>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PID);
 		if (Utils.isMapNotEmpty(sigPolicy)) {
 			Map<String, Object> policyId = (Map<String, Object>) sigPolicy.get(JAdESHeaderParameterNames.ID);

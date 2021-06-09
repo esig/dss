@@ -72,7 +72,7 @@ public class PolicySPURITest extends AbstractCAdESTestValidation {
 		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
 		assertFalse(signatureWrapper.isPolicyAsn1Processable());
 		assertTrue(signatureWrapper.isPolicyIdentified());
-		assertTrue(signatureWrapper.isPolicyStatus());
+		assertTrue(signatureWrapper.isPolicyDigestValid());
 	}
 	
 	@Override

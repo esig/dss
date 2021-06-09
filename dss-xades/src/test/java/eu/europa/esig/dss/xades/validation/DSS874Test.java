@@ -78,7 +78,7 @@ public class DSS874Test extends AbstractXAdESTestValidation {
 		super.checkTokens(diagnosticData);
 
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatures().get(0);
-		assertTrue(signatureWrapper.isPolicyStatus());
+		assertTrue(signatureWrapper.isPolicyDigestValid());
 		assertTrue(signatureWrapper.isPolicyIdentified());
 		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
 		

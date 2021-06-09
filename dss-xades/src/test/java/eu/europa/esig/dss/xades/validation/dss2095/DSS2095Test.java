@@ -74,7 +74,7 @@ public class DSS2095Test extends AbstractXAdESTestValidation {
 		assertNotNull(signature.getPolicyId());
 		assertNotNull(signature.getPolicyUrl());
 		assertTrue(signature.isPolicyPresent());
-		assertTrue(signature.isPolicyStatus());
+		assertTrue(signature.isPolicyDigestValid());
 		assertFalse(signature.isPolicyAsn1Processable());
 		assertFalse(signature.isPolicyZeroHash());
 		assertTrue(Utils.isStringEmpty(signature.getPolicyProcessingError()));

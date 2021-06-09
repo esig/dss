@@ -29,8 +29,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -86,9 +86,8 @@ public class CAdESSignaturePolicyStoreBuilder {
 			if (signaturePolicy != null) {
 				Digest expectedDigest = signaturePolicy.getDigest();
 				if (expectedDigest != null) {
-					signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
-					SignaturePolicyValidator validator = new SignaturePolicyValidatorLoader(signaturePolicy).loadValidator();
-					Digest computedDigest = validator.getComputedDigest(expectedDigest.getAlgorithm());
+					SignaturePolicyValidator validator = new DefaultSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
+					Digest computedDigest = validator.getComputedDigest(signaturePolicyStore.getSignaturePolicyContent(), expectedDigest.getAlgorithm());
 					if (expectedDigest.equals(computedDigest)) {
 						newSignerInformation = addSignaturePolicyStore(signerInformation, signaturePolicyStore);
 					} else {

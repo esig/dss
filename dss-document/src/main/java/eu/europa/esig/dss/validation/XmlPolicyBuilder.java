@@ -25,14 +25,12 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,54 +49,34 @@ public class XmlPolicyBuilder {
 	/** The {@code SignaturePolicy} to incorporate into the DiagnosticData */
 	private final SignaturePolicy signaturePolicy;
 
-	/** Retrieves the signature policy document */
-	private SignaturePolicyProvider signaturePolicyProvider;
+	/** The result of a signature policy validation */
+	private final SignaturePolicyValidationResult validationResult;
 
 	/** The found SignaturePolicyStore from a signature */
 	private SignaturePolicyStore signaturePolicyStore;
-
-	/** The DigestAlgorithm to use */
-	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
-
-	/** The signature policy validator instance */
-	private SignaturePolicyValidator validator;
 	
 	/**
 	 * The default constructor
 	 * 
 	 * @param signaturePolicy {@link SignaturePolicy} to build {@code XmlPolicy} from
+	 * @param validationResult {@link SignaturePolicyValidationResult} the output of signature policy validation
 	 */
-	public XmlPolicyBuilder(SignaturePolicy signaturePolicy) {
+	public XmlPolicyBuilder(final SignaturePolicy signaturePolicy, final SignaturePolicyValidationResult validationResult) {
 		Objects.requireNonNull(signaturePolicy, "SignaturePolicy cannot be null!");
+		Objects.requireNonNull(validationResult, "The result of a signature policy validation cannot be null!");
 		this.signaturePolicy = signaturePolicy;
-	}
-	
-	/**
-	 * Sets {@code SignaturePolicyProvider} to extract a SignaturePolicy by ID or URI
-	 * 
-	 * @param signaturePolicyProvider {@link SignaturePolicyProvider}
-	 */
-	public void setSignaturePolicyProvider(final SignaturePolicyProvider signaturePolicyProvider) {
-		this.signaturePolicyProvider = signaturePolicyProvider;
+		this.validationResult = validationResult;
 	}
 
 	/**
 	 * Sets {@code SignaturePolicyStore} extracted from a signature when applicable
 	 * 
 	 * @param signaturePolicyStore {@link SignaturePolicyStore}
+	 * @return {@link XmlPolicyBuilder} this
 	 */
-	public void setSignaturePolicyStore(SignaturePolicyStore signaturePolicyStore) {
+	public XmlPolicyBuilder setSignaturePolicyStore(SignaturePolicyStore signaturePolicyStore) {
 		this.signaturePolicyStore = signaturePolicyStore;
-	}
-	
-	/**
-	 * Sets a default {@code DigestAlgorithm} to compute a signature policy store digest,
-	 * when SignaturePolicyIdentifier is not present
-	 * 
-	 * @param digestAlgorithm {@link DigestAlgorithm}
-	 */
-	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
-		this.defaultDigestAlgorithm = digestAlgorithm;
+		return this;
 	}
 	
 	/**
@@ -107,9 +85,6 @@ public class XmlPolicyBuilder {
 	 * @return {@link XmlPolicy}
 	 */
 	public XmlPolicy build() {
-		DSSDocument policyContent = extractPolicyContent();
-		signaturePolicy.setPolicyContent(policyContent);
-
 		final XmlPolicy xmlPolicy = new XmlPolicy();
 
 		xmlPolicy.setId(signaturePolicy.getIdentifier());
@@ -130,17 +105,14 @@ public class XmlPolicyBuilder {
 		}
 		
 		try {
-			SignaturePolicyValidator validator = getValidator(signaturePolicy);
-			validator.validate();
-			
-			xmlPolicy.setAsn1Processable(validator.isAsn1Processable());
+			xmlPolicy.setAsn1Processable(validationResult.isAsn1Processable());
 			if (!signaturePolicy.isZeroHash()) {
-				xmlPolicy.setDigestAlgorithmsEqual(validator.isDigestAlgorithmsEqual());
+				xmlPolicy.setDigestAlgorithmsEqual(validationResult.isDigestAlgorithmsEqual());
 			}
-			xmlPolicy.setIdentified(validator.isIdentified());
-			xmlPolicy.setStatus(validator.isStatus());
-			if (Utils.isStringNotBlank(validator.getProcessingErrors())) {
-				xmlPolicy.setProcessingError(validator.getProcessingErrors());
+			xmlPolicy.setIdentified(validationResult.isIdentified());
+			xmlPolicy.setStatus(validationResult.isDigestValid());
+			if (Utils.isStringNotBlank(validationResult.getProcessingErrors())) {
+				xmlPolicy.setProcessingError(validationResult.getProcessingErrors());
 			}
 		} catch (Exception e) {
 			// When any error (communication) we just set the status to false
@@ -159,24 +131,6 @@ public class XmlPolicyBuilder {
 	}
 	
 	/**
-	 * Extracts {@code SignaturePolicy} content
-	 * NOTE: the relevant {@code SignaturePolicyStore} or/and {@code SignaturePolicyProvider} shall be provided
-	 * 
-	 * @return {@link DSSDocument} representing a {@code SignaturePolicy} content, NULL if not available
-	 */
-	public DSSDocument extractPolicyContent() {
-		if (signaturePolicyStore != null && signaturePolicyStore.getSignaturePolicyContent() != null) {
-			return signaturePolicyStore.getSignaturePolicyContent();
-		}
-		
-		if (signaturePolicyProvider != null) {
-			return signaturePolicyProvider.getSignaturePolicy(signaturePolicy.getIdentifier(), signaturePolicy.getUrl());
-		}
-		
-		throw new DSSException("Unable to extract SignaturePolicy content. SignaturePolicyStore or SignaturePolicyProvider shall be provided.");
-	}
-	
-	/**
 	 * Builds an {@code XmlSignaturePolicyStore}
 	 * 
 	 * @return {@link XmlSignaturePolicyStore}
@@ -185,6 +139,7 @@ public class XmlPolicyBuilder {
 		if (signaturePolicyStore == null) {
 			return null;
 		}
+
 		XmlSignaturePolicyStore xmlSignaturePolicyStore = new XmlSignaturePolicyStore();
 		SpDocSpecification spDocSpecification = signaturePolicyStore.getSpDocSpecification();
 		if (spDocSpecification != null) {
@@ -197,22 +152,10 @@ public class XmlPolicyBuilder {
 		}
 		DSSDocument signaturePolicyContent = signaturePolicyStore.getSignaturePolicyContent();
 		if (signaturePolicyContent != null) {
-			DigestAlgorithm digestAlgorithm = defaultDigestAlgorithm;
-			if (signaturePolicy != null && signaturePolicy.getDigest() != null) {
-				digestAlgorithm = signaturePolicy.getDigest().getAlgorithm();
-			}
-			SignaturePolicyValidator validator = getValidator(signaturePolicy);
-			Digest recalculatedDigest = validator.getComputedDigest(digestAlgorithm);
+			Digest recalculatedDigest = validationResult.getDigest();
 			xmlSignaturePolicyStore.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(recalculatedDigest.getAlgorithm(), recalculatedDigest.getValue()));
 		}
 		return xmlSignaturePolicyStore;
-	}
-	
-	private SignaturePolicyValidator getValidator(SignaturePolicy signaturePolicy) {
-		if (validator == null) {
-			validator = new SignaturePolicyValidatorLoader(signaturePolicy).loadValidator();
-		}
-		return validator;
 	}
 
 	private XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(DigestAlgorithm digestAlgo, byte[] digestValue) {

@@ -74,7 +74,7 @@ public class DSS2095WithBrokenPolicyTransformsTest extends AbstractXAdESTestVali
 		assertNotNull(signature.getPolicyId());
 		assertNotNull(signature.getPolicyUrl());
 		assertTrue(signature.isPolicyPresent());
-		assertFalse(signature.isPolicyStatus());
+		assertFalse(signature.isPolicyDigestValid());
 		assertFalse(signature.isPolicyAsn1Processable());
 		assertFalse(signature.isPolicyZeroHash());
 		assertFalse(Utils.isStringEmpty(signature.getPolicyProcessingError()));

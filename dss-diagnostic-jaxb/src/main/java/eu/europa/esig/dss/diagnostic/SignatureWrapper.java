@@ -617,7 +617,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return false;
 	}
 
-	public boolean isPolicyStatus() {
+	public boolean isPolicyDigestValid() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
 			return policy.isStatus() != null && policy.isStatus();

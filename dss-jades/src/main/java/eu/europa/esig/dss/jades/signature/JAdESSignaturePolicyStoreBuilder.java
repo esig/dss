@@ -37,8 +37,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,13 +96,13 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 	}
 
 	private void extendSignature(JAdESSignature jadesSignature, SignaturePolicyStore signaturePolicyStore, boolean base64UrlInstance) {
-		SignaturePolicy policyId = jadesSignature.getSignaturePolicy();
-		if (policyId != null && policyId.getDigest() != null) {
-			Digest expectedDigest = policyId.getDigest();
-			policyId.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
+		SignaturePolicy signaturePolicy = jadesSignature.getSignaturePolicy();
+		if (signaturePolicy != null && signaturePolicy.getDigest() != null) {
+			Digest expectedDigest = signaturePolicy.getDigest();
 			
-			SignaturePolicyValidator validator = new SignaturePolicyValidatorLoader(policyId).loadValidator();
-			Digest computedDigest = validator.getComputedDigest(expectedDigest.getAlgorithm());
+			SignaturePolicyValidator validator = new DefaultSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
+			Digest computedDigest = validator.getComputedDigest(signaturePolicyStore.getSignaturePolicyContent(),
+					expectedDigest.getAlgorithm());
 			if (expectedDigest.equals(computedDigest)) {
 
 				Map<String, Object> sigPolicyStoreParams = new LinkedHashMap<>();

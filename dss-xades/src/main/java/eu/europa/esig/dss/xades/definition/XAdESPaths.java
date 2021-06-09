@@ -686,6 +686,13 @@ public interface XAdESPaths {
 	String getCurrentSignaturePolicyTransforms();
 
 	/**
+	 * Gets path "./xades:SignaturePolicyId/ds:SigPolicyQualifiers"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentSignaturePolicyQualifiers();
+
+	/**
 	 * Gets path "./xades:Include"
 	 *
 	 * @return {@link String} path
