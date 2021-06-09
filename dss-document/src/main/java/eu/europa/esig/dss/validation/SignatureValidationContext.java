@@ -33,7 +33,6 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
@@ -42,6 +41,7 @@ import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -61,8 +61,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -83,17 +81,17 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * A set of certificates to process
 	 */
-	private final Set<CertificateToken> processedCertificates = new LinkedHashSet<>();
+	private final Set<CertificateToken> processedCertificates = new HashSet<>();
 
 	/**
 	 * A set of revocation data to process
 	 */
-	private final Set<RevocationToken<?>> processedRevocations = new LinkedHashSet<>();
+	private final Set<RevocationToken<?>> processedRevocations = new HashSet<>();
 
 	/**
 	 * A set of timestamps to process
 	 */
-	private final Set<TimestampToken> processedTimestamps = new LinkedHashSet<>();
+	private final Set<TimestampToken> processedTimestamps = new HashSet<>();
 
 	/**
 	 * The CertificateVerifier to use
@@ -106,7 +104,7 @@ public class SignatureValidationContext implements ValidationContext {
 	private AIASource aiaSource;
 
 	/** Map of tokens defining if they have been processed yet */
-	private final Map<Token, Boolean> tokensToProcess = new LinkedHashMap<>();
+	private final Map<Token, Boolean> tokensToProcess = new HashMap<>();
 
 	/** The last usage of a timestamp's certificate tokens */
 	private final Map<CertificateToken, Date> lastTimestampCertChainDates = new HashMap<>();
@@ -210,12 +208,35 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public void addDocumentCertificateSource(CertificateSource certificateSource) {
-		documentCertificateSource.add(certificateSource);
+		addCertificateSource(documentCertificateSource, certificateSource);
 	}
 
 	@Override
-	public void addDocumentCertificateSource(ListCertificateSource certificateSource) {
-		documentCertificateSource.addAll(certificateSource);
+	public void addDocumentCertificateSource(ListCertificateSource listCertificateSource) {
+		for (CertificateSource certificateSource : listCertificateSource.getSources()) {
+			addDocumentCertificateSource(certificateSource);
+		}
+	}
+
+	/**
+	 * Adds {@code certificateSourceToAdd} to the given {@code listCertificateSource}
+	 *
+	 * @param listCertificateSource {@link ListCertificateSource} to enrich
+	 * @param certificateSourceToAdd {@link CertificateSource} to add
+	 */
+	private void addCertificateSource(ListCertificateSource listCertificateSource, CertificateSource certificateSourceToAdd) {
+		listCertificateSource.add(certificateSourceToAdd);
+
+		// add all existing equivalent certificates for the validation
+		ListCertificateSource allCertificateSources = getAllCertificateSources();
+		for (CertificateToken certificateToken : certificateSourceToAdd.getCertificates()) {
+			final Set<CertificateToken> equivalentCertificates = allCertificateSources.getByPublicKey(certificateToken.getPublicKey());
+			for (CertificateToken equivalentCertificate : equivalentCertificates) {
+				if (!certificateToken.getDSSIdAsString().equals(equivalentCertificate.getDSSIdAsString())) {
+					addCertificateTokenForVerification(certificateToken);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -333,7 +354,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if ((issuerCertificateToken == null) && (token instanceof CertificateToken) && aiaSource != null) {
 			final AIACertificateSource aiaCertificateSource = new AIACertificateSource((CertificateToken) token, aiaSource);
 			issuerCertificateToken = aiaCertificateSource.getIssuerFromAIA();
-			aiaCertificateSources.add(aiaCertificateSource);
+			addCertificateSource(aiaCertificateSources, aiaCertificateSource);
 		}
 		
 		if ((issuerCertificateToken == null) && (token instanceof OCSPToken)) {
@@ -388,7 +409,7 @@ public class SignatureValidationContext implements ValidationContext {
 			CertificateRef signingCertificateRef = signingCertificateRefs.iterator().next();
 			ResponderId responderId = signingCertificateRef.getResponderId();
 			if (responderId != null) {
-				Set<CertificateToken> issuerCandidates = new LinkedHashSet<>();
+				Set<CertificateToken> issuerCandidates = new HashSet<>();
 				if (responderId.getSki() != null) {
 					issuerCandidates.addAll(allCertificateSources.getBySki(responderId.getSki()));
 				}
@@ -407,7 +428,7 @@ public class SignatureValidationContext implements ValidationContext {
 		CandidatesForSigningCertificate candidatesForSigningCertificate = timestamp.getCandidatesForSigningCertificate();
 		CertificateValidity theBestCandidate = candidatesForSigningCertificate.getTheBestCandidate();
 		if (theBestCandidate != null) {
-			Set<CertificateToken> issuerCandidates = new LinkedHashSet<>();
+			Set<CertificateToken> issuerCandidates = new HashSet<>();
 			CertificateToken timestampSigner = theBestCandidate.getCertificateToken();
 			if (timestampSigner == null) {
 				issuerCandidates.addAll(allCertificateSources.getByCertificateIdentifier(theBestCandidate.getSignerInfo()));
@@ -483,7 +504,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 			RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
 			if (revocationCertificateSource != null) {
-				revocationCertificateSources.add(revocationCertificateSource);
+				addCertificateSource(revocationCertificateSources, revocationCertificateSource);
 			}
 
 			CertificateToken issuerCertificateToken = revocationToken.getIssuerCertificateToken();
@@ -514,14 +535,6 @@ public class SignatureValidationContext implements ValidationContext {
 					LOG.trace("CertificateToken already present processedCertificates: {} ", certificateToken);
 				}
 			}
-			// add equivalent certificate tokens incorporated within the document
-			final Set<CertificateToken> equivalentCertificates = documentCertificateSource.
-					getByPublicKey(certificateToken.getPublicKey());
-			for (CertificateToken equivalentCertificate : equivalentCertificates) {
-				if (!certificateToken.getDSSIdAsString().equals(equivalentCertificate.getDSSIdAsString())) {
-					addCertificateTokenForVerification(equivalentCertificate);
-				}
-			}
 		}
 	}
 
@@ -531,6 +544,15 @@ public class SignatureValidationContext implements ValidationContext {
 			addDocumentCertificateSource(timestampToken.getCertificateSource());
 			addDocumentCRLSource(timestampToken.getCRLSource());
 			addDocumentOCSPSource(timestampToken.getOCSPSource());
+
+			List<CertificateValidity> certificateValidities = timestampToken.getCandidatesForSigningCertificate().getCertificateValidityList();
+			if (Utils.isCollectionNotEmpty(certificateValidities)) {
+				for (CertificateValidity certificateValidity : certificateValidities) {
+					if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
+						addCertificateTokenForVerification(certificateValidity.getCertificateToken());
+					}
+				}
+			}
 
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {

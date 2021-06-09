@@ -29,7 +29,6 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -217,7 +216,7 @@ public class ListCertificateSource {
 	 * @return a Set of found {@link CertificateToken}
 	 */
 	public Set<CertificateToken> getByPublicKey(PublicKey publicKey) {
-		Set<CertificateToken> result = new LinkedHashSet<>();
+		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSource source : sources) {
 			result.addAll(source.getByPublicKey(publicKey));
 		}
@@ -248,7 +247,7 @@ public class ListCertificateSource {
 	 * @return a Set of found {@link CertificateToken}
 	 */
 	public Set<CertificateToken> getBySubject(X500PrincipalHelper subject) {
-		Set<CertificateToken> result = new LinkedHashSet<>();
+		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSource source : sources) {
 			result.addAll(source.getBySubject(subject));
 		}

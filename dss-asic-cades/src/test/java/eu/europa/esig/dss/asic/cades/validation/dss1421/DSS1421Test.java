@@ -75,10 +75,4 @@ public class DSS1421Test extends AbstractASiCWithCAdESTestValidation {
 		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
-	@Override
-	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
-	}
-
 }

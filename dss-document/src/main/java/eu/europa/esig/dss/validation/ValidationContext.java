@@ -109,9 +109,9 @@ public interface ValidationContext {
 	/**
 	 * Adds a list certificate source to the used list of sources
 	 *
-	 * @param certificateSource {@link ListCertificateSource}
+	 * @param listCertificateSource {@link ListCertificateSource}
 	 */
-	void addDocumentCertificateSource(ListCertificateSource certificateSource);
+	void addDocumentCertificateSource(ListCertificateSource listCertificateSource);
 
 	/**
 	 * Adds an extracted CRL source to the used list of sources

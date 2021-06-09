@@ -468,6 +468,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
 			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps) {
 		ValidationContext validationContext = new SignatureValidationContext();
+		validationContext.initialize(certificateVerifier);
 		prepareSignatureValidationContext(validationContext, signatures);
 		prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
 		return validationContext;
@@ -694,7 +695,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param validationContext {@link ValidationContext} to process
 	 */
 	protected void validateContext(final ValidationContext validationContext) {
-		validationContext.initialize(certificateVerifier);
 		validationContext.validate();
 	}
 	

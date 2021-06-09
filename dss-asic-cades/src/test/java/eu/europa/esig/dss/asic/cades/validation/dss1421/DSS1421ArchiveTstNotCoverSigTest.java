@@ -67,17 +67,5 @@ public class DSS1421ArchiveTstNotCoverSigTest extends AbstractASiCWithCAdESTestV
 		}
 		assertEquals(0, archiveTimestampCounter);
 	}
-	
-	@Override
-	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-
-	@Override
-	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
-	}
 
 }

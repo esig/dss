@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pades.validation.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
-import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -35,7 +35,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2025
@@ -53,10 +52,10 @@ public class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTest
 		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
 		assertEquals(1, timestampList.size());
 		TimestampWrapper timestampWrapper = timestampList.get(0);
-		assertNull(timestampWrapper.getSigningCertificate());
+		assertNotNull(timestampWrapper.getSigningCertificate());
 		assertTrue(timestampWrapper.isMessageImprintDataFound());
 		assertTrue(timestampWrapper.isMessageImprintDataIntact());
-		assertFalse(timestampWrapper.isSigningCertificateIdentified());
+		assertTrue(timestampWrapper.isSigningCertificateIdentified());
 		assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
 		assertFalse(timestampWrapper.isSigningCertificateReferenceUnique()); // 2 signing-certificate attributes
 		assertFalse(timestampWrapper.isSignatureValid());
@@ -72,12 +71,12 @@ public class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTest
 			DiagnosticData diagnosticData) {
 		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
 		FoundCertificatesProxy foundCertificates = timestampWrapper.foundCertificates();
-		
-		assertEquals(2, foundCertificates.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
 
-		List<OrphanCertificateWrapper> orphanCertificatesByRefOrigin = foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-		assertEquals(1, orphanCertificatesByRefOrigin.size());
-		assertEquals(2, orphanCertificatesByRefOrigin.get(0).getReferences().size());
+		assertEquals(2, foundCertificates.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+
+		List<RelatedCertificateWrapper> relatedCertificatesByRefOrigin = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+		assertEquals(1, relatedCertificatesByRefOrigin.size());
+		assertEquals(2, relatedCertificatesByRefOrigin.get(0).getReferences().size());
 	}
 
 }

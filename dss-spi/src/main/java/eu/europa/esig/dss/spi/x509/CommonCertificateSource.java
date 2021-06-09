@@ -33,8 +33,8 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -60,14 +60,14 @@ public class CommonCertificateSource implements CertificateSource {
 	 * 
 	 * All entries share the same key pair
 	 */
-	private Map<EntityIdentifier, CertificateSourceEntity> entriesByPublicKeyHash = new LinkedHashMap<>();
+	private Map<EntityIdentifier, CertificateSourceEntity> entriesByPublicKeyHash = new HashMap<>();
 
 	/**
 	 * Map of tokens, the key is the properties map of SubjectX500Principal
 	 * 
 	 * For a same SubjectX500Principal, different key pairs (and certificates) are possible
 	 */
-	private Map<Map<String, String>, Set<CertificateToken>> tokensBySubject = new LinkedHashMap<>();
+	private Map<Map<String, String>, Set<CertificateToken>> tokensBySubject = new HashMap<>();
 
 	/**
 	 * The default constructor
@@ -116,8 +116,8 @@ public class CommonCertificateSource implements CertificateSource {
 	 * This method removes all certificates from the source
 	 */
 	protected void reset() {
-		entriesByPublicKeyHash = new LinkedHashMap<>();
-		tokensBySubject = new LinkedHashMap<>();
+		entriesByPublicKeyHash = new HashMap<>();
+		tokensBySubject = new HashMap<>();
 	}
 
 	@Override

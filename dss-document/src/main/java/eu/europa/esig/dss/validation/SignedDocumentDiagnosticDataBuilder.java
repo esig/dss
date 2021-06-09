@@ -276,6 +276,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			linkSignaturesAndTimestamps(signatures);
 		}
 
+		// link the rest certificates
+		super.linkSigningCertificateAndChains(usedCertificates);
+
 		diagnosticData.setOrphanTokens(buildXmlOrphanTokens());
 
 		// timestamped objects must be linked after building of orphan tokens
@@ -284,6 +287,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		}
 
 		return diagnosticData;
+	}
+
+	@Override
+	protected void linkSigningCertificateAndChains(Set<CertificateToken> certificates) {
+		// skip (certificate chain is build based on provided tokens)
 	}
 
 	/**
@@ -410,12 +418,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private void setXmlSigningCertificate(XmlSignature xmlSignature, AdvancedSignature signature) {
 		final CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
-
 		PublicKey signingCertificatePublicKey = null;
 		if (theCertificateValidity != null) {
 			xmlSignature.setSigningCertificate(getXmlSigningCertificate(signature.getDSSId(), theCertificateValidity));
+			xmlSignature.setCertificateChain(getXmlForCertificateChain(theCertificateValidity, signature.getCertificateSource()));
 			signingCertificatePublicKey = theCertificateValidity.getPublicKey();
-			xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificatePublicKey));
 		}
 
 		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificatePublicKey));
@@ -852,13 +859,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 				getXmlSignerInformationStore(timestampToken.getSignerInformationStoreInfos()));
 		xmlTimestampToken.setTSAGeneralName(getXmlTSAGeneralName(timestampToken));
 
-		final CandidatesForSigningCertificate candidatesForSigningCertificate = timestampToken
-				.getCandidatesForSigningCertificate();
+		final CandidatesForSigningCertificate candidatesForSigningCertificate = timestampToken.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
 		if (theCertificateValidity != null) {
-			xmlTimestampToken
-					.setSigningCertificate(getXmlSigningCertificate(timestampToken.getDSSId(), theCertificateValidity));
-			xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(theCertificateValidity.getPublicKey()));
+			xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken.getDSSId(), theCertificateValidity));
+			xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(theCertificateValidity, timestampToken.getCertificateSource()));
 		}
 
 		xmlTimestampToken.setFoundCertificates(

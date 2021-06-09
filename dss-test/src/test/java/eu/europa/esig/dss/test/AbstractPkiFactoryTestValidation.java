@@ -601,10 +601,18 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			if (Utils.isCollectionNotEmpty(signingCertificateChain)) {
 				if (signingCertificate.getId().equals(signingCertificateChain.get(0).getId())) {
 					assertEquals(1, signingCertificateChain.size());
-				} else {
-					assertEquals(certificateChain.size(), signingCertificateChain.size() + 1);
+
+				} else if (certificateChain.size() == signingCertificateChain.size() + 1) {
 					for (int ii = 0; ii < signingCertificateChain.size(); ii++) {
-						assertEquals(certificateChain.get(ii + 1).getId(), signingCertificateChain.get(ii).getId());
+						assertTrue(certificateChain.get(ii + 1).getId().equals(signingCertificateChain.get(ii).getId()) ||
+								certificateChain.get(ii + 1).getEntityKey().equals(signingCertificateChain.get(ii).getEntityKey()));
+					}
+
+				} else {
+					int length = certificateChain.size() < signingCertificateChain.size() ? certificateChain.size() - 1 : signingCertificateChain.size();
+					for (int ii = 0; ii < length; ii++) {
+						assertTrue(certificateChain.get(ii + 1).getId().equals(signingCertificateChain.get(ii).getId()) ||
+								certificateChain.get(ii + 1).getEntityKey().equals(signingCertificateChain.get(ii).getEntityKey()));
 					}
 				}
 			}
@@ -1599,8 +1607,15 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					equivalentCertsFound = true;
 					for (String crossCertId : subXCV.getCrossCertificates()) {
 						assertNotEquals(certId, crossCertId);
-						CertificateWrapper crossCert = diagnosticData.getUsedCertificateById(crossCertId);
-						assertEquals(certificateWrapper.getEntityKey(), crossCert.getEntityKey());
+						CertificateWrapper usedCertificate = diagnosticData.getUsedCertificateById(crossCertId);
+						OrphanCertificateTokenWrapper orphanCertificate = diagnosticData.getOrphanCertificateById(crossCertId);
+						assertTrue(usedCertificate != null || orphanCertificate != null);
+						if (usedCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), usedCertificate.getEntityKey());
+						}
+						if (orphanCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), orphanCertificate.getEntityKey());
+						}
 					}
 				}
 				if (Utils.isCollectionNotEmpty(subXCV.getEquivalentCertificates())) {
