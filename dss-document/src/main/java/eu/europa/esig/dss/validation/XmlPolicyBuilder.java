@@ -89,9 +89,9 @@ public class XmlPolicyBuilder {
 
 		xmlPolicy.setId(signaturePolicy.getIdentifier());
 		xmlPolicy.setUrl(DSSUtils.removeControlCharacters(signaturePolicy.getUrl()));
+		xmlPolicy.setNotice(signaturePolicy.getNotice());
 		xmlPolicy.setDescription(signaturePolicy.getDescription());
 		xmlPolicy.setDocumentationReferences(signaturePolicy.getDocumentationReferences());
-		xmlPolicy.setNotice(signaturePolicy.getNotice());
 		
 		List<String> transformsDescription = signaturePolicy.getTransformsDescription();
 		if (Utils.isCollectionNotEmpty(transformsDescription)) {

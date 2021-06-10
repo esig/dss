@@ -29,7 +29,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 
 /**
- * This class covers the case of non ASN1 signature policies (eg : PDF file and its digest)
+ * This class covers the case of non ASN1 signature policies (e.g. : PDF file and its digest)
  */
 public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
@@ -47,25 +47,30 @@ public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyVali
 	public SignaturePolicyValidationResult validate(SignaturePolicy signaturePolicy) {
 		SignaturePolicyValidationResult validationResult = new SignaturePolicyValidationResult();
 
+		DSSDocument policyContent = signaturePolicy.getPolicyContent();
+		if (policyContent == null) {
+			validationResult.addError("general", "The signature policy content is not obtained.");
+			return validationResult;
+		}
 		validationResult.setIdentified(true);
 
 		Digest digest = signaturePolicy.getDigest();
-		
-		if (digest != null) {
-			Digest recalculatedDigest = getComputedDigest(signaturePolicy.getPolicyContent(), digest.getAlgorithm());
-			validationResult.setDigest(recalculatedDigest);
-
-			if (digest.equals(recalculatedDigest)) {
-				validationResult.setDigestValid(true);
-				validationResult.setDigestAlgorithmsEqual(true);
-			} else {
-				validationResult.addError("general",
-						"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
-								+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
-			}
-			
-		} else {
+		if (digest == null) {
 			validationResult.addError("general", "The policy digest value is not defined.");
+			return validationResult;
+		}
+		validationResult.setDigestAlgorithmsEqual(true);
+
+		Digest recalculatedDigest = getComputedDigest(signaturePolicy.getPolicyContent(), digest.getAlgorithm());
+		validationResult.setDigest(recalculatedDigest);
+
+		if (digest.equals(recalculatedDigest)) {
+			validationResult.setDigestValid(true);
+			validationResult.setDigestAlgorithmsEqual(true);
+		} else {
+			validationResult.addError("general",
+					"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
+							+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
 		}
 
 		return validationResult;

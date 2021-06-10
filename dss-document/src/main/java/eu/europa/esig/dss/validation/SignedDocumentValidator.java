@@ -694,7 +694,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @return {@link SignaturePolicyValidatorLoader}
 	 */
-	protected SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
+	public SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
 		return new DefaultSignaturePolicyValidatorLoader();
 	}
 	

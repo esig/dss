@@ -46,7 +46,7 @@ public class Policy implements Serializable {
 	/** The array of documentation references (used in XAdES) */
 	private String[] documentationReferences;
 
-	/** The digest algorithm used to conpute the digest */
+	/** The digest algorithm used to compute the digest */
 	private DigestAlgorithm digestAlgorithm;
 
 	/** The computed digest value */

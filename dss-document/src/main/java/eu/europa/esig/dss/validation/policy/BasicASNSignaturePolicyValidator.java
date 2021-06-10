@@ -61,14 +61,22 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 		SignaturePolicyValidationResult validationResult = new SignaturePolicyValidationResult();
 
 		final DSSDocument policyContent = signaturePolicy.getPolicyContent();
-		byte[] policyBytes = DSSUtils.toByteArray(policyContent);
-		final Digest digest = signaturePolicy.getDigest();
-
+		if (policyContent == null) {
+			validationResult.addError("general", "The signature policy content is not obtained.");
+			return validationResult;
+		}
 		validationResult.setIdentified(true);
+
+		final Digest digest = signaturePolicy.getDigest();
+		if (digest == null) {
+			validationResult.addError("general", "The policy digest value is not defined.");
+			return validationResult;
+		}
 		// valid if no errors occur
 		validationResult.setDigestValid(true);
 
 		try {
+			final byte[] policyBytes = DSSUtils.toByteArray(policyContent);
 			ASN1Sequence asn1Sequence = DSSASN1Utils.toASN1Primitive(policyBytes);
 
 			if (asn1Sequence != null) {

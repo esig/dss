@@ -15,9 +15,6 @@ public class XAdESSignaturePolicy extends SignaturePolicy {
     /** The transforms Element (used in XAdES) */
     private Element transforms;
 
-    /** Represents the xades:SigPolicyQualifiers element */
-    private Element sigPolicyQualifiers;
-
     /**
      * The default constructor for XAdESSignaturePolicy. It represents the implied policy.
      */
@@ -65,24 +62,6 @@ public class XAdESSignaturePolicy extends SignaturePolicy {
             return new TransformsDescriptionBuilder(transforms).build();
         }
         return Collections.emptyList();
-    }
-
-    /**
-     * Gets the xades:SigPolicyQualifiers element if present
-     *
-     * @return {@link Element}
-     */
-    public Element getSigPolicyQualifiers() {
-        return sigPolicyQualifiers;
-    }
-
-    /**
-     * Sets the xades:SigPolicyQualifiers element
-     *
-     * @param sigPolicyQualifiers {@link Element}
-     */
-    public void setSigPolicyQualifiers(Element sigPolicyQualifiers) {
-        this.sigPolicyQualifiers = sigPolicyQualifiers;
     }
 
 }

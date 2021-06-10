@@ -37,7 +37,6 @@ import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESSignaturePolicy;
-import eu.europa.esig.dss.xades.validation.XAdESSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
 import org.slf4j.Logger;
@@ -92,7 +91,7 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 				if (digest != null) {
 					Digest computedDigest;
 					try {
-						SignaturePolicyValidator validator = new XAdESSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
+						SignaturePolicyValidator validator = documentValidator.getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
 						if (validator instanceof XMLSignaturePolicyValidator) {
 							XMLSignaturePolicyValidator xmlSignaturePolicyValidator = (XMLSignaturePolicyValidator) validator;
 								computedDigest = xmlSignaturePolicyValidator.getDigestAfterTransforms(

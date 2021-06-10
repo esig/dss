@@ -68,6 +68,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -454,18 +455,66 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			List<Object> qualifiers = (List<Object>) sigPolicy.get(JAdESHeaderParameterNames.SIG_PQUALS);
 			if (Utils.isCollectionNotEmpty(qualifiers)) {
 				signaturePolicy.setUrl(getSPUri(qualifiers));
+				signaturePolicy.setNotice(getSPUserNotice(qualifiers));
 			}
+
+			Boolean digPSp = (Boolean) sigPolicy.get(JAdESHeaderParameterNames.DIG_PSP);
+			if (digPSp != null) {
+				signaturePolicy.setHashAsInTechnicalSpecification(digPSp);
+			}
+
 		}
 		return signaturePolicy;
 	}
 
-	@SuppressWarnings("unchecked")
 	private String getSPUri(List<Object> qualifiers) {
 		for (Object qualifier : qualifiers) {
-			Map<String, Object> qualiferMap = (Map<String, Object>) qualifier;
-			String spUri = (String)qualiferMap.get(JAdESHeaderParameterNames.SP_URI);
+			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
+			String spUri = (String) qualifierMap.get(JAdESHeaderParameterNames.SP_URI);
 			if (Utils.isStringNotEmpty(spUri)) {
 				return spUri;
+			}
+		}
+		return null;
+	}
+
+	private String getSPUserNotice(List<Object> qualifiers) {
+		for (Object qualifier : qualifiers) {
+			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
+			Map<?, ?> spUserNotice = (Map<?, ?>) qualifierMap.get(JAdESHeaderParameterNames.SP_USER_NOTICE);
+			if (Utils.isMapNotEmpty(spUserNotice)) {
+				StringBuilder spUserNoticeStringBuilder = new StringBuilder();
+
+				Map<?, ?> noticeRef = (Map<?, ?>) spUserNotice.get(JAdESHeaderParameterNames.NOTICE_REF);
+				if (Utils.isMapNotEmpty(noticeRef)) {
+					String organization = (String) noticeRef.get(JAdESHeaderParameterNames.ORGANTIZATION);
+					if (Utils.isStringNotBlank(organization)) {
+						spUserNoticeStringBuilder.append(organization);
+					}
+
+					List<?> noticeNumbers = (List<?>) noticeRef.get(JAdESHeaderParameterNames.NOTICE_NUMBERS);
+					if (Utils.isCollectionNotEmpty(noticeNumbers)) {
+						if (spUserNoticeStringBuilder.length() != 0) {
+							spUserNoticeStringBuilder.append("; ");
+						}
+						Iterator<?> iterator = noticeNumbers.iterator();
+						while (iterator.hasNext()) {
+							spUserNoticeStringBuilder.append(iterator.next());
+							if (iterator.hasNext()) {
+								spUserNoticeStringBuilder.append(", ");
+							}
+						}
+					}
+				}
+
+				String explTest = (String) spUserNotice.get(JAdESHeaderParameterNames.EXPL_TEXT);
+				if (Utils.isStringNotBlank(explTest)) {
+					if (spUserNoticeStringBuilder.length() != 0) {
+						spUserNoticeStringBuilder.append("; ");
+					}
+					spUserNoticeStringBuilder.append(explTest);
+				}
+				return spUserNoticeStringBuilder.toString();
 			}
 		}
 		return null;

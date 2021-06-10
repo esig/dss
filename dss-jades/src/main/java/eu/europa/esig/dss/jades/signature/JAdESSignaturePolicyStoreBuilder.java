@@ -37,7 +37,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +86,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 			assertEtsiUComponentsConsistent(jadesSignature.getJws(), base64UrlInstance);
 
-			extendSignature(jadesSignature, signaturePolicyStore, base64UrlInstance);
+			extendSignature(jadesSignature, signaturePolicyStore, base64UrlInstance, documentValidator);
 		}
 
 		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
@@ -95,13 +94,14 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		return generator.generate();
 	}
 
-	private void extendSignature(JAdESSignature jadesSignature, SignaturePolicyStore signaturePolicyStore, boolean base64UrlInstance) {
+	private void extendSignature(JAdESSignature jadesSignature, SignaturePolicyStore signaturePolicyStore, boolean base64UrlInstance,
+								 AbstractJWSDocumentValidator documentValidator) {
 		SignaturePolicy signaturePolicy = jadesSignature.getSignaturePolicy();
 		if (signaturePolicy != null && signaturePolicy.getDigest() != null) {
 			Digest expectedDigest = signaturePolicy.getDigest();
-			
-			SignaturePolicyValidator validator = new DefaultSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
-			Digest computedDigest = validator.getComputedDigest(signaturePolicyStore.getSignaturePolicyContent(),
+
+			SignaturePolicyValidator signaturePolicyValidator = documentValidator.getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
+			Digest computedDigest = signaturePolicyValidator.getComputedDigest(signaturePolicyStore.getSignaturePolicyContent(),
 					expectedDigest.getAlgorithm());
 			if (expectedDigest.equals(computedDigest)) {
 

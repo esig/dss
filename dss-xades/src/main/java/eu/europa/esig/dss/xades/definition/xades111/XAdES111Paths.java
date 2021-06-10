@@ -26,7 +26,6 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.xades.XAdES111Utils;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
@@ -429,6 +428,32 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	public String getCurrentSignaturePolicySPURI() {
 		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_QUALIFIERS, XAdES111Element.SIG_POLICY_QUALIFIER,
 				XAdES111Element.SP_URI);
+	}
+
+	@Override
+	public String getCurrentSignaturePolicySPUserNotice() {
+		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_QUALIFIERS, XAdES111Element.SIG_POLICY_QUALIFIER,
+				XAdES111Element.SP_USER_NOTICE);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeNoticeRefOrganization() {
+		return fromCurrentPosition(XAdES111Element.NOTICE_REF, XAdES111Element.ORGANIZATION);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeNoticeRefNoticeNumbers() {
+		return fromCurrentPosition(XAdES111Element.NOTICE_REF, XAdES111Element.NOTICE_NUMBERS);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeExplicitText() {
+		return fromCurrentPosition(XAdES111Element.EXPLICIT_TEXT);
+	}
+
+	@Override
+	public String getCurrentSignaturePolicySPDocSpecificationIdentifier() {
+		return null;
 	}
 
 	@Override

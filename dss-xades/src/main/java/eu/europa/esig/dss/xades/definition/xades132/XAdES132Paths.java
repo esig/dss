@@ -455,6 +455,33 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentSignaturePolicySPUserNotice() {
+		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS, XAdES132Element.SIG_POLICY_QUALIFIER,
+				XAdES132Element.SP_USER_NOTICE);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeNoticeRefOrganization() {
+		return fromCurrentPosition(XAdES132Element.NOTICE_REF, XAdES132Element.ORGANIZATION);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeNoticeRefNoticeNumbers() {
+		return fromCurrentPosition(XAdES132Element.NOTICE_REF, XAdES132Element.NOTICE_NUMBERS);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeExplicitText() {
+		return fromCurrentPosition(XAdES132Element.EXPLICIT_TEXT);
+	}
+
+	@Override
+	public String getCurrentSignaturePolicySPDocSpecificationIdentifier() {
+		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS, XAdES132Element.SIG_POLICY_QUALIFIER,
+				XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.IDENTIFIER);
+	}
+
+	@Override
 	public String getCurrentSignaturePolicyDescription() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_ID, XAdES132Element.DESCRIPTION);
 	}

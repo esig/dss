@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import org.w3c.dom.Node;
 
 /**
@@ -12,7 +13,7 @@ import org.w3c.dom.Node;
 public class SPDocDigestAsInSpecificationTransform extends AbstractTransform {
 
     /** The SPDocDigestAsInSpecification algorithm URI */
-    private static final String ALGORITHM_URI = "http://uri.etsi.org/01903/v1.3.2/SignaturePolicy/SPDocDigestAsInSpecification";
+    private static final String ALGORITHM_URI = DSSXMLUtils.SP_DOC_DIGEST_AS_IN_SPECIFICATION_ALGORITHM_URI;
 
     /**
      * Default constructor with ds: xmldsig namespace
