@@ -33,10 +33,9 @@
             <CommitmentTypeIndications/>
             <Policy>
                 <Id>1.2.3.4.5.6</Id>
-                <ZeroHash>true</ZeroHash>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>true</Identified>
-                <Status>true</Status>
+                <Asn1Processable>false</Asn1Processable>
+                <DigestAlgoAndValue zeroHash="true" match="true" />
             </Policy>
             <SignerInformationStore>
                 <SignerInfo Current="true">

@@ -36,15 +36,13 @@
             <Policy>
                 <Id>2.16.76.1.7.1.11.1</Id>
                 <Url>http://politicas.icpbrasil.gov.br/PA_PAdES_AD_RB_v1_0.der</Url>
-                <DigestAlgoAndValue>
+                <Identified>true</Identified>
+                <Asn1Processable>true</Asn1Processable>
+                <ProcessingError></ProcessingError>
+                <DigestAlgoAndValue digestAlgorithmsEqual="true" match="true">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>UB1ptLcfxuVzI8LHQTGpyMYkCb43i6eI3CiFVWEbnlg=</DigestValue>
                 </DigestAlgoAndValue>
-                <Asn1Processable>true</Asn1Processable>
-                <Identified>true</Identified>
-                <Status>true</Status>
-                <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>true</DigestAlgorithmsEqual>
             </Policy>
            	<SignerInformationStore>
            		<SignerInfo Current="true">

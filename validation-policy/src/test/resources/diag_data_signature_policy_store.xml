@@ -34,15 +34,12 @@
             <Policy>
                 <Id>1.2.3.4.5.6</Id>
                 <Url>http://spuri.test</Url>
-                <ZeroHash>false</ZeroHash>
-                <DigestAlgoAndValue>
+                <Identified>true</Identified>
+                <Asn1Processable>true</Asn1Processable>
+                <DigestAlgoAndValue digestAlgorithmsEqual="true" match="true">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>UB1ptLcfxuVzI8LHQTGpyMYkCb43i6eI3CiFVWEbnlg=</DigestValue>
                 </DigestAlgoAndValue>
-                <Asn1Processable>true</Asn1Processable>
-                <Identified>true</Identified>
-                <Status>true</Status>
-                <DigestAlgorithmsEqual>true</DigestAlgorithmsEqual>
             </Policy>
             <SignaturePolicyStore>
                 <Id>1.2.3.4.5.6</Id>

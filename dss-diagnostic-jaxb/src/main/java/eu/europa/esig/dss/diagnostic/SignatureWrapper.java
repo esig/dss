@@ -28,6 +28,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
@@ -271,13 +272,13 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public boolean isPolicyZeroHash() {
 		XmlPolicy policy = signature.getPolicy();
-		if (policy != null) {
-			return policy.isZeroHash() != null && policy.isZeroHash();
+		if (policy != null && policy.getDigestAlgoAndValue() != null) {
+			return policy.getDigestAlgoAndValue().isZeroHash() != null && policy.getDigestAlgoAndValue().isZeroHash();
 		}
 		return false;
 	}
 
-	public XmlDigestAlgoAndValue getPolicyDigestAlgoAndValue() {
+	public XmlPolicyDigestAlgoAndValue getPolicyDigestAlgoAndValue() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
 			return policy.getDigestAlgoAndValue();
@@ -619,16 +620,17 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public boolean isPolicyDigestValid() {
 		XmlPolicy policy = signature.getPolicy();
-		if (policy != null) {
-			return policy.isStatus() != null && policy.isStatus();
+		if (policy != null && policy.getDigestAlgoAndValue() != null) {
+			return policy.getDigestAlgoAndValue().isMatch() != null && policy.getDigestAlgoAndValue().isMatch();
 		}
 		return false;
 	}
 
 	public boolean isPolicyDigestAlgorithmsEqual() {
 		XmlPolicy policy = signature.getPolicy();
-		if (policy != null) {
-			return policy.isDigestAlgorithmsEqual() != null && policy.isDigestAlgorithmsEqual();
+		if (policy != null && policy.getDigestAlgoAndValue() != null) {
+			return policy.getDigestAlgoAndValue().isDigestAlgorithmsEqual() != null
+					&& policy.getDigestAlgoAndValue().isDigestAlgorithmsEqual();
 		}
 		return false;
 	}

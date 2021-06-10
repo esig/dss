@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
@@ -92,39 +92,31 @@ public class XmlPolicyBuilder {
 		xmlPolicy.setDescription(signaturePolicy.getDescription());
 		xmlPolicy.setDocumentationReferences(signaturePolicy.getDocumentationReferences());
 		xmlPolicy.setNotice(signaturePolicy.getNotice());
-		xmlPolicy.setZeroHash(signaturePolicy.isZeroHash());
 		
 		List<String> transformsDescription = signaturePolicy.getTransformsDescription();
 		if (Utils.isCollectionNotEmpty(transformsDescription)) {
 			xmlPolicy.setTransformations(transformsDescription);
 		}
 
+		XmlPolicyDigestAlgoAndValue xmlPolicyDigestAlgoAndValue = new XmlPolicyDigestAlgoAndValue();
+		if (signaturePolicy.isZeroHash()) {
+			xmlPolicyDigestAlgoAndValue.setZeroHash(signaturePolicy.isZeroHash());
+		} else {
+			xmlPolicyDigestAlgoAndValue.setDigestAlgorithmsEqual(validationResult.isDigestAlgorithmsEqual());
+		}
 		final Digest digest = signaturePolicy.getDigest();
 		if (digest != null) {
-			xmlPolicy.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(digest.getAlgorithm(), digest.getValue()));
+			XmlDigestAlgoAndValue xmlDigestAlgoAndValue = getXmlDigestAlgoAndValue(digest);
+			xmlPolicyDigestAlgoAndValue.setDigestMethod(xmlDigestAlgoAndValue.getDigestMethod());
+			xmlPolicyDigestAlgoAndValue.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
 		}
-		
-		try {
-			xmlPolicy.setAsn1Processable(validationResult.isAsn1Processable());
-			if (!signaturePolicy.isZeroHash()) {
-				xmlPolicy.setDigestAlgorithmsEqual(validationResult.isDigestAlgorithmsEqual());
-			}
-			xmlPolicy.setIdentified(validationResult.isIdentified());
-			xmlPolicy.setStatus(validationResult.isDigestValid());
-			if (Utils.isStringNotBlank(validationResult.getProcessingErrors())) {
-				xmlPolicy.setProcessingError(validationResult.getProcessingErrors());
-			}
-		} catch (Exception e) {
-			// When any error (communication) we just set the status to false
-			xmlPolicy.setStatus(false);
-			xmlPolicy.setProcessingError(e.getMessage());
-			// Do nothing
-			String errorMessage = "An error occurred during validation a signature policy with id '{}'. Reason : [{}]";
-			if (LOG.isDebugEnabled()) {
-				LOG.warn(errorMessage, signaturePolicy.getIdentifier(), e.getMessage(), e);
-			} else {
-				LOG.warn(errorMessage, signaturePolicy.getIdentifier(), e.getMessage());
-			}
+		xmlPolicyDigestAlgoAndValue.setMatch(validationResult.isDigestValid());
+		xmlPolicy.setDigestAlgoAndValue(xmlPolicyDigestAlgoAndValue);
+
+		xmlPolicy.setAsn1Processable(validationResult.isAsn1Processable());
+		xmlPolicy.setIdentified(validationResult.isIdentified());
+		if (Utils.isStringNotBlank(validationResult.getProcessingErrors())) {
+			xmlPolicy.setProcessingError(validationResult.getProcessingErrors());
 		}
 		
 		return xmlPolicy;
@@ -153,15 +145,15 @@ public class XmlPolicyBuilder {
 		DSSDocument signaturePolicyContent = signaturePolicyStore.getSignaturePolicyContent();
 		if (signaturePolicyContent != null) {
 			Digest recalculatedDigest = validationResult.getDigest();
-			xmlSignaturePolicyStore.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(recalculatedDigest.getAlgorithm(), recalculatedDigest.getValue()));
+			xmlSignaturePolicyStore.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(recalculatedDigest));
 		}
 		return xmlSignaturePolicyStore;
 	}
 
-	private XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(DigestAlgorithm digestAlgo, byte[] digestValue) {
+	private XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(Digest digest) {
 		XmlDigestAlgoAndValue xmlDigestAlgAndValue = new XmlDigestAlgoAndValue();
-		xmlDigestAlgAndValue.setDigestMethod(digestAlgo);
-		xmlDigestAlgAndValue.setDigestValue(digestValue == null ? DSSUtils.EMPTY_BYTE_ARRAY : digestValue);
+		xmlDigestAlgAndValue.setDigestMethod(digest.getAlgorithm());
+		xmlDigestAlgAndValue.setDigestValue(digest.getValue() == null ? DSSUtils.EMPTY_BYTE_ARRAY : digest.getValue());
 		return xmlDigestAlgAndValue;
 	}
 
