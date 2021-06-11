@@ -1,7 +1,10 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -10,6 +13,8 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -55,11 +60,23 @@ public class PAdESOverwrittenDSSDictTest extends AbstractPAdESTestValidation {
         }
     }
 
+    @Override
+    protected void checkCertificates(DiagnosticData diagnosticData) {
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
+            List<OrphanCertificateWrapper> orphanCertificates = foundCertificates.getOrphanCertificates();
+            for (OrphanCertificateWrapper certificateWrapper : orphanCertificates) {
+                assertTrue(certificateWrapper.getOrigins().contains(CertificateOrigin.DSS_DICTIONARY));
+                assertTrue(certificateWrapper.getOrigins().contains(CertificateOrigin.VRI_DICTIONARY));
+            }
+        }
+    }
+
     protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-        assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanCertificateObjects()));
-        assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanCertificateReferences()));
-        assertEquals(3, Utils.collectionSize(diagnosticData.getAllOrphanRevocationObjects()));
-        assertEquals(2, Utils.collectionSize(diagnosticData.getAllOrphanRevocationReferences()));
+        assertEquals(3, Utils.collectionSize(diagnosticData.getAllOrphanCertificateObjects()));
+        assertEquals(0, Utils.collectionSize(diagnosticData.getAllOrphanCertificateReferences()));
+        assertEquals(5, Utils.collectionSize(diagnosticData.getAllOrphanRevocationObjects()));
+        assertEquals(0, Utils.collectionSize(diagnosticData.getAllOrphanRevocationReferences()));
     }
 
 }

@@ -2,6 +2,8 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
+import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -9,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -110,7 +113,7 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         boolean minimalLTRequirement = !allSelfSigned && !emptyRevocation;
         if (minimalLTRequirement) {
             // check presence of all revocation data
-            return isAllRevocationDataPresent(certificateSources, offlineCertificateVerifier);
+            return isAllRevocationDataPresent(offlineCertificateVerifier);
         }
         return minimalLTRequirement;
     }
@@ -127,8 +130,7 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         return certificateSource;
     }
 
-    private boolean isAllRevocationDataPresent(ListCertificateSource certificateSources,
-                                               CertificateVerifier offlineCertificateVerifier) {
+    private boolean isAllRevocationDataPresent(CertificateVerifier offlineCertificateVerifier) {
         SignatureValidationContext validationContext = new SignatureValidationContext();
         validationContext.initialize(offlineCertificateVerifier);
 
@@ -136,12 +138,33 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         validationContext.addDocumentCRLSource(signature.getCompleteCRLSource());
         validationContext.addDocumentOCSPSource(signature.getCompleteOCSPSource());
 
-        // add only the selected certificates for the offline validation
-        for (final CertificateToken certificate : certificateSources.getAllCertificateTokens()) {
-            validationContext.addCertificateTokenForVerification(certificate);
-        }
+        addSignatureForVerification(validationContext, signature);
+
         validationContext.validate();
         return validationContext.checkAllRequiredRevocationDataPresent();
+    }
+
+    private void addSignatureForVerification(ValidationContext validationContext, AdvancedSignature signature) {
+        CertificateToken signingCertificate = signature.getSigningCertificateToken();
+        if (signingCertificate != null) {
+            validationContext.addCertificateTokenForVerification(signingCertificate);
+        } else {
+            CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
+            List<CertificateValidity> certificateValidities = candidatesForSigningCertificate.getCertificateValidityList();
+            if (Utils.isCollectionNotEmpty(certificateValidities)) {
+                for (CertificateValidity certificateValidity : certificateValidities) {
+                    if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
+                        validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
+                    }
+                }
+            }
+        }
+        for (TimestampToken timestampToken : signature.getTimestampSource().getAllTimestampsExceptLastArchiveTimestamp()) {
+            validationContext.addTimestampTokenForVerification(timestampToken);
+        }
+        for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
+            addSignatureForVerification(validationContext, counterSignature);
+        }
     }
 
     /**

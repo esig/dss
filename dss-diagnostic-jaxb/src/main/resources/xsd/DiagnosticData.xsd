@@ -1016,6 +1016,31 @@
 		<xs:complexContent>
             <xs:extension base="AbstractToken">
 				<xs:sequence>
+				</xs:sequence>
+				<xs:attribute name="EncapsulationType" type="EncapsulationType" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="EncapsulationType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BINARIES" />
+			<xs:enumeration value="REFERENCE" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="OrphanCertificateToken">
+		<xs:complexContent>
+            <xs:extension base="OrphanToken">
+				<xs:sequence>
+					<xs:element name="SubjectDistinguishedName" type="DistinguishedName" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="IssuerDistinguishedName" type="DistinguishedName" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="SerialNumber" type="xs:integer" minOccurs="0" />
+					<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0" />
+					<xs:element name="NotBefore" type="xs:dateTime" minOccurs="0" />
+					<xs:element name="EntityKey" type="xs:string" minOccurs="0" />
+					<xs:element name="Trusted" type="xs:boolean" minOccurs="0" />
+					<xs:element name="SelfSigned" type="xs:boolean" minOccurs="0" />
 					<xs:choice minOccurs="0"> <!-- not applicable for cert refs obtained from ocsp tokens -->
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />
 						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
@@ -1025,20 +1050,15 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="OrphanCertificateToken">
-		<xs:complexContent>
-            <xs:extension base="OrphanToken">
-				<xs:sequence>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
 	<xs:complexType name="OrphanRevocationToken">
 		<xs:complexContent>
             <xs:extension base="OrphanToken">
 				<xs:sequence>
-					<xs:element name="Type" type="RevocationType" />
+					<xs:element name="RevocationType" type="RevocationType" />
+					<xs:choice minOccurs="0">
+						<xs:element name="Base64Encoded" type="xs:base64Binary" />
+						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+					</xs:choice>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

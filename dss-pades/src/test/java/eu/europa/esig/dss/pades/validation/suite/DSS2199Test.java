@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -34,6 +30,9 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DSS2199Test extends AbstractPAdESTestValidation {
 	
@@ -71,8 +70,8 @@ public class DSS2199Test extends AbstractPAdESTestValidation {
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
 		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
-		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
-		assertEquals(1, diagnosticData.getAllOrphanRevocationReferences().size()); // CRL from an orphan DSS dictionary
+		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size()); // CRL from an orphan DSS dictionary
+		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 
 }

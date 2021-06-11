@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
@@ -67,9 +68,9 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -113,11 +114,14 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	/** The signature policy provider */
 	protected SignaturePolicyProvider signaturePolicyProvider;
 
+	/** The list of all certificate sources */
+	protected ListCertificateSource completeCertificateSource = new ListCertificateSource();
+
 	/** The list of all CRL revocation sources */
-	protected ListRevocationSource<CRL> commonCRLSource = new ListRevocationSource<>();
+	protected ListRevocationSource<CRL> completeCRLSource = new ListRevocationSource<>();
 
 	/** The list of all OCSP revocation sources */
-	protected ListRevocationSource<OCSP> commonOCSPSource = new ListRevocationSource<>();
+	protected ListRevocationSource<OCSP> completeOCSPSource = new ListRevocationSource<>();
 
 	/** The cached map of signatures */
 	protected Map<String, XmlSignature> xmlSignaturesMap = new HashMap<>();
@@ -140,7 +144,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	@Override
-	public SignedDocumentDiagnosticDataBuilder usedRevocations(Set<RevocationToken<Revocation>> usedRevocations) {
+	public SignedDocumentDiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
 		return (SignedDocumentDiagnosticDataBuilder) super.usedRevocations(usedRevocations);
 	}
 
@@ -210,6 +214,17 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	/**
+	 * Sets a merged Certificate Source
+	 *
+	 * @param completeCertificateSource {@link ListCertificateSource} computed from existing sources
+	 * @return the builder
+	 */
+	public SignedDocumentDiagnosticDataBuilder completeCertificateSource(ListCertificateSource completeCertificateSource) {
+		this.completeCertificateSource = completeCertificateSource;
+		return this;
+	}
+
+	/**
 	 * Sets a merged CRL Source
 	 * 
 	 * @param completeCRLSource {@link ListRevocationSource} computed from existing
@@ -217,7 +232,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @return the builder
 	 */
 	public SignedDocumentDiagnosticDataBuilder completeCRLSource(ListRevocationSource<CRL> completeCRLSource) {
-		this.commonCRLSource = completeCRLSource;
+		this.completeCRLSource = completeCRLSource;
 		return this;
 	}
 
@@ -229,7 +244,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @return the builder
 	 */
 	public SignedDocumentDiagnosticDataBuilder completeOCSPSource(ListRevocationSource<OCSP> completeOCSPSource) {
-		this.commonOCSPSource = completeOCSPSource;
+		this.completeOCSPSource = completeOCSPSource;
 		return this;
 	}
 
@@ -261,6 +276,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			linkSignaturesAndTimestamps(signatures);
 		}
 
+		// link the rest certificates
+		super.linkSigningCertificateAndChains(usedCertificates);
+
 		diagnosticData.setOrphanTokens(buildXmlOrphanTokens());
 
 		// timestamped objects must be linked after building of orphan tokens
@@ -269,6 +287,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		}
 
 		return diagnosticData;
+	}
+
+	@Override
+	protected void linkSigningCertificateAndChains(Set<CertificateToken> certificates) {
+		// skip (certificate chain is build based on provided tokens)
 	}
 
 	/**
@@ -395,12 +418,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private void setXmlSigningCertificate(XmlSignature xmlSignature, AdvancedSignature signature) {
 		final CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
-
 		PublicKey signingCertificatePublicKey = null;
 		if (theCertificateValidity != null) {
 			xmlSignature.setSigningCertificate(getXmlSigningCertificate(signature.getDSSId(), theCertificateValidity));
+			xmlSignature.setCertificateChain(getXmlForCertificateChain(theCertificateValidity, signature.getCertificateSource()));
 			signingCertificatePublicKey = theCertificateValidity.getPublicKey();
-			xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificatePublicKey));
 		}
 
 		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificatePublicKey));
@@ -680,16 +702,14 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	private <R extends Revocation> void addOrphanRevocations(List<XmlOrphanRevocation> xmlOrphanRevocations,
 			OfflineRevocationSource<R> source) {
-		Map<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> allBinariesWithOrigins = source
-				.getAllRevocationBinariesWithOrigins();
-		for (Entry<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> entry : allBinariesWithOrigins
-				.entrySet()) {
+		Map<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> allBinariesWithOrigins =
+				source.getAllRevocationBinariesWithOrigins();
+		for (Entry<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> entry : allBinariesWithOrigins.entrySet()) {
 			EncapsulatedRevocationTokenIdentifier<R> token = entry.getKey();
 			String tokenId = token.asXmlId();
 			if (!xmlRevocationsMap.containsKey(tokenId)) {
 				XmlOrphanRevocation xmlOrphanRevocation = getXmlOrphanRevocation(token, entry.getValue());
-				xmlOrphanRevocation.getRevocationRefs()
-						.addAll(getXmlRevocationRefs(tokenId, source.findRefsAndOriginsForBinary(token)));
+				xmlOrphanRevocation.getRevocationRefs().addAll(getXmlRevocationRefs(tokenId, source.findRefsAndOriginsForBinary(token)));
 				xmlOrphanRevocations.add(xmlOrphanRevocation);
 			}
 		}
@@ -698,17 +718,16 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private List<XmlOrphanRevocation> getXmlOrphanRevocationRefs(OfflineRevocationSource<CRL> crlSource,
 			OfflineRevocationSource<OCSP> ocspSource) {
 		List<XmlOrphanRevocation> xmlOrphanRevocationRefs = new ArrayList<>();
-		addOrphanRevocationRefs(xmlOrphanRevocationRefs, crlSource, commonCRLSource);
-		addOrphanRevocationRefs(xmlOrphanRevocationRefs, ocspSource, commonOCSPSource);
+		addOrphanRevocationRefs(xmlOrphanRevocationRefs, crlSource, completeCRLSource);
+		addOrphanRevocationRefs(xmlOrphanRevocationRefs, ocspSource, completeOCSPSource);
 		return xmlOrphanRevocationRefs;
 	}
 
 	private <R extends Revocation> void addOrphanRevocationRefs(List<XmlOrphanRevocation> xmlOrphanRevocationRefs,
 			OfflineRevocationSource<R> source, ListRevocationSource<R> allSources) {
-		Map<RevocationRef<R>, Set<RevocationRefOrigin>> orphanRevocationReferencesWithOrigins = source
-				.getOrphanRevocationReferencesWithOrigins();
-		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : orphanRevocationReferencesWithOrigins
-				.entrySet()) {
+		Map<RevocationRef<R>, Set<RevocationRefOrigin>> orphanRevocationReferencesWithOrigins =
+				source.getOrphanRevocationReferencesWithOrigins();
+		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : orphanRevocationReferencesWithOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
 			if (allSources.isOrphan(ref) && sourceDoesNotContainOrphanBinaries(source, ref)) {
 				xmlOrphanRevocationRefs.add(createOrphanRevocationFromRef(ref, entry.getValue()));
@@ -746,6 +765,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	protected <R extends Revocation> XmlOrphanRevocationToken createOrphanTokenFromRevocationIdentifier(
 			EncapsulatedRevocationTokenIdentifier<R> revocationIdentifier) {
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
+		orphanToken.setEncapsulationType(XmlEncapsulationType.BINARIES);
 		orphanToken.setId(identifierProvider.getIdAsString(revocationIdentifier));
 		if (tokenExtractionStrategy.isRevocationData()) {
 			orphanToken.setBase64Encoded(revocationIdentifier.getBinaries());
@@ -754,9 +774,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, digestValue));
 		}
 		if (revocationIdentifier instanceof CRLBinary) {
-			orphanToken.setType(RevocationType.CRL);
+			orphanToken.setRevocationType(RevocationType.CRL);
 		} else {
-			orphanToken.setType(RevocationType.OCSP);
+			orphanToken.setRevocationType(RevocationType.OCSP);
 		}
 		xmlOrphanRevocationTokensMap.put(revocationIdentifier.asXmlId(), orphanToken);
 		return orphanToken;
@@ -767,6 +787,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		XmlOrphanRevocation xmlOrphanRevocation = new XmlOrphanRevocation();
 
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
+		orphanToken.setEncapsulationType(XmlEncapsulationType.REFERENCE);
 		orphanToken.setId(identifierProvider.getIdAsString(ref));
 		if (ref.getDigest() != null) {
 			orphanToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ref.getDigest()));
@@ -775,11 +796,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 		xmlOrphanRevocation.setToken(orphanToken);
 		if (ref instanceof CRLRef) {
-			orphanToken.setType(RevocationType.CRL);
+			orphanToken.setRevocationType(RevocationType.CRL);
 			xmlOrphanRevocation.setType(RevocationType.CRL);
 			xmlOrphanRevocation.getRevocationRefs().add(getXmlCRLRevocationRef((CRLRef) ref, origins));
 		} else {
-			orphanToken.setType(RevocationType.OCSP);
+			orphanToken.setRevocationType(RevocationType.OCSP);
 			xmlOrphanRevocation.setType(RevocationType.OCSP);
 			xmlOrphanRevocation.getRevocationRefs().add(getXmlOCSPRevocationRef((OCSPRef) ref, origins));
 		}
@@ -838,13 +859,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 				getXmlSignerInformationStore(timestampToken.getSignerInformationStoreInfos()));
 		xmlTimestampToken.setTSAGeneralName(getXmlTSAGeneralName(timestampToken));
 
-		final CandidatesForSigningCertificate candidatesForSigningCertificate = timestampToken
-				.getCandidatesForSigningCertificate();
+		final CandidatesForSigningCertificate candidatesForSigningCertificate = timestampToken.getCandidatesForSigningCertificate();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
 		if (theCertificateValidity != null) {
-			xmlTimestampToken
-					.setSigningCertificate(getXmlSigningCertificate(timestampToken.getDSSId(), theCertificateValidity));
-			xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(theCertificateValidity.getPublicKey()));
+			xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken.getDSSId(), theCertificateValidity));
+			xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(theCertificateValidity, timestampToken.getCertificateSource()));
 		}
 
 		xmlTimestampToken.setFoundCertificates(

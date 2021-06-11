@@ -929,7 +929,7 @@ public final class DSSASN1Utils {
 		}
 		final Map<String, String> firstStringStringHashMap = DSSASN1Utils.get(firstX500Principal);
 		final Map<String, String> secondStringStringHashMap = DSSASN1Utils.get(secondX500Principal);
-		return firstStringStringHashMap.entrySet().containsAll(secondStringStringHashMap.entrySet());
+		return firstStringStringHashMap.equals(secondStringStringHashMap);
 	}
 
 	/**

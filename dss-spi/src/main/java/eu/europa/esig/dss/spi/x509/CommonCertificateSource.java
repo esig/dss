@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,11 +63,11 @@ public class CommonCertificateSource implements CertificateSource {
 	private Map<EntityIdentifier, CertificateSourceEntity> entriesByPublicKeyHash = new HashMap<>();
 
 	/**
-	 * Map of tokens, the key is the canonicalized SubjectX500Principal
+	 * Map of tokens, the key is the properties map of SubjectX500Principal
 	 * 
-	 * For a same SubjectX500Principal, different key pairs are possible
+	 * For a same SubjectX500Principal, different key pairs (and certificates) are possible
 	 */
-	private Map<String, Set<CertificateToken>> tokensBySubject = new HashMap<>();
+	private Map<Map<String, String>, Set<CertificateToken>> tokensBySubject = new HashMap<>();
 
 	/**
 	 * The default constructor
@@ -104,8 +105,8 @@ public class CommonCertificateSource implements CertificateSource {
 		}
 
 		synchronized (tokensBySubject) {
-			String key = certificateToAdd.getSubject().getCanonical();
-			tokensBySubject.computeIfAbsent(key, k -> new HashSet<>()).add(certificateToAdd);
+			Map<String, String> propertiesMap = DSSASN1Utils.get(certificateToAdd.getSubject().getPrincipal());
+			tokensBySubject.computeIfAbsent(propertiesMap, k -> new HashSet<>()).add(certificateToAdd);
 		}
 
 		return certificateToAdd;
@@ -186,7 +187,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	@Override
 	public Set<CertificateToken> getBySubject(X500PrincipalHelper subject) {
-		final Set<CertificateToken> tokensSet = tokensBySubject.get(subject.getCanonical());
+		final Set<CertificateToken> tokensSet = tokensBySubject.get(DSSASN1Utils.get(subject.getPrincipal()));
 		if (tokensSet != null) {
 			return tokensSet;
 		}

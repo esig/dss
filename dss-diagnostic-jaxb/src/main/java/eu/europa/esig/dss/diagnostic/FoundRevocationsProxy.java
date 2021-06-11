@@ -256,4 +256,40 @@ public class FoundRevocationsProxy {
 		return allRevocations;
 	}
 
+	/**
+	 * Returns a list of related revocation data by the given reference origin and type
+	 *
+	 * @param type {@link RevocationType} type of the revocation data
+	 * @param refOrigin {@link RevocationRefOrigin} origin of a reference of revocation data
+	 * @return a list of {@link RelatedRevocationWrapper}s
+	 */
+	public List<RelatedRevocationWrapper> getRelatedRevocationsByTypeAndRefOrigin(RevocationType type,
+																				 RevocationRefOrigin refOrigin) {
+		List<RelatedRevocationWrapper> allRevocations = new ArrayList<>();
+		for (RelatedRevocationWrapper revocationWrapper : getRelatedRevocationsByRefOrigin(refOrigin)) {
+			if (type.equals(revocationWrapper.getRevocationType())) {
+				allRevocations.add(revocationWrapper);
+			}
+		}
+		return allRevocations;
+	}
+
+	/**
+	 * Returns a list of orphan revocation data by the given reference origin and type
+	 *
+	 * @param type {@link RevocationType} type of the revocation data
+	 * @param refOrigin {@link RevocationRefOrigin} reference origin of the revocation data
+	 * @return a list of {@link OrphanRevocationWrapper}s
+	 */
+	public List<OrphanRevocationWrapper> getOrphanRevocationsByTypeAndRefOrigin(RevocationType type,
+																				RevocationRefOrigin refOrigin) {
+		List<OrphanRevocationWrapper> allRevocations = new ArrayList<>();
+		for (OrphanRevocationWrapper revocationWrapper : getOrphanRevocationsByRefOrigin(refOrigin)) {
+			if (type.equals(revocationWrapper.getRevocationType())) {
+				allRevocations.add(revocationWrapper);
+			}
+		}
+		return allRevocations;
+	}
+
 }

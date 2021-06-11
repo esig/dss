@@ -20,7 +20,11 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.io.File;
 import java.util.Arrays;
@@ -28,11 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class DSS728SignaturePolicyProviderTest extends AbstractCAdESTestValidation {
 
@@ -61,6 +62,13 @@ public class DSS728SignaturePolicyProviderTest extends AbstractCAdESTestValidati
 	@Override
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		// root cert, because there is no CA cert
+		assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
+		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
 	}
 
 }

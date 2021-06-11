@@ -26,7 +26,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
@@ -437,7 +436,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return {@link String}
 	 */
 	public String getCertificateDN() {
-		return getFormat(certificate.getSubjectDistinguishedName(), "RFC2253");
+		DistinguishedNameListWrapper distinguishedNameListWrapper = new DistinguishedNameListWrapper(
+				certificate.getSubjectDistinguishedName());
+		return distinguishedNameListWrapper.getValue("RFC2253");
 	}
 
 	/**
@@ -446,18 +447,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return {@link String}
 	 */
 	public String getCertificateIssuerDN() {
-		return getFormat(certificate.getIssuerDistinguishedName(), "RFC2253");
-	}
-
-	private String getFormat(List<XmlDistinguishedName> distinguishedNames, String format) {
-		if (distinguishedNames != null) {
-			for (XmlDistinguishedName distinguishedName : distinguishedNames) {
-				if (distinguishedName.getFormat().equals(format)) {
-					return distinguishedName.getValue();
-				}
-			}
-		}
-		return "";
+		DistinguishedNameListWrapper distinguishedNameListWrapper = new DistinguishedNameListWrapper(
+				certificate.getIssuerDistinguishedName());
+		return distinguishedNameListWrapper.getValue("RFC2253");
 	}
 
 	/**

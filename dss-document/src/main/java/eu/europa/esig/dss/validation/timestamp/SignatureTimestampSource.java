@@ -217,19 +217,21 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     @Override
     public ListCertificateSource getTimestampCertificateSourcesExceptLastArchiveTimestamp() {
         ListCertificateSource result = new ListCertificateSource();
+        List<TimestampToken> timestampTokens = getAllTimestampsExceptLastArchiveTimestamp();
+        for (final TimestampToken timestampToken : timestampTokens) {
+            result.add(timestampToken.getCertificateSource());
+        }
+        return result;
+    }
 
-        for (final TimestampToken timestampToken : getContentTimestamps()) {
-            result.add(timestampToken.getCertificateSource());
-        }
-        for (final TimestampToken timestampToken : getTimestampsX1()) {
-            result.add(timestampToken.getCertificateSource());
-        }
-        for (final TimestampToken timestampToken : getTimestampsX2()) {
-            result.add(timestampToken.getCertificateSource());
-        }
-        for (final TimestampToken timestampToken : getSignatureTimestamps()) {
-            result.add(timestampToken.getCertificateSource());
-        }
+    @Override
+    public List<TimestampToken> getAllTimestampsExceptLastArchiveTimestamp() {
+        List<TimestampToken> timestampTokens = new ArrayList<>();
+
+        timestampTokens.addAll(getContentTimestamps());
+        timestampTokens.addAll(getSignatureTimestamps());
+        timestampTokens.addAll(getTimestampsX1());
+        timestampTokens.addAll(getTimestampsX2());
 
         final List<TimestampToken> archiveTimestamps = new ArrayList<>(getArchiveTimestamps());
         archiveTimestamps.addAll(getDocumentTimestamps()); // can be a document timestamp for PAdES
@@ -238,11 +240,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         if (archiveTimestamps.size() > 0) {
             for (int ii = 0; ii < archiveTimestamps.size() - 1; ii++) {
                 TimestampToken timestampToken = archiveTimestamps.get(ii);
-                result.add(timestampToken.getCertificateSource());
+                timestampTokens.add(timestampToken);
             }
         }
-
-        return result;
+        return timestampTokens;
     }
 
     @Override

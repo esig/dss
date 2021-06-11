@@ -32,6 +32,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
@@ -57,6 +58,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
@@ -67,6 +69,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -287,30 +290,14 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
 			FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
 
-			// Tokens
-			assertEquals(certificateSource.getKeyInfoCertificates().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-			assertEquals(certificateSource.getCertificateValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
-			assertEquals(certificateSource.getSignedDataCertificates().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
-			assertEquals(certificateSource.getDSSDictionaryCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
-			assertEquals(certificateSource.getVRIDictionaryCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
-			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+			verifyCertificateSourceData(certificateSource, foundCertificates);
 
-			// Refs
-			assertEquals(certificateSource.getSigningCertificateRefs().size(),
-					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-			assertEquals(certificateSource.getAttributeCertificateRefs().size(),
-					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
-			assertEquals(certificateSource.getCompleteCertificateRefs().size(),
-					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+			OfflineRevocationSource<CRL> crlSource = advancedSignature.getCRLSource();
+			OfflineRevocationSource<OCSP> ocspSource = advancedSignature.getOCSPSource();
+			FoundRevocationsProxy foundRevocations = signatureWrapper.foundRevocations();
+
+			verifyRevocationSourceData(crlSource, foundRevocations, RevocationType.CRL);
+			verifyRevocationSourceData(ocspSource, foundRevocations, RevocationType.OCSP);
 
 			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
 			for (TimestampToken timestampToken : timestamps) {
@@ -319,34 +306,16 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				certificateSource = timestampToken.getCertificateSource();
 				foundCertificates = timestampWrapper.foundCertificates();
 
-				// Tokens
-				assertEquals(certificateSource.getKeyInfoCertificates().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-				assertEquals(certificateSource.getCertificateValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-				assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-				assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
-				assertEquals(certificateSource.getSignedDataCertificates()
-						.size(),
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
-				assertEquals(certificateSource.getDSSDictionaryCertValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
-				assertEquals(certificateSource.getVRIDictionaryCertValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+				verifyCertificateSourceData(certificateSource, foundCertificates);
 
-				// Refs
-				assertEquals(certificateSource.getSigningCertificateRefs().size(),
-						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-				assertEquals(certificateSource.getAttributeCertificateRefs().size(), 
-						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
-				assertEquals(certificateSource.getCompleteCertificateRefs().size(), 
-						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+				crlSource = timestampToken.getCRLSource();
+				ocspSource = timestampToken.getOCSPSource();
+				foundRevocations = timestampWrapper.foundRevocations();
+
+				verifyRevocationSourceData(crlSource, foundRevocations, RevocationType.CRL);
+				verifyRevocationSourceData(ocspSource, foundRevocations, RevocationType.OCSP);
 			}
 
-			OfflineRevocationSource<OCSP> ocspSource = advancedSignature.getOCSPSource();
 			Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
 			for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
 				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
@@ -355,13 +324,85 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					foundCertificates = revocationWrapper.foundCertificates();
 
 					assertEquals(revocationCertificateSource.getCertificates().size(), 
-							foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+							foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() +
+									foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
 					assertEquals(revocationCertificateSource.getAllCertificateRefs().size(), foundCertificates.getRelatedCertificateRefs().size());
 				}
 			}
 		}
 		
 		checkOrphanTokens(diagnosticData);
+	}
+
+	protected void verifyCertificateSourceData(SignatureCertificateSource certificateSource, FoundCertificatesProxy foundCertificates) {
+		// Tokens
+		assertEquals(certificateSource.getKeyInfoCertificates().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+		assertEquals(certificateSource.getCertificateValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+		assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
+		assertEquals(certificateSource.getSignedDataCertificates().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
+		assertEquals(certificateSource.getDSSDictionaryCertValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
+		assertEquals(certificateSource.getVRIDictionaryCertValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
+		assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() +
+				foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+
+		// Refs
+		assertEquals(certificateSource.getSigningCertificateRefs().size(),
+				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size() +
+						foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+		assertEquals(certificateSource.getAttributeCertificateRefs().size(),
+				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size() +
+						foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+		assertEquals(certificateSource.getCompleteCertificateRefs().size(),
+				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size() +
+						foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+	}
+
+	protected void verifyRevocationSourceData(OfflineRevocationSource<?> revocationSource, FoundRevocationsProxy foundRevocations,
+											RevocationType revocationType) {
+		assertEquals(revocationSource.getCMSSignedDataRevocationBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.CMS_SIGNED_DATA).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.CMS_SIGNED_DATA).size());
+		assertEquals(revocationSource.getRevocationValuesBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.REVOCATION_VALUES).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(revocationSource.getAttributeRevocationValuesBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES).size());
+		assertEquals(revocationSource.getTimestampValidationDataBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(revocationSource.getDSSDictionaryBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.DSS_DICTIONARY).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.DSS_DICTIONARY).size());
+		assertEquals(revocationSource.getVRIDictionaryBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.VRI_DICTIONARY).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.VRI_DICTIONARY).size());
+		assertEquals(revocationSource.getADBERevocationValuesBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL).size());
+
+		// Refs
+		assertEquals(revocationSource.getCompleteRevocationRefs().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndRefOrigin(revocationType, RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size() +
+						foundRevocations.getOrphanRevocationsByTypeAndRefOrigin(revocationType, RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(revocationSource.getAttributeRevocationRefs().size(), foundRevocations.
+				getRelatedRevocationsByTypeAndRefOrigin(revocationType, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndRefOrigin(revocationType, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
 	}
 
 	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
@@ -560,10 +601,18 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			if (Utils.isCollectionNotEmpty(signingCertificateChain)) {
 				if (signingCertificate.getId().equals(signingCertificateChain.get(0).getId())) {
 					assertEquals(1, signingCertificateChain.size());
-				} else {
-					assertEquals(certificateChain.size(), signingCertificateChain.size() + 1);
+
+				} else if (certificateChain.size() == signingCertificateChain.size() + 1) {
 					for (int ii = 0; ii < signingCertificateChain.size(); ii++) {
-						assertEquals(certificateChain.get(ii + 1).getId(), signingCertificateChain.get(ii).getId());
+						assertTrue(certificateChain.get(ii + 1).getId().equals(signingCertificateChain.get(ii).getId()) ||
+								certificateChain.get(ii + 1).getEntityKey().equals(signingCertificateChain.get(ii).getEntityKey()));
+					}
+
+				} else {
+					int length = certificateChain.size() < signingCertificateChain.size() ? certificateChain.size() - 1 : signingCertificateChain.size();
+					for (int ii = 0; ii < length; ii++) {
+						assertTrue(certificateChain.get(ii + 1).getId().equals(signingCertificateChain.get(ii).getId()) ||
+								certificateChain.get(ii + 1).getEntityKey().equals(signingCertificateChain.get(ii).getEntityKey()));
 					}
 				}
 			}
@@ -1452,8 +1501,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						++otherCounter;
 				}
 			}
-			
-			assertEquals(diagnosticData.getUsedCertificates().size(), certificateCounter);
+
+			long ddCerts = diagnosticData.getUsedCertificates().size() +
+					diagnosticData.getAllOrphanCertificateObjects().size();
+			assertEquals(ddCerts, certificateCounter);
 			long ddCrls = diagnosticData.getAllRevocationData().stream()
 					.filter(r -> RevocationType.CRL.equals(r.getRevocationType())).count();
 			ddCrls += diagnosticData.getAllOrphanRevocationObjects().stream()
@@ -1556,20 +1607,35 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					equivalentCertsFound = true;
 					for (String crossCertId : subXCV.getCrossCertificates()) {
 						assertNotEquals(certId, crossCertId);
-						CertificateWrapper crossCert = diagnosticData.getUsedCertificateById(crossCertId);
-						assertEquals(certificateWrapper.getEntityKey(), crossCert.getEntityKey());
+						CertificateWrapper usedCertificate = diagnosticData.getUsedCertificateById(crossCertId);
+						OrphanCertificateTokenWrapper orphanCertificate = diagnosticData.getOrphanCertificateById(crossCertId);
+						assertTrue(usedCertificate != null || orphanCertificate != null);
+						if (usedCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), usedCertificate.getEntityKey());
+						}
+						if (orphanCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), orphanCertificate.getEntityKey());
+						}
 					}
 				}
 				if (Utils.isCollectionNotEmpty(subXCV.getEquivalentCertificates())) {
 					equivalentCertsFound = true;
 					for (String equivalentCertId : subXCV.getEquivalentCertificates()) {
 						assertNotEquals(certId, equivalentCertId);
-						CertificateWrapper equivalentCert = diagnosticData.getUsedCertificateById(equivalentCertId);
-						assertEquals(certificateWrapper.getEntityKey(), equivalentCert.getEntityKey());
+						CertificateWrapper usedCertificate = diagnosticData.getUsedCertificateById(equivalentCertId);
+						OrphanCertificateTokenWrapper orphanCertificate = diagnosticData.getOrphanCertificateById(equivalentCertId);
+						assertTrue(usedCertificate != null || orphanCertificate != null);
+						if (usedCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), usedCertificate.getEntityKey());
+						}
+						if (orphanCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), orphanCertificate.getEntityKey());
+						}
 					}
 				}
 				if (!equivalentCertsFound) {
 					assertTrue(Utils.isCollectionEmpty(diagnosticData.getEquivalentCertificates(certificateWrapper)));
+					assertTrue(Utils.isCollectionEmpty(diagnosticData.getOrphanEquivalentCertificates(certificateWrapper)));
 				}
 			}
 		}

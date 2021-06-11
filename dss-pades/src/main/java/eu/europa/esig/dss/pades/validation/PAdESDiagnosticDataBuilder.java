@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.CAdESDiagnosticDataBuilder;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
@@ -33,12 +29,17 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DiagnosticDataBuilder for a PDF signature
@@ -140,14 +141,20 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 	}
 
 	private void buildOrphanRevocationTokensFromCommonSources() {
-		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationIdentifier : commonCRLSource
+		for (CertificateToken certificateToken : completeCertificateSource.getAllCertificateTokens()) {
+			String id = certificateToken.getDSSIdAsString();
+			if (!xmlCertsMap.containsKey(id) && !xmlOrphanCertificateTokensMap.containsKey(id)) {
+				buildXmlOrphanCertificateToken(certificateToken);
+			}
+		}
+		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationIdentifier : completeCRLSource
 				.getAllRevocationBinaries()) {
 			String id = revocationIdentifier.asXmlId();
 			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
 				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
 			}
 		}
-		for (EncapsulatedRevocationTokenIdentifier<OCSP> revocationIdentifier : commonOCSPSource
+		for (EncapsulatedRevocationTokenIdentifier<OCSP> revocationIdentifier : completeOCSPSource
 				.getAllRevocationBinaries()) {
 			String id = revocationIdentifier.asXmlId();
 			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {

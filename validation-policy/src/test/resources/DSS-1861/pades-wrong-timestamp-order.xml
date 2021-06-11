@@ -1205,33 +1205,33 @@
         </Timestamp>
     </UsedTimestamps>
     <OrphanTokens>
-        <OrphanRevocation Id="R-9A13EEACCDB7CF28D1886FC9A02FD403BE3B005F82D2466574F5F0CB35EC4859">
+        <OrphanRevocation EncapsulationType="BINARIES" Id="R-9A13EEACCDB7CF28D1886FC9A02FD403BE3B005F82D2466574F5F0CB35EC4859">
+            <RevocationType>OCSP</RevocationType>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>mhPurM23zyjRiG/JoC/UA747AF+C0kZldPXwyzXsSFk=</DigestValue>
             </DigestAlgoAndValue>
-            <Type>OCSP</Type>
         </OrphanRevocation>
-        <OrphanRevocation Id="R-F14EBE897CF92C9899E5E510D9FFD18C05E2B9D03A6CB87C9BC3135FD8E248DC">
+        <OrphanRevocation EncapsulationType="BINARIES" Id="R-F14EBE897CF92C9899E5E510D9FFD18C05E2B9D03A6CB87C9BC3135FD8E248DC">
+            <RevocationType>OCSP</RevocationType>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>8U6+iXz5LJiZ5eUQ2f/RjAXiudA6bLh8m8MTX9jiSNw=</DigestValue>
             </DigestAlgoAndValue>
-            <Type>OCSP</Type>
         </OrphanRevocation>
-        <OrphanRevocation Id="R-9F0C1F6947DADFA3B0B533EF20E37F305C9723ACB555B1A393FE04D9FA7AFD2E">
+        <OrphanRevocation EncapsulationType="BINARIES" Id="R-9F0C1F6947DADFA3B0B533EF20E37F305C9723ACB555B1A393FE04D9FA7AFD2E">
+            <RevocationType>OCSP</RevocationType>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>nwwfaUfa36OwtTPvION/MFyXI6y1VbGjk/4E2fp6/S4=</DigestValue>
             </DigestAlgoAndValue>
-            <Type>OCSP</Type>
         </OrphanRevocation>
-        <OrphanRevocation Id="R-7045B3CC30FB448D655E0632460713127A260AF6EFA0FCA3C26BC3895D9FAE2D">
+        <OrphanRevocation EncapsulationType="BINARIES" Id="R-7045B3CC30FB448D655E0632460713127A260AF6EFA0FCA3C26BC3895D9FAE2D">
+            <RevocationType>OCSP</RevocationType>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>cEWzzDD7RI1lXgYyRgcTEnomCvbvoPyjwmvDiV2fri0=</DigestValue>
             </DigestAlgoAndValue>
-            <Type>OCSP</Type>
         </OrphanRevocation>
     </OrphanTokens>
     <OriginalDocuments>

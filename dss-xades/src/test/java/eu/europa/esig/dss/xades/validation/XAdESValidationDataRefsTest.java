@@ -22,7 +22,9 @@ package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.OrphanRevocationTokenWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
@@ -99,7 +101,7 @@ public class XAdESValidationDataRefsTest extends AbstractXAdESTestValidation {
 		
 		assertEquals(3, signature.foundRevocations().getOrphanRevocationRefs().size());
 		
-		List<OrphanTokenWrapper> allOrphanCertificates = diagnosticData.getAllOrphanCertificateReferences();
+		List<OrphanCertificateTokenWrapper> allOrphanCertificates = diagnosticData.getAllOrphanCertificateReferences();
 		assertEquals(3, allOrphanCertificates.size());
 		for (OrphanTokenWrapper orphanCertificate : allOrphanCertificates) {
 			assertNotNull(orphanCertificate.getDigestAlgoAndValue());
@@ -107,7 +109,7 @@ public class XAdESValidationDataRefsTest extends AbstractXAdESTestValidation {
 			assertNotNull(orphanCertificate.getDigestAlgoAndValue().getDigestValue());
 		}
 		
-		List<OrphanTokenWrapper> allOrphanRevocations = diagnosticData.getAllOrphanRevocationReferences();
+		List<OrphanRevocationTokenWrapper> allOrphanRevocations = diagnosticData.getAllOrphanRevocationReferences();
 		assertEquals(3, allOrphanRevocations.size());
 		for (OrphanTokenWrapper orphanRevocation : allOrphanRevocations) {
 			assertNotNull(orphanRevocation);
