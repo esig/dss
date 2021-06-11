@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>signed_document_ok.pdf</DocumentName>
+    <ValidationDate>2021-06-11T14:03:10</ValidationDate>
+    <Signatures>
+        <Signature Id="S-8803F50BF7BD41F61417952BCBB2186AF4F8F0C02D17BDD2C3E41FF253417D52">
+            <SignatureFilename>signed_document_ok.pdf</SignatureFilename>
+            <ClaimedSigningTime>2020-06-21T19:55:52</ClaimedSigningTime>
+            <SignatureFormat>PKCS7-B</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>KaUEYqAm4OKanCc8Xc+DO3f0DxIpMQLBx6q83vqe87g=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-B45FE2443C9DE45161696EC809D6FEB5BC361D3B700E46C5078F7D2351EFA6AB"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-B45FE2443C9DE45161696EC809D6FEB5BC361D3B700E46C5078F7D2351EFA6AB"/>
+                <ChainItem Certificate="C-F9295618E7A752D107423C3D3E1FFE0D894F14369A188E733EEE36884EA73853"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=Certinomis - Prime CA, OU=0002 433998903, O=Certinomis, C=FR</IssuerName>
+                    <SerialNumber>3869645993449232460210704909727299541</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature2</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <SignerName>Signer Test</SignerName>
+                    <Type>Sig</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>adbe.pkcs7.detached</SubFilter>
+                    <SignatureByteRange>0 48800 55358 62490</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-B45FE2443C9DE45161696EC809D6FEB5BC361D3B700E46C5078F7D2351EFA6AB">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-68F9B6E53F6C534EDF676FCD9D140A87DE080DF1786A1F8ADEDC6C8DCBD8F828">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Q+hk5CbPJ/kzzRYNA2bjVx54PWFzqRokRxuRjlMlOpQ=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>YOg9rNd+6jirBjxcomNjbzlz82++K8SyfbF+zEUvzIc=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>YFpjUvU8ABIFQUUgXaHjBvOHDrPWRSTUEjo+JbjocNTcXqAxQUM6z51YWEir0t+Gx1lp5rdbQyvBvABz5jtY3Gdnvq4B4F8XPgdh2wtIyU3IJK1AkD1e0fLg6CZl7So+ln4eeFWV41uwQUdNBgTKSWxBEGMV+bET3cHk6fyWnUPWz2+lzgT4RxqsfXDUqedPsQ7M12EmrWk4v+7T45vutKMiuFUzXEvUGYqktWtLzXnVplHmLyuxKxloDLSepA92FPeI0s0V7qYuPoSJk4AIkPC/j7nmqmbL7hAoWOFb35L4aMqKklWU6QBSCqUimmoioD3Z9iCSBVkq5H7+MNlDRw==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-B45FE2443C9DE45161696EC809D6FEB5BC361D3B700E46C5078F7D2351EFA6AB">
+            <SubjectDistinguishedName Format="CANONICAL">cn=signer test,2.5.4.5=#374b4c4c31130b373832323531,2.5.4.42=#1c30c05476ab6c,2.5.4.4=#245520c06454494e,2.5.4.12=#26563746575722067c0c13446973a96ec3a972616c,ou=0002 518038542,2.5.4.97=#522d353138303330c0f4e5452468353432,o=archive data software,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Signer test,2.5.4.5=#374b4c4c31130b373832323531,2.5.4.42=#1c30c05476ab6c,2.5.4.4=#245520c06454494e,2.5.4.12=#26563746575722067c0c13446973a96ec3a972616c,OU=0002 518038542,2.5.4.97=#522d353138303330c0f4e5452468353432,O=ARCHIVE DATA SOFTWARE,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=certinomis - prime ca,ou=0002 433998903,o=certinomis,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Certinomis - Prime CA,OU=0002 433998903,O=Certinomis,C=FR</IssuerDistinguishedName>
+            <SerialNumber>6021070490972386964599344923247299541</SerialNumber>
+            <SubjectSerialNumber>FR4896</SubjectSerialNumber>
+            <CommonName>Signer test</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationIdentifier>FR-22</OrganizationIdentifier>
+            <OrganizationName>ARCHIVE DATA SOFTWARE</OrganizationName>
+            <OrganizationalUnit>0000</OrganizationalUnit>
+            <Title>Directeur général</Title>
+            <GivenName>Signer</GivenName>
+            <Surname>TEST</Surname>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>test@software.com</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.certinomis.fr/publi/cer/AC_PRIME.cer</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.certinomis.com/crl/acg3-PRIME.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp-pki.certinomis.com</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2021-07-30T15:32:00</NotAfter>
+            <NotBefore>2019-11-08T15:32:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-BC6AC9A1E3AAD3EF381679E9839E742B8277ADC7342EB1EF4BB24CA3EFD3D0AC</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F9295618E7A752D107423C3D3E1FFE0D894F14369A188E733EEE36884EA73853"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F9295618E7A752D107423C3D3E1FFE0D894F14369A188E733EEE36884EA73853"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://www.certinomis.fr/documents-et-liens/nos-politiques">1.2.250.1.86.2.3.3.2.1</certificatePolicy>
+            </CertificatePolicies>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+                <QcEuPDS>
+                    <PdsLocation lang="en">https://www.certinomis.fr/documents-et-liens/nos-conditions-generales-dutilisation</PdsLocation>
+                </QcEuPDS>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+                <QcCClegislation/>
+            </QcStatements>
+            <TrustedServiceProviders />
+            <Revocations>
+                <CertificateRevocation Revocation="R-0FA79CC60142B82ACF2560ACDE6DEF146C5359C53B5C42AC6630CCCB688040A9">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>tF/iRDyd5FFhaW7ICdb+tbw2HTtwDkbFB499I1Hvpqs=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F9295618E7A752D107423C3D3E1FFE0D894F14369A188E733EEE36884EA73853">
+            <SubjectDistinguishedName Format="CANONICAL">cn=certinomis - prime ca,ou=0002 433998903,o=certinomis,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Certinomis - Prime CA,OU=0002 433998903,O=Certinomis,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=certinomis - root ca,ou=0002 433998903,o=certinomis,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Certinomis - Root CA,OU=0002 433998903,O=Certinomis,C=FR</IssuerDistinguishedName>
+            <SerialNumber>21276391522691006104120022146991972828854625976</SerialNumber>
+            <CommonName>Certinomis - Prime CA</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Certinomis</OrganizationName>
+            <OrganizationalUnit>0002 433998903</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.igc-g3.certinomis.com/RACINE_G3/crl/AC_Racine_G3-crl-1.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2023-10-21T10:15:47</NotAfter>
+            <NotBefore>2013-10-21T10:15:47</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-421A05B334F650A573E3CC365D52F4F654EED6801A8C1D32E14D2BD21454B883</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>+SlWGOenUtEHQjw9Ph/+DYlPFDaaGI5zPu42iE6nOFM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-FA301CE001DEED67F7D013BB22B79953A969BA530881692428171479D3EECF3A">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder - prime ca,ou=0002 433998903,o=certinomis,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP Responder - PRIME CA,OU=0002 433998903,O=Certinomis,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=certinomis - prime ca,ou=0002 433998903,o=certinomis,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Certinomis - Prime CA,OU=0002 433998903,O=Certinomis,C=FR</IssuerDistinguishedName>
+            <SerialNumber>4191874918292314116693933914474506184308786675</SerialNumber>
+            <CommonName>OCSP Responder - PRIME CA</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Certinomis</OrganizationName>
+            <OrganizationalUnit>0002 433998903</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.igc-g3.certinomis.com/INSTANCE_SHA2/crl/AC_PRIME-crl-1.crl</crlUrl>
+                <crlUrl>http://www.certinomis.com/crl/acg3-PRIME.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2021-06-21T10:41:33</NotAfter>
+            <NotBefore>2018-06-21T10:41:33</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-97AA5AF24AB1317E7ABC049A7FE0A0639C425AE3C0501FBFE1062C0C9C16B46F</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F9295618E7A752D107423C3D3E1FFE0D894F14369A188E733EEE36884EA73853"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F9295618E7A752D107423C3D3E1FFE0D894F14369A188E733EEE36884EA73853"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>1.2.250.1.86.2.3.0.13.1</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>+jAc4AHe7Wf30BO7IreZU6lpulMIgWkkKBcUedPuzzo=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-0FA79CC60142B82ACF2560ACDE6DEF146C5359C53B5C42AC6630CCCB688040A9">
+            <Origin>CACHED</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp-pki.certinomis.com</SourceAddress>
+            <ProductionDate>2021-06-11T14:01:59</ProductionDate>
+            <ThisUpdate>2021-06-11T14:01:59</ThisUpdate>
+            <NextUpdate>2021-06-21T14:01:59</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-FA301CE001DEED67F7D013BB22B79953A969BA530881692428171479D3EECF3A"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-FA301CE001DEED67F7D013BB22B79953A969BA530881692428171479D3EECF3A"/>
+                <ChainItem Certificate="C-F9295618E7A752D107423C3D3E1FFE0D894F14369A188E733EEE36884EA73853"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-FA301CE001DEED67F7D013BB22B79953A969BA530881692428171479D3EECF3A">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>f2DZ4M/Lr7Ly4BmKiVDtOKqJNK0=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>D6ecxgFCuCrPJWCs3m3vFGxTWcU7XEKsZjDMy2iAQKk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps/>
+    <OriginalDocuments>
+        <SignerData Id="D-68F9B6E53F6C534EDF676FCD9D140A87DE080DF1786A1F8ADEDC6C8DCBD8F828">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>sZY1dhW1WJoz4osto3wYQ3rtd/WmcI668G2ThS+y0Qk=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-D2EEAEDA38B68B8EFF88F3CE74F362C0453075A549601B0B411C67592963FDF9">
+            <CountryCode>FR</CountryCode>
+            <Url>https://www.ssi.gouv.fr/eidas/TL-FR.xml</Url>
+            <SequenceNumber>85</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2021-06-11T13:20:06</LastLoading>
+            <IssueDate>2021-06-01T01:00:00</IssueDate>
+            <NextUpdate>2021-12-01T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <SequenceNumber>290</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2021-06-11T13:20:05</LastLoading>
+            <IssueDate>2021-05-28T01:00:00</IssueDate>
+            <NextUpdate>2021-11-28T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

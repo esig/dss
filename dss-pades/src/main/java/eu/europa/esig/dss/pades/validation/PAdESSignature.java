@@ -224,7 +224,8 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
-		if (hasBProfile()) {
+		SignatureForm signatureForm = getSignatureForm();
+		if (SignatureForm.PAdES.equals(signatureForm) && hasBProfile()) {
 			if (!hasTProfile()) {
 				return SignatureLevel.PAdES_BASELINE_B;
 			}
@@ -235,7 +236,8 @@ public class PAdESSignature extends CAdESSignature {
 				return SignatureLevel.PAdES_BASELINE_LTA;
 			}
 			return SignatureLevel.PAdES_BASELINE_LT;
-		} else if (hasPKCS7Profile()) {
+
+		} else if (SignatureForm.PKCS7.equals(signatureForm) && hasPKCS7Profile()) {
 			if (!hasPKCS7TProfile()) {
 				return SignatureLevel.PKCS7_B;
 			}
@@ -246,6 +248,7 @@ public class PAdESSignature extends CAdESSignature {
 				return SignatureLevel.PKCS7_LTA;
 			}
 			return SignatureLevel.PKCS7_LT;
+
 		} else {
 			return SignatureLevel.PDF_NOT_ETSI;
 		}
