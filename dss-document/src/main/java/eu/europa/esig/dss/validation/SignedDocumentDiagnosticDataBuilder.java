@@ -115,13 +115,13 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	protected SignaturePolicyProvider signaturePolicyProvider;
 
 	/** The list of all certificate sources */
-	protected ListCertificateSource commonCertificateSource = new ListCertificateSource();
+	protected ListCertificateSource completeCertificateSource = new ListCertificateSource();
 
 	/** The list of all CRL revocation sources */
-	protected ListRevocationSource<CRL> commonCRLSource = new ListRevocationSource<>();
+	protected ListRevocationSource<CRL> completeCRLSource = new ListRevocationSource<>();
 
 	/** The list of all OCSP revocation sources */
-	protected ListRevocationSource<OCSP> commonOCSPSource = new ListRevocationSource<>();
+	protected ListRevocationSource<OCSP> completeOCSPSource = new ListRevocationSource<>();
 
 	/** The cached map of signatures */
 	protected Map<String, XmlSignature> xmlSignaturesMap = new HashMap<>();
@@ -220,7 +220,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @return the builder
 	 */
 	public SignedDocumentDiagnosticDataBuilder completeCertificateSource(ListCertificateSource completeCertificateSource) {
-		this.commonCertificateSource = completeCertificateSource;
+		this.completeCertificateSource = completeCertificateSource;
 		return this;
 	}
 
@@ -232,7 +232,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @return the builder
 	 */
 	public SignedDocumentDiagnosticDataBuilder completeCRLSource(ListRevocationSource<CRL> completeCRLSource) {
-		this.commonCRLSource = completeCRLSource;
+		this.completeCRLSource = completeCRLSource;
 		return this;
 	}
 
@@ -244,7 +244,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @return the builder
 	 */
 	public SignedDocumentDiagnosticDataBuilder completeOCSPSource(ListRevocationSource<OCSP> completeOCSPSource) {
-		this.commonOCSPSource = completeOCSPSource;
+		this.completeOCSPSource = completeOCSPSource;
 		return this;
 	}
 
@@ -718,8 +718,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private List<XmlOrphanRevocation> getXmlOrphanRevocationRefs(OfflineRevocationSource<CRL> crlSource,
 			OfflineRevocationSource<OCSP> ocspSource) {
 		List<XmlOrphanRevocation> xmlOrphanRevocationRefs = new ArrayList<>();
-		addOrphanRevocationRefs(xmlOrphanRevocationRefs, crlSource, commonCRLSource);
-		addOrphanRevocationRefs(xmlOrphanRevocationRefs, ocspSource, commonOCSPSource);
+		addOrphanRevocationRefs(xmlOrphanRevocationRefs, crlSource, completeCRLSource);
+		addOrphanRevocationRefs(xmlOrphanRevocationRefs, ocspSource, completeOCSPSource);
 		return xmlOrphanRevocationRefs;
 	}
 

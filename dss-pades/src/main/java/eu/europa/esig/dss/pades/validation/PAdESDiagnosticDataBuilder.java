@@ -141,20 +141,20 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 	}
 
 	private void buildOrphanRevocationTokensFromCommonSources() {
-		for (CertificateToken certificateToken : commonCertificateSource.getAllCertificateTokens()) {
+		for (CertificateToken certificateToken : completeCertificateSource.getAllCertificateTokens()) {
 			String id = certificateToken.getDSSIdAsString();
 			if (!xmlCertsMap.containsKey(id) && !xmlOrphanCertificateTokensMap.containsKey(id)) {
 				buildXmlOrphanCertificateToken(certificateToken);
 			}
 		}
-		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationIdentifier : commonCRLSource
+		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationIdentifier : completeCRLSource
 				.getAllRevocationBinaries()) {
 			String id = revocationIdentifier.asXmlId();
 			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
 				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
 			}
 		}
-		for (EncapsulatedRevocationTokenIdentifier<OCSP> revocationIdentifier : commonOCSPSource
+		for (EncapsulatedRevocationTokenIdentifier<OCSP> revocationIdentifier : completeOCSPSource
 				.getAllRevocationBinaries()) {
 			String id = revocationIdentifier.asXmlId();
 			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
