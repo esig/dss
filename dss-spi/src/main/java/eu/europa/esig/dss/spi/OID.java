@@ -48,6 +48,11 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_etsi_signer_attributes = new ASN1ObjectIdentifier("0.4.0.19122.1");
 
 	/**
+	 * Signer attributes {itu-t(0) identified-organization(4) etsi(0) cades(19122) id-spq (2)} (see ETSI EN 319 122-1)
+	 */
+	public static final ASN1ObjectIdentifier id_etsi_spq = new ASN1ObjectIdentifier("0.4.0.19122.2");
+
+	/**
 	 * id-aa-ets-mimeType OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) etsi(0)
 	 * electronic-signature-standard(1733) attributes(2) 1 }
 	 */
@@ -88,6 +93,12 @@ public class OID {
      * etsi(0) cades(19122) attributes(1) 5 } 
 	 */
 	public static final ASN1ObjectIdentifier id_aa_ATSHashIndexV3 = id_etsi_signer_attributes.branch("5");
+
+	/**
+	 * id-spq-ets-docspec OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4)
+	 * etsi(0) cades(19122) id-spq (2) 1 }
+	 */
+	public static final ASN1ObjectIdentifier id_sp_doc_specification = id_etsi_spq.branch("1");
 
 	/**
 	 * id-aa-ets-attrCertificateRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)

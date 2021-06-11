@@ -602,6 +602,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return "";
 	}
 
+	public String getPolicyDocSpecification() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.getDocSpecification();
+		}
+		return "";
+	}
+
 	public boolean isPolicyAsn1Processable() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {

@@ -44,9 +44,9 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -64,6 +64,7 @@ import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -74,6 +75,7 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
+import org.bouncycastle.asn1.esf.SPUserNotice;
 import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
 import org.bouncycastle.asn1.esf.SigPolicyQualifiers;
 import org.bouncycastle.asn1.esf.SignaturePolicyId;
@@ -88,6 +90,8 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
 import org.bouncycastle.asn1.x509.AttributeCertificate;
 import org.bouncycastle.asn1.x509.AttributeCertificateInfo;
+import org.bouncycastle.asn1.x509.DisplayText;
+import org.bouncycastle.asn1.x509.NoticeReference;
 import org.bouncycastle.asn1.x509.RoleSyntax;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -245,10 +249,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					final ASN1ObjectIdentifier policyQualifierInfoId = policyQualifierInfo.getSigPolicyQualifierId();
 					final String policyQualifierInfoValue = policyQualifierInfo.getSigQualifier().toString();
 
-					if (PKCSObjectIdentifiers.id_spq_ets_unotice.equals(policyQualifierInfoId)) {
-						signaturePolicy.setNotice(policyQualifierInfoValue);
-					} else if (PKCSObjectIdentifiers.id_spq_ets_uri.equals(policyQualifierInfoId)) {
+					if (PKCSObjectIdentifiers.id_spq_ets_uri.equals(policyQualifierInfoId)) {
 						signaturePolicy.setUrl(policyQualifierInfoValue);
+					} else if (PKCSObjectIdentifiers.id_spq_ets_unotice.equals(policyQualifierInfoId)) {
+						SPUserNotice spUserNotice = SPUserNotice.getInstance(policyQualifierInfo.getSigQualifier());
+						signaturePolicy.setNotice(buildSPUserNoticeString(spUserNotice));
+					} else if (OID.id_sp_doc_specification.equals(policyQualifierInfoId)) {
+						signaturePolicy.setDocSpecification(policyQualifierInfoValue);
 					} else {
 						LOG.error("Unknown signature policy qualifier id: {} with value: {}", policyQualifierInfoId,
 								policyQualifierInfoValue);
@@ -260,6 +267,34 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		
 		return signaturePolicy;
+	}
+
+	private String buildSPUserNoticeString(SPUserNotice spUserNotice) {
+		String organizationString = null;
+		List<Integer> noticeNumbersList = null;
+		String explicitTextString = null;
+
+		NoticeReference noticeRef = spUserNotice.getNoticeRef();
+		if (noticeRef != null) {
+			DisplayText organization = noticeRef.getOrganization();
+			if (organization != null) {
+				organizationString = organization.getString();
+			}
+			ASN1Integer[] noticeNumbers = noticeRef.getNoticeNumbers();
+			if (noticeNumbers != null && noticeNumbers.length != 0) {
+				noticeNumbersList = new ArrayList<>();
+				for (int ii = 0; ii < noticeNumbers.length; ii++) {
+					ASN1Integer integer = noticeNumbers[ii];
+					noticeNumbersList.add(integer.intValueExact());
+				}
+			}
+		}
+		DisplayText explicitText = spUserNotice.getExplicitText();
+		if (explicitText != null) {
+			explicitTextString = explicitText.getString();
+		}
+
+		return DSSUtils.getSPUserNoticeString(organizationString, noticeNumbersList, explicitTextString);
 	}
 	
 	@Override

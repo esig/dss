@@ -87,6 +87,7 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 
 			XAdESSignaturePolicy signaturePolicy = xadesSignature.getSignaturePolicy();
 			if (signaturePolicy != null) {
+				signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
 				final Digest digest = signaturePolicy.getDigest();
 				if (digest != null) {
 					Digest computedDigest;

@@ -206,8 +206,9 @@
 		<xs:sequence>
 			<xs:element name="Id" type="xs:string" />
 			<xs:element name="Url" type="xs:string" minOccurs="0" />
-			<xs:element name="Description" type="xs:string" minOccurs="0" />
 			<xs:element name="Notice" type="xs:string" minOccurs="0" />
+			<xs:element name="DocSpecification" type="xs:string" minOccurs="0" />
+			<xs:element name="Description" type="xs:string" minOccurs="0" />
 			<xs:element name="Identified" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Asn1Processable" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Transformations" type="Transformations" minOccurs="0" />

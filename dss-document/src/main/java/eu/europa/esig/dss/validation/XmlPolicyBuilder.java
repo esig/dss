@@ -90,6 +90,7 @@ public class XmlPolicyBuilder {
 		xmlPolicy.setId(signaturePolicy.getIdentifier());
 		xmlPolicy.setUrl(DSSUtils.removeControlCharacters(signaturePolicy.getUrl()));
 		xmlPolicy.setNotice(signaturePolicy.getNotice());
+		xmlPolicy.setDocSpecification(signaturePolicy.getDocSpecification());
 		xmlPolicy.setDescription(signaturePolicy.getDescription());
 		xmlPolicy.setDocumentationReferences(signaturePolicy.getDocumentationReferences());
 		

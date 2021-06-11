@@ -98,6 +98,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 								 AbstractJWSDocumentValidator documentValidator) {
 		SignaturePolicy signaturePolicy = jadesSignature.getSignaturePolicy();
 		if (signaturePolicy != null && signaturePolicy.getDigest() != null) {
+			signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
 			Digest expectedDigest = signaturePolicy.getDigest();
 
 			SignaturePolicyValidator signaturePolicyValidator = documentValidator.getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);

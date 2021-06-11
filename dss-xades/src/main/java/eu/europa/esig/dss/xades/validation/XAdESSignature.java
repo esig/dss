@@ -428,6 +428,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					xadesSignaturePolicy.setNotice(buildSPUserNoticeString(spUserNotice));
 				}
 
+				final Element spDocSpecification = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPDocSpecificationIdentifier());
+				if (spDocSpecification != null) {
+					String spDocSpecificationString = spDocSpecification.getTextContent();
+					xadesSignaturePolicy.setDocSpecification(DSSUtils.getObjectIdentifier(spDocSpecificationString));
+				}
+
 				final Element policyDescription = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDescription());
 				if (policyDescription != null && Utils.isStringNotEmpty(policyDescription.getTextContent())) {
 					xadesSignaturePolicy.setDescription(policyDescription.getTextContent());
@@ -457,35 +463,37 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private String buildSPUserNoticeString(Element spUserNoticeElement) {
-		StringBuilder spUserNoticeStringBuilder = new StringBuilder();
-		Element organization = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeNoticeRefOrganization());
-		if (organization != null) {
-			spUserNoticeStringBuilder.append(organization.getTextContent());
-		}
-		Element noticeNumbers = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeNoticeRefNoticeNumbers());
-		if (noticeNumbers != null && noticeNumbers.hasChildNodes()) {
-			if (spUserNoticeStringBuilder.length() != 0) {
-				spUserNoticeStringBuilder.append("; ");
+		try {
+			String organizationString = null;
+			List<Integer> noticeNumbersList = null;
+			String explicitTextString = null;
+
+			final Element organization = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeNoticeRefOrganization());
+			if (organization != null) {
+				organizationString = organization.getTextContent();
 			}
-			NodeList childNodes = noticeNumbers.getChildNodes();
-			for (int ii = 0; ii < childNodes.getLength(); ii++) {
-				Node child = childNodes.item(ii);
-				if (Node.ELEMENT_NODE == child.getNodeType() && XAdES132Element.INT.isSameTagName(child.getLocalName())) {
-					spUserNoticeStringBuilder.append(child.getTextContent());
-					if (ii + 1 < childNodes.getLength()) {
-						spUserNoticeStringBuilder.append(", ");
+			final Element noticeNumbers = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeNoticeRefNoticeNumbers());
+			if (noticeNumbers != null && noticeNumbers.hasChildNodes()) {
+				noticeNumbersList = new ArrayList<>();
+				NodeList childNodes = noticeNumbers.getChildNodes();
+				for (int ii = 0; ii < childNodes.getLength(); ii++) {
+					Node child = childNodes.item(ii);
+					if (Node.ELEMENT_NODE == child.getNodeType() && XAdES132Element.INT.isSameTagName(child.getLocalName())) {
+						noticeNumbersList.add(Integer.valueOf(child.getTextContent()));
 					}
 				}
 			}
-		}
-		Element explicitText = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeExplicitText());
-		if (explicitText != null) {
-			if (spUserNoticeStringBuilder.length() != 0) {
-				spUserNoticeStringBuilder.append("; ");
+			final Element explicitText = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeExplicitText());
+			if (explicitText != null) {
+				explicitTextString = explicitText.getTextContent();
 			}
-			spUserNoticeStringBuilder.append(explicitText.getTextContent());
+
+			return DSSUtils.getSPUserNoticeString(organizationString, noticeNumbersList, explicitTextString);
+
+		} catch (Exception e) {
+			LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
+			return null;
 		}
-		return spUserNoticeStringBuilder.toString();
 	}
 
 	private boolean isHashComputationAsInPolicySpecification(Element transforms) {

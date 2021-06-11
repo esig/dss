@@ -84,6 +84,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 			CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 			SignaturePolicy signaturePolicy = cadesSignature.getSignaturePolicy();
 			if (signaturePolicy != null) {
+				signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
 				Digest expectedDigest = signaturePolicy.getDigest();
 				if (expectedDigest != null) {
 					SignaturePolicyValidator validator = new DefaultSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);

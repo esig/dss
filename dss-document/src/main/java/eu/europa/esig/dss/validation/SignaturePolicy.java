@@ -70,6 +70,13 @@ public class SignaturePolicy {
 	private String notice;
 
 	/**
+	 * Signature Policy Document Specification qualifier
+	 * An identifier of the technical specification that defines the syntax used for producing
+	 * the signature policy document.
+	 */
+	private String docSpecification;
+
+	/**
 	 * The default constructor for SignaturePolicy. It represents the implied policy.
 	 */
 	public SignaturePolicy() {
@@ -249,6 +256,24 @@ public class SignaturePolicy {
 	 */
 	public void setNotice(final String notice) {
 		this.notice = notice;
+	}
+
+	/**
+	 * Gets the Document Specification Qualifier when present
+	 *
+	 * @return {@link String}
+	 */
+	public String getDocSpecification() {
+		return docSpecification;
+	}
+
+	/**
+	 * Sets the Document Specification qualifier
+	 *
+	 * @param docSpecification {@link String}
+	 */
+	public void setDocSpecification(String docSpecification) {
+		this.docSpecification = docSpecification;
 	}
 
 }
