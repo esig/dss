@@ -95,8 +95,9 @@ public class DSSUtilsTest {
 		assertEquals("95decc72f0a50ae4d9d5378e1b2252587cfc71977e43292c8f1b84648248509f1bc18bc6f0b0d0b8606a643eff61d611ae84e6fbd4a2683165706bd6fd48b334",
 				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_512, data)));
 
-		assertEquals("ee8ee3ada079996b80d926eef439a502", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE128, data)));
-		assertEquals("e80627c7a1dd02229936bb2822572025e17b91ef3a94f7ade9d810aee8d6a873",
+		assertEquals("ee8ee3ada079996b80d926eef439a5022faf7a8b9cf69154e6ee46020ea2eafd",
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE128, data)));
+		assertEquals("e80627c7a1dd02229936bb2822572025e17b91ef3a94f7ade9d810aee8d6a873f3d6795a6f7b042a3b65ba0faa872f32e513eb8f460dc60768ee86a05d22e7ac",
 				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE256, data)));
 
 		// BC JCAJCE
