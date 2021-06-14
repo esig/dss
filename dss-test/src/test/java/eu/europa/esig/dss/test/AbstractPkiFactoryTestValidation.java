@@ -609,7 +609,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					}
 
 				} else {
-					int length = certificateChain.size() < signingCertificateChain.size() ? certificateChain.size() - 1 : signingCertificateChain.size();
+					int length = certificateChain.size() < signingCertificateChain.size() + 1 ? certificateChain.size() - 1 : signingCertificateChain.size();
 					for (int ii = 0; ii < length; ii++) {
 						assertTrue(certificateChain.get(ii + 1).getId().equals(signingCertificateChain.get(ii).getId()) ||
 								certificateChain.get(ii + 1).getEntityKey().equals(signingCertificateChain.get(ii).getEntityKey()));
