@@ -212,6 +212,7 @@ public class OnlineOCSPSourceTest {
 		ocspSource.setDigestAlgorithmsForExclusion(Collections.emptyList());
 
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
+		assertNotNull(ocspToken);
 		assertEquals(SignatureAlgorithm.RSA_SHA1, ocspToken.getSignatureAlgorithm()); // default value
 		
 		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA256);
