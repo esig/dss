@@ -627,7 +627,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	}
 	
 	@Override
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
 		// do nothing
 	}
 	

@@ -332,8 +332,8 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * 
 	 * @return list of orphan certificates
 	 */
-	public List<OrphanTokenWrapper> getTimestampedOrphanCertificates() {
-		List<OrphanTokenWrapper> orphanCertificates = new ArrayList<>();
+	public List<OrphanCertificateTokenWrapper> getTimestampedOrphanCertificates() {
+		List<OrphanCertificateTokenWrapper> orphanCertificates = new ArrayList<>();
 		
 		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.ORPHAN_CERTIFICATE);
 		for (XmlAbstractToken token : timestampedObjectsByCategory) {
@@ -352,8 +352,8 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * 
 	 * @return list of orphan revocations
 	 */
-	public List<OrphanTokenWrapper> getTimestampedOrphanRevocations() {
-		List<OrphanTokenWrapper> orphanRevocations = new ArrayList<>();
+	public List<OrphanRevocationTokenWrapper> getTimestampedOrphanRevocations() {
+		List<OrphanRevocationTokenWrapper> orphanRevocations = new ArrayList<>();
 		
 		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.ORPHAN_REVOCATION);
 		for (XmlAbstractToken token : timestampedObjectsByCategory) {

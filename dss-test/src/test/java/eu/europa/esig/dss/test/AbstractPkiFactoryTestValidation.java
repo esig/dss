@@ -115,6 +115,7 @@ import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 import eu.europa.esig.validationreport.jaxb.VOReferenceType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectRepresentationType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
@@ -1177,9 +1178,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				
 				SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
 				validateETSISignatureAttributes(signatureAttributes);
-				
-				List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
-				validateETSISignerDocuments(signersDocuments);
+
+				SignersDocumentType signersDocument = signatureValidationReport.getSignersDocument();
+				validateETSISignersDocument(signersDocument);
 				
 			}
 		}
@@ -1410,8 +1411,27 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 	}
 
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
-		assertTrue(Utils.isCollectionNotEmpty(signersDocuments));
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		assertNotNull(signersDocument);
+		boolean signerDocumentFound = false;
+		for (JAXBElement<?> jaxbElement : signersDocument.getContent()) {
+			Object value = jaxbElement.getValue();
+			if (value instanceof DigestAlgAndValueType) {
+				DigestAlgAndValueType digestAlgAndValueType = (DigestAlgAndValueType) value;
+				assertNotNull(digestAlgAndValueType.getDigestMethod());
+				assertNotNull(digestAlgAndValueType.getDigestValue());
+				signerDocumentFound = true;
+			} else if (value instanceof VOReferenceType) {
+				VOReferenceType voReferenceType = (VOReferenceType) value;
+				List<Object> voReferences = voReferenceType.getVOReference();
+				assertNotNull(voReferences);
+				signerDocumentFound = true;
+				for (Object object : voReferences) {
+					assertTrue(object instanceof ValidationObjectType);
+				}
+			}
+		}
+		assertTrue(signerDocumentFound);
 	}
 
 	protected void verifyReportsData(Reports reports) {
@@ -1437,32 +1457,71 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
 				assertNotNull(signature);
 				
+				SignersDocumentType signersDocument = signatureValidationReport.getSignersDocument();
 				List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-				List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
-				
-				if (signatureScopes != null) {
-					assertNotNull(signersDocuments);
-					assertEquals(signatureScopes.size(), signersDocuments.size());
+				if (signatureScopes != null && signatureScopes.size() > 0) {
+					assertNotNull(signersDocument);
+
+					List<ValidationObjectType> validationObjects = getValidationObjects(signersDocument);
+					assertEquals(signatureScopes.size(), validationObjects.size());
 					for (int i = 0; i < signatureScopes.size(); i++) {
 						XmlSignatureScope xmlSignatureScope = signatureScopes.get(i);
 						XmlSignerData signerData = xmlSignatureScope.getSignerData();
 						assertNotNull(signerData);
-						XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
-						assertNotNull(digestAlgoAndValue);
-						
-						SignersDocumentType signersDocument = signersDocuments.get(i);
-						DigestAlgAndValueType digestAlgAndValue = signersDocument.getDigestAlgAndValue();
-						assertNotNull(digestAlgAndValue);
-	
-						assertEquals(digestAlgoAndValue.getDigestMethod(),
-								DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
-						assertArrayEquals(digestAlgoAndValue.getDigestValue(), digestAlgAndValue.getDigestValue());
+						XmlDigestAlgoAndValue xmlDigestAlgoAndValue = signerData.getDigestAlgoAndValue();
+						assertNotNull(xmlDigestAlgoAndValue);
+
+						boolean correspondingValidationObjectFound = false;
+						for (ValidationObjectType validationObject : validationObjects) {
+							if (signerData.getId().equals(validationObject.getId())) {
+								ValidationObjectRepresentationType validationObjectRepresentation = validationObject.getValidationObjectRepresentation();
+								assertNotNull(validationObjectRepresentation);
+								DigestAlgAndValueType digestAlgAndValue = validationObjectRepresentation.getDigestAlgAndValue();
+								assertNotNull(digestAlgAndValue);
+								assertEquals(xmlDigestAlgoAndValue.getDigestMethod(), DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
+								assertArrayEquals(xmlDigestAlgoAndValue.getDigestValue(), digestAlgAndValue.getDigestValue());
+								correspondingValidationObjectFound = true;
+								break;
+							}
+						}
+						assertTrue(correspondingValidationObjectFound);
 					}
 				} else {
-					assertNull(signersDocuments);
+					assertNull(signersDocument);
 				}
 			}
 		}
+	}
+
+	protected DigestAlgAndValueType getDigestAlgoAndValue(SignersDocumentType signersDocument) {
+		for (JAXBElement<?> jaxbElement : signersDocument.getContent()) {
+			Object value = jaxbElement.getValue();
+			if (value instanceof DigestAlgAndValueType) {
+				DigestAlgAndValueType digestAlgAndValueType = (DigestAlgAndValueType) value;
+				assertNotNull(digestAlgAndValueType.getDigestMethod());
+				assertNotNull(digestAlgAndValueType.getDigestValue());
+				return digestAlgAndValueType;
+			}
+		}
+		return null;
+	}
+
+	protected List<ValidationObjectType> getValidationObjects(SignersDocumentType signersDocument) {
+		List<ValidationObjectType> validationObjects = new ArrayList<>();
+		for (JAXBElement<?> jaxbElement : signersDocument.getContent()) {
+			Object value = jaxbElement.getValue();
+			if (value instanceof VOReferenceType) {
+				VOReferenceType voReferenceType = (VOReferenceType) value;
+				List<Object> voReferences = voReferenceType.getVOReference();
+				assertNotNull(voReferences);
+				for (Object object : voReferences) {
+					assertTrue(object instanceof ValidationObjectType);
+					ValidationObjectType validationObjectType = (ValidationObjectType) object;
+					validationObjects.add(validationObjectType);
+				}
+			}
+		}
+		return validationObjects;
 	}
 	
 	protected void checkReportsTokens(Reports reports) {

@@ -697,14 +697,25 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     @Override
     public List<TimestampedReference> getSignerDataReferences() {
         final List<TimestampedReference> references = new ArrayList<>();
+        populateSignerDataReferencesList(references, signature.getSignatureScopes());
+        return references;
+    }
 
-        List<SignatureScope> signatureScopes = signature.getSignatureScopes();
+    /**
+     * Populates the {@code result} list with references creates from the {@code signatureScopes} list
+     *
+     * @param result a final list of {@link TimestampedReference} to populate
+     * @param signatureScopes a list of {@link SignatureScope} to use
+     */
+    protected void populateSignerDataReferencesList(final List<TimestampedReference> result, List<SignatureScope> signatureScopes) {
         if (Utils.isCollectionNotEmpty(signatureScopes)) {
             for (SignatureScope signatureScope : signatureScopes) {
-                addReference(references, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+                addReference(result, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+                if (Utils.isCollectionNotEmpty(signatureScope.getChildren())) {
+                    populateSignerDataReferencesList(result, signatureScope.getChildren());
+                }
             }
         }
-        return references;
     }
 
     /**

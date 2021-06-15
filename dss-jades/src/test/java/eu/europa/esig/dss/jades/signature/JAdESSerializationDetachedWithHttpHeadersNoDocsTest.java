@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -50,10 +38,19 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class JAdESSerializationDetachedWithHttpHeadersNoDocsTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
@@ -131,8 +128,8 @@ public class JAdESSerializationDetachedWithHttpHeadersNoDocsTest extends Abstrac
 	}
 	
 	@Override
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
-		assertTrue(Utils.isCollectionEmpty(signersDocuments));
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		assertNull(signersDocument);
 	}
 	
 	@Override

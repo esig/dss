@@ -28,6 +28,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
@@ -56,16 +57,34 @@ import java.util.Set;
  */
 public class DiagnosticData {
 
+	/**
+	 * Wrapped {@code XmlDiagnosticData} jaxb object
+	 */
 	private final XmlDiagnosticData wrapped;
 
+	/** List of found signatures */
 	private List<SignatureWrapper> foundSignatures;
+
+	/** List of used certificates */
 	private List<CertificateWrapper> usedCertificates;
+
+	/** List of found timestamps */
 	private List<TimestampWrapper> usedTimestamps;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param wrapped {@link XmlDiagnosticData}
+	 */
 	public DiagnosticData(final XmlDiagnosticData wrapped) {
 		this.wrapped = wrapped;
 	}
 
+	/**
+	 * Returns a name of the validating document
+	 *
+	 * @return {@link String}
+	 */
 	public String getDocumentName() {
 		return wrapped.getDocumentName();
 	}
@@ -431,6 +450,31 @@ public class DiagnosticData {
 	public boolean isALevelTechnicallyValid(final String signatureId) {
 		SignatureWrapper signatureWrapper = getSignatureByIdNullSafe(signatureId);
 		return signatureWrapper.isALevelTechnicallyValid();
+	}
+
+	/**
+	 * Returns a list of all Signer's documents used to create a signature
+	 *
+	 * NOTE: returns a first level documents only (e.g. a signed Manifest for XAdES, when applicable)
+	 *
+	 * @param signatureId
+	 *            The identifier of the signature.
+	 * @return a list of {@link SignerDataWrapper} signer's documents
+	 */
+	public List<SignerDataWrapper> getSignerDocuments(final String signatureId) {
+		final List<SignerDataWrapper> result = new ArrayList<>();
+		SignatureWrapper signatureWrapper = getSignatureByIdNullSafe(signatureId);
+		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
+		if (signatureScopes != null && signatureScopes.size() > 0) {
+			for (XmlSignatureScope xmlSignatureScope : signatureScopes) {
+				XmlSignerData signerData = xmlSignatureScope.getSignerData();
+				// return first level data only
+				if (signerData.getParent() == null) {
+					result.add(new SignerDataWrapper(signerData));
+				}
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -982,6 +1026,20 @@ public class DiagnosticData {
 		}
 		return latest;
 	}
+
+	/**
+	 * Returns {@link CertificateWrapper} with the given {@code id}
+	 * @param id {@link String} identifier to get {@link CertificateWrapper} with
+	 * @return {@link CertificateWrapper}
+	 */
+	public CertificateWrapper getCertificateById(String id) {
+		for (CertificateWrapper certificateWrapper : getUsedCertificates()) {
+			if (id.equals(certificateWrapper.getId())) {
+				return certificateWrapper;
+			}
+		}
+		return null;
+	}
 	
 	/**
 	 * Returns {@link RevocationWrapper} with the given {@code id}
@@ -1079,6 +1137,11 @@ public class DiagnosticData {
 		return null;
 	}
 
+	/**
+	 * Returns information about ASiC container (when applicable)
+	 *
+	 * @return {@link XmlContainerInfo}
+	 */
 	public XmlContainerInfo getContainerInfo() {
 		return wrapped.getContainerInfo();
 	}
@@ -1115,6 +1178,11 @@ public class DiagnosticData {
 		return result;
 	}
 
+	/**
+	 * Returns the validation time
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getValidationDate() {
 		return wrapped.getValidationDate();
 	}

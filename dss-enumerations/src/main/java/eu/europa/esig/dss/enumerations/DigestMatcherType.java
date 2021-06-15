@@ -46,7 +46,7 @@ public enum DigestMatcherType {
 	/** XAdES XPointer reference */
 	XPOINTER,
 	
-	/** XAdES and ASiC CAdES*/
+	/** XAdES and ASiC CAdES */
 	MANIFEST_ENTRY,
 	
 	/** XAdES signed SignatureValue (counter signature) */
