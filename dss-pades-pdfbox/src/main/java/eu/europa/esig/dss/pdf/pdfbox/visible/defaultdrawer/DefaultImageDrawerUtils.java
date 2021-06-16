@@ -160,7 +160,7 @@ public final class DefaultImageDrawerUtils {
      */
     public static BufferedImage toBufferedImage(final DSSDocument imageDocument) {
         try {
-            return ImageUtils.readImage(imageDocument);
+            return ImageUtils.toBufferedImage(imageDocument);
         } catch (IOException e) {
             throw new IllegalInputException(String.format("An error occurred during image document reading : %s", e.getMessage()), e);
         }
