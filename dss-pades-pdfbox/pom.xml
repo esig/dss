@@ -40,9 +40,15 @@
 
 		<!-- Allows to test PDF/A -->
 		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>preflight</artifactId>
+			<groupId>org.verapdf</groupId>
+			<artifactId>validation-model</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
