@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ *
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -51,106 +51,120 @@ import eu.europa.esig.dss.validation.reports.Reports;
 
 public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess {
 
-	protected PAdESService service;
-	private PAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+    protected PAdESService service;
+    private PAdESSignatureParameters signatureParameters;
+    private DSSDocument documentToSign;
 
-	@BeforeEach
+    @BeforeEach
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
+        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
-		signatureParameters = new PAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+        signatureParameters = new PAdESSignatureParameters();
+        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-		service = new PAdESService(getOfflineCertificateVerifier());
-		setCustomFactory();
-	}
+        service = new PAdESService(getOfflineCertificateVerifier());
+        setCustomFactory();
+    }
 
-	/**
-	 * Set a custom instance of {@link IPdfObjFactory}
-	 */
-	protected abstract void setCustomFactory();
+    /**
+     * Set a custom instance of {@link IPdfObjFactory}
+     */
+    protected abstract void setCustomFactory();
 
-	@Test
-	public void testGeneratedTextOnly() throws IOException {
-		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("My signature");
-		textParameters.setTextColor(Color.GREEN);
-		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(imageParameters);
+    @Test
+    public void testGeneratedTextOnly() throws IOException {
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+        textParameters.setText("My signature");
+        textParameters.setTextColor(Color.GREEN);
+        imageParameters.setTextParameters(textParameters);
+        signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate(true);
-	}
+        signAndValidate(true);
+    }
 
-	@Test
-	public void testGeneratedTextWithOnlyAlpha() throws IOException {
-		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("My signature");
-		textParameters.setTextColor(new Color(0, 255, 0, 100));
-		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(imageParameters);
+    @Test
+    public void testGeneratedTextWithoutColor() throws IOException {
+        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-without-outputintent.pdf"));
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+        textParameters.setBackgroundColor(null);
+        textParameters.setText("My signature");
+        textParameters.setTextColor(null);
+        imageParameters.setTextParameters(textParameters);
+        signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate(false);
-	}
+        signAndValidate(true);
+    }
 
-	@Test
-	public void testGeneratedImageOnly() throws IOException {
-		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
-		
-		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-		fieldParameters.setOriginX(100);
-		fieldParameters.setOriginY(100);
-		imageParameters.setFieldParameters(fieldParameters);
-		
-		signatureParameters.setImageParameters(imageParameters);
+    @Test
+    public void testGeneratedTextWithOnlyAlpha() throws IOException {
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+        textParameters.setText("My signature");
+        textParameters.setTextColor(new Color(0, 255, 0, 100));
+        imageParameters.setTextParameters(textParameters);
+        signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate(true);
-	}
+        signAndValidate(false);
+    }
 
-	@Test
-	public void testGeneratedImageOnlyPNG() throws IOException {
-		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		// PNG with ALPHA
-		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-		
-		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-		fieldParameters.setOriginX(100);
-		fieldParameters.setOriginY(100);
-		imageParameters.setFieldParameters(fieldParameters);
-		
-		signatureParameters.setImageParameters(imageParameters);
+    @Test
+    public void testGeneratedImageOnly() throws IOException {
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
 
-		signAndValidate(false);
-	}
+        SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+        fieldParameters.setOriginX(100);
+        fieldParameters.setOriginY(100);
+        imageParameters.setFieldParameters(fieldParameters);
+
+        signatureParameters.setImageParameters(imageParameters);
+
+        signAndValidate(true);
+    }
+
+    @Test
+    public void testGeneratedImageOnlyPNG() throws IOException {
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        // PNG with ALPHA
+        imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
+
+        SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+        fieldParameters.setOriginX(100);
+        fieldParameters.setOriginY(100);
+        imageParameters.setFieldParameters(fieldParameters);
+
+        signatureParameters.setImageParameters(imageParameters);
+
+        signAndValidate(false);
+    }
 
 	private void signAndValidate(boolean expectedValidPDFA) throws IOException {
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+        ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+        DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		// signedDocument.save("target/test.pdf");
 
-		assertEquals(expectedValidPDFA, PDFAUtils.validatePDFAStructure(signedDocument));
+        assertEquals(expectedValidPDFA, PDFAUtils.validatePDFAStructure(signedDocument));
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
+        SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+        Reports reports = validator.validateDocument();
 
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 
-		UnmarshallingTester.unmarshallXmlReports(reports);
-	}
+        UnmarshallingTester.unmarshallXmlReports(reports);
+    }
 
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
-	}
+    @Override
+    protected String getSigningAlias() {
+        return GOOD_USER;
+    }
 
 }
