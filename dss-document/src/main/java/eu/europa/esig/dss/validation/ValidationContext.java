@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
@@ -32,7 +31,6 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -226,14 +224,6 @@ public interface ValidationContext {
 	Set<CertificateToken> getProcessedCertificates();
 
 	/**
-	 * Returns a map of {@code CertificateSourceType} by {@code CertificateToken}
-	 * which contains the sources where the certificate was found.
-	 * 
-	 * @return a map of CertificateSourceType by CertificateToken
-	 */
-	Map<CertificateToken, Set<CertificateSourceType>> getCertificateSourceTypes();
-
-	/**
 	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the
 	 * given document.
 	 *
@@ -248,6 +238,36 @@ public interface ValidationContext {
 	 * @return The list of CertificateToken(s)
 	 */
 	Set<TimestampToken> getProcessedTimestamps();
+
+	/**
+	 * Returns a list of all {@code CertificateSource}s used during the validation process.
+	 * It is represented by sources extracted from the provided document (e.g. signatures, timestamps)
+	 * as well as the sources obtained during the validation process (e.g. AIA, OCSP).
+	 *
+	 * @return {@link ListCertificateSource}
+	 */
+	ListCertificateSource getAllCertificateSources();
+
+	/**
+	 * Returns a list of all {@code CertificateSource}s extracted from a validating document (signature(s), timestamp(s))
+	 *
+	 * @return {@link ListCertificateSource}
+	 */
+	ListCertificateSource getDocumentCertificateSource();
+
+	/**
+	 * Returns a list of all CRL {@code OfflineRevocationSource}s extracted from a validating document
+	 *
+	 * @return {@link ListRevocationSource}
+	 */
+	ListRevocationSource<CRL> getDocumentCRLSource();
+
+	/**
+	 * Returns a list of all OCSP {@code OfflineRevocationSource}s extracted from a validating document
+	 *
+	 * @return {@link ListRevocationSource}
+	 */
+	ListRevocationSource<OCSP> getDocumentOCSPSource();
 
 	/**
 	 * Returns a validation data for the given signature's certificate chain

@@ -64,7 +64,6 @@ import eu.europa.esig.dss.enumerations.RoleOfPspOid;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -139,14 +138,11 @@ public abstract class DiagnosticDataBuilder {
 	/** The revocation used during the validation process */
 	protected Set<RevocationToken> usedRevocations;
 
-	/** The list of trusted certificate sources */
-	protected ListCertificateSource trustedCertSources = new ListCertificateSource();
+	/** The list of all certificate sources */
+	protected ListCertificateSource allCertificateSources = new ListCertificateSource();
 
 	/** The validation time */
 	protected Date validationDate;
-
-	/** A map between certificate tokens and source types where they been obtained from */
-	protected Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes;
 
 	/** The token extraction strategy */
 	protected TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
@@ -200,18 +196,6 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * This method allows to set the certificate source types
-	 * 
-	 * @param certificateSourceTypes the certificate source types
-	 * @return the builder
-	 */
-	public DiagnosticDataBuilder certificateSourceTypes(
-			Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes) {
-		this.certificateSourceTypes = certificateSourceTypes;
-		return this;
-	}
-
-	/**
 	 * This method allows to set the used revocation data
 	 * 
 	 * @param usedRevocations the used revocation data
@@ -223,18 +207,17 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * This method allows to set the TrustedListsCertificateSources
+	 * This method allows to set {@code ListCertificateSource} containing all certificate sources used in the validator
+	 * (including trusted certificate sources)
 	 * 
-	 * @param trustedCertSources the list of trusted lists certificate sources
+	 * @param allCertificateSources the list of trusted lists certificate sources
 	 * @return the builder
 	 */
-	public DiagnosticDataBuilder trustedCertificateSources(ListCertificateSource trustedCertSources) {
-		if (trustedCertSources.areAllCertSourcesTrusted()) {
-			this.trustedCertSources = trustedCertSources;
-		} else {
-			throw new DSSException(
-					"Trusted CertificateSource must contain only sources of type TRUSTED_STORE or TRUSTED_LIST!");
+	public DiagnosticDataBuilder allCertificateSources(ListCertificateSource allCertificateSources) {
+		if (allCertificateSources != null && !allCertificateSources.containsTrustedCertSources()) {
+			LOG.warn("Provided CertificateSource configuration contains none of trusted sources of type TRUSTED_STORE or TRUSTED_LIST!");
 		}
+		this.allCertificateSources = allCertificateSources;
 		return this;
 	}
 
@@ -303,7 +286,7 @@ public abstract class DiagnosticDataBuilder {
 		linkCertificatesAndRevocations(usedCertificates);
 
 		if (isUseTrustedLists()) {
-			Collection<XmlTrustedList> trustedLists = buildXmlTrustedLists(trustedCertSources);
+			Collection<XmlTrustedList> trustedLists = buildXmlTrustedLists(allCertificateSources);
 			diagnosticData.getTrustedLists().addAll(trustedLists);
 			linkCertificatesAndTrustServices(usedCertificates);
 		}
@@ -311,8 +294,8 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	private boolean isUseTrustedLists() {
-		if (!trustedCertSources.isEmpty()) {
-			for (CertificateSource certificateSource : trustedCertSources.getSources()) {
+		if (!allCertificateSources.isEmpty()) {
+			for (CertificateSource certificateSource : allCertificateSources.getSources()) {
 				if (certificateSource instanceof TrustedListsCertificateSource) {
 					return true;
 				}
@@ -787,7 +770,7 @@ public abstract class DiagnosticDataBuilder {
 				cert = getProcessedCertificateToken(cert);
 				if (publicKey.equals(cert.getPublicKey())) {
 					founds.add(cert);
-					if (trustedCertSources.isTrusted(cert)) {
+					if (allCertificateSources.isTrusted(cert)) {
 						return Arrays.asList(cert);
 					}
 				}
@@ -862,7 +845,7 @@ public abstract class DiagnosticDataBuilder {
 		for (CertificateToken cert : usedCertificates) {
 			if (signerIdentifier.isRelatedToCertificate(cert)) {
 				founds.add(cert);
-				if (trustedCertSources.isTrusted(cert)) {
+				if (allCertificateSources.isTrusted(cert)) {
 					return cert;
 				}
 			}
@@ -1094,7 +1077,7 @@ public abstract class DiagnosticDataBuilder {
 			orphanToken.setEntityKey(certificateToken.getEntityKey().asXmlId());
 
 			orphanToken.setSelfSigned(certificateToken.isSelfSigned());
-			orphanToken.setTrusted(trustedCertSources.isTrusted(certificateToken));
+			orphanToken.setTrusted(allCertificateSources.isTrusted(certificateToken));
 
 			if (tokenExtractionStrategy.isCertificate()) {
 				orphanToken.setBase64Encoded(certificateToken.getEncoded());
@@ -1276,7 +1259,7 @@ public abstract class DiagnosticDataBuilder {
 		xmlCert.setCertificatePolicies(getXmlCertificatePolicies(DSSASN1Utils.getCertificatePolicies(certToken)));
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
-		xmlCert.setTrusted(trustedCertSources.isTrusted(certToken));
+		xmlCert.setTrusted(allCertificateSources.isTrusted(certToken));
 
 		if (tokenExtractionStrategy.isCertificate()) {
 			xmlCert.setBase64Encoded(certToken.getEncoded());
@@ -1376,8 +1359,8 @@ public abstract class DiagnosticDataBuilder {
 
 	private List<CertificateSourceType> getXmlCertificateSources(final CertificateToken token) {
 		List<CertificateSourceType> certificateSources = new ArrayList<>();
-		if (certificateSourceTypes != null) {
-			Set<CertificateSourceType> sourceTypes = certificateSourceTypes.get(token);
+		if (allCertificateSources != null) {
+			Set<CertificateSourceType> sourceTypes = allCertificateSources.getCertificateSource(token);
 			if (sourceTypes != null) {
 				certificateSources.addAll(sourceTypes);
 			}
@@ -1496,7 +1479,7 @@ public abstract class DiagnosticDataBuilder {
 	private Map<CertificateToken, List<TrustProperties>> getRelatedTrustServices(CertificateToken certToken) {
 		Map<CertificateToken, List<TrustProperties>> result = new HashMap<>();
 		Set<CertificateToken> processedTokens = new HashSet<>();
-		for (CertificateSource trustedSource : trustedCertSources.getSources()) {
+		for (CertificateSource trustedSource : allCertificateSources.getSources()) {
 			if (trustedSource instanceof TrustedListsCertificateSource) {
 				TrustedListsCertificateSource trustedCertSource = (TrustedListsCertificateSource) trustedSource;
 				while (certToken != null) {

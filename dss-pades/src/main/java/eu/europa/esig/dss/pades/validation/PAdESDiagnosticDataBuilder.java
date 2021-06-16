@@ -136,26 +136,24 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 
 	@Override
 	protected XmlOrphanTokens buildXmlOrphanTokens() {
-		buildOrphanRevocationTokensFromCommonSources(); // necessary to collect all data from DSS PDF revisions
+		buildOrphanTokensFromDocumentSources(); // necessary to collect all data from DSS PDF revisions
 		return super.buildXmlOrphanTokens();
 	}
 
-	private void buildOrphanRevocationTokensFromCommonSources() {
-		for (CertificateToken certificateToken : completeCertificateSource.getAllCertificateTokens()) {
+	private void buildOrphanTokensFromDocumentSources() {
+		for (CertificateToken certificateToken : documentCertificateSource.getAllCertificateTokens()) {
 			String id = certificateToken.getDSSIdAsString();
 			if (!xmlCertsMap.containsKey(id) && !xmlOrphanCertificateTokensMap.containsKey(id)) {
 				buildXmlOrphanCertificateToken(certificateToken);
 			}
 		}
-		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationIdentifier : completeCRLSource
-				.getAllRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier<CRL> revocationIdentifier : documentCRLSource.getAllRevocationBinaries()) {
 			String id = revocationIdentifier.asXmlId();
 			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
 				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);
 			}
 		}
-		for (EncapsulatedRevocationTokenIdentifier<OCSP> revocationIdentifier : completeOCSPSource
-				.getAllRevocationBinaries()) {
+		for (EncapsulatedRevocationTokenIdentifier<OCSP> revocationIdentifier : documentOCSPSource.getAllRevocationBinaries()) {
 			String id = revocationIdentifier.asXmlId();
 			if (!xmlRevocationsMap.containsKey(id) && !xmlOrphanRevocationTokensMap.containsKey(id)) {
 				createOrphanTokenFromRevocationIdentifier(revocationIdentifier);

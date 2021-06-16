@@ -123,48 +123,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
         return new PAdESDiagnosticDataBuilder();
     }
 
-    @Override
-    protected ListCertificateSource mergeCertificateSources(final Collection<AdvancedSignature> allSignatureList,
-                                                            final Collection<TimestampToken> detachedTimestamps) {
-        ListCertificateSource listCertificateSource = super.mergeCertificateSources(allSignatureList, detachedTimestamps);
-
-        List<PdfDssDict> dssDictionaries = getDssDictionaries();
-        if (Utils.isCollectionNotEmpty(dssDictionaries)) {
-            for (PdfDssDict dssDictionary : dssDictionaries) {
-                listCertificateSource.add(new PdfDssDictCertificateSource(dssDictionary));
-            }
-        }
-        return listCertificateSource;
-    }
-
-    @Override
-    protected ListRevocationSource<CRL> mergeCRLSources(final Collection<AdvancedSignature> allSignatures,
-                                                        final Collection<TimestampToken> timestampTokens) {
-        ListRevocationSource<CRL> listCRLSource = super.mergeCRLSources(allSignatures, timestampTokens);
-
-        List<PdfDssDict> dssDictionaries = getDssDictionaries();
-        if (Utils.isCollectionNotEmpty(dssDictionaries)) {
-            for (PdfDssDict dssDictionary : dssDictionaries) {
-                listCRLSource.add(new PdfDssDictCRLSource(dssDictionary));
-            }
-        }
-        return listCRLSource;
-    }
-
-    @Override
-    protected ListRevocationSource<OCSP> mergeOCSPSources(final Collection<AdvancedSignature> allSignatures,
-                                                          final Collection<TimestampToken> timestampTokens) {
-        ListRevocationSource<OCSP> listOCSPSource = super.mergeOCSPSources(allSignatures, timestampTokens);
-
-        List<PdfDssDict> dssDictionaries = getDssDictionaries();
-        if (Utils.isCollectionNotEmpty(dssDictionaries)) {
-            for (PdfDssDict dssDictionary : dssDictionaries) {
-                listOCSPSource.add(new PdfDssDictOCSPSource(dssDictionary));
-            }
-        }
-        return listOCSPSource;
-    }
-
     /**
      * Fills the {@code validateContext} with certificate tokens from {@code dssDicts}
      *

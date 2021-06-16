@@ -28,8 +28,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
-import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -39,7 +37,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -450,11 +447,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (!skipValidationContextExecution) {
 			validateContext(validationContext);
 		}
-		
-		ListCertificateSource listCertificateSource = mergeCertificateSources(allSignatures, detachedTimestamps);
-		ListRevocationSource<CRL> listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps);
-		ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps);
-		return createDiagnosticDataBuilder(validationContext, allSignatures, listCertificateSource, listCRLSource, listOCSPSource);
+		return createDiagnosticDataBuilder(validationContext, allSignatures);
 	}
 
 	/**
@@ -540,104 +533,25 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * 
 	 * @param validationContext {@link ValidationContext} used for the validation
 	 * @param signatures        a list of {@link AdvancedSignature}s to be validated
-	 * @param listCRLSource     {@link ListRevocationSource} used for CRL collection
-	 * @param listOCSPSource    {@link ListRevocationSource} used for OCSP
 	 *                          collection
 	 * @return filled {@link DiagnosticDataBuilder}
 	 */
-	protected DiagnosticDataBuilder createDiagnosticDataBuilder(
-			final ValidationContext validationContext, final List<AdvancedSignature> signatures,
-			final ListCertificateSource listCertificateSource, final ListRevocationSource<CRL> listCRLSource,
-			final ListRevocationSource<OCSP> listOCSPSource) {
+	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
+																final List<AdvancedSignature> signatures) {
 		return initializeDiagnosticDataBuilder().document(document)
 				.foundSignatures(signatures)
 				.usedTimestamps(validationContext.getProcessedTimestamps())
-				.completeCertificateSource(listCertificateSource)
-				.completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource)
+				.allCertificateSources(validationContext.getAllCertificateSources())
+				.documentCertificateSource(validationContext.getDocumentCertificateSource())
+				.documentCRLSource(validationContext.getDocumentCRLSource())
+				.documentOCSPSource(validationContext.getDocumentOCSPSource())
 				.signaturePolicyProvider(getSignaturePolicyProvider())
 				.usedCertificates(validationContext.getProcessedCertificates())
 				.usedRevocations(validationContext.getProcessedRevocations())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.tokenExtractionStrategy(tokenExtractionStrategy)
 				.tokenIdentifierProvider(identifierProvider)
-				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
-				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime());
-	}
-
-	/**
-	 * For all signatures to be validated this method merges the certificate sources.
-	 *
-	 * @param allSignatureList   {@code Collection} of {@code AdvancedSignature}s to
-	 *                           validate including the counter-signatures
-	 * @param detachedTimestamps   {@code Collection} of {@code TimestampToken}s
-	 *                           detached to a validating file
-	 * @return merged certificate source
-	 */
-	protected ListCertificateSource mergeCertificateSources(final Collection<AdvancedSignature> allSignatureList,
-															final Collection<TimestampToken> detachedTimestamps) {
-		ListCertificateSource allCertificatesSource = new ListCertificateSource();
-		if (Utils.isCollectionNotEmpty(allSignatureList)) {
-			for (final AdvancedSignature signature : allSignatureList) {
-				allCertificatesSource.addAll(signature.getCompleteCertificateSource());
-			}
-		}
-		if (Utils.isCollectionNotEmpty(detachedTimestamps)) {
-			for (TimestampToken timestampToken : detachedTimestamps) {
-				allCertificatesSource.add(timestampToken.getCertificateSource());
-			}
-		}
-		return allCertificatesSource;
-	}
-
-	/**
-	 * For all signatures to be validated this method merges the CRL sources.
-	 *
-	 * @param allSignatureList   {@code Collection} of {@code AdvancedSignature}s to
-	 *                           validate including the counter-signatures
-	 * @param detachedTimestamps   {@code Collection} of {@code TimestampToken}s
-	 *                           detached to a validating file
-	 * @return merged CRL Source
-	 */
-	protected ListRevocationSource<CRL> mergeCRLSources(final Collection<AdvancedSignature> allSignatureList,
-														final Collection<TimestampToken> detachedTimestamps) {
-		ListRevocationSource<CRL> allCrlSource = new ListRevocationSource<>();
-		if (Utils.isCollectionNotEmpty(allSignatureList)) {
-			for (final AdvancedSignature signature : allSignatureList) {
-				allCrlSource.addAll(signature.getCompleteCRLSource());
-			}
-		}
-		if (Utils.isCollectionNotEmpty(detachedTimestamps)) {
-			for (TimestampToken timestampToken : detachedTimestamps) {
-				allCrlSource.add(timestampToken.getCRLSource());
-			}
-		}
-		return allCrlSource;
-	}
-
-	/**
-	 * For all signatures to be validated this method merges the OCSP sources.
-	 *
-	 * @param allSignatureList   {@code Collection} of {@code AdvancedSignature}s to
-	 *                           validate including the counter-signatures
-	 * @param detachedTimestamps   {@code Collection} of {@code TimestampToken}s
-	 *                           detached to a validating file
-	 * @return merged OCSP Source
-	 */
-	protected ListRevocationSource<OCSP> mergeOCSPSources(final Collection<AdvancedSignature> allSignatureList,
-														  final Collection<TimestampToken> detachedTimestamps) {
-		ListRevocationSource<OCSP> allOcspSource = new ListRevocationSource<>();
-		if (Utils.isCollectionNotEmpty(allSignatureList)) {
-			for (final AdvancedSignature signature : allSignatureList) {
-				allOcspSource.addAll(signature.getCompleteOCSPSource());
-			}
-		}
-		if (Utils.isCollectionNotEmpty(detachedTimestamps)) {
-			for (TimestampToken timestampToken : detachedTimestamps) {
-				allOcspSource.add(timestampToken.getOCSPSource());
-			}
-		}
-		return allOcspSource;
 	}
 
 	/**

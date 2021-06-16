@@ -20,20 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -49,6 +35,19 @@ import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CertificateDiagnosticDataBuilderTest {
 
@@ -133,7 +132,7 @@ public class CertificateDiagnosticDataBuilderTest {
 		trustedCertSource.setTrustPropertiesByCertificates(hashMap);
 
 		DiagnosticDataBuilder ddb = new CertificateDiagnosticDataBuilder().usedCertificates(usedCertificates)
-				.trustedCertificateSources(new ListCertificateSource(trustedCertSource));
+				.allCertificateSources(new ListCertificateSource(trustedCertSource));
 		XmlDiagnosticData dd = ddb.build();
 
 		assertNotNull(dd);

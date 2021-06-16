@@ -46,7 +46,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTSAGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -114,14 +113,14 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	/** The signature policy provider */
 	protected SignaturePolicyProvider signaturePolicyProvider;
 
-	/** The list of all certificate sources */
-	protected ListCertificateSource completeCertificateSource = new ListCertificateSource();
+	/** The list of all certificate sources extracted from a validating document (signature(s), timestamp(s)) */
+	protected ListCertificateSource documentCertificateSource = new ListCertificateSource();
 
-	/** The list of all CRL revocation sources */
-	protected ListRevocationSource<CRL> completeCRLSource = new ListRevocationSource<>();
+	/** The list of all CRL revocation sources extracted from a validating document (signature(s), timestamp(s)) */
+	protected ListRevocationSource<CRL> documentCRLSource = new ListRevocationSource<>();
 
-	/** The list of all OCSP revocation sources */
-	protected ListRevocationSource<OCSP> completeOCSPSource = new ListRevocationSource<>();
+	/** The list of all OCSP revocation sources extracted from a validating document (signature(s), timestamp(s)) */
+	protected ListRevocationSource<OCSP> documentOCSPSource = new ListRevocationSource<>();
 
 	/** The cached map of signatures */
 	protected Map<String, XmlSignature> xmlSignaturesMap = new HashMap<>();
@@ -138,19 +137,13 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	@Override
-	public SignedDocumentDiagnosticDataBuilder certificateSourceTypes(
-			Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes) {
-		return (SignedDocumentDiagnosticDataBuilder) super.certificateSourceTypes(certificateSourceTypes);
-	}
-
-	@Override
 	public SignedDocumentDiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
 		return (SignedDocumentDiagnosticDataBuilder) super.usedRevocations(usedRevocations);
 	}
 
 	@Override
-	public SignedDocumentDiagnosticDataBuilder trustedCertificateSources(ListCertificateSource trustedCertSources) {
-		return (SignedDocumentDiagnosticDataBuilder) super.trustedCertificateSources(trustedCertSources);
+	public SignedDocumentDiagnosticDataBuilder allCertificateSources(ListCertificateSource trustedCertSources) {
+		return (SignedDocumentDiagnosticDataBuilder) super.allCertificateSources(trustedCertSources);
 	}
 
 	@Override
@@ -207,44 +200,41 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @param signaturePolicyProvider {@link SignaturePolicyProvider}
 	 * @return the builder
 	 */
-	public SignedDocumentDiagnosticDataBuilder signaturePolicyProvider(
-			SignaturePolicyProvider signaturePolicyProvider) {
+	public SignedDocumentDiagnosticDataBuilder signaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider) {
 		this.signaturePolicyProvider = signaturePolicyProvider;
 		return this;
 	}
 
 	/**
-	 * Sets a merged Certificate Source
+	 * Sets a document Certificate Source containing all sources extracted from the provided signature(s)/timestamp(s)
 	 *
-	 * @param completeCertificateSource {@link ListCertificateSource} computed from existing sources
+	 * @param documentCertificateSource {@link ListCertificateSource} computed from document sources
 	 * @return the builder
 	 */
-	public SignedDocumentDiagnosticDataBuilder completeCertificateSource(ListCertificateSource completeCertificateSource) {
-		this.completeCertificateSource = completeCertificateSource;
+	public SignedDocumentDiagnosticDataBuilder documentCertificateSource(ListCertificateSource documentCertificateSource) {
+		this.documentCertificateSource = documentCertificateSource;
 		return this;
 	}
 
 	/**
-	 * Sets a merged CRL Source
+	 * Sets a document CRL Source containing all sources extracted from the provided signature(s)/timestamp(s)
 	 * 
-	 * @param completeCRLSource {@link ListRevocationSource} computed from existing
-	 *                          sources
+	 * @param documentCRLSource {@link ListRevocationSource} computed from document sources
 	 * @return the builder
 	 */
-	public SignedDocumentDiagnosticDataBuilder completeCRLSource(ListRevocationSource<CRL> completeCRLSource) {
-		this.completeCRLSource = completeCRLSource;
+	public SignedDocumentDiagnosticDataBuilder documentCRLSource(ListRevocationSource<CRL> documentCRLSource) {
+		this.documentCRLSource = documentCRLSource;
 		return this;
 	}
 
 	/**
-	 * Sets a merged OCSP Source
+	 * Sets a document OCSP Source containing all sources extracted from the provided signature(s)/timestamp(s)
 	 * 
-	 * @param completeOCSPSource {@link ListRevocationSource} computed from existing
-	 *                           sources
+	 * @param documentCRLSource {@link ListRevocationSource} computed from document sources
 	 * @return the builder
 	 */
-	public SignedDocumentDiagnosticDataBuilder completeOCSPSource(ListRevocationSource<OCSP> completeOCSPSource) {
-		this.completeOCSPSource = completeOCSPSource;
+	public SignedDocumentDiagnosticDataBuilder documentOCSPSource(ListRevocationSource<OCSP> documentCRLSource) {
+		this.documentOCSPSource = documentCRLSource;
 		return this;
 	}
 
@@ -718,8 +708,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private List<XmlOrphanRevocation> getXmlOrphanRevocationRefs(OfflineRevocationSource<CRL> crlSource,
 			OfflineRevocationSource<OCSP> ocspSource) {
 		List<XmlOrphanRevocation> xmlOrphanRevocationRefs = new ArrayList<>();
-		addOrphanRevocationRefs(xmlOrphanRevocationRefs, crlSource, completeCRLSource);
-		addOrphanRevocationRefs(xmlOrphanRevocationRefs, ocspSource, completeOCSPSource);
+		addOrphanRevocationRefs(xmlOrphanRevocationRefs, crlSource, documentCRLSource);
+		addOrphanRevocationRefs(xmlOrphanRevocationRefs, ocspSource, documentOCSPSource);
 		return xmlOrphanRevocationRefs;
 	}
 

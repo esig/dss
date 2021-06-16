@@ -24,16 +24,12 @@ import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
-import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
 import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
@@ -100,10 +96,9 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	
 	@Override
 	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
-				final List<AdvancedSignature> signatures, final ListCertificateSource listCertificateSource,
-				final ListRevocationSource<CRL> listCRLSource, final ListRevocationSource<OCSP> listOCSPSource) {
+																final List<AdvancedSignature> signatures) {
 		ASiCContainerDiagnosticDataBuilder builder = (ASiCContainerDiagnosticDataBuilder) super.createDiagnosticDataBuilder(
-				validationContext, signatures, listCertificateSource, listCRLSource, listOCSPSource);
+				validationContext, signatures);
 		builder.containerInfo(getContainerInfo());
 		return builder;
 	}

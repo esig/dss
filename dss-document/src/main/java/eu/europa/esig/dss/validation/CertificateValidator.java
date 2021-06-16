@@ -168,11 +168,10 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		final XmlDiagnosticData diagnosticData = new CertificateDiagnosticDataBuilder()
 				.usedCertificates(svc.getProcessedCertificates())
 				.usedRevocations(svc.getProcessedRevocations())
+				.allCertificateSources(svc.getAllCertificateSources())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.tokenExtractionStrategy(tokenExtractionStrategy)
 				.tokenIdentifierProvider(identifierProvider)
-				.certificateSourceTypes(svc.getCertificateSourceTypes())
-				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
 				.validationDate(getValidationTime()).build();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();

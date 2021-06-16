@@ -22,7 +22,6 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.alert.status.Status;
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -384,7 +383,8 @@ public class SignatureValidationContext implements ValidationContext {
 		return null;
 	}
 
-	private ListCertificateSource getAllCertificateSources() {
+	@Override
+	public ListCertificateSource getAllCertificateSources() {
 		ListCertificateSource allCertificateSources = new ListCertificateSource();
 		allCertificateSources.addAll(documentCertificateSource);
 		allCertificateSources.addAll(revocationCertificateSources);
@@ -392,6 +392,21 @@ public class SignatureValidationContext implements ValidationContext {
 		allCertificateSources.addAll(adjunctCertSources);
 		allCertificateSources.addAll(trustedCertSources);
 		return allCertificateSources;
+	}
+
+	@Override
+	public ListCertificateSource getDocumentCertificateSource() {
+		return documentCertificateSource;
+	}
+
+	@Override
+	public ListRevocationSource<CRL> getDocumentCRLSource() {
+		return documentCRLSource;
+	}
+
+	@Override
+	public ListRevocationSource<OCSP> getDocumentOCSPSource() {
+		return documentOCSPSource;
 	}
 
 	private Set<CertificateToken> getIssuersFromSources(Token token, ListCertificateSource allCertificateSources) {
@@ -1141,16 +1156,6 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public Set<CertificateToken> getProcessedCertificates() {
 		return Collections.unmodifiableSet(processedCertificates);
-	}
-
-	@Override
-	public Map<CertificateToken, Set<CertificateSourceType>> getCertificateSourceTypes() {
-		ListCertificateSource allCertificateSources = getAllCertificateSources();
-		Map<CertificateToken, Set<CertificateSourceType>> result = new HashMap<>();
-		for (CertificateToken certificateToken : getProcessedCertificates()) {
-			result.put(certificateToken, allCertificateSources.getCertificateSource(certificateToken));
-		}
-		return result;
 	}
 
 	@Override

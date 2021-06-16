@@ -163,6 +163,20 @@ public class ListCertificateSource {
 	}
 
 	/**
+	 * This method verifies if the current list of certificate sources contains a trusted certificate source
+	 *
+	 * @return TRUE if the list certificate source contains a trusted certificate source, FALSE otherwise
+	 */
+	public boolean containsTrustedCertSources() {
+		for (CertificateSource certificateSource : sources) {
+			if (certificateSource.getCertificateSourceType().isTrusted()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * This method checks in all sources in the given certificate is trusted
 	 * 
 	 * @param certificateToken the {@link CertificateToken} to be checked
