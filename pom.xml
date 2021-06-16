@@ -46,46 +46,47 @@
 		<jose4j.version>0.7.2</jose4j.version>
 		<pdfbox.version>2.0.22</pdfbox.version>
 		<openpdf.version>1.3.23</openpdf.version>
+		<verapdf.version>1.18.8</verapdf.version>
 		<httpclient.version>4.5.13</httpclient.version>
 		<commons-codec.version>1.15</commons-codec.version> <!-- Synchronized with santuario -->
-		
+
 		<jakarta.bind-api.version>2.3.2</jakarta.bind-api.version> <!-- Synchronized with santuario -->
 		<jaxb-runtime.version>2.3.2</jaxb-runtime.version>
-		
+
 		<!-- REST/SOAP API -->
 		<jakarta.rs-api.version>2.1.6</jakarta.rs-api.version>
 		<jakarta.ws-api.version>2.3.2</jakarta.ws-api.version>
 
 		<junit.platform.version>1.7.0</junit.platform.version>
 		<junit.jupiter.version>5.7.0</junit.jupiter.version>
-		
+
 		<awaitility.version>4.0.3</awaitility.version>
 		<mockito.version>3.3.3</mockito.version>
 		<h2database.version>1.4.200</h2database.version>
 		<jackson.version>2.11.3</jackson.version>
-		
+
 		<sonar.java.source>1.8</sonar.java.source>
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>	   
+	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../dss-jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-		
+
 		<!-- By default, skip slow tests (use slow-tests profile to enable them) -->
 		<exclude.tag.tests>slow</exclude.tag.tests>
 	</properties>
-	
+
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License</name>
 			<url>https://www.gnu.org/licenses/lgpl-2.1.html</url>
 		</license>
 	</licenses>
-	
+
 	<modules>
-	
+
 		<module>dss-enumerations</module>
 		<module>dss-alert</module>
 		<module>dss-jaxb-parsers</module>
-	
+
 		<module>specs-xmldsig</module>
 		<module>specs-xades</module>
 		<module>specs-trusted-list</module>
@@ -94,19 +95,19 @@
 		<module>specs-saml-assertion</module>
 		<module>specs-jws</module>
 		<module>specs-jades</module>
-		
+
 		<module>dss-policy-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
 		<module>dss-detailed-report-jaxb</module>
 		<module>dss-simple-report-jaxb</module>
 		<module>dss-simple-certificate-report-jaxb</module>
-	
+
 		<module>dss-utils</module>
 		<module>dss-utils-apache-commons</module>
 		<module>dss-utils-google-guava</module>
-		
+
     	<module>dss-i18n</module>
-		
+
 		<module>dss-model</module>
 		<module>dss-crl-parser</module>
 		<module>dss-crl-parser-x509crl</module>
@@ -127,7 +128,7 @@
 		<module>dss-asic-xades</module>
 		<module>dss-asic-cades</module>
 		<module>dss-tsl-validation</module>
-		
+
     	<module>dss-common-remote-dto</module>
     	<module>dss-common-remote-converter</module>
 		<module>dss-signature-dto</module>
@@ -160,9 +161,9 @@
     	<module>dss-timestamp-remote-soap-client</module>
     	<module>dss-timestamp-remote-rest</module>
     	<module>dss-timestamp-remote-soap</module>
-		
+
 		<module>dss-cookbook</module>
-		
+
 		<module>dss-jacoco-coverage</module>
   </modules>
 
@@ -185,10 +186,10 @@
 				<artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>${project.encoding}</encoding>
-                    
+
                     <!-- Default + Test -->
 					<release>8</release> <!-- XML Security requires 8+ -->
-					
+
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
@@ -203,7 +204,7 @@
 							<release>8</release> <!-- XML Security requires 8+ -->
 						</configuration>
 					</execution>
-			
+
 					<execution>
 						<id>module-compile</id>
 						<phase>compile</phase>
@@ -218,7 +219,7 @@
 							<outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
 						</configuration>
 					</execution>
-				</executions>          
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -319,7 +320,7 @@
 					</execution>
 				</executions>
 			</plugin>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -714,7 +715,7 @@
 				<artifactId>dss-token</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-server-signing-dto</artifactId>
@@ -863,9 +864,9 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
-			
+
 			<!-- Public Dependencies -->
-			
+
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
@@ -886,7 +887,12 @@
 				<artifactId>openpdf</artifactId>
 				<version>${openpdf.version}</version>
 			</dependency>
-			
+			<dependency>
+				<groupId>org.verapdf</groupId>
+				<artifactId>validation-model</artifactId>
+				<version>${verapdf.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
@@ -907,7 +913,7 @@
 				<artifactId>jose4j</artifactId>
 				<version>${jose4j.version}</version>
 			</dependency>
-			
+
 			<!-- Logger -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -937,7 +943,7 @@
 			    <version>${jaxb-runtime.version}</version>
 			    <scope>runtime</scope>
 			</dependency>
-			
+
 			<!-- REST/SOAP API -->
 			<dependency>
 			    <groupId>jakarta.ws.rs</groupId>
@@ -1006,7 +1012,7 @@
 			<url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://ec.europa.eu/cefdigital/tracker/projects/DSS</url>
