@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -33,6 +28,16 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class XAdESManifestLevelBTest extends AbstractXAdESTestSignature {
 
@@ -59,6 +64,19 @@ public class XAdESManifestLevelBTest extends AbstractXAdESTestSignature {
 		signatureParameters.setManifestSignature(true);
 
 		service = new XAdESService(getOfflineCertificateVerifier());
+	}
+
+	@Override
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		super.validateETSISignersDocument(signersDocument);
+
+		DigestAlgAndValueType digestAlgoAndValue = getDigestAlgoAndValue(signersDocument);
+		assertNotNull(digestAlgoAndValue);
+		assertNotNull(digestAlgoAndValue.getDigestMethod());
+		assertNotNull(digestAlgoAndValue.getDigestValue());
+
+		List<ValidationObjectType> validationObjects = getValidationObjects(signersDocument);
+		assertEquals(1, validationObjects.size());
 	}
 
 	@Override

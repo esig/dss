@@ -24,7 +24,6 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -313,19 +312,20 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	protected List<TimestampedReference> getIndividualContentTimestampedReferences(XAdESAttribute signedAttribute) {
 		List<TimestampInclude> includes = signedAttribute.getTimestampIncludedReferences();
 		List<TimestampedReference> timestampReferences = new ArrayList<>();
+		List<SignatureScope> signatureScopeListToAdd = new ArrayList<>();
 		for (Reference reference : signature.getReferences()) {
 			if (isContentTimestampedReference(reference, includes)) {
 				List<SignatureScope> signatureScopes = signature.getSignatureScopes();
 				if (Utils.isCollectionNotEmpty(signatureScopes)) {
 					for (SignatureScope signatureScope : signatureScopes) {
 						if (Utils.endsWithIgnoreCase(reference.getURI(), signatureScope.getName())) {
-							addReference(timestampReferences, new TimestampedReference(
-									signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+							signatureScopeListToAdd.add(signatureScope);
 						}
 					}
 				}
 			}
 		}
+		populateSignerDataReferencesList(timestampReferences, signatureScopeListToAdd);
 		return timestampReferences;
 	}
 	

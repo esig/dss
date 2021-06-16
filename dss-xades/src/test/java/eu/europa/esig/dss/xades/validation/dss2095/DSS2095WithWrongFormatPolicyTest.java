@@ -130,8 +130,8 @@ public class DSS2095WithWrongFormatPolicyTest extends AbstractXAdESTestValidatio
 	}
 	
 	@Override
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
-		assertEquals(0, signersDocuments.size());
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		assertNull(signersDocument);
 	}
 
 }

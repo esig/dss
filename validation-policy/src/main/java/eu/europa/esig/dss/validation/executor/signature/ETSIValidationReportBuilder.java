@@ -137,7 +137,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -157,6 +159,12 @@ public class ETSIValidationReportBuilder {
 
 	 /** The detailed report */
 	private final DetailedReport detailedReport;
+
+	/** Map between signature Ids and the respective {@code SignatureIdentifierType}s */
+	private Map<String, SignatureIdentifierType> signatureIdentifierMap = new HashMap<>();
+
+	/** Map between token Ids and the respective {@code ValidationObjectType}s */
+	private Map<String, ValidationObjectType> validationObjectMap = new HashMap<>();
 
 	/**
 	 * Default constructor
@@ -199,7 +207,7 @@ public class ETSIValidationReportBuilder {
 	private SignatureValidationReportType getSignatureValidationReport(SignatureWrapper sigWrapper) {
 		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
 		signatureValidationReport.setSignatureIdentifier(getSignatureIdentifier(sigWrapper));
-		getSignersDocuments(signatureValidationReport, sigWrapper);
+		signatureValidationReport.setSignersDocument(getSignersDocument(sigWrapper));
 		SignatureAttributesType signatureAttributes = getSignatureAttributes(sigWrapper);
 		if (!signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().isEmpty()) {
 			signatureValidationReport.setSignatureAttributes(signatureAttributes);
@@ -311,7 +319,8 @@ public class ETSIValidationReportBuilder {
 
 		String timestampId = proofOfExistence.getTimestampId();
 		if (Utils.isStringNotEmpty(timestampId)) {
-			poeType.setPOEObject(getVOReference(timestampId));
+			TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampId);
+			poeType.setPOEObject(getVOReference(getTimestampValidationObject(timestampWrapper)));
 		}
 		validationTimeInfoType.setBestSignatureTime(poeType);
 		return validationTimeInfoType;
@@ -328,7 +337,7 @@ public class ETSIValidationReportBuilder {
 			signerInfo.setPseudonym(isPseudoUse(pseudoUseStatus));
 		}
 		signerInfo.setSigner(signingCert.getReadableCertificateName());
-		signerInfo.setSignerCertificate(getVOReference(signingCert.getId()));
+		signerInfo.setSignerCertificate(getVOReference(getCertificateValidationObject(signingCert)));
 		return signerInfo;
 	}
 	
@@ -360,15 +369,19 @@ public class ETSIValidationReportBuilder {
 		return null;
 	}
 
-	private VOReferenceType getVOReference(String id) {
-		return getVOReference(Arrays.asList(id));
+	private VOReferenceType getVOReference(SignatureIdentifierType signatureIdentifier) {
+		VOReferenceType voRef = objectFactory.createVOReferenceType();
+		voRef.getVOReference().add(signatureIdentifier);
+		return voRef;
 	}
 
-	private VOReferenceType getVOReference(List<String> ids) {
+	private VOReferenceType getVOReference(ValidationObjectType validationObject) {
+		return getVOReference(Arrays.asList(validationObject));
+	}
+
+	private VOReferenceType getVOReference(List<ValidationObjectType> validationObjects) {
 		VOReferenceType voRef = objectFactory.createVOReferenceType();
-		for (String id : ids) {
-			ValidationObjectType validationObject = objectFactory.createValidationObjectType();
-			validationObject.setId(id);
+		for (ValidationObjectType validationObject : validationObjects) {
 			voRef.getVOReference().add(validationObject);
 		}
 		return voRef;
@@ -400,45 +413,60 @@ public class ETSIValidationReportBuilder {
 		poeExtraction.collectAllPOE(diagnosticData.getTimestampSet());
 
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
-			addTimestamp(validationObjectListType, timestamp);
+			ValidationObjectType timestampValidationObject = getTimestampValidationObject(timestamp);
+			validationObjectListType.getValidationObject().add(timestampValidationObject);
 		}
 
 		for (CertificateWrapper certificate : diagnosticData.getUsedCertificates()) {
-			addCertificate(validationObjectListType, certificate, poeExtraction);
+			ValidationObjectType certificateValidationObject = getCertificateValidationObject(certificate);
+			certificateValidationObject.setPOE(getPOE(certificate.getId(), poeExtraction));
+			validationObjectListType.getValidationObject().add(certificateValidationObject);
 		}
 		
 		for (OrphanCertificateTokenWrapper orphanCertificate : diagnosticData.getAllOrphanCertificateObjects()) {
-			addOrphanCertificate(validationObjectListType, orphanCertificate, poeExtraction);
+			ValidationObjectType orphanCertificateValidationObject = getOrphanCertificateValidationObject(orphanCertificate);
+			orphanCertificateValidationObject.setPOE(getPOE(orphanCertificate.getId(), poeExtraction));
+			validationObjectListType.getValidationObject().add(orphanCertificateValidationObject);
 		}
 
 		for (RevocationWrapper revocationData : diagnosticData.getAllRevocationData()) {
-			addRevocationData(validationObjectListType, revocationData, poeExtraction);
+			ValidationObjectType revocationValidationObject = getRevocationValidationObject(revocationData);
+			revocationValidationObject.setPOE(getPOE(revocationData.getId(), poeExtraction));
+			validationObjectListType.getValidationObject().add(revocationValidationObject);
 		}
 		
 		for (OrphanRevocationTokenWrapper orphanRevocation : diagnosticData.getAllOrphanRevocationObjects()) {
-			addOrphanRevocation(validationObjectListType, orphanRevocation, poeExtraction);
+			ValidationObjectType orphanRevocationValidationObject = getOrphanRevocationValidationObject(orphanRevocation);
+			orphanRevocationValidationObject.setPOE(getPOE(orphanRevocation.getId(), poeExtraction));
+			validationObjectListType.getValidationObject().add(orphanRevocationValidationObject);
 		}
 
 		for (SignerDataWrapper signedData : diagnosticData.getOriginalSignerDocuments()) {
-			addSignerData(validationObjectListType, signedData, poeExtraction);
+			ValidationObjectType signerDataValidationObject = getSignerDataValidationObject(signedData);
+			signerDataValidationObject.setPOE(getPOE(signedData.getId(), poeExtraction));
+			validationObjectListType.getValidationObject().add(signerDataValidationObject);
 		}
 
 		return validationObjectListType;
 	}
 
-	private void addCertificate(ValidationObjectListType validationObjectListType, CertificateWrapper certificate, POEExtraction poeExtraction) {
-		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
-		validationObject.setId(certificate.getId());
-		validationObject.setObjectType(ObjectType.CERTIFICATE);
-		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-		if (Utils.isArrayNotEmpty(certificate.getBinaries())) {
-			representation.setBase64(certificate.getBinaries());
-		} else {
-			representation.setDigestAlgAndValue(getDigestAlgAndValueType(certificate.getDigestAlgoAndValue()));
+	private ValidationObjectType getCertificateValidationObject(CertificateWrapper certificate) {
+		ValidationObjectType validationObject = validationObjectMap.get(certificate.getId());
+		if (validationObject == null) {
+			validationObject = objectFactory.createValidationObjectType();
+			validationObjectMap.put(certificate.getId(), validationObject);
+
+			validationObject.setId(certificate.getId());
+			validationObject.setObjectType(ObjectType.CERTIFICATE);
+			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
+			if (Utils.isArrayNotEmpty(certificate.getBinaries())) {
+				representation.setBase64(certificate.getBinaries());
+			} else {
+				representation.setDigestAlgAndValue(getDigestAlgAndValueType(certificate.getDigestAlgoAndValue()));
+			}
+			validationObject.setValidationObjectRepresentation(representation);
 		}
-		validationObject.setValidationObjectRepresentation(representation);
-		validationObject.setPOE(getPOE(certificate.getId(), poeExtraction));
-		validationObjectListType.getValidationObject().add(validationObject);
+		return validationObject;
 	}
 	
 	private DigestAlgAndValueType getDigestAlgAndValueType(XmlDigestAlgoAndValue xmlDigestAlgoAndValue) {
@@ -459,26 +487,35 @@ public class ETSIValidationReportBuilder {
 		POE lowestPOE = poeExtraction.getLowestPOE(tokenId);
 		poeType.setPOETime(lowestPOE.getTime());
 		if (lowestPOE.isTimestampPoe()) {
-			poeType.setPOEObject(getVOReference(lowestPOE.getTimestampId()));
+			String timestampId = lowestPOE.getTimestampId();
+			if (Utils.isStringNotEmpty(timestampId)) {
+				TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampId);
+				poeType.setPOEObject(getVOReference(getTimestampValidationObject(timestampWrapper)));
+			}
 		}
 		poeType.setTypeOfProof(TypeOfProof.VALIDATION);
 		return poeType;
 	}
 
-	private void addTimestamp(ValidationObjectListType validationObjectListType, TimestampWrapper timestamp) {
-		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
-		validationObject.setId(timestamp.getId());
-		validationObject.setObjectType(ObjectType.TIMESTAMP);
-		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-		if (Utils.isArrayNotEmpty(timestamp.getBinaries())) {
-			representation.setBase64(timestamp.getBinaries());
-		} else {
-			representation.setDigestAlgAndValue(getDigestAlgAndValueType(timestamp.getDigestAlgoAndValue()));
+	private ValidationObjectType getTimestampValidationObject(TimestampWrapper timestamp) {
+		ValidationObjectType validationObject = validationObjectMap.get(timestamp.getId());
+		if (validationObject == null) {
+			validationObject = objectFactory.createValidationObjectType();
+			validationObjectMap.put(timestamp.getId(), validationObject);
+
+			validationObject.setId(timestamp.getId());
+			validationObject.setObjectType(ObjectType.TIMESTAMP);
+			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
+			if (Utils.isArrayNotEmpty(timestamp.getBinaries())) {
+				representation.setBase64(timestamp.getBinaries());
+			} else {
+				representation.setDigestAlgAndValue(getDigestAlgAndValueType(timestamp.getDigestAlgoAndValue()));
+			}
+			validationObject.setValidationObjectRepresentation(representation);
+			validationObject.setPOEProvisioning(getPOEProvisioningType(timestamp));
+			validationObject.setValidationReport(getValidationReport(timestamp));
 		}
-		validationObject.setValidationObjectRepresentation(representation);
-		validationObject.setPOEProvisioning(getPOEProvisioningType(timestamp));
-		validationObject.setValidationReport(getValidationReport(timestamp));
-		validationObjectListType.getValidationObject().add(validationObject);
+		return validationObject;
 	}
 
 	private POEProvisioningType getPOEProvisioningType(TimestampWrapper timestamp) {
@@ -486,33 +523,33 @@ public class ETSIValidationReportBuilder {
 		poeProvisioning.setPOETime(timestamp.getProductionTime());
 		
 		for (CertificateWrapper cert : timestamp.getTimestampedCertificates()) {
-			poeProvisioning.getValidationObject().add(getVOReference(cert.getId()));
+			poeProvisioning.getValidationObject().add(getVOReference(getCertificateValidationObject(cert)));
 		}
 		// only created validation objects must be added (not references)
 		List<OrphanCertificateTokenWrapper> allOrphanObjectCertificates = diagnosticData.getAllOrphanCertificateObjects();
-		for (OrphanTokenWrapper orphanCert : timestamp.getTimestampedOrphanCertificates()) {
+		for (OrphanCertificateTokenWrapper orphanCert : timestamp.getTimestampedOrphanCertificates()) {
 			if (allOrphanObjectCertificates.contains(orphanCert)) {
-				poeProvisioning.getValidationObject().add(getVOReference(orphanCert.getId()));
+				poeProvisioning.getValidationObject().add(getVOReference(getOrphanCertificateValidationObject(orphanCert)));
 			}
 		}
 		
 		for (RevocationWrapper revocation : timestamp.getTimestampedRevocations()) {
-			poeProvisioning.getValidationObject().add(getVOReference(revocation.getId()));
+			poeProvisioning.getValidationObject().add(getVOReference(getRevocationValidationObject(revocation)));
 		}
 		// only created validation objects must be added (not references)
 		List<OrphanRevocationTokenWrapper> allOrphanObjectRevocations = diagnosticData.getAllOrphanRevocationObjects();
-		for (OrphanTokenWrapper orphanRevocation : timestamp.getTimestampedOrphanRevocations()) {
+		for (OrphanRevocationTokenWrapper orphanRevocation : timestamp.getTimestampedOrphanRevocations()) {
 			if (allOrphanObjectRevocations.contains(orphanRevocation)) {
-				poeProvisioning.getValidationObject().add(getVOReference(orphanRevocation.getId()));
+				poeProvisioning.getValidationObject().add(getVOReference(getOrphanRevocationValidationObject(orphanRevocation)));
 			}
 		}
 		
 		for (TimestampWrapper tst : timestamp.getTimestampedTimestamps()) {
-			poeProvisioning.getValidationObject().add(getVOReference(tst.getId()));
+			poeProvisioning.getValidationObject().add(getVOReference(getTimestampValidationObject(tst)));
 		}
 		
 		for (SignerDataWrapper signerData : timestamp.getTimestampedSignedData()) {
-			poeProvisioning.getValidationObject().add(getVOReference(signerData.getId()));
+			poeProvisioning.getValidationObject().add(getVOReference(getSignerDataValidationObject(signerData)));
 		}
 		
 		List<SignatureWrapper> timestampedSignatures = timestamp.getTimestampedSignatures();
@@ -535,70 +572,76 @@ public class ETSIValidationReportBuilder {
 		}
 		return signatureReference;
 	}
-	
-	private void addSignerData(ValidationObjectListType validationObjectListType, SignerDataWrapper signedData, POEExtraction poeExtraction) {
-		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
-		validationObject.setId(signedData.getId());
-		validationObject.setObjectType(ObjectType.SIGNED_DATA);
-		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-		representation.setDigestAlgAndValue(getDigestAlgAndValueType(signedData.getDigestAlgoAndValue()));
-		validationObject.setValidationObjectRepresentation(representation);
-		validationObject.setPOE(getPOE(signedData.getId(), poeExtraction));
-		validationObjectListType.getValidationObject().add(validationObject);
+
+	private ValidationObjectType getSignerDataValidationObject(SignerDataWrapper signedData) {
+		ValidationObjectType validationObject = validationObjectMap.get(signedData.getId());
+		if (validationObject == null) {
+			validationObject = objectFactory.createValidationObjectType();
+			validationObjectMap.put(signedData.getId(), validationObject);
+
+			validationObject.setId(signedData.getId());
+			validationObject.setObjectType(ObjectType.SIGNED_DATA);
+			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
+			representation.setDigestAlgAndValue(getDigestAlgAndValueType(signedData.getDigestAlgoAndValue()));
+			validationObject.setValidationObjectRepresentation(representation);
+		}
+		return validationObject;
 	}
 
-	private void addRevocationData(ValidationObjectListType validationObjectListType, RevocationWrapper revocationData, POEExtraction poeExtraction) {
-		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
-		validationObject.setId(revocationData.getId());
-		if (RevocationType.CRL.equals(revocationData.getRevocationType())) {
-			validationObject.setObjectType(ObjectType.CRL);
-		} else {
-			validationObject.setObjectType(ObjectType.OCSP_RESPONSE);
-		}
-		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-		if (Utils.isArrayNotEmpty(revocationData.getBinaries())) {
-			representation.setBase64(revocationData.getBinaries());
-		} else {
-			representation.setDigestAlgAndValue(getDigestAlgAndValueType(revocationData.getDigestAlgoAndValue()));
-		}
+	private ValidationObjectType getRevocationValidationObject(RevocationWrapper revocationData) {
+		ValidationObjectType validationObject = validationObjectMap.get(revocationData.getId());
+		if (validationObject == null) {
+			validationObject = objectFactory.createValidationObjectType();
+			validationObjectMap.put(revocationData.getId(), validationObject);
+
+			validationObject.setId(revocationData.getId());
+			if (RevocationType.CRL.equals(revocationData.getRevocationType())) {
+				validationObject.setObjectType(ObjectType.CRL);
+			} else {
+				validationObject.setObjectType(ObjectType.OCSP_RESPONSE);
+			}
+			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
+			if (Utils.isArrayNotEmpty(revocationData.getBinaries())) {
+				representation.setBase64(revocationData.getBinaries());
+			} else {
+				representation.setDigestAlgAndValue(getDigestAlgAndValueType(revocationData.getDigestAlgoAndValue()));
+			}
 //		Standard says choice
 //		String sourceAddress = revocationData.getSourceAddress();
 //		if (Utils.isStringNotEmpty(sourceAddress)) {
 //			representation.setURI(sourceAddress);
 //		}
-		validationObject.setValidationObjectRepresentation(representation);
-		validationObject.setPOE(getPOE(revocationData.getId(), poeExtraction));
-		validationObject.setValidationReport(getValidationReport(revocationData));
-		validationObjectListType.getValidationObject().add(validationObject);
+			validationObject.setValidationObjectRepresentation(representation);
+			validationObject.setValidationReport(getValidationReport(revocationData));
+		}
+		return validationObject;
 	}
 
-	private void addOrphanRevocation(ValidationObjectListType validationObjectListType, OrphanRevocationTokenWrapper orphanRevocation, POEExtraction poeExtraction) {
-		ValidationObjectType validationObject = createOrphanToken(orphanRevocation, poeExtraction);
-		if (RevocationType.CRL.equals(orphanRevocation.getRevocationType())) {
-			validationObject.setObjectType(ObjectType.CRL);
-		} else {
-			validationObject.setObjectType(ObjectType.OCSP_RESPONSE);
-		}
-		validationObjectListType.getValidationObject().add(validationObject);
+	private ValidationObjectType getOrphanCertificateValidationObject(OrphanCertificateTokenWrapper orphanCertificate) {
+		return createOrphanToken(orphanCertificate, ObjectType.CERTIFICATE);
+	}
+
+	private ValidationObjectType getOrphanRevocationValidationObject(OrphanRevocationTokenWrapper orphanRevocation) {
+		ObjectType objectType = RevocationType.CRL.equals(orphanRevocation.getRevocationType()) ? ObjectType.CRL : ObjectType.OCSP_RESPONSE;
+		return createOrphanToken(orphanRevocation, objectType);
 	}
 	
-	private void addOrphanCertificate(ValidationObjectListType validationObjectListType, OrphanCertificateTokenWrapper orphanCertificate, POEExtraction poeExtraction) {
-		ValidationObjectType orphanCertificateToken = createOrphanToken(orphanCertificate, poeExtraction);
-		orphanCertificateToken.setObjectType(ObjectType.CERTIFICATE);
-		validationObjectListType.getValidationObject().add(orphanCertificateToken);
-	}
-	
-	private ValidationObjectType createOrphanToken(OrphanTokenWrapper orphanToken, POEExtraction poeExtraction) {
-		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
-		validationObject.setId(orphanToken.getId());
-		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-		if (Utils.isArrayNotEmpty(orphanToken.getBinaries())) {
-			representation.setBase64(orphanToken.getBinaries());
-		} else {
-			representation.setDigestAlgAndValue(getDigestAlgAndValueType(orphanToken.getDigestAlgoAndValue()));
+	private ValidationObjectType createOrphanToken(OrphanTokenWrapper orphanToken, ObjectType objectType) {
+		ValidationObjectType validationObject = validationObjectMap.get(orphanToken.getId());
+		if (validationObject == null) {
+			validationObject = objectFactory.createValidationObjectType();
+			validationObjectMap.put(orphanToken.getId(), validationObject);
+
+			validationObject.setId(orphanToken.getId());
+			validationObject.setObjectType(objectType);
+			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
+			if (Utils.isArrayNotEmpty(orphanToken.getBinaries())) {
+				representation.setBase64(orphanToken.getBinaries());
+			} else {
+				representation.setDigestAlgAndValue(getDigestAlgAndValueType(orphanToken.getDigestAlgoAndValue()));
+			}
+			validationObject.setValidationObjectRepresentation(representation);
 		}
-		validationObject.setValidationObjectRepresentation(representation);
-		validationObject.setPOE(getPOE(orphanToken.getId(), poeExtraction));
 		return validationObject;
 	}
 
@@ -655,7 +698,7 @@ public class ETSIValidationReportBuilder {
 
 				XmlSAV sav = basicBuildingBlock.getSAV();
 				if (sav != null && sav.getCryptographicValidation() != null) {
-					fillCryptographicInfo(validationReportData, token.getId(), sav.getCryptographicValidation());
+					fillCryptographicInfo(validationReportData, token, sav.getCryptographicValidation());
 				}
 			}
 
@@ -667,9 +710,17 @@ public class ETSIValidationReportBuilder {
 		}
 	}
 
-	private void fillCryptographicInfo(ValidationReportDataType validationReportData, String tokenId, XmlCryptographicValidation cryptographicValidation) {
+	private void fillCryptographicInfo(ValidationReportDataType validationReportData, AbstractTokenProxy token, XmlCryptographicValidation cryptographicValidation) {
 		CryptoInformationType cryptoInformationType = objectFactory.createCryptoInformationType();
-		cryptoInformationType.setValidationObjectId(getVOReference(tokenId));
+		if (token instanceof SignatureWrapper) {
+			cryptoInformationType.setValidationObjectId(getVOReference(getSignatureIdentifier((SignatureWrapper) token)));
+		} else if (token instanceof TimestampWrapper) {
+			cryptoInformationType.setValidationObjectId(getVOReference(getTimestampValidationObject((TimestampWrapper) token)));
+		} else if (token instanceof RevocationWrapper) {
+			cryptoInformationType.setValidationObjectId(getVOReference(getRevocationValidationObject((RevocationWrapper) token)));
+		} else {
+			throw new IllegalArgumentException(String.format("Unsupported class %s", token.getClass()));
+		}
 		cryptoInformationType.setSecureAlgorithm(cryptographicValidation.isSecure());
 		XmlCryptographicAlgorithm algorithm = cryptographicValidation.getAlgorithm();
 		if (algorithm != null) {
@@ -682,8 +733,10 @@ public class ETSIValidationReportBuilder {
 	private void fillRevocationInfo(ValidationReportDataType validationReportData, XmlRevocationInformation revocationInfo) {
 		RevocationStatusInformationType revocationStatusInformationType = objectFactory.createRevocationStatusInformationType();
 		revocationStatusInformationType.setRevocationTime(revocationInfo.getRevocationDate());
-		revocationStatusInformationType.setRevocationObject(getVOReference(revocationInfo.getRevocationId()));
-		revocationStatusInformationType.setValidationObjectId(getVOReference(revocationInfo.getCertificateId()));
+		RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(revocationInfo.getRevocationId());
+		revocationStatusInformationType.setRevocationObject(getVOReference(getRevocationValidationObject(revocationWrapper)));
+		CertificateWrapper certificateWrapper = diagnosticData.getCertificateById(revocationInfo.getCertificateId());
+		revocationStatusInformationType.setValidationObjectId(getVOReference(getCertificateValidationObject(certificateWrapper)));
 		if (revocationInfo.getReason() != null) {
 			revocationStatusInformationType.setRevocationReason(revocationInfo.getReason());
 		}
@@ -701,7 +754,8 @@ public class ETSIValidationReportBuilder {
 		VOReferenceType trustAnchor = null;
 		for (int i = 0; i < chainItem.size(); i++) {
 			XmlChainItem currentChainItem = chainItem.get(i);
-			VOReferenceType currentVORef = getVOReference(currentChainItem.getId());
+			CertificateWrapper certificateWrapper = diagnosticData.getCertificateById(currentChainItem.getId());
+			VOReferenceType currentVORef = getVOReference(getCertificateValidationObject(certificateWrapper));
 			CertificateSourceType source = currentChainItem.getSource();
 
 			boolean isSigningCert = (i == 0);
@@ -733,16 +787,21 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private SignatureIdentifierType getSignatureIdentifier(SignatureWrapper sigWrapper) {
-		SignatureIdentifierType sigId = objectFactory.createSignatureIdentifierType();
-		sigId.setId(sigWrapper.getId());
-		sigId.setDAIdentifier(sigWrapper.getDAIdentifier());
-		sigId.setDocHashOnly(sigWrapper.isDocHashOnly());
-		sigId.setHashOnly(sigWrapper.isHashOnly());
-		sigId.setDigestAlgAndValue(getDTBSRDigestAlgAndValue(sigWrapper));
-		SignatureValueType sigValue = new SignatureValueType();
-		sigValue.setValue(sigWrapper.getSignatureValue());
-		sigId.setSignatureValue(sigValue);
-		return sigId;
+		SignatureIdentifierType signatureIdentifier = signatureIdentifierMap.get(sigWrapper.getId());
+		if (signatureIdentifier == null) {
+			signatureIdentifier = objectFactory.createSignatureIdentifierType();
+			signatureIdentifierMap.put(sigWrapper.getId(), signatureIdentifier);
+
+			signatureIdentifier.setId(sigWrapper.getId());
+			signatureIdentifier.setDAIdentifier(sigWrapper.getDAIdentifier());
+			signatureIdentifier.setDocHashOnly(sigWrapper.isDocHashOnly());
+			signatureIdentifier.setHashOnly(sigWrapper.isHashOnly());
+			signatureIdentifier.setDigestAlgAndValue(getDTBSRDigestAlgAndValue(sigWrapper));
+			SignatureValueType sigValue = new SignatureValueType();
+			sigValue.setValue(sigWrapper.getSignatureValue());
+			signatureIdentifier.setSignatureValue(sigValue);
+		}
+		return signatureIdentifier;
 	}
 	
 	private DigestAlgAndValueType getDTBSRDigestAlgAndValue(SignatureWrapper sigWrapper) {
@@ -753,14 +812,33 @@ public class ETSIValidationReportBuilder {
 		return null;
 	}
 	
-	private void getSignersDocuments(SignatureValidationReportType signatureValidationReport, SignatureWrapper sigWrapper) {
-		List<XmlSignatureScope> signerData = sigWrapper.getSignatureScopes();
-		for (XmlSignatureScope xmlSignatureScope : signerData) {
-			SignersDocumentType signersDocumentType = objectFactory.createSignersDocumentType();
-			signersDocumentType.setDigestAlgAndValue(getDigestAlgAndValueType(xmlSignatureScope.getSignerData().getDigestAlgoAndValue()));
-			signersDocumentType.setSignersDocumentRef(getVOReference(xmlSignatureScope.getSignerData().getId()));
-			signatureValidationReport.getSignersDocument().add(signersDocumentType);
+	private SignersDocumentType getSignersDocument(SignatureWrapper sigWrapper) {
+		List<SignerDataWrapper> signerDocuments = diagnosticData.getSignerDocuments(sigWrapper.getId());
+		if (Utils.isCollectionEmpty(signerDocuments)) {
+			return null;
 		}
+
+		SignersDocumentType signersDocumentType = objectFactory.createSignersDocumentType();
+		if (Utils.collectionSize(signerDocuments) == 1) {
+			SignerDataWrapper signerDocument = signerDocuments.get(0);
+			DigestAlgAndValueType digestAlgAndValueType = getDigestAlgAndValueType(signerDocument.getDigestAlgoAndValue());
+			if (digestAlgAndValueType != null) {
+				signersDocumentType.getContent().add(objectFactory.createSignersDocumentTypeDigestAlgAndValue(digestAlgAndValueType));
+			}
+		}
+
+		final List<ValidationObjectType> validationObjectList = new ArrayList<>();
+
+		List<XmlSignatureScope> signatureScopes = sigWrapper.getSignatureScopes();
+		List<SignerDataWrapper> signerDataList = signatureScopes.stream().map(s -> new SignerDataWrapper(s.getSignerData())).collect(Collectors.toList());
+		for (SignerDataWrapper signerDataWrapper : signerDataList) {
+			validationObjectList.add(getSignerDataValidationObject(signerDataWrapper));
+		}
+
+		signersDocumentType.getContent().add(objectFactory.createSignersDocumentTypeSignersDocumentRepresentation(
+				getVOReference(validationObjectList)));
+
+		return signersDocumentType;
 	}
 
 	private SignatureAttributesType getSignatureAttributes(SignatureWrapper sigWrapper) {
@@ -838,37 +916,52 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addAttrAuthoritiesCertValues(SignatureAttributesType sigAttributes, FoundCertificatesProxy foundCertificates) {
-		List<String> certIds = new ArrayList<>();
-		certIds.addAll(getRelatedCertsIds(foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)));
-		certIds.addAll(getOrphanCertsIds(foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)));
-		if (Utils.isCollectionNotEmpty(certIds)) {
+		List<ValidationObjectType> validationObjectTypes = new ArrayList<>();
+		for (CertificateWrapper certificateWrapper : foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
+			validationObjectTypes.add(getCertificateValidationObject(certificateWrapper));
+		}
+		for (OrphanCertificateTokenWrapper orphanCertificate : foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
+			validationObjectTypes.add(getOrphanCertificateValidationObject(orphanCertificate));
+		}
+		if (Utils.isCollectionNotEmpty(validationObjectTypes)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeAttrAuthoritiesCertValues(buildTokenList(certIds)));
+					.add(objectFactory.createSignatureAttributesTypeAttrAuthoritiesCertValues(buildTokenList(validationObjectTypes)));
 		}
 	}
 
 	private void addTimeStampValidationData(SignatureAttributesType sigAttributes, 
 			FoundCertificatesProxy foundCertificates, FoundRevocationsProxy foundRevocations) {
-		List<String> tokenIds = new ArrayList<>();
-		tokenIds.addAll(getRelatedCertsIds(foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA)));
-		tokenIds.addAll(getOrphanCertsIds(foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA)));
+		List<ValidationObjectType> validationObjectTypes = new ArrayList<>();
+		for (CertificateWrapper certificateWrapper : foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA)) {
+			validationObjectTypes.add(getCertificateValidationObject(certificateWrapper));
+		}
+		for (OrphanCertificateTokenWrapper orphanCertificate : foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA)) {
+			validationObjectTypes.add(getOrphanCertificateValidationObject(orphanCertificate));
+		}
+		for (RevocationWrapper revocationWrapper : foundRevocations.getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA)) {
+			validationObjectTypes.add(getRevocationValidationObject(revocationWrapper));
+		}
+		for (OrphanRevocationTokenWrapper orphanRevocation : foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA)) {
+			validationObjectTypes.add(getOrphanRevocationValidationObject(orphanRevocation));
+		}
 		
-		tokenIds.addAll(getRelatedRevocationIds(foundRevocations.getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA)));
-		tokenIds.addAll(getOrphanRevocationIds(foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA)));
-		
-		if (Utils.isCollectionNotEmpty(tokenIds)) {
+		if (Utils.isCollectionNotEmpty(validationObjectTypes)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeTimeStampValidationData(buildTokenList(tokenIds)));
+					.add(objectFactory.createSignatureAttributesTypeTimeStampValidationData(buildTokenList(validationObjectTypes)));
 		}
 	}
 
 	private void addCertificateValues(SignatureAttributesType sigAttributes, FoundCertificatesProxy foundCertificates) {
-		List<String> certIds = new ArrayList<>();
-		certIds.addAll(getRelatedCertsIds(foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)));
-		certIds.addAll(getOrphanCertsIds(foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)));
-		if (Utils.isCollectionNotEmpty(certIds)) {
+		List<ValidationObjectType> validationObjectTypes = new ArrayList<>();
+		for (CertificateWrapper certificateWrapper : foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
+			validationObjectTypes.add(getCertificateValidationObject(certificateWrapper));
+		}
+		for (OrphanCertificateTokenWrapper orphanCertificate : foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
+			validationObjectTypes.add(getOrphanCertificateValidationObject(orphanCertificate));
+		}
+		if (Utils.isCollectionNotEmpty(validationObjectTypes)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildTokenList(certIds)));
+					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildTokenList(validationObjectTypes)));
 		}
 	}
 	
@@ -922,21 +1015,19 @@ public class ETSIValidationReportBuilder {
 		}
 	}
 
-	private AttributeBaseType buildTokenList(List<String> ids) {
+	private AttributeBaseType buildTokenList(List<ValidationObjectType> validationObjects) {
 		AttributeBaseType attributeBaseType = objectFactory.createAttributeBaseType();
-		for (String id : ids) {
-			attributeBaseType.getAttributeObject().add(getVOReference(id));
-		}
+		attributeBaseType.getAttributeObject().add(getVOReference(validationObjects));
 		return attributeBaseType;
 	}
 
 	private SACertIDListType buildCertIDListType(List<RelatedCertificateWrapper> relatedCerts, List<OrphanCertificateWrapper> orphanCerts) {
 		SACertIDListType certIdList = objectFactory.createSACertIDListType();
-		List<String> validationObjectIds = new ArrayList<>();
+		List<ValidationObjectType> validationObjects = new ArrayList<>();
 		
 		if (Utils.isCollectionNotEmpty(relatedCerts)) {
 			for (CertificateWrapper cert : relatedCerts) {
-				validationObjectIds.add(cert.getId());
+				validationObjects.add(getCertificateValidationObject(cert));
 			}
 		}
 		
@@ -955,15 +1046,15 @@ public class ETSIValidationReportBuilder {
 							certIdList.getCertID().add(buildCertIDType(certRef.getDigestAlgoAndValue(), certRef.getIssuerSerial()));
 						}
 					} else {
-						validationObjectIds.add(orphanCert.getId());
+						validationObjects.add(getOrphanCertificateValidationObject(orphanCert));
 					}
 				}
 				
 			}
 		}
 		
-		if (Utils.isCollectionNotEmpty(validationObjectIds)) {
-			certIdList.getAttributeObject().add(getVOReference(validationObjectIds));
+		if (Utils.isCollectionNotEmpty(validationObjects)) {
+			certIdList.getAttributeObject().add(getVOReference(validationObjects));
 		}
 		
 		return certIdList;
@@ -1001,11 +1092,11 @@ public class ETSIValidationReportBuilder {
 	
 	private SARevIDListType buildRevIDListType(List<RelatedRevocationWrapper> relatedRevs, List<OrphanRevocationWrapper> orphanRevs) {
 		SARevIDListType revIDListType = objectFactory.createSARevIDListType();
-		List<String> validationObjectIds = new ArrayList<>();
+		List<ValidationObjectType> validationObjects = new ArrayList<>();
 		
 		if (Utils.isCollectionNotEmpty(relatedRevs)) {
 			for (RevocationWrapper revocation : relatedRevs) {
-				validationObjectIds.add(revocation.getId());
+				validationObjects.add(getRevocationValidationObject(revocation));
 			}
 		}
 		
@@ -1026,15 +1117,15 @@ public class ETSIValidationReportBuilder {
 							}
 						}
 					} else {
-						validationObjectIds.add(orphanRev.getId());
+						validationObjects.add(getOrphanRevocationValidationObject(orphanRev));
 					}
 				}
 				
 			}
 		}
 
-		if (Utils.isCollectionNotEmpty(validationObjectIds)) {
-			revIDListType.getAttributeObject().add(getVOReference(validationObjectIds));
+		if (Utils.isCollectionNotEmpty(validationObjects)) {
+			revIDListType.getAttributeObject().add(getVOReference(validationObjects));
 		}
 		
 		return revIDListType;
@@ -1068,22 +1159,30 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private void addRevocationValues(SignatureAttributesType sigAttributes, FoundRevocationsProxy foundRevocations) {
-		List<String> revocationIds = new ArrayList<>();
-		revocationIds.addAll(getRelatedRevocationIds(foundRevocations.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)));
-		revocationIds.addAll(getOrphanRevocationIds(foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)));
-		if (Utils.isCollectionNotEmpty(revocationIds)) {
+		List<ValidationObjectType> validationObjects = new ArrayList<>();
+		for (RevocationWrapper revocationWrapper : foundRevocations.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
+			validationObjects.add(getRevocationValidationObject(revocationWrapper));
+		}
+		for (OrphanRevocationTokenWrapper orphanRevocation : foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
+			validationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
+		}
+		if (Utils.isCollectionNotEmpty(validationObjects)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeRevocationValues(buildTokenList(revocationIds)));
+					.add(objectFactory.createSignatureAttributesTypeRevocationValues(buildTokenList(validationObjects)));
 		}
 	}
 	
 	private void addAttributeRevocationValues(SignatureAttributesType sigAttributes, FoundRevocationsProxy foundRevocations) {
-		List<String> revocationIds = new ArrayList<>();
-		revocationIds.addAll(getRelatedRevocationIds(foundRevocations.getRelatedRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)));
-		revocationIds.addAll(getOrphanRevocationIds(foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)));
-		if (Utils.isCollectionNotEmpty(revocationIds)) {
+		List<ValidationObjectType> validationObjects = new ArrayList<>();
+		for (RevocationWrapper revocationWrapper : foundRevocations.getRelatedRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
+			validationObjects.add(getRevocationValidationObject(revocationWrapper));
+		}
+		for (OrphanRevocationTokenWrapper orphanRevocation : foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
+			validationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
+		}
+		if (Utils.isCollectionNotEmpty(validationObjects)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeAttributeRevocationValues(buildTokenList(revocationIds)));
+					.add(objectFactory.createSignatureAttributesTypeAttributeRevocationValues(buildTokenList(validationObjects)));
 		}
 	}
 
@@ -1115,7 +1214,7 @@ public class ETSIValidationReportBuilder {
 	private SATimestampType getSATimestampType(TimestampWrapper timestampWrapper) {
 		SATimestampType timestamp = objectFactory.createSATimestampType();
 		timestamp.setTimeStampValue(timestampWrapper.getProductionTime());
-		timestamp.getAttributeObject().add(getVOReference(timestampWrapper.getId()));
+		timestamp.getAttributeObject().add(getVOReference(getTimestampValidationObject(timestampWrapper)));
 		return timestamp;
 	}
 
@@ -1202,7 +1301,7 @@ public class ETSIValidationReportBuilder {
 		Set<SignatureWrapper> counterSignatures = diagnosticData.getAllCounterSignaturesForMasterSignature(sigWrapper);
 		for (SignatureWrapper counterSignature : counterSignatures) {
 			SACounterSignatureType saCounterSignatureType = objectFactory.createSACounterSignatureType();
-			saCounterSignatureType.getAttributeObject().add(getVOReference(counterSignature.getId()));
+			saCounterSignatureType.getAttributeObject().add(getVOReference(getSignatureIdentifier(counterSignature)));
 			SignatureReferenceType signatureReference = getSignatureReference(counterSignature);
 			saCounterSignatureType.setCounterSignature(signatureReference);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(
@@ -1330,52 +1429,80 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addDSS(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		
-		List<String> certIds = getRelatedCertsIds(sigWrapper.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY));
-		certIds.addAll(getOrphanCertsIds(sigWrapper.foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY)));
-		
-		List<String> crlIds = getRelatedRevocationIds(sigWrapper.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.DSS_DICTIONARY));
-		crlIds.addAll(getOrphanRevocationIds(sigWrapper.foundRevocations().getOrphanRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.DSS_DICTIONARY)));
-		
-		List<String> ocspIds = getRelatedRevocationIds(sigWrapper.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY));
-		ocspIds.addAll(getOrphanRevocationIds(sigWrapper.foundRevocations().getOrphanRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY)));
-		
-		if (Utils.isCollectionNotEmpty(certIds) || Utils.isCollectionNotEmpty(crlIds) || Utils.isCollectionNotEmpty(ocspIds)) {
+		List<ValidationObjectType> certificateValidationObjects = new ArrayList<>();
+		for (CertificateWrapper certificateWrapper : sigWrapper.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY)) {
+			certificateValidationObjects.add(getCertificateValidationObject(certificateWrapper));
+		}
+		for (OrphanCertificateTokenWrapper orphanCertificate : sigWrapper.foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY)) {
+			certificateValidationObjects.add(getOrphanCertificateValidationObject(orphanCertificate));
+		}
+
+		List<ValidationObjectType> crlValidationObjects = new ArrayList<>();
+		for (RevocationWrapper revocationWrapper : sigWrapper.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.DSS_DICTIONARY)) {
+			crlValidationObjects.add(getRevocationValidationObject(revocationWrapper));
+		}
+		for (OrphanRevocationTokenWrapper orphanRevocation : sigWrapper.foundRevocations().getOrphanRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.DSS_DICTIONARY)) {
+			crlValidationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
+		}
+
+		List<ValidationObjectType> ocspValidationObjects = new ArrayList<>();
+		for (RevocationWrapper revocationWrapper : sigWrapper.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY)) {
+			ocspValidationObjects.add(getRevocationValidationObject(revocationWrapper));
+		}
+		for (OrphanRevocationTokenWrapper orphanRevocation : sigWrapper.foundRevocations().getOrphanRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY)) {
+			ocspValidationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
+		}
+
+		if (Utils.isCollectionNotEmpty(certificateValidationObjects) || Utils.isCollectionNotEmpty(crlValidationObjects) || Utils.isCollectionNotEmpty(ocspValidationObjects)) {
 			SADSSType dssType = objectFactory.createSADSSType();
-			if (Utils.isCollectionNotEmpty(certIds)) {
-				dssType.setCerts(getVOReference(certIds));
+			if (Utils.isCollectionNotEmpty(certificateValidationObjects)) {
+				dssType.setCerts(getVOReference(certificateValidationObjects));
 			}
-			if (Utils.isCollectionNotEmpty(crlIds)) {
-				dssType.setCRLs(getVOReference(crlIds));
+			if (Utils.isCollectionNotEmpty(crlValidationObjects)) {
+				dssType.setCRLs(getVOReference(crlValidationObjects));
 			}
-			if (Utils.isCollectionNotEmpty(ocspIds)) {
-				dssType.setOCSPs(getVOReference(ocspIds));
+			if (Utils.isCollectionNotEmpty(ocspValidationObjects)) {
+				dssType.setOCSPs(getVOReference(ocspValidationObjects));
 			}
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeDSS(dssType));
 		}
 	}
 
 	private void addVRI(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		
-		List<String> certIds = getRelatedCertsIds(sigWrapper.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY));
-		certIds.addAll(getOrphanCertsIds(sigWrapper.foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY)));
-		
-		List<String> crlIds = getRelatedRevocationIds(sigWrapper.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.VRI_DICTIONARY));
-		crlIds.addAll(getOrphanRevocationIds(sigWrapper.foundRevocations().getOrphanRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.VRI_DICTIONARY)));
-		
-		List<String> ocspIds = getRelatedRevocationIds(sigWrapper.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.VRI_DICTIONARY));
-		ocspIds.addAll(getOrphanRevocationIds(sigWrapper.foundRevocations().getOrphanRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.VRI_DICTIONARY)));
+		List<ValidationObjectType> certificateValidationObjects = new ArrayList<>();
+		for (CertificateWrapper certificateWrapper : sigWrapper.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY)) {
+			certificateValidationObjects.add(getCertificateValidationObject(certificateWrapper));
+		}
+		for (OrphanCertificateTokenWrapper orphanCertificate : sigWrapper.foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY)) {
+			certificateValidationObjects.add(getOrphanCertificateValidationObject(orphanCertificate));
+		}
 
-		if (Utils.isCollectionNotEmpty(certIds) || Utils.isCollectionNotEmpty(crlIds) || Utils.isCollectionNotEmpty(ocspIds)) {
+		List<ValidationObjectType> crlValidationObjects = new ArrayList<>();
+		for (RevocationWrapper revocationWrapper : sigWrapper.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.VRI_DICTIONARY)) {
+			crlValidationObjects.add(getRevocationValidationObject(revocationWrapper));
+		}
+		for (OrphanRevocationTokenWrapper orphanRevocation : sigWrapper.foundRevocations().getOrphanRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.VRI_DICTIONARY)) {
+			crlValidationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
+		}
+
+		List<ValidationObjectType> ocspValidationObjects = new ArrayList<>();
+		for (RevocationWrapper revocationWrapper : sigWrapper.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.VRI_DICTIONARY)) {
+			ocspValidationObjects.add(getRevocationValidationObject(revocationWrapper));
+		}
+		for (OrphanRevocationTokenWrapper orphanRevocation : sigWrapper.foundRevocations().getOrphanRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.VRI_DICTIONARY)) {
+			ocspValidationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
+		}
+
+		if (Utils.isCollectionNotEmpty(certificateValidationObjects) || Utils.isCollectionNotEmpty(crlValidationObjects) || Utils.isCollectionNotEmpty(ocspValidationObjects)) {
 			SAVRIType vriType = objectFactory.createSAVRIType();
-			if (Utils.isCollectionNotEmpty(certIds)) {
-				vriType.setCerts(getVOReference(certIds));
+			if (Utils.isCollectionNotEmpty(certificateValidationObjects)) {
+				vriType.setCerts(getVOReference(certificateValidationObjects));
 			}
-			if (Utils.isCollectionNotEmpty(crlIds)) {
-				vriType.setCRLs(getVOReference(crlIds));
+			if (Utils.isCollectionNotEmpty(crlValidationObjects)) {
+				vriType.setCRLs(getVOReference(crlValidationObjects));
 			}
-			if (Utils.isCollectionNotEmpty(ocspIds)) {
-				vriType.setOCSPs(getVOReference(ocspIds));
+			if (Utils.isCollectionNotEmpty(ocspValidationObjects)) {
+				vriType.setOCSPs(getVOReference(ocspValidationObjects));
 			}
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeVRI(vriType));
 		}

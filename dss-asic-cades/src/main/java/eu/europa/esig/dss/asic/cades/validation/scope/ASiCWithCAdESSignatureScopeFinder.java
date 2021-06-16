@@ -51,19 +51,23 @@ public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder
         }
         
         if (isASiCSArchive(cadesSignature, originalDocument)) {
-			result.add(new ContainerSignatureScope(originalDocument.getName(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument)));
+			ContainerSignatureScope containerSignatureScope = new ContainerSignatureScope(
+					originalDocument.getName(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument));
+			result.add(containerSignatureScope);
 			for (DSSDocument archivedDocument : cadesSignature.getContainerContents()) {
-				result.add(new ContainerContentSignatureScope(DSSUtils.decodeURI(archivedDocument.getName()), getDigest(archivedDocument)));
+				containerSignatureScope.addChildSignatureScope(new ContainerContentSignatureScope(DSSUtils.decodeURI(archivedDocument.getName()), getDigest(archivedDocument)));
 			}
 			
         } else if (isASiCEArchive(cadesSignature)) {
 			ManifestFile manifestFile = cadesSignature.getManifestFile();
-			result.add(new ManifestSignatureScope(manifestFile.getFilename(), 
-					new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(manifestFile.getDigestBase64String(getDefaultDigestAlgorithm())))) );
+			ManifestSignatureScope manifestSignatureScope = new ManifestSignatureScope(
+					manifestFile.getFilename(), new Digest(getDefaultDigestAlgorithm(),
+					Utils.fromBase64(manifestFile.getDigestBase64String(getDefaultDigestAlgorithm()))) );
+			result.add(manifestSignatureScope);
 			
         	for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
         		if (manifestEntry.isIntact()) {
-					result.add(new FullSignatureScope(manifestEntry.getFileName(), manifestEntry.getDigest()));
+					manifestSignatureScope.addChildSignatureScope(new FullSignatureScope(manifestEntry.getFileName(), manifestEntry.getDigest()));
         		}
         	}
         	

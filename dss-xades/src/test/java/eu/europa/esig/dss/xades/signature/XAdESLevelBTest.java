@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -41,6 +33,19 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class XAdESLevelBTest extends AbstractXAdESTestSignature {
 
@@ -85,6 +90,19 @@ public class XAdESLevelBTest extends AbstractXAdESTestSignature {
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, getSignatureParameters());
 		assertArrayEquals(DSSUtils.digest(dtbsr.getDigestMethod(), dataToSign.getBytes()), dtbsr.getDigestValue());
+	}
+
+	@Override
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		super.validateETSISignersDocument(signersDocument);
+
+		DigestAlgAndValueType digestAlgoAndValue = getDigestAlgoAndValue(signersDocument);
+		assertNotNull(digestAlgoAndValue);
+		assertNotNull(digestAlgoAndValue.getDigestMethod());
+		assertNotNull(digestAlgoAndValue.getDigestValue());
+
+		List<ValidationObjectType> validationObjects = getValidationObjects(signersDocument);
+		assertEquals(1, validationObjects.size());
 	}
 
 	@Override

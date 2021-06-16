@@ -75,7 +75,7 @@ public class JAdESWithBrokenDetachedCounterSignatureTest extends AbstractJAdESTe
     }
 
     @Override
-    protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
+    protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
         // skip
     }
 

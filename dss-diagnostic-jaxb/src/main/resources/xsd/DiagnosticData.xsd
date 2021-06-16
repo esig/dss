@@ -1078,6 +1078,7 @@
 					<xs:element name="ReferencedName" type="xs:string" minOccurs="0" />
 					<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
 				</xs:sequence>
+				<xs:attribute name="Parent" type="xs:IDREF" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

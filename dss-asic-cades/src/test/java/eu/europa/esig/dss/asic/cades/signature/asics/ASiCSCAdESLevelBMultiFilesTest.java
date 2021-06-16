@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -45,21 +37,32 @@ import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithCAdESService service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
-	private List<DSSDocument> documentToSigns = new ArrayList<>();
+	private List<DSSDocument> documentsToSign = new ArrayList<>();
 
 	@BeforeEach
 	public void init() throws Exception {
 		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
-		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
-		documentToSigns.add(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
+		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
+		documentsToSign.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		documentsToSign.add(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -67,7 +70,7 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSigns, signatureParameters);
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentsToSign, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 	}
 
@@ -88,6 +91,19 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 		}
 		assertEquals(1, archive);
 		assertEquals(3, archiveContent);
+	}
+
+	@Override
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		super.validateETSISignersDocument(signersDocument);
+
+		DigestAlgAndValueType digestAlgoAndValue = getDigestAlgoAndValue(signersDocument);
+		assertNotNull(digestAlgoAndValue);
+		assertNotNull(digestAlgoAndValue.getDigestMethod());
+		assertNotNull(digestAlgoAndValue.getDigestValue());
+
+		List<ValidationObjectType> validationObjects = getValidationObjects(signersDocument);
+		assertEquals(4, validationObjects.size());
 	}
 
 	@Override
@@ -112,7 +128,7 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 
 	@Override
 	protected List<DSSDocument> getDocumentsToSign() {
-		return documentToSigns;
+		return documentsToSign;
 	}
 
 	@Override

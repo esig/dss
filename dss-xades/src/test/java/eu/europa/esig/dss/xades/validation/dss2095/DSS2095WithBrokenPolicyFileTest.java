@@ -136,8 +136,8 @@ public class DSS2095WithBrokenPolicyFileTest extends AbstractXAdESTestValidation
 	}
 	
 	@Override
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
-		assertEquals(0, signersDocuments.size());
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		assertNull(signersDocument);
 	}
 
 }
