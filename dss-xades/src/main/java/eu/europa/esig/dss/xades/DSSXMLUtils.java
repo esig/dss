@@ -125,6 +125,10 @@ public final class DSSXMLUtils {
 	 */
 	public static final String DEFAULT_XMLDSIG_C14N_METHOD = CanonicalizationMethod.INCLUSIVE;
 
+	/** The SPDocDigestAsInSpecification transform algorithm URI for a custom SignaturePolicy processing */
+	public static final String SP_DOC_DIGEST_AS_IN_SPECIFICATION_ALGORITHM_URI =
+			"http://uri.etsi.org/01903/v1.3.2/SignaturePolicy/SPDocDigestAsInSpecification";
+
 	static {
 		SantuarioInitializer.init();
 

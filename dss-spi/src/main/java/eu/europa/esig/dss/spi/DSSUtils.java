@@ -84,6 +84,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -1283,6 +1284,41 @@ public final class DSSUtils {
 		}
 		newSignatureValue.setValue(signatureValueBinaries);
 		return newSignatureValue;
+	}
+
+	/**
+	 * This method creates a user-friendly representation of SPUserNotice signature policy qualifier
+	 *
+	 * @param organization {@link String}
+	 * @param noticeNumbers a list of {@link Number}s
+	 * @param explicitText {@link String}
+	 * @return {@link String}
+	 */
+	public static <N extends Number> String getSPUserNoticeString(String organization, List<N> noticeNumbers, String explicitText) {
+		StringBuilder spUserNoticeStringBuilder = new StringBuilder();
+		if (Utils.isStringNotEmpty(organization)) {
+			spUserNoticeStringBuilder.append(organization);
+		}
+		if (Utils.isCollectionNotEmpty(noticeNumbers)) {
+			if (spUserNoticeStringBuilder.length() != 0) {
+				spUserNoticeStringBuilder.append("; ");
+			}
+			Iterator<N> iterator = noticeNumbers.iterator();
+			while (iterator.hasNext()) {
+				N number = iterator.next();
+				spUserNoticeStringBuilder.append(number);
+				if (iterator.hasNext()) {
+					spUserNoticeStringBuilder.append(", ");
+				}
+			}
+		}
+		if (Utils.isStringNotEmpty(explicitText)) {
+			if (spUserNoticeStringBuilder.length() != 0) {
+				spUserNoticeStringBuilder.append("; ");
+			}
+			spUserNoticeStringBuilder.append(explicitText);
+		}
+		return spUserNoticeStringBuilder.toString();
 	}
 
 }

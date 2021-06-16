@@ -26,6 +26,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
+import eu.europa.esig.dss.validation.policy.NonASN1SignaturePolicyValidator;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,5 +90,12 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 	 * @return {@link JWSJsonSerializationObject}
 	 */
 	protected abstract JWSJsonSerializationObject buildJwsJsonSerializationObject();
+
+	@Override
+	public SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
+		DefaultSignaturePolicyValidatorLoader signaturePolicyValidatorLoader = new DefaultSignaturePolicyValidatorLoader();
+		signaturePolicyValidatorLoader.setDefaultSignaturePolicyValidator(new NonASN1SignaturePolicyValidator());
+		return signaturePolicyValidatorLoader;
+	}
 
 }

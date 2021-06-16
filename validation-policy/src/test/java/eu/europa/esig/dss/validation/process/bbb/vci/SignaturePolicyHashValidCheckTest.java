@@ -20,29 +20,31 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.vci;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyHashValidCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SignaturePolicyHashValidCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void signaturePolicyHashValidCheck() throws Exception {
 		XmlPolicy xmlPolicy = new XmlPolicy();
-		xmlPolicy.setStatus(true);
+		XmlPolicyDigestAlgoAndValue xmlPolicyDigestAlgoAndValue = new XmlPolicyDigestAlgoAndValue();
+		xmlPolicyDigestAlgoAndValue.setMatch(true);
+		xmlPolicy.setDigestAlgoAndValue(xmlPolicyDigestAlgoAndValue);
 
 		XmlSignature sig = new XmlSignature();
 		sig.setPolicy(xmlPolicy);
@@ -63,7 +65,9 @@ public class SignaturePolicyHashValidCheckTest extends AbstractTestCheck {
 	@Test
 	public void invalidHashCheck() throws Exception {
 		XmlPolicy xmlPolicy = new XmlPolicy();
-		xmlPolicy.setStatus(false);
+		XmlPolicyDigestAlgoAndValue xmlPolicyDigestAlgoAndValue = new XmlPolicyDigestAlgoAndValue();
+		xmlPolicyDigestAlgoAndValue.setMatch(false);
+		xmlPolicy.setDigestAlgoAndValue(xmlPolicyDigestAlgoAndValue);
 
 		XmlSignature sig = new XmlSignature();
 		sig.setPolicy(xmlPolicy);

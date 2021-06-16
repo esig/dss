@@ -96,7 +96,7 @@ public class ASiCSXAdESSignaturePolicyStoreCreationTest extends AbstractASiCSXAd
 
 		assertTrue(signature.isPolicyIdentified());
 		assertTrue(signature.isPolicyPresent());
-		assertTrue(signature.isPolicyStatus());
+		assertTrue(signature.isPolicyDigestValid());
 		assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyId());
 		assertTrue(signature.isPolicyDigestAlgorithmsEqual());
 	}

@@ -440,12 +440,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public SignaturePolicy getSignaturePolicy() {
-		if (signaturePolicy != null) {
-			return signaturePolicy;
-		}
-		
+	protected SignaturePolicy buildSignaturePolicy() {
 		Map<String, Object> sigPolicy = (Map<String, Object>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PID);
 		if (Utils.isMapNotEmpty(sigPolicy)) {
 			Map<String, Object> policyId = (Map<String, Object>) sigPolicy.get(JAdESHeaderParameterNames.ID);
@@ -459,18 +454,76 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			List<Object> qualifiers = (List<Object>) sigPolicy.get(JAdESHeaderParameterNames.SIG_PQUALS);
 			if (Utils.isCollectionNotEmpty(qualifiers)) {
 				signaturePolicy.setUrl(getSPUri(qualifiers));
+				signaturePolicy.setNotice(getSPUserNotice(qualifiers));
+				signaturePolicy.setDocSpecification(getSPDSpec(qualifiers));
 			}
+
+			Boolean digPSp = (Boolean) sigPolicy.get(JAdESHeaderParameterNames.DIG_PSP);
+			if (digPSp != null) {
+				signaturePolicy.setHashAsInTechnicalSpecification(digPSp);
+			}
+
 		}
 		return signaturePolicy;
 	}
 
-	@SuppressWarnings("unchecked")
 	private String getSPUri(List<Object> qualifiers) {
 		for (Object qualifier : qualifiers) {
-			Map<String, Object> qualiferMap = (Map<String, Object>) qualifier;
-			String spUri = (String)qualiferMap.get(JAdESHeaderParameterNames.SP_URI);
+			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
+			String spUri = (String) qualifierMap.get(JAdESHeaderParameterNames.SP_URI);
 			if (Utils.isStringNotEmpty(spUri)) {
 				return spUri;
+			}
+		}
+		return null;
+	}
+
+	private String getSPUserNotice(List<Object> qualifiers) {
+		for (Object qualifier : qualifiers) {
+			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
+			Map<?, ?> spUserNotice = (Map<?, ?>) qualifierMap.get(JAdESHeaderParameterNames.SP_USER_NOTICE);
+			if (Utils.isMapNotEmpty(spUserNotice)) {
+				try {
+					String organizationString = null;
+					List<Number> noticeNumbersList = null;
+					String explicitTextString = null;
+
+					final Map<?, ?> noticeRef = (Map<?, ?>) spUserNotice.get(JAdESHeaderParameterNames.NOTICE_REF);
+					if (Utils.isMapNotEmpty(noticeRef)) {
+						final String organization = (String) noticeRef.get(JAdESHeaderParameterNames.ORGANTIZATION);
+						if (Utils.isStringNotBlank(organization)) {
+							organizationString = organization;
+						}
+
+						final List<Number> noticeNumbers = (List<Number>) noticeRef.get(JAdESHeaderParameterNames.NOTICE_NUMBERS);
+						if (Utils.isCollectionNotEmpty(noticeNumbers)) {
+							noticeNumbersList = noticeNumbers;
+						}
+					}
+					final String explTest = (String) spUserNotice.get(JAdESHeaderParameterNames.EXPL_TEXT);
+					if (Utils.isStringNotBlank(explTest)) {
+						explicitTextString = explTest;
+					}
+					return DSSUtils.getSPUserNoticeString(organizationString, noticeNumbersList, explicitTextString);
+
+				} catch (Exception e) {
+					LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
+					return null;
+				}
+			}
+		}
+		return null;
+	}
+
+	private String getSPDSpec(List<Object> qualifiers) {
+		for (Object qualifier : qualifiers) {
+			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
+			Map<?, ?> spDSpec = (Map<?, ?>) qualifierMap.get(JAdESHeaderParameterNames.SP_DSPEC);
+			if (Utils.isMapNotEmpty(spDSpec)) {
+				String id = (String) spDSpec.get(JAdESHeaderParameterNames.ID);
+				if (Utils.isStringNotEmpty(id)) {
+					return DSSUtils.getObjectIdentifier(id);
+				}
 			}
 		}
 		return null;

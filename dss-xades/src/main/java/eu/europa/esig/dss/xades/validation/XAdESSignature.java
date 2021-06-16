@@ -55,7 +55,6 @@ import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -391,11 +390,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public SignaturePolicy getSignaturePolicy() {
-		if (signaturePolicy != null) {
-			return signaturePolicy;
-		}
-		
+	public XAdESSignaturePolicy getSignaturePolicy() {
+		return (XAdESSignaturePolicy) super.getSignaturePolicy();
+	}
+
+	@Override
+	protected XAdESSignaturePolicy buildSignaturePolicy() {
+		XAdESSignaturePolicy xadesSignaturePolicy = null;
+
 		final Element policyIdentifier = DomUtils.getElement(signatureElement, xadesPaths.getSignaturePolicyIdentifierPath());
 		if (policyIdentifier != null) {
 			// There is a policy
@@ -406,49 +408,106 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				String policyIdString = policyId.getTextContent();
 				policyIdString = DSSUtils.getObjectIdentifier(policyIdString);
 				if (!DSSUtils.isUrnOid(policyIdString)) {
-					policyUrlString = DSSUtils.getObjectIdentifier(policyIdString);
+					policyUrlString = policyIdString;
 				}
-				
-				signaturePolicy = new SignaturePolicy(policyIdString);
+
+				xadesSignaturePolicy = new XAdESSignaturePolicy(policyIdString);
 
 				final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDigestAlgAndValue()));
-				signaturePolicy.setDigest(digest);
+				xadesSignaturePolicy.setDigest(digest);
 
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPURI());
 				if (policyUrl != null) {
 					policyUrlString = policyUrl.getTextContent();
 					policyUrlString = Utils.trim(policyUrlString);
 				}
+				xadesSignaturePolicy.setUrl(policyUrlString);
+
+				final Element spUserNotice = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPUserNotice());
+				if (spUserNotice != null) {
+					xadesSignaturePolicy.setNotice(buildSPUserNoticeString(spUserNotice));
+				}
+
+				final Element spDocSpecification = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPDocSpecificationIdentifier());
+				if (spDocSpecification != null) {
+					String spDocSpecificationString = spDocSpecification.getTextContent();
+					xadesSignaturePolicy.setDocSpecification(DSSUtils.getObjectIdentifier(spDocSpecificationString));
+				}
 
 				final Element policyDescription = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDescription());
 				if (policyDescription != null && Utils.isStringNotEmpty(policyDescription.getTextContent())) {
-					signaturePolicy.setDescription(policyDescription.getTextContent());
-				}
-				Element docRefsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDocumentationReferences());
-				if (docRefsNode != null) {
-					signaturePolicy.setDocumentationReferences(getDocumentationReferences(docRefsNode));
-				}
-				
-				Element transformsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyTransforms());
-				if (transformsNode != null) {
-					signaturePolicy.setTransforms(transformsNode);
-					
-					TransformsDescriptionBuilder transformsDescriptionBuilder = new TransformsDescriptionBuilder(transformsNode);
-					signaturePolicy.setTransformsDescription(transformsDescriptionBuilder.build());
+					xadesSignaturePolicy.setDescription(policyDescription.getTextContent());
 				}
 
-				signaturePolicy.setUrl(policyUrlString);
-				
+				final Element docRefsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDocumentationReferences());
+				if (docRefsNode != null) {
+					xadesSignaturePolicy.setDocumentationReferences(getDocumentationReferences(docRefsNode));
+				}
+
+				final Element transformsNode = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyTransforms());
+				if (transformsNode != null) {
+					xadesSignaturePolicy.setTransforms(transformsNode);
+					xadesSignaturePolicy.setHashAsInTechnicalSpecification(isHashComputationAsInPolicySpecification(transformsNode));
+				}
+
 			} else {
 				// Implicit policy
 				final Element signaturePolicyImplied = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyImplied());
 				if (signaturePolicyImplied != null) {
-					signaturePolicy = new SignaturePolicy();
+					xadesSignaturePolicy = new XAdESSignaturePolicy();
 				}
 				
 			}
 		}
-		return signaturePolicy;
+		return xadesSignaturePolicy;
+	}
+
+	private String buildSPUserNoticeString(Element spUserNoticeElement) {
+		try {
+			String organizationString = null;
+			List<Integer> noticeNumbersList = null;
+			String explicitTextString = null;
+
+			final Element organization = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeNoticeRefOrganization());
+			if (organization != null) {
+				organizationString = organization.getTextContent();
+			}
+			final Element noticeNumbers = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeNoticeRefNoticeNumbers());
+			if (noticeNumbers != null && noticeNumbers.hasChildNodes()) {
+				noticeNumbersList = new ArrayList<>();
+				NodeList childNodes = noticeNumbers.getChildNodes();
+				for (int ii = 0; ii < childNodes.getLength(); ii++) {
+					Node child = childNodes.item(ii);
+					if (Node.ELEMENT_NODE == child.getNodeType() && XAdES132Element.INT.isSameTagName(child.getLocalName())) {
+						noticeNumbersList.add(Integer.valueOf(child.getTextContent()));
+					}
+				}
+			}
+			final Element explicitText = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeExplicitText());
+			if (explicitText != null) {
+				explicitTextString = explicitText.getTextContent();
+			}
+
+			return DSSUtils.getSPUserNoticeString(organizationString, noticeNumbersList, explicitTextString);
+
+		} catch (Exception e) {
+			LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
+			return null;
+		}
+	}
+
+	private boolean isHashComputationAsInPolicySpecification(Element transforms) {
+		if (transforms != null && transforms.hasChildNodes()) {
+			NodeList transformList = DomUtils.getNodeList(transforms, XMLDSigPaths.TRANSFORM_PATH);
+			if (transformList.getLength() == 1) {
+				Node transform = transformList.item(0);
+				String algorithm = DomUtils.getValue(transform, "@Algorithm");
+				if (DSSXMLUtils.SP_DOC_DIGEST_AS_IN_SPECIFICATION_ALGORITHM_URI.equals(algorithm)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override

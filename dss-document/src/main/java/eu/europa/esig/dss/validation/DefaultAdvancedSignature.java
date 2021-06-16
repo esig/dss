@@ -535,6 +535,21 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return getTimestampSource().getAllTimestamps();
 	}
 
+	@Override
+	public SignaturePolicy getSignaturePolicy() {
+		if (signaturePolicy == null) {
+			signaturePolicy = buildSignaturePolicy();
+		}
+		return signaturePolicy;
+	}
+
+	/**
+	 * This method extracts a signature policy from a signature and builds the object
+	 *
+	 * @return {@link SignaturePolicy}
+	 */
+	protected abstract SignaturePolicy buildSignaturePolicy();
+
 	/**
 	 * Returns a cached instance of the {@code BaselineRequirementsChecker}
 	 *

@@ -24,6 +24,8 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.SAMLAssertionNamespace;
@@ -32,6 +34,7 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
 import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -180,6 +183,13 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 */
 	public Document getRootElement() {
 		return rootElement;
+	}
+
+	@Override
+	public SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
+		DefaultSignaturePolicyValidatorLoader signaturePolicyValidatorLoader = new DefaultSignaturePolicyValidatorLoader();
+		signaturePolicyValidatorLoader.setDefaultSignaturePolicyValidator(new XMLSignaturePolicyValidator());
+		return signaturePolicyValidatorLoader;
 	}
 
 }

@@ -215,7 +215,7 @@ public class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJ
 
 		assertFalse(signature.isPolicyAsn1Processable());
 		assertTrue(signature.isPolicyIdentified());
-		assertTrue(signature.isPolicyStatus());
+		assertTrue(signature.isPolicyDigestValid());
 		assertTrue(signature.isPolicyDigestAlgorithmsEqual());
 	}
 

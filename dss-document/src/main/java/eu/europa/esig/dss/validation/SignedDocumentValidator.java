@@ -41,6 +41,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -546,6 +548,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				.documentCRLSource(validationContext.getDocumentCRLSource())
 				.documentOCSPSource(validationContext.getDocumentOCSPSource())
 				.signaturePolicyProvider(getSignaturePolicyProvider())
+				.signaturePolicyValidatorLoader(getSignaturePolicyValidatorLoader())
 				.usedCertificates(validationContext.getProcessedCertificates())
 				.usedRevocations(validationContext.getProcessedRevocations())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
@@ -629,6 +632,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			signaturePolicyProvider.setDataLoader(new NativeHTTPDataLoader());
 		}
 		return signaturePolicyProvider;
+	}
+
+	/**
+	 * Returns an instance of a corresponding to the format {@code SignaturePolicyValidatorLoader}
+	 *
+	 * @return {@link SignaturePolicyValidatorLoader}
+	 */
+	public SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
+		return new DefaultSignaturePolicyValidatorLoader();
 	}
 	
 	@Override

@@ -76,6 +76,9 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampTokenComparator;
@@ -112,6 +115,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	/** The signature policy provider */
 	protected SignaturePolicyProvider signaturePolicyProvider;
+
+	/** Loads a {@code SignaturePolicyValidator} */
+	protected SignaturePolicyValidatorLoader signaturePolicyValidatorLoader;
 
 	/** The list of all certificate sources extracted from a validating document (signature(s), timestamp(s)) */
 	protected ListCertificateSource documentCertificateSource = new ListCertificateSource();
@@ -213,6 +219,18 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 */
 	public SignedDocumentDiagnosticDataBuilder documentCertificateSource(ListCertificateSource documentCertificateSource) {
 		this.documentCertificateSource = documentCertificateSource;
+		return this;
+	}
+
+	/**
+	 * This method allows to set the {@code SignaturePolicyValidatorLoader}
+	 *
+	 * @param signaturePolicyValidatorLoader {@link SignaturePolicyValidatorLoader}
+	 * @return the builder
+	 */
+	public SignedDocumentDiagnosticDataBuilder signaturePolicyValidatorLoader(
+			SignaturePolicyValidatorLoader signaturePolicyValidatorLoader) {
+		this.signaturePolicyValidatorLoader = signaturePolicyValidatorLoader;
 		return this;
 	}
 
@@ -420,8 +438,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	private void setXmlPolicy(XmlSignature xmlSignature, AdvancedSignature signature) {
-		XmlPolicyBuilder policyBuilder = getPolicyBuilder(signature);
-		if (policyBuilder != null) {
+		if (signature.getSignaturePolicy() != null) {
+			XmlPolicyBuilder policyBuilder = getPolicyBuilder(signature);
 			xmlSignature.setPolicy(policyBuilder.build());
 			xmlSignature.setSignaturePolicyStore(policyBuilder.buildSignaturePolicyStore());
 		}
@@ -603,15 +621,22 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * 
 	 */
 	private XmlPolicyBuilder getPolicyBuilder(AdvancedSignature signature) {
+		Objects.requireNonNull(signaturePolicyValidatorLoader, "SignaturePolicyValidatorLoader shall be defined!");
 		SignaturePolicy signaturePolicy = signature.getSignaturePolicy();
-		if (signaturePolicy == null) {
-			return null;
-		}
 
-		XmlPolicyBuilder xmlPolicyBuilder = new XmlPolicyBuilder(signaturePolicy);
-		xmlPolicyBuilder.setSignaturePolicyProvider(signaturePolicyProvider);
+		DSSDocument policyContent = null;
+		if (signature.getSignaturePolicyStore() != null) {
+			policyContent = signature.getSignaturePolicyStore().getSignaturePolicyContent();
+		} else if (signaturePolicyProvider != null) {
+			policyContent = signaturePolicyProvider.getSignaturePolicy(signaturePolicy.getIdentifier(), signaturePolicy.getUrl());
+		}
+		signaturePolicy.setPolicyContent(policyContent);
+
+		SignaturePolicyValidator signaturePolicyValidator = signaturePolicyValidatorLoader.loadValidator(signaturePolicy);
+		SignaturePolicyValidationResult validationResult = signaturePolicyValidator.validate(signaturePolicy);
+
+		XmlPolicyBuilder xmlPolicyBuilder = new XmlPolicyBuilder(signaturePolicy, validationResult);
 		xmlPolicyBuilder.setSignaturePolicyStore(signature.getSignaturePolicyStore());
-		xmlPolicyBuilder.setDefaultDigestAlgorithm(defaultDigestAlgorithm);
 		return xmlPolicyBuilder;
 	}
 

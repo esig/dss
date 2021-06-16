@@ -658,6 +658,41 @@ public interface XAdESPaths {
 	String getCurrentSignaturePolicySPURI();
 
 	/**
+	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyQualifiers/xades:SigPolicyQualifier/xades:SPURI"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentSignaturePolicySPUserNotice();
+
+	/**
+	 * Gets path "./xades:NoticeRef/xades:Organization"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentSPUserNoticeNoticeRefOrganization();
+
+	/**
+	 * Gets path "./xades:NoticeRef/xades:NoticeNumbers"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentSPUserNoticeNoticeRefNoticeNumbers();
+
+	/**
+	 * Gets path "./xades:NoticeRef/xades:NoticeNumbers"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentSPUserNoticeExplicitText();
+
+	/**
+	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyQualifiers/xades:SigPolicyQualifier/xades141:SPDocSpecification/xades:Identifier"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentSignaturePolicySPDocSpecificationIdentifier();
+
+	/**
 	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyId/xades:Description"
 	 *
 	 * @return {@link String} path
@@ -684,6 +719,13 @@ public interface XAdESPaths {
 	 * @return {@link String} path
 	 */
 	String getCurrentSignaturePolicyTransforms();
+
+	/**
+	 * Gets path "./xades:SignaturePolicyId/ds:SigPolicyQualifiers"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentSignaturePolicyQualifiers();
 
 	/**
 	 * Gets path "./xades:Include"

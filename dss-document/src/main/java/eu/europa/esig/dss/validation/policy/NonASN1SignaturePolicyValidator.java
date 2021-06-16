@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation.policy;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -30,49 +29,51 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 
 /**
- * This class covers the case of non ASN1 signature policies (eg : PDF file and its digest)
+ * This class covers the case of non ASN1 signature policies (e.g. : PDF file and its digest)
  */
 public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
 	@Override
-	public boolean canValidate() {
-		SignaturePolicy policy = getSignaturePolicy();
-		if (policy.getPolicyContent() != null) {
-			byte firstByte = DSSUtils.readFirstByte(policy.getPolicyContent());
-			return !DSSASN1Utils.isASN1SequenceTag(firstByte) && !DomUtils.startsWithXmlPreamble(policy.getPolicyContent());
+	public boolean canValidate(SignaturePolicy signaturePolicy) {
+		DSSDocument policyContent = signaturePolicy.getPolicyContent();
+		if (policyContent != null) {
+			byte firstByte = DSSUtils.readFirstByte(policyContent);
+			return !DSSASN1Utils.isASN1SequenceTag(firstByte) && !DomUtils.startsWithXmlPreamble(policyContent);
 		}
 		return false;
 	}
 
 	@Override
-	public void validate() {
-		setIdentified(true);
+	public SignaturePolicyValidationResult validate(SignaturePolicy signaturePolicy) {
+		SignaturePolicyValidationResult validationResult = new SignaturePolicyValidationResult();
 
-		SignaturePolicy signaturePolicy = getSignaturePolicy();
+		DSSDocument policyContent = signaturePolicy.getPolicyContent();
+		if (policyContent == null) {
+			validationResult.addError("general", "The signature policy content is not obtained.");
+			return validationResult;
+		}
+		validationResult.setIdentified(true);
+
 		Digest digest = signaturePolicy.getDigest();
-		
-		if (digest != null) {
-			Digest recalculatedDigest = getComputedDigest(digest.getAlgorithm());
-			if (digest.equals(recalculatedDigest)) {
-				setStatus(true);
-				setDigestAlgorithmsEqual(true);
-			} else {
-				addError("general",
-						"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
-								+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
-			}
-			
+		if (digest == null) {
+			validationResult.addError("general", "The policy digest value is not defined.");
+			return validationResult;
+		}
+		validationResult.setDigestAlgorithmsEqual(true);
+
+		Digest recalculatedDigest = getComputedDigest(signaturePolicy.getPolicyContent(), digest.getAlgorithm());
+		validationResult.setDigest(recalculatedDigest);
+
+		if (digest.equals(recalculatedDigest)) {
+			validationResult.setDigestValid(true);
+			validationResult.setDigestAlgorithmsEqual(true);
 		} else {
-			addError("general", "The policy digest value is not defined.");
+			validationResult.addError("general",
+					"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
+							+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
 		}
 
-	}
-	
-	@Override
-	public Digest getComputedDigest(DigestAlgorithm digestAlgorithm) {
-		SignaturePolicy signaturePolicy = getSignaturePolicy();
-		DSSDocument policyContent = signaturePolicy.getPolicyContent();
-		return DSSUtils.getDigest(digestAlgorithm, policyContent);
+		return validationResult;
 	}
 
 }

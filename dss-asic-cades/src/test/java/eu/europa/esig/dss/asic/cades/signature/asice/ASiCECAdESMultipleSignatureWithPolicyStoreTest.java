@@ -138,14 +138,14 @@ public class ASiCECAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			assertTrue(signature.isPolicyIdentified());
 			assertTrue(signature.isPolicyPresent());
-			assertTrue(signature.isPolicyStatus());
+			assertTrue(signature.isPolicyDigestValid());
 
 			assertEquals(HTTP_SPURI_TEST, signature.getPolicyUrl());
 			assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyId());
 
 			assertTrue(signature.isPolicyAsn1Processable());
 			assertTrue(signature.isPolicyIdentified());
-			assertTrue(signature.isPolicyStatus());
+			assertTrue(signature.isPolicyDigestValid());
 			assertTrue(signature.isPolicyDigestAlgorithmsEqual());
 		}
 	}

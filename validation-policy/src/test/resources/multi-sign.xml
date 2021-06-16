@@ -40,11 +40,10 @@
             </SignerRole>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
+                <Asn1Processable>false</Asn1Processable>
                 <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D">
@@ -111,11 +110,10 @@
             </SignerRole>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
+                <Asn1Processable>false</Asn1Processable>
                 <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D">
@@ -180,11 +178,10 @@
             <CommitmentTypeIndications/>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
+                <Asn1Processable>false</Asn1Processable>
                 <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8">
@@ -249,11 +246,10 @@
             <CommitmentTypeIndications/>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
+                <Asn1Processable>false</Asn1Processable>
                 <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8">

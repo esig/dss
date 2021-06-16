@@ -431,6 +431,32 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentSignaturePolicySPUserNotice() {
+		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_QUALIFIERS, XAdES111Element.SIG_POLICY_QUALIFIER,
+				XAdES111Element.SP_USER_NOTICE);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeNoticeRefOrganization() {
+		return fromCurrentPosition(XAdES111Element.NOTICE_REF, XAdES111Element.ORGANIZATION);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeNoticeRefNoticeNumbers() {
+		return fromCurrentPosition(XAdES111Element.NOTICE_REF, XAdES111Element.NOTICE_NUMBERS);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeExplicitText() {
+		return fromCurrentPosition(XAdES111Element.EXPLICIT_TEXT);
+	}
+
+	@Override
+	public String getCurrentSignaturePolicySPDocSpecificationIdentifier() {
+		return null;
+	}
+
+	@Override
 	public String getCurrentSignaturePolicyDescription() {
 		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_ID, XAdES111Element.DESCRIPTION);
 	}
@@ -448,6 +474,11 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentSignaturePolicyTransforms() {
 		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XMLDSigElement.TRANSFORMS);
+	}
+
+	@Override
+	public String getCurrentSignaturePolicyQualifiers() {
+		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_QUALIFIERS);
 	}
 
 	@Override

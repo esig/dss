@@ -37,11 +37,11 @@
 	        <Policy>
 	            <Id>urn:oid:1.3.6.1.4.1.10015.1000.3.2.1</Id>
 	            <Url>https://www.sk.ee/repository/bdoc-spec21.pdf</Url>
+                <Identified>true</Identified>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA256</DigestMethod>
 	                <DigestValue>Ygw9Ex7wCSrep2Mnju+Ml3pOPZZBmd6vicQkvOQKxyo=</DigestValue>
 	            </DigestAlgoAndValue>
-	            <Identified>true</Identified>
 	        </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-F5F7727489506D7F7CBCB375028D19A433B296CFC28ADA46CDE6D2EE93BA74A4">

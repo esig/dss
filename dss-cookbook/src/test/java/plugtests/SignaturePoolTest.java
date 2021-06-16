@@ -648,7 +648,5 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 			}
 		}
 	}
-	
-	
 
 }

@@ -42,11 +42,9 @@
             <CommitmentTypeIndications/>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <ZeroHash>false</ZeroHash>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <Asn1Processable>false</Asn1Processable>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
                 <RelatedCertificate Certificate="C-0796255FE3B787B9A40A1C356DC00DB11A529EDEEEAF154E4CC6968D6C2B0CD1">

@@ -40,11 +40,10 @@
             
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
+                <Asn1Processable>false</Asn1Processable>
                 <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1">

@@ -107,6 +107,9 @@ public class XMLDSigPaths extends AbstractPaths {
 
 	// ------------------------- Transforms
 
+	/** "./ds:Transform" */
+	public static final String TRANSFORM_PATH = fromCurrentPosition(XMLDSigElement.TRANSFORM);
+
 	/** "./ds:Transforms" */
 	public static final String TRANSFORMS_PATH = fromCurrentPosition(XMLDSigElement.TRANSFORMS);
 
