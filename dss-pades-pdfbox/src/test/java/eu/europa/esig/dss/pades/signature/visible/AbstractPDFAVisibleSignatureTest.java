@@ -52,124 +52,124 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess {
 
-    protected PAdESService service;
-    private PAdESSignatureParameters signatureParameters;
-    private DSSDocument documentToSign;
+	protected PAdESService service;
+	private PAdESSignatureParameters signatureParameters;
+	private DSSDocument documentToSign;
 
-    @BeforeEach
+	@BeforeEach
 	public void init() throws Exception {
-        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
-        signatureParameters = new PAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
-        signatureParameters.setSigningCertificate(getSigningCert());
-        signatureParameters.setCertificateChain(getCertificateChain());
-        signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		signatureParameters = new PAdESSignatureParameters();
+		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-        service = new PAdESService(getOfflineCertificateVerifier());
-        setCustomFactory();
-    }
+		service = new PAdESService(getOfflineCertificateVerifier());
+		setCustomFactory();
+	}
 
-    /**
-     * Set a custom instance of {@link IPdfObjFactory}
-     */
-    protected abstract void setCustomFactory();
+	/**
+	 * Set a custom instance of {@link IPdfObjFactory}
+	 */
+	protected abstract void setCustomFactory();
 
-    @Test
-    public void testGeneratedTextOnly() throws IOException {
-        SignatureImageParameters imageParameters = new SignatureImageParameters();
-        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-        textParameters.setText("My signature");
-        textParameters.setTextColor(Color.GREEN);
-        imageParameters.setTextParameters(textParameters);
-        signatureParameters.setImageParameters(imageParameters);
+	@Test
+	public void testGeneratedTextOnly() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.GREEN);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
-        signAndValidate(true);
-    }
+		signAndValidate(true);
+	}
 
-    @Test
-    public void testGeneratedTextWithoutColor() throws IOException {
-        SignatureImageParameters imageParameters = new SignatureImageParameters();
-        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-        textParameters.setBackgroundColor(null);
-        textParameters.setText("My signature");
-        textParameters.setTextColor(null);
-        imageParameters.setTextParameters(textParameters);
-        signatureParameters.setImageParameters(imageParameters);
+	@Test
+	public void testGeneratedTextWithoutColor() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setBackgroundColor(null);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(null);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
-        signAndValidate(true);
-    }
+		signAndValidate(true);
+	}
 
-    @Test
-    public void testSigningPdfWithoutOutputIntent() throws IOException {
-        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-without-outputintent.pdf"));
-        SignatureImageParameters imageParameters = new SignatureImageParameters();
-        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-        textParameters.setBackgroundColor(null);
-        textParameters.setText("My signature");
-        textParameters.setTextColor(null);
-        imageParameters.setTextParameters(textParameters);
-        signatureParameters.setImageParameters(imageParameters);
+	@Test
+	public void testSigningPdfWithoutOutputIntent() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-without-outputintent.pdf"));
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setBackgroundColor(null);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(null);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
-        signAndValidate(true);
-    }
+		signAndValidate(true);
+	}
 
-    @Test
-    public void testAlreadySignedPdfWithoutOutputIntent() throws IOException {
-        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-signed-without-outputintent.pdf"));
-        SignatureImageParameters imageParameters = new SignatureImageParameters();
-        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-        textParameters.setBackgroundColor(null);
-        textParameters.setText("My signature");
-        textParameters.setTextColor(null);
-        imageParameters.setTextParameters(textParameters);
-        imageParameters.setAlignmentHorizontal(VisualSignatureAlignmentHorizontal.RIGHT);
-        signatureParameters.setImageParameters(imageParameters);
+	@Test
+	public void testAlreadySignedPdfWithoutOutputIntent() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-signed-without-outputintent.pdf"));
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setBackgroundColor(null);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(null);
+		imageParameters.setTextParameters(textParameters);
+		imageParameters.setAlignmentHorizontal(VisualSignatureAlignmentHorizontal.RIGHT);
+		signatureParameters.setImageParameters(imageParameters);
 
-        signAndValidate(true);
-    }
+		signAndValidate(true);
+	}
 
-    @Test
-    public void testGeneratedTextWithOnlyAlpha() throws IOException {
-        SignatureImageParameters imageParameters = new SignatureImageParameters();
-        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-        textParameters.setText("My signature");
-        textParameters.setTextColor(new Color(0, 255, 0, 100));
-        imageParameters.setTextParameters(textParameters);
-        signatureParameters.setImageParameters(imageParameters);
+	@Test
+	public void testGeneratedTextWithOnlyAlpha() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+		textParameters.setTextColor(new Color(0, 255, 0, 100));
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
-        signAndValidate(false);
-    }
+		signAndValidate(false);
+	}
 
-    @Test
-    public void testGeneratedImageOnly() throws IOException {
-        SignatureImageParameters imageParameters = new SignatureImageParameters();
-        imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+	@Test
+	public void testGeneratedImageOnly() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
 
-        SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-        fieldParameters.setOriginX(100);
-        fieldParameters.setOriginY(100);
-        imageParameters.setFieldParameters(fieldParameters);
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
-        signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
-        signAndValidate(true);
-    }
+		signAndValidate(true);
+	}
 
-    @Test
-    public void testGeneratedImageOnlyPNG() throws IOException {
-        SignatureImageParameters imageParameters = new SignatureImageParameters();
-        // PNG with ALPHA
-        imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
+	@Test
+	public void testGeneratedImageOnlyPNG() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		// PNG with ALPHA
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
 
-        SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-        fieldParameters.setOriginX(100);
-        fieldParameters.setOriginY(100);
-        imageParameters.setFieldParameters(fieldParameters);
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
 
-        signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setImageParameters(imageParameters);
 
-        Exception exception = assertThrows(AlertException.class, () -> signAndValidate(false));
+		Exception exception = assertThrows(AlertException.class, () -> signAndValidate(false));
 		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 
 		fieldParameters.setWidth(400);
@@ -178,27 +178,27 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 	}
 
 	private void signAndValidate(boolean expectedValidPDFA) throws IOException {
-        ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-        DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		// signedDocument.save("target/test.pdf");
 
-        assertEquals(expectedValidPDFA, PDFAUtils.validatePDFAStructure(signedDocument));
+		assertEquals(expectedValidPDFA, PDFAUtils.validatePDFAStructure(signedDocument));
 
-        SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-        validator.setCertificateVerifier(getOfflineCertificateVerifier());
-        Reports reports = validator.validateDocument();
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		Reports reports = validator.validateDocument();
 
-        DiagnosticData diagnosticData = reports.getDiagnosticData();
-        assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 
-        UnmarshallingTester.unmarshallXmlReports(reports);
-    }
+		UnmarshallingTester.unmarshallXmlReports(reports);
+	}
 
-    @Override
-    protected String getSigningAlias() {
-        return GOOD_USER;
-    }
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
+	}
 
 }

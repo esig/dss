@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -233,7 +233,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	/**
 	 * Fills a signature field background with the given color
-	 *
+	 * 
 	 * @param cs    current {@link PDPageContentStream}
 	 * @param color {@link Color} background color
 	 * @throws IOException in case of error
@@ -255,7 +255,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	/**
 	 * Draws the given image with specified dimension and position
-	 *
+	 * 
 	 * @param cs                   {@link PDPageContentStream} current stream
 	 * @param doc                  {@link PDDocument} to draw the picture on
 	 * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition} size
@@ -287,7 +287,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	/**
 	 * Draws a custom text with the specified parameters
-	 *
+	 * 
 	 * @param cs                   {@link PDPageContentStream} current stream
 	 * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition} size
 	 *                             and position to place the text to
@@ -362,7 +362,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	/**
 	 * Sets alpha channel if needed
-	 *
+	 * 
 	 * @param cs    {@link PDPageContentStream} current stream
 	 * @param color {@link Color}
 	 * @throws IOException in case of error
@@ -403,7 +403,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	/**
 	 * Returns {@link PDRectangle} of the widget to place on page
-	 *
+	 * 
 	 * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition}
 	 *                             specifies widget size and position
 	 * @param page                 {@link PDPage} to place the widget on

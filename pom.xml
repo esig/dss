@@ -62,7 +62,7 @@
 		<mockito.version>3.12.4</mockito.version>
 		<h2database.version>1.4.200</h2database.version>
 		<jackson.version>2.13.0</jackson.version>
-<fop-core.version>2.6</fop-core.version>
+		<fop-core.version>2.6</fop-core.version>
 		<sonar.java.source>1.8</sonar.java.source>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -876,16 +876,11 @@
 				<version>${pdfbox.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>preflight</artifactId>
-				<version>${pdfbox.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>com.github.librepdf</groupId>
 				<artifactId>openpdf</artifactId>
 				<version>${openpdf.version}</version>
 			</dependency>
-<dependency>
+			<dependency>
 				<groupId>org.verapdf</groupId>
 				<artifactId>validation-model</artifactId>
 				<version>${verapdf.version}</version>
