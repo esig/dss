@@ -89,6 +89,19 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 
     @Test
     public void testGeneratedTextWithoutColor() throws IOException {
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+        textParameters.setBackgroundColor(null);
+        textParameters.setText("My signature");
+        textParameters.setTextColor(null);
+        imageParameters.setTextParameters(textParameters);
+        signatureParameters.setImageParameters(imageParameters);
+
+        signAndValidate(true);
+    }
+
+    @Test
+    public void testSigningPdfWithoutOutputIntent() throws IOException {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-without-outputintent.pdf"));
         SignatureImageParameters imageParameters = new SignatureImageParameters();
         SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
@@ -96,6 +109,21 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
         textParameters.setText("My signature");
         textParameters.setTextColor(null);
         imageParameters.setTextParameters(textParameters);
+        signatureParameters.setImageParameters(imageParameters);
+
+        signAndValidate(true);
+    }
+
+    @Test
+    public void testAlreadySignedPdfWithoutOutputIntent() throws IOException {
+        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-signed-without-outputintent.pdf"));
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+        textParameters.setBackgroundColor(null);
+        textParameters.setText("My signature");
+        textParameters.setTextColor(null);
+        imageParameters.setTextParameters(textParameters);
+        imageParameters.setAlignmentHorizontal(VisualSignatureAlignmentHorizontal.RIGHT);
         signatureParameters.setImageParameters(imageParameters);
 
         signAndValidate(true);
