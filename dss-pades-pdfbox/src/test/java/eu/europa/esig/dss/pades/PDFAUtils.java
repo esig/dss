@@ -22,39 +22,44 @@ package eu.europa.esig.dss.pades;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
-import org.apache.pdfbox.preflight.PreflightDocument;
-import org.apache.pdfbox.preflight.ValidationResult;
-import org.apache.pdfbox.preflight.ValidationResult.ValidationError;
-import org.apache.pdfbox.preflight.parser.PreflightParser;
-import org.apache.pdfbox.preflight.utils.ByteArrayDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.verapdf.core.VeraPDFException;
+import org.verapdf.pdfa.Foundries;
+import org.verapdf.pdfa.PDFAParser;
+import org.verapdf.pdfa.PDFAValidator;
+import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
+import org.verapdf.pdfa.VeraPDFFoundry;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import org.verapdf.pdfa.results.TestAssertion;
+import org.verapdf.pdfa.results.ValidationResult;
 
 public final class PDFAUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PDFAUtils.class);
+	private static final VeraPDFFoundry FOUNDRY;
+
+	static {
+		VeraGreenfieldFoundryProvider.initialise();
+		FOUNDRY = Foundries.defaultInstance();
+	}
 
 	private PDFAUtils() {
 	}
 
 	public static boolean validatePDFAStructure(DSSDocument signedDocument) {
-		try (InputStream is = signedDocument.openStream()) {
-			PreflightParser parser = new PreflightParser(new ByteArrayDataSource(is));
-			parser.parse();
-			PreflightDocument preflightDocument = parser.getPreflightDocument();
-			preflightDocument.validate();
-			ValidationResult result = preflightDocument.getResult();
-			List<ValidationError> errorsList = result.getErrorsList();
-			for (ValidationError validationError : errorsList) {
-				LOG.info(validationError.getDetails());
-			}
-			return result.isValid();
-		} catch (IOException e) {
+		try (InputStream is = signedDocument.openStream();
+			 PDFAParser parser = FOUNDRY.createParser(is);
+			 PDFAValidator validator = FOUNDRY.createValidator(parser.getFlavour(), false)) {
+			ValidationResult result = validator.validate(parser);
+			result.getTestAssertions().stream()
+					.filter(assertion -> assertion.getStatus() == TestAssertion.Status.FAILED)
+					.forEach(assertion -> LOG.info(assertion.getMessage()));
+			return result.isCompliant();
+		} catch (IOException | VeraPDFException e) {
 			throw new DSSException("Unable to validate PDFA structure", e);
 		}
 	}

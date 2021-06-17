@@ -83,7 +83,7 @@ public class SignatureImageTextParameters implements Serializable {
 	private float padding = DEFAULT_PADDING;
 
 	/**
-	 * This variable defines the text color to use 
+	 * This variable defines the text color to use
 	 * (default is BLACK)
 	 */
 	private Color textColor = DEFAULT_TEXT_COLOR;
@@ -204,6 +204,9 @@ public class SignatureImageTextParameters implements Serializable {
 	/**
 	 * Sets color for the text
 	 *
+	 * NOTE: use NULL for the default text color (if supported by a selected implementation)
+	 * DEFAULT: Color.BLACK
+	 *
 	 * @param textColor {@link Color} to set
 	 */
 	public void setTextColor(Color textColor) {
@@ -223,7 +226,7 @@ public class SignatureImageTextParameters implements Serializable {
 	 * Sets the provided background color for a test's area
 	 *
 	 * NOTE: use NULL for a transparent background (if supported by a selected implementation)
-	 * DEFAULT: Color.WHITE 
+	 * DEFAULT: Color.WHITE
 	 *
 	 * @param backgroundColor {@link Color} to set
 	 */
