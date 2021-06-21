@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.service.http.commons;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.service.http.proxy.ProxyProperties;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -303,7 +302,7 @@ public class CommonsDataLoader implements DataLoader {
 					getSupportedSSLCipherSuites(), getHostnameVerifier());
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
 		} catch (final Exception e) {
-			throw new DSSException("Unable to configure the SSLContext/SSLConnectionSocketFactory", e);
+			throw new IllegalArgumentException("Unable to configure the SSLContext/SSLConnectionSocketFactory", e);
 		}
 	}
 
@@ -494,7 +493,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	@Override
-	public byte[] get(final String urlString) throws DSSException {
+	public byte[] get(final String urlString) {
 
 		if (Protocol.isFileUrl(urlString)) {
 			return fileGet(urlString);
@@ -511,9 +510,9 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	@Override
-	public DataAndUrl get(final List<String> urlStrings) throws DSSException {
+	public DataAndUrl get(final List<String> urlStrings) {
 		if (Utils.isCollectionEmpty(urlStrings)) {
-			throw new DSSException("Cannot process the GET call. List of URLs is empty!");
+			throw new DSSExternalResourceException("Cannot process the GET call. List of URLs is empty!");
 		}
 
 		final Map<String, Throwable> exceptions = new HashMap<>(); // store map of exception thrown for urls
@@ -543,10 +542,9 @@ public class CommonsDataLoader implements DataLoader {
 	 * @param refresh
 	 *            if true indicates that the cached data should be refreshed
 	 * @return {@code byte} array of obtained data
-	 * @throws DSSException in case of DataLoader error
 	 */
 	@Override
-	public byte[] get(final String url, final boolean refresh) throws DSSException {
+	public byte[] get(final String url, final boolean refresh) {
 		return get(url);
 	}
 
@@ -558,9 +556,8 @@ public class CommonsDataLoader implements DataLoader {
 	 *
 	 * @param urlString {@link String}
 	 * @return byte array
-	 * @throws DSSException in case of DataLoader error
 	 */
-	protected byte[] ldapGet(String urlString) throws DSSException {
+	protected byte[] ldapGet(String urlString) {
 		
 		urlString = LdapURLUtils.encode(urlString);
 
@@ -582,16 +579,16 @@ public class CommonsDataLoader implements DataLoader {
 			final DirContext ctx = new InitialDirContext(env);
 			final Attributes attributes = ctx.getAttributes(Utils.EMPTY_STRING, new String[] { attributeName });
 			if ((attributes == null) || (attributes.size() < 1)) {
-				throw new DSSException(String.format("Cannot download binaries from: [%s], no attributes with name: [%s] returned", urlString, attributeName));
+				throw new DSSExternalResourceException(String.format("Cannot download binaries from: [%s], no attributes with name: [%s] returned", urlString, attributeName));
 			} else {
 				final Attribute attribute = attributes.getAll().next();
 				final byte[] ldapBytes = (byte[]) attribute.get();
 				if (Utils.isArrayNotEmpty(ldapBytes)) {
 					return ldapBytes;
 				}
-				throw new DSSException(String.format("The retrieved ldap content from url [%s] is empty", urlString));
+				throw new DSSExternalResourceException(String.format("The retrieved ldap content from url [%s] is empty", urlString));
 			}
-		} catch (DSSException e) {
+		} catch (DSSExternalResourceException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new DSSExternalResourceException(String.format("Cannot get data from URL [%s]. Reason : [%s]", urlString, e.getMessage()), e);
@@ -603,9 +600,8 @@ public class CommonsDataLoader implements DataLoader {
 	 *
 	 * @param urlString {@link String} url to retrieve data from
 	 * @return byte array
-	 * @throws DSSException in case of file download error
 	 */
-	protected byte[] ftpGet(final String urlString) throws DSSException {
+	protected byte[] ftpGet(final String urlString) {
 		final URL url = getURL(urlString);
 		try (InputStream inputStream = url.openStream()) {
 			return DSSUtils.toByteArray(inputStream);
@@ -628,7 +624,7 @@ public class CommonsDataLoader implements DataLoader {
 		try {
 			return new URL(urlString);
 		} catch (MalformedURLException e) {
-			throw new DSSException("Unable to create URL instance", e);
+			throw new DSSExternalResourceException("Unable to create URL instance", e);
 		}
 	}
 
@@ -639,7 +635,7 @@ public class CommonsDataLoader implements DataLoader {
 	 *            to access
 	 * @return {@code byte} array of obtained data or null
 	 */
-	protected byte[] httpGet(final String url) throws DSSException {
+	protected byte[] httpGet(final String url) {
 
 		HttpGet httpRequest = null;
 		CloseableHttpResponse httpResponse = null;

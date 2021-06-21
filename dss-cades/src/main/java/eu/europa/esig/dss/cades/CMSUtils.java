@@ -153,7 +153,7 @@ public final class CMSUtils {
 			final ASN1Set asn1Set = DSSASN1Utils.toASN1Primitive(encodedSignedAttributes);
 			return new DERTaggedObject(false, 0, asn1Set);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to extract SignedAttributes. Reason : %s", e.getMessage()), e);
 		}
 	}
 

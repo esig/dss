@@ -22,7 +22,6 @@ package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 
 import java.util.Objects;
 
@@ -52,7 +51,7 @@ public class HTTPHeaderDigest extends HTTPHeader {
 		
 		String jwsHttpHeaderAlgo = digestAlgorithm.getHttpHeaderAlgo();
 		if (jwsHttpHeaderAlgo == null) {
-			throw new DSSException(String.format("The DigestAlgorithm '%s' is not supported for 'sigD' HTTP_HEADERS mechanism. "
+			throw new IllegalArgumentException(String.format("The DigestAlgorithm '%s' is not supported for 'sigD' HTTP_HEADERS mechanism. "
 					+ "See RFC 5843 for more information.", digestAlgorithm));
 		}
 		/*

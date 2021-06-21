@@ -139,7 +139,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 				case CAdES:
 					return asicWithCAdESService;
 				default:
-					throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+					throw new UnsupportedOperationException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 				}
 		} else {
 			switch (signatureForm) {
@@ -166,7 +166,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 				case CAdES:
 					return asicWithCAdESService;
 				default:
-					throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+					throw new IllegalArgumentException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 				}
 		} else {
 			switch (signatureForm) {
@@ -175,7 +175,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 				case CAdES:
 					return cadesService;
 				case PAdES:
-					throw new DSSException(String.format("The Counter Signature is not supported with %s", signatureForm));
+					throw new UnsupportedOperationException(String.format("The Counter Signature is not supported with %s", signatureForm));
 				case JAdES:
 					return jadesService;
 				default:
@@ -186,18 +186,15 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 
 	@SuppressWarnings("rawtypes")
 	private DocumentSignatureService getServiceForTimestamp(TimestampContainerForm timestampContainerForm) {
-		if (timestampContainerForm != null) {
-			switch(timestampContainerForm) {
-				case PDF:
-					return padesService;
-				case ASiC_E:
-				case ASiC_S:
-					return asicWithCAdESService;
-				default:
-					throw new DSSException("Unrecognized format (only PDF, ASiC-E and ASiC-S are allowed) : " + timestampContainerForm);
-			}
-		} else {
-			throw new DSSException("The timestampContainerForm must be defined!");
+		Objects.requireNonNull(timestampContainerForm, "The timestampContainerForm must be defined!");
+		switch(timestampContainerForm) {
+			case PDF:
+				return padesService;
+			case ASiC_E:
+			case ASiC_S:
+				return asicWithCAdESService;
+			default:
+				throw new DSSException("Unrecognized format (only PDF, ASiC-E and ASiC-S are allowed) : " + timestampContainerForm);
 		}
 	}
 

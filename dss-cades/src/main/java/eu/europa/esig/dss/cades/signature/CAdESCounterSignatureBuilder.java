@@ -24,8 +24,8 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -89,13 +89,9 @@ public class CAdESCounterSignatureBuilder {
 		final List<SignerInformation> updatedSignerInfo = getUpdatedSignerInformations(originalCMSSignedData, originalCMSSignedData.getSignerInfos(),
 				parameters, signatureValue, null);
 
-		if (Utils.isCollectionNotEmpty(updatedSignerInfo)) {
-			CMSSignedData updatedCMSSignedData = CMSSignedData.replaceSigners(originalCMSSignedData, new SignerInformationStore(updatedSignerInfo));
-			updatedCMSSignedData = addNewCertificates(updatedCMSSignedData, parameters);
-			return new CMSSignedDocument(updatedCMSSignedData);
-		} else {
-			throw new DSSException("No updated signed info");
-		}
+		CMSSignedData updatedCMSSignedData = CMSSignedData.replaceSigners(originalCMSSignedData, new SignerInformationStore(updatedSignerInfo));
+		updatedCMSSignedData = addNewCertificates(updatedCMSSignedData, parameters);
+		return new CMSSignedDocument(updatedCMSSignedData);
 	}
 
 	private List<SignerInformation> getUpdatedSignerInformations(CMSSignedData originalCMSSignedData, SignerInformationStore signerInformationStore,
@@ -171,7 +167,8 @@ public class CAdESCounterSignatureBuilder {
 	public SignerInformation getSignerInformationToBeCounterSigned(DSSDocument signatureDocument, CAdESCounterSignatureParameters parameters) {
 		CAdESSignature cadesSignature = getSignatureById(signatureDocument, parameters);
 		if (cadesSignature == null) {
-			throw new DSSException(String.format("CAdESSignature not found with the given dss id '%s'", parameters.getSignatureIdToCounterSign()));
+			throw new IllegalArgumentException(String.format("CAdESSignature not found with the given dss id '%s'",
+					parameters.getSignatureIdToCounterSign()));
 		}
 		return cadesSignature.getSignerInformation();
 	}
@@ -206,7 +203,7 @@ public class CAdESCounterSignatureBuilder {
 	
 	private void assertCounterSignaturePossible(SignerInformation signerInformation) {
 		if (CMSUtils.containsATSTv2(signerInformation)) {
-			throw new DSSException("Cannot add a counter signature to a CAdES containing an archiveTimestampV2");
+			throw new IllegalInputException("Cannot add a counter signature to a CAdES containing an archiveTimestampV2");
 		}
 	}
 

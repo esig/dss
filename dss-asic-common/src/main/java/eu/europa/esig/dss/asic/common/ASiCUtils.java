@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -294,7 +294,7 @@ public final class ASiCUtils {
 				return false;
 			}
 		} catch (IOException e) {
-			throw new DSSException("Unable to read the 2 first bytes", e);
+			throw new IllegalInputException("Unable to read the 2 first bytes", e);
 		}
 
 		return (preamble[0] == 'P') && (preamble[1] == 'K');
@@ -423,7 +423,7 @@ public final class ASiCUtils {
 			final String mimeTypeString = new String(byteArray, StandardCharsets.UTF_8);
 			return MimeType.fromMimeTypeString(mimeTypeString);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new IllegalInputException(String.format("Unable to read mimetype file. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -452,7 +452,7 @@ public final class ASiCUtils {
 			} else if (Utils.collectionSize(signedDocuments) > 1) {
 				containerType = ASiCContainerType.ASiC_E;
 			} else {
-				throw new DSSException("The provided file does not contain signed documents. The signature validation is not possible");
+				throw new IllegalInputException("The provided file does not contain signed documents. The signature validation is not possible");
 			}
 		}
 

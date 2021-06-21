@@ -31,6 +31,7 @@ import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRespStatus;
@@ -248,7 +249,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 
 			} catch (Exception e) {
 				if (nbTries == 0) {
-					throw new DSSException("Unable to retrieve OCSP response", e);
+					throw new DSSExternalResourceException(String.format(
+							"Unable to retrieve OCSP response for certificate with Id '%s'", certificateToken.getDSSIdAsString()));
 				} else {
 					LOG.warn("Unable to retrieve OCSP response with URL '{}' : {}", ocspAccessLocation, e.getMessage());
 				}
@@ -286,8 +288,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		if (expectedNonceValue != null) {
 			BigInteger receivedNonce = getEmbeddedNonceValue(ocspResp);
 			if (!expectedNonceValue.equals(receivedNonce)) {
-				throw new DSSException(String.format("Nonce received from OCSP response '%s' does not match a dispatched nonce '%s'.", 
-						receivedNonce, expectedNonceValue));
+				throw new DSSExternalResourceException(String.format("Nonce received from OCSP response '%s' " +
+								"does not match a dispatched nonce '%s'.", receivedNonce, expectedNonceValue));
 			}
 		}
 	}
@@ -309,7 +311,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			}
 			throw new OCSPException("Nonce extension value in OCSP response is not an OCTET STRING");
 		} catch (Exception e) {
-			throw new DSSException(String.format("Unable to extract the nonce from the OCSPResponse! Reason : [%s]", e.getMessage()), e);
+			throw new DSSExternalResourceException(String.format("Unable to extract the nonce from the OCSPResponse! " +
+					"Reason : [%s]", e.getMessage()), e);
 		}
 	}
 	

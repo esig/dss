@@ -66,7 +66,7 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 			textImage = DefaultImageDrawerUtils.createTextImage(parameters, dimensionAndPosition);
 		}
 		if (image == null && textImage == null) {
-			throw new DSSException("Image or text shall be defined in order to build a visual signature!");
+			throw new IllegalArgumentException("Image or text shall be defined in order to build a visual signature!");
 		}
 
 		BufferedImage bufferedImage = DefaultImageDrawerUtils.mergeImages(image, textImage, dimensionAndPosition, parameters);

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import org.slf4j.Logger;
@@ -110,7 +110,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 		if (jwsJsonSerializationParser.isSupported()) {
 			return jwsJsonSerializationParser.parse();
 		}
-		throw new DSSException("The given document is not supported by JWSSerializationDocumentValidator!");
+		throw new IllegalInputException("The given document is not supported by JWSSerializationDocumentValidator!");
 	}
 
 }

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -107,7 +108,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
 			return new CMSSignedDocument(extendCMSSignedData);
 		} catch (IOException | CMSException e) {
-			throw new DSSException(String.format("Cannot parse CMS data. Reason : %s", e.getMessage()), e);
+			throw new IllegalInputException(String.format("Cannot parse CMS data. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -153,7 +154,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		// extract signerInformations before pre-extension
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
 		if (Utils.isCollectionEmpty(signerInformationCollection)) {
-			throw new DSSException("Unable to extend the document! No signatures found.");
+			throw new IllegalInputException("Unable to extend the document! No signatures found.");
 		}
 
 		List<String> signatureIdsToExtend = new ArrayList<>();

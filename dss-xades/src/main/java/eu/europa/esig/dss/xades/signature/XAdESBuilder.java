@@ -347,7 +347,7 @@ public abstract class XAdESBuilder {
 		} else if (XAdESNamespaces.XADES_111.getUri().equals(xadesURI)) {
 			return XAdES111Element.values()[0];
 		}
-		throw new DSSException("Unsupported URI : " + xadesURI);
+		throw new IllegalArgumentException("Unsupported URI : " + xadesURI);
 	}
 
 	/**
@@ -364,7 +364,7 @@ public abstract class XAdESBuilder {
 		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_111.getUri(), xadesURI)) {
 			return new XAdES111Paths();
 		} else {
-			throw new DSSException("Unsupported URI : " + xadesURI);
+			throw new IllegalArgumentException("Unsupported URI : " + xadesURI);
 		}
 	}
 	

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
@@ -66,7 +66,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 
 		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
 		if (Utils.isCollectionEmpty(signatures)) {
-			throw new DSSException("No signatures found to be extended!");
+			throw new IllegalInputException("No signatures found to be extended!");
 		}
 
 		for (final AdvancedSignature signature : signatures) {
@@ -105,7 +105,8 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 	private void assertExtendSignaturePossible(List<AdvancedSignature> signatures) {
 		for (AdvancedSignature signature : signatures) {
 			if (signature.areAllSelfSignedCertificates()) {
-				throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+				throw new IllegalInputException("Cannot extend the signature. " +
+						"The signature contains only self-signed certificate chains!");
 			}
 		}
 	}

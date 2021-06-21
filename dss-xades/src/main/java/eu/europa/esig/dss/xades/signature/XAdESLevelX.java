@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -119,7 +119,7 @@ public class XAdESLevelX extends XAdESLevelC {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		if (SignatureLevel.XAdES_X.equals(signatureLevel) && (xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
 			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
-			throw new DSSException(String.format(exceptionMessage, "XAdES XL"));
+			throw new IllegalInputException(String.format(exceptionMessage, "XAdES XL"));
 		}
 	}
 

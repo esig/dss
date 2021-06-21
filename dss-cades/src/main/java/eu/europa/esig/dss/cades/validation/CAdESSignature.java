@@ -435,7 +435,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return commitmentTypeIndications;
 		} catch (Exception e) {
-			throw new DSSException("Error when dealing with CommitmentTypeIndication!", e);
+			LOG.warn("An error while extracting CommitmentTypeIndication. Reason : {}", e.getMessage(), e);
+			return Collections.emptyList();
 		}
 	}
 

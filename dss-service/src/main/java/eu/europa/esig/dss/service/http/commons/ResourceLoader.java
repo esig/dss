@@ -67,7 +67,7 @@ public class ResourceLoader {
 			final String decodedAbsolutePath = URLDecoder.decode(absolutePath, "UTF-8");
 			return decodedAbsolutePath;
 		} catch (UnsupportedEncodingException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to decode URI path : %s", e.getMessage()), e);
 		}
 	}
 

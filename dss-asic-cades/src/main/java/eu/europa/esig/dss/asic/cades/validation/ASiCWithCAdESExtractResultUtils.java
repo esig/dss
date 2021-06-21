@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
+
+import java.util.List;
 
 public class ASiCWithCAdESExtractResultUtils {
 
@@ -60,7 +60,7 @@ public class ASiCWithCAdESExtractResultUtils {
 				return null; // related manifest not found
 			}
 		}
-		throw new DSSException("Unable to extract a signed document. Reason : Unknown asic container type.");
+		throw new IllegalInputException("Unable to extract a signed document. Reason : Unknown asic container type.");
 	}
 	
 	/**

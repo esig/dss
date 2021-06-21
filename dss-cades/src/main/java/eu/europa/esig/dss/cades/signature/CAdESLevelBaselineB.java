@@ -282,7 +282,7 @@ public class CAdESLevelBaselineB {
 				
 				final CommitmentType commitmentType = commitmentTypeIndications.get(ii);
 				if (commitmentType.getOid() == null) {
-					throw new DSSException("The commitmentTypeIndication OID must be defined for CAdES creation!");
+					throw new IllegalArgumentException("The commitmentTypeIndication OID must be defined for CAdES creation!");
 				}
 
 				final ASN1ObjectIdentifier objectIdentifier = new ASN1ObjectIdentifier(commitmentType.getOid());

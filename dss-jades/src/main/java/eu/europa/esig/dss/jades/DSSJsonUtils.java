@@ -404,7 +404,7 @@ public class DSSJsonUtils {
 	 */
 	public static JsonObject getTstContainer(List<TimestampBinary> timestampBinaries, String canonicalizationMethodUri) {
 		if (Utils.isCollectionEmpty(timestampBinaries)) {
-			throw new DSSException("Impossible to create 'tstContainer'. List of TimestampBinaries cannot be null or empty!");
+			throw new IllegalArgumentException("Impossible to create 'tstContainer'. List of TimestampBinaries cannot be null or empty!");
 		}
 
 		Map<String, Object> tstContainerParams = new LinkedHashMap<>();
@@ -447,7 +447,7 @@ public class DSSJsonUtils {
 	 */
 	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents) {
 		if (Utils.isCollectionEmpty(documents)) {
-			throw new DSSException("Unable to build a JWS Payload. Reason : the detached content is not provided!");
+			throw new IllegalArgumentException("Unable to build a JWS Payload. Reason : the detached content is not provided!");
 		}
 		if (documents.size() == 1) {
 			return DSSUtils.toByteArray(documents.get(0));

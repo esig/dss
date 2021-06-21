@@ -88,7 +88,7 @@ public class DigestDocument extends CommonDocument {
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
 		if (base64EncodeDigest == null) {
-			throw new DSSException("The digest document does not contain a digest value for the algorithm : " + digestAlgorithm);
+			throw new IllegalArgumentException("The digest document does not contain a digest value for the algorithm : " + digestAlgorithm);
 		}
 		return base64EncodeDigest;
 	}
@@ -103,17 +103,17 @@ public class DigestDocument extends CommonDocument {
 			Entry<DigestAlgorithm, String> digestEntry = base64EncodeDigestMap.entrySet().iterator().next();
 			return new Digest(digestEntry.getKey(), Base64.getDecoder().decode(digestEntry.getValue()));
 		}
-		throw new DSSException("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.");
+		throw new IllegalArgumentException("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.");
 	}
 
 	@Override
 	public InputStream openStream() {
-		throw new DSSException("Not possible with Digest document");
+		throw new UnsupportedOperationException("Not possible with Digest document");
 	}
 
 	@Override
 	public void save(String filePath) throws IOException {
-		throw new DSSException("Not possible with Digest document");
+		throw new UnsupportedOperationException("Not possible with Digest document");
 	}
 
 }

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.common;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -136,7 +137,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 				assertCollectionSizeValid(result);
 			}
 		} catch (IOException e) {
-			throw new DSSException("Unable to extract package.zip", e);
+			throw new IllegalInputException("Unable to extract content from zip archive", e);
 		}
 		return result;
 	}
@@ -166,7 +167,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 				secureRead(zis, allowedSize); // read securely before accessing the next entry
 			}
 		} catch (IOException e) {
-			throw new DSSException("Unable to extract package.zip", e);
+			throw new IllegalArgumentException("Unable to extract document names from zip archive", e);
 		}
 		return result;
 	}
@@ -213,7 +214,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 			zipEntry.setSize(byteArray.length);
 			zipEntry.setCompressedSize(byteArray.length);
 			final CRC32 crc = new CRC32();
-			crc.update(byteArray);
+			crc.update(byteArray, 0, byteArray.length);
 			zipEntry.setCrc(crc.getValue());
 		} else {
 			zipEntry.setMethod(ZipEntry.DEFLATED);
@@ -326,13 +327,13 @@ public class SecureContainerHandler implements ZipContainerHandler {
 
 	private void assertExtractEntryLengthValid(long allowedSize) {
 		if (allowedSize != -1 && byteCounter > threshold && byteCounter > allowedSize) {
-			throw new DSSException("Zip Bomb detected in the ZIP container. Validation is interrupted.");
+			throw new IllegalInputException("Zip Bomb detected in the ZIP container. Validation is interrupted.");
 		}
 	}
 
 	private void assertCollectionSizeValid(Collection<?> collection) {
 		if (collection.size() > maxAllowedFilesAmount) {
-			throw new DSSException("Too many files detected. Cannot extract ASiC content from the file.");
+			throw new IllegalInputException("Too many files detected. Cannot extract ASiC content from the file.");
 		}
 	}
 

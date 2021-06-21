@@ -276,7 +276,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	@Override
 	protected List<TimestampedReference> getIndividualContentTimestampedReferences(CAdESAttribute signedAttribute) {
 		// not applicable for CAdES, must be not executed
-		throw new DSSException("Not applicable for CAdES!");
+		throw new UnsupportedOperationException("Not applicable for CAdES!");
 	}
 	
 	@Override

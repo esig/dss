@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.visible;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
@@ -115,7 +116,7 @@ public class ImageUtils {
 		} else if (isImageWithContentType(image, MimeType.PNG)) {
 			return readAndDisplayMetadataPNG(image);
 		}
-		throw new DSSException("Unsupported image type");
+		throw new IllegalInputException("Unsupported image type");
 	}
 
 	private static boolean isImageWithContentType(DSSDocument image, MimeType expectedContentType) {
@@ -132,7 +133,7 @@ public class ImageUtils {
 			}
 			return Utils.areStringsEqual(expectedContentType.getMimeTypeString(), contentType);
 		} else {
-			throw new DSSException("Cannot read image metadata. MimeType or image name must be specified!");
+			throw new IllegalArgumentException("Cannot read image metadata. MimeType or image name must be specified!");
 		}
 	}
 
@@ -224,7 +225,7 @@ public class ImageUtils {
 			float height = bufferedImage.getHeight();
 			return new AnnotationBox(0, 0, width, height);
 		} catch (IOException e) {
-			throw new DSSException(String.format("Cannot read the given image. Reason : %s}", e.getMessage()), e);
+			throw new IllegalInputException(String.format("Cannot read the given image. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -272,7 +273,7 @@ public class ImageUtils {
 				LOG.info("Converting from CMYK to RGB...");
 				return convertCMYKToRGB(raster);
 			}
-			throw new DSSException("The color space of image is not supported!");
+			throw new UnsupportedOperationException("The color space of image is not supported!");
 		}
 	}
 
@@ -328,7 +329,7 @@ public class ImageUtils {
 		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName(type);
 		ImageReader reader = getRasterReader(readers);
 		if (reader == null) {
-			throw new DSSException("No reader for '" + type + "' found");
+			throw new UnsupportedOperationException(String.format("No reader for '%s' found", type));
 		}
 		return reader;
 	}
@@ -337,7 +338,7 @@ public class ImageUtils {
 		Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
 		ImageReader reader = getRasterReader(readers);
 		if (reader == null) {
-			throw new DSSException("No reader for the image found");
+			throw new UnsupportedOperationException("No reader for the image found");
 		}
 		return reader;
 	}

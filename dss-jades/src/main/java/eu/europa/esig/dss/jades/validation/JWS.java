@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.model.DSSException;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
 
@@ -63,7 +63,7 @@ public class JWS extends JsonWebSignature {
 		try {
 			setCompactSerializationParts(parts);
 		} catch (JoseException e) {
-			throw new DSSException("Unable to instantiate a compact JWS", e);
+			throw new IllegalInputException("Unable to instantiate a compact JWS", e);
 		}
 	}
 

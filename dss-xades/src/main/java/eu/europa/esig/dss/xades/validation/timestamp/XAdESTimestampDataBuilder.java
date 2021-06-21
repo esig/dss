@@ -92,7 +92,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			return null;
 		}
 		if (references.isEmpty()) {
-			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
+			throw new IllegalStateException("The method 'checkSignatureIntegrity' must be invoked first!");
 		}
 
 		switch (timeStampType) {
@@ -101,7 +101,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
 				return getIndividualDataObjectsTimestampData(timestampToken);
 			default:
-				throw new DSSException(String.format("The content timestamp of type '%s' is not supported!", timeStampType));
+				throw new UnsupportedOperationException(String.format("The content timestamp of type '%s' is not supported!",
+						timeStampType));
 		}
 	}
 
@@ -145,7 +146,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 */
 	protected DSSDocument getIndividualDataObjectsTimestampData(final TimestampToken timestampToken) {
 		if (!checkTimestampTokenIncludes(timestampToken)) {
-			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
+			throw new IllegalArgumentException("The Included referencedData attribute is either not present or set to false!");
 		}
 
 		final String canonicalizationMethod = timestampToken.getCanonicalizationMethod();

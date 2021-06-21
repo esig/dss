@@ -172,7 +172,7 @@ public final class DSSASN1Utils {
 		try {
 			return (T) ASN1Primitive.fromByteArray(bytes);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Cannot convert binaries to ASN1Primitive : %s", e.getMessage()), e);
 		}
 	}
 
@@ -227,7 +227,7 @@ public final class DSSASN1Utils {
 		try {
 			return asn1Encodable.toASN1Primitive().getEncoded(encoding);
 		} catch (IOException e) {
-			throw new DSSException("Unable to encode to " + encoding, e);
+			throw new DSSException(String.format("Unable to encode to %s. Reason : %s", encoding, e.getMessage()), e);
 		}
 	}
 
@@ -242,7 +242,7 @@ public final class DSSASN1Utils {
 			BasicOCSPResponse basicOCSPResponse = BasicOCSPResponse.getInstance(basicOCSPResp.getEncoded());
 			return getDEREncoded(basicOCSPResponse);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Cannot retrieve DER encoded binaries of BasicOCSPResp : %s", e.getMessage()), e);
 		}
 	}
 
@@ -256,7 +256,7 @@ public final class DSSASN1Utils {
 		try {
 			return asn1Date.getDate();
 		} catch (ParseException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Cannot parse Date : %s", e.getMessage()), e);
 		}
 	}
 
@@ -613,8 +613,10 @@ public final class DSSASN1Utils {
 				return computeSkiFromCert(certificateToken);
 			}
 			return null;
+
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to retrieve ski of a certificate token with Id '%s'. " +
+					"Reason : %s", certificateToken.getDSSIdAsString(), e.getMessage()), e);
 		}
 	}
 
@@ -662,8 +664,9 @@ public final class DSSASN1Utils {
 			DLSequence seq = (DLSequence) ASN1Primitive.fromByteArray(publicKey.getEncoded());
 			DERBitString item = (DERBitString) seq.getObjectAt(1);
 			return DSSUtils.digest(DigestAlgorithm.SHA1, item.getOctets());
+
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute ski from public key : %s", e.getMessage()), e);
 		}
 	}
 	
@@ -828,7 +831,7 @@ public final class DSSASN1Utils {
 		try {
 			return new X509CertificateHolder(certToken.getEncoded());
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to instantiate a X509CertificateHolder : %s", e.getMessage()), e);
 		}
 	}
 
@@ -843,8 +846,10 @@ public final class DSSASN1Utils {
 			JcaX509CertificateConverter converter = new JcaX509CertificateConverter().setProvider(DSSSecurityProvider.getSecurityProviderName());
 			X509Certificate x509Certificate = converter.getCertificate(x509CertificateHolder);
 			return new CertificateToken(x509Certificate);
+
 		} catch (CertificateException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format(
+					"Unable to get a CertificateToken from X509CertificateHolder : %s", e.getMessage()), e);
 		}
 	}
 

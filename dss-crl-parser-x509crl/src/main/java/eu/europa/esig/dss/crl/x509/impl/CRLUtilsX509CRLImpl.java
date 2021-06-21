@@ -149,7 +149,7 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 			}
 			return crl;
 		} catch (CRLException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to parse the CRL : %s", e.getMessage()), e);
 		}
 	}
 

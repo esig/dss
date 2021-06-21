@@ -84,11 +84,11 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 	protected void assertConfigurationValidity(JAdESSignatureParameters signatureParameters) {
 		SignaturePackaging packaging = signatureParameters.getSignaturePackaging();
 		if (!(SignaturePackaging.ENVELOPING.equals(packaging)) && !(SignaturePackaging.DETACHED.equals(packaging))) {
-			throw new DSSException("Unsupported signature packaging for JAdES Compact Signature: " + packaging);
+			throw new IllegalArgumentException("Unsupported signature packaging for JAdES Compact Signature: " + packaging);
 		}
 		SignatureLevel signatureLevel = signatureParameters.getSignatureLevel();
 		if (!SignatureLevel.JAdES_BASELINE_B.equals(signatureLevel)) {
-			throw new DSSException("Only JAdES_BASELINE_B level is allowed for JAdES Compact Signature! "
+			throw new IllegalArgumentException("Only JAdES_BASELINE_B level is allowed for JAdES Compact Signature! "
 					+ "Change JwsSerializationType in JAdESSignatureParameters in order to support extension!");
 		}
 	}

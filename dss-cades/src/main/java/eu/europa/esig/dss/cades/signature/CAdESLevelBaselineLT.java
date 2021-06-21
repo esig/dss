@@ -212,7 +212,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 	
 	private void assertExtendSignatureLevelLTPossible(CAdESSignature cadesSignature) {
 		if (cadesSignature.areAllSelfSignedCertificates()) {
-			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+			throw new IllegalArgumentException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}
 

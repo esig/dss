@@ -22,6 +22,7 @@ package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
@@ -93,7 +94,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 			return parameters.getDetachedContents();
 
 		} else {
-			throw new DSSException("The payload or detached content must be provided!");
+			throw new IllegalArgumentException("The payload or detached content must be provided!");
 		}
 	}
 
@@ -131,7 +132,7 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 			boolean base64UrlEncodedPayload = parameters.isBase64UrlEncodedPayload();
 			for (JWS jws : jwsJsonSerializationObject.getSignatures()) {
 				if (base64UrlEncodedPayload != !jws.isRfc7797UnencodedPayload()) {
-					throw new DSSException("'b64' value shall be the same for all signatures! "
+					throw new IllegalArgumentException("'b64' value shall be the same for all signatures! "
 							+ "Change 'Base64UrlEncodedPayload' signature parameter or sign another file!");
 				}
 			}
@@ -154,12 +155,11 @@ public class JAdESSerializationBuilder extends AbstractJAdESBuilder {
 	protected void assertConfigurationValidity(JAdESSignatureParameters signatureParameters) {
 		SignaturePackaging packaging = signatureParameters.getSignaturePackaging();
 		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
-			throw new DSSException("Unsupported signature packaging for JSON Serialization Signature: " + packaging);
+			throw new IllegalArgumentException("Unsupported signature packaging for JSON Serialization Signature: " + packaging);
 		}
 		if (!JWSSerializationType.JSON_SERIALIZATION.equals(signatureParameters.getJwsSerializationType())
 				&& jwsJsonSerializationObject != null) {
-			throw new DSSException(String.format(
-					"The '%s' type is not supported for a parallel signing!",
+			throw new IllegalArgumentException(String.format("The '%s' type is not supported for a parallel signing!",
 					signatureParameters.getJwsSerializationType()));
 		}
 	}

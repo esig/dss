@@ -87,7 +87,7 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	
 	private void assertSignatureParametersAreValid(SignatureImageParameters parameters) {
 		if (parameters == null || parameters.getImage() == null && parameters.getTextParameters().isEmpty()) {
-			throw new DSSException("Neither image nor text parameters are defined!");
+			throw new IllegalArgumentException("Neither image nor text parameters are defined!");
 		}
 	}
 	

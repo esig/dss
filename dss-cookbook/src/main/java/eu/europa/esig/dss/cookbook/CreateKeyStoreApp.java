@@ -88,7 +88,7 @@ public class CreateKeyStoreApp {
 			CertificateToken cert = DSSUtils.loadCertificate(is);
 			if (!ALLOW_EXPIRED && !cert.isValidOn(new Date())) {
 				LOG.error("Certificate is out of bounds : {}", cert);
-				throw new DSSException(String.format("Certificate %s cannot be added to the keyStore! "
+				throw new IllegalArgumentException(String.format("Certificate %s cannot be added to the keyStore! "
 						+ "Renew the certificate or change ALLOW_EXPIRED value to true.", DSSASN1Utils.getSubjectCommonName(cert)));
 			}
 			displayCertificateDigests(cert);

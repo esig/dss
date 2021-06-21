@@ -25,6 +25,7 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -125,7 +126,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 			
 		} else {
 			// TODO : build an XPath ???
-			throw new DSSException(String.format(
+			throw new IllegalInputException(String.format(
 					"The signature with Id '%s' does not have an Id for a SignatureValue element! " +
 							"Unable to counter sign.", parameters.getSignatureIdToCounterSign()));
 		}
@@ -164,7 +165,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		
 		final NodeList signatureNodeList = counterSignatureDom.getElementsByTagNameNS(XMLNS, XMLDSigElement.SIGNATURE.getTagName());
 		if (signatureNodeList.getLength() != 1) {
-			throw new DSSException(String.format("The counterSignature document shall have one counter signature, when %s signatures found!", 
+			throw new IllegalInputException(String.format("The counterSignature document shall have one counter signature, when %s signatures found!",
 					signatureNodeList.getLength()));
 		}
 		
@@ -179,7 +180,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	
 	private XAdESSignature extractSignatureById(XAdESCounterSignatureParameters parameters) {
 		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
-			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
+			throw new IllegalArgumentException("The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 		}
 
@@ -191,7 +192,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 			}
 		}
 		
-		throw new DSSException(String.format("A signature with Id '%s' has not been found in the file! Unable to counter sign.", 
+		throw new IllegalArgumentException(String.format("A signature with Id '%s' has not been found in the file! Unable to counter sign.",
 				parameters.getSignatureIdToCounterSign()));
 	}
 	
@@ -205,7 +206,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 			if (counterSignatureById != null) {
 				// check if not timestamped
 				if (signature.getTimestampSource().isTimestamped(signatureId, TimestampedObjectType.SIGNATURE)) {
-					throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. "
+					throw new IllegalInputException(String.format("Unable to counter sign a signature with Id '%s'. "
 							+ "The signature is timestamped by a master signature!", signatureId));
 				}
 				return counterSignatureById;
@@ -223,7 +224,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 			return signatureValueElement;
 		}
 		
-		throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. The SignatureValue element is not found!", 
+		throw new IllegalInputException(String.format("Unable to counter sign a signature with Id '%s'. The SignatureValue element is not found!",
 				xadesSignature.getDAIdentifier()));
 	}
 

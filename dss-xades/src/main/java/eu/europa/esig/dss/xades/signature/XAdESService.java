@@ -85,9 +85,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
-		if (tspSource == null) {
-			throw new DSSException("A TSPSource is required !");
-		}
+		Objects.requireNonNull(tspSource, "A TSPSource is required !");
 		AllDataObjectsTimeStampBuilder builder = new AllDataObjectsTimeStampBuilder(tspSource, parameters);
 		return builder.build(toSignDocuments);
 	}
@@ -242,7 +240,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		Objects.requireNonNull(parameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");
 		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
 		if (signaturePackaging == null || SignaturePackaging.ENVELOPED == signaturePackaging) {
-			throw new DSSException("Not supported operation (only DETACHED or ENVELOPING are allowed)");
+			throw new IllegalArgumentException("Not supported operation (only DETACHED or ENVELOPING are allowed)");
 		}
 	}
 
@@ -250,10 +248,10 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		List<String> documentNames = new ArrayList<>();
 		for (DSSDocument document : toSignDocuments) {
 			if (toSignDocuments.size() > 1 && Utils.isStringBlank(document.getName())) {
-				throw new DSSException("All documents in the list to be signed shall have names!");
+				throw new IllegalArgumentException("All documents in the list to be signed shall have names!");
 			}
 			if (documentNames.contains(document.getName())) {
-				throw new DSSException(String.format("The documents to be signed shall have different names! "
+				throw new IllegalArgumentException(String.format("The documents to be signed shall have different names! "
 						+ "The name '%s' appears multiple times.", document.getName()));
 			}
 			documentNames.add(document.getName());

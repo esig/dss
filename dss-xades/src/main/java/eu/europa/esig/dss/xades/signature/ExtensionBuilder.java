@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
@@ -109,7 +110,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 
 		final NodeList qualifyingPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getQualifyingPropertiesPath());
 		if (qualifyingPropertiesNodeList.getLength() != 1) {
-			throw new DSSException("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.");
+			throw new IllegalInputException("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.");
 		}
 
 		qualifyingPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
@@ -125,7 +126,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPaths.getUnsignedPropertiesPath());
 			}
 		} else {
-			throw new DSSException("The signature contains more then one UnsignedProperties element! Extension is not possible.");
+			throw new IllegalInputException("The signature contains more then one UnsignedProperties element! Extension is not possible.");
 		}
 	}
 
@@ -144,7 +145,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPaths.getUnsignedSignaturePropertiesPath());
 			}
 		} else {
-			throw new DSSException("The signature contains more then one UnsignedSignatureProperties element! Extension is not possible.");
+			throw new IllegalInputException("The signature contains more than one UnsignedSignatureProperties element! Extension is not possible.");
 		}
 	}
 
@@ -155,7 +156,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getSignedDataObjectPropertiesPath());
 		final int length = signedDataObjectPropertiesNodeList.getLength();
 		if (length > 1) {
-			throw new DSSException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");
+			throw new IllegalInputException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");
 		}
 	}
 

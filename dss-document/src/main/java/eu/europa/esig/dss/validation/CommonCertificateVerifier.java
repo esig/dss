@@ -247,7 +247,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 			if (certificateSource.getCertificateSourceType().isTrusted()) {
 				this.trustedCertSources.add(certificateSource);
 			} else {
-	            throw new DSSException(String.format("The certificateSource with type [%s] is not allowed in the trustedCertSources. Please, "
+	            throw new UnsupportedOperationException(String.format("The certificateSource with type [%s] is not allowed in the trustedCertSources. Please, "
 	                    + "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", certificateSource.getCertificateSourceType()));
 			}
 		}
@@ -260,7 +260,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 		} else if (trustedListCertificateSource.areAllCertSourcesTrusted()) {
 			this.trustedCertSources = trustedListCertificateSource;
 		} else {
-            throw new DSSException(String.format("The trusted ListCertificateSource must contain only trusted sources "
+            throw new UnsupportedOperationException(String.format("The trusted ListCertificateSource must contain only trusted sources "
                     + "with a type TRUSTED_STORE or TRUSTED_LIST."));
 		}
 	}

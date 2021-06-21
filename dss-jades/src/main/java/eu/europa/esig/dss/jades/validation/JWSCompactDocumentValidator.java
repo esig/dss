@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
@@ -90,7 +91,7 @@ public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 			jwsJsonSerializationObject.setJWSSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
 			return jwsJsonSerializationObject;
 		}
-		throw new DSSException("The given document is not supported by JWSCompactDocumentValidator!");
+		throw new IllegalInputException("The given document is not supported by JWSCompactDocumentValidator!");
 	}
 
 }

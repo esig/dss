@@ -193,7 +193,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			if (signatureNames.contains(signatureFieldId)) {
 				return acroFields.getFieldItem(signatureFieldId);
 			}
-			throw new DSSException("The signature field '" + signatureFieldId + "' does not exist.");
+			throw new IllegalArgumentException(String.format("The signature field with id '%s' does not exist.", signatureFieldId));
 		}
 		return null;
 	}
@@ -284,7 +284,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			}
 			return digest;
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to build message-digest : %s", e.getMessage()), e);
 		}
 	}
 
@@ -300,9 +300,10 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			byte[] pk = signatureValue;
 			int csize = parameters.getContentSize();
 			if (csize < pk.length) {
-				throw new DSSException(
+				throw new IllegalArgumentException(
 						String.format("Unable to save a document. Reason : The signature size [%s] is too small " +
-										"for the signature value with a length [%s]", csize, pk.length));
+								"for the signature value with a length [%s]. Use setContentSize(...) method " +
+								"to define a bigger length.", csize, pk.length));
 			}
 
 			byte[] outc = new byte[csize];
@@ -315,8 +316,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
 			signature.setMimeType(MimeType.PDF);
 			return signature;
+
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to sign a PDF : %s", e.getMessage()), e);
 		}
 	}
 
@@ -437,7 +439,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		} catch (BadPasswordException e) {
 			throw new InvalidPasswordException(e.getMessage());
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to retrieve available signature fields : %s", e.getMessage()), e);
 		}
 	}
 	

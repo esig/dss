@@ -151,7 +151,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected SignatureDrawer loadSignatureDrawer(SignatureImageParameters imageParameters) {
 		SignatureDrawer signatureDrawer = signatureDrawerFactory.getSignatureDrawer(imageParameters);
 		if (signatureDrawer == null) {
-			throw new DSSException("SignatureDrawer shall be defined for the used SignatureDrawerFactory!");
+			throw new IllegalArgumentException("SignatureDrawer shall be defined for the used SignatureDrawerFactory!");
 		}
 		return signatureDrawer;
 	}

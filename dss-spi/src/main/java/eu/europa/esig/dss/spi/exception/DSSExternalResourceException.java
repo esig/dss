@@ -34,6 +34,10 @@ public class DSSExternalResourceException extends DSSException {
 		super();
 	}
 
+    public DSSExternalResourceException(String message) {
+        super(message);
+    }
+
     public DSSExternalResourceException(Throwable cause) {
         super(cause);
     }

@@ -37,6 +37,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -157,7 +158,7 @@ public final class DomUtils {
 			transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.METHOD, TRANSFORMER_METHOD_VALUE);
 		} catch (TransformerConfigurationException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to instantiate a new secure Transformer. Reason : %s", e.getMessage()), e);
 		}
 		transformer.setErrorListener(new DSSXmlErrorListener());
 		return transformer;
@@ -185,7 +186,7 @@ public final class DomUtils {
 		try {
 			return getSecureDocumentBuilderFactory().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to build an empty DOM : %s", e.getMessage()), e);
 		}
 	}
 
@@ -283,8 +284,10 @@ public final class DomUtils {
 	public static Document buildDOM(final InputStream inputStream) {
 		try (InputStream is = inputStream) {
 			return getSecureDocumentBuilderFactory().newDocumentBuilder().parse(is);
-		} catch (Exception e) {
-			throw new DSSException("Unable to parse content (XML expected)", e);
+		} catch (ParserConfigurationException | SAXException e) {
+			throw new DSSException(String.format("Unable to parse content (XML expected) : %s", e.getMessage()), e);
+		} catch (IOException e) {
+			throw new DSSException(String.format("An error occurred while reading InputStream : %s", e.getMessage()), e);
 		}
 	}
 
@@ -342,8 +345,8 @@ public final class DomUtils {
 		xpath.setNamespaceContext(namespacePrefixMapper);
 		try {
 			return xpath.compile(xpathString);
-		} catch (XPathExpressionException ex) {
-			throw new DSSException(ex);
+		} catch (XPathExpressionException e) {
+			throw new DSSException(String.format("Unable to create an XPath expression : %s", e.getMessage()), e);
 		}
 	}
 
@@ -362,7 +365,7 @@ public final class DomUtils {
 			final String string = (String) xPathExpression.evaluate(xmlNode, XPathConstants.STRING);
 			return Utils.trim(string);
 		} catch (XPathExpressionException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to extract value of the node. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -380,7 +383,8 @@ public final class DomUtils {
 			final XPathExpression expr = createXPathExpression(xPathString);
 			return (NodeList) expr.evaluate(xmlNode, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to find a NodeList by the given xPathString '%s'. Reason : %s",
+					xPathString, e.getMessage()), e);
 		}
 	}
 
@@ -559,7 +563,7 @@ public final class DomUtils {
 			Transformer transformer = getSecureTransformer();
 			transformer.transform(xmlSource, outputTarget);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to store a DOM document to OutputStream : %s", e.getMessage()), e);
 		}
 	}
 
@@ -577,7 +581,7 @@ public final class DomUtils {
 			DomUtils.writeDocumentTo(document, baos);
 			return new InMemoryDocument(baos.toByteArray(), name, MimeType.XML);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to create a DSSDocument from DOM document : %s", e.getMessage()), e);
 		}
 	}
 
@@ -597,7 +601,7 @@ public final class DomUtils {
 			transformer.transform(source, result);
 			return stringWriter.getBuffer().toString();
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to transform XML Node to string. Reason : %s", e.getMessage()), e);
 		}
 	}
 

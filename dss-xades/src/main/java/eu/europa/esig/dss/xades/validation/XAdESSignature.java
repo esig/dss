@@ -816,7 +816,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public void addExternalTimestamp(TimestampToken timestamp) {
-		throw new DSSException("The action is not supported for XAdES!");
+		throw new UnsupportedOperationException("The action is not supported for XAdES!");
 	}
 
 	@Override

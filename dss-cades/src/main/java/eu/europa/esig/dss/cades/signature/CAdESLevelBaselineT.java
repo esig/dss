@@ -26,7 +26,7 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -109,11 +109,11 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 	private void assertExtendSignatureLevelTPossible(CAdESSignature cadesSignature) {
 		final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
 		if (cadesSignature.hasLTAProfile()) {
-			throw new DSSException(String.format(exceptionMessage, "CAdES LTA"));
+			throw new IllegalInputException(String.format(exceptionMessage, "CAdES LTA"));
 		}
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(cadesSignature.getSignerInformation());
 		if (unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp) != null) {
-			throw new DSSException(String.format(exceptionMessage, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
+			throw new IllegalInputException(String.format(exceptionMessage, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
 		}
 	}
 

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.PAdESUtils;
@@ -91,7 +91,7 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 */
 	protected void assertExtensionPossible(DSSDocument document) {
 		if (!PAdESUtils.isPDFDocument(document)) {
-			throw new DSSException(String.format("Unable to extend the document with name '%s'. " +
+			throw new IllegalInputException(String.format("Unable to extend the document with name '%s'. " +
 					"PDF document is expected!", document.getName()));
 		}
 	}

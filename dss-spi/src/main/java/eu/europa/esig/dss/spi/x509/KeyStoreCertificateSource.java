@@ -20,6 +20,12 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,13 +40,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
 
 /**
  * Implements a CertificateSource using a KeyStore (PKCS12, JKS,...).
@@ -225,7 +224,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 	 * This method allows to store the keystore in the OutputStream
 	 * 
 	 * @param os
-	 *            the OutpuStream where to store the keystore
+	 *            the OutputStream where to store the keystore
 	 */
 	public void store(OutputStream os) {
 		try {

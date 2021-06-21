@@ -124,7 +124,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
         // if text is present
         if (textParameters != null && !textParameters.isEmpty()) {
             if (fontMetrics == null) {
-                throw new DSSException("DSSFontMetrics shall be defined!");
+                throw new NullPointerException("DSSFontMetrics shall be defined!");
             }
 
             float padding = textParameters.getPadding();

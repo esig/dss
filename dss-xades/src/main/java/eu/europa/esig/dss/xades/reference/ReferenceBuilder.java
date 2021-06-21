@@ -283,14 +283,14 @@ public class ReferenceBuilder {
 						switch (transform.getAlgorithm()) {
 							case Transforms.TRANSFORM_BASE64_DECODE:
 								if (signatureParameters.isEmbedXML()) {
-									throw new DSSException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
+									throw new IllegalArgumentException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
 								} else if (signatureParameters.isManifestSignature()) {
-									throw new DSSException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
+									throw new IllegalArgumentException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
 								} else if (!SignaturePackaging.ENVELOPING.equals(signatureParameters.getSignaturePackaging())) {
-									throw new DSSException(referenceWrongMessage +
+									throw new IllegalArgumentException(referenceWrongMessage +
 											String.format("Base64 transform is not compatible with %s signature format.", signatureParameters.getSignaturePackaging()));
 								} else if (transforms.size() > 1) {
-									throw new DSSException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
+									throw new IllegalArgumentException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
 								}
 								break;
 							default:
@@ -306,7 +306,7 @@ public class ReferenceBuilder {
 								+ "The configuration can lead to an unexpected result!", reference.getId(), uri);
 					}
 					if (SignaturePackaging.ENVELOPED.equals(signatureParameters.getSignaturePackaging()) && Utils.isStringBlank(uri)) {
-						throw new DSSException(referenceWrongMessage + "Enveloped signature must have an enveloped transformation!");
+						throw new IllegalArgumentException(referenceWrongMessage + "Enveloped signature must have an enveloped transformation!");
 					}
 
 				}

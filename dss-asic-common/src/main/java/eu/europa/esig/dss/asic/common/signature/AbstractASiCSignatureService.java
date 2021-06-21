@@ -253,7 +253,7 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	 */
 	protected void assertCounterSignatureParametersValid(CSP parameters) {
 		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
-			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
+			throw new IllegalArgumentException("The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 		}
 	}

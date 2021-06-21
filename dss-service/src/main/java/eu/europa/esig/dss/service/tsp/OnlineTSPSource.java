@@ -27,6 +27,7 @@ import eu.europa.esig.dss.service.NonceSource;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -195,13 +196,15 @@ public class OnlineTSPSource implements TSPSource {
 			if (timeStampToken != null) {
 				LOG.info("TSP SID : SN {}, Issuer {}", timeStampToken.getSID().getSerialNumber(), timeStampToken.getSID().getIssuer());
 			} else {
-				throw new DSSException("No retrieved timestamp token (TSP Status : " + statusString + " / " + failInfo + ")");
+				throw new DSSExternalResourceException(String.format("No timestamp token has been retrieved " +
+								"(TSP Status : %s / %s)", statusString, failInfo));
 			}
 			return new TimestampBinary(DSSASN1Utils.getDEREncoded(timeStampToken));
 		} catch (TSPException e) {
-			throw new DSSException("Invalid TSP response", e);
+			throw new DSSExternalResourceException(String.format("Invalid TSP response : %s", e.getMessage()), e);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSExternalResourceException(String.format(
+					"An error occurred during timestamp request : %s", e.getMessage()), e);
 		}
 	}
 

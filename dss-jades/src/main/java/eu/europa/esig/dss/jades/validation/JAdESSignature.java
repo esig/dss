@@ -748,7 +748,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	
 	private byte[] getPayloadForHttpHeadersMechanism() {
 		if (Utils.isCollectionEmpty(detachedContents)) {
-			throw new DSSException("The detached contents shall be provided for validating a detached signature!");
+			throw new IllegalArgumentException("The detached contents shall be provided for validating a detached signature!");
 		}
 		
 		/*
@@ -767,7 +767,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	
 	private byte[] getPayloadForObjectIdByUriMechanism() {
 		if (Utils.isCollectionEmpty(detachedContents)) {
-			throw new DSSException("The detached contents shall be provided for validating a detached signature!");
+			throw new IllegalArgumentException("The detached contents shall be provided for validating a detached signature!");
 		}
 		
 		List<DSSDocument> signedDocumentsByUri = getSignedDocumentsByUri(true);
@@ -1082,7 +1082,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public void addExternalTimestamp(TimestampToken timestamp) {
-		throw new DSSException("The action is not supported for JAdES!");
+		throw new UnsupportedOperationException("The method addExternalTimestamp(timestamp) is not supported for JAdES!");
 	}
 
 }
