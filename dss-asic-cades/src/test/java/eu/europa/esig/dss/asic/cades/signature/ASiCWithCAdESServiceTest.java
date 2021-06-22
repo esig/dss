@@ -74,12 +74,12 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, null));
         assertEquals("SignatureParameters cannot be null!", exception.getMessage());
 
-        exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("Signing Certificate is not defined!", exception.getMessage());
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
         signatureParameters.setSignWithExpiredCertificate(true);
-        exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("Signing Certificate is not defined!", exception.getMessage());
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
         signatureParameters.setGenerateTBSWithoutCertificate(true);
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
@@ -90,8 +90,8 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
         assertEquals("SignatureLevel must be defined!", exception.getMessage());
 
         signatureParameters.setGenerateTBSWithoutCertificate(false);
-        exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("Signing Certificate is not defined!", exception.getMessage());
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         
         signatureParameters.setSigningCertificate(getSigningCert());
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
@@ -187,7 +187,7 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
         assertEquals("Only CAdES form is allowed !", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-        exception = assertThrows(DSSException.class, () -> extendAndValidate(signedDocument, extensionParameters));
+        exception = assertThrows(IllegalArgumentException.class, () -> extendAndValidate(signedDocument, extensionParameters));
         assertEquals("Unsupported signature format : CAdES-BASELINE-B", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);

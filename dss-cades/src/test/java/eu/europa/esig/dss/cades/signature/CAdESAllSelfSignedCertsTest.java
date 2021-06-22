@@ -24,8 +24,8 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,14 +69,14 @@ public class CAdESAllSelfSignedCertsTest extends AbstractCAdESTestSignature {
 	@Test
 	public void ltLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-		Exception exception = assertThrows(DSSException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 
 	@Test
 	public void ltaLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		Exception exception = assertThrows(DSSException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 

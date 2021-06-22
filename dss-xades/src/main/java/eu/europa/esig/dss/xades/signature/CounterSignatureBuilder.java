@@ -27,7 +27,6 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -47,6 +46,7 @@ import org.w3c.dom.NodeList;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
@@ -179,10 +179,8 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	}
 	
 	private XAdESSignature extractSignatureById(XAdESCounterSignatureParameters parameters) {
-		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
-			throw new IllegalArgumentException("The Id of a signature to be counter signed shall be defined! "
+		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
-		}
 
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
 		for (AdvancedSignature signature : signatures) {

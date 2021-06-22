@@ -44,6 +44,7 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The class to build a CAdES counter signature
@@ -174,6 +175,9 @@ public class CAdESCounterSignatureBuilder {
 	}
 
 	private CAdESSignature getSignatureById(DSSDocument signatureDocument, CAdESCounterSignatureParameters parameters) {
+		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The Id of a signature to be counter signed shall be defined! "
+				+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
+
 		CMSDocumentValidator validator = new CMSDocumentValidator(signatureDocument);
 		validator.setDetachedContents(parameters.getDetachedContents());
 		validator.setManifestFile(manifestFile);

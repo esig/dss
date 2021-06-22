@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
@@ -38,8 +28,8 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
@@ -50,6 +40,15 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCECAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiCWithCAdESTestValidation {
 
@@ -103,9 +102,10 @@ public class ASiCECAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 		spDocSpec.setId(HTTP_SPURI_TEST);
 		signaturePolicyStore.setSpDocSpecification(spDocSpec);
 
-		Exception exception = assertThrows(DSSException.class,
+		Exception exception = assertThrows(IllegalInputException.class,
 				() -> service.addSignaturePolicyStore(doubleSignedDocument, signaturePolicyStore));
-		assertTrue(exception.getMessage().contains("The counter signature is not possible!"));
+		assertEquals("Not possible to add a signature policy store! " +
+				"Reason : a signature with a filename 'META-INF/signature002.p7s' is covered by another manifest.", exception.getMessage());
 
 		return service.addSignaturePolicyStore(signedDocument, signaturePolicyStore);
 	}

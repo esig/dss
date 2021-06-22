@@ -95,7 +95,7 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		List<DSSReference> references = buildReferences(document, new Base64Transform());
 		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		
-		Exception exception = assertThrows(DSSException.class, () -> sign(document, signatureParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> sign(document, signatureParameters));
 		assertEquals("Reference setting is not correct! Base64 transform is not compatible with DETACHED signature format.", exception.getMessage());
 	}
 	

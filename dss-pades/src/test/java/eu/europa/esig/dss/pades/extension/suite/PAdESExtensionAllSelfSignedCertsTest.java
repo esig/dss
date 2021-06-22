@@ -20,23 +20,22 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PAdESExtensionAllSelfSignedCertsTest extends PKIFactoryAccess {
 	
@@ -73,7 +72,7 @@ public class PAdESExtensionAllSelfSignedCertsTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = sign();
 
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
-		Exception exception = assertThrows(DSSException.class, () -> extend(signedDocument));
+		Exception exception = assertThrows(IllegalInputException.class, () -> extend(signedDocument));
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 
@@ -83,7 +82,7 @@ public class PAdESExtensionAllSelfSignedCertsTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = sign();
 
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
-		Exception exception = assertThrows(DSSException.class, () -> extend(signedDocument));
+		Exception exception = assertThrows(IllegalInputException.class, () -> extend(signedDocument));
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 
@@ -93,7 +92,7 @@ public class PAdESExtensionAllSelfSignedCertsTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = sign();
 
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
-		Exception exception = assertThrows(DSSException.class, () -> extend(signedDocument));
+		Exception exception = assertThrows(IllegalInputException.class, () -> extend(signedDocument));
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 	

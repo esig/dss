@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The abstract class for a JWS signature validation
@@ -58,7 +59,10 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 	 */
 	protected AbstractJWSDocumentValidator(DSSDocument document) {
 		super(new JAdESSignatureScopeFinder());
+		Objects.requireNonNull(document, "Document to be validated cannot be null!");
+
 		this.document = document;
+		this.jwsJsonSerializationObject = buildJwsJsonSerializationObject();
 	}
 
 	@Override
@@ -78,9 +82,6 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 	 * @return {@link JWSJsonSerializationObject}
 	 */
 	public JWSJsonSerializationObject getJwsJsonSerializationObject() {
-		if (jwsJsonSerializationObject == null) {
-			jwsJsonSerializationObject = buildJwsJsonSerializationObject();
-		}
 		return jwsJsonSerializationObject;
 	}
 

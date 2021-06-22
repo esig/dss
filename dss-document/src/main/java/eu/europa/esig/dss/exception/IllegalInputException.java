@@ -1,12 +1,10 @@
 package eu.europa.esig.dss.exception;
 
-import eu.europa.esig.dss.model.DSSException;
-
 /**
  * This exception indicates that a provided by the user input or file is not valid for a particular operation
  *
  */
-public class IllegalInputException extends DSSException {
+public class IllegalInputException extends RuntimeException {
 
     /**
      * Default constructor

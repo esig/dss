@@ -5,8 +5,8 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -44,8 +44,8 @@ public class ASiCSCAdESSignTimestampedContainerTest extends AbstractASiCSCAdESTe
         DSSDocument timestampedContainer = service.timestamp(originalDocument, timestampParameters);
 
         documentToSign = timestampedContainer;
-        Exception exception = assertThrows(DSSException.class, () -> super.sign());
-        assertEquals("Unable to sign an ASiC-S with CADES container containing time assertion files!", exception.getMessage());
+        Exception exception = assertThrows(IllegalInputException.class, () -> super.sign());
+        assertEquals("Unable to sign an ASiC-S with CAdES container containing time assertion files!", exception.getMessage());
     }
 
     @Override

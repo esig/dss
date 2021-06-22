@@ -254,7 +254,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument doc = signAndValidate(documentToSign);
 		assertNotNull(doc);
 
-		assertThrows(DSSException.class, () -> signAndValidate(doc));
+		assertThrows(IllegalArgumentException.class, () -> signAndValidate(doc));
 	}
 
 	@Test
@@ -262,7 +262,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		signatureParameters.getImageParameters().getFieldParameters().setFieldId("not-found");
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
-		assertThrows(DSSException.class, () -> signAndValidate(documentToSign));
+		assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign));
 	}
 
 	@Test

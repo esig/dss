@@ -29,7 +29,6 @@ import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.DSSFileFont;
@@ -536,7 +535,7 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		signatureParameters.setImageParameters(signatureImageParameters);
 
 		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-		Exception exception = assertThrows(DSSException.class , () -> sign(testName + "_default"));
+		Exception exception = assertThrows(UnsupportedOperationException.class , () -> sign(testName + "_default"));
 		assertEquals("PdfBoxNativeFont.class can be used only with PdfBoxNativeObjectFactory!", exception.getMessage());
 		
 		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());

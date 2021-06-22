@@ -20,23 +20,22 @@
  */
 package eu.europa.esig.dss.test.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractTestValidator {
 
@@ -77,19 +76,19 @@ public abstract class AbstractTestValidator {
 	@Test
 	public void binaryDocumentValidation() {
 		DSSDocument document = getBinaryDocument();
-		assertThrows(DSSException.class, () -> initValidator(document));
+		assertThrows(IllegalInputException.class, () -> initValidator(document));
 	}
 
 	@Test
 	public void malformedDocumentValidation() {
 		DSSDocument document = getMalformedDocument();
-		assertThrows(DSSException.class, () -> initValidator(document));
+		assertThrows(IllegalInputException.class, () -> initValidator(document));
 	}
 
 	@Test
 	public void otherDocumentTypeValidation() {
 		DSSDocument document = getOtherTypeDocument();
-		assertThrows(DSSException.class, () -> initValidator(document));
+		assertThrows(IllegalInputException.class, () -> initValidator(document));
 	}
 
 	@Test

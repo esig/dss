@@ -26,6 +26,7 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -184,12 +185,12 @@ public class ReferenceBuilder {
 
 	private void assertEnvelopedSignaturePossible(DSSDocument document) {
 		if (!DomUtils.isDOM(document)) {
-			throw new IllegalArgumentException("Enveloped signature cannot be created. Reason : the provided document is not XML!");
+			throw new IllegalInputException("Enveloped signature cannot be created. Reason : the provided document is not XML!");
 		}
 		Document dom = DomUtils.buildDOM(document);
 		Element documentElement = dom.getDocumentElement();
 		if (XMLDSigElement.SIGNATURE.isSameTagName(documentElement.getLocalName())) {
-			throw new IllegalArgumentException("Unable to create an enveloped signature for another XML signature document!");
+			throw new IllegalInputException("Unable to create an enveloped signature for another XML signature document!");
 		}
 	}
 

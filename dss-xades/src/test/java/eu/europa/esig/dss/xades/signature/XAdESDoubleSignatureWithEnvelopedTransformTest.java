@@ -20,21 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -43,6 +32,16 @@ import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class XAdESDoubleSignatureWithEnvelopedTransformTest extends AbstractXAdESTestSignature {
 
@@ -94,7 +93,7 @@ public class XAdESDoubleSignatureWithEnvelopedTransformTest extends AbstractXAdE
 	@Override
 	@Test
 	public void signAndVerify() {
-		Exception exception = assertThrows(DSSException.class, () -> sign());
+		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
 		assertEquals(
 				"The parallel signature is not possible! The provided file contains a signature "
 						+ "with an 'http://www.w3.org/2000/09/xmldsig#enveloped-signature' transform.",

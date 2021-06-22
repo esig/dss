@@ -20,15 +20,13 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CommonCertificateVerifierTest {
 	
@@ -50,13 +48,13 @@ public class CommonCertificateVerifierTest {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
 		CommonCertificateSource commonCertificateSource = new CommonCertificateSource();
 
-		Exception exception = assertThrows(DSSException.class,
+		Exception exception = assertThrows(UnsupportedOperationException.class,
 				() -> ccv.setTrustedCertSources(commonCertificateSource));
 		assertEquals("The certificateSource with type [OTHER] is not allowed in the trustedCertSources. Please, "
 				+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", exception.getMessage());
 		
 		CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
-		exception = assertThrows(DSSException.class,
+		exception = assertThrows(UnsupportedOperationException.class,
 				() -> ccv.setTrustedCertSources(commonTrustedCertificateSource, commonCertificateSource));
 		assertEquals("The certificateSource with type [OTHER] is not allowed in the trustedCertSources. Please, "
 				+ "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", exception.getMessage());

@@ -542,7 +542,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		for (DSSDocument signature : getEmbeddedSignatures()) {
 			if (isCoveredByArchiveManifest(signature)) {
-				throw new IllegalInputException(String.format("The counter signature is not possible! "
+				throw new IllegalInputException(String.format("Not possible to add a signature policy store! "
 						+ "Reason : a signature with a filename '%s' is covered by another manifest.", signature.getName()));
 			}
 		}

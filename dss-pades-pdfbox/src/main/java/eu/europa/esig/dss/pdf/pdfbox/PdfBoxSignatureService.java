@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -261,7 +260,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					PDSignature signature = signatureField.getSignature();
 					if (signature != null) {
 						throw new IllegalArgumentException(String.format(
-								"The signature field '%s' can not be signed since its already signed.", signatureField));
+								"The signature field '%s' can not be signed since its already signed.", targetFieldId));
 					}
 					return signatureField;
 				}

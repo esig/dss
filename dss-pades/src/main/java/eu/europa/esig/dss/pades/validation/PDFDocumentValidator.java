@@ -81,6 +81,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      */
     public PDFDocumentValidator(final DSSDocument document) {
         super(new PAdESSignatureScopeFinder());
+        Objects.requireNonNull(document, "Document to be validated cannot be null!");
+
         if (!isSupported(document)) {
             throw new IllegalInputException("Not supported document");
         }

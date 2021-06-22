@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.asic.xades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +17,7 @@ public class ASiCWithXAdESValidateASiCCAdESTest extends AbstractASiCWithXAdESTes
     @Test
     @Override
     public void validate() {
-        Exception exception = assertThrows(DSSException.class, () -> super.validate());
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> super.validate());
         assertEquals("Document format not recognized/handled", exception.getMessage());
     }
 

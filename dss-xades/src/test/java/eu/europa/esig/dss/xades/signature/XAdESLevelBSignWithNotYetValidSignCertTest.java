@@ -35,11 +35,11 @@ public class XAdESLevelBSignWithNotYetValidSignCertTest extends AbstractXAdESTes
 
     @Override
     protected DSSDocument sign() {
-        Exception exception = assertThrows(DSSException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("is not yet valid at signing time"));
 
         signatureParameters.setSignWithExpiredCertificate(true);
-        exception = assertThrows(DSSException.class, () -> super.sign());
+        exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("is not yet valid at signing time"));
 
         signatureParameters.setSignWithExpiredCertificate(false);

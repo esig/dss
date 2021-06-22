@@ -84,9 +84,8 @@ public class CAdESService extends
 
 	@Override
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, CAdESSignatureParameters parameters) {
-		if (tspSource == null) {
-			throw new IllegalArgumentException("A TSPSource is required !");
-		}
+		Objects.requireNonNull(tspSource, "A TSPSource is required !");
+
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
 		try {
@@ -246,6 +245,8 @@ public class CAdESService extends
 	}
 
 	/**
+	 * This method returns the extension profile to be used for a CAdES signature augmentation
+	 *
 	 * @param parameters
 	 *            set of driving signing parameters
 	 * @return {@code CAdESSignatureExtension} related to the predefine profile

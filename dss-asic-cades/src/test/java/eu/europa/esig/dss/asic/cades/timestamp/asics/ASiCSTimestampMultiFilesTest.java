@@ -29,8 +29,8 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
@@ -169,12 +169,14 @@ public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 		ASiCWithCAdESSignatureParameters extendParameters = new ASiCWithCAdESSignatureParameters();
 		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(docToExtend, extendParameters));
 		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 	}
 	
 	@Override

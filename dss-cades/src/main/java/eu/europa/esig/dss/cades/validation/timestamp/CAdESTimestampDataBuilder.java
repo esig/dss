@@ -127,7 +127,7 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			return new InMemoryDocument(byteArray);
 		} catch (IOException e) {
 			throw new DSSException(String.format("An error occurred while generating message-imprint for " +
-					"signature-time-stamp-token. Reason : %s", e.getMessage()), e);
+					"escTimeStamp token. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -154,7 +154,7 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			return data.toByteArray();
 		} catch (IOException e) {
 			throw new DSSException(String.format("An error occurred while generating message-imprint for " +
-					"refs-only-time-stamp-token. Reason : %s", e.getMessage()), e);
+					"certCRLTimestamp token. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -272,7 +272,7 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			return new InMemoryDocument(result);
 		} catch (IOException e) {
 			throw new DSSException(String.format("An error occurred while generating message-imprint for " +
-					"archive-time-stamp-token-v2. Reason : %s", e.getMessage()), e);
+					"archive-time-stamp-v3 token. Reason : %s", e.getMessage()), e);
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
 			LOG.error("An error in computing of message-imprint for a TimestampToken with Id : {}. Reason : {}",

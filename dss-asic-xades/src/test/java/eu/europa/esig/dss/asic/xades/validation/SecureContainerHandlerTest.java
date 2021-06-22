@@ -20,21 +20,20 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.common.SecureContainerHandler;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SecureContainerHandlerTest extends PKIFactoryAccess {
 
@@ -70,7 +69,7 @@ public class SecureContainerHandlerTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
 
-		Exception exception = assertThrows(DSSException.class, () -> getValidator(biggerDocument));
+		Exception exception = assertThrows(IllegalInputException.class, () -> getValidator(biggerDocument));
 		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
 	}
 
@@ -80,7 +79,7 @@ public class SecureContainerHandlerTest extends PKIFactoryAccess {
 		secureContainerHandler.setMaxCompressionRatio(50);
 		ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
 
-		Exception exception = assertThrows(DSSException.class, () -> getValidator(biggerDocument));
+		Exception exception = assertThrows(IllegalInputException.class, () -> getValidator(biggerDocument));
 		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
 
 		secureContainerHandler.setThreshold(100000000);
@@ -96,7 +95,7 @@ public class SecureContainerHandlerTest extends PKIFactoryAccess {
 		secureContainerHandler.setMaxAllowedFilesAmount(1);
 		ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
 
-		Exception exception = assertThrows(DSSException.class, () -> getValidator(smallerDocument));
+		Exception exception = assertThrows(IllegalInputException.class, () -> getValidator(smallerDocument));
 		assertEquals("Too many files detected. Cannot extract ASiC content from the file.", exception.getMessage());
 	}
 

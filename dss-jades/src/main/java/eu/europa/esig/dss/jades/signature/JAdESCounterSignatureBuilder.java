@@ -42,6 +42,7 @@ import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Creates a JAdES Counter signature
@@ -152,10 +153,9 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	}
 	
 	private AdvancedSignature extractSignatureById(List<AdvancedSignature> signatures, String signatureId) {
-		if (Utils.isStringEmpty(signatureId)) {
-			throw new IllegalArgumentException("The Id of a signature to be counter signed shall be defined! "
-					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
-		}
+		Objects.requireNonNull(signatureId, "The Id of a signature to be counter signed shall be defined! "
+				+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
+
 		if (Utils.isCollectionEmpty(signatures)) {
 			throw new IllegalArgumentException("The provided signatureDocument does not contain JAdES Signatures!");
 		}

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -43,6 +44,7 @@ import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Validator of XML Signed document
@@ -85,15 +87,24 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 *                    The instance of {@code DSSDocument} to validate
 	 */
 	public XMLDocumentValidator(final DSSDocument dssDocument) {
-
 		super(new XAdESSignatureScopeFinder());
+		Objects.requireNonNull(dssDocument, "Document to be validated cannot be null!");
+
 		this.document = dssDocument;
-		this.rootElement = DomUtils.buildDOM(dssDocument);
+		this.rootElement = toDomDocument(dssDocument);
 
 		xadesPathsHolders = new ArrayList<>();
 		xadesPathsHolders.add(new XAdES111Paths());
 		xadesPathsHolders.add(new XAdES122Paths());
 		xadesPathsHolders.add(new XAdES132Paths());
+	}
+
+	private Document toDomDocument(DSSDocument document) {
+		try {
+			return DomUtils.buildDOM(document);
+		} catch (Exception e) {
+			throw new IllegalInputException(String.format("An XML file is expected : %s", e.getMessage()), e);
+		}
 	}
 
 	@Override

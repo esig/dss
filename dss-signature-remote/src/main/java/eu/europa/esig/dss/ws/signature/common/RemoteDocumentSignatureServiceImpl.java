@@ -152,7 +152,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 				case JAdES:
 					return jadesService;
 				default:
-					throw new DSSException("Unrecognized format " + signatureForm);
+					throw new UnsupportedOperationException("Unrecognized format " + signatureForm);
 				}
 		}
 	}
@@ -166,7 +166,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 				case CAdES:
 					return asicWithCAdESService;
 				default:
-					throw new IllegalArgumentException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+					throw new UnsupportedOperationException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 				}
 		} else {
 			switch (signatureForm) {
@@ -179,7 +179,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 				case JAdES:
 					return jadesService;
 				default:
-					throw new DSSException("Unrecognized format " + signatureForm);
+					throw new UnsupportedOperationException("Unrecognized format " + signatureForm);
 			}
 		}
 	}
@@ -194,7 +194,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 			case ASiC_S:
 				return asicWithCAdESService;
 			default:
-				throw new DSSException("Unrecognized format (only PDF, ASiC-E and ASiC-S are allowed) : " + timestampContainerForm);
+				throw new UnsupportedOperationException("Unrecognized format (only PDF, ASiC-E and ASiC-S are allowed) : " + timestampContainerForm);
 		}
 	}
 

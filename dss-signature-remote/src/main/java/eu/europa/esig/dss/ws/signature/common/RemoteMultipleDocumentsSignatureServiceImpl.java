@@ -112,7 +112,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 				case CAdES:
 					return asicWithCAdESService;
 				default:
-					throw new IllegalArgumentException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+					throw new UnsupportedOperationException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 				}
 		} else {
 			switch (signatureForm) {
@@ -121,7 +121,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 				case JAdES:
 					return jadesService;
 				default:
-					throw new IllegalArgumentException("Unrecognized format " +
+					throw new UnsupportedOperationException("Unrecognized format " +
 							"(only XAdES and JAdES are allowed for multiple documents signing) : " + signatureForm);
 			}
 		}
@@ -135,7 +135,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 			case ASiC_S:
 				return asicWithCAdESService;
 			default:
-				throw new DSSException(String.format("The format is not recognized or not allowed "
+				throw new UnsupportedOperationException(String.format("The format is not recognized or not allowed "
 						+ "(only ASiC-E and ASiC-S are allowed for a multiple document timestamping)", timestampContainerForm.getReadable()));
 		}
 	}

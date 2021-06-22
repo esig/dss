@@ -3,7 +3,6 @@ package eu.europa.esig.dss.token;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -106,7 +105,7 @@ public class SignDigestDSASignatureAlgorithmTest {
 
             ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
 
-            Exception exception = assertThrows(DSSException.class, () ->
+            Exception exception = assertThrows(IllegalArgumentException.class, () ->
                     signatureToken.sign(toBeSigned, SignatureAlgorithm.ECDSA_SHA256, entry));
             assertEquals("The provided SignatureAlgorithm 'ECDSA with SHA256' cannot be used to sign with " +
                     "the token's implied EncryptionAlgorithm 'DSA'", exception.getMessage());

@@ -25,7 +25,7 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -212,7 +212,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 	
 	private void assertExtendSignatureLevelLTPossible(CAdESSignature cadesSignature) {
 		if (cadesSignature.areAllSelfSignedCertificates()) {
-			throw new IllegalArgumentException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}
 

@@ -97,7 +97,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			asicWithXAdESParameters.aSiC().setContainerType(asicContainerType);
 			return asicWithXAdESParameters;
 		default:
-			throw new IllegalArgumentException("Unrecognized format (only XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+			throw new UnsupportedOperationException("Unrecognized format (only XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 		}
 	}
 
@@ -129,7 +129,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 				parameters = getJAdESSignatureParameters(remoteParameters);
 				break;
 			default:
-				throw new DSSException("Unsupported signature form : " + signatureForm);
+				throw new UnsupportedOperationException("Unsupported signature form : " + signatureForm);
 			}
 		}
 
@@ -263,7 +263,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			case ASiC_S:
 				return toTimestampParameters(remoteTimestampParameters, SignatureForm.CAdES, ASiCContainerType.ASiC_S);
 			default:
-				throw new DSSException(String.format("Unsupported timestamp container form [%s]", timestampForm.getReadable()));
+				throw new UnsupportedOperationException(String.format("Unsupported timestamp container form [%s]", timestampForm.getReadable()));
 		}
 	}
 
@@ -291,7 +291,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 							remoteTimestampParameters.getCanonicalizationMethod());
 					break;
 				default:
-					throw new IllegalArgumentException(String.format("Unsupported signature form [%s] for asic container type [%s]", signatureForm, asicContainerType));
+					throw new UnsupportedOperationException(String.format("Unsupported signature form [%s] for asic container type [%s]", signatureForm, asicContainerType));
 			}
 		} else {
 			switch (signatureForm) {
@@ -309,7 +309,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 					timestampParameters = new JAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm());
 					break;
 				default:
-					throw new DSSException("Unsupported signature form : " + signatureForm);
+					throw new UnsupportedOperationException("Unsupported signature form : " + signatureForm);
 			}
 		}
 		return timestampParameters;
