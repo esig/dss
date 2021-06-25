@@ -122,8 +122,8 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
     private Set<CertificateToken> buildCertificatesFromResult(Collection<JdbcCacheConnector.JdbcResultRecord> records) {
         try {
             Set<CertificateToken> certificateTokens = new LinkedHashSet<>();
-            for (JdbcCacheConnector.JdbcResultRecord record : records) {
-                byte[] binaries = (byte[]) record.get(SQL_FIND_QUERY_DATA);
+            for (JdbcCacheConnector.JdbcResultRecord resultRecord : records) {
+                byte[] binaries = (byte[]) resultRecord.get(SQL_FIND_QUERY_DATA);
                 if (Utils.isArrayNotEmpty(binaries)) {
                     CertificateToken certificateToken = DSSUtils.loadCertificate(binaries);
                     if (certificateToken != null) {

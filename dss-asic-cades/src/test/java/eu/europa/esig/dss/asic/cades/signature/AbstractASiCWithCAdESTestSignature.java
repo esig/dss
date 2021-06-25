@@ -26,6 +26,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public abstract class AbstractASiCWithCAdESTestSignature
         extends AbstractASiCTestSignature<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
@@ -64,7 +65,7 @@ public abstract class AbstractASiCWithCAdESTestSignature
     protected void checkSignaturePackaging(DSSDocument signatureDocument) {
         CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(signatureDocument);
         assertTrue(cmsSignedData.isDetachedSignature());
-        assertTrue(cmsSignedData.getSignedContent() == null);
+        assertNull(cmsSignedData.getSignedContent());
     }
 
     protected abstract DSSDocument getSignedData(ASiCExtractResult extractResult);

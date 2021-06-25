@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URISyntaxException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;

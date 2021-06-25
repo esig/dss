@@ -115,8 +115,8 @@ public final class JAdESUtils extends AbstractJWSUtils {
 					parseJson(JAdESUtils.class.getResourceAsStream(JAdES_SCHEMA_DEFINITIONS_LOCATION)));
 
 			Map<URI, JSONObject> rfcDefinitions = JWSUtils.getInstance().getRFCDefinitions();
-			for (URI uri : rfcDefinitions.keySet()) {
-				definitions.put(URI.create(RFC_SUBDIRECTORY + uri.toString()), rfcDefinitions.get(uri));
+			for (Map.Entry<URI, JSONObject> entry : rfcDefinitions.entrySet()) {
+				definitions.put(URI.create(RFC_SUBDIRECTORY + entry.getKey().toString()), entry.getValue());
 			}
 			definitions.put(URI.create(RFC_SUBDIRECTORY + RFC7797_SCHEMA_URI),
 					parseJson(JAdESUtils.class.getResourceAsStream(RFC7797_SCHEMA_LOCATION)));

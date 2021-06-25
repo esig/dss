@@ -95,12 +95,12 @@ public class JdbcCacheConnector {
 
             Collection<JdbcResultRecord> records = new ArrayList<>();
             while (rs.next()) {
-                JdbcResultRecord record = new JdbcResultRecord();
+                JdbcResultRecord resultRecord = new JdbcResultRecord();
                 for (JdbcResultRequest request : requests) {
                     Object object = rs.getObject(request.getColumnName(), request.getTargetClass());
-                    record.put(request.getColumnName(), object);
+                    resultRecord.put(request.getColumnName(), object);
                 }
-                records.add(record);
+                records.add(resultRecord);
             }
 
             c.commit();
@@ -255,7 +255,7 @@ public class JdbcCacheConnector {
         /**
          * The map between the column names and the extracted values for a Db row
          */
-        private final Map<String, Object> record = new HashMap<>();
+        private final Map<String, Object> row = new HashMap<>();
 
         /**
          * The method allows to populate the map
@@ -264,7 +264,7 @@ public class JdbcCacheConnector {
          * @param value {@link Object} the corresponding value
          */
         public void put(String columnName, Object value) {
-            record.put(columnName, value);
+            row.put(columnName, value);
         }
 
         /**
@@ -274,7 +274,7 @@ public class JdbcCacheConnector {
          * @return the {@link Object} value
          */
         public Object get(String columnName) {
-            return record.get(columnName);
+            return row.get(columnName);
         }
 
     }

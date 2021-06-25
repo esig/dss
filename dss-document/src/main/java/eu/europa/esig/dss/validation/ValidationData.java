@@ -101,8 +101,8 @@ public class ValidationData {
 				boolean added = certificateTokens.add(certificateToken);
 				if (added) {
 					storedPublicKeys.add(certificateToken.getEntityKey());
-					LOG.trace(String.format("CertificateToken with Id '{}' has been added to the ValidationData instance",
-							token.getDSSIdAsString()));
+					LOG.trace("CertificateToken with Id '{}' has been added to the ValidationData instance",
+							token.getDSSIdAsString());
 					return true;
 				}
 			}
@@ -114,8 +114,8 @@ public class ValidationData {
  				if (!containsCRLToken(crlToken)) {
 					boolean added = crlTokens.add(crlToken);
 					if (added) {
-						LOG.trace(String.format("CRL RevocationToken with Id '{}' has been added to the ValidationData instance",
-								token.getDSSIdAsString()));
+						LOG.trace("CRL RevocationToken with Id '{}' has been added to the ValidationData instance",
+								token.getDSSIdAsString());
 						return true;
 					}
 				}
@@ -125,22 +125,22 @@ public class ValidationData {
 				if (!containsOCSPToken(ocspToken)) {
 					boolean added = ocspTokens.add(ocspToken);
 					if (added) {
-						LOG.trace(String.format("OCSP RevocationToken with Id '{}' has been added to the ValidationData instance",
-								token.getDSSIdAsString()));
+						LOG.trace("OCSP RevocationToken with Id '{}' has been added to the ValidationData instance",
+								token.getDSSIdAsString());
 						return true;
 					}
 				}
 
 			} else {
-				throw new DSSException(String.format("Unexpected RevocationToken with Id '{}'", token.getDSSIdAsString()));
+				throw new DSSException(String.format("Unexpected RevocationToken with Id '%s'", token.getDSSIdAsString()));
 			}
 
 		} else {
-			throw new DSSException(String.format("Unexpected token with Id '{}'", token.getDSSIdAsString()));
+			throw new DSSException(String.format("Unexpected token with Id '%s'", token.getDSSIdAsString()));
 		}
 
-		LOG.trace(String.format("ValidationData instance already contains token with Id '{}'",
-				token.getDSSIdAsString()));
+		LOG.trace("ValidationData instance already contains token with Id '{}'",
+				token.getDSSIdAsString());
 		return false;
 	}
 

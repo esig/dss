@@ -79,12 +79,12 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	
 	/**
 	 * Build {@link RevocationToken} from the obtained {@link ResultSet}
-	 * @param record represent the extract record row
+	 * @param resultRecord represent the extract record row
 	 * @param certificateToken {@link CertificateToken} of certificate to get revocation data for
 	 * @param issuerCertificateToken {@link CertificateToken} if issuer of the certificateToken
 	 * @return {@link RevocationToken}
 	 */
-	protected abstract RevocationToken<R> buildRevocationTokenFromResult(JdbcCacheConnector.JdbcResultRecord record,
+	protected abstract RevocationToken<R> buildRevocationTokenFromResult(JdbcCacheConnector.JdbcResultRecord resultRecord,
 			CertificateToken certificateToken,CertificateToken issuerCertificateToken) throws RevocationException;
 
 	/**

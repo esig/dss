@@ -39,6 +39,8 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESLevelLTAOverwriteTstVDTest extends AbstractJAdESTestValidation {
@@ -100,7 +102,7 @@ public class JAdESLevelLTAOverwriteTstVDTest extends AbstractJAdESTestValidation
         ListIterator<Object> iterator = unsignedProperties.listIterator(unsignedProperties.size());
         Object component = iterator.previous();
         Map<?, ?> componentMap = DSSJsonUtils.parseEtsiUComponent(component);
-        assertTrue(componentMap.get(JAdESHeaderParameterNames.ARC_TST) != null);
+        assertNotNull(componentMap.get(JAdESHeaderParameterNames.ARC_TST));
         iterator.remove();
 
         JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(serializationObject,
@@ -116,7 +118,7 @@ public class JAdESLevelLTAOverwriteTstVDTest extends AbstractJAdESTestValidation
 
         Map<?, ?> tstVD = (Map<?, ?>) componentMap.get(JAdESHeaderParameterNames.TST_VD);
         assertTrue(Utils.isMapNotEmpty(tstVD));
-        assertTrue(tstVD.get(JAdESHeaderParameterNames.R_VALS) == null); // not added
+        assertNull(tstVD.get(JAdESHeaderParameterNames.R_VALS)); // not added
 
         return sigWithRemovedLastArcTst;
     }
