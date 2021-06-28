@@ -20,20 +20,13 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -45,7 +38,17 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JAdESLevelBDetachedHttpHeadersWithContentTstTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
@@ -112,6 +115,17 @@ public class JAdESLevelBDetachedHttpHeadersWithContentTstTest extends AbstractJA
 		TimestampWrapper contentTimestamp = timestampList.get(0);
 		assertEquals(TimestampType.CONTENT_TIMESTAMP, contentTimestamp.getType());
 		assertEquals(2, contentTimestamp.getTimestampedSignedData().size());
+
+		List<XmlDigestMatcher> digestMatchers = contentTimestamp.getDigestMatchers();
+		assertEquals(1, digestMatchers.size());
+		XmlDigestMatcher messageImprintDigestMatcher = digestMatchers.get(0);
+		assertEquals(DigestMatcherType.MESSAGE_IMPRINT, messageImprintDigestMatcher.getType());
+
+		byte[] messageImprint = ("content-type: application/json\n" +
+				"x-example: HTTP Headers Example, Duplicated Header\n" +
+				"{ \"title\": \"Hello World!\" }").getBytes();
+		assertArrayEquals(DSSUtils.digest(messageImprintDigestMatcher.getDigestMethod(), messageImprint),
+				messageImprintDigestMatcher.getDigestValue());
 	}
 	
 	@Override

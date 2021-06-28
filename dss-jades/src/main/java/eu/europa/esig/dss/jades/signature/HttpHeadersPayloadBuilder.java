@@ -25,8 +25,11 @@ import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.HTTPHeaderDigest;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -101,17 +104,17 @@ public class HttpHeadersPayloadBuilder {
 			HTTPHeader concatenatedHttpHeader = getHTTPHeaderWithName(concatenatedHttpFields, headerName);
 
 			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(headerName) && isTimestamp) {
-				if (httpHeader instanceof HTTPHeaderDigest) {
-					concatenatedHttpHeader = httpHeader;
-					continue;
-
-				} else {
+				if (concatenatedHttpHeader != null) {
+					throw new IllegalArgumentException(String.format(
+							"Only one HTTPHeader with the name '%s' is allowed!", DSSJsonUtils.HTTP_HEADER_DIGEST));
+				}
+				if (!(httpHeader instanceof HTTPHeaderDigest)) {
 					throw new IllegalArgumentException("Unable to compute message-imprint for an Archive Timestamp! "
 							+ "'Digest' header must be an instance of HTTPHeaderDigest class.");
 				}
-			}
-			
-			if (concatenatedHttpHeader != null) {
+				concatenatedHttpFields.add(httpHeader);
+
+			} else if (concatenatedHttpHeader != null) {
 				StringBuilder stringBuilder = new StringBuilder(concatenatedHttpHeader.getValue());
 				stringBuilder.append(", ");
 				stringBuilder.append(headerValue);
@@ -124,26 +127,33 @@ public class HttpHeadersPayloadBuilder {
 				concatenatedHttpFields.add(concatenatedHttpHeader);
 			}
 		}
-		
-		StringBuilder stringBuilder = new StringBuilder();
-		Iterator<HTTPHeader> iterator = concatenatedHttpFields.iterator();
-		while (iterator.hasNext()) {
-			HTTPHeader header = iterator.next();
-			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(header.getName()) && isTimestamp) {
-				HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) header;
-				stringBuilder.append(httpHeaderDigest.getMessageBodyDocument());
-			} else {
-				stringBuilder.append(Utils.lowerCase(header.getName()));
-				stringBuilder.append(":");
-				stringBuilder.append(" ");
-				stringBuilder.append(header.getValue());
-			}
-			if (iterator.hasNext()) {
-				stringBuilder.append("\n");
-			}
-		}
 
-		return stringBuilder.toString().getBytes();
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			Iterator<HTTPHeader> iterator = concatenatedHttpFields.iterator();
+			while (iterator.hasNext()) {
+				HTTPHeader header = iterator.next();
+				if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(header.getName()) && isTimestamp) {
+					HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) header;
+					DSSDocument messageBodyDocument = httpHeaderDigest.getMessageBodyDocument();
+					baos.write(DSSUtils.toByteArray(messageBodyDocument));
+				} else {
+					StringBuilder stringBuilder = new StringBuilder();
+					stringBuilder.append(Utils.lowerCase(header.getName()));
+					stringBuilder.append(":");
+					stringBuilder.append(" ");
+					stringBuilder.append(header.getValue());
+					baos.write(stringBuilder.toString().getBytes());
+				}
+				if (iterator.hasNext()) {
+					baos.write("\n".getBytes());
+				}
+			}
+			return baos.toByteArray();
+
+		} catch (IOException e) {
+			throw new DSSException(String.format("An error occurred while building an HTTPHeaders payload : %s",
+					e.getMessage()), e);
+		}
 	}
 
 	private HTTPHeader getHTTPHeaderWithName(List<HTTPHeader> httpHeaders, String name) {
