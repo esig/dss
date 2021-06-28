@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Base64;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DigestDocumentTest {
 
@@ -57,7 +56,7 @@ public class DigestDocumentTest {
 	public void testUnknownDigest() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		Exception exception = assertThrows(DSSException.class, () -> doc.getDigest(DigestAlgorithm.SHA256));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> doc.getDigest(DigestAlgorithm.SHA256));
 		assertEquals("The digest document does not contain a digest value for the algorithm : SHA256", exception.getMessage());
 	}
 
@@ -65,7 +64,7 @@ public class DigestDocumentTest {
 	public void testOpenStream() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		Exception exception = assertThrows(DSSException.class, () -> doc.openStream());
+		Exception exception = assertThrows(UnsupportedOperationException.class, () -> doc.openStream());
 		assertEquals("Not possible with Digest document", exception.getMessage());
 	}
 
@@ -73,7 +72,7 @@ public class DigestDocumentTest {
 	public void testSave() throws IOException {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		Exception exception = assertThrows(DSSException.class, () -> doc.save("target/test"));
+		Exception exception = assertThrows(UnsupportedOperationException.class, () -> doc.save("target/test"));
 		assertEquals("Not possible with Digest document", exception.getMessage());
 	}
 

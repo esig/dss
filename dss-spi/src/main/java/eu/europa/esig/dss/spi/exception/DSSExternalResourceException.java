@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi.exception;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * The exception to be thrown in case of an external error arisen during a data loader requests
@@ -33,6 +34,10 @@ public class DSSExternalResourceException extends DSSException {
 	DSSExternalResourceException() {
 		super();
 	}
+
+    public DSSExternalResourceException(String message) {
+        super(message);
+    }
 
     public DSSExternalResourceException(Throwable cause) {
         super(cause);
@@ -47,7 +52,11 @@ public class DSSExternalResourceException extends DSSException {
      * @return {@link String} caused exception's message
      */
     String getCauseMessage() {
-    	return getCause().getMessage();
+        Throwable cause = getCause();
+        if (cause != null) {
+            return cause.getMessage();
+        }
+        return Utils.EMPTY_STRING;
     }
 
 }

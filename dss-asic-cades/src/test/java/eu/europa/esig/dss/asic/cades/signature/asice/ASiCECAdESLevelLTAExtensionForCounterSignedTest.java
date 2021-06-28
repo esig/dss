@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
@@ -49,8 +34,8 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -59,6 +44,20 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCECAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithCAdESTestValidation {
 	
@@ -153,7 +152,7 @@ public class ASiCECAdESLevelLTAExtensionForCounterSignedTest extends AbstractASi
 		// impossible to counter sign an extended signature
 		counterSignatureParameters.bLevel().setSigningDate(new Date());
 		counterSignatureParameters.setSignatureIdToCounterSign(counterSignatureId);
-		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(ltaCAdES, counterSignatureParameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(ltaCAdES, counterSignatureParameters));
 		assertEquals("The counter signature is not possible! Reason : " +
 					"a signature with a filename 'META-INF/signature001.p7s' is covered by another manifest.", exception.getMessage());
 		
@@ -171,7 +170,7 @@ public class ASiCECAdESLevelLTAExtensionForCounterSignedTest extends AbstractASi
 		// possible to counter sign the main signature again
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
 		
-		exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(ltaCAdES, counterSignatureParameters));
+		exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(ltaCAdES, counterSignatureParameters));
 		assertEquals("The counter signature is not possible! Reason : " +
 					"a signature with a filename 'META-INF/signature001.p7s' is covered by another manifest.", exception.getMessage());
 	}

@@ -29,7 +29,6 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -144,7 +143,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setEmbedXML(true);
 		signatureParameters.setReferences(refs);
-		Exception exception = assertThrows(DSSException.class, () -> signAndValidate(document, signatureParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(document, signatureParameters));
 		assertEquals("Reference setting is not correct! The embedXML(true) parameter is not compatible with base64 transform.", exception.getMessage());
 	}
 	
@@ -163,7 +162,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setReferences(refs);
-		Exception exception = assertThrows(DSSException.class, () -> signAndValidate(document, signatureParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(document, signatureParameters));
 		assertEquals("Reference setting is not correct! Base64 transform is not compatible with ENVELOPED signature format.", exception.getMessage());		
 	}
 	
@@ -185,7 +184,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setReferences(refs);
-		Exception exception = assertThrows(DSSException.class, () -> signAndValidate(document, signatureParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(document, signatureParameters));
 		assertEquals("Reference setting is not correct! Base64 transform cannot be used with other transformations.", exception.getMessage());		
 	}
 	
@@ -206,7 +205,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setReferences(refs);
-		Exception exception = assertThrows(DSSException.class, () -> signAndValidate(document, signatureParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(document, signatureParameters));
 		assertEquals("Reference setting is not correct! Base64 transform cannot be used with other transformations.", exception.getMessage());		
 	}
 	
@@ -233,8 +232,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setReferences(refs);
 		signatureParameters.setManifestSignature(true);
-		Exception exception = assertThrows(DSSException.class,
-				() -> signAndValidate(documentToSign, signatureParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
 		assertEquals("Reference setting is not correct! Manifest signature is not compatible with base64 transform.", exception.getMessage());	
 	}
 	

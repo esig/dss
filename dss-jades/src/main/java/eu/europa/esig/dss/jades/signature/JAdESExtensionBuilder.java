@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.validation.JWS;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
@@ -44,11 +44,11 @@ public abstract class JAdESExtensionBuilder {
 		List<Object> etsiU = DSSJsonUtils.getEtsiU(jws);
 		if (Utils.isCollectionNotEmpty(etsiU)) {
 			if (!DSSJsonUtils.checkComponentsUnicity(etsiU)) {
-				throw new DSSException("Extension is not possible, because components of the 'etsiU' header have "
+				throw new IllegalInputException("Extension is not possible, because components of the 'etsiU' header have "
 						+ "not common format! Shall be all Strings or Objects.");
 			}
 			if (DSSJsonUtils.areAllBase64UrlComponents(etsiU) != isBase64UrlEtsiUComponents) {
-				throw new DSSException(String.format("Extension is not possible! The encoding of 'etsiU' "
+				throw new IllegalInputException(String.format("Extension is not possible! The encoding of 'etsiU' "
 						+ "components shall match! Use jadesSignatureParameters.setBase64UrlEncodedEtsiUComponents(%s)",
 						!isBase64UrlEtsiUComponents));
 			}
@@ -62,13 +62,13 @@ public abstract class JAdESExtensionBuilder {
 	 */
 	protected void assertJWSJsonSerializationObjectValid(JWSJsonSerializationObject jwsJsonSerializationObject) {
 		if (jwsJsonSerializationObject == null) {
-			throw new DSSException("The provided document is not a valid JAdES signature! Unable to extend.");
+			throw new IllegalInputException("The provided document is not a valid JAdES signature! Unable to extend.");
 		}
 		if (Utils.isCollectionEmpty(jwsJsonSerializationObject.getSignatures())) {
-			throw new DSSException("There is no signature to extend!");
+			throw new IllegalInputException("There is no signature to extend!");
 		}
 		if (!jwsJsonSerializationObject.isValid()) {
-			throw new DSSException(String.format("Signature extension is not supported for invalid RFC 7515 files "
+			throw new IllegalInputException(String.format("Signature extension is not supported for invalid RFC 7515 files "
 							+ "(shall be a Serializable JAdES signature). Reason(s) : %s",
 					jwsJsonSerializationObject.getStructuralValidationErrors()));
 		}
@@ -85,7 +85,7 @@ public abstract class JAdESExtensionBuilder {
 		JWSSerializationType jwsSerializationType = jwsJsonSerializationObject.getJWSSerializationType();
 		if (!JWSSerializationType.JSON_SERIALIZATION.equals(jwsSerializationType) &&
 				!JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(jwsSerializationType)) {
-			throw new DSSException("The extended signature shall have JSON Serialization (or Flattened) type! " +
+			throw new IllegalInputException("The extended signature shall have JSON Serialization (or Flattened) type! " +
 					"Use JWSConverter to convert the signature.");
 		}
 	}

@@ -63,7 +63,7 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 				LOG.debug("Created PdfDocTimestampInfo : {}", getByteRange());
 			}
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to create a PdfDocTimestampRevision : %s", e.getMessage()), e);
 		}
 	}
 

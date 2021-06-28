@@ -2,7 +2,6 @@ package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -83,7 +82,7 @@ public class SignEd25519Test {
 
             ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
 
-            Exception exception = assertThrows(DSSException.class, () ->
+            Exception exception = assertThrows(IllegalArgumentException.class, () ->
                     signatureToken.sign(toBeSigned, SignatureAlgorithm.RSA_SHA512, entry));
             assertEquals("The provided SignatureAlgorithm 'RSA with SHA512' cannot be used to sign with " +
                             "the token's implied EncryptionAlgorithm 'EdDSA'", exception.getMessage());
@@ -106,11 +105,11 @@ public class SignEd25519Test {
             final byte[] encodedDigest = DSSUtils.encodeRSADigest(digestAlgo, digestBinaries);
             Digest digest = new Digest(digestAlgo, encodedDigest);
 
-            Exception exception = assertThrows(DSSException.class, () -> signatureToken.signDigest(digest, entry));
+            Exception exception = assertThrows(UnsupportedOperationException.class, () -> signatureToken.signDigest(digest, entry));
             assertEquals("The SignatureAlgorithm for digest signing is not found for the given configuration " +
                     "[EncryptionAlgorithm: EDDSA; MaskGenerationFunction: null]", exception.getMessage());
 
-            exception = assertThrows(DSSException.class, () -> signatureToken.signDigest(digest, SignatureAlgorithm.ED25519, entry));
+            exception = assertThrows(UnsupportedOperationException.class, () -> signatureToken.signDigest(digest, SignatureAlgorithm.ED25519, entry));
             assertEquals("The SignatureAlgorithm for digest signing is not found for the given configuration " +
                     "[EncryptionAlgorithm: EDDSA; MaskGenerationFunction: null]", exception.getMessage());
         }

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -153,7 +154,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		JAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		if (!params.isBase64UrlEncodedEtsiUComponents()
 				&& Utils.isStringEmpty(archiveTimestampParameters.getCanonicalizationMethod())) {
-			throw new DSSException(
+			throw new IllegalInputException(
 					"Unable to extend JAdES-LTA level. Clear 'etsiU' incorporation requires a canonicalization method!");
 		}
 	}
@@ -163,7 +164,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			for (DSSDocument detachedDocument : detachedContents) {
 				if (detachedDocument instanceof DigestDocument) {
-					throw new DSSException("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "
+					throw new IllegalArgumentException("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "
 							+ "Extension with a DigestDocument is not possible.");
 				}
 			}
@@ -173,7 +174,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 	private void checkEtsiUContentUnicity(JAdESSignature jadesSignature) {
 		List<Object> etsiU = DSSJsonUtils.getEtsiU(jadesSignature.getJws());
 		if (!DSSJsonUtils.checkComponentsUnicity(etsiU)) {
-			throw new DSSException("Unsupported 'etsiU' container structure! Extension is not possible.");
+			throw new IllegalInputException("Unsupported 'etsiU' container structure! Extension is not possible.");
 		}
 	}
 

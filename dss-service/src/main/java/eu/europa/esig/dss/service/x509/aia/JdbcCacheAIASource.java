@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.service.x509.aia;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.aia.RepositoryAIASource;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -134,8 +134,8 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
             return certificateTokens;
 
         } catch (Exception e) {
-            throw new DSSException(String.format("An error occurred during an attempt to get a certificate token from cache. " +
-                    "Reason : %s", e.getMessage()), e);
+            throw new DSSExternalResourceException(String.format("An error occurred during an attempt to get " +
+                    "a certificate token from cache. Reason : %s", e.getMessage()), e);
         }
     }
 

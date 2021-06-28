@@ -20,11 +20,16 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader.DataAndUrl;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,17 +42,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DataLoader.DataAndUrl;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
-import eu.europa.esig.dss.utils.Utils;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileCacheDataLoaderTest {
 
@@ -72,7 +71,7 @@ public class FileCacheDataLoaderTest {
 	}
 
 	@Test
-	public void getUrl_whenExpirationTimeIsNotSet_useCachedFile() throws Exception {
+	public void getUrlWhenExpirationTimeIsNotSetUseCachedFile() {
 		long cacheCreationTime = getUrlAndReturnCacheCreationTime();
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
@@ -81,7 +80,7 @@ public class FileCacheDataLoaderTest {
 	}
 
 	@Test
-	public void getUrl_whenCacheIsNotExpired_useCachedFile() throws Exception {
+	public void getUrlWhenCacheIsNotExpiredUseCachedFile() {
 		dataLoader.setCacheExpirationTime(2000L);
 		long cacheCreationTime = getUrlAndReturnCacheCreationTime();
 		waitOneSecond();
@@ -91,7 +90,7 @@ public class FileCacheDataLoaderTest {
 	}
 
 	@Test
-	public void getUrl_whenCacheIsExpired_downloadNewCopy() throws Exception {
+	public void getUrlWhenCacheIsExpiredDownloadNewCopy() {
 		dataLoader.setCacheExpirationTime(500L);
 		long cacheCreationTime = getUrlAndReturnCacheCreationTime();
 		waitOneSecond();
@@ -103,7 +102,7 @@ public class FileCacheDataLoaderTest {
 	@Test
 	public void testNotNetworkProtocol() throws IOException {
 		FileCacheDataLoader specificDataLoader = new FileCacheDataLoader();
-		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<String, byte[]>()));
+		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<>()));
 		specificDataLoader.setFileCacheDirectory(cacheDirectory);
 
 		assertThrows(DSSException.class, () -> specificDataLoader.get("1.2.3.4.5"));

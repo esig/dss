@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -14,7 +14,7 @@ public class XAdESLevelCAllSelfSignedTest extends XAdESLevelCTest {
     @Test
     @Override
     public void signAndVerify() {
-        Exception exception = assertThrows(DSSException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalInputException.class, () -> super.sign());
         assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!",
                 exception.getMessage());
     }

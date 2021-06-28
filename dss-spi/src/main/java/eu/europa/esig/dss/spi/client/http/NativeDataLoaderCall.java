@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.io.IOException;
@@ -87,7 +87,7 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 			inputStream = connection.getInputStream();
 			result = Utils.toByteArray(maxInputSize > 0? new MaxSizeInputStream(inputStream, maxInputSize, url): inputStream);
 		} catch (IOException e) {
-			throw new DSSException(String.format(ERROR_MESSAGE, url, e.getMessage()), e);
+			throw new DSSExternalResourceException(String.format(ERROR_MESSAGE, url, e.getMessage()), e);
 		} finally {
 			Utils.closeQuietly(out);
 			Utils.closeQuietly(inputStream);

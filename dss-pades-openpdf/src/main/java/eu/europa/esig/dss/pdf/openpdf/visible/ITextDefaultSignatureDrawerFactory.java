@@ -40,11 +40,11 @@ public class ITextDefaultSignatureDrawerFactory implements ITextSignatureDrawerF
 		} else if ((image != null) && textParameters.isEmpty()) {
 			return new ImageOnlySignatureDrawer();
 		} else if (image == null && textParameters.isEmpty()) {
-			throw new DSSException("Neither image nor text parameters are defined!");
+			throw new IllegalArgumentException("Neither image nor text parameters are defined!");
 		} else {
 			// Custom drawer(s) can be injected with a new Factory and a custom instance of
 			// IPdfObjFactory
-			throw new DSSException("Common Image and Text signature drawer is not implemented for OpenPDF module!");
+			throw new UnsupportedOperationException("Image with Text visual signature is not supported for OpenPDF module!");
 		}
 	}
 

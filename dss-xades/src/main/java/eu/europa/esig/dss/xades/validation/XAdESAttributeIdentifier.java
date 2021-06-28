@@ -38,7 +38,7 @@ public class XAdESAttributeIdentifier extends SignatureAttributeIdentifier {
             return new XAdESAttributeIdentifier(baos.toByteArray());
 
         } catch (IOException e) {
-            throw new DSSException(e);
+            throw new DSSException(String.format("Unable to build a XAdES Attribute Identifier : %s", e.getMessage()), e);
         }
     }
 

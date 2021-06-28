@@ -29,6 +29,7 @@ import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.exception.DSSDataLoaderMultipleException;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -196,7 +197,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
 		// TODO: review
 		if ((toBeLoaded != null) && !toBeLoaded.contains(url)) {
-			throw new DSSException(String.format("The toBeLoaded list does not contain URL [%s]!", url));
+			throw new DSSExternalResourceException(String.format("The toBeLoaded list does not contain URL [%s]!", url));
 		}
 		final String fileName = DSSUtils.getNormalizedString(url);
 		final File file = getCacheFile(fileName);
@@ -231,7 +232,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 			return new FileDocument(out);
 			
 		} 
-		throw new DSSException(String.format("Cannot retrieve data from url [%s]. Empty content is obtained!", url));
+		throw new DSSExternalResourceException(String.format("Cannot retrieve data from url [%s]. Empty content is obtained!", url));
 		
 	}
 
@@ -275,7 +276,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 		final String trimmedFileName = Utils.trim(fileName);
 		if ((toIgnored != null) && toIgnored.contains(trimmedFileName)) {
 
-			throw new DSSException("Part of urls to ignore.");
+			throw new DSSExternalResourceException("Part of urls to ignore.");
 		}
 		LOG.debug("Cached file: {}/{}", fileCacheDirectory, trimmedFileName);
 		final File file = new File(fileCacheDirectory, trimmedFileName);
@@ -312,7 +313,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 			final byte[] bytes = DSSUtils.toByteArray(file);
 			return bytes;
 		}
-		throw new DSSException(String.format("The file with URL [%s] does not exist in the cache!", urlString));
+		throw new DSSExternalResourceException(String.format("The file with URL [%s] does not exist in the cache!", urlString));
 	}
 
 	@Override
@@ -352,7 +353,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 			DSSUtils.saveToFile(returnedBytes, cacheFile);
 			return returnedBytes;
 		}
-		throw new DSSException(String.format("Cannot retrieve data from URL [%s]", urlString));
+		throw new DSSExternalResourceException(String.format("Cannot retrieve data from URL [%s]", urlString));
 	}
 
 	private boolean isCacheExpired(File file) {
@@ -373,7 +374,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	@Override
 	public DataAndUrl get(final List<String> urlStrings) {
 		if (Utils.isCollectionEmpty(urlStrings)) {
-			throw new DSSException("Cannot process the GET call. List of URLs is empty!");
+			throw new DSSExternalResourceException("Cannot process the GET call. List of URLs is empty!");
 		}
 		
 		final Map<String, Throwable> exceptions = new HashMap<>(); // store map of exception thrown for urls

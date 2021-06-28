@@ -23,13 +23,13 @@ package eu.europa.esig.dss.jades.extension;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSConverter;
 import eu.europa.esig.dss.jades.signature.AbstractJAdESTestSignature;
 import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,18 +67,18 @@ public class JAdESExtensionLTClearToLTATest extends AbstractJAdESTestSignature {
 
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
 
-		Exception exception = assertThrows(DSSException.class,
+		Exception exception = assertThrows(IllegalInputException.class,
 				() -> service.extendDocument(signedDocument, signatureParameters));
 		assertEquals("Unable to extend JAdES-LTA level. Clear 'etsiU' incorporation requires a canonicalization method!",
 				exception.getMessage());
 
 		JAdESTimestampParameters archiveTimestampParameters = signatureParameters.getArchiveTimestampParameters();
-		exception = assertThrows(DSSException.class, () -> archiveTimestampParameters.setCanonicalizationMethod("c14n"));
+		exception = assertThrows(UnsupportedOperationException.class, () -> archiveTimestampParameters.setCanonicalizationMethod("c14n"));
 		assertEquals("Canonicalization is not supported in the current version.", exception.getMessage());
 
 		signatureParameters.setBase64UrlEncodedEtsiUComponents(true);
 
-		exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, signatureParameters));
+		exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(signedDocument, signatureParameters));
 		assertEquals("Extension is not possible! The encoding of 'etsiU' "
 				+ "components shall match! Use jadesSignatureParameters.setBase64UrlEncodedEtsiUComponents(false)",
 				exception.getMessage());

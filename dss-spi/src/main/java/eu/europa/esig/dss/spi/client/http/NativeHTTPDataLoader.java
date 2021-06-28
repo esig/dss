@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi.client.http;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,9 +74,9 @@ public class NativeHTTPDataLoader implements DataLoader {
 			return timeout > 0 ? result.get(timeout, TimeUnit.MILLISECONDS) : result.get();
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new DSSException(e);
+			throw new DSSExternalResourceException(e);
 		} catch (ExecutionException | TimeoutException e) {
-			throw new DSSException(e);
+			throw new DSSExternalResourceException(e);
 		} finally {
 			executorService.shutdown();
 		}
@@ -94,7 +95,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 				LOGGER.warn("Impossible to obtain data using {}", urlString, e);
 			}
 		}
-		throw new DSSException(String.format("Impossible to obtain data using with given urls %s", urlStrings));
+		throw new DSSExternalResourceException(String.format("No data have been obtained from urls : %s", urlStrings));
 	}
 
 	@Override
@@ -114,7 +115,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 
 	@Override
 	public void setContentType(String contentType) {
-		throw new DSSException("Not implemented");
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	/**

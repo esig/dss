@@ -20,13 +20,8 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -35,6 +30,10 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESLevelBNotEnoughSpaceForSignatureTest extends PKIFactoryAccess {
 
@@ -51,14 +50,10 @@ public class PAdESLevelBNotEnoughSpaceForSignatureTest extends PKIFactoryAccess 
 		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(getOfflineCertificateVerifier());
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				getPrivateKeyEntry());
-		try {
-			service.signDocument(toBeSigned, signatureParameters, signatureValue);
-			fail("Not enough space");
-		} catch (DSSException e) {
-			// assertTrue(ExceptionUtils.getStackTrace(e).contains("not enough space"));
-		}
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		// unable to get detailed exception from PdfBox
+		Exception exception = assertThrows(Exception.class, () -> service.signDocument(toBeSigned, signatureParameters, signatureValue));
+		assertTrue(exception.getMessage().contains("Unable to save a document."));
 	}
 
 	@Override

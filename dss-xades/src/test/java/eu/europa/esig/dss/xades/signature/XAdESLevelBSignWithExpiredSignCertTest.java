@@ -3,7 +3,6 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -35,11 +34,11 @@ public class XAdESLevelBSignWithExpiredSignCertTest extends AbstractXAdESTestSig
 
     @Override
     protected DSSDocument sign() {
-        Exception exception = assertThrows(DSSException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("is expired at signing time"));
 
         signatureParameters.setSignWithNotYetValidCertificate(true);
-        exception = assertThrows(DSSException.class, () -> super.sign());
+        exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("is expired at signing time"));
 
         signatureParameters.setSignWithNotYetValidCertificate(false);

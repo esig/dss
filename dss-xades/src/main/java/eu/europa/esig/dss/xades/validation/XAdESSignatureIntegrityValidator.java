@@ -49,7 +49,7 @@ public class XAdESSignatureIntegrityValidator extends SignatureIntegrityValidato
 		try {
 			return santuarioSignature.checkSignatureValue(publicKey);
 		} catch (XMLSignatureException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to verify the signature : %s", e.getMessage()), e);
 		}
 	}
 

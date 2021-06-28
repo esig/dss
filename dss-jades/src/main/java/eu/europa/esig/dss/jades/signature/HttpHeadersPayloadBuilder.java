@@ -106,7 +106,7 @@ public class HttpHeadersPayloadBuilder {
 					continue;
 
 				} else {
-					throw new DSSException("Unable to compute message-imprint for an Archive Timestamp! "
+					throw new IllegalArgumentException("Unable to compute message-imprint for an Archive Timestamp! "
 							+ "'Digest' header must be an instance of HTTPHeaderDigest class.");
 				}
 			}
@@ -187,22 +187,22 @@ public class HttpHeadersPayloadBuilder {
 			boolean digestDocumentFound = false;
 			for (DSSDocument document : detachedContents) {
 				if (!(document instanceof HTTPHeader)) {
-					throw new DSSException("The documents to sign must have "
+					throw new IllegalArgumentException("The documents to sign must have "
 							+ "a type of HTTPHeader for 'sigD' HttpHeaders mechanism!");
 				}
 				if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
 					if (digestDocumentFound) {
-						throw new DSSException("Only one 'Digest' header or HTTPHeaderDigest object is allowed!");
+						throw new IllegalArgumentException("Only one 'Digest' header or HTTPHeaderDigest object is allowed!");
 					}
 					if (!(document instanceof HTTPHeaderDigest) && isTimestamp) {
-						throw new DSSException("Unable to compute message-imprint for a Timestamp! "
+						throw new IllegalArgumentException("Unable to compute message-imprint for a Timestamp! "
 								+ "'Digest' header must be an instance of HTTPHeaderDigest class.");
 					}
 					digestDocumentFound = true;
 				}
 			}
 		} else {
-			throw new DSSException("Unable to compute HTTPHeaders payload! The list of detached documents is empty.");
+			throw new IllegalArgumentException("Unable to compute HTTPHeaders payload! The list of detached documents is empty.");
 		}
 	}
 

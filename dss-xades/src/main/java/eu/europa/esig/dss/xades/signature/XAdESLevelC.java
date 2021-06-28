@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.ResponderId;
@@ -360,9 +360,9 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		if (SignatureLevel.XAdES_C.equals(signatureLevel) && (xadesSignature.hasXProfile() ||
 				xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
 			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
-			throw new DSSException(String.format(exceptionMessage, "XAdES X"));
+			throw new IllegalInputException(String.format(exceptionMessage, "XAdES X"));
 		} else if (xadesSignature.areAllSelfSignedCertificates()) {
-			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}
 

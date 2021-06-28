@@ -20,23 +20,21 @@
  */
 package eu.europa.esig.dss.ws.converter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RemoteDocumentConverterTest {
 	
@@ -88,9 +86,8 @@ public class RemoteDocumentConverterTest {
 	@Test
 	public void emptyDigestDocumentToRemoteDocumentTest() {
 		DSSDocument dssDocument = new DigestDocument();
-		assertThrows(DSSException.class, () -> RemoteDocumentConverter.toRemoteDocument(dssDocument));
-
-		
+		Exception exception = assertThrows(IllegalStateException.class, () -> RemoteDocumentConverter.toRemoteDocument(dssDocument));
+		assertEquals("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.", exception.getMessage());
 	}
 	
 	@Test

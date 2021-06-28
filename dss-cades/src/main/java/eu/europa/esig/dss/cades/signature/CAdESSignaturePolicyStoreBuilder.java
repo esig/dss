@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -73,7 +73,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 		
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
 		if (Utils.isCollectionEmpty(signerInformationCollection)) {
-			throw new DSSException("Unable to extend the document! No signatures found.");
+			throw new IllegalInputException("Unable to extend the document! No signatures found.");
 		}
 		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 		
@@ -151,7 +151,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 	
 	private void assertSignaturePolicyStoreExtensionPossible(SignerInformation signerInformation) {
 		if (CMSUtils.containsATSTv2(signerInformation)) {
-			throw new DSSException("Cannot add signature policy store to a CAdES containing an archiveTimestampV2");
+			throw new IllegalInputException("Cannot add signature policy store to a CAdES containing an archiveTimestampV2");
 		}
 	}
 

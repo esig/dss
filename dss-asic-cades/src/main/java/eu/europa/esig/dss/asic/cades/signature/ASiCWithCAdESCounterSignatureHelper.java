@@ -21,14 +21,14 @@
 package eu.europa.esig.dss.asic.cades.signature;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESExtractResultUtils;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
 
@@ -85,7 +85,7 @@ public class ASiCWithCAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 		super.checkCounterSignaturePossible(signatureDocument);
 		
 		if (ASiCWithCAdESExtractResultUtils.isCoveredByManifest(getASiCExtractResult(), signatureDocument.getName())) {
-			throw new DSSException(String.format("The counter signature is not possible! "
+			throw new IllegalInputException(String.format("The counter signature is not possible! "
 					+ "Reason : a signature with a filename '%s' is covered by another manifest.", signatureDocument.getName()));
 		}
 	}

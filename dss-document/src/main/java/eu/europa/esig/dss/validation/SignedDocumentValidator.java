@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -221,7 +222,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				return factory.create(dssDocument);
 			}
 		}
-		throw new DSSException("Document format not recognized/handled");
+		throw new UnsupportedOperationException("Document format not recognized/handled");
 	}
 
 	/**
@@ -345,10 +346,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (validationPolicyURL == null) {
 			return validateDocument((InputStream) null);
 		}
-		try {
-			return validateDocument(validationPolicyURL.openStream());
+		try (InputStream is = validationPolicyURL.openStream()) {
+			return validateDocument(is);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new IllegalInputException(String.format("Unable to load policy with URL '%s'. Reason : %s",
+					validationPolicyURL, e.getMessage()), e);
 		}
 	}
 
@@ -357,7 +359,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (policyResourcePath == null) {
 			return validateDocument((InputStream) null);
 		}
-		return validateDocument(getClass().getResourceAsStream(policyResourcePath));
+		try (InputStream is = getClass().getResourceAsStream(policyResourcePath)) {
+			return validateDocument(is);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format("Unable to load policy from path '%s'. Reason : %s",
+					policyResourcePath, e.getMessage()), e);
+		}
 	}
 
 	@Override
@@ -365,8 +372,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if ((policyFile == null) || !policyFile.exists()) {
 			return validateDocument((InputStream) null);
 		}
-		final InputStream inputStream = DSSUtils.toByteArrayInputStream(policyFile);
-		return validateDocument(inputStream);
+		try (InputStream is = DSSUtils.toByteArrayInputStream(policyFile)) {
+			return validateDocument(is);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format("Unable to load policy from file '%s'. Reason : %s",
+					policyFile, e.getMessage()), e);
+		}
 	}
 
 	/**
@@ -387,7 +398,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
 			}
 		} catch (Exception e) {
-			throw new DSSException("Unable to load the policy", e);
+			throw new IllegalInputException("Unable to load the policy", e);
 		}
 		return validateDocument(validationPolicy);
 	}

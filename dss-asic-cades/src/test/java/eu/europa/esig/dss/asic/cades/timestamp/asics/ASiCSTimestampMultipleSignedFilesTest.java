@@ -6,8 +6,8 @@ import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.signature.AbstractASiCWithCAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ public class ASiCSTimestampMultipleSignedFilesTest extends AbstractASiCWithCAdES
         ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();
         timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-        Exception exception = assertThrows(DSSException.class, () -> service.timestamp(signedDocument, timestampParameters));
+        Exception exception = assertThrows(IllegalInputException.class, () -> service.timestamp(signedDocument, timestampParameters));
         assertEquals("Unable to timestamp an ASiC-S with CAdES container containing signature files! " +
                 "Use extendDocument(...) method for signature extension.", exception.getMessage());
     }

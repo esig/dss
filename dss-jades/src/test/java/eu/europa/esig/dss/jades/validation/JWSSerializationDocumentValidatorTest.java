@@ -20,29 +20,64 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.test.validation.AbstractTestValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.model.InMemoryDocument;
-
-public class JWSSerializationDocumentValidatorTest {
+public class JWSSerializationDocumentValidatorTest extends AbstractTestValidator {
 
 	@Test
 	public void test() {
-
 		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator();
-
 		assertFalse(validator.isSupported(new InMemoryDocument(new byte[] {})));
 		assertFalse(validator.isSupported(new InMemoryDocument("{".getBytes())));
 		assertTrue(validator.isSupported(new InMemoryDocument("{}".getBytes())));
 		assertFalse(validator.isSupported(new InMemoryDocument("{hello:\"world\"}".getBytes())));
 		assertTrue(validator.isSupported(new InMemoryDocument("{\"hello\":\"world\"}".getBytes())));
-
-		assertTrue(
-				validator
-						.isSupported(new InMemoryDocument("{\"payload\":\"AAA\",\"signatures\":[{\"protected\":\"BBB\",\"signature\":\"CCCC\"}]}".getBytes())));
-
+		assertTrue(validator.isSupported(new InMemoryDocument("{\"payload\":\"AAA\",\"signatures\":[{\"protected\":\"BBB\",\"signature\":\"CCCC\"}]}".getBytes())));
 	}
+
+	@Override
+	protected SignedDocumentValidator initEmptyValidator() {
+		return new JWSSerializationDocumentValidator();
+	}
+
+	@Override
+	protected SignedDocumentValidator initValidator(DSSDocument document) {
+		return new JWSSerializationDocumentValidator(document);
+	}
+
+	@Override
+	protected List<DSSDocument> getValidDocuments() {
+		List<DSSDocument> documents = new ArrayList<>();
+		documents.add(new FileDocument("src/test/resources/validation/jades-lta.json"));
+		documents.add(new FileDocument("src/test/resources/validation/jades-with-counter-signature.json"));
+		documents.add(new FileDocument("src/test/resources/validation/serialization-extra-element.json"));
+		return documents;
+	}
+
+	@Override
+	protected DSSDocument getMalformedDocument() {
+		return new FileDocument("src/test/resources/validation/malformed-jades-serialization.json");
+	}
+
+	@Override
+	protected DSSDocument getOtherTypeDocument() {
+		return new FileDocument("src/test/resources/validation/jades-level-b-full-type.json");
+	}
+
+	@Override
+	protected DSSDocument getNoSignatureDocument() {
+		return new FileDocument("src/test/resources/validation/jws-serialization-no-signatures.json");
+	}
+
 }

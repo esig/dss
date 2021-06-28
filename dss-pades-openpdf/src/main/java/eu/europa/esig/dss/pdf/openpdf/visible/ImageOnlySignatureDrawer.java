@@ -23,7 +23,7 @@ package eu.europa.esig.dss.pdf.openpdf.visible;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfTemplate;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
@@ -79,7 +79,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		try {
 			return Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
 		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to read the provided image file. Reason : %s", e.getMessage()), e);
+			throw new IllegalInputException(String.format("Unable to read the provided image file. Reason : %s", e.getMessage()), e);
 		}
 	}
 

@@ -153,7 +153,7 @@ public final class DSSRevocationUtils {
 			final byte[] encoded = basicOCSPResp.getEncoded();
 			return fromBasicToResp(encoded);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to convert BasicOCSPResp to OCSPResp : %s", e.getMessage()), e);
 		}
 	}
 
@@ -172,7 +172,7 @@ public final class DSSRevocationUtils {
 				throw new DSSException("Empty OCSP response");
 			}
 		} catch (IOException e) {
-			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);
+			throw new DSSException(String.format("OCSP encoding error : %s", e.getMessage()), e);
 		}
 	}
 
@@ -311,7 +311,7 @@ public final class DSSRevocationUtils {
 		try {
 			return ocspResp.getEncoded();
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to get binaries of OCSPResp : %s", e.getMessage()), e);
 		}
 	}
 	

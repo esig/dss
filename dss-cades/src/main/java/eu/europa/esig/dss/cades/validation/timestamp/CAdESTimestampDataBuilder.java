@@ -126,7 +126,8 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			byte[] byteArray = data.toByteArray();
 			return new InMemoryDocument(byteArray);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("An error occurred while generating message-imprint for " +
+					"escTimeStamp token. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -152,7 +153,8 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 			return data.toByteArray();
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("An error occurred while generating message-imprint for " +
+					"certCRLTimestamp token. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -269,10 +271,11 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			final byte[] result = data.toByteArray();
 			return new InMemoryDocument(result);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("An error occurred while generating message-imprint for " +
+					"archive-time-stamp-v3 token. Reason : %s", e.getMessage()), e);
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
-			LOG.error("An error in computing of message impring for a TimestampToken with Id : {}. Reason : {}", 
+			LOG.error("An error in computing of message-imprint for a TimestampToken with Id : {}. Reason : {}",
 					timestampToken.getDSSIdAsString(), e.getMessage(), e);
 			return null;
 		}
@@ -388,7 +391,8 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 						continue;
 					}
 				} catch (Exception e) {
-					throw new DSSException(e);
+					throw new DSSException(String.format("Unexpected error occurred on reading unsigned properties : %s",
+							e.getMessage()), e);
 				}
 			}
 			result.add(unauthenticatedAttributes.getObjectAt(ii));

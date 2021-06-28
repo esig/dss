@@ -155,7 +155,8 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 		try {
 			addBinary(CRLUtils.buildCRLBinary(crlHolder.getEncoded()), origin);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to parse CRL binaries from origin '%s'. Reason : %s",
+					origin, e.getMessage()), e);
 		}
 	}
 

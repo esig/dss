@@ -285,7 +285,7 @@ public class CertificateToken extends Token {
 			x509Certificate.verify(publicKey);
 			signatureValidity = SignatureValidity.VALID;
 		} catch (NoSuchProviderException e) { // if there's no default provider.
-			throw new DSSException(e);
+			throw new DSSException(String.format("No provider has been found for signature validation : %s", e.getMessage()), e);
 		} catch (Exception e) {
 			signatureInvalidityReason = e.getClass().getSimpleName() + " : " + e.getMessage();
 		}

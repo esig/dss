@@ -28,6 +28,7 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -1084,7 +1085,7 @@ public final class DSSXMLUtils {
 				transformedReferenceBytes = transform.getBytesAfterTransformation(nodeToTransform);
 				if (iterator.hasNext()) {
 					if (Utils.isArrayEmpty(transformedReferenceBytes)) {
-						throw new DSSException(String.format(
+						throw new IllegalInputException(String.format(
 								"Unable to perform the next transform. The %s produced an empty output!", transform));
 					}
 					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);

@@ -84,9 +84,8 @@ public class CAdESService extends
 
 	@Override
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, CAdESSignatureParameters parameters) {
-		if (tspSource == null) {
-			throw new DSSException("A TSPSource is required !");
-		}
+		Objects.requireNonNull(tspSource, "A TSPSource is required !");
+
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
 		try {
@@ -246,6 +245,8 @@ public class CAdESService extends
 	}
 
 	/**
+	 * This method returns the extension profile to be used for a CAdES signature augmentation
+	 *
 	 * @param parameters
 	 *            set of driving signing parameters
 	 * @return {@code CAdESSignatureExtension} related to the predefine profile
@@ -261,7 +262,7 @@ public class CAdESService extends
 			case CAdES_BASELINE_LTA:
 				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier);
 			default:
-				throw new DSSException("Unsupported signature format : " + signatureLevel);
+				throw new IllegalArgumentException("Unsupported signature format : " + signatureLevel);
 		}
 	}
 
@@ -297,7 +298,7 @@ public class CAdESService extends
 	 */
 	private void assertSignaturePackaging(final SignaturePackaging packaging) {
 		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
-			throw new DSSException("Unsupported signature packaging: " + packaging);
+			throw new IllegalArgumentException("Unsupported signature packaging: " + packaging);
 		}
 	}
 
@@ -385,7 +386,7 @@ public class CAdESService extends
 
 	private void assertCounterSignaturePossible(CAdESCounterSignatureParameters parameters) {
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
-			throw new DSSException(String.format("A counter signature with a level '%s' is not supported! "
+			throw new UnsupportedOperationException(String.format("A counter signature with a level '%s' is not supported! "
 					+ "Please, use CAdES-BASELINE-B", parameters.getSignatureLevel()));
 		}
 	}

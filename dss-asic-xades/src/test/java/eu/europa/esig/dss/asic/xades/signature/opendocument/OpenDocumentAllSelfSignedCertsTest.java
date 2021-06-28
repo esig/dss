@@ -20,31 +20,30 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
 	
@@ -100,7 +99,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
 	public void ltLevelTest(File file) {
 		documentToSign = new FileDocument(file);
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		Exception exception = assertThrows(DSSException.class, () -> sign());
+		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 
@@ -109,7 +108,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
 	public void ltaLevelTest(File file) {
 		documentToSign = new FileDocument(file);
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		Exception exception = assertThrows(DSSException.class, () -> sign());
+		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 	

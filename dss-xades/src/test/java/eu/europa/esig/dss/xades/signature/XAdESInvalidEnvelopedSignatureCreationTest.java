@@ -2,8 +2,8 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -59,12 +59,12 @@ public class XAdESInvalidEnvelopedSignatureCreationTest extends AbstractXAdESTes
 
         documentToSign = signedDocument;
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalInputException.class, () -> super.sign());
         assertEquals("Unable to create an enveloped signature for another XML signature document!", exception.getMessage());
 
         documentToSign = new InMemoryDocument("Hello World!".getBytes(), "test.txt");
 
-        exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        exception = assertThrows(IllegalInputException.class, () -> super.sign());
         assertEquals("Enveloped signature cannot be created. Reason : the provided document is not XML!", exception.getMessage());
 
         documentToSign = signedDocument;
@@ -83,7 +83,7 @@ public class XAdESInvalidEnvelopedSignatureCreationTest extends AbstractXAdESTes
         reference.setTransforms(dssTransformList);
         signatureParameters.setReferences(Arrays.asList(reference));
 
-        exception = assertThrows(DSSException.class, () -> super.sign());
+        exception = assertThrows(IllegalInputException.class, () -> super.sign());
         assertEquals(String.format("Unable to perform the next transform. The %s produced an empty output!", xpathTransform), exception.getMessage());
     }
 

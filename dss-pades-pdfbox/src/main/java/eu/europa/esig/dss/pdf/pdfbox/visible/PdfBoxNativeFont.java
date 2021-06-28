@@ -51,7 +51,7 @@ public class PdfBoxNativeFont extends AbstractDSSFont implements DSSNativeFont<P
 
 	@Override
 	public Font getJavaFont() {
-		throw new DSSException("PdfBoxNativeFont.class can be used only with PdfBoxNativeObjectFactory!");
+		throw new UnsupportedOperationException("PdfBoxNativeFont.class can be used only with PdfBoxNativeObjectFactory!");
 	}
 
 }

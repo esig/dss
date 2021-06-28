@@ -40,7 +40,7 @@ public class PAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 
 	@Override
 	protected Object getCounterSignaturePosition(AdvancedSignature masterSignature) {
-		throw new DSSException("Not supported in PAdES!");
+		throw new UnsupportedOperationException("Not supported in PAdES!");
 	}
 
 	@Override

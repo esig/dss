@@ -26,7 +26,6 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -155,15 +154,15 @@ public class DetachedTimestampValidatorTest {
 	}
 
 	@Test
-	public void sdvTooMuchFiles() throws Exception {
+	public void sdvTooMuchFiles() {
 		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
 		DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(timestamp);
 		validator.setDetachedContents(Arrays.asList(timestampedContent, timestampedContent));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		DSSException exception = assertThrows(DSSException.class, () -> validator.validateDocument());
-		assertEquals("Too many files", exception.getMessage());
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> validator.validateDocument());
+		assertEquals("Only one detached document shall be provided for a timestamp validation!", exception.getMessage());
 	}
 
 	@Test

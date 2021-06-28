@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.spi.x509.tsp;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * This class allows to retrieve a timestamp with different sources. The composite will try all sources until to get a
@@ -72,7 +72,7 @@ public class CompositeTSPSource implements TSPSource {
 				LOG.warn("Unable to retrieve the timestamp with TSPSource '{}' : {}", sourceKey, e.getMessage());
 			}
 		}
-		throw new DSSException("Unable to retrieve the timestamp (" + tspSources.size() + " tries)");
+		throw new DSSExternalResourceException("Unable to retrieve the timestamp (" + tspSources.size() + " tries)");
 	}
 
 }

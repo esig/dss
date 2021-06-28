@@ -20,24 +20,22 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JAdESMultipleDocumentSignatureTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
@@ -60,7 +58,7 @@ public class JAdESMultipleDocumentSignatureTest extends AbstractJAdESMultipleDoc
 	@Test
 	public void test() {
 		MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service = getService();
-		Exception exception = assertThrows(DSSException.class, () -> service.getDataToSign(documentToSigns, signatureParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(documentToSigns, signatureParameters));
 		assertEquals("Not supported operation (only DETACHED are allowed for multiple document signing)!", exception.getMessage());
 	}
 	

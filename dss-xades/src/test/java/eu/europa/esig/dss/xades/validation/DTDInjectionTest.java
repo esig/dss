@@ -21,18 +21,18 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jaxb.common.DocumentBuilderFactoryBuilder;
 import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit test added to fix issue : https://esig-dss.atlassian.net/browse/DSS-678
@@ -73,9 +73,9 @@ public class DTDInjectionTest extends AbstractXAdESTestValidation {
 	public void test() {
 		FileDocument fileDocument = new FileDocument(
 				new File("src/test/resources/validation/xades-with-dtd-injection.xml"));
-		Exception exception = assertThrows(DSSException.class,
+		Exception exception = assertThrows(IllegalInputException.class,
 				() -> SignedDocumentValidator.fromDocument(fileDocument));
-		assertEquals("Unable to parse content (XML expected)", exception.getMessage());
+		assertTrue(exception.getMessage().contains("An XML file is expected : Unable to parse content (XML expected)"));;
 	}
 
 }

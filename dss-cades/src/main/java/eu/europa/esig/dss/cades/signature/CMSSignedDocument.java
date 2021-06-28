@@ -72,12 +72,17 @@ public class CMSSignedDocument extends CommonDocument {
 		return signedData;
 	}
 
+	/**
+	 * Returns the encoded binaries of the CMSSignedData
+	 *
+	 * @return binaries
+	 */
 	public byte[] getBytes() {
 		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 			writeTo(output);
 			return output.toByteArray();
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("An error occurred while reading CMSSignedData binaries : %s", e.getMessage()), e);
 		}
 	}
 

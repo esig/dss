@@ -527,7 +527,7 @@ public class TimestampToken extends Token {
 	 */
 	public Boolean isMessageImprintDataIntact() {
 		if (!processed) {
-			throw new DSSException("Invoke matchData(byte[] data) method before!");
+			throw new IllegalStateException("Invoke matchData(byte[] data) method before!");
 		}
 		return messageImprintIntact;
 	}

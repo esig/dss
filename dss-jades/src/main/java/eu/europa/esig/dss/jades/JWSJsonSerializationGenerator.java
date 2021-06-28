@@ -75,7 +75,7 @@ public class JWSJsonSerializationGenerator {
 			jsonSerialization = buildFlattenedJwsJsonSerialization();
 			break;
 		default:
-			throw new DSSException(String.format("The JWSJsonSerializationGenerator does not support the given JWS Serialization Type '%s'", output));
+			throw new UnsupportedOperationException(String.format("The JWSJsonSerializationGenerator does not support the given JWS Serialization Type '%s'", output));
 		}
 
 		byte[] binaries = jsonSerialization.toJSONString().getBytes(StandardCharsets.UTF_8);

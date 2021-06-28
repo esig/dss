@@ -312,7 +312,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * @return the parameters to produce a content timestamp
 	 */
 	public TP getContentTimestampParameters() {
-		throw new DSSException("Cannot extract ContentTimestampParameters! Not implemented by default.");
+		throw new UnsupportedOperationException("Cannot extract ContentTimestampParameters! Not implemented by default.");
 	}
 
 	/**
@@ -331,7 +331,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * @return the parameters to produce a signature timestamp
 	 */
 	public TP getSignatureTimestampParameters() {
-		throw new DSSException("Cannot extract SignatureTimestampParameters! Not implemented by default.");
+		throw new UnsupportedOperationException("Cannot extract SignatureTimestampParameters! Not implemented by default.");
 	}
 
 	/**
@@ -345,12 +345,12 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	/**
-	 * Get the parameters for achive timestamp (Baseline-LTA)
+	 * Get the parameters for archive timestamp (Baseline-LTA)
 	 * 
 	 * @return the parameters to produce an archive timestamp
 	 */
 	public TP getArchiveTimestampParameters() {
-		throw new DSSException("Cannot extract ArchiveTimestampParameters! Not implemented by default.");
+		throw new UnsupportedOperationException("Cannot extract ArchiveTimestampParameters! Not implemented by default.");
 	}
 
 	/**

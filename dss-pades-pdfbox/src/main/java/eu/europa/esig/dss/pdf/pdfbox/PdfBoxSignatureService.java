@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -244,8 +245,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			checkEncryptedAndSaveIncrementally(pdDocument, fileOutputStream, parameters);
 
 			return digest.digest();
+
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute digest for a PDF : %s", e.getMessage()), e);
 		}
 	}
 	
@@ -258,13 +260,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				if (signatureField != null) {
 					PDSignature signature = signatureField.getSignature();
 					if (signature != null) {
-						throw new DSSException(
-								"The signature field '" + targetFieldId + "' can not be signed since its already signed.");
+						throw new IllegalArgumentException(String.format(
+								"The signature field '%s' can not be signed since its already signed.", targetFieldId));
 					}
 					return signatureField;
 				}
 			}
-			throw new DSSException("The signature field '" + targetFieldId + "' does not exist.");
+			throw new IllegalArgumentException(String.format("The signature field '%s' does not exist.", targetFieldId));
 		}
 		return null;
 	}
@@ -449,7 +451,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			return inMemoryDocument;
 
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to add a new dss dictionary revision : %s", e.getMessage()), e);
 		}
 	}
 
@@ -573,7 +575,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		} catch (InvalidPasswordException e) {
 			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		} catch (Exception e) {
-			throw new DSSException(String.format("Unable to determine signature fields. Reason : %s", e.getMessage()), e);
+			throw new DSSException(String.format("Unable to retrieve signature fields. Reason : %s", e.getMessage()), e);
 		}
 		return result;
 	}
@@ -587,7 +589,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
 			if (pdfDoc.getPages().getCount() < parameters.getPage()) {
-				throw new DSSException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
+				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}
 			
 			PdfBoxDocumentReader pdfBoxDocumentReader = new PdfBoxDocumentReader(pdfDoc);

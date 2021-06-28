@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JsonObject;
@@ -259,9 +260,9 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		if (SignatureLevel.JAdES_BASELINE_LT.equals(signatureLevel) && jadesSignature.hasLTAProfile()) {
 			final String exceptionMessage = "Cannot extend the signature. The signedData is already extended with [%s]!";
-			throw new DSSException(String.format(exceptionMessage, "JAdES LTA"));
+			throw new IllegalInputException(String.format(exceptionMessage, "JAdES LTA"));
 		} else if (jadesSignature.areAllSelfSignedCertificates()) {
-			throw new DSSException(
+			throw new IllegalInputException(
 					"Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}

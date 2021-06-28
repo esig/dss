@@ -315,7 +315,7 @@ public final class DSSUtils {
 		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(input)) {
 			return loadCertificate(inputStream);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to create a CertificateToken from binaries : %s", e.getMessage()), e);
 		}
 	}
 
@@ -379,7 +379,7 @@ public final class DSSUtils {
 			dos.write(data);
 			return dos.getDigest();
 		} catch (IOException e) {
-			throw new DSSException("Unable to compute digest : " + e.getMessage(), e);
+			throw new DSSException(String.format("Unable to compute digest : %s", e.getMessage()), e);
 		}
 	}
 
@@ -394,7 +394,7 @@ public final class DSSUtils {
 		try {
 			return digestAlgorithm.getMessageDigest();
 		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException("Unable to create a MessageDigest for algorithm " + digestAlgorithm, e);
+			throw new DSSException(String.format("Unable to create a MessageDigest for algorithm '%s'", digestAlgorithm), e);
 		}
 	}
 
@@ -438,7 +438,7 @@ public final class DSSUtils {
 			}
 			return messageDigest.digest();
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute digest : %s", e.getMessage()), e);
 		}
 	}
 
@@ -453,7 +453,7 @@ public final class DSSUtils {
 		try (InputStream is = document.openStream()) {
 			return digest(digestAlgorithm, is);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute digest : %s", e.getMessage()), e);
 		}
 	}
 
@@ -486,7 +486,7 @@ public final class DSSUtils {
 		try {
 			return openInputStream(file);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to read InputStream : %s", e.getMessage()), e);
 		}
 	}
 
@@ -515,7 +515,8 @@ public final class DSSUtils {
 		try (InputStream is = openInputStream(file)) {
 			return toByteArray(is);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to read content of file '%s'. Reason : %s",
+					file.toString(), e.getMessage()), e);
 		}
 	}
 
@@ -593,7 +594,8 @@ public final class DSSUtils {
 		try (InputStream is = document.openStream()) {
 			return toByteArray(is);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to read content of document with name '%s'. Reason : %s",
+					document.getName(), e.getMessage()), e);
 		}
 	}
 
@@ -609,7 +611,7 @@ public final class DSSUtils {
 		try {
 			return Utils.toByteArray(inputStream);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to read InputStream : %s", e.getMessage()), e);
 		}
 	}
 	
@@ -671,7 +673,7 @@ public final class DSSUtils {
 		try (InputStream is = new ByteArrayInputStream(bytes); OutputStream os = new FileOutputStream(file)) {
 			Utils.copy(is, os);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to save a file : %s", e.getMessage()), e);
 		}
 	}
 
@@ -713,7 +715,7 @@ public final class DSSUtils {
 			dos.flush();
 			return "id-" + getMD5Digest(baos.toByteArray());
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute a deterministic Id : %s", e.getMessage()), e);
 		}
 	}
 
@@ -742,7 +744,7 @@ public final class DSSUtils {
 			dos.flush();
 			return "id-" + getMD5Digest(baos.toByteArray());
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute a deterministic Id for a counter-signature : %s", e.getMessage()), e);
 		}
 	}
 

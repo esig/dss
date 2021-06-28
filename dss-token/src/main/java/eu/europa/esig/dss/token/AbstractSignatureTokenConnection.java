@@ -78,7 +78,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 			value.setValue(signatureValue);
 			return value;
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to sign : %s", e.getMessage()), e);
 		}
 	}
 
@@ -116,7 +116,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 			value.setValue(signatureValue);
 			return value;
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to sign digest : %s", e.getMessage()), e);
 		}
 	}
 
@@ -149,7 +149,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(
 				encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
 		if (signatureAlgorithm == null) {
-			throw new DSSException(String.format("The SignatureAlgorithm is not found for the given configuration " +
+			throw new UnsupportedOperationException(String.format("The SignatureAlgorithm is not found for the given configuration " +
 					"[EncryptionAlgorithm: %s; DigestAlgorithm: %s; MaskGenerationFunction: %s]",
 					encryptionAlgorithm, digestAlgorithm, maskGenerationFunction));
 		}
@@ -169,8 +169,8 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(
 				encryptionAlgorithm, null, maskGenerationFunction);
 		if (signatureAlgorithm == null) {
-			throw new DSSException(String.format("The SignatureAlgorithm for digest signing is not found for the given configuration " +
-							"[EncryptionAlgorithm: %s; MaskGenerationFunction: %s]",
+			throw new UnsupportedOperationException(String.format("The SignatureAlgorithm for digest signing is not found " +
+							"for the given configuration [EncryptionAlgorithm: %s; MaskGenerationFunction: %s]",
 					encryptionAlgorithm, maskGenerationFunction));
 		}
 		return signatureAlgorithm;
@@ -208,14 +208,14 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		Objects.requireNonNull(signatureAlgorithm.getEncryptionAlgorithm(), "EncryptionAlgorithm shall be provided within the SignatureAlgorithm.");
 		Objects.requireNonNull(keyEntry, "keyEntry shall be provided.");
 		if (!signatureAlgorithm.getEncryptionAlgorithm().isEquivalent(keyEntry.getEncryptionAlgorithm())) {
-			throw new DSSException(String.format("The provided SignatureAlgorithm '%s' cannot be used to sign with " +
+			throw new IllegalArgumentException(String.format("The provided SignatureAlgorithm '%s' cannot be used to sign with " +
 					"the token's implied EncryptionAlgorithm '%s'", signatureAlgorithm.getName(), keyEntry.getEncryptionAlgorithm().getName()));
 		}
 	}
 
 	private void assertDigestAlgorithmValid(Digest digest, SignatureAlgorithm signatureAlgorithm) {
 		if (signatureAlgorithm.getDigestAlgorithm() != null && signatureAlgorithm.getDigestAlgorithm() != digest.getAlgorithm()) {
-			throw new DSSException(String.format("The DigestAlgorithm '%s' provided withing a SignatureAlgorithm " +
+			throw new IllegalArgumentException(String.format("The DigestAlgorithm '%s' provided withing a SignatureAlgorithm " +
 							"does not match the one used to compute the Digest : '%s'!",
 					signatureAlgorithm.getDigestAlgorithm().getName(), digest.getAlgorithm().getName()));
 		}

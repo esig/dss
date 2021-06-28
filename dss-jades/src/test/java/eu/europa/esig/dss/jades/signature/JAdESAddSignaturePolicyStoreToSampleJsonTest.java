@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
@@ -65,7 +65,7 @@ public class JAdESAddSignaturePolicyStoreToSampleJsonTest extends AbstractJAdEST
         spDocSpec.setDocumentationReferences(DOCUMENTATION_REFERENCES);
         signaturePolicyStore.setSpDocSpecification(spDocSpec);
 
-        Exception exception = assertThrows(DSSException.class, () ->
+        Exception exception = assertThrows(IllegalInputException.class, () ->
                 service.addSignaturePolicyStore(documentToSign, signaturePolicyStore));
         assertEquals("There is no signature to extend!", exception.getMessage());
     }

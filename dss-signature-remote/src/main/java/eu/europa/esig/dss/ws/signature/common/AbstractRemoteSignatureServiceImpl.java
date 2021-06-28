@@ -70,6 +70,7 @@ import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -96,7 +97,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			asicWithXAdESParameters.aSiC().setContainerType(asicContainerType);
 			return asicWithXAdESParameters;
 		default:
-			throw new DSSException("Unrecognized format (only XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+			throw new UnsupportedOperationException("Unrecognized format (only XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 		}
 	}
 
@@ -128,7 +129,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 				parameters = getJAdESSignatureParameters(remoteParameters);
 				break;
 			default:
-				throw new DSSException("Unsupported signature form : " + signatureForm);
+				throw new UnsupportedOperationException("Unsupported signature form : " + signatureForm);
 			}
 		}
 
@@ -252,20 +253,17 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 	 * @return {@link TimestampParameters}
 	 */
 	protected TimestampParameters toTimestampParameters(RemoteTimestampParameters remoteTimestampParameters) {
+		Objects.requireNonNull(remoteTimestampParameters.getTimestampContainerForm(), "Timestamp container form is not defined!");
 		TimestampContainerForm timestampForm = remoteTimestampParameters.getTimestampContainerForm();
-		if (timestampForm != null) {
-			switch (timestampForm) {
-				case PDF:
-					return toTimestampParameters(remoteTimestampParameters, SignatureForm.PAdES, null);
-				case ASiC_E:
-					return toTimestampParameters(remoteTimestampParameters, SignatureForm.CAdES, ASiCContainerType.ASiC_E);
-				case ASiC_S:
-					return toTimestampParameters(remoteTimestampParameters, SignatureForm.CAdES, ASiCContainerType.ASiC_S);
-				default:
-					throw new DSSException(String.format("Unsupported timestamp container form [%s]", timestampForm.getReadable()));
-			}
-		} else {
-			throw new DSSException("Timestamp container form is not defined!");
+		switch (timestampForm) {
+			case PDF:
+				return toTimestampParameters(remoteTimestampParameters, SignatureForm.PAdES, null);
+			case ASiC_E:
+				return toTimestampParameters(remoteTimestampParameters, SignatureForm.CAdES, ASiCContainerType.ASiC_E);
+			case ASiC_S:
+				return toTimestampParameters(remoteTimestampParameters, SignatureForm.CAdES, ASiCContainerType.ASiC_S);
+			default:
+				throw new UnsupportedOperationException(String.format("Unsupported timestamp container form [%s]", timestampForm.getReadable()));
 		}
 	}
 
@@ -293,7 +291,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 							remoteTimestampParameters.getCanonicalizationMethod());
 					break;
 				default:
-					throw new DSSException(String.format("Unsupported signature form [%s] for asic container type [%s]", signatureForm, asicContainerType));
+					throw new UnsupportedOperationException(String.format("Unsupported signature form [%s] for asic container type [%s]", signatureForm, asicContainerType));
 			}
 		} else {
 			switch (signatureForm) {
@@ -311,7 +309,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 					timestampParameters = new JAdESTimestampParameters(remoteTimestampParameters.getDigestAlgorithm());
 					break;
 				default:
-					throw new DSSException("Unsupported signature form : " + signatureForm);
+					throw new UnsupportedOperationException("Unsupported signature form : " + signatureForm);
 			}
 		}
 		return timestampParameters;
@@ -475,7 +473,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 				parameters = getJAdESSignatureParameters(remoteParameters);
 				break;
 			default:
-				throw new DSSException("Unsupported signature form for counter singature : " + signatureForm);
+				throw new UnsupportedOperationException("Unsupported signature form for counter signature : " + signatureForm);
 		}
 		
 		fillCounterSignatureParameters(parameters, remoteParameters);

@@ -33,6 +33,7 @@ import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
@@ -250,7 +251,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 						String transformAlgorithm = transformElement
 								.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 						if (Transforms.TRANSFORM_ENVELOPED_SIGNATURE.equals(transformAlgorithm)) {
-							throw new DSSException(String.format(
+							throw new IllegalInputException(String.format(
 									"The parallel signature is not possible! The provided file contains a signature with an '%s' transform.",
 									Transforms.TRANSFORM_ENVELOPED_SIGNATURE));
 						}
@@ -284,11 +285,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void checkSignaturePackagingValidity() {
 		if (!SignaturePackaging.ENVELOPING.equals(params.getSignaturePackaging())) {
 			if (params.isManifestSignature()) {
-				throw new DSSException(String.format("The signature packaging %s is not compatible with manifestSignature(true) configuration!", 
+				throw new IllegalArgumentException(String.format("The signature packaging %s is not compatible with manifestSignature(true) configuration!",
 						params.getSignaturePackaging()));
 			}
 			if (params.isEmbedXML()) {
-				throw new DSSException(String.format("The signature packaging %s is not compatible with embedXML(true) configuration!", 
+				throw new IllegalArgumentException(String.format("The signature packaging %s is not compatible with embedXML(true) configuration!",
 						params.getSignaturePackaging()));
 			}
 		}
@@ -355,7 +356,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
 		final String signatureAlgorithmXMLId = signatureAlgorithm.getUri();
 		if (Utils.isStringBlank(signatureAlgorithmXMLId)) {
-			throw new DSSException("Unsupported signature algorithm " + signatureAlgorithm);
+			throw new UnsupportedOperationException("Unsupported signature algorithm " + signatureAlgorithm);
 		}
 		signatureMethod.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signatureAlgorithmXMLId);
 	}
@@ -1039,7 +1040,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				individualDataObjectsTimestampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), timestampId);
 				addTimestamp(individualDataObjectsTimestampDom, contentTimestamp);
 			} else {
-				throw new DSSException("Only types ALL_DATA_OBJECTS_TIMESTAMP and INDIVIDUAL_DATA_OBJECTS_TIMESTAMP are allowed");
+				throw new UnsupportedOperationException("Only types ALL_DATA_OBJECTS_TIMESTAMP and INDIVIDUAL_DATA_OBJECTS_TIMESTAMP are allowed");
 			}
 		}
 	}
@@ -1171,7 +1172,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 						getXadesNamespace(), getCurrentXAdESElements().getElementCommitmentTypeId());
 
 				if (commitmentTypeIndication.getUri() == null) {
-					throw new DSSException("The commitmentTypeIndication URI must be defined for XAdES creation!");
+					throw new IllegalArgumentException("The commitmentTypeIndication URI must be defined for XAdES creation!");
 				}
 				
 				Element identifierDom = DomUtils.addTextElement(documentDom, commitmentTypeIdDom, getXadesNamespace(), 
@@ -1269,7 +1270,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					canonicalizationMethod);
 			timestampElement.appendChild(canonicalizationMethodElement);
 		} else {
-			throw new DSSException("Unable to create a timestamp with empty canonicalization method. "
+			throw new IllegalArgumentException("Unable to create a timestamp with empty canonicalization method. "
 					+ "See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.");
 		}
 

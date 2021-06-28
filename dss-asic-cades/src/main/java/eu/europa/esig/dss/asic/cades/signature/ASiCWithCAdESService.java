@@ -44,8 +44,8 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
@@ -111,7 +111,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) {
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new DSSException("List of documents to sign cannot be empty!");
+			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -131,7 +131,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new DSSException("List of documents to sign cannot be empty!");
+			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
 
 		assertSigningDateInCertificateValidityRange(parameters);
@@ -198,7 +198,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, ASiCWithCAdESTimestampParameters parameters) {
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		if (Utils.isCollectionEmpty(toTimestampDocuments)) {
-			throw new DSSException("List of documents to be timestamped cannot be empty!");
+			throw new IllegalArgumentException("List of documents to be timestamped cannot be empty!");
 		}
 
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESDataToSignHelperBuilder()
@@ -288,7 +288,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		ASiCContainerType containerType = ASiCUtils.getContainerType(toExtendDocument, mimetype, null, originalSignedDocuments);
 		if (containerType == null) {
-			throw new DSSException("Unable to determine container type");
+			throw new IllegalInputException("The container type of the provided document is not supported or cannot be extracted!");
 		}
 
 		List<DSSDocument> extendedDocuments = new ArrayList<>();
@@ -327,13 +327,13 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 	private void assertExtensionSupported(DSSDocument toExtendDocument) {
 		if (!ASiCUtils.isZip(toExtendDocument)) {
-			throw new DSSException("Unsupported file type");
+			throw new IllegalInputException("Unsupported file type");
 		}
 	}
 
 	private void assertValidSignaturesToExtendFound(List<DSSDocument> signatureDocuments) {
 		if (Utils.isCollectionEmpty(signatureDocuments)) {
-			throw new DSSException("No supported signature documents found! Unable to extend the container.");
+			throw new IllegalInputException("No supported signature documents found! Unable to extend the container.");
 		}
 	}
 
@@ -542,7 +542,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		for (DSSDocument signature : getEmbeddedSignatures()) {
 			if (isCoveredByArchiveManifest(signature)) {
-				throw new DSSException(String.format("The counter signature is not possible! "
+				throw new IllegalInputException(String.format("Not possible to add a signature policy store! "
 						+ "Reason : a signature with a filename '%s' is covered by another manifest.", signature.getName()));
 			}
 		}
@@ -600,7 +600,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		super.assertCounterSignatureParametersValid(parameters);
 
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
-			throw new DSSException(String.format("A counter signature with a level '%s' is not supported! "
+			throw new UnsupportedOperationException(String.format("A counter signature with a level '%s' is not supported! "
 					+ "Please, use CAdES-BASELINE-B", parameters.getSignatureLevel()));
 		}
 	}
@@ -608,7 +608,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	private void assertTimestampPossible(GetDataToSignASiCWithCAdESHelper dataToSignHelper, ASiCParameters asicParameters) {
 		if (ASiCUtils.isASiCS(asicParameters)) {
 			if (Utils.isCollectionNotEmpty(dataToSignHelper.getSignatures())) {
-				throw new DSSException("Unable to timestamp an ASiC-S with CAdES container containing signature files! " +
+				throw new IllegalInputException("Unable to timestamp an ASiC-S with CAdES container containing signature files! " +
 						"Use extendDocument(...) method for signature extension.");
 			}
 		}
@@ -617,7 +617,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	private void assertSignaturePossible(GetDataToSignASiCWithCAdESHelper dataToSignHelper, ASiCParameters asicParameters) {
 		if (ASiCUtils.isASiCS(asicParameters)) {
 			if (Utils.isCollectionNotEmpty(dataToSignHelper.getTimestamps())) {
-				throw new DSSException("Unable to sign an ASiC-S with CADES container containing time assertion files!");
+				throw new IllegalInputException("Unable to sign an ASiC-S with CAdES container containing time assertion files!");
 			}
 		}
 	}

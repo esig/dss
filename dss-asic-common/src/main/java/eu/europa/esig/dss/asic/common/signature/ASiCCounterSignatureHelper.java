@@ -23,8 +23,8 @@ package eu.europa.esig.dss.asic.common.signature;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
@@ -65,11 +65,11 @@ public abstract class ASiCCounterSignatureHelper {
 	 */
 	public DSSDocument extractSignatureDocument(String signatureId) {
 		if (!ASiCUtils.isZip(asicContainer)) {
-			throw new DSSException("The provided file shall be an ASiC container with signatures inside!");
+			throw new IllegalInputException("The provided file shall be an ASiC container with signatures inside!");
 		}
 		List<DSSDocument> signatureDocuments = getSignatureDocuments();
 		if (Utils.isCollectionEmpty(signatureDocuments)) {
-			throw new DSSException("No signatures found to be extended!");
+			throw new IllegalInputException("No signatures found to be extended!");
 		}
 
 		for (DSSDocument signatureDocument : signatureDocuments) {
@@ -78,7 +78,7 @@ public abstract class ASiCCounterSignatureHelper {
 				return signatureDocument;
 			}
 		}
-		throw new DSSException(String.format("A signature with id '%s' has not been found!", signatureId));
+		throw new IllegalArgumentException(String.format("A signature with id '%s' has not been found!", signatureId));
 	}
 
 	/**

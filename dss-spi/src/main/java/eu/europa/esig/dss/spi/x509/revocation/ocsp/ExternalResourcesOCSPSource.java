@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.io.InputStream;
-
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.model.DSSException;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.model.DSSException;
+import java.io.InputStream;
 
 public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 
@@ -65,7 +64,7 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 			final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 			addBinary(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.EXTERNAL);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to load OCSP token : %s", e.getMessage()), e);
 		}
 	}
 

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -80,8 +81,10 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      */
     public PDFDocumentValidator(final DSSDocument document) {
         super(new PAdESSignatureScopeFinder());
+        Objects.requireNonNull(document, "Document to be validated cannot be null!");
+
         if (!isSupported(document)) {
-            throw new DSSException("Not supported document");
+            throw new IllegalInputException("Not supported document");
         }
         this.document = document;
     }

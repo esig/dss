@@ -26,6 +26,7 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -121,7 +122,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
 
 		if (Utils.isCollectionEmpty(signatures)) {
-			throw new DSSException("There is no signature to extend!");
+			throw new IllegalInputException("There is no signature to extend!");
 		}
 
 		// In the case of the enveloped signature we have a specific treatment:<br>
@@ -184,7 +185,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		if (XAdES_BASELINE_T.equals(signatureLevel) && (xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
 			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
-			throw new DSSException(String.format(exceptionMessage, "XAdES LT"));
+			throw new IllegalInputException(String.format(exceptionMessage, "XAdES LT"));
 		}
 	}
 
@@ -485,7 +486,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		if ((XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())
 				|| XAdESNamespaces.XADES_122.isSameUri(getXadesNamespace().getUri()))
 				&& TimestampType.SIGNATURE_TIMESTAMP != timestampType) {
-			throw new DSSException("Signature Timestamp creation is only supported for XAdES 1.1.1 and 1.2.2");
+			throw new UnsupportedOperationException("Signature Timestamp creation is only supported for XAdES 1.1.1 and 1.2.2");
 		}		
 
 		final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
@@ -520,7 +521,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 				break;
 			default:
 				// Content timestamps need to be generated before the signature itself
-				throw new DSSException("Unsupported timestamp type : " + timestampType);
+				throw new UnsupportedOperationException("Unsupported timestamp type : " + timestampType);
 		}
 
 		if (LOG.isDebugEnabled()) {
@@ -595,7 +596,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			for (DSSDocument detachedDocument : detachedContents) {
 				if (detachedDocument instanceof DigestDocument) {
-					throw new DSSException("XAdES-LTA requires complete binaries of signed documents! "
+					throw new IllegalArgumentException("XAdES-LTA requires complete binaries of signed documents! "
 							+ "Extension with a DigestDocument is not possible.");
 				}
 			}

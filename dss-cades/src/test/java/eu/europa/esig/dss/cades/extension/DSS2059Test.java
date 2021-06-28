@@ -33,8 +33,8 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -106,7 +106,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		counterSignatureParameters.setSignatureIdToCounterSign(signatures.get(0).getId());
 		
-		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(document, counterSignatureParameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(document, counterSignatureParameters));
 		assertEquals("Cannot add a counter signature to a CAdES containing an archiveTimestampV2", exception.getMessage());
 	}
 	
@@ -120,7 +120,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		spDocSpec.setId("1.2.3.4.5.6");
 		signaturePolicyStore.setSpDocSpecification(spDocSpec);
 		
-		Exception exception = assertThrows(DSSException.class, () -> service.addSignaturePolicyStore(document, signaturePolicyStore));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.addSignaturePolicyStore(document, signaturePolicyStore));
 		assertEquals("Cannot add signature policy store to a CAdES containing an archiveTimestampV2", exception.getMessage());
 	}
 	

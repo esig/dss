@@ -94,9 +94,10 @@ public class SSLCertificateLoader implements Serializable {
 			Certificate[] httpGetCertificates = httpGetCertificates(trimmedUrl);
 			return toCertificateTokens(httpGetCertificates);
     	}
-		throw new DSSException(String.format("DSS framework supports only HTTP(S) certificate extraction. Obtained URL : '%s'", urlString));
+		throw new UnsupportedOperationException(String.format(
+				"DSS framework supports only HTTP(S) certificate extraction. Obtained URL : '%s'", urlString));
     }
-    
+
     private Certificate[] httpGetCertificates(final String url) throws DSSException {
     	HttpGet httpRequest = null;
 		CloseableHttpResponse httpResponse = null;

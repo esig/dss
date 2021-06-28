@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +83,7 @@ public abstract class AbstractASiCContainerExtractor {
 
 		List<DSSDocument> documents = ZipUtils.getInstance().extractContainerContent(asicContainer);
 		if (Utils.isCollectionEmpty(documents)) {
-			throw new DSSException(String.format(
+			throw new IllegalInputException(String.format(
 					"The provided file with name '%s' does not contain documents inside. "
 							+ "Probably file has an unsupported format or has been corrupted. "
 							+ "The signature validation is not possible",

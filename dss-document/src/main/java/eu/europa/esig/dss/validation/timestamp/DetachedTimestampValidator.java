@@ -151,7 +151,7 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 		if (size == 0) {
 			return null;
 		} else if (size > 1) {
-			throw new DSSException("Too many files");
+			throw new IllegalArgumentException("Only one detached document shall be provided for a timestamp validation!");
 		}
 		return detachedContents.iterator().next();
 	}

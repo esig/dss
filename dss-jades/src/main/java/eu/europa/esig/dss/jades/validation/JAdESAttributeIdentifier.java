@@ -58,7 +58,7 @@ public class JAdESAttributeIdentifier extends SignatureAttributeIdentifier {
             return new JAdESAttributeIdentifier(baos.toByteArray());
 
         } catch (IOException e) {
-            throw new DSSException(e);
+            throw new DSSException(String.format("Unable to build a JAdESAttributeIdentifier. Reason : %s", e.getMessage()), e);
         }
     }
 

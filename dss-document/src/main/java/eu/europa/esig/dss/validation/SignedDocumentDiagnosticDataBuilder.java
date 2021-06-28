@@ -1111,7 +1111,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			return timestampedObj;
 
 		default:
-			throw new DSSException("Unsupported category " + timestampReference.getCategory());
+			throw new DSSException(String.format("Unsupported category '%s'", timestampReference.getCategory()));
 
 		}
 

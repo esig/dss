@@ -511,7 +511,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		if (XAdESNamespaces.XMLDSIG.isSameUri(uri)) {
 			this.xmldsigNamespace = xmldsigNamespace;
 		} else {
-			throw new DSSException("Not accepted URI");
+			throw new IllegalArgumentException("Not accepted URI");
 		}
 	}
 
@@ -538,7 +538,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		if (XAdESNamespaces.XADES_111.isSameUri(uri) || XAdESNamespaces.XADES_122.isSameUri(uri) || XAdESNamespaces.XADES_132.isSameUri(uri)) {
 			this.xadesNamespace = xadesNamespace;
 		} else {
-			throw new DSSException("Not accepted URI");
+			throw new IllegalArgumentException("Not accepted URI");
 		}
 	}
 
@@ -565,7 +565,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		if (XAdESNamespaces.XADES_141.isSameUri(uri)) {
 			this.xades141Namespace = xades141Namespace;
 		} else {
-			throw new DSSException("Not accepted URI");
+			throw new IllegalArgumentException("Not accepted URI");
 		}
 	}
 

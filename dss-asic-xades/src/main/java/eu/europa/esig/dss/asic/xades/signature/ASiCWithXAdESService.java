@@ -33,8 +33,8 @@ import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -92,7 +92,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters) {
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new DSSException("List of documents to sign cannot be empty!");
+			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -108,7 +108,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new DSSException("List of documents to sign cannot be empty!");
+			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -194,13 +194,13 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	private void assertExtensionSupported(DSSDocument toExtendDocument) {
 		if (!ASiCUtils.isZip(toExtendDocument)) {
-			throw new DSSException("Unsupported file type");
+			throw new IllegalInputException("Unsupported file type");
 		}
 	}
 
 	private void assertValidSignaturesToExtendFound(List<DSSDocument> signatureDocuments) {
 		if (Utils.isCollectionEmpty(signatureDocuments)) {
-			throw new DSSException("No supported signature documents found! Unable to extend the container.");
+			throw new IllegalInputException("No supported signature documents found! Unable to extend the container.");
 		}
 	}
 

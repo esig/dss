@@ -48,7 +48,7 @@ public class PdfBoxDSSFontMetrics extends AbstractDSSFontMetrics {
 		try {
 			return pdFont.getStringWidth(str) / 1000 * size;
 		} catch (IOException e) {
-			throw new DSSException("Unable to compute string width!");
+			throw new DSSException(String.format("Unable to compute string width! Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class PdfBoxDSSFontMetrics extends AbstractDSSFontMetrics {
 		try {
 			return pdFont.getBoundingBox().getHeight() / 1000 * size;
 		} catch (IOException e) {
-			throw new DSSException("Unable to compute string height!");
+			throw new DSSException(String.format("Unable to compute string height! Reason : %s", e.getMessage()), e);
 		}
 	}
 

@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -12,7 +12,12 @@ import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
@@ -147,17 +152,8 @@ public final class DefaultImageDrawerUtils {
         try {
             return ImageUtils.readImage(imageDocument);
         } catch (IOException e) {
-            throw new DSSException(String.format("An error occurred during image document reading : %s", e.getMessage()), e);
+            throw new IllegalInputException(String.format("An error occurred during image document reading : %s", e.getMessage()), e);
         }
-    }
-
-    private static BufferedImage sizeImage(BufferedImage original, int newWidth, int newHeight) {
-        BufferedImage resized = new BufferedImage(newWidth, newHeight, original.getType());
-        Graphics2D g = resized.createGraphics();
-        initRendering(g);
-        g.drawImage(original, 0, 0, newWidth, newHeight, 0, 0, original.getWidth(), original.getHeight(), null);
-        g.dispose();
-        return resized;
     }
 
     /**

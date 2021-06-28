@@ -56,6 +56,9 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	@Override
 	public long getObjectNumber(int i) {
 		PdfObject pdfObject = wrapped.getPdfObject(i);
+		if (pdfObject == null) {
+			throw new DSSException("The requested PDF object not found!");
+		}
 		if (pdfObject.isStream()) {
 			PdfStream asStream = wrapped.getAsStream(i);
 			return asStream.getIndRef().getNumber();
@@ -63,11 +66,11 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 			PdfIndirectReference asIndirectObject = wrapped.getAsIndirectObject(i);
 			return asIndirectObject.getNumber();
 		}
-		throw new DSSException("Not supported " + pdfObject);
+		throw new DSSException(String.format("Not supported PDF object type '%s'", pdfObject.type()));
 	}
 
 	@Override
-	public int getInt(int i) throws IOException {
+	public int getInt(int i) {
 		PdfNumber number = wrapped.getAsNumber(i);
 		if (number != null) {
 			return number.intValue();

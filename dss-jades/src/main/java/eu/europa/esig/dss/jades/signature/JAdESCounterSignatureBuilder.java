@@ -22,6 +22,7 @@ package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
@@ -29,12 +30,10 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
-import eu.europa.esig.dss.jades.validation.JAdESAttributeIdentifier;
 import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -43,6 +42,7 @@ import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Creates a JAdES Counter signature
@@ -116,7 +116,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 
 			Object cSig = getCSig(generator.generate(), jwsJsonSerializationObject.getJWSSerializationType());
 			EtsiUComponent updatedCSigAttribute = EtsiUComponent.build(JAdESHeaderParameterNames.C_SIG, cSig,
-					masterCSigAttribute.isBase64UrlEncoded(), (JAdESAttributeIdentifier) masterCSigAttribute.getIdentifier());
+					masterCSigAttribute.isBase64UrlEncoded(), masterCSigAttribute.getIdentifier());
 			replaceCSigComponent(jadesSignature, updatedCSigAttribute);
 
 			updateMasterSignatureRecursively(masterSignature);
@@ -134,11 +134,11 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 				try {
 					cSig = new JsonObject(JsonUtil.parseJson(signatureString));
 				} catch (JoseException e) {
-					throw new DSSException(String.format("An error occurred during a Counter Signature creation. Reason : %s", e.getMessage()), e);
+					throw new IllegalInputException(String.format("Unable to parse a counter signature. Reason : %s", e.getMessage()), e);
 				}
 				break;
 			default:
-				throw new DSSException(String.format("The JWSSerializarionType '%s' is not supported for a Counter Signature!", 
+				throw new UnsupportedOperationException(String.format("The JWSSerializarionType '%s' is not supported for a Counter Signature!",
 						jwsSerializationType));
 		}
 		return cSig;
@@ -153,14 +153,11 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	}
 	
 	private AdvancedSignature extractSignatureById(List<AdvancedSignature> signatures, String signatureId) {
-
-		if (Utils.isStringEmpty(signatureId)) {
-			throw new DSSException("The Id of a signature to be counter signed shall be defined! "
-					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
-		}
+		Objects.requireNonNull(signatureId, "The Id of a signature to be counter signed shall be defined! "
+				+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 
 		if (Utils.isCollectionEmpty(signatures)) {
-			throw new DSSException("The provided signatureDocument does not contain JAdES Signatures!");
+			throw new IllegalArgumentException("The provided signatureDocument does not contain JAdES Signatures!");
 		}
 		for (AdvancedSignature signature : signatures) {
 			AdvancedSignature signatureById = getSignatureOrItsCounterSignature((JAdESSignature) signature, signatureId);
@@ -168,7 +165,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 				return signatureById;
 			}
 		}
-		throw new DSSException(String.format("The requested JAdES Signature with id '%s' has not been found in the provided file!", signatureId));
+		throw new IllegalArgumentException(String.format("The requested JAdES Signature with id '%s' has not been found in the provided file!", signatureId));
 	}
 
 	private JAdESSignature getSignatureOrItsCounterSignature(JAdESSignature signature, String signatureId) {
@@ -184,7 +181,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 				
 				// check timestamp before incorporating a new property
 				if (signature.getTimestampSource().isTimestamped(signatureId, TimestampedObjectType.SIGNATURE)) {
-					throw new DSSException(String.format("Unable to counter sign a signature with Id '%s'. "
+					throw new IllegalInputException(String.format("Unable to counter sign a signature with Id '%s'. "
 							+ "The signature is timestamped by a master signature!", signatureId));
 				}
 				
@@ -192,7 +189,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 				JAdESSignature signatureById = getSignatureOrItsCounterSignature(counterSignature, signatureId);
 				if (signatureById != null) {
 					if (cSigComponent.getValue() instanceof String) {
-						throw new DSSException("Unable to extend a Compact JAdES Signature with id '" + signatureId + "'");
+						throw new IllegalInputException("Unable to extend a Compact JAdES Signature with id '" + signatureId + "'");
 					}
 					return signatureById;
 				}

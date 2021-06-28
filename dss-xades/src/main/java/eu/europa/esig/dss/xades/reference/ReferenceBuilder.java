@@ -26,6 +26,7 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -184,12 +185,19 @@ public class ReferenceBuilder {
 
 	private void assertEnvelopedSignaturePossible(DSSDocument document) {
 		if (!DomUtils.isDOM(document)) {
-			throw new IllegalArgumentException("Enveloped signature cannot be created. Reason : the provided document is not XML!");
+			throw new IllegalInputException("Enveloped signature cannot be created. Reason : the provided document is not XML!");
 		}
 		Document dom = DomUtils.buildDOM(document);
 		Element documentElement = dom.getDocumentElement();
 		if (XMLDSigElement.SIGNATURE.isSameTagName(documentElement.getLocalName())) {
-			throw new IllegalArgumentException("Unable to create an enveloped signature for another XML signature document!");
+			throw new IllegalInputException("Unable to create an enveloped signature for another XML signature document!");
+		}
+	}
+
+	private void assertEnvelopingSignatureWithEmbeddedXMLPossible(DSSDocument document) {
+		if (!DomUtils.isDOM(document)) {
+			throw new IllegalInputException("Enveloping signature with embedded XML cannot be created. " +
+					"Reason : the provided document is not XML!");
 		}
 	}
 
@@ -203,18 +211,24 @@ public class ReferenceBuilder {
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		if (signatureParameters.isManifestSignature()) {
+			assertEnvelopingSignatureWithEmbeddedXMLPossible(document);
+
 			reference.setType(XMLDSigPaths.MANIFEST_TYPE);
 			Document manifestDoc = DomUtils.buildDOM(document);
 			Element manifestElement = manifestDoc.getDocumentElement();
 			reference.setUri("#" + manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName()));
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Arrays.asList(xmlTransform));
+
 		} else if (signatureParameters.isEmbedXML()) {
+			assertEnvelopingSignatureWithEmbeddedXMLPossible(document);
+
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_PREFIX + refId);
 
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Arrays.asList(xmlTransform));
+
 		} else {
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_PREFIX + refId);
@@ -283,14 +297,14 @@ public class ReferenceBuilder {
 						switch (transform.getAlgorithm()) {
 							case Transforms.TRANSFORM_BASE64_DECODE:
 								if (signatureParameters.isEmbedXML()) {
-									throw new DSSException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
+									throw new IllegalArgumentException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
 								} else if (signatureParameters.isManifestSignature()) {
-									throw new DSSException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
+									throw new IllegalArgumentException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
 								} else if (!SignaturePackaging.ENVELOPING.equals(signatureParameters.getSignaturePackaging())) {
-									throw new DSSException(referenceWrongMessage +
+									throw new IllegalArgumentException(referenceWrongMessage +
 											String.format("Base64 transform is not compatible with %s signature format.", signatureParameters.getSignaturePackaging()));
 								} else if (transforms.size() > 1) {
-									throw new DSSException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
+									throw new IllegalArgumentException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
 								}
 								break;
 							default:
@@ -306,7 +320,7 @@ public class ReferenceBuilder {
 								+ "The configuration can lead to an unexpected result!", reference.getId(), uri);
 					}
 					if (SignaturePackaging.ENVELOPED.equals(signatureParameters.getSignaturePackaging()) && Utils.isStringBlank(uri)) {
-						throw new DSSException(referenceWrongMessage + "Enveloped signature must have an enveloped transformation!");
+						throw new IllegalArgumentException(referenceWrongMessage + "Enveloped signature must have an enveloped transformation!");
 					}
 
 				}

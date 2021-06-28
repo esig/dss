@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class allows to handle different mime types. It also allows to add
@@ -122,8 +122,8 @@ public class MimeType implements Serializable {
 			LOG.warn("'{}' is not conformant mime-type string! (see RFC 2045)", mimeTypeString);
 		}
 		if (mimeTypes.get(mimeTypeString) != null) {
-			throw new DSSException(
-					"'" + mimeTypeString + "' corresponding MimeType exists already! Use #fromMimeTypeString method to obtain the corresponding object.");
+			throw new DSSException(String.format("'%s' corresponding MimeType exists already! " +
+					"Use #fromMimeTypeString method to obtain the corresponding object.", mimeTypeString));
 		}
 		this.mimeTypeString = mimeTypeString;
 		mimeTypes.put(mimeTypeString, this);

@@ -98,7 +98,8 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 			if (parameters.isGenerateTBSWithoutCertificate()) {
 				return;
 			} else {
-				throw new DSSException("Signing Certificate is not defined!");
+				throw new IllegalArgumentException("Signing Certificate is not defined! " +
+						"Set signing certificate or use method setGenerateTBSWithoutCertificate(true).");
 			}
 		}
 		assertSigningCertificateIsYetValid(parameters);
@@ -114,8 +115,9 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 		final Date notAfter = signingCertificate.getNotAfter();
 		final Date signingDate = parameters.bLevel().getSigningDate();
 		if (signingDate.before(notBefore)) {
-			throw new DSSException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
-							"is not yet valid at signing time %s!",
+			throw new IllegalArgumentException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
+							"is not yet valid at signing time %s! Change signing certificate or use method " +
+							"setSignWithNotYetValidCertificate(true).",
 					notBefore.toString(), notAfter.toString(), signingDate.toString()));
 		}
 	}
@@ -129,8 +131,9 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 		final Date notAfter = signingCertificate.getNotAfter();
 		final Date signingDate = parameters.bLevel().getSigningDate();
 		if (signingDate.after(notAfter)) {
-			throw new DSSException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
-							"is expired at signing time %s!",
+			throw new IllegalArgumentException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
+							"is expired at signing time %s! Change signing certificate or use method " +
+							"setSignWithExpiredCertificate(true).",
 					notBefore.toString(), notAfter.toString(), signingDate.toString()));
 		}
 	}
@@ -267,7 +270,8 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 					// TODO : use another extension ?
 					return "json";
 				default:
-					throw new DSSException("Unable to generate a full document name");
+					throw new DSSException(String.format("Unable to generate a full document name! " +
+							"The SignatureForm %s is not supported.", signatureForm));
 			}
 		}
 		return Utils.EMPTY_STRING;

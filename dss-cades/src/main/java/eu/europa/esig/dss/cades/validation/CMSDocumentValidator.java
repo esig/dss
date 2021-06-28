@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Validation of CMS document
@@ -84,8 +86,18 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 */
 	public CMSDocumentValidator(final DSSDocument document) {
 		this();
+		Objects.requireNonNull(document, "Document to be validated cannot be null!");
+
 		this.document = document;
-		this.cmsSignedData = DSSUtils.toCMSSignedData(document);
+		this.cmsSignedData = toCMSSignedData(document);
+	}
+
+	private CMSSignedData toCMSSignedData(DSSDocument document) {
+		try {
+			return DSSUtils.toCMSSignedData(document);
+		} catch (Exception e) {
+			throw new IllegalInputException(String.format("A CMS file is expected : %s", e.getMessage()), e);
+		}
 	}
 
 	/**

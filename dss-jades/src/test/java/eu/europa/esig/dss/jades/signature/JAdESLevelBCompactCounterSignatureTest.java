@@ -23,10 +23,10 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -79,7 +79,7 @@ public class JAdESLevelBCompactCounterSignatureTest extends AbstractJAdESCounter
     @Test
     @Override
     public void signAndVerify() {
-        Exception exception = assertThrows(DSSException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
         assertEquals("The extended signature shall have JSON Serialization (or Flattened) type! " +
                 "Use JWSConverter to convert the signature.", exception.getMessage());
     }

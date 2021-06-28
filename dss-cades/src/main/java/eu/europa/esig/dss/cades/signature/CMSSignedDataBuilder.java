@@ -144,7 +144,7 @@ public class CMSSignedDataBuilder {
 			generator.addCertificates(jcaCertStore);
 			return generator;
 		} catch (CMSException | OperatorCreationException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to create a CMSSignedDataGenerator. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -253,7 +253,7 @@ public class CMSSignedDataBuilder {
 			}
 			return new JcaCertStore(certs);
 		} catch (CertificateEncodingException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to get JcaCertStore. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -295,7 +295,7 @@ public class CMSSignedDataBuilder {
 			}
 			return cmsSignedData;
 		} catch (CMSException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to regenerate CMSSignedData. Reason : %s", e.getMessage()), e);
 		}
 	}
 	

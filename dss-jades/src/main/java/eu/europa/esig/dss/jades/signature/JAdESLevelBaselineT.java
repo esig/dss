@@ -22,6 +22,7 @@ package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -34,7 +35,6 @@ import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -143,7 +143,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 		if (SignatureLevel.JAdES_BASELINE_T.equals(signatureLevel)
 				&& (jadesSignature.hasLTProfile() || jadesSignature.hasLTAProfile())) {
 			final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
-			throw new DSSException(String.format(exceptionMessage, "JAdES LT"));
+			throw new IllegalInputException(String.format(exceptionMessage, "JAdES LT"));
 		}
 	}
 

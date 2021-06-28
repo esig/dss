@@ -355,7 +355,7 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public void addExternalTimestamp(TimestampToken timestamp) {
-		throw new DSSException("The action is not supported for PAdES!");
+		throw new UnsupportedOperationException("The action is not supported for PAdES!");
 	}
 
 }

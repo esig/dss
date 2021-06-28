@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.ws.timestamp.remote;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 import eu.europa.esig.dss.ws.timestamp.dto.TimestampResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class RemoteTimestampService {
 			LOG.info("Timestamp is obtained.");
 			return toTimestampResponseDTO(timestampBinary);
 		}
-		throw new DSSException("The obtained TimestampToken response is null or empty!");
+		throw new DSSRemoteServiceException("The obtained TimestampToken response is null or empty!");
 	}
 	
 	private TimestampResponseDTO toTimestampResponseDTO(TimestampBinary timestampBinary) {
