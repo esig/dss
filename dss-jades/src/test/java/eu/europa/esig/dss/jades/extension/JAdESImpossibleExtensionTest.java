@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -56,7 +57,7 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_T);
 		parameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
-		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(doc, parameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, parameters));
 		assertEquals("There is no signature to extend!", exception.getMessage());
 	}
 	
@@ -87,7 +88,7 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		extensionParameters.setDetachedContents(Collections.singletonList(digestDocument));
 		extensionParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 
-		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, extensionParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.extendDocument(signedDocument, extensionParameters));
 		assertEquals("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "
 				+ "Extension with a DigestDocument is not possible.", exception.getMessage());
 	}

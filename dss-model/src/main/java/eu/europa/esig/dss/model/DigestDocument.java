@@ -103,7 +103,7 @@ public class DigestDocument extends CommonDocument {
 			Entry<DigestAlgorithm, String> digestEntry = base64EncodeDigestMap.entrySet().iterator().next();
 			return new Digest(digestEntry.getKey(), Base64.getDecoder().decode(digestEntry.getValue()));
 		}
-		throw new IllegalArgumentException("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.");
+		throw new IllegalStateException("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.");
 	}
 
 	@Override

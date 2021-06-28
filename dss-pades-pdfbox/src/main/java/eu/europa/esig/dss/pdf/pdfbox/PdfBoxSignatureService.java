@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -265,7 +266,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					return signatureField;
 				}
 			}
-			throw new IllegalArgumentException("The signature field '" + targetFieldId + "' does not exist.");
+			throw new IllegalArgumentException(String.format("The signature field '%s' does not exist.", targetFieldId));
 		}
 		return null;
 	}

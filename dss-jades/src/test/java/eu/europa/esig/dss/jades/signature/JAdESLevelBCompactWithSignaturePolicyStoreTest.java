@@ -24,10 +24,10 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
@@ -91,7 +91,7 @@ public class JAdESLevelBCompactWithSignaturePolicyStoreTest extends AbstractJAdE
         spDocSpec.setDocumentationReferences(DOCUMENTATION_REFERENCES);
         signaturePolicyStore.setSpDocSpecification(spDocSpec);
 
-        Exception exception = assertThrows(DSSException.class, () ->
+        Exception exception = assertThrows(IllegalInputException.class, () ->
                 service.addSignaturePolicyStore(signedDocument, signaturePolicyStore));
         assertEquals("The extended signature shall have JSON Serialization (or Flattened) type! " +
                 "Use JWSConverter to convert the signature.", exception.getMessage());

@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -73,7 +72,7 @@ public class JAdESParallelSignatureWithCompactTest extends AbstractJAdESTestSign
         signatureParameters.setJwsSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
 
         documentToSign = signedDocument;
-        Exception exception = assertThrows(DSSException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
         assertEquals("The 'COMPACT_SERIALIZATION' type is not supported for a parallel signing!",
                 exception.getMessage());
     }

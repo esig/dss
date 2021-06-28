@@ -101,14 +101,14 @@ public class JAdESFlattenedParallelSignatureTest extends AbstractJAdESTestValida
 	@Test
 	public void parallelSignFlattenedTest() {
 		DSSDocument serializationSignature = getCompleteSerializationSignature(toBeSigned);
-		Exception exception = assertThrows(DSSException.class, () -> getFlattenedSignature(serializationSignature));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> getFlattenedSignature(serializationSignature));
 		assertEquals("The 'FLATTENED_JSON_SERIALIZATION' type is not supported for a parallel signing!", exception.getMessage());
 	}
 	
 	@Test
 	public void twiceSignFlattenedTest() {
 		DSSDocument flattenedSignature = getFlattenedSignature(toBeSigned);
-		Exception exception = assertThrows(DSSException.class, () -> getFlattenedSignature(flattenedSignature));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> getFlattenedSignature(flattenedSignature));
 		assertEquals("The 'FLATTENED_JSON_SERIALIZATION' type is not supported for a parallel signing!", exception.getMessage());
 	}
 	

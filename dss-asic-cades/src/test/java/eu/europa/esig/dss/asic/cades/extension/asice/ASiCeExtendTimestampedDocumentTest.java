@@ -49,7 +49,6 @@ public class ASiCeExtendTimestampedDocumentTest extends PKIFactoryAccess {
 
 		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, extendParams));
 		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
-		
 	}
 
 	@Override

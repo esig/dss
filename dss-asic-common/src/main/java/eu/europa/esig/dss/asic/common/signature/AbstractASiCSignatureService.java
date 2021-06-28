@@ -26,7 +26,6 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
@@ -252,10 +251,8 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	 * @param parameters counter signature parameters to verify
 	 */
 	protected void assertCounterSignatureParametersValid(CSP parameters) {
-		if (Utils.isStringEmpty(parameters.getSignatureIdToCounterSign())) {
-			throw new IllegalArgumentException("The Id of a signature to be counter signed shall be defined! "
+		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
-		}
 	}
 
 	/**

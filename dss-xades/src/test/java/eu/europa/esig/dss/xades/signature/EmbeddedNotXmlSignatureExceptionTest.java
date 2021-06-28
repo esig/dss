@@ -22,8 +22,8 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -33,8 +33,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EmbeddedNotXmlSignatureExceptionTest extends AbstractXAdESTestSignature {
 
@@ -56,10 +56,9 @@ public class EmbeddedNotXmlSignatureExceptionTest extends AbstractXAdESTestSigna
 	@Override
 	@Test
 	public void signAndVerify() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			super.signAndVerify(); // enveloping signature with embedded content only allow XML
-		});
-		assertTrue(exception.getMessage().contains("An XML file is expected : Unable to parse content (XML expected)"));
+		Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
+		assertEquals("Enveloping signature with embedded XML cannot be created. Reason : the provided document is not XML!",
+				exception.getMessage());
 	}
 
 	@Override

@@ -698,7 +698,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 			
-		} catch (DSSException e) {
+		} catch (Exception e) {
 			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage());
 		}
 		

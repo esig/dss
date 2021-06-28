@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -69,7 +69,7 @@ public class JAdESCounterSignSampleJSONTest extends AbstractJAdESCounterSignatur
 
     @Test
     public void test() {
-        Exception exception = assertThrows(DSSException.class, () -> counterSign(documentToSign, "Id-1"));
+        Exception exception = assertThrows(IllegalInputException.class, () -> counterSign(documentToSign, "Id-1"));
         assertEquals("There is no signature to extend!", exception.getMessage());
     }
 

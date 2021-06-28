@@ -23,13 +23,13 @@ package eu.europa.esig.dss.jades.extension;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSConverter;
 import eu.europa.esig.dss.jades.signature.AbstractJAdESTestSignature;
 import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +68,7 @@ public class JAdESExtensionTClearToLTB64Test extends AbstractJAdESTestSignature 
 		signatureParameters.setBase64UrlEncodedEtsiUComponents(true);
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
 
-		Exception exception = assertThrows(DSSException.class,
+		Exception exception = assertThrows(IllegalInputException.class,
 				() -> service.extendDocument(signedDocument, signatureParameters));
 		assertEquals("Extension is not possible! The encoding of 'etsiU' "
 				+ "components shall match! Use jadesSignatureParameters.setBase64UrlEncodedEtsiUComponents(false)",

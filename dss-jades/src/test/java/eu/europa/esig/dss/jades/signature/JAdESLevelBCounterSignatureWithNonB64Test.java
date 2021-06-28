@@ -3,6 +3,7 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -12,7 +13,6 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
@@ -75,14 +75,14 @@ public class JAdESLevelBCounterSignatureWithNonB64Test extends AbstractJAdESCoun
 
     @Override
     protected DSSDocument counterSign(DSSDocument signatureDocument, String signatureId) {
-        Exception exception = assertThrows(DSSException.class, () -> super.counterSign(signatureDocument, signatureId));
+        Exception exception = assertThrows(IllegalInputException.class, () -> super.counterSign(signatureDocument, signatureId));
         assertEquals("The payload contains not URL-safe characters! " +
                 "With Unencoded Payload ('b64' = false) only ASCII characters in ranges " +
                 "%x20-2D and %x2F-7E are allowed for a COMPACT_SERIALIZATION!", exception.getMessage());
 
         counterSignatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
-        exception = assertThrows(DSSException.class, () -> super.counterSign(signatureDocument, signatureId));
+        exception = assertThrows(IllegalInputException.class, () -> super.counterSign(signatureDocument, signatureId));
         assertEquals("The payload contains not valid content! " +
                 "With Unencoded Payload ('b64' = false) only UTF-8 characters are allowed!", exception.getMessage());
 

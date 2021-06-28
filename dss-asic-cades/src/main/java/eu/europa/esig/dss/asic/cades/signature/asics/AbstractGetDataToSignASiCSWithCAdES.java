@@ -49,9 +49,9 @@ public abstract class AbstractGetDataToSignASiCSWithCAdES extends AbstractGetDat
 	}
 
 	/**
-	 * Returns the expected signature filename
+	 * Returns the expected signature document filename
 	 *
-	 * @return {@link String} singature filename
+	 * @return {@link String} signature document filename
 	 */
 	protected String getSignatureFileName() {
 		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {

@@ -194,6 +194,13 @@ public class ReferenceBuilder {
 		}
 	}
 
+	private void assertEnvelopingSignatureWithEmbeddedXMLPossible(DSSDocument document) {
+		if (!DomUtils.isDOM(document)) {
+			throw new IllegalInputException("Enveloping signature with embedded XML cannot be created. " +
+					"Reason : the provided document is not XML!");
+		}
+	}
+
 	private DSSReference envelopingDSSReference(DSSDocument document, int index) {
 		// <ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object"
 		// URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
@@ -204,18 +211,24 @@ public class ReferenceBuilder {
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		if (signatureParameters.isManifestSignature()) {
+			assertEnvelopingSignatureWithEmbeddedXMLPossible(document);
+
 			reference.setType(XMLDSigPaths.MANIFEST_TYPE);
 			Document manifestDoc = DomUtils.buildDOM(document);
 			Element manifestElement = manifestDoc.getDocumentElement();
 			reference.setUri("#" + manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName()));
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Arrays.asList(xmlTransform));
+
 		} else if (signatureParameters.isEmbedXML()) {
+			assertEnvelopingSignatureWithEmbeddedXMLPossible(document);
+
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_PREFIX + refId);
 
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Arrays.asList(xmlTransform));
+
 		} else {
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_PREFIX + refId);

@@ -84,7 +84,7 @@ public class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDo
 				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters));
+		Exception exception = assertThrows(NullPointerException.class, () -> service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters));
 		assertEquals("The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.", exception.getMessage());
 

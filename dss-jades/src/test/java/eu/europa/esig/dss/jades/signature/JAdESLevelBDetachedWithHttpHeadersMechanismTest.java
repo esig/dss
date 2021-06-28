@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -44,10 +33,19 @@ import eu.europa.esig.dss.jades.HTTPHeaderDigest;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
@@ -107,7 +105,7 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 	
 	@Override
 	protected DSSDocument sign() {
-		Exception exception = assertThrows(DSSException.class, () -> super.sign());
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
 		assertEquals("'http://uri.etsi.org/19182/HttpHeaders' SigD Mechanism can be used only with non-base64url encoded payload! "
 				+ "Set JAdESSignatureParameters.setBase64UrlEncodedPayload(true).", exception.getMessage());
 
