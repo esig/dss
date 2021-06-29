@@ -195,7 +195,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			xmlSignature.setSignedBy(getReadableCertificateName(signingCertificate.getId()));
 		}
 
-		XmlDetails validationDetails = getValidationDetails(signatureId);
+		XmlDetails validationDetails = getAdESValidationDetails(signatureId);
 		if (isNotEmpty(validationDetails)) {
 			xmlSignature.setAdESValidationDetails(validationDetails);
 		}
@@ -244,7 +244,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		return xmlSignature;
 	}
 
-	private XmlDetails getValidationDetails(String tokenId) {
+	private XmlDetails getAdESValidationDetails(String tokenId) {
 		XmlDetails validationDetails = new XmlDetails();
 		validationDetails.getError().addAll(convert(detailedReport.getAdESValidationErrors(tokenId)));
 		validationDetails.getWarning().addAll(convert(detailedReport.getAdESValidationWarnings(tokenId)));
@@ -362,7 +362,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			xmlTimestamp.setTimestampLevel(xmlTimestampLevel);
 		}
 
-		XmlDetails validationDetails = getValidationDetails(timestampId);
+		XmlDetails validationDetails = getAdESValidationDetails(timestampId);
 		if (isNotEmpty(validationDetails)) {
 			xmlTimestamp.setAdESValidationDetails(validationDetails);
 		}

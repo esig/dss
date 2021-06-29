@@ -369,7 +369,7 @@
 								</fo:table-cell>
 							</fo:table-row>
 
-							<xsl:apply-templates select="dss:ValidationDetails" />
+							<xsl:apply-templates select="dss:AdESValidationDetails" />
 							
 							<xsl:if test="@SignatureFormat">
 								<fo:table-row>
@@ -544,10 +544,10 @@
 
     </xsl:template>
 
-	<xsl:template match="dss:QualificationDetails|dss:ValidationDetails">
+	<xsl:template match="dss:QualificationDetails|dss:AdESValidationDetails">
 		<xsl:variable name="header">
 			<xsl:choose>
-				<xsl:when test="name() = 'ValidationDetails'">Validation Details</xsl:when>
+				<xsl:when test="name() = 'AdESValidationDetails'">AdES Validation Details</xsl:when>
 				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
