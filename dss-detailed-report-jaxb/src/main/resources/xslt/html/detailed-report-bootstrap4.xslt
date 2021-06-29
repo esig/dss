@@ -150,15 +150,17 @@
 					<xsl:apply-templates select="dss:FC" />
 					<xsl:apply-templates select="dss:ISC" />
 					<xsl:apply-templates select="dss:VCI" />
+					<xsl:apply-templates select="dss:XCV" />
 					<xsl:apply-templates select="dss:CV" />
 					<xsl:apply-templates select="dss:SAV" />
-					<xsl:apply-templates select="dss:XCV" />
+
     				<xsl:if test="$PSV != ''">
 						<hr />
 					</xsl:if>
 					<xsl:apply-templates select="dss:PSV" />
 					<xsl:apply-templates select="dss:PCV" />
 					<xsl:apply-templates select="dss:VTS" />
+
     				<xsl:if test="$SubXCV != ''">
 						<hr />
 					</xsl:if>

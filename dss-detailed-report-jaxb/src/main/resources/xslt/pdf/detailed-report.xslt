@@ -129,7 +129,17 @@
     		</fo:block>
     	</fo:block>
 
-       	<xsl:apply-templates/>
+		<xsl:apply-templates select="dss:FC" />
+		<xsl:apply-templates select="dss:ISC" />
+		<xsl:apply-templates select="dss:VCI" />
+		<xsl:apply-templates select="dss:XCV" />
+		<xsl:apply-templates select="dss:CV" />
+		<xsl:apply-templates select="dss:SAV" />
+
+		<xsl:apply-templates select="dss:PSV" />
+		<xsl:apply-templates select="dss:PCV" />
+		<xsl:apply-templates select="dss:VTS" />
+
     </xsl:template>
     
 	<xsl:template match="dss:TLAnalysis">
@@ -655,7 +665,9 @@
     <xsl:template match="dss:RevocationProductionDate" />
     <xsl:template match="dss:RevocationInfo" />
     <xsl:template match="dss:CrossCertificate" />
-    <xsl:template match="dss:EquivalentCertificate" />
-    
+	<xsl:template match="dss:EquivalentCertificate" />
+	<xsl:template match="dss:CryptographicValidation" />
+	<xsl:template match="dss:ControlTime" />
+
 </xsl:stylesheet>
 
