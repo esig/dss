@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -94,6 +95,8 @@ public class DSS1788NoCertProvidedTest extends AbstractXAdESTestValidation {
 		
 		assertEquals(certificateSource.getSigningCertificateRefs().size(), 
 				foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+
+		checkOrphanTokens(diagnosticData);
 	}
 	
 	@Override
@@ -110,7 +113,13 @@ public class DSS1788NoCertProvidedTest extends AbstractXAdESTestValidation {
 	
 	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(1, diagnosticData.getAllOrphanCertificateReferences().size());
+		List<OrphanCertificateTokenWrapper> allOrphanCertificateReferences = diagnosticData.getAllOrphanCertificateReferences();
+		assertEquals(1, allOrphanCertificateReferences.size());
+		OrphanCertificateTokenWrapper orphanCertificateTokenWrapper = allOrphanCertificateReferences.iterator().next();
+		assertNotNull(orphanCertificateTokenWrapper);
+		assertNotNull(orphanCertificateTokenWrapper.getDigestAlgoAndValue());
+		assertEquals("", orphanCertificateTokenWrapper.getCertificateDN());
+		assertEquals("", orphanCertificateTokenWrapper.getCertificateIssuerDN());
 		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 	

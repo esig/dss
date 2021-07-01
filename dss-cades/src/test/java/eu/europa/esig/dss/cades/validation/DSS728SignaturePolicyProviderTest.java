@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
@@ -34,6 +35,8 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS728SignaturePolicyProviderTest extends AbstractCAdESTestValidation {
 
@@ -67,7 +70,17 @@ public class DSS728SignaturePolicyProviderTest extends AbstractCAdESTestValidati
 	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		// root cert, because there is no CA cert
-		assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
+		List<OrphanCertificateTokenWrapper> allOrphanCertificateObjects = diagnosticData.getAllOrphanCertificateObjects();
+		assertEquals(1, allOrphanCertificateObjects.size());
+		OrphanCertificateTokenWrapper orphan = allOrphanCertificateObjects.iterator().next();
+		assertNotNull(orphan);
+		assertNotNull(orphan.getCertificateDN());
+		assertNotNull(orphan.getCertificateIssuerDN());
+		assertNotNull(orphan.getSerialNumber());
+		assertNotNull(orphan.getNotAfter());
+		assertNotNull(orphan.getNotBefore());
+		assertFalse(orphan.isTrusted());
+		assertTrue(orphan.isSelfSigned());
 		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
 	}
 

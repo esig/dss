@@ -512,6 +512,7 @@ public final class DSSUtils {
 	 * @return the file contents, never {@code null}
 	 */
 	public static byte[] toByteArray(final File file) {
+		Objects.requireNonNull(file, "The file cannot be null");
 		try (InputStream is = openInputStream(file)) {
 			return toByteArray(is);
 		} catch (Exception e) {

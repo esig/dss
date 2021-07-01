@@ -35,10 +35,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
-import eu.europa.esig.dss.validation.ValidationDataForInclusionBuilder;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
 
@@ -125,23 +123,6 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	private void removeOldRevocationValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
 		etsiUHeader.removeComponent(JAdESHeaderParameterNames.R_VALS);
 		jadesSignature.resetRevocationSources();
-	}
-
-	/**
-	 * Gets the validation data to be included into the signature
-	 *
-	 * @param jadesSignature {@link JAdESSignature} to get validation data to be included for
-	 * @param validationContext {@link ValidationContext} used to process the signature
-	 * @return {@link ValidationData}
-	 */
-	protected ValidationData getValidationDataForInclusion(JAdESSignature jadesSignature,
-                                                           ValidationContext validationContext) {
-		ValidationDataForInclusionBuilder validationDataForInclusionBuilder = new ValidationDataForInclusionBuilder(
-				validationContext, jadesSignature.getCompleteCertificateSource())
-						.excludeCertificateTokens(jadesSignature.getCertificateSource().getCertificates())
-						.excludeCRLs(jadesSignature.getCRLSource().getAllRevocationBinaries())
-						.excludeOCSPs(jadesSignature.getOCSPSource().getAllRevocationBinaries());
-		return validationDataForInclusionBuilder.build();
 	}
 
 	/**
