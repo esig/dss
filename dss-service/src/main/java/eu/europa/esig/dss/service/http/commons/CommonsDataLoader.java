@@ -139,6 +139,9 @@ public class CommonsDataLoader implements DataLoader {
 	/** The timeout connection */
 	private int timeoutConnection = TIMEOUT_CONNECTION;
 
+	/** The connection request timeout */
+	private int timeoutConnectionRequest = TIMEOUT_CONNECTION;
+
 	/** The timeout socket */
 	private int timeoutSocket = TIMEOUT_SOCKET;
 
@@ -375,6 +378,7 @@ public class CommonsDataLoader implements DataLoader {
 		final RequestConfig.Builder custom = RequestConfig.custom();
 		custom.setSocketTimeout(timeoutSocket);
 		custom.setConnectTimeout(timeoutConnection);
+		custom.setConnectionRequestTimeout(timeoutConnectionRequest);
 		custom.setRedirectsEnabled(redirectsEnabled);
 		custom.setCookieSpec(CookieSpecs.STANDARD); // to allow interoperability with RFC 6265 cookies
 
@@ -804,7 +808,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets the connection timeout.
 	 *
 	 * @return the value (millis)
 	 */
@@ -813,7 +817,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets the connection timeout.
 	 *
 	 * @param timeoutConnection
 	 *            the value (millis)
@@ -823,7 +827,26 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets the connection request timeout.
+	 *
+	 * @return the value (millis)
+	 */
+	public int getTimeoutConnectionRequest() {
+		return timeoutConnectionRequest;
+	}
+
+	/**
+	 * Sets the connection request timeout.
+	 *
+	 * @param timeoutConnectionRequest
+	 *            the value (millis)
+	 */
+	public void setTimeoutConnectionRequest(int timeoutConnectionRequest) {
+		this.timeoutConnectionRequest = timeoutConnectionRequest;
+	}
+
+	/**
+	 * Gets the socket timeout.
 	 *
 	 * @return the value (millis)
 	 */
@@ -832,7 +855,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets the socket timeout.
 	 *
 	 * @param timeoutSocket
 	 *            the value (millis)
@@ -842,16 +865,16 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets the maximum connections number.
 	 *
-	 * @return maximum number of connections
+	 * @return the value (millis)
 	 */
 	public int getConnectionsMaxTotal() {
 		return connectionsMaxTotal;
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets the maximum connections number.
 	 *
 	 * @param connectionsMaxTotal
 	 *            maximum number of connections
@@ -861,7 +884,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets the maximum connections number per route.
 	 *
 	 * @return maximum number of connections per one route
 	 */
@@ -870,7 +893,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets the maximum connections number per route.
 	 *
 	 * @param connectionsMaxPerRoute
 	 *            maximum number of connections per one route
@@ -880,7 +903,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets if redirect is enabled.
 	 *
 	 * @return true if http redirects are allowed
 	 */
@@ -889,7 +912,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets if redirect should be enabled.
 	 *
 	 * @param redirectsEnabled
 	 *            true if http redirects are allowed
