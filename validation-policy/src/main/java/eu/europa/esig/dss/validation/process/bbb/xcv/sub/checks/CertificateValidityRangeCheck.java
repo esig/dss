@@ -36,7 +36,7 @@ import java.util.Date;
 /**
  * Checks if the certificate is not expired
  */
-public class CertificateExpirationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** Validation date */
 	private final Date currentTime;
@@ -60,8 +60,8 @@ public class CertificateExpirationCheck<T extends XmlConstraintsConclusion> exte
 	 * @param currentTime {@link Date} validation time
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public CertificateExpirationCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
-			CertificateRevocationWrapper usedCertificateRevocation, Date currentTime, LevelConstraint constraint) {
+	public CertificateValidityRangeCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
+										 CertificateRevocationWrapper usedCertificateRevocation, Date currentTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTime = currentTime;
 		this.certificate = certificate;
@@ -73,7 +73,7 @@ public class CertificateExpirationCheck<T extends XmlConstraintsConclusion> exte
 		boolean inValidityRange = isInValidityRange();
 		if (!inValidityRange) {
 			subIndication = SubIndication.OUT_OF_BOUNDS_NO_POE;
-			if (ValidationProcessUtils.isRevocationCheckRequired(certificate, currentTime)) {
+			if (ValidationProcessUtils.isRevocationCheckRequired(certificate)) {
 				if (usedCertificateRevocation != null && !usedCertificateRevocation.isRevoked()) {
 					subIndication = SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
 				}
@@ -115,4 +115,5 @@ public class CertificateExpirationCheck<T extends XmlConstraintsConclusion> exte
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return subIndication;
 	}
+
 }

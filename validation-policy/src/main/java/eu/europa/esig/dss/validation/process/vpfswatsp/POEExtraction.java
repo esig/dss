@@ -177,6 +177,27 @@ public class POEExtraction {
 	}
 
 	/**
+	 * Checks if a POE exists for the token with the given Id within the validity range
+	 * between {@code notBefore} and {@code notAfter} inclusively
+	 *
+	 * @param tokenId {@link String} the Id of a token to check POE for
+	 * @param notBefore {@link Date} the start of the validity range
+	 * @param notAfter {@link Date} the end of the validity range
+	 * @return TRUE if a POE exists in the range, FALSE otherwise
+	 */
+	public boolean isPOEExistInRange(final String tokenId, final Date notBefore, final Date notAfter) {
+		List<POE> poes = poeMap.get(tokenId);
+		if (poes != null) {
+			for (POE poe : poes) {
+				if (poe.getTime().compareTo(notBefore) >= 0 && poe.getTime().compareTo(notAfter) <= 0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Returns the lowest POE time for the requested token
 	 * 
 	 * @param tokenId {@link String} is of the token to get the lowest POE time for

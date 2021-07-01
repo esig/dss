@@ -24,6 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
@@ -165,7 +166,17 @@ public class DetailedReportMessageCollector {
 
 	private List<Message> collectTimestampValidation(MessageType type, XmlTimestamp xmlTimestamp) {
 		XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
-		return getMessages(type, validationProcessTimestamps.getConclusion());
+
+		XmlConclusion conclusion = new XmlConclusion();
+		conclusion.getWarnings().addAll(validationProcessTimestamps.getConclusion().getWarnings());
+		conclusion.getInfos().addAll(validationProcessTimestamps.getConclusion().getInfos());
+
+		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+		XmlPSV psv = tstBBB.getPSV();
+		if (psv == null || psv.getConclusion() == null || !Indication.PASSED.equals(psv.getConclusion().getIndication())) {
+			conclusion.getErrors().addAll(validationProcessTimestamps.getConclusion().getErrors());
+		}
+		return getMessages(type, conclusion);
 	}
 
 	private List<Message> collectSignatureQualification(MessageType type, XmlSignature xmlSignature) {

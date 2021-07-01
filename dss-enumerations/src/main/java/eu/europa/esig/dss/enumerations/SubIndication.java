@@ -63,6 +63,8 @@ public enum SubIndication implements UriBasedEnum {
 
 	OUT_OF_BOUNDS_NO_POE("urn:etsi:019102:subindication:OUT_OF_BOUNDS_NO_POE"),
 
+	REVOCATION_OUT_OF_BOUNDS_NO_POE("urn:etsi:019102:subindication:REVOCATION_OUT_OF_BOUNDS_NO_POE"),
+
 	OUT_OF_BOUNDS_NOT_REVOKED("urn:etsi:019102:subindication:OUT_OF_BOUNDS_NOT_REVOKED"),
 
 	CRYPTO_CONSTRAINTS_FAILURE_NO_POE("urn:etsi:019102:subindication:CRYPTO_CONSTRAINTS_FAILURE_NO_POE"),

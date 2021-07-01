@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>document-signed-cades-baseline-t.pkcs7</DocumentName>
-    <ValidationDate>2020-01-21T12:17:35</ValidationDate>
+    <ValidationDate>2020-01-21T12:17:36</ValidationDate>
     <Signatures>
         <Signature Id="S-F50AA3963D9DD6F4CCE151BAE10FD04DC597D22A2185562A7E7A1A30B3BDCA5D">
             <SignatureFilename>document-signed-cades-baseline-t.pkcs7</SignatureFilename>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>sample-signed-xades-baseline-b.xml</DocumentName>
-    <ValidationDate>2020-05-05T14:05:26</ValidationDate>
+    <ValidationDate>2020-05-05T14:05:27</ValidationDate>
     <Signatures>
         <Signature Id="S-C225430C50EE4B25659EC76D8AEEAE3AF28FC2758FFC1E754681B81F212093B1">
             <DAIdentifier>id-8fd79488a6f30846d2ed77f9bdaa3078</DAIdentifier>

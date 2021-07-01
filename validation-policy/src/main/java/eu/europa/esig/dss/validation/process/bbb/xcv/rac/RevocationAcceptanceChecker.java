@@ -46,6 +46,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationDataKn
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.SelfIssuedOCSPCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 
 import java.util.ArrayList;
@@ -144,12 +145,16 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 			}
 			
 			item = item.setNextItem(certificateIntact(revocationCertificate));
+
+			if (revocationCertificate.isSelfSigned()) {
+				item = item.setNextItem(selfSigned(revocationCertificate));
+			}
 			
 			if (revocationCertificate.isIdPkixOcspNoCheck()) {
 				item = item.setNextItem(idPkixOcspNoCheck(revocationCertificate));
 			}
 			
-			if (ValidationProcessUtils.isRevocationCheckRequired(revocationCertificate, controlTime)) {
+			if (ValidationProcessUtils.isRevocationCheckRequired(revocationCertificate)) {
 
 				SubContext subContext = revocationData.getSigningCertificate().getId().equals(revocationCertificate.getId()) ? 
 						SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
@@ -231,8 +236,12 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		return new SignatureIntactWithIdCheck(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
 	}
 
+	private ChainItem<XmlRAC> selfSigned(CertificateWrapper certificate) {
+		return new CertificateSelfSignedCheck(i18nProvider, result, certificate, getWarnLevelConstraint());
+	}
+
 	private ChainItem<XmlRAC> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {
-		return new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, controlTime, getWarnLevelConstraint());
+		return new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, getWarnLevelConstraint());
 	}
 	
 	private ChainItem<XmlRAC> revocationDataPresentForRevocationChain(CertificateWrapper certificate, SubContext subContext) {

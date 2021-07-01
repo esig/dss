@@ -44,6 +44,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.ValidationTime
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Validates certificate in a past
@@ -53,8 +54,8 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	/** Token to be validated */
 	private final TokenProxy token;
 
-	/** The related BBBs */
-	private final XmlBasicBuildingBlocks bbb;
+	/** Map of all BBBs */
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
 	/** POE container */
 	private final POEExtraction poe;
@@ -76,18 +77,18 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param token {@link TokenProxy}
-	 * @param bbb {@link XmlBasicBuildingBlocks}
+	 * @param bbbs map of all {@link XmlBasicBuildingBlocks}
 	 * @param poe {@link POEExtraction}
 	 * @param currentTime {@link Date}
 	 * @param policy {@link ValidationPolicy}
 	 * @param context {@link Context}
 	 */
-	public PastCertificateValidation(I18nProvider i18nProvider, TokenProxy token, XmlBasicBuildingBlocks bbb, 
+	public PastCertificateValidation(I18nProvider i18nProvider, TokenProxy token, Map<String, XmlBasicBuildingBlocks> bbbs,
 			POEExtraction poe, Date currentTime, ValidationPolicy policy, Context context) {
 		super(i18nProvider, new XmlPCV());
 
 		this.token = token;
-		this.bbb = bbb;
+		this.bbbs = bbbs;
 		this.poe = poe;
 		this.currentTime = currentTime;
 
@@ -194,9 +195,10 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private ChainItem<XmlPCV> validationTimeSliding() {
 		ValidationTimeSliding validationTimeSliding = 
-				new ValidationTimeSliding(i18nProvider, token, currentTime, poe, bbb, context, policy);
+				new ValidationTimeSliding(i18nProvider, token, currentTime, poe, bbbs, context, policy);
 		
 		XmlVTS vts = validationTimeSliding.execute();
+		XmlBasicBuildingBlocks bbb = bbbs.get(token.getId());
 		bbb.setVTS(vts);
 		if (isValid(vts)) {
 			controlTime = vts.getControlTime();

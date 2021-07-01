@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -28,6 +29,9 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+
+import java.util.Date;
 
 /**
  * Checks if an acceptable revocation data exists
@@ -36,26 +40,47 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  */
 public class SatisfyingRevocationDataExistsCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Concerned certificate token */
+	private final CertificateWrapper certificateWrapper;
+
 	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
+
+	/** The control time used to find out the revocation data */
+	private final Date controlTime;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result the result
+	 * @param certificateWrapper {@link CertificateWrapper}
 	 * @param revocationData {@link RevocationWrapper}
+	 * @param controlTime {@link Date}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public SatisfyingRevocationDataExistsCheck(I18nProvider i18nProvider, T result, RevocationWrapper revocationData,
-											   LevelConstraint constraint) {
+	public SatisfyingRevocationDataExistsCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificateWrapper,
+											   RevocationWrapper revocationData, Date controlTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
+		this.certificateWrapper = certificateWrapper;
 		this.revocationData = revocationData;
+		this.controlTime = controlTime;
 	}
 
 	@Override
 	protected boolean process() {
 		return revocationData != null;
+	}
+
+	@Override
+	protected String buildAdditionalInfo() {
+		if (revocationData != null) {
+			return i18nProvider.getMessage(MessageTag.CERTIFICATE_REVOCATION_FOUND, revocationData.getId(),
+					certificateWrapper.getId(), ValidationProcessUtils.getFormattedDate(controlTime));
+		} else {
+			return i18nProvider.getMessage(MessageTag.CERTIFICATE_REVOCATION_NOT_FOUND, certificateWrapper.getId(),
+					ValidationProcessUtils.getFormattedDate(controlTime));
+		}
 	}
 
 	@Override

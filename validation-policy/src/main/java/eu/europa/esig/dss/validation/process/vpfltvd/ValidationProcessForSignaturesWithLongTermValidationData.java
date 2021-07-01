@@ -26,6 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationBasicValidation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
@@ -60,17 +61,17 @@ import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidati
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentWithIdCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeSuspensionTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDataAcceptableCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeSuspensionTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
@@ -180,6 +181,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		if (!ValidationProcessUtils.isAllowedBasicSignatureValidation(basicSignatureValidation.getConclusion())) {
 			return;
 		}
+
+		final XmlBasicBuildingBlocks signatureBBB = bbbs.get(currentSignature.getId());
 		
 		/* Revocation BBBs analysis */
 		certificateRevocationMap = new LinkedHashMap<>();
@@ -190,17 +193,23 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			}
 			CertificateRevocationWrapper latestCertificateRevocation = null;
 			for (CertificateRevocationWrapper revocationData : certificateWrapper.getCertificateRevocationData()) {
+
+				RevocationBasicValidationProcess rbvp = new RevocationBasicValidationProcess(i18nProvider, diagnosticData, revocationData, bbbs);
+				XmlRevocationBasicValidation revocationBasicValidationResult = rbvp.execute();
 				
-				item = item.setNextItem(revocationBasicValidationAcceptable(revocationData));
-				
-				XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationData.getId());
-				if (ValidationProcessUtils.isAllowedBasicSignatureValidation(revocationBBB.getConclusion())) {
-					
-					item = item.setNextItem(revocationDataConsistent(certificateWrapper, revocationData));
-					
-					if (isRevocationDataConsistent(certificateWrapper, revocationData) && 
-							(latestCertificateRevocation == null || revocationData.getProductionDate().after(latestCertificateRevocation.getProductionDate()))) {
-						latestCertificateRevocation = revocationData;
+				item = item.setNextItem(revocationBasicValidationAcceptable(revocationBasicValidationResult));
+
+				if (ValidationProcessUtils.isAllowedBasicRevocationDataValidation(revocationBasicValidationResult.getConclusion())) {
+
+					XmlRAC xmlRAC = ValidationProcessUtils.getRevocationAcceptanceCheckerResult(signatureBBB, certificateWrapper, revocationData);
+
+					if (xmlRAC != null) {
+						item = item.setNextItem(revocationDataAcceptable(xmlRAC));
+
+						if (isValid(xmlRAC) && (latestCertificateRevocation == null
+								|| revocationData.getProductionDate().after(latestCertificateRevocation.getProductionDate()) )) {
+							latestCertificateRevocation = revocationData;
+						}
 					}
 				}
 			}
@@ -417,14 +426,13 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new AcceptableBasicSignatureValidationCheck(i18nProvider, result, basicSignatureValidation, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> revocationBasicValidationAcceptable(CertificateRevocationWrapper revocationData) {
-		RevocationBasicValidationProcess rbvp = new RevocationBasicValidationProcess(i18nProvider, diagnosticData, revocationData, bbbs);
-		XmlRevocationBasicValidation revocationBasicValidationResult = rbvp.execute();
-		return new RevocationDataAcceptableCheck(i18nProvider, result, revocationBasicValidationResult, getWarnLevelConstraint());
+	private ChainItem<XmlValidationProcessLongTermData> revocationBasicValidationAcceptable(XmlRevocationBasicValidation revocationBasicValidationResult) {
+		return new RevocationDataAcceptableCheck(i18nProvider, result, revocationBasicValidationResult.getId(),
+				revocationBasicValidationResult.getConclusion(), getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> revocationDataConsistent(CertificateWrapper certificate, CertificateRevocationWrapper revocationData) {
-		return new RevocationConsistentWithIdCheck(i18nProvider, result, certificate, revocationData, getWarnLevelConstraint());
+	private ChainItem<XmlValidationProcessLongTermData> revocationDataAcceptable(XmlRAC xmlRAC) {
+		return new RevocationAcceptanceCheckerResultCheck(i18nProvider, result, xmlRAC, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDataAvailable(RevocationWrapper revocationData, 
@@ -616,20 +624,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			}
 		}
 		return item;
-	}
-
-	private boolean isRevocationDataConsistent(CertificateWrapper certificate, CertificateRevocationWrapper revocationData) {
-		XmlBasicBuildingBlocks signatureBBB = bbbs.get(currentSignature.getId());
-		if (signatureBBB.getXCV() != null) {
-			for (XmlSubXCV subXCV : signatureBBB.getXCV().getSubXCV()) {
-				if (certificate.getId().equals(subXCV.getId()) &&
-						subXCV.getRFC() != null && revocationData.getId().equals(subXCV.getRFC().getId())) {
-					// RFC is performed only for consistent revocation
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	private SubContext getSubContext(CertificateWrapper certificateWrapper) {

@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationBasicValidation;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -35,25 +35,32 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
  * Verifies the result of a basic revocation validation process
  *
  */
-public class RevocationDataAcceptableCheck extends ChainItem<XmlValidationProcessLongTermData> {
+public class RevocationDataAcceptableCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+
+	/**
+	 * The Id of a revocation data to be checked
+	 */
+	private final String revocationId;
 
 	/**
 	 * The revocation basic validation result
 	 */
-	private final XmlRevocationBasicValidation revocationBasicValidation;
+	private final XmlConclusion xmlConclusion;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
-	 * @param result {@link XmlValidationProcessLongTermData}
-	 * @param revocationBasicValidation {@link XmlRevocationBasicValidation}
+	 * @param result {@link XmlConstraintsConclusion}
+	 * @param revocationId {@link String}
+	 * @param xmlConclusion {@link XmlConclusion}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public RevocationDataAcceptableCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result,
-										 XmlRevocationBasicValidation revocationBasicValidation, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint, revocationBasicValidation.getId());
-		this.revocationBasicValidation = revocationBasicValidation;
+	public RevocationDataAcceptableCheck(I18nProvider i18nProvider, T result,
+										 String revocationId, XmlConclusion xmlConclusion, LevelConstraint constraint) {
+		super(i18nProvider, result, constraint, revocationId);
+		this.revocationId = revocationId;
+		this.xmlConclusion = xmlConclusion;
 	}
 
 	@Override
@@ -63,18 +70,22 @@ public class RevocationDataAcceptableCheck extends ChainItem<XmlValidationProces
 
 	@Override
 	protected boolean process() {
-		return revocationBasicValidation.getConclusion() != null &&
-				ValidationProcessUtils.isAllowedBasicSignatureValidation(revocationBasicValidation.getConclusion());
+		return xmlConclusion != null && ValidationProcessUtils.isAllowedBasicRevocationDataValidation(xmlConclusion);
+	}
+
+	@Override
+	protected String buildAdditionalInfo() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_ID, revocationId);
 	}
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return revocationBasicValidation.getConclusion().getIndication();
+		return xmlConclusion.getIndication();
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return revocationBasicValidation.getConclusion().getSubIndication();
+		return xmlConclusion.getSubIndication();
 	}
 
 	@Override

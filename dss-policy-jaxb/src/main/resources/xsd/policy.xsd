@@ -486,7 +486,7 @@
 			</xsd:element>
 			<xsd:element name="NotExpired" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate is not expired</xsd:documentation>
+					<xsd:documentation>Checks if the validation time is in the validity range of the certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="AuthorityInfoAccessPresent" type="LevelConstraint" minOccurs="0">
@@ -577,6 +577,11 @@
 			<xsd:element name="NotOnHold" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is not with a status certificateHold</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="RevocationIssuerNotExpired" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the validation time is in the validity range of the certificate of the issuer of the revocation information</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SelfSigned" type="LevelConstraint" minOccurs="0">

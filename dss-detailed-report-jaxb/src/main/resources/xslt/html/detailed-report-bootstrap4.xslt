@@ -598,9 +598,6 @@
 								<xsl:when test="$BlockType='RFC'">
 									<xsl:attribute name="href">#RFC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
 								</xsl:when>
-								<xsl:when test="$BlockType='PSV'">
-									<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-PSV</xsl:attribute>
-								</xsl:when>
 								<xsl:when test="$BlockType='PCV'">
 									<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-PCV</xsl:attribute>
 								</xsl:when>
