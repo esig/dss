@@ -272,12 +272,12 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getCertificateExtendedKeyUsageConstraint(Context context, SubContext subContext);
 
 	/**
-	 * Returns certificate's not expired constraint
+	 * Returns certificate's validity range constraint
 	 *
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if Expiration for a given context element is present in the constraint file, null
-	 *         otherwise.
+	 * @return {@code LevelConstraint} if NotExpired constraint for a given certificate context is present
+	 * 			in the constraint file, null otherwise.
 	 */
 	LevelConstraint getCertificateNotExpiredConstraint(Context context, SubContext subContext);
 
@@ -387,6 +387,16 @@ public interface ValidationPolicy {
 	 *         otherwise.
 	 */
 	LevelConstraint getCertificateNotOnHoldConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns revocation issuer's validity range constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if RevocationIssuerNotExpired constraint for a given certificate context is present
+	 * 			in the constraint file, null otherwise.
+	 */
+	LevelConstraint getRevocationIssuerNotExpiredConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns certificate's not self-signed constraint

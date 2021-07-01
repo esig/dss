@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -32,7 +32,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Checks if the certificate is self-signed
  */
-public class CertificateSelfSignedCheck extends ChainItem<XmlSubXCV> {
+public class CertificateSelfSignedCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** Certificate to check */
 	private final CertificateWrapper certificate;
@@ -45,7 +45,7 @@ public class CertificateSelfSignedCheck extends ChainItem<XmlSubXCV> {
 	 * @param certificate {@link CertificateWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public CertificateSelfSignedCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+	public CertificateSelfSignedCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
 									  LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;

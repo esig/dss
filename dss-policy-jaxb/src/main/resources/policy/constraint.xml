@@ -69,6 +69,7 @@
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
+				<RevocationIssuerNotExpired Level="FAIL" />
 				<NotSelfSigned Level="WARN" />
 <!-- 				<Qualification Level="WARN" /> -->
 <!-- 				<SupportedByQSCD Level="WARN" /> -->

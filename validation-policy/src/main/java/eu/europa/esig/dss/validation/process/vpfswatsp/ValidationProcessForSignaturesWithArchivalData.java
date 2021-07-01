@@ -148,15 +148,18 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		/*
 		 * 3) The long term validation process shall perform the validation process for Signatures with Time as per
 		 * clause 5.5 with all the inputs, including the processing of any signed attributes as specified.
+		 *
 		 * - If the validation outputs PASSED:
 		 * -- If there is no validation constraint mandating the validation of the LTV attributes, the long term
-		 * validation process shall return the indication PASSED.
+		 *    validation process shall return the indication PASSED.
 		 * -- Otherwise, the SVA shall go to step 4.
+		 *
 		 * - If the validation outputs one of the following indications/sub-indications:
-		 * INDETERMINATE/REVOKED_NO_POE, INDETERMINATE/REVOKED_CA_NO_POE,
-		 * INDETERMINATE/OUT_OF_BOUNDS_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED or
-		 * INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE, the long term validation process
-		 * shall go to the next step.
+		 *   INDETERMINATE/REVOKED_NO_POE, INDETERMINATE/REVOKED_CA_NO_POE,
+		 *   INDETERMINATE/OUT_OF_BOUNDS_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED,
+		 *   INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE or INDETERMINATE/REVOCATION_OUT_OF_BOUNDS_NO_POE,
+		 *   the long term validation process shall go to the next step.
+		 *
 		 * - In all other cases, the long term validation process shall fail with returned code and information.
 		 */
 		ChainItem<XmlValidationProcessArchivalData> item = firstItem = longTermValidation();

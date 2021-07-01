@@ -435,7 +435,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 				lastTrustedUsage = poe.getLowestPOETime(certificateWrapper.getId());
 			}
 
-			if (ValidationProcessUtils.isRevocationCheckRequired(certificateWrapper, lastTrustedUsage)) {
+			if (ValidationProcessUtils.isRevocationCheckRequired(certificateWrapper)) {
 				Date tempMin = null;
 				List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
 				for (CertificateRevocationWrapper revocationData : certificateRevocationData) {
