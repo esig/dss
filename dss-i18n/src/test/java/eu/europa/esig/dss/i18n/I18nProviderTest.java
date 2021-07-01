@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.i18n;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class I18nProviderTest {
 	
@@ -130,7 +130,7 @@ public class I18nProviderTest {
 			MessageTag tstIntact = MessageTag.BBB_CV_ISIT;
 			String message = i18nProvider.getMessage(tstIntact);
 			assertNotNull(message);
-			assertEquals("Is timestamp's signature intact?", message);
+			assertEquals("Is time-stamp's signature intact?", message);
 			
 			MessageTag signedAttribute = MessageTag.BBB_ICS_ISASCP;
 			message = i18nProvider.getMessage(signedAttribute);
