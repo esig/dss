@@ -56,8 +56,7 @@
 		<jakarta.rs-api.version>2.1.6</jakarta.rs-api.version>
 		<jakarta.ws-api.version>2.3.2</jakarta.ws-api.version>
 
-		<junit.platform.version>1.7.2</junit.platform.version>
-		<junit.jupiter.version>5.7.2</junit.jupiter.version>
+		<junit.version>5.7.2</junit.version>
 
 		<awaitility.version>4.1.0</awaitility.version>
 		<mockito.version>3.10.0</mockito.version>
@@ -953,25 +952,11 @@
 
 			<!-- Testing -->
 			<dependency>
-				<groupId>org.junit.platform</groupId>
-				<artifactId>junit-platform-launcher</artifactId>
-				<version>${junit.platform.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-engine</artifactId>
-				<version>${junit.jupiter.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-params</artifactId>
-				<version>${junit.jupiter.version}</version>
-			</dependency>
-			<!-- JUnit Test Suite compatibility -->
-			<dependency>
-				<groupId>org.junit.platform</groupId>
-				<artifactId>junit-platform-runner</artifactId>
-				<version>${junit.platform.version}</version>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 
 			<dependency>
