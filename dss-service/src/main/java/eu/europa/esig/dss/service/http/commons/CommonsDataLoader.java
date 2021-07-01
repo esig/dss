@@ -161,7 +161,7 @@ public class CommonsDataLoader implements DataLoader {
 	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
 	/** Contains rules credentials for authentication to different resources */
-	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<>();
+	private Map<HostConnection, UserCredentials> authenticationMap;
 
 	/**
 	 * Used SSL protocol
@@ -412,11 +412,13 @@ public class CommonsDataLoader implements DataLoader {
 	private HttpClientBuilder configCredentials(HttpClientBuilder httpClientBuilder, final String url) {
 
 		final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-		for (final Map.Entry<HttpHost, UsernamePasswordCredentials> entry : authenticationMap.entrySet()) {
-
-			final HttpHost httpHost = entry.getKey();
-			final UsernamePasswordCredentials usernamePasswordCredentials = entry.getValue();
-			final AuthScope authscope = new AuthScope(httpHost.getHostName(), httpHost.getPort());
+		for (final Map.Entry<HostConnection, UserCredentials> entry : getAuthenticationMap().entrySet()) {
+			final HostConnection hostConnection = entry.getKey();
+			final UserCredentials userCredentials = entry.getValue();
+			final AuthScope authscope = new AuthScope(hostConnection.getHost(), hostConnection.getPort(),
+					hostConnection.getRealm(), hostConnection.getScheme());
+			final UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(
+					userCredentials.getUsername(), userCredentials.getPassword());
 			credentialsProvider.setCredentials(authscope, usernamePasswordCredentials);
 		}
 		httpClientBuilder = httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
@@ -1071,7 +1073,45 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Addz authentication credentials
+	 * Returns the current instance of the authentication map
+	 *
+	 * @return a map between {@link HostConnection} and {@link UserCredentials}
+	 */
+	public Map<HostConnection, UserCredentials> getAuthenticationMap() {
+		if (authenticationMap == null) {
+			authenticationMap = new HashMap<>();
+		}
+		return authenticationMap;
+	}
+
+	/**
+	 * Sets the authentication map
+	 *
+	 * NOTE: this method overrides the current instance of {@code authenticationMap}
+	 *
+	 * @param authenticationMap a map between {@link HostConnection} and {@link UserCredentials}
+	 */
+	public void setAuthenticationMap(Map<HostConnection, UserCredentials> authenticationMap) {
+		this.authenticationMap = authenticationMap;
+	}
+
+	/**
+	 * Adds authentication credentials to the existing {@code authenticationMap}
+	 *
+	 * @param hostConnection
+	 *            host connection details
+	 * @param userCredentials
+	 *            user login credentials
+	 * @return this for fluent addAuthentication
+	 */
+	public CommonsDataLoader addAuthentication(HostConnection hostConnection, UserCredentials userCredentials) {
+		Map<HostConnection, UserCredentials> authenticationMap = getAuthenticationMap();
+		authenticationMap.put(hostConnection, userCredentials);
+		return this;
+	}
+
+	/**
+	 * Adds authentication credentials to the existing {@code authenticationMap}
 	 *
 	 * @param host
 	 *            host
@@ -1087,31 +1127,28 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	public CommonsDataLoader addAuthentication(final String host, final int port, final String scheme,
 											   final String login, final String password) {
-
-		final HttpHost httpHost = new HttpHost(host, port, scheme);
-		final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(login, password);
-		authenticationMap.put(httpHost, credentials);
-
-		return this;
+		final HostConnection hostConnection = new HostConnection(host, port, scheme);
+		final UserCredentials userCredentials = new UserCredentials(login, password);
+		return addAuthentication(hostConnection, userCredentials);
 	}
 
 	/**
 	 * This method allows to propagate the authentication information from the
 	 * current object.
 	 *
+	 * Deprecated. Please use
+	 * {@code
+	 * 		currentDataLoader.setAuthenticationMap(oldDataLoader.getAuthenticationMap());
+	 * }
+	 *
 	 * @param commonsDataLoader
 	 *            {@code CommonsDataLoader} to be initialized with
 	 *            authentication information
+	 * @deprecated since v5.9
 	 */
+	@Deprecated
 	public void propagateAuthentication(final CommonsDataLoader commonsDataLoader) {
-
-		for (final Map.Entry<HttpHost, UsernamePasswordCredentials> credentialsEntry : authenticationMap.entrySet()) {
-
-			final HttpHost httpHost = credentialsEntry.getKey();
-			final UsernamePasswordCredentials credentials = credentialsEntry.getValue();
-			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(),
-					credentials.getPassword());
-		}
+		setAuthenticationMap(commonsDataLoader.getAuthenticationMap());
 	}
 
 	/**
