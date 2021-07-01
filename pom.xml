@@ -157,7 +157,9 @@
 		<module>dss-timestamp-remote-rest</module>
 		<module>dss-timestamp-remote-soap</module>
 		<module>dss-cookbook</module>
+
 		<module>dss-jacoco-coverage</module>
+		<module>dss-bom</module>
 	</modules>
 
 	<build>
