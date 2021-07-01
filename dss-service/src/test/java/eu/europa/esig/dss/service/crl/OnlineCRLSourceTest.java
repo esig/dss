@@ -57,7 +57,7 @@ public class OnlineCRLSourceTest {
 	@BeforeAll
 	public static void init() {
 		dataLoader = new CommonsDataLoader();
-		dataLoader.setTimeoutConnection(6000);
+		dataLoader.setTimeoutConnection(60000);
 
 		goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user.crt"));
 		goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
@@ -121,7 +121,7 @@ public class OnlineCRLSourceTest {
 		revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa, Arrays.asList(wrong_url, alternative_url));
 		assertNull(revocationToken);
 
-		dataLoader.setTimeoutConnection(6000);
+		dataLoader.setTimeoutConnection(60000);
 	}
 
 	@Test
