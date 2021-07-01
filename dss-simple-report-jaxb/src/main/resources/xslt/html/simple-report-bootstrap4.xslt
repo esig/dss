@@ -241,7 +241,7 @@
 			        	Certificate Chain:
 			        </dt>
 		            <xsl:choose>
-			            <xsl:when test="dss:CertificateChain">
+			            <xsl:when test="dss:CertificateChain/dss:Certificate">
 			        		<dd>
 		            			<xsl:attribute name="class">col-sm-9</xsl:attribute>
 		            			
@@ -267,7 +267,11 @@
 		        			</dd>
 			        	</xsl:when>
 			        	<xsl:otherwise>
-			        		<dd>/</dd>
+			        		<dd>
+								<xsl:attribute name="class">col-sm-9</xsl:attribute>
+
+								/
+							</dd>
 			        	</xsl:otherwise>
 		        	</xsl:choose>
 	        	</dl>

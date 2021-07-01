@@ -407,7 +407,7 @@
 								</fo:table-cell>
 								<fo:table-cell>
 									<xsl:choose>
-							            <xsl:when test="dss:CertificateChain">
+							            <xsl:when test="dss:CertificateChain/dss:Certificate">
 								            <xsl:for-each select="dss:CertificateChain/dss:Certificate">
 								        		<fo:block>
 													<xsl:attribute name="margin-top">2px</xsl:attribute>

@@ -357,11 +357,6 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 			}
 		}
 
-		// none of them match
-		if (bestCertificateValidity == null && !candidates.isEmpty()) {
-			bestCertificateValidity = candidates.getCertificateValidityList().iterator().next();
-		}
-
 		if (bestCertificateValidity != null) {
 			candidates.setTheCertificateValidity(bestCertificateValidity);
 		}
