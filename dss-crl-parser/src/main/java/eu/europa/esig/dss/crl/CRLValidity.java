@@ -97,6 +97,10 @@ public class CRLValidity {
 		this.crlBinary = crlBinary;
 	}
 
+	public CRLBinary getCrlBinary() {
+		return crlBinary;
+	}
+
 	/**
 	 * Returns DER encoded binaries of the CRL
 	 *
