@@ -30,7 +30,7 @@ import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
 import eu.europa.esig.dss.pdf.PdfCMSRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

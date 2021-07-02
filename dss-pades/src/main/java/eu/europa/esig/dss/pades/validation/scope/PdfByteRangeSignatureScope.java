@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pades.validation.scope;
 
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.validation.scope.PartialSignatureScope;
 
 public class PdfByteRangeSignatureScope extends PartialSignatureScope {

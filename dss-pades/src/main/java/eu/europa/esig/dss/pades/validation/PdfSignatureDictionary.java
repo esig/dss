@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import eu.europa.esig.dss.validation.ByteRange;
 import org.bouncycastle.cms.CMSSignedData;
 
 import java.util.Date;

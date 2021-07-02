@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
