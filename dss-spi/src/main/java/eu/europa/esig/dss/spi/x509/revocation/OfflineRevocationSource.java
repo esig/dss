@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -41,7 +42,7 @@ import java.util.Set;
  *
  * @param <R> the revocation class type (CRL/OCSP)
  */
-public abstract class OfflineRevocationSource<R extends Revocation> implements MultipleRevocationSource<R> {
+public abstract class OfflineRevocationSource<R extends Revocation> implements RevocationSource<R>, MultipleRevocationSource<R> {
 
 	private static final long serialVersionUID = 8270762277613989997L;
 
@@ -185,6 +186,36 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	 */
 	public Set<RevocationRef<R>> getAllRevocationReferences() {
 		return referenceOrigins.keySet();
+	}
+
+	/**
+	 * This method returns the latest issued revocation token from a set of all revocation data found for
+	 * the given {@code certificateToken}.
+	 * Returns NULL, if no corresponding revocation data found for the certificate.
+	 *
+	 * @param certificateToken
+	 *                               The {@code CertificateToken} for which the
+	 *                               request is made
+	 * @param issuerCertificateToken
+	 *                               The {@code CertificateToken} which is the
+	 *                               issuer of the certificateToken
+	 * @return {@link RevocationToken}
+	 */
+	@Override
+	public RevocationToken<R> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		RevocationToken<R> latestRevocationToken = null;
+
+		final List<RevocationToken<R>> revocationTokens = getRevocationTokens(certificateToken, issuerCertificateToken);
+		if (Utils.isCollectionNotEmpty(revocationTokens)) {
+			for (RevocationToken<R> revocationToken : revocationTokens) {
+				if (latestRevocationToken == null || (revocationToken.getProductionDate() != null
+						&& revocationToken.getProductionDate().after(latestRevocationToken.getProductionDate()))) {
+					latestRevocationToken = revocationToken;
+				}
+			}
+		}
+
+		return latestRevocationToken;
 	}
 
 	/**
