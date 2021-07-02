@@ -29,7 +29,6 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
-import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
@@ -244,7 +243,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 					// NOTE : HYBRID model is treated as CHAIN for Signing Cert and as SHELL for CAs
 					if (Model.SHELL.equals(validationModel)
 							|| (Model.HYBRID.equals(validationModel) && SubContext.CA_CERTIFICATE.equals(subContext))
-							|| RevocationReason.KEY_COMPROMISE.equals(revocationReason) || CertificateStatus.UNKNOWN.equals(revocationReason)) {
+							|| RevocationReason.KEY_COMPROMISE.equals(revocationReason) || RevocationReason.UNSPECIFIED.equals(revocationReason)) {
 						controlTime = latestCompliantRevocation.getRevocationDate();
 					}
 
