@@ -142,7 +142,7 @@ Please note that the DSS framework is still under maintenance and new features w
 |[[R02]]	R02	|ESI - CAdES digital signatures													|ETSI EN 319 122 part 1-2	|1.1.1
 |[[R03]]	R03	|ESI - PAdES digital signatures													|ETSI EN 319 142 part 1-2	|1.1.1
 |[[R04]]	R04	|ESI - Associated Signature Containers (ASiC)									|ETSI EN 319 162 part 1-2	|1.1.1
-|[[R05]]	R05	|ESI - JAdES digital signatures													|ETSI TS 119 182 part 1 	|draft 0.0.6
+|[[R05]]	R05	|ESI - JAdES digital signatures													|ETSI TS 119 182 part 1 	|1.1.1
 |[[R06]]	R06	|Document management - Portable document format - Part 1: PDF 1.7				|ISO 32000-1				|1
 |[[R07]]	R07	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
 |[[R08]]	R08	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
@@ -159,8 +159,8 @@ Please note that the DSS framework is still under maintenance and new features w
 
  * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature[CEF Digital]
  * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature+FAQ[eSignature FAQ]
- * https://webgate.ec.europa.eu/tl-browser/#/[TL Browser]
- * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature+validation+tests[eSignature validation tests]
+ * https://esignature.ec.europa.eu/efda/home/[Trust Services Dashboard]
+ * https://esignature.ec.europa.eu/efda/validation-tests/[eSignature validation tests]
  * https://ec.europa.eu/cefdigital/wiki/display/TLSO/Trusted+List+Manager+non-EU[Trusted List Manager non-EU]
  * https://github.com/esig/dss[Source code (GitHub)]
  * https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss/browse[Source code (EC Bitbucket)]
@@ -471,6 +471,7 @@ dss-timestamp-remote-soap:: SOAP webservice to create a timestamp.
 
 dss-test:: Mocks and util classes for unit tests.
 dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
+dss-bom:: Module which helps the integration with all DSS modules and the version.
 
 [[dssUtils]]
 === DSS Utils
