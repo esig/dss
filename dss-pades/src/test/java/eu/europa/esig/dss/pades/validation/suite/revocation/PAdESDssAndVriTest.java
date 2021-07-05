@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.pades.validation.suite.revocation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
@@ -168,24 +170,46 @@ public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		super.checkTimestamps(diagnosticData);
 
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<RelatedRevocationWrapper> adbeRevocationInfoArchivalRevocationData = signature.foundRevocations()
+				.getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+		assertEquals(1, adbeRevocationInfoArchivalRevocationData.size());
+
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertEquals(2, timestampList.size());
 
 		boolean sigTstFound = false;
 		boolean arcTstFound = false;
+		boolean containsAdbeRevocation = false;
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
+				assertEquals(0, timestampWrapper.getTimestampedTimestamps().size());
+				assertEquals(1, timestampWrapper.getTimestampedRevocations().size());
+				for (RevocationWrapper revocationWrapper : timestampWrapper.getTimestampedRevocations()) {
+					if (adbeRevocationInfoArchivalRevocationData.get(0).getId().equals(revocationWrapper.getId())) {
+						containsAdbeRevocation = true;
+					}
+				}
 				sigTstFound = true;
 			} else if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(ArchiveTimestampType.PAdES, timestampWrapper.getArchiveTimestampType());
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
 				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
 				assertEquals(1, timestampWrapper.getTimestampedTimestamps().size());
-				assertEquals(1, timestampWrapper.getTimestampedRevocations().size());
+				assertEquals(2, timestampWrapper.getTimestampedRevocations().size());
+				for (RevocationWrapper revocationWrapper : timestampWrapper.getTimestampedRevocations()) {
+					if (adbeRevocationInfoArchivalRevocationData.get(0).getId().equals(revocationWrapper.getId())) {
+						containsAdbeRevocation = true;
+					}
+				}
 				arcTstFound = true;
 			}
 		}
 		assertTrue(sigTstFound);
 		assertTrue(arcTstFound);
+		assertTrue(containsAdbeRevocation);
 	}
 
 }

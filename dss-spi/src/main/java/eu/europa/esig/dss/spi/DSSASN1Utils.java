@@ -27,9 +27,9 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
-import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -58,6 +58,7 @@ import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
 import org.bouncycastle.asn1.x500.DirectoryString;
 import org.bouncycastle.asn1.x500.RDN;
@@ -85,6 +86,8 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPException;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
@@ -1719,6 +1722,51 @@ public final class DSSASN1Utils {
 			}
 		}
 		return postalAddress;
+	}
+
+	/**
+	 * Converts an object of {@code OCSPResponse} class to {@code BasicOCSPResp}
+	 *
+	 * @param ocspResponse {@link OCSPResponse} to convert
+	 * @return {@link BasicOCSPResp}
+	 * @throws OCSPException in case of a conversion error
+	 */
+	public static BasicOCSPResp toBasicOCSPResp(OCSPResponse ocspResponse) throws OCSPException {
+		final OCSPResp ocspResp = new OCSPResp(ocspResponse);
+		return (BasicOCSPResp) ocspResp.getResponseObject();
+	}
+
+	/**
+	 * Converts an array of {@code OCSPResponse}s to an array of {@code BasicOCSPResp}s
+	 *
+	 * @param ocspResponses an array of {@link OCSPResponse}s to convert
+	 * @return an array of {@code BasicOCSPResp}
+	 */
+	public static BasicOCSPResp[] toBasicOCSPResps(OCSPResponse[] ocspResponses) {
+		List<BasicOCSPResp> basicOCSPResps = new ArrayList<>();
+		for (int ii = 0; ii < ocspResponses.length; ii++) {
+			try {
+				basicOCSPResps.add(toBasicOCSPResp(ocspResponses[ii]));
+			} catch (OCSPException e) {
+				LOG.warn("Error while converting OCSPResponse to BasicOCSPResp : {}", e.getMessage());
+				return null;
+			}
+		}
+		return basicOCSPResps.toArray(new BasicOCSPResp[0]);
+	}
+
+	/**
+	 * Converts an array of {@code BasicOCSPResponse}s to an array of {@code BasicOCSPResp}s
+	 *
+	 * @param basicOCSPResponses an array of {@link BasicOCSPResponse}s to convert
+	 * @return an array of {@code BasicOCSPResp}
+	 */
+	public static BasicOCSPResp[] toBasicOCSPResps(BasicOCSPResponse[] basicOCSPResponses) {
+		List<BasicOCSPResp> basicOCSPResps = new ArrayList<>();
+		for (int ii = 0; ii < basicOCSPResponses.length; ii++) {
+			basicOCSPResps.add(new BasicOCSPResp(basicOCSPResponses[ii]));
+		}
+		return basicOCSPResps.toArray(new BasicOCSPResp[0]);
 	}
 
 }

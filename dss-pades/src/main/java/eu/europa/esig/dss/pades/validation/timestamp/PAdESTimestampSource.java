@@ -23,27 +23,39 @@ package eu.europa.esig.dss.pades.validation.timestamp;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfDssDictCRLSource;
 import eu.europa.esig.dss.pades.validation.PdfDssDictCertificateSource;
 import eu.europa.esig.dss.pades.validation.PdfDssDictOCSPSource;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static eu.europa.esig.dss.spi.OID.adbe_revocationInfoArchival;
+
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PAdESTimestampSource.class);
 
     private final transient List<PdfRevision> documentRevisions;
 
@@ -209,6 +221,47 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
     protected boolean isArchiveTimestamp(CAdESAttribute unsignedAttribute) {
         // not applicable for PAdES
         return false;
+    }
+
+    @Override
+    protected List<TimestampedReference> getSignatureTimestampReferences() {
+        List<TimestampedReference> signatureTimestampReferences = super.getSignatureTimestampReferences();
+        addReferences(signatureTimestampReferences,
+                createReferencesForIdentifiers(getAdbeRevocationInfoArchivalReferences(), TimestampedObjectType.REVOCATION));
+        return signatureTimestampReferences;
+    }
+
+    /**
+     * Returns a list of revocation data identifiers from the adbe-revocationInfoArchival signed attribute
+     *
+     * @return a list of {@link Identifier}s
+     */
+    protected List<Identifier> getAdbeRevocationInfoArchivalReferences() {
+        SignatureProperties<CAdESAttribute> signedSignatureProperties = getSignedSignatureProperties();
+        if (!signedSignatureProperties.isExist()) {
+            return Collections.emptyList();
+        }
+        final List<Identifier> identifiers = new ArrayList<>();
+        for (CAdESAttribute attribute : signedSignatureProperties.getAttributes()) {
+            if (isAdbeRevocationInfoArchival(attribute)) {
+                RevocationInfoArchival revValues = PAdESUtils.getRevocationInfoArchival(attribute.getASN1Object());
+                if (revValues != null) {
+                    identifiers.addAll(buildCRLIdentifiers(revValues.getCrlVals()));
+                    identifiers.addAll(buildOCSPIdentifiers(DSSASN1Utils.toBasicOCSPResps(revValues.getOcspVals())));
+                }
+            }
+        }
+        return identifiers;
+    }
+
+    /**
+     * Checks if the {@code signedAttribute} is an instance of type adbe-revocationInfoArchival
+     *
+     * @param signedAttribute {@link CAdESAttribute} to check
+     * @return TRUE if the attribute is an instance of type adbe-revocationInfoArchival, FALSE otherwise
+     */
+    protected boolean isAdbeRevocationInfoArchival(CAdESAttribute signedAttribute) {
+        return adbe_revocationInfoArchival.equals(signedAttribute.getASN1Oid());
     }
 
     @Override

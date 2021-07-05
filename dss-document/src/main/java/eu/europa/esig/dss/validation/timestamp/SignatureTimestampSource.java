@@ -732,7 +732,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      *
      * @return list of {@link TimestampedReference}s
      */
-    public List<TimestampedReference> getSignatureTimestampReferences() {
+    protected List<TimestampedReference> getSignatureTimestampReferences() {
         final List<TimestampedReference> references = new ArrayList<>();
         addReferences(references, getEncapsulatedReferencesFromTimestamps(getContentTimestamps()));
         addReferences(references, getSignerDataReferences());

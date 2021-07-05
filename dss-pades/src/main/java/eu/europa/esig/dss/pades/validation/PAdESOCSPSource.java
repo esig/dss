@@ -32,7 +32,6 @@ import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
-import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,9 +72,8 @@ public class PAdESOCSPSource extends PdfDssDictOCSPSource {
 				RevocationInfoArchival revocationArchival = PAdESUtils.getRevocationInfoArchival(attValue);
 				if (revocationArchival != null) {
 					for (final OCSPResponse ocspResponse : revocationArchival.getOcspVals()) {
-						final OCSPResp ocspResp = new OCSPResp(ocspResponse);
 						try {
-							BasicOCSPResp basicOCSPResponse = (BasicOCSPResp) ocspResp.getResponseObject();
+							BasicOCSPResp basicOCSPResponse = DSSASN1Utils.toBasicOCSPResp(ocspResponse);
 							addBinary(OCSPResponseBinary.build(basicOCSPResponse),
 									RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
 						} catch (OCSPException e) {

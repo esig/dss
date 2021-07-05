@@ -30,7 +30,6 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -536,11 +535,24 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 	@Override
 	protected List<Identifier> getEncapsulatedCRLIdentifiers(CAdESAttribute unsignedAttribute) {
-		List<Identifier> crlBinaryIdentifiers = new ArrayList<>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
 		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
 		if (revocationValues != null) {
-			for (final CertificateList revValue : revocationValues.getCrlVals()) {
+			return buildCRLIdentifiers(revocationValues.getCrlVals());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Builds a list of CRL identifiers for the given {@code revVals}
+	 *
+	 * @param crlVals instances of {@link CertificateList} representing CRL entries
+	 * @return a list of {@link Identifier}
+	 */
+	protected List<Identifier> buildCRLIdentifiers(CertificateList... crlVals) {
+		List<Identifier> crlBinaryIdentifiers = new ArrayList<>();
+		if (Utils.isArrayNotEmpty(crlVals)) {
+			for (final CertificateList revValue : crlVals) {
 				try {
 					crlBinaryIdentifiers.add(CRLUtils.buildCRLBinary(revValue.getEncoded()));
 				} catch (Exception e) {
@@ -558,13 +570,25 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 	@Override
 	protected List<Identifier> getEncapsulatedOCSPIdentifiers(CAdESAttribute unsignedAttribute) {
-		List<Identifier> ocspIdentifiers = new ArrayList<>();
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
 		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
 		if (revocationValues != null) {
-			for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
+			return buildOCSPIdentifiers(DSSASN1Utils.toBasicOCSPResps(revocationValues.getOcspVals()));
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Builds a list of OCSP identifiers for the given {@code ocspVals}
+	 *
+	 * @param ocspVals instances of {@link BasicOCSPResponse} representing OCSP basic responses
+	 * @return a list of {@link Identifier}
+	 */
+	protected List<Identifier> buildOCSPIdentifiers(BasicOCSPResp... ocspVals) {
+		List<Identifier> ocspIdentifiers = new ArrayList<>();
+		if (Utils.isArrayNotEmpty(ocspVals)) {
+			for (final BasicOCSPResp basicOCSPResp : ocspVals) {
 				try {
-					final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
 					ocspIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
 				} catch (Exception e) {
 					String errorMessage = "Unable to parse OCSP response binaries : {}";
