@@ -40,7 +40,7 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	private final TSPSource tspSource;
 
 	/** The used implementation for processing of a PDF document */
-	private final IPdfObjFactory pdfObjectFactory;
+	protected final IPdfObjFactory pdfObjectFactory;
 
 	/**
 	 * The default constructor

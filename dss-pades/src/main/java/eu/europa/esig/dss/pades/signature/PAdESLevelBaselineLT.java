@@ -92,6 +92,9 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
 		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
+		if (pdfObjectFactory != null) {
+			pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
+		}
 		return pdfDocumentValidator;
 	}
 
