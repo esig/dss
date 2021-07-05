@@ -1968,6 +1968,25 @@ DSS allows running of custom alerts in some situations (eg : invalid TL signatur
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=alerting]
 ----
 
+=== LOTL/TL filter predicates
+
+TSL predicates provide an option to filter the extracted TSL Pointers from LOTL or TL sources, allowing a customization of a trusted certificates and trusted services loading.
+
+The following predicates are provided within the framework:
+
+ * `EULOTLOtherTSLPointer` - filters the EU LOTL pointer;
+ * `EUTLOtherTSLPointer` - filters the EU TL pointers;
+ * `MimetypeOtherTSLPointer` - filters TL pointers by a MimeType (e.g. XML only);
+ * `XMLOtherTSLPointer` - filters XML TL pointers;
+ * `PDFOtherTSLPointer` - filters PDF TL pointers;
+ * `SchemeTerritoryOtherTSLPointer` - filters TL pointers with a specific scheme territory (i.e. filter by country).
+
+[source,java,indent=0]
+.Examples of TSL Loading Predicates configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicates]
+----
+
 === Executor Service
 
 An Executor Service parameter allows you to customize a way of the program execution on your Java machine, by configuring a number of possible threads to be running, await time and so on. 
