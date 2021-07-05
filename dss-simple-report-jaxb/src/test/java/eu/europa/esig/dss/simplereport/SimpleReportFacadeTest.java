@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.simplereport;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SimpleReportFacadeTest {
 
@@ -55,9 +54,12 @@ public class SimpleReportFacadeTest {
 
 		XmlSimpleReport simpleReport = facade.unmarshall(new File("src/test/resources/" + filename));
 		assertNotNull(simpleReport);
+		String simpleReportString = facade.marshall(simpleReport);
 
 		String htmlReport = facade.generateHtmlReport(simpleReport);
 		assertNotNull(htmlReport);
+
+		assertNotNull(facade.generateHtmlReport(simpleReportString));
 	}
 
 }

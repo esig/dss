@@ -122,13 +122,19 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.FopFactoryBuilder;
+import org.apache.fop.apps.MimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.Result;
+import javax.xml.transform.sax.SAXResult;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -153,6 +159,15 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				TP extends SerializableTimestampParameters> extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestValidation.class);
+
+	private static FopFactory fopFactory;
+
+	static {
+		FopFactoryBuilder builder = new FopFactoryBuilder(new File(".").toURI());
+		builder.setAccessibility(true);
+
+		fopFactory = builder.build();
+	}
 	
 	protected Reports verify(DSSDocument signedDocument) {
 
@@ -1729,14 +1744,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		/* Bootstrap 4 Simple Report */
 		try {
-			assertNotNull(simpleReportFacade.generateHtmlReport(marshalledSimpleReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
 			assertNotNull(simpleReportFacade.generateHtmlReport(reports.getSimpleReportJaxb()));
 		} catch (Exception e) {
 			String message = "Unable to generate the html simple report from the jaxb source";
@@ -1745,18 +1752,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 
 		/* PDF Simple Report */
-		try (StringWriter sw = new StringWriter()) {
-			simpleReportFacade.generatePdfReport(marshalledSimpleReport, new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
-		} catch (Exception e) {
-			String message = "Unable to generate the pdf simple report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try (StringWriter sw = new StringWriter()) {
-			simpleReportFacade.generatePdfReport(reports.getSimpleReportJaxb(), new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, baos);
+			Result result = new SAXResult(fop.getDefaultHandler());
+			simpleReportFacade.generatePdfReport(reports.getSimpleReportJaxb(), result);
+			assertTrue(Utils.isArrayNotEmpty(baos.toByteArray()));
 		} catch (Exception e) {
 			String message = "Unable to generate the pdf simple report from the jaxb source";
 			LOG.error(message, e);
@@ -1777,14 +1777,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		/* Bootstrap 4 Detailed Report */
 		try {
-			assertNotNull(detailedReportFacade.generateHtmlReport(marshalledDetailedReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
 			assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
 		} catch (Exception e) {
 			String message = "Unable to generate the html detailed report from the jaxb source";
@@ -1793,18 +1785,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 
 		/* PDF Detailed Report */
-		try (StringWriter sw = new StringWriter()) {
-			detailedReportFacade.generatePdfReport(marshalledDetailedReport, new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
-		} catch (Exception e) {
-			String message = "Unable to generate the pdf detailed report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try (StringWriter sw = new StringWriter()) {
-			detailedReportFacade.generatePdfReport(reports.getDetailedReportJaxb(), new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, baos);
+			Result result = new SAXResult(fop.getDefaultHandler());
+			detailedReportFacade.generatePdfReport(reports.getDetailedReportJaxb(), result);
+			assertTrue(Utils.isArrayNotEmpty(baos.toByteArray()));
 		} catch (Exception e) {
 			String message = "Unable to generate the pdf detailed report from the jaxb source";
 			LOG.error(message, e);
@@ -1825,14 +1810,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 
 		try {
-			assertNotNull(diagnosticDataFacade.generateSVG(marshalledDiagnosticData));
-		} catch (Exception e) {
-			String message = "Unable to generate the SVG for diagnostic data from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
 			assertNotNull(diagnosticDataFacade.generateSVG(reports.getDiagnosticDataJaxb()));
 		} catch (Exception e) {
 			String message = "Unable to generate the SVG for diagnostic data from the jaxb source";
@@ -1843,7 +1820,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 
 	protected boolean isGenerateHtmlPdfReports() {
-		return false;
+		return true;
 	}
 
 }

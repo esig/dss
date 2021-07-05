@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Arrays;
-import java.util.Date;
-
-import org.junit.jupiter.api.Test;
-
-import com.google.common.base.Charsets;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -42,12 +32,20 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DSS798Test extends PKIFactoryAccess {
 
 	@Test
 	public void testExtendDetachedWithoutFile() throws Exception {
-		DSSDocument documentToSign = new InMemoryDocument("Hello".getBytes(Charsets.UTF_8), "bin.bin");
+		DSSDocument documentToSign = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8), "bin.bin");
 
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -75,7 +73,7 @@ public class DSS798Test extends PKIFactoryAccess {
 	@Test
 	public void testExtendDetachedWithFile() throws Exception {
 
-		DSSDocument documentToSign = new InMemoryDocument("Hello".getBytes(Charsets.UTF_8), "bin.bin");
+		DSSDocument documentToSign = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8), "bin.bin");
 
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

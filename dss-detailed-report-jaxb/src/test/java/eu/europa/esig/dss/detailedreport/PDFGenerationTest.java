@@ -20,15 +20,7 @@
  */
 package eu.europa.esig.dss.detailedreport;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.sax.SAXResult;
-
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -37,7 +29,14 @@ import org.apache.fop.apps.MimeConstants;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import javax.xml.transform.Result;
+import javax.xml.transform.sax.SAXResult;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PDFGenerationTest {
 
@@ -86,6 +85,7 @@ public class PDFGenerationTest {
 
 		File file = new File("src/test/resources/" + filename);
 		XmlDetailedReport detailedReport = facade.unmarshall(file);
+		String detailedReportString = facade.marshall(detailedReport);
 
 		try (FileOutputStream fos = new FileOutputStream("target/report.pdf")) {
 
@@ -98,6 +98,13 @@ public class PDFGenerationTest {
 		assertTrue(pdfReport.exists());
 		assertTrue(pdfReport.delete(), "Cannot delete PDF document (IO error)");
 		assertFalse(pdfReport.exists());
+
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, baos);
+			Result result = new SAXResult(fop.getDefaultHandler());
+			facade.generatePdfReport(detailedReportString, result);
+			assertTrue(baos.toByteArray().length >= 0);
+		}
 		
 	}
 	
