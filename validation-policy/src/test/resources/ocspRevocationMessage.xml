@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>test-signed-cades-baseline-b.pkcs7</DocumentName>
-    <ValidationDate>2019-08-14T07:00:48</ValidationDate>
+    <ValidationDate>2019-08-14T07:00:48Z</ValidationDate>
     <Signatures>
         <Signature Id="S-AED1933650CCAE36030F94BD50321D36F77CEFE1319B64C5C93F3511A4B69A82">
             <SignatureFilename>test-signed-cades-baseline-b.pkcs7</SignatureFilename>
-            <ClaimedSigningTime>2019-08-08T08:20:43</ClaimedSigningTime>
+            <ClaimedSigningTime>2019-08-08T08:20:43Z</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -77,8 +77,8 @@
             <Sources>
                 <Source>AIA</Source>
             </Sources>
-            <NotAfter>2042-02-06T09:27:35</NotAfter>
-            <NotBefore>2017-02-06T09:27:35</NotBefore>
+            <NotAfter>2042-02-06T09:27:35Z</NotAfter>
+            <NotBefore>2017-02-06T09:27:35Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-657CFE2FA73FAA38462571F332A2363A46FCE7020951710702CDFBB6EEDA3305</EntityKey>
@@ -125,8 +125,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-07-16T12:52:10</NotAfter>
-            <NotBefore>2018-07-16T12:52:10</NotBefore>
+            <NotAfter>2021-07-16T12:52:10Z</NotAfter>
+            <NotBefore>2018-07-16T12:52:10Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-49AAB7F1E44D844E956892C769BC457C0257F6403A634804A0A8622C317AC2B1</EntityKey>
@@ -174,7 +174,7 @@
                             <ServiceNames><ServiceName lang="en">certSIGN Qualified CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-06-25T22:00:00</StartDate>
+                            <StartDate>2017-06-25T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -213,8 +213,8 @@
                 <Source>TRUSTED_LIST</Source>
                 <Source>AIA</Source>
             </Sources>
-            <NotAfter>2027-02-06T10:06:03</NotAfter>
-            <NotBefore>2017-02-06T10:06:03</NotBefore>
+            <NotAfter>2027-02-06T10:06:03Z</NotAfter>
+            <NotBefore>2017-02-06T10:06:03Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926</EntityKey>
@@ -249,7 +249,7 @@
                             <ServiceNames><ServiceName lang="en">certSIGN Qualified CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-06-25T22:00:00</StartDate>
+                            <StartDate>2017-06-25T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -267,9 +267,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.certsign.ro</SourceAddress>
-            <ProductionDate>2019-08-14T07:00:47</ProductionDate>
-            <ThisUpdate>2019-08-14T07:00:47</ThisUpdate>
-            <NextUpdate>2019-08-15T07:00:47</NextUpdate>
+            <ProductionDate>2019-08-14T07:00:47Z</ProductionDate>
+            <ThisUpdate>2019-08-14T07:00:47Z</ThisUpdate>
+            <NextUpdate>2019-08-15T07:00:47Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -300,9 +300,9 @@
             <Url>https://comunicatii.gov.ro/trustedlist.xml</Url>
             <SequenceNumber>37</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2019-08-13T13:22:23</LastLoading>
-            <IssueDate>2019-07-10T01:00:00</IssueDate>
-            <NextUpdate>2020-01-10T00:00:00</NextUpdate>
+            <LastLoading>2019-08-13T13:22:23Z</LastLoading>
+            <IssueDate>2019-07-10T01:00:00Z</IssueDate>
+            <NextUpdate>2020-01-10T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -310,9 +310,9 @@
 	        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
 	        <SequenceNumber>247</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2019-08-13T13:22:19</LastLoading>
-	        <IssueDate>2019-08-13T06:00:00</IssueDate>
-	        <NextUpdate>2020-02-13T00:00:00</NextUpdate>
+	        <LastLoading>2019-08-13T13:22:19Z</LastLoading>
+	        <IssueDate>2019-08-13T06:00:00Z</IssueDate>
+	        <NextUpdate>2020-02-13T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

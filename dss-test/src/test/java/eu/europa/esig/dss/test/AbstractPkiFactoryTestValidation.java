@@ -1820,7 +1820,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 
 	protected boolean isGenerateHtmlPdfReports() {
-		return true;
+		return false;
 	}
 
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>signedLTV (1).pdf</DocumentName>
-    <ValidationDate>2016-05-04T15:15:00</ValidationDate>
+    <ValidationDate>2016-05-04T15:15:00Z</ValidationDate>
     <Signatures>
 	    <Signature Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
-	        <ClaimedSigningTime>2014-04-29T07:32:50</ClaimedSigningTime>
+	        <ClaimedSigningTime>2014-04-29T07:32:50Z</ClaimedSigningTime>
 	        <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
@@ -72,8 +72,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2021-12-15T09:00:00</NotAfter>
-            <NotBefore>2007-10-04T12:00:00</NotBefore>
+            <NotAfter>2021-12-15T09:00:00Z</NotAfter>
+            <NotBefore>2007-10-04T12:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</EntityKey>
@@ -111,8 +111,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2019-01-23T12:00:00</NotAfter>
-            <NotBefore>2013-10-23T13:00:00</NotBefore>
+            <NotAfter>2019-01-23T12:00:00Z</NotAfter>
+            <NotBefore>2013-10-23T13:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19</EntityKey>
@@ -163,8 +163,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2016-02-22T18:29:38</NotAfter>
-            <NotBefore>2010-02-22T18:29:38</NotBefore>
+            <NotAfter>2016-02-22T18:29:38Z</NotAfter>
+            <NotBefore>2010-02-22T18:29:38Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-0AF09567AEFB2E6B8C76FE459CF2CCE0D5182A6D093D01BEA21C6423EDC47B46</EntityKey>
@@ -206,8 +206,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2014-10-21T14:45:54</NotAfter>
-            <NotBefore>2014-04-28T14:45:54</NotBefore>
+            <NotAfter>2014-10-21T14:45:54Z</NotAfter>
+            <NotBefore>2014-04-28T14:45:54Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-DF09A37F5DD288207B0FF4E96D551DE65CC403336CE6A25BCBF6C0D847BD2E74</EntityKey>
@@ -240,7 +240,7 @@
 			<Revocations>
 	            <CertificateRevocation Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84">
 	                <Status>REVOKED</Status>
-            		<RevocationDate>2014-04-29T12:50:05</RevocationDate>
+            		<RevocationDate>2014-04-29T12:50:05Z</RevocationDate>
 	            </CertificateRevocation>
 	       	</Revocations>
             <DigestAlgoAndValue>
@@ -254,9 +254,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
-            <ProductionDate>2016-02-15T12:00:00</ProductionDate>
-            <ThisUpdate>2016-02-15T12:00:00</ThisUpdate>
-            <NextUpdate>2016-07-31T13:00:00</NextUpdate>
+            <ProductionDate>2016-02-15T12:00:00Z</ProductionDate>
+            <ThisUpdate>2016-02-15T12:00:00Z</ThisUpdate>
+            <NextUpdate>2016-07-31T13:00:00Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -276,9 +276,9 @@
         <Revocation Id="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2014-01-01T12:00:00</ProductionDate>
-            <ThisUpdate>2014-01-01T12:00:00</ThisUpdate>
-            <NextUpdate>2014-07-31T13:00:00</NextUpdate>
+            <ProductionDate>2014-01-01T12:00:00Z</ProductionDate>
+            <ThisUpdate>2014-01-01T12:00:00Z</ThisUpdate>
+            <NextUpdate>2014-07-31T13:00:00Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -298,9 +298,9 @@
         <Revocation Id="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2014-04-29T12:50:05</ProductionDate>
-            <ThisUpdate>2014-04-29T12:50:05</ThisUpdate>
-            <NextUpdate>2014-04-29T18:50:05</NextUpdate>
+            <ProductionDate>2014-04-29T12:50:05Z</ProductionDate>
+            <ThisUpdate>2014-04-29T12:50:05Z</ThisUpdate>
+            <NextUpdate>2014-04-29T18:50:05Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -321,7 +321,7 @@
     
 	        <UsedTimestamps>
 	            <Timestamp Id="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" Type="SIGNATURE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:32:54</ProductionTime>
+	                <ProductionTime>2014-04-29T07:32:54Z</ProductionTime>
 	                <DigestMatcher type="MESSAGE_IMPRINT">
 		              <DigestMethod>SHA256</DigestMethod>
 		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
@@ -352,7 +352,7 @@
 		            </DigestAlgoAndValue>
 	            </Timestamp>
 	            <Timestamp Id="T-C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" Type="SIGNATURE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:33:19</ProductionTime>
+	                <ProductionTime>2014-04-29T07:33:19Z</ProductionTime>
 	                <DigestMatcher type="MESSAGE_IMPRINT">
 		              <DigestMethod>SHA256</DigestMethod>
 		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
@@ -383,7 +383,7 @@
 		            </DigestAlgoAndValue>
 	            </Timestamp>
 	            <Timestamp Id="T-1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" Type="ARCHIVE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:33:19</ProductionTime>
+	                <ProductionTime>2014-04-29T07:33:19Z</ProductionTime>
 	                <DigestMatcher type="MESSAGE_IMPRINT">
 		              <DigestMethod>SHA256</DigestMethod>
 		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
@@ -421,7 +421,7 @@
 		            </DigestAlgoAndValue>
 	            </Timestamp>
 	            <Timestamp Id="T-A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF" Type="ARCHIVE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:35:49</ProductionTime>
+	                <ProductionTime>2014-04-29T07:35:49Z</ProductionTime>
 	                <DigestMatcher type="MESSAGE_IMPRINT">
 		              <DigestMethod>SHA256</DigestMethod>
 		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
@@ -461,7 +461,7 @@
 		            </DigestAlgoAndValue>
 	            </Timestamp>
 	            <Timestamp Id="T-7453A148A73E91DDCD689D466D32A6C652D397853E52C1EC2EAC5F0CF4881168" Type="ARCHIVE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:36:30</ProductionTime>
+	                <ProductionTime>2014-04-29T07:36:30Z</ProductionTime>
 	               <DigestMatcher type="MESSAGE_IMPRINT">
 		              <DigestMethod>SHA256</DigestMethod>
 		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>signed.p7s</DocumentName>
-    <ValidationDate>2020-08-27T09:33:04</ValidationDate>
+    <ValidationDate>2020-08-27T09:33:04Z</ValidationDate>
     <Signatures>
         <Signature Id="S-85E76EF2BCF7774C81B8732264253BB52CC5F4ACCF91B15B8B3FE3D886C03F80">
             <SignatureFilename>signed.p7s</SignatureFilename>
-            <ClaimedSigningTime>2020-08-27T09:31:09</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-08-27T09:31:09Z</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -101,8 +101,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-07-03T06:32:50</NotAfter>
-            <NotBefore>2019-09-03T06:32:50</NotBefore>
+            <NotAfter>2021-07-03T06:32:50Z</NotAfter>
+            <NotBefore>2019-09-03T06:32:50Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-5559598F9BE6E5E39866C24B983A61BFEF268AD599672B1FE4B4153BC1CD73F3</EntityKey>
@@ -154,8 +154,8 @@
                 <Source>TRUSTED_STORE</Source>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-08-03T06:32:47</NotAfter>
-            <NotBefore>2019-08-03T06:32:47</NotBefore>
+            <NotAfter>2021-08-03T06:32:47Z</NotAfter>
+            <NotBefore>2019-08-03T06:32:47Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9270BC66659B7024678331F1D792C3CF274E5A096343791E523526E0CABEFCFA</EntityKey>
@@ -202,8 +202,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-07-03T06:32:48</NotAfter>
-            <NotBefore>2019-09-03T06:32:48</NotBefore>
+            <NotAfter>2021-07-03T06:32:48Z</NotAfter>
+            <NotBefore>2019-09-03T06:32:48Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-645FC7C23B7FB0637D0BBAE47D1D976D7D7E173A899CE5750DE7E65C70392B8C</EntityKey>
@@ -254,8 +254,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-08-03T06:32:48</NotAfter>
-            <NotBefore>2019-08-03T06:32:48</NotBefore>
+            <NotAfter>2021-08-03T06:32:48Z</NotAfter>
+            <NotBefore>2019-08-03T06:32:48Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-B197DCA898090C111016475D39251B87F69664B85F87022F7C0BD2BE9F3017F5</EntityKey>
@@ -292,8 +292,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://dss.nowina.lu/pki-factory/ocsp/good-ca</SourceAddress>
-            <ProductionDate>2020-08-27T09:33:02</ProductionDate>
-            <ThisUpdate>2020-08-27T09:33:02</ThisUpdate>
+            <ProductionDate>2020-08-27T09:33:02Z</ProductionDate>
+            <ThisUpdate>2020-08-27T09:33:02Z</ThisUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -331,9 +331,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</SourceAddress>
-            <ProductionDate>2020-08-27T09:33:02</ProductionDate>
-            <ThisUpdate>2020-08-27T09:33:02</ThisUpdate>
-            <NextUpdate>2021-02-27T10:33:02</NextUpdate>
+            <ProductionDate>2020-08-27T09:33:02Z</ProductionDate>
+            <ThisUpdate>2020-08-27T09:33:02Z</ThisUpdate>
+            <NextUpdate>2021-02-27T10:33:02Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>

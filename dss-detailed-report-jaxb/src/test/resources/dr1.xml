@@ -10,11 +10,11 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2020-02-10T06:53:57</Time>
+                <Time>2020-02-10T06:53:57Z</Time>
             </ProofOfExistence>
         </ValidationProcessBasicSignature>
         <Timestamp Id="T-E70F7C745B498A2208A0096422489744EEAEC0F30FE781A6DC6F3E96467EDEE2">
-            <ValidationProcessTimestamp Type="SIGNATURE_TIMESTAMP" ProductionTime="2020-02-05T07:31:18" Title="Validation Process for Timestamps">
+            <ValidationProcessTimestamp Type="SIGNATURE_TIMESTAMP" ProductionTime="2020-02-05T07:31:18Z" Title="Validation Process for Timestamps">
                 <Constraint Id="T-E70F7C745B498A2208A0096422489744EEAEC0F30FE781A6DC6F3E96467EDEE2">
                     <Name Key="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
                     <Status>OK</Status>
@@ -94,7 +94,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2020-02-05T07:31:18</Time>
+                <Time>2020-02-05T07:31:18Z</Time>
                 <TimestampId>T-E70F7C745B498A2208A0096422489744EEAEC0F30FE781A6DC6F3E96467EDEE2</TimestampId>
             </ProofOfExistence>
         </ValidationProcessLongTermData>
@@ -107,7 +107,7 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2020-02-05T07:31:18</Time>
+                <Time>2020-02-05T07:31:18Z</Time>
                 <TimestampId>T-E70F7C745B498A2208A0096422489744EEAEC0F30FE781A6DC6F3E96467EDEE2</TimestampId>
             </ProofOfExistence>
         </ValidationProcessArchivalData>
@@ -416,7 +416,7 @@
                     <Conclusion>
                         <Indication>PASSED</Indication>
                     </Conclusion>
-                    <RevocationProductionDate>2020-02-10T06:49:19</RevocationProductionDate>
+                    <RevocationProductionDate>2020-02-10T06:49:19Z</RevocationProductionDate>
                 </RAC>
                 <RFC Id="R-C6107EDB0D55A32E70246643933113552E59120A3B073C72D159CA5D1BF257C0" Title="Revocation Freshness Checker">
                     <Constraint>
@@ -679,7 +679,7 @@
                     <Conclusion>
                         <Indication>PASSED</Indication>
                     </Conclusion>
-                    <RevocationProductionDate>2020-02-10T06:05:30</RevocationProductionDate>
+                    <RevocationProductionDate>2020-02-10T06:05:30Z</RevocationProductionDate>
                 </RAC>
                 <RFC Id="R-54A348E8CB0461CB2A672B9FEE07605AC6CE8AAA6070A23A2E3F30A2A72CC652" Title="Revocation Freshness Checker">
                     <Constraint>
@@ -951,7 +951,7 @@
                     <Conclusion>
                         <Indication>PASSED</Indication>
                     </Conclusion>
-                    <RevocationProductionDate>2020-02-10T06:53:57</RevocationProductionDate>
+                    <RevocationProductionDate>2020-02-10T06:53:57Z</RevocationProductionDate>
                 </RAC>
                 <RFC Id="R-D617BFD380A606FA144B7207257891B5516E8FE2A155A65B1E466656C604E61C" Title="Revocation Freshness Checker">
                     <Constraint>

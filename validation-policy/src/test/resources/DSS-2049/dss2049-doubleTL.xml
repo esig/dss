@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-C-CZ_ICA-1.p7m</DocumentName>
-    <ValidationDate>2016-04-24T09:54:43</ValidationDate>
+    <ValidationDate>2016-04-24T09:54:43Z</ValidationDate>
     <Signatures>
         <Signature Id="S-A9FD0993671106A2630BF4A66A0C4FE6F08CC13C9918BA414807133B93D2D64D">
             <SignatureFilename>Signature-C-CZ_ICA-1.p7m</SignatureFilename>
-            <ClaimedSigningTime>2016-04-25T21:30:40</ClaimedSigningTime>
+            <ClaimedSigningTime>2016-04-25T21:30:40Z</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -88,8 +88,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2016-08-09T14:22:53</NotAfter>
-            <NotBefore>2015-08-10T14:22:53</NotBefore>
+            <NotAfter>2016-08-09T14:22:53Z</NotAfter>
+            <NotBefore>2015-08-10T14:22:53Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4AE84856DAD3520D875D28EDF71D513AA08EF813C96B22A9B6C3A562956FF4B1</EntityKey>
@@ -137,7 +137,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
                             </CapturedQualifiers>
@@ -152,8 +152,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2009-09-01T00:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2009-09-01T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert</Qualifier>
                             </CapturedQualifiers>
@@ -177,7 +177,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:01</StartDate>
+                            <StartDate>2016-06-30T22:00:01Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -190,8 +190,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:01</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:01Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -203,8 +203,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2005-06-15T00:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2005-06-15T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                         </TrustedService>
@@ -237,8 +237,8 @@
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2019-09-01T00:00:00</NotAfter>
-            <NotBefore>2009-09-01T00:00:00</NotBefore>
+            <NotAfter>2019-09-01T00:00:00Z</NotAfter>
+            <NotBefore>2009-09-01T00:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C0C05A8D8DA55EAF27AA9B910B0A6EF0D8BBDED346928DB872E182C2073E9802</EntityKey>
@@ -278,7 +278,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -290,8 +290,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2009-09-01T00:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2009-09-01T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -311,7 +311,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:01</StartDate>
+                            <StartDate>2016-06-30T22:00:01Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -323,8 +323,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:01</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:01Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -335,8 +335,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2005-06-15T00:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2005-06-15T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -352,9 +352,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://qcrldp1.ica.cz/qica09.crl</SourceAddress>
-            <ProductionDate>2016-03-31T19:52:02</ProductionDate>
-            <ThisUpdate>2016-03-31T19:52:02</ThisUpdate>
-            <NextUpdate>2016-09-01T19:52:02</NextUpdate>
+            <ProductionDate>2016-03-31T19:52:02Z</ProductionDate>
+            <ThisUpdate>2016-03-31T19:52:02Z</ThisUpdate>
+            <NextUpdate>2016-09-01T19:52:02Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -390,9 +390,9 @@
             <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
             <SequenceNumber>263</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-04-24T09:50:43</LastLoading>
-            <IssueDate>2020-04-15T08:00:00</IssueDate>
-            <NextUpdate>2020-10-15T00:00:00</NextUpdate>
+            <LastLoading>2020-04-24T09:50:43Z</LastLoading>
+            <IssueDate>2020-04-15T08:00:00Z</IssueDate>
+            <NextUpdate>2020-10-15T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F">
@@ -400,9 +400,9 @@
             <Url>https://tsl.gov.cz/publ/TSL_CZ.xtsl</Url>
             <SequenceNumber>87</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-04-24T09:50:44</LastLoading>
-            <IssueDate>2020-04-16T08:30:00</IssueDate>
-            <NextUpdate>2020-10-15T00:00:00</NextUpdate>
+            <LastLoading>2020-04-24T09:50:44Z</LastLoading>
+            <IssueDate>2020-04-16T08:30:00Z</IssueDate>
+            <NextUpdate>2020-10-15T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC">
@@ -410,9 +410,9 @@
             <Url>http://tl.nbu.gov.sk/kca/tsl/tsl.xml</Url>
             <SequenceNumber>63</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-04-24T09:50:44</LastLoading>
-            <IssueDate>2020-03-26T08:00:00</IssueDate>
-            <NextUpdate>2020-09-17T00:00:00</NextUpdate>
+            <LastLoading>2020-04-24T09:50:44Z</LastLoading>
+            <IssueDate>2020-03-26T08:00:00Z</IssueDate>
+            <NextUpdate>2020-09-17T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

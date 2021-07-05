@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>https___ec_europa_eu_information_society_policy_esignature_trusted_list_tl_pivot_191_mp_xml.xml</DocumentName>
-    <ValidationDate>2018-09-25T11:42:49</ValidationDate>
+    <ValidationDate>2018-09-25T11:42:49Z</ValidationDate>
     <Signatures>
         <Signature Id="id-247fe7e18cb7a65ccd44568c56d39b5b">
             <SignatureFilename>https___ec_europa_eu_information_society_policy_esignature_trusted_list_tl_pivot_191_mp_xml.xml</SignatureFilename>
-            <ClaimedSigningTime>2017-12-12T08:29:06</ClaimedSigningTime>
+            <ClaimedSigningTime>2017-12-12T08:29:06Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="false">
                 <Message>cvc-complex-type.2.4.a: Invalid content was found starting with element '{"http://uri.etsi.org/01903/v1.3.2#":EncapsulatedCRLValue}'. One of '{"http://uri.etsi.org/01903/v1.3.2#":EncapsulatedOCSPValue}' is expected.</Message>
@@ -94,8 +94,8 @@
             <Sources>
             	<Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2019-09-15T09:00:12</NotAfter>
-            <NotBefore>2016-09-15T09:00:12</NotBefore>
+            <NotAfter>2019-09-15T09:00:12Z</NotAfter>
+            <NotBefore>2016-09-15T09:00:12Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          	<EntityKey>PK-9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630</EntityKey>

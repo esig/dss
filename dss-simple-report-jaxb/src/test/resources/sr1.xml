@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<SimpleReport ValidationTime="2019-07-01T06:50:17" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+<SimpleReport ValidationTime="2019-07-01T06:50:17Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
     <ValidationPolicy>
         <PolicyName>QES AdESQC TL based</PolicyName>
         <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
@@ -38,8 +38,8 @@
         <QualificationDetails>
             <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
         </QualificationDetails>
-        <SigningTime>2013-07-02T06:03:10</SigningTime>
-        <BestSignatureTime>2013-07-02T06:03:10</BestSignatureTime>
+        <SigningTime>2013-07-02T06:03:10Z</SigningTime>
+        <BestSignatureTime>2013-07-02T06:03:10Z</BestSignatureTime>
         <SignedBy>Joaquin Romera Ramirez</SignedBy>
         <SignatureLevel description="Indeterminate Qualified Electronic Signature">Indeterminate QESig</SignatureLevel>
         <SignatureScope name="L_18320130702EN.pdf" scope="FULL">Full document</SignatureScope>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>container-signed-cades-baseline-b.sce</DocumentName>
-    <ValidationDate>2019-12-17T10:12:32</ValidationDate>
+    <ValidationDate>2019-12-17T10:12:32Z</ValidationDate>
     <ContainerInfo>
         <ContainerType>ASiC-E</ContainerType>
         <MimeTypeFilePresent>true</MimeTypeFilePresent>
@@ -43,7 +43,7 @@
     <Signatures>
         <Signature Id="S-132A03478A000A8356CE0470BCB15FF5A51B7A4C00B1EBD83AFC78DB67DFE178">
             <SignatureFilename>META-INF/signature001.p7s</SignatureFilename>
-            <ClaimedSigningTime>2019-12-17T10:12:31</ClaimedSigningTime>
+            <ClaimedSigningTime>2019-12-17T10:12:31Z</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -114,7 +114,7 @@
         </Signature>
         <Signature Id="S-5A5C2391891B3D58E7AC7472ACC38CE3894E965FA5840694D7A94AFC9A4BDB59">
             <SignatureFilename>META-INF/signature002.p7s</SignatureFilename>
-            <ClaimedSigningTime>2019-12-17T10:12:31</ClaimedSigningTime>
+            <ClaimedSigningTime>2019-12-17T10:12:31Z</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -201,8 +201,8 @@
             <Sources>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2020-10-28T14:24:59</NotAfter>
-            <NotBefore>2018-10-28T14:24:59</NotBefore>
+            <NotAfter>2020-10-28T14:24:59Z</NotAfter>
+            <NotBefore>2018-10-28T14:24:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023</EntityKey>
@@ -248,8 +248,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-09-28T13:25:03</NotAfter>
-            <NotBefore>2018-11-28T14:25:03</NotBefore>
+            <NotAfter>2020-09-28T13:25:03Z</NotAfter>
+            <NotBefore>2018-11-28T14:25:03Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-1CFD70C719A4175EE5E68712499F8D33B45AB5CB727ED7D6FC43B62210AD26B4</EntityKey>
@@ -296,8 +296,8 @@
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2020-10-28T14:24:52</NotAfter>
-            <NotBefore>2018-10-28T14:24:52</NotBefore>
+            <NotAfter>2020-10-28T14:24:52Z</NotAfter>
+            <NotBefore>2018-10-28T14:24:52Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-6D096B9723FE55DFC4FC1B8A3C015CDF4D3AD7210CDF5E8558775F796EC9DEB3</EntityKey>
@@ -344,8 +344,8 @@
                 <Source>TRUSTED_STORE</Source>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2020-09-28T13:24:54</NotAfter>
-            <NotBefore>2018-11-28T14:24:54</NotBefore>
+            <NotAfter>2020-09-28T13:24:54Z</NotAfter>
+            <NotBefore>2018-11-28T14:24:54Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-70FC6AEDDE983F0641B81C10E7FAEF57D5815AF462385C034F874D1E27301241</EntityKey>
@@ -397,8 +397,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-09-28T13:24:59</NotAfter>
-            <NotBefore>2018-11-28T14:24:59</NotBefore>
+            <NotAfter>2020-09-28T13:24:59Z</NotAfter>
+            <NotBefore>2018-11-28T14:24:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A67956063E9D60455B955541D8437C252DF781A29C403B778C9AAF48D1D129EB</EntityKey>
@@ -434,7 +434,7 @@
         <Timestamp Type="CONTENT_TIMESTAMP" Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
             <TimestampFilename>META-INF/timestamp002.tst</TimestampFilename>
             <ArchiveTimestampType>CAdES_DETACHED</ArchiveTimestampType>
-            <ProductionTime>2019-12-17T10:12:31</ProductionTime>
+            <ProductionTime>2019-12-17T10:12:31Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT" name="META-INF/ASiCManifest2.xml">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>9qOYbF34xTNfaOEl/ESE1xRKJt+s5do4krX76iyAiFM=</DigestValue>
@@ -473,7 +473,7 @@
         <Timestamp Type="CONTENT_TIMESTAMP" Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
             <TimestampFilename>META-INF/timestamp001.tst</TimestampFilename>
             <ArchiveTimestampType>CAdES_DETACHED</ArchiveTimestampType>
-            <ProductionTime>2019-12-17T10:12:30</ProductionTime>
+            <ProductionTime>2019-12-17T10:12:30Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT" name="META-INF/ASiCManifest.xml">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>tG97lbtnRtigiTNc62TCVyGZOrZupUydYRnMkH/yHRI=</DigestValue>

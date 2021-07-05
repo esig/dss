@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
    <DocumentName></DocumentName>
-   <ValidationDate>2018-07-10T15:24:38</ValidationDate>
+   <ValidationDate>2018-07-10T15:24:38Z</ValidationDate>
    <Signatures>
       <Signature Id="id-905d81dad601ccc48fd00277cfa4a9bc31c8f989b895969d1731eb7d46f0c5cb">
          <SignatureFilename></SignatureFilename>
-         <ClaimedSigningTime>2017-07-21T17:52:11</ClaimedSigningTime>
+         <ClaimedSigningTime>2017-07-21T17:52:11Z</ClaimedSigningTime>
          <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
          <StructuralValidation valid="true" />
          <DigestMatchers>
@@ -76,8 +76,8 @@
          <Sources>
          	<Source>TRUSTED_LIST</Source>
          </Sources>
-         <NotAfter>2026-10-04T12:58:02</NotAfter>
-         <NotBefore>2016-10-04T12:58:02</NotBefore>
+         <NotAfter>2026-10-04T12:58:02Z</NotAfter>
+         <NotBefore>2016-10-04T12:58:02Z</NotBefore>
          <PublicKeySize>4096</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</EntityKey>
@@ -113,7 +113,7 @@
                      <ServiceNames><ServiceName lang="en">C - 2</ServiceName></ServiceNames>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                     <StartDate>2016-10-03T22:00:00</StartDate>
+                     <StartDate>2016-10-03T22:00:00Z</StartDate>
                   </TrustedService>
                </TrustedServices>
             </TrustedServiceProvider>
@@ -137,8 +137,8 @@
          <Sources>
          	<Source>OCSP_RESPONSE</Source>
          </Sources>
-         <NotAfter>2019-09-07T09:14:13</NotAfter>
-         <NotBefore>2017-09-07T09:14:13</NotBefore>
+         <NotAfter>2019-09-07T09:14:13Z</NotAfter>
+         <NotBefore>2017-09-07T09:14:13Z</NotBefore>
          <PublicKeySize>2048</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-E3A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8</EntityKey>
@@ -172,7 +172,7 @@
                      <ServiceNames><ServiceName lang="en">C - 2</ServiceName></ServiceNames>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                     <StartDate>2016-10-03T22:00:00</StartDate>
+                     <StartDate>2016-10-03T22:00:00Z</StartDate>
                      <CapturedQualifiers/>
                      <AdditionalServiceInfoUris/>
                   </TrustedService>
@@ -198,8 +198,8 @@
          <Sources>
          	<Source>UNKNOWN</Source>
          </Sources>
-         <NotAfter>2046-10-04T11:21:17</NotAfter>
-         <NotBefore>2016-10-04T11:21:17</NotBefore>
+         <NotAfter>2046-10-04T11:21:17Z</NotAfter>
+         <NotBefore>2016-10-04T11:21:17Z</NotBefore>
          <PublicKeySize>4096</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA</EntityKey>
@@ -249,8 +249,8 @@
          <Sources>
          	<Source>UNKNOWN</Source>
          </Sources>
-         <NotAfter>2021-04-18T13:11:25</NotAfter>
-         <NotBefore>2017-04-18T13:11:25</NotBefore>
+         <NotAfter>2021-04-18T13:11:25Z</NotAfter>
+         <NotBefore>2017-04-18T13:11:25Z</NotBefore>
          <PublicKeySize>2048</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CA</EntityKey>
@@ -285,7 +285,7 @@
                      <ServiceNames><ServiceName lang="en">C - 2</ServiceName></ServiceNames>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                     <StartDate>2016-10-03T22:00:00</StartDate>
+                     <StartDate>2016-10-03T22:00:00Z</StartDate>
                      <CapturedQualifiers/>
                      <AdditionalServiceInfoUris/>
                   </TrustedService>
@@ -308,9 +308,9 @@
          <Origin>EXTERNAL</Origin>
          <Type>OCSP</Type>
          <SourceAddress>http://hide.eu/ocsp</SourceAddress>
-         <ProductionDate>2018-07-10T15:24:39</ProductionDate>
-         <ThisUpdate>2018-07-10T07:55:03</ThisUpdate>
-         <NextUpdate>2018-07-16T07:55:03</NextUpdate>
+         <ProductionDate>2018-07-10T15:24:39Z</ProductionDate>
+         <ThisUpdate>2018-07-10T07:55:03Z</ThisUpdate>
+         <NextUpdate>2018-07-16T07:55:03Z</NextUpdate>
          <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
             <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -344,9 +344,9 @@
          <Url>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</Url>
          <SequenceNumber>3</SequenceNumber>
          <Version>5</Version>
-         <LastLoading>2018-07-10T15:22:32</LastLoading>
-         <IssueDate>2017-06-27T09:00:00</IssueDate>
-         <NextUpdate>2017-12-26T09:00:00</NextUpdate>
+         <LastLoading>2018-07-10T15:22:32Z</LastLoading>
+         <IssueDate>2017-06-27T09:00:00Z</IssueDate>
+         <NextUpdate>2017-12-26T09:00:00Z</NextUpdate>
          <WellSigned>true</WellSigned>
       </TrustedList>
    </TrustedLists>

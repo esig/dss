@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DetailedReport ValidationTime="2020-02-10T13:14:22" xmlns="http://dss.esig.europa.eu/validation/detailed-report">
     <Timestamp Id="T-517648400E98B8EAEA60C1376EDA4D03A454CAA28DBA7E5ACEE5E96A2B1FE0CD">
-        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-11-26T09:39:46" Title="Validation Process for Timestamps">
+        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-11-26T09:39:46Z" Title="Validation Process for Timestamps">
             <Constraint Id="T-517648400E98B8EAEA60C1376EDA4D03A454CAA28DBA7E5ACEE5E96A2B1FE0CD">
                 <Name Key="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
                 <Status>OK</Status>

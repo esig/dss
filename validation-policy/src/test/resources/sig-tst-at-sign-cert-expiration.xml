@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>document-signed-cades-baseline-t.pkcs7</DocumentName>
-    <ValidationDate>2020-01-21T12:17:36</ValidationDate>
+    <ValidationDate>2020-01-21T12:17:36Z</ValidationDate>
     <Signatures>
         <Signature Id="S-F50AA3963D9DD6F4CCE151BAE10FD04DC597D22A2185562A7E7A1A30B3BDCA5D">
             <SignatureFilename>document-signed-cades-baseline-t.pkcs7</SignatureFilename>
-            <ClaimedSigningTime>2018-07-07T09:37:10</ClaimedSigningTime>
+            <ClaimedSigningTime>2018-07-07T09:37:10Z</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -88,8 +88,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2018-07-07T09:37:15</NotAfter>
-            <NotBefore>2018-06-07T09:37:15</NotBefore>
+            <NotAfter>2018-07-07T09:37:15Z</NotAfter>
+            <NotBefore>2018-06-07T09:37:15Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-83FCA1C95D77C0408D71FBCC94F3C8FF403D48CD9408ECEB89C55AA631C26EA0</EntityKey>
@@ -141,8 +141,8 @@
                 <Source>TIMESTAMP</Source>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2021-01-07T09:37:08</NotAfter>
-            <NotBefore>2017-01-07T09:37:08</NotBefore>
+            <NotAfter>2021-01-07T09:37:08Z</NotAfter>
+            <NotBefore>2017-01-07T09:37:08Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-8B73C62E7CD4C0B51DE14ACBED952355B4B954E01722EDFC5D0F957BA2C60FE7</EntityKey>
@@ -190,8 +190,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-12-07T09:37:09</NotAfter>
-            <NotBefore>2018-01-07T09:37:09</NotBefore>
+            <NotAfter>2020-12-07T09:37:09Z</NotAfter>
+            <NotBefore>2018-01-07T09:37:09Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-8B73C62E7CD4C0B51DE14ACBED952355B4B954E01722EDFC5D0F957BA2C60FE7</EntityKey>
@@ -246,8 +246,8 @@
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2020-12-07T09:37:16</NotAfter>
-            <NotBefore>2018-01-07T09:37:16</NotBefore>
+            <NotAfter>2020-12-07T09:37:16Z</NotAfter>
+            <NotBefore>2018-01-07T09:37:16Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-DF8E55D8DAD271CA46D1946F104FE38B9870246B79CB88153071F75C9444CEC7</EntityKey>
@@ -299,8 +299,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-01-07T09:37:09</NotAfter>
-            <NotBefore>2019-01-07T09:37:09</NotBefore>
+            <NotAfter>2021-01-07T09:37:09Z</NotAfter>
+            <NotBefore>2019-01-07T09:37:09Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F986F1BEF713A0A83AB3135552678D9F55FA960FC0C39894D86BE507EFFF6623</EntityKey>
@@ -337,9 +337,9 @@
         <Revocation Id="R-E3B1DED818BEA65106A8476F5014433E2D683AB835356F2474DF354A419626F4">
             <Origin>CACHED</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2018-01-21T12:16:47</ProductionDate>
-            <ThisUpdate>2018-01-21T12:16:47</ThisUpdate>
-            <NextUpdate>2018-07-21T11:16:47</NextUpdate>
+            <ProductionDate>2018-01-21T12:16:47Z</ProductionDate>
+            <ThisUpdate>2018-01-21T12:16:47Z</ThisUpdate>
+            <NextUpdate>2018-07-21T11:16:47Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -362,8 +362,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://dss.nowina.lu/pki-factory/ocsp/good-ca</SourceAddress>
-            <ProductionDate>2020-01-21T12:17:35</ProductionDate>
-            <ThisUpdate>2020-01-21T12:17:35</ThisUpdate>
+            <ProductionDate>2020-01-21T12:17:35Z</ProductionDate>
+            <ThisUpdate>2020-01-21T12:17:35Z</ThisUpdate>
             <CertHashExtensionPresent>true</CertHashExtensionPresent>
             <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
@@ -386,7 +386,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-DCE40A0B3000949823D7D87DAC74998205B61F9C4D2110D206CD125B34C25FAE">
-            <ProductionTime>2018-07-07T09:37:15</ProductionTime>
+            <ProductionTime>2018-07-07T09:37:15Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>cPdHFsYlJ7ry2zIYmEDhHrWl1fSzRPhImsweCtArV0I=</DigestValue>

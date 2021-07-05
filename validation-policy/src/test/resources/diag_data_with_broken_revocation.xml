@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>simple-detached.json</DocumentName>
-    <ValidationDate>2021-02-04T16:01:09</ValidationDate>
+    <ValidationDate>2021-02-04T16:01:09Z</ValidationDate>
     <Signatures>
         <Signature Id="S-D7358C0FE576CC9FC88B7DE14A4A8633EAE8186281E6569C42D9367806DC791C">
             <SignatureFilename>simple-detached.json</SignatureFilename>
-            <ClaimedSigningTime>2020-11-23T14:44:09</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-11-23T14:44:09Z</ClaimedSigningTime>
             <SignatureFormat>JAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -90,8 +90,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-10-14T05:38:44</NotAfter>
-            <NotBefore>2019-10-14T05:38:44</NotBefore>
+            <NotAfter>2021-10-14T05:38:44Z</NotAfter>
+            <NotBefore>2019-10-14T05:38:44Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E70C13F35C36899888CD23BF0C76788D4E50757B0E41FD5B3C6B7F269BC3B762</EntityKey>
@@ -142,8 +142,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-09-14T05:38:45</NotAfter>
-            <NotBefore>2019-11-14T06:38:45</NotBefore>
+            <NotAfter>2021-09-14T05:38:45Z</NotAfter>
+            <NotBefore>2019-11-14T06:38:45Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-68B61994DEB10C71014BB30C68B43A9A04721E9700635D0A697D9C16A24F9AAE</EntityKey>
@@ -195,8 +195,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2021-10-14T05:38:44</NotAfter>
-            <NotBefore>2019-10-14T05:38:44</NotBefore>
+            <NotAfter>2021-10-14T05:38:44Z</NotAfter>
+            <NotBefore>2019-10-14T05:38:44Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F360537C0EBEA0D9CB3EE54F3384519AD613561F3F99EDA8520A636A5F938F99</EntityKey>
@@ -244,8 +244,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-09-14T05:38:47</NotAfter>
-            <NotBefore>2019-11-14T06:38:47</NotBefore>
+            <NotAfter>2021-09-14T05:38:47Z</NotAfter>
+            <NotBefore>2019-11-14T06:38:47Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D6145F957B4BFB401F8E539BFF8C0035959B1F3DDB336F24ABDB8F5045FED8EC</EntityKey>
@@ -285,9 +285,9 @@
         <Revocation Id="R-16466B98FF29731097CF59BA87C44F41776DAE800951DF0EE13B809F8F5829D8">
             <Origin>CACHED</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2021-02-03T10:37:07</ProductionDate>
-            <ThisUpdate>2021-02-03T10:37:07</ThisUpdate>
-            <NextUpdate>2021-08-03T09:37:07</NextUpdate>
+            <ProductionDate>2021-02-03T10:37:07Z</ProductionDate>
+            <ThisUpdate>2021-02-03T10:37:07Z</ThisUpdate>
+            <NextUpdate>2021-08-03T09:37:07Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -310,8 +310,8 @@
             <Origin>CACHED</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://dss.nowina.lu/pki-factory/ocsp/good-ca</SourceAddress>
-            <ProductionDate>2021-02-04T15:59:03</ProductionDate>
-            <ThisUpdate>2021-02-04T15:59:03</ThisUpdate>
+            <ProductionDate>2021-02-04T15:59:03Z</ProductionDate>
+            <ThisUpdate>2021-02-04T15:59:03Z</ThisUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>

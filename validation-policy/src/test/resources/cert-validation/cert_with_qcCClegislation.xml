@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
-    <ValidationDate>2021-01-08T12:47:05</ValidationDate>
+    <ValidationDate>2021-01-08T12:47:05Z</ValidationDate>
     <UsedCertificates>
         <Certificate Id="C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC">
             <SubjectDistinguishedName Format="CANONICAL">cn=john doe,ou=test pki,o=test organization,st=midlands,c=tc</SubjectDistinguishedName>
@@ -23,8 +23,8 @@
             <Sources>
                 <Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2025-06-02T16:23:31</NotAfter>
-            <NotBefore>2020-06-03T16:23:31</NotBefore>
+            <NotAfter>2025-06-02T16:23:31Z</NotAfter>
+            <NotBefore>2020-06-03T16:23:31Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-018ECA9D3C524E4282E9B1CC1C7BF224204B887D0B0380BA61835EF4094567E6</EntityKey>
@@ -67,7 +67,7 @@
                             <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
                             </CapturedQualifiers>
@@ -104,8 +104,8 @@
                 <Source>AIA</Source>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2030-05-16T18:45:40</NotAfter>
-            <NotBefore>2020-05-18T18:45:40</NotBefore>
+            <NotAfter>2030-05-16T18:45:40Z</NotAfter>
+            <NotBefore>2020-05-18T18:45:40Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-56527FB9704A82EFB2DE904F6839D1FA0E024A4BDD0E12285A2F24DCD39EBB82</EntityKey>
@@ -152,8 +152,8 @@
                 <Source>AIA</Source>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2030-06-15T10:06:52</NotAfter>
-            <NotBefore>2020-06-17T10:06:52</NotBefore>
+            <NotAfter>2030-06-15T10:06:52Z</NotAfter>
+            <NotBefore>2020-06-17T10:06:52Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3A17381B1BE30A700CFE5F29AC81BA72C0FAF2F769CCA6C3AA14DED134C9359B</EntityKey>
@@ -186,7 +186,7 @@
                             <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
                             </CapturedQualifiers>
@@ -209,8 +209,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-21.1.1</SourceAddress>
-            <ProductionDate>2021-01-07T14:45:33</ProductionDate>
-            <ThisUpdate>2021-01-07T14:45:33</ThisUpdate>
+            <ProductionDate>2021-01-07T14:45:33Z</ProductionDate>
+            <ThisUpdate>2021-01-07T14:45:33Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -234,9 +234,9 @@
             <Url>http://localhost:8080/TC.xml</Url>
             <SequenceNumber>1</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2021-01-07T14:45:31</LastLoading>
-            <IssueDate>2021-01-07T14:37:39</IssueDate>
-            <NextUpdate>2021-01-10T14:37:39</NextUpdate>
+            <LastLoading>2021-01-07T14:45:31Z</LastLoading>
+            <IssueDate>2021-01-07T14:37:39Z</IssueDate>
+            <NextUpdate>2021-01-10T14:37:39Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

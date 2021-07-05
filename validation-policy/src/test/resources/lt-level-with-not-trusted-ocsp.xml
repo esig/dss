@@ -1,11 +1,11 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>sample-signed-xades-baseline-lt.xml</DocumentName>
-    <ValidationDate>2020-02-11T06:22:02</ValidationDate>
+    <ValidationDate>2020-02-11T06:22:02Z</ValidationDate>
     <Signatures>
         <Signature Id="S-3CFE9707B7E1CE460586D97EF807B13380BDABEE9F60EA40A12BA7EE7321EBD8">
             <DAIdentifier>id-4bf3e2817bdbed79516ecb8b622a35f7</DAIdentifier>
             <SignatureFilename>sample-signed-xades-baseline-lt.xml</SignatureFilename>
-            <ClaimedSigningTime>2020-02-11T06:21:21</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-02-11T06:21:21Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -113,8 +113,8 @@
                 <Source>TRUSTED_STORE</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-01-31T08:46:11</NotAfter>
-            <NotBefore>2019-01-31T08:46:11</NotBefore>
+            <NotAfter>2021-01-31T08:46:11Z</NotAfter>
+            <NotBefore>2019-01-31T08:46:11Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-0582AE7CD842FB71E1FE6F6C6414CC37EA515BC55A8FA447874D013CE765BA03</EntityKey>
@@ -163,8 +163,8 @@
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-12-31T08:46:21</NotAfter>
-            <NotBefore>2019-02-28T08:46:21</NotBefore>
+            <NotAfter>2020-12-31T08:46:21Z</NotAfter>
+            <NotBefore>2019-02-28T08:46:21Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-1BC24FB42D91B29A8559AD3C583805F194A98F1BFCF176826E2E91B0D898CA32</EntityKey>
@@ -223,8 +223,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-12-31T08:46:14</NotAfter>
-            <NotBefore>2019-02-28T08:46:14</NotBefore>
+            <NotAfter>2020-12-31T08:46:14Z</NotAfter>
+            <NotBefore>2019-02-28T08:46:14Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-36951498074ACFC14C8DD44A4F8413C5B6DF2FD096E5D17311B1A6F1C59EAA95</EntityKey>
@@ -275,8 +275,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-01-31T08:46:12</NotAfter>
-            <NotBefore>2019-01-31T08:46:12</NotBefore>
+            <NotAfter>2021-01-31T08:46:12Z</NotAfter>
+            <NotBefore>2019-01-31T08:46:12Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-5B8AD007143EC6255EF26A94CBAB8BC9C2EAE667E6D68331C9DE7DF01605F2A7</EntityKey>
@@ -324,8 +324,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-12-31T08:46:12</NotAfter>
-            <NotBefore>2019-02-28T08:46:12</NotBefore>
+            <NotAfter>2020-12-31T08:46:12Z</NotAfter>
+            <NotBefore>2019-02-28T08:46:12Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D47AEDBBF22B2CAD493283EA250D688A44AA1F76F4D15A659BB0DDA0698D670A</EntityKey>
@@ -365,9 +365,9 @@
         <Revocation Id="R-05D723368E350D9DD5E2C362348E42E4F865CDAE775AA33D4B0A5F30A82286E5">
             <Origin>CACHED</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2020-02-06T15:00:51</ProductionDate>
-            <ThisUpdate>2020-02-06T15:00:51</ThisUpdate>
-            <NextUpdate>2020-08-06T14:00:51</NextUpdate>
+            <ProductionDate>2020-02-06T15:00:51Z</ProductionDate>
+            <ThisUpdate>2020-02-06T15:00:51Z</ThisUpdate>
+            <NextUpdate>2020-08-06T14:00:51Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -389,9 +389,9 @@
         <Revocation Id="R-40D5D3C1CAD88F19BA8176037251E8FE3773889CDFC5A1FF17C5A15CEA689E9C">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2020-02-11T06:21:25</ProductionDate>
-            <ThisUpdate>2020-02-11T06:21:25</ThisUpdate>
-            <NextUpdate>2020-08-11T05:21:25</NextUpdate>
+            <ProductionDate>2020-02-11T06:21:25Z</ProductionDate>
+            <ThisUpdate>2020-02-11T06:21:25Z</ThisUpdate>
+            <NextUpdate>2020-08-11T05:21:25Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -414,8 +414,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://dss.nowina.lu/pki-factory/ocsp/good-ca</SourceAddress>
-            <ProductionDate>2020-02-11T06:22:02</ProductionDate>
-            <ThisUpdate>2020-02-11T06:22:02</ThisUpdate>
+            <ProductionDate>2020-02-11T06:22:02Z</ProductionDate>
+            <ThisUpdate>2020-02-11T06:22:02Z</ThisUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -437,7 +437,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-68737BDBDF3B9EBAFB8195D9D8CCD477CF8B7F71BCDC3A5B481E408CF1EE128B">
-            <ProductionTime>2020-02-11T06:21:25</ProductionTime>
+            <ProductionTime>2020-02-11T06:21:25Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>/wmhbvcKpJ1GAXiXbDBhj3WIPWMxppn1ZVz+6slOc58=</DigestValue>

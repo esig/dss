@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>submissionReport(Getekend)_v1_2.xml</DocumentName>
-    <ValidationDate>2017-03-02T09:11:50</ValidationDate>
+    <ValidationDate>2017-03-02T09:11:50Z</ValidationDate>
     <Signatures>
         <Signature Id="id-1e71de2a815b8732fdcdc48064062d7b">
             <SignatureFilename>submissionReport(Getekend)_v1_2.xml</SignatureFilename>
@@ -74,8 +74,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2021-03-17T19:33:33</NotAfter>
-            <NotBefore>2014-05-30T20:15:49</NotBefore>
+            <NotAfter>2021-03-17T19:33:33Z</NotAfter>
+            <NotBefore>2014-05-30T20:15:49Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</EntityKey>
@@ -105,7 +105,7 @@
 		                    <ServiceNames><ServiceName lang="en">QuoVadis EU Issuing Certification Authority G3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-07-01T02:00:00</StartDate>
+                            <StartDate>2016-07-01T02:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -114,8 +114,8 @@
 		                    <ServiceNames><ServiceName lang="en">QuoVadis EU Issuing Certification Authority G3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2014-07-02T15:00:00</StartDate>
-                            <EndDate>2016-07-01T02:00:00</EndDate>
+                            <StartDate>2014-07-02T15:00:00Z</StartDate>
+                            <EndDate>2016-07-01T02:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -142,8 +142,8 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2019-11-03T21:06:26</NotAfter>
-            <NotBefore>2016-11-03T21:06:26</NotBefore>
+            <NotAfter>2019-11-03T21:06:26Z</NotAfter>
+            <NotBefore>2016-11-03T21:06:26Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</EntityKey>
@@ -176,7 +176,7 @@
 		                    <ServiceNames><ServiceName lang="en">QuoVadis EU Issuing Certification Authority G3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-07-01T02:00:00</StartDate>
+                            <StartDate>2016-07-01T02:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -213,8 +213,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2018-02-28T15:11:00</NotAfter>
-            <NotBefore>2017-02-28T15:01:01</NotBefore>
+            <NotAfter>2018-02-28T15:11:00Z</NotAfter>
+            <NotBefore>2017-02-28T15:01:01Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74</EntityKey>
@@ -254,7 +254,7 @@
 		                    <ServiceNames><ServiceName lang="en">QuoVadis EU Issuing Certification Authority G3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-07-01T02:00:00</StartDate>
+                            <StartDate>2016-07-01T02:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -279,9 +279,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.quovadisglobal.com</SourceAddress>
-            <ProductionDate>2017-03-02T09:11:50</ProductionDate>
-            <ThisUpdate>2017-03-02T09:11:50</ThisUpdate>
-            <NextUpdate>2017-03-04T09:11:50</NextUpdate>
+            <ProductionDate>2017-03-02T09:11:50Z</ProductionDate>
+            <ThisUpdate>2017-03-02T09:11:50Z</ThisUpdate>
+            <NextUpdate>2017-03-04T09:11:50Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -315,9 +315,9 @@
             <Url>https://www.acm.nl/download/bestand/current-tsl.xml</Url>
             <SequenceNumber>28</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2017-03-02T08:50:52</LastLoading>
-            <IssueDate>2016-12-12T10:00:00</IssueDate>
-            <NextUpdate>2017-06-12T08:00:00</NextUpdate>
+            <LastLoading>2017-03-02T08:50:52Z</LastLoading>
+            <IssueDate>2016-12-12T10:00:00Z</IssueDate>
+            <NextUpdate>2017-06-12T08:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -325,9 +325,9 @@
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>164</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2017-03-02T08:50:49</LastLoading>
-	        <IssueDate>2017-02-28T16:00:00</IssueDate>
-	        <NextUpdate>2017-08-28T16:00:00</NextUpdate>
+	        <LastLoading>2017-03-02T08:50:49Z</LastLoading>
+	        <IssueDate>2017-02-28T16:00:00Z</IssueDate>
+	        <NextUpdate>2017-08-28T16:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

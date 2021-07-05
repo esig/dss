@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>seal-cz.pdf</DocumentName>
-    <ValidationDate>2020-01-28T09:44:51</ValidationDate>
+    <ValidationDate>2020-01-28T09:44:51Z</ValidationDate>
     <Signatures>
         <Signature Id="S-6EAFAC65BDFAA7722923D43ECCBE9B9CFF2E55FF88F712D58CECDE53DF383FCE">
             <SignatureFilename>seal-cz.pdf</SignatureFilename>
-            <ClaimedSigningTime>2018-09-01T14:28:46</ClaimedSigningTime>
+            <ClaimedSigningTime>2018-09-01T14:28:46Z</ClaimedSigningTime>
             <SignatureFormat>PKCS7-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -103,8 +103,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2020-01-19T11:30:20</NotAfter>
-            <NotBefore>2010-01-19T11:31:20</NotBefore>
+            <NotAfter>2020-01-19T11:30:20Z</NotAfter>
+            <NotBefore>2010-01-19T11:31:20Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC</EntityKey>
@@ -147,7 +147,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-08-30T22:00:00</StartDate>
+                            <StartDate>2017-08-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -161,8 +161,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2017-08-30T22:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2017-08-30T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -174,8 +174,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2010-01-19T11:31:20</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2010-01-19T11:31:20Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -212,8 +212,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2019-06-05T12:43:41</NotAfter>
-            <NotBefore>2018-06-05T12:43:41</NotBefore>
+            <NotAfter>2019-06-05T12:43:41Z</NotAfter>
+            <NotBefore>2018-06-05T12:43:41Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-40FE2CE068AB7D4277E897FA4B10CCF338CE9FC8101F787BEA7700E20F80AC92</EntityKey>
@@ -265,7 +265,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-08-30T22:00:00</StartDate>
+                            <StartDate>2017-08-30T22:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
                             </CapturedQualifiers>
@@ -307,8 +307,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2025-01-19T08:04:31</NotAfter>
-            <NotBefore>2010-01-19T08:04:31</NotBefore>
+            <NotAfter>2025-01-19T08:04:31Z</NotAfter>
+            <NotBefore>2010-01-19T08:04:31Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578</EntityKey>
@@ -343,10 +343,10 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://www.postsignum.cz/crl/psqualifiedca2.crl</SourceAddress>
-            <ProductionDate>2020-01-19T11:29:09</ProductionDate>
-            <ThisUpdate>2020-01-19T11:29:09</ThisUpdate>
-            <NextUpdate>2020-01-20T08:20:00</NextUpdate>
-            <ExpiredCertsOnCRL>2010-01-19T11:44:47</ExpiredCertsOnCRL>
+            <ProductionDate>2020-01-19T11:29:09Z</ProductionDate>
+            <ThisUpdate>2020-01-19T11:29:09Z</ThisUpdate>
+            <NextUpdate>2020-01-20T08:20:00Z</NextUpdate>
+            <ExpiredCertsOnCRL>2010-01-19T11:44:47Z</ExpiredCertsOnCRL>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -384,9 +384,9 @@
             <Url>https://tsl.gov.cz/publ/TSL_CZ.xtsl</Url>
             <SequenceNumber>84</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-01-28T09:44:09</LastLoading>
-            <IssueDate>2019-12-13T09:00:00</IssueDate>
-            <NextUpdate>2020-06-13T00:00:00</NextUpdate>
+            <LastLoading>2020-01-28T09:44:09Z</LastLoading>
+            <IssueDate>2019-12-13T09:00:00Z</IssueDate>
+            <NextUpdate>2020-06-13T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
@@ -394,9 +394,9 @@
             <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
             <SequenceNumber>255</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-01-28T09:44:07</LastLoading>
-            <IssueDate>2020-01-07T10:00:00</IssueDate>
-            <NextUpdate>2020-07-07T00:00:00</NextUpdate>
+            <LastLoading>2020-01-28T09:44:07Z</LastLoading>
+            <IssueDate>2020-01-07T10:00:00Z</IssueDate>
+            <NextUpdate>2020-07-07T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

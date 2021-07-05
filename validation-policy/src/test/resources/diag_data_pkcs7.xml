@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>signed_document_ok.pdf</DocumentName>
-    <ValidationDate>2021-06-11T14:03:10</ValidationDate>
+    <ValidationDate>2021-06-11T14:03:10Z</ValidationDate>
     <Signatures>
         <Signature Id="S-8803F50BF7BD41F61417952BCBB2186AF4F8F0C02D17BDD2C3E41FF253417D52">
             <SignatureFilename>signed_document_ok.pdf</SignatureFilename>
-            <ClaimedSigningTime>2020-06-21T19:55:52</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-06-21T19:55:52Z</ClaimedSigningTime>
             <SignatureFormat>PKCS7-B</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -103,8 +103,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-07-30T15:32:00</NotAfter>
-            <NotBefore>2019-11-08T15:32:00</NotBefore>
+            <NotAfter>2021-07-30T15:32:00Z</NotAfter>
+            <NotBefore>2019-11-08T15:32:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BC6AC9A1E3AAD3EF381679E9839E742B8277ADC7342EB1EF4BB24CA3EFD3D0AC</EntityKey>
@@ -171,8 +171,8 @@
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2023-10-21T10:15:47</NotAfter>
-            <NotBefore>2013-10-21T10:15:47</NotBefore>
+            <NotAfter>2023-10-21T10:15:47Z</NotAfter>
+            <NotBefore>2013-10-21T10:15:47Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-421A05B334F650A573E3CC365D52F4F654EED6801A8C1D32E14D2BD21454B883</EntityKey>
@@ -218,8 +218,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-06-21T10:41:33</NotAfter>
-            <NotBefore>2018-06-21T10:41:33</NotBefore>
+            <NotAfter>2021-06-21T10:41:33Z</NotAfter>
+            <NotBefore>2018-06-21T10:41:33Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-97AA5AF24AB1317E7ABC049A7FE0A0639C425AE3C0501FBFE1062C0C9C16B46F</EntityKey>
@@ -258,9 +258,9 @@
             <Origin>CACHED</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp-pki.certinomis.com</SourceAddress>
-            <ProductionDate>2021-06-11T14:01:59</ProductionDate>
-            <ThisUpdate>2021-06-11T14:01:59</ThisUpdate>
-            <NextUpdate>2021-06-21T14:01:59</NextUpdate>
+            <ProductionDate>2021-06-11T14:01:59Z</ProductionDate>
+            <ThisUpdate>2021-06-11T14:01:59Z</ThisUpdate>
+            <NextUpdate>2021-06-21T14:01:59Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -308,9 +308,9 @@
             <Url>https://www.ssi.gouv.fr/eidas/TL-FR.xml</Url>
             <SequenceNumber>85</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2021-06-11T13:20:06</LastLoading>
-            <IssueDate>2021-06-01T01:00:00</IssueDate>
-            <NextUpdate>2021-12-01T00:00:00</NextUpdate>
+            <LastLoading>2021-06-11T13:20:06Z</LastLoading>
+            <IssueDate>2021-06-01T01:00:00Z</IssueDate>
+            <NextUpdate>2021-12-01T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
@@ -318,9 +318,9 @@
             <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
             <SequenceNumber>290</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2021-06-11T13:20:05</LastLoading>
-            <IssueDate>2021-05-28T01:00:00</IssueDate>
-            <NextUpdate>2021-11-28T00:00:00</NextUpdate>
+            <LastLoading>2021-06-11T13:20:05Z</LastLoading>
+            <IssueDate>2021-05-28T01:00:00Z</IssueDate>
+            <NextUpdate>2021-11-28T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

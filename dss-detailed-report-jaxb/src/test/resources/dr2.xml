@@ -13,7 +13,7 @@
                 <Errors Key="BBB_CV_IRDOI_ANS">The reference data object is not intact!</Errors>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2020-02-10T13:14:22</Time>
+                <Time>2020-02-10T13:14:22Z</Time>
             </ProofOfExistence>
         </ValidationProcessBasicSignature>
         <ValidationProcessLongTermData Title="Validation Process for Signatures with Time and Signatures with Long-Term Validation Data">
@@ -28,7 +28,7 @@
                 <Errors Key="BBB_CV_IRDOI_ANS">The reference data object is not intact!</Errors>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2020-02-10T13:14:22</Time>
+                <Time>2020-02-10T13:14:22Z</Time>
             </ProofOfExistence>
         </ValidationProcessLongTermData>
         <ValidationProcessArchivalData Title="Validation Process for Signatures with Archival Data">
@@ -43,7 +43,7 @@
                 <Errors Key="BBB_CV_IRDOI_ANS">The reference data object is not intact!</Errors>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2020-02-10T13:14:22</Time>
+                <Time>2020-02-10T13:14:22Z</Time>
             </ProofOfExistence>
         </ValidationProcessArchivalData>
         <ValidationSignatureQualification SignatureQualification="Not AdES but QC with QSCD" Title="Signature Qualification">
@@ -276,7 +276,7 @@
                     <Conclusion>
                         <Indication>PASSED</Indication>
                     </Conclusion>
-                    <RevocationProductionDate>2020-02-10T12:49:19</RevocationProductionDate>
+                    <RevocationProductionDate>2020-02-10T12:49:19Z</RevocationProductionDate>
                 </RAC>
                 <RFC Id="R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210" Title="Revocation Freshness Checker">
                     <Constraint>
@@ -616,7 +616,7 @@
                     <Conclusion>
                         <Indication>PASSED</Indication>
                     </Conclusion>
-                    <RevocationProductionDate>2020-02-10T13:14:22</RevocationProductionDate>
+                    <RevocationProductionDate>2020-02-10T13:14:22Z</RevocationProductionDate>
                 </RAC>
                 <RFC Id="R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3" Title="Revocation Freshness Checker">
                     <Constraint>

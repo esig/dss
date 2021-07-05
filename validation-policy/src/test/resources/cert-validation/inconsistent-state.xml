@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
-    <ValidationDate>2018-06-01T00:00:00</ValidationDate>
+    <ValidationDate>2018-06-01T00:00:00Z</ValidationDate>
     <UsedCertificates>
         <Certificate Id="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
             <SubjectDistinguishedName Format="CANONICAL">cn=f rdc 2015,o=f a,c=hr</SubjectDistinguishedName>
@@ -23,8 +23,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2025-11-25T10:43:30</NotAfter>
-            <NotBefore>2015-11-25T10:13:30</NotBefore>
+            <NotAfter>2025-11-25T10:43:30Z</NotAfter>
+            <NotBefore>2015-11-25T10:13:30Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B</EntityKey>
@@ -55,7 +55,7 @@
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -65,14 +65,14 @@
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2015-12-06T23:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2015-12-06T23:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -81,8 +81,8 @@
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2015-12-06T23:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2015-12-06T23:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -112,8 +112,8 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2019-04-15T07:09:20</NotAfter>
-            <NotBefore>2018-04-15T06:39:20</NotBefore>
+            <NotAfter>2019-04-15T07:09:20Z</NotAfter>
+            <NotBefore>2018-04-15T06:39:20Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F</EntityKey>
@@ -150,7 +150,7 @@
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig</Qualifier>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
@@ -166,7 +166,7 @@
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -201,8 +201,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2020-04-09T09:22:18</NotAfter>
-            <NotBefore>2018-04-09T08:52:18</NotBefore>
+            <NotAfter>2020-04-09T09:22:18Z</NotAfter>
+            <NotBefore>2018-04-09T08:52:18Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A1E2D4CA9C521332369FA3224F0B7282AD2596E8A7416CBC0DF087E05D8F5502</EntityKey>
@@ -243,7 +243,7 @@
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig</Qualifier>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
@@ -259,7 +259,7 @@
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -281,8 +281,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.f.hr</SourceAddress>
-            <ProductionDate>2018-06-01T11:29:26</ProductionDate>
-            <ThisUpdate>2018-06-01T11:29:26</ThisUpdate>
+            <ProductionDate>2018-06-01T11:29:26Z</ProductionDate>
+            <ThisUpdate>2018-06-01T11:29:26Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -307,9 +307,9 @@
             <Url>https://www.mingo.hr/TLS/TSL-HR.xml</Url>
             <SequenceNumber>20</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2018-06-01T10:33:45</LastLoading>
-            <IssueDate>2018-02-22T01:00:00</IssueDate>
-            <NextUpdate>2018-08-22T00:00:00</NextUpdate>
+            <LastLoading>2018-06-01T10:33:45Z</LastLoading>
+            <IssueDate>2018-02-22T01:00:00Z</IssueDate>
+            <NextUpdate>2018-08-22T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -317,9 +317,9 @@
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>210</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2018-06-01T10:33:44</LastLoading>
-	        <IssueDate>2018-05-30T06:00:00</IssueDate>
-	        <NextUpdate>2018-11-30T00:00:00</NextUpdate>
+	        <LastLoading>2018-06-01T10:33:44Z</LastLoading>
+	        <IssueDate>2018-05-30T06:00:00Z</IssueDate>
+	        <NextUpdate>2018-11-30T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>firmaok.zip.p7m</DocumentName>
-    <ValidationDate>2016-07-19T11:30:00</ValidationDate>
+    <ValidationDate>2016-07-19T11:30:00Z</ValidationDate>
     <Signatures>
 	    <Signature Id="id-5f10afd0f54237a13101adc397e64fd1">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
-	        <ClaimedSigningTime>2016-06-10T16:50:58</ClaimedSigningTime>
+	        <ClaimedSigningTime>2016-06-10T16:50:58Z</ClaimedSigningTime>
 	        <SignatureFormat>CAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
@@ -68,8 +68,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2034-11-24T10:13:33</NotAfter>
-            <NotBefore>2014-11-24T09:43:33</NotBefore>
+            <NotAfter>2034-11-24T10:13:33Z</NotAfter>
+            <NotBefore>2014-11-24T09:43:33Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-729224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640</EntityKey>
@@ -108,8 +108,8 @@
             <Sources>
             	 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2019-11-27T08:50:32</NotAfter>
-            <NotBefore>2014-11-27T08:20:32</NotBefore>
+            <NotAfter>2019-11-27T08:50:32Z</NotAfter>
+            <NotBefore>2014-11-27T08:20:32Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C</EntityKey>
@@ -152,8 +152,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-11-24T08:44:58</NotAfter>
-            <NotBefore>2015-11-24T08:14:58</NotBefore>
+            <NotAfter>2020-11-24T08:44:58Z</NotAfter>
+            <NotBefore>2015-11-24T08:14:58Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC</EntityKey>
@@ -204,9 +204,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
-            <ProductionDate>2016-07-19T11:12:49</ProductionDate>
-            <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
-            <NextUpdate>2016-07-20T10:03:20</NextUpdate>
+            <ProductionDate>2016-07-19T11:12:49Z</ProductionDate>
+            <ThisUpdate>2016-07-19T09:03:20Z</ThisUpdate>
+            <NextUpdate>2016-07-20T10:03:20Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -228,9 +228,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
-            <ProductionDate>2016-07-19T11:18:22</ProductionDate>
-            <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
-            <NextUpdate>2016-07-20T10:03:20</NextUpdate>
+            <ProductionDate>2016-07-19T11:18:22Z</ProductionDate>
+            <ThisUpdate>2016-07-19T09:03:20Z</ThisUpdate>
+            <NextUpdate>2016-07-20T10:03:20Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -252,9 +252,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
-            <ProductionDate>2016-07-19T11:13:48</ProductionDate>
-            <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
-            <NextUpdate>2016-07-20T10:03:20</NextUpdate>
+            <ProductionDate>2016-07-19T11:13:48Z</ProductionDate>
+            <ThisUpdate>2016-07-19T09:03:20Z</ThisUpdate>
+            <NextUpdate>2016-07-20T10:03:20Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

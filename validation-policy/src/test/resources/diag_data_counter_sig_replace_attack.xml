@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>jades-with-attached-counter-signature-replace-attack.json</DocumentName>
-    <ValidationDate>2021-02-03T09:22:16</ValidationDate>
+    <ValidationDate>2021-02-03T09:22:16Z</ValidationDate>
     <Signatures>
         <Signature Id="S-DDDD913C4176056E6EDA00CDC5826FC46CA3E2325751C644AF789790ADBBD85C">
             <SignatureFilename>jades-with-attached-counter-signature-replace-attack.json</SignatureFilename>
-            <ClaimedSigningTime>2021-01-29T14:21:31</ClaimedSigningTime>
+            <ClaimedSigningTime>2021-01-29T14:21:31Z</ClaimedSigningTime>
             <SignatureFormat>JAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -62,7 +62,7 @@
         </Signature>
         <Signature CounterSignature="true" Parent="S-DDDD913C4176056E6EDA00CDC5826FC46CA3E2325751C644AF789790ADBBD85C" Id="S-610BCE7CF6BE153F5B9C1BDB8EB054200CD2660298C6EABCC35037A5F3EC01A8">
             <SignatureFilename>jades-with-attached-counter-signature-replace-attack.json</SignatureFilename>
-            <ClaimedSigningTime>2021-02-02T14:10:52</ClaimedSigningTime>
+            <ClaimedSigningTime>2021-02-02T14:10:52Z</ClaimedSigningTime>
             <SignatureFormat>JAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -157,8 +157,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-09-14T05:38:45</NotAfter>
-            <NotBefore>2019-11-14T06:38:45</NotBefore>
+            <NotAfter>2021-09-14T05:38:45Z</NotAfter>
+            <NotBefore>2019-11-14T06:38:45Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-68B61994DEB10C71014BB30C68B43A9A04721E9700635D0A697D9C16A24F9AAE</EntityKey>
@@ -204,8 +204,8 @@
             <Sources>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2021-10-14T05:38:44</NotAfter>
-            <NotBefore>2019-10-14T05:38:44</NotBefore>
+            <NotAfter>2021-10-14T05:38:44Z</NotAfter>
+            <NotBefore>2019-10-14T05:38:44Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F360537C0EBEA0D9CB3EE54F3384519AD613561F3F99EDA8520A636A5F938F99</EntityKey>
@@ -248,8 +248,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-08-11T12:23:48</NotAfter>
-            <NotBefore>2020-08-11T12:23:48</NotBefore>
+            <NotAfter>2021-08-11T12:23:48Z</NotAfter>
+            <NotBefore>2020-08-11T12:23:48Z</NotBefore>
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9BAFAD457DAD0BF8C710B9752E7158D3A5C171182B36A887C5FF4CE3F10125CC</EntityKey>
@@ -296,8 +296,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-09-14T05:38:47</NotAfter>
-            <NotBefore>2019-11-14T06:38:47</NotBefore>
+            <NotAfter>2021-09-14T05:38:47Z</NotAfter>
+            <NotBefore>2019-11-14T06:38:47Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D6145F957B4BFB401F8E539BFF8C0035959B1F3DDB336F24ABDB8F5045FED8EC</EntityKey>

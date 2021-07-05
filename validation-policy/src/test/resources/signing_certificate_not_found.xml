@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-P-IT_STAMP-1.pdf</DocumentName>
-    <ValidationDate>2016-05-04T15:55:00</ValidationDate>
+    <ValidationDate>2016-05-04T15:55:00Z</ValidationDate>
     <Signatures>
 	    <Signature Id="id-0a3d7678f962b64e24af1ea3410ee1a25e87cc4f861179aabd393cf288c70419">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
-	        <ClaimedSigningTime>2016-04-25T08:09:51</ClaimedSigningTime>
+	        <ClaimedSigningTime>2016-04-25T08:09:51Z</ClaimedSigningTime>
 	        <SignatureFormat>PDF-NOT-ETSI</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
@@ -57,8 +57,8 @@
             <Sources>
             	 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2020-11-10T16:49:08</NotAfter>
-            <NotBefore>2011-02-17T10:41:07</NotBefore>
+            <NotAfter>2020-11-10T16:49:08Z</NotAfter>
+            <NotBefore>2011-02-17T10:41:07Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7</EntityKey>
@@ -105,8 +105,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2020-11-10T16:49:08</NotAfter>
-            <NotBefore>2010-11-11T16:49:08</NotBefore>
+            <NotAfter>2020-11-10T16:49:08Z</NotAfter>
+            <NotBefore>2010-11-11T16:49:08Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31</EntityKey>
@@ -144,8 +144,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2016-12-18T12:47:38</NotAfter>
-            <NotBefore>2015-12-19T12:47:38</NotBefore>
+            <NotAfter>2016-12-18T12:47:38Z</NotAfter>
+            <NotBefore>2015-12-19T12:47:38Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768</EntityKey>
@@ -193,8 +193,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
-            <ProductionDate>2016-05-04T16:20:02</ProductionDate>
-            <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
+            <ProductionDate>2016-05-04T16:20:02Z</ProductionDate>
+            <ThisUpdate>2016-05-04T16:20:02Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -215,8 +215,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
-            <ProductionDate>2016-05-04T16:20:02</ProductionDate>
-            <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
+            <ProductionDate>2016-05-04T16:20:02Z</ProductionDate>
+            <ThisUpdate>2016-05-04T16:20:02Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

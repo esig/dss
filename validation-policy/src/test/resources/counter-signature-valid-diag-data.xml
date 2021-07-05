@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>TEST_S1a_C1a_InTL_VALID.xml</DocumentName>
-    <ValidationDate>2017-09-25T05:59:01</ValidationDate>
+    <ValidationDate>2017-09-25T05:59:01Z</ValidationDate>
     <Signatures>
         <Signature Id="XSIG1">
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
-            <ClaimedSigningTime>2017-09-21T16:04:25</ClaimedSigningTime>
+            <ClaimedSigningTime>2017-09-21T16:04:25Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
@@ -67,7 +67,7 @@
         </Signature>
         <Signature Id="XSIG2" CounterSignature="true" Parent="XSIG1">
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
-            <ClaimedSigningTime>2017-09-21T16:04:55</ClaimedSigningTime>
+            <ClaimedSigningTime>2017-09-21T16:04:55Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
@@ -142,8 +142,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2023-12-15T22:59:00</NotAfter>
-            <NotBefore>2014-10-02T10:40:21</NotBefore>
+            <NotAfter>2023-12-15T22:59:00Z</NotAfter>
+            <NotBefore>2014-10-02T10:40:21Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67</EntityKey>

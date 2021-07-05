@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
-    <ValidationDate>2018-02-09T07:23:22</ValidationDate>
+    <ValidationDate>2018-02-09T07:23:22Z</ValidationDate>
     <UsedCertificates>
         <Certificate Id="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
             <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</SubjectDistinguishedName>
@@ -16,8 +16,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2021-12-15T08:00:00</NotAfter>
-            <NotBefore>2007-10-04T10:00:00</NotBefore>
+            <NotAfter>2021-12-15T08:00:00Z</NotAfter>
+            <NotBefore>2007-10-04T10:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</EntityKey>
@@ -48,7 +48,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA2, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -58,8 +58,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA2, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2007-10-04T10:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2007-10-04T10:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -87,8 +87,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2019-01-23T11:00:00</NotAfter>
-            <NotBefore>2013-10-23T11:00:00</NotBefore>
+            <NotAfter>2019-01-23T11:00:00Z</NotAfter>
+            <NotBefore>2013-10-23T11:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19</EntityKey>
@@ -125,7 +125,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA2, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
@@ -136,8 +136,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA2, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2007-10-04T10:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2007-10-04T10:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
@@ -159,9 +159,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
-            <ProductionDate>2018-01-01T11:00:00</ProductionDate>
-            <ThisUpdate>2018-01-01T11:00:00</ThisUpdate>
-            <NextUpdate>2018-07-31T11:00:00</NextUpdate>
+            <ProductionDate>2018-01-01T11:00:00Z</ProductionDate>
+            <ThisUpdate>2018-01-01T11:00:00Z</ThisUpdate>
+            <NextUpdate>2018-07-31T11:00:00Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -185,9 +185,9 @@
             <Url>https://tsl.belgium.be/tsl-be.xml</Url>
             <SequenceNumber>36</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2018-02-09T07:03:30</LastLoading>
-            <IssueDate>2018-02-08T00:00:00</IssueDate>
-            <NextUpdate>2018-07-30T00:00:00</NextUpdate>
+            <LastLoading>2018-02-09T07:03:30Z</LastLoading>
+            <IssueDate>2018-02-08T00:00:00Z</IssueDate>
+            <NextUpdate>2018-07-30T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -195,9 +195,9 @@
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>198</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2018-02-09T07:03:30</LastLoading>
-	        <IssueDate>2018-02-01T13:00:00</IssueDate>
-	        <NextUpdate>2018-07-31T00:00:00</NextUpdate>
+	        <LastLoading>2018-02-09T07:03:30Z</LastLoading>
+	        <IssueDate>2018-02-01T13:00:00Z</IssueDate>
+	        <NextUpdate>2018-07-31T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
 	</TrustedLists>

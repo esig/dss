@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>5.1.5-TEST FILE.xml</DocumentName>
-    <ValidationDate>2018-07-05T13:28:12</ValidationDate>
+    <ValidationDate>2018-07-05T13:28:12Z</ValidationDate>
     <Signatures>
         <Signature Id="id-a2f4d9e240dd42ab5fc976cb8171bd7d">
             <SignatureFilename>5.1.5-TEST FILE.xml</SignatureFilename>
-            <ClaimedSigningTime>2018-07-05T13:19:42</ClaimedSigningTime>
+            <ClaimedSigningTime>2018-07-05T13:19:42Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -90,8 +90,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2019-07-05T13:18:37</NotAfter>
-            <NotBefore>2017-07-05T13:18:37</NotBefore>
+            <NotAfter>2019-07-05T13:18:37Z</NotAfter>
+            <NotBefore>2017-07-05T13:18:37Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3E75A50C854182576BECBE1128851364E0B0AC909EBED4ACA5B38A6FC14FC23D</EntityKey>
@@ -129,7 +129,7 @@
                             <ServiceNames><ServiceName lang="en">TS-5.1.5 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -162,8 +162,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2019-07-05T13:18:36</NotAfter>
-            <NotBefore>2017-07-05T13:18:36</NotBefore>
+            <NotAfter>2019-07-05T13:18:36Z</NotAfter>
+            <NotBefore>2017-07-05T13:18:36Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619</EntityKey>
@@ -192,7 +192,7 @@
                             <ServiceNames><ServiceName lang="en">TS-5.1.5 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -210,8 +210,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.5</SourceAddress>
-            <ProductionDate>2018-07-05T13:28:12</ProductionDate>
-            <ThisUpdate>2018-07-05T13:28:12</ThisUpdate>
+            <ProductionDate>2018-07-05T13:28:12Z</ProductionDate>
+            <ThisUpdate>2018-07-05T13:28:12Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -244,9 +244,9 @@
             <Url>http://localhost:8080/qes-validation-web/tl/TL-5.xml</Url>
             <SequenceNumber>1</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2018-07-05T13:28:11</LastLoading>
-            <IssueDate>2018-07-04T13:17:57</IssueDate>
-            <NextUpdate>2018-08-05T13:17:57</NextUpdate>
+            <LastLoading>2018-07-05T13:28:11Z</LastLoading>
+            <IssueDate>2018-07-04T13:17:57Z</IssueDate>
+            <NextUpdate>2018-08-05T13:17:57Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -254,9 +254,9 @@
 	        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</Url>
 	        <SequenceNumber>1</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2018-07-05T13:28:11</LastLoading>
-	        <IssueDate>2018-07-04T13:17:57</IssueDate>
-	        <NextUpdate>2018-08-05T13:17:57</NextUpdate>
+	        <LastLoading>2018-07-05T13:28:11Z</LastLoading>
+	        <IssueDate>2018-07-04T13:17:57Z</IssueDate>
+	        <NextUpdate>2018-08-05T13:17:57Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

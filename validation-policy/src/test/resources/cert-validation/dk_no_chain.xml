@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
-    <ValidationDate>2018-02-09T07:11:54</ValidationDate>
+    <ValidationDate>2018-02-09T07:11:54Z</ValidationDate>
     <UsedCertificates>
         <Certificate Id="C-3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D">
             <SubjectDistinguishedName Format="CANONICAL">cn=rune tendal kock+2.5.4.5=#131c5049443a393230382d323030322d322d383434373439313736313538,o=ingen organisatorisk tilknytning,c=dk</SubjectDistinguishedName>
@@ -21,8 +21,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2016-06-11T20:58:25</NotAfter>
-            <NotBefore>2013-06-11T20:58:59</NotBefore>
+            <NotAfter>2016-06-11T20:58:25Z</NotAfter>
+            <NotBefore>2013-06-11T20:58:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D</EntityKey>

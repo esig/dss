@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>7.1.2-TEST FILE.xml</DocumentName>
-    <ValidationDate>2020-12-23T07:35:07</ValidationDate>
+    <ValidationDate>2020-12-23T07:35:07Z</ValidationDate>
     <Signatures>
         <Signature Id="S-C040D0115536ABF10F6E589C6829FB4651F5BE065F7D8AFF384BCFE0CFBCA5AB">
             <DAIdentifier>id-0640fdb5cd9176d5d9c8df4a94477eb6</DAIdentifier>
             <SignatureFilename>7.1.2-TEST FILE.xml</SignatureFilename>
-            <ClaimedSigningTime>2020-12-20T00:02:05</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-12-20T00:02:05Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -100,8 +100,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2022-12-20T00:00:11</NotAfter>
-            <NotBefore>2018-12-20T00:00:11</NotBefore>
+            <NotAfter>2022-12-20T00:00:11Z</NotAfter>
+            <NotBefore>2018-12-20T00:00:11Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EDDCF9925130085138553683B6D29AFF5297D0D08A6A585F91EB3B5F5DE98CBD</EntityKey>
@@ -147,7 +147,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-01-09T23:00:00</StartDate>
+                            <StartDate>2019-01-09T23:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -158,8 +158,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
-                            <StartDate>2018-01-09T23:00:00</StartDate>
-                            <EndDate>2019-01-09T23:00:00</EndDate>
+                            <StartDate>2018-01-09T23:00:00Z</StartDate>
+                            <EndDate>2019-01-09T23:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -194,8 +194,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2022-12-20T00:00:10</NotAfter>
-            <NotBefore>2018-12-20T00:00:10</NotBefore>
+            <NotAfter>2022-12-20T00:00:10Z</NotAfter>
+            <NotBefore>2018-12-20T00:00:10Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-95FCC9C0067344C1938A2C4EA0E22C1CA5DFBF5B9E7C87B5757116B1B87121D1</EntityKey>
@@ -232,7 +232,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-01-09T23:00:00</StartDate>
+                            <StartDate>2019-01-09T23:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -243,8 +243,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
-                            <StartDate>2018-01-09T23:00:00</StartDate>
-                            <EndDate>2019-01-09T23:00:00</EndDate>
+                            <StartDate>2018-01-09T23:00:00Z</StartDate>
+                            <EndDate>2019-01-09T23:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -263,9 +263,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://192.168.87.22:8080/efda/validation-tests/crl/SDI-7.1.2.crl</SourceAddress>
-            <ProductionDate>2020-12-23T07:35:05</ProductionDate>
-            <ThisUpdate>2020-12-23T07:35:05</ThisUpdate>
-            <NextUpdate>2021-06-23T06:35:05</NextUpdate>
+            <ProductionDate>2020-12-23T07:35:05Z</ProductionDate>
+            <ThisUpdate>2020-12-23T07:35:05Z</ThisUpdate>
+            <NextUpdate>2021-06-23T06:35:05Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -301,9 +301,9 @@
             <Url>http://efda.nowina.lu:8080/efda/validation-tests/testcase/tl/TL-7.xml</Url>
             <SequenceNumber>1</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-12-23T07:34:59</LastLoading>
-            <IssueDate>2020-12-19T00:00:00</IssueDate>
-            <NextUpdate>2021-01-20T00:00:00</NextUpdate>
+            <LastLoading>2020-12-23T07:34:59Z</LastLoading>
+            <IssueDate>2020-12-19T00:00:00Z</IssueDate>
+            <NextUpdate>2021-01-20T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D" LOTL="true">
@@ -311,9 +311,9 @@
             <Url>http://efda.nowina.lu:8080/efda/validation-tests/testcase/tl/force_download/LOTL-3</Url>
             <SequenceNumber>1</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-12-23T07:34:59</LastLoading>
-            <IssueDate>2020-12-19T00:00:00</IssueDate>
-            <NextUpdate>2021-01-20T00:00:00</NextUpdate>
+            <LastLoading>2020-12-23T07:34:59Z</LastLoading>
+            <IssueDate>2020-12-19T00:00:00Z</IssueDate>
+            <NextUpdate>2021-01-20T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

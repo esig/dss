@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>2-signed-signed262-signed_revoked_certtel_alairt_eles_es_minositett_alairasos (1).pdf</DocumentName>
-    <ValidationDate>2020-10-02T13:25:48</ValidationDate>
+    <ValidationDate>2020-10-02T13:25:48Z</ValidationDate>
     <Signatures>
         <Signature Id="S-13A7DA79A1014659AC9666D88C9C54E87BCE9B5AE63D49010F43C3EDABEE740C">
             <SignatureFilename>2-signed-signed262-signed_revoked_certtel_alairt_eles_es_minositett_alairasos (1).pdf</SignatureFilename>
-            <ClaimedSigningTime>2020-10-01T10:17:00</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-10-01T10:17:00Z</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -152,8 +152,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2024-10-15T10:51:20</NotAfter>
-            <NotBefore>2009-07-31T10:51:20</NotBefore>
+            <NotAfter>2024-10-15T10:51:20Z</NotAfter>
+            <NotBefore>2009-07-31T10:51:20Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C1BA80BE3544C4DCD8824593FA9B106BB30371822C70648E6196B4726E71F373</EntityKey>
@@ -201,8 +201,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2028-12-06T15:08:21</NotAfter>
-            <NotBefore>2008-12-11T15:08:21</NotBefore>
+            <NotAfter>2028-12-06T15:08:21Z</NotAfter>
+            <NotBefore>2008-12-11T15:08:21Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F48BADD7DF6A06690D0AE31373B12855F8DEDB14517F362A313101CC98CC6B35</EntityKey>
@@ -258,8 +258,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2028-07-07T17:37:34</NotAfter>
-            <NotBefore>2016-09-28T17:37:34</NotBefore>
+            <NotAfter>2028-07-07T17:37:34Z</NotAfter>
+            <NotBefore>2016-09-28T17:37:34Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7B6CBE21CCB2580EE664A4101562D51F7E1C7583A16BFDF74FF484D988FB8E9F</EntityKey>
@@ -306,8 +306,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-09-01T14:47:49</NotAfter>
-            <NotBefore>2020-09-01T14:47:49</NotBefore>
+            <NotAfter>2021-09-01T14:47:49Z</NotAfter>
+            <NotBefore>2020-09-01T14:47:49Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-577047142FC737AE717BA97734D5D08A6997BF8C54E1021C1E9111914328CDD7</EntityKey>
@@ -355,8 +355,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-09-28T14:54:37</NotAfter>
-            <NotBefore>2020-09-28T14:54:37</NotBefore>
+            <NotAfter>2021-09-28T14:54:37Z</NotAfter>
+            <NotBefore>2020-09-28T14:54:37Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-0ECB43380A972ECE9BDC0B6EF346E6289A02B7AC1D1D0E3DCBE4B88BCB1B455C</EntityKey>
@@ -422,8 +422,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-09-30T13:49:10</NotAfter>
-            <NotBefore>2020-09-30T13:49:10</NotBefore>
+            <NotAfter>2021-09-30T13:49:10Z</NotAfter>
+            <NotBefore>2020-09-30T13:49:10Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4ABCC9C93B3F194C0C8D0186557FEBE5D5AB4B74721AE52A05E9C3454CBA1F24</EntityKey>
@@ -460,12 +460,12 @@
                 <CertificateRevocation Revocation="R-8639D0EA228C7CD3476125CD6EAE0EDA4E05B94AEAD126AE77EAB0F981E25CE7">
                     <Status>REVOKED</Status>
                     <Reason>certificateHold</Reason>
-                    <RevocationDate>2020-09-30T16:57:18</RevocationDate>
+                    <RevocationDate>2020-09-30T16:57:18Z</RevocationDate>
                 </CertificateRevocation>
                 <CertificateRevocation Revocation="R-95D660C73C71EC0D27B525B96DE8E5E94E265E9D0A773E539245C39B29C1BC75">
                     <Status>REVOKED</Status>
                     <Reason>certificateHold</Reason>
-                    <RevocationDate>2020-09-30T16:57:18</RevocationDate>
+                    <RevocationDate>2020-09-30T16:57:18Z</RevocationDate>
                 </CertificateRevocation>
             </Revocations>
             <DigestAlgoAndValue>
@@ -503,8 +503,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2024-09-15T15:21:36</NotAfter>
-            <NotBefore>2019-07-04T15:21:36</NotBefore>
+            <NotAfter>2024-09-15T15:21:36Z</NotAfter>
+            <NotBefore>2019-07-04T15:21:36Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9AB991CB30392ED4E2CFD2F3FCB4020F5963F39E3277A67BE375A1389A08A871</EntityKey>
@@ -553,9 +553,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp1.netlock.hu/cqlca.cgi</SourceAddress>
-            <ProductionDate>2020-10-02T13:25:47</ProductionDate>
-            <ThisUpdate>2020-10-02T13:25:47</ThisUpdate>
-            <NextUpdate>2020-10-03T13:25:47</NextUpdate>
+            <ProductionDate>2020-10-02T13:25:47Z</ProductionDate>
+            <ThisUpdate>2020-10-02T13:25:47Z</ThisUpdate>
+            <NextUpdate>2020-10-03T13:25:47Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -590,9 +590,9 @@
         <Revocation Id="R-8639D0EA228C7CD3476125CD6EAE0EDA4E05B94AEAD126AE77EAB0F981E25CE7">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2020-10-01T03:28:33</ProductionDate>
-            <ThisUpdate>2020-10-01T03:28:33</ThisUpdate>
-            <NextUpdate>2020-10-02T03:28:33</NextUpdate>
+            <ProductionDate>2020-10-01T03:28:33Z</ProductionDate>
+            <ThisUpdate>2020-10-01T03:28:33Z</ThisUpdate>
+            <NextUpdate>2020-10-02T03:28:33Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -615,9 +615,9 @@
         <Revocation Id="R-94C4F5E33BEC167E48FC8D5FD9775594469528ED66BC8F6ED6F07F5FF2E7264E">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2020-09-30T15:28:33</ProductionDate>
-            <ThisUpdate>2020-09-30T15:28:33</ThisUpdate>
-            <NextUpdate>2020-10-01T15:28:33</NextUpdate>
+            <ProductionDate>2020-09-30T15:28:33Z</ProductionDate>
+            <ThisUpdate>2020-09-30T15:28:33Z</ThisUpdate>
+            <NextUpdate>2020-10-01T15:28:33Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -641,9 +641,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp1.netlock.hu/qtrustscd.cgi</SourceAddress>
-            <ProductionDate>2020-10-02T13:25:48</ProductionDate>
-            <ThisUpdate>2020-10-02T13:25:48</ThisUpdate>
-            <NextUpdate>2020-10-03T13:25:48</NextUpdate>
+            <ProductionDate>2020-10-02T13:25:48Z</ProductionDate>
+            <ThisUpdate>2020-10-02T13:25:48Z</ThisUpdate>
+            <NextUpdate>2020-10-03T13:25:48Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -678,9 +678,9 @@
         <Revocation Id="R-C996D822DDDD92D3A569F33D0B196C7E256EFCBCF2A11F9BB118F4DD2108915B">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2020-10-01T02:28:21</ProductionDate>
-            <ThisUpdate>2020-10-01T02:28:21</ThisUpdate>
-            <NextUpdate>2020-10-02T02:28:21</NextUpdate>
+            <ProductionDate>2020-10-01T02:28:21Z</ProductionDate>
+            <ThisUpdate>2020-10-01T02:28:21Z</ThisUpdate>
+            <NextUpdate>2020-10-02T02:28:21Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -703,9 +703,9 @@
         <Revocation Id="R-FB6207D6602E4A7DE29FC73C5E80A3490273E71724BD6670054857B96D37EBE7">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2020-09-30T15:14:45</ProductionDate>
-            <ThisUpdate>2020-09-30T15:14:45</ThisUpdate>
-            <NextUpdate>2020-10-01T15:14:45</NextUpdate>
+            <ProductionDate>2020-09-30T15:14:45Z</ProductionDate>
+            <ThisUpdate>2020-09-30T15:14:45Z</ThisUpdate>
+            <NextUpdate>2020-10-01T15:14:45Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -728,7 +728,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-4727247AEF1A6048931A7808D0BAC4EC1B66EB428AE60DC558E4507C9FD6A7B4">
-            <ProductionTime>2020-10-01T10:17:00</ProductionTime>
+            <ProductionTime>2020-10-01T10:17:00Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>YVdxFh9yrQsM7MnsPgYy/d3MGE03SBlI4FSqPqXpIy8=</DigestValue>
@@ -779,7 +779,7 @@
         </Timestamp>
         <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-782337BECAB3C2374B4EC073AE3BD43395D1BA8BB6699E164E42240A5D5FFD1E">
             <ArchiveTimestampType>PAdES</ArchiveTimestampType>
-            <ProductionTime>2020-10-01T10:17:01</ProductionTime>
+            <ProductionTime>2020-10-01T10:17:01Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>+GdWHmIjYDi4XVl93g/GHv79BmjGZf9OGRS1nfxOnVM=</DigestValue>
@@ -878,9 +878,9 @@
             <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
             <SequenceNumber>274</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-10-02T12:34:45</LastLoading>
-            <IssueDate>2020-10-01T10:00:00</IssueDate>
-            <NextUpdate>2021-04-01T00:00:00</NextUpdate>
+            <LastLoading>2020-10-02T12:34:45Z</LastLoading>
+            <IssueDate>2020-10-01T10:00:00Z</IssueDate>
+            <NextUpdate>2021-04-01T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="TL-84E39259BAF8B3BB68AF54EDA113487542E0D30AFC7BFB1F824396B09ACD42D3">
@@ -888,9 +888,9 @@
             <Url>http://www.nmhh.hu/tl/pub/HU_TL.xml</Url>
             <SequenceNumber>59</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-10-02T12:34:46</LastLoading>
-            <IssueDate>2020-07-24T10:00:00</IssueDate>
-            <NextUpdate>2020-12-21T10:00:00</NextUpdate>
+            <LastLoading>2020-10-02T12:34:46Z</LastLoading>
+            <IssueDate>2020-07-24T10:00:00Z</IssueDate>
+            <NextUpdate>2020-12-21T10:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

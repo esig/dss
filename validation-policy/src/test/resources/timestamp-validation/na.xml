@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-P-LU_NOW-4.pdf</DocumentName>
-    <ValidationDate>2019-12-17T05:44:06</ValidationDate>
+    <ValidationDate>2019-12-17T05:44:06Z</ValidationDate>
     <Signatures/>
     <UsedCertificates>
         <Certificate Id="C-834A78BAB833DE9C27C892ECBAD091BC669BA47B2F618B7E75BFA457130B9895">
@@ -22,8 +22,8 @@
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2024-09-02T10:06:51</NotAfter>
-            <NotBefore>2014-09-02T10:06:51</NotBefore>
+            <NotAfter>2024-09-02T10:06:51Z</NotAfter>
+            <NotBefore>2014-09-02T10:06:51Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-834A78BAB833DE9C27C892ECBAD091BC669BA47B2F618B7E75BFA457130B9895</EntityKey>
@@ -52,7 +52,7 @@
     <UsedTimestamps>
         <Timestamp Type="CONTENT_TIMESTAMP" Id="T-5C13CCA68D38F6952CAEC8EC27C7CA558307A0A6E3B3796D97FBEAEAF15E0252">
             <TimestampFilename>Signature-P-LU_NOW-4.pdf</TimestampFilename>
-            <ProductionTime>2019-11-20T07:59:20</ProductionTime>
+            <ProductionTime>2019-11-20T07:59:20Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>oR+kmXoEcZPOwz4jJXIyfiazSfm4xrBLzoPTrWPRDXk=</DigestValue>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>test_esteid2018.asice</DocumentName>
-    <ValidationDate>2019-10-04T07:14:19</ValidationDate>
+    <ValidationDate>2019-10-04T07:14:19Z</ValidationDate>
     <ContainerInfo>
         <ContainerType>ASiC-E</ContainerType>
         <MimeTypeFilePresent>true</MimeTypeFilePresent>
@@ -23,7 +23,7 @@
         <Signature Id="S-B9E1CEC2D55F6C3D14143FF0CE585FD28D375F3124D2F1BA156499D601B8B55C">
             <DAIdentifier>S0</DAIdentifier>
             <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
-            <ClaimedSigningTime>2019-09-23T14:25:17</ClaimedSigningTime>
+            <ClaimedSigningTime>2019-09-23T14:25:17Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -119,8 +119,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2019-10-04T21:00:00</NotAfter>
-            <NotBefore>2019-08-30T21:00:00</NotBefore>
+            <NotAfter>2019-10-04T21:00:00Z</NotAfter>
+            <NotBefore>2019-08-30T21:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-156BF7E95B5629DDF162FF1D50480C389D1FBEEF9E401110901CC29E0275DD87</EntityKey>
@@ -155,7 +155,7 @@
                             <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-11-02T14:00:00</StartDate>
+                            <StartDate>2018-11-02T14:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
@@ -188,8 +188,8 @@
                 <Source>TRUSTED_LIST</Source>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2024-01-01T21:00:00</NotAfter>
-            <NotBefore>2019-01-01T21:00:00</NotBefore>
+            <NotAfter>2024-01-01T21:00:00Z</NotAfter>
+            <NotBefore>2019-01-01T21:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754</EntityKey>
@@ -221,7 +221,7 @@
                             <ServiceNames><ServiceName lang="en">SK Time-Stamping Authority for qualified electronic time stamps (SK-TSA 2019)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-03-10T22:00:00</StartDate>
+                            <StartDate>2019-03-10T22:00:00Z</StartDate>
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://tsa.sk.ee</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
@@ -252,8 +252,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2023-11-21T21:59:59</NotAfter>
-            <NotBefore>2018-11-22T09:57:50</NotBefore>
+            <NotAfter>2023-11-21T21:59:59Z</NotAfter>
+            <NotBefore>2018-11-22T09:57:50Z</NotBefore>
             <PublicKeySize>384</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-58ABD5722C7A09EB1368285A3C1EDB668107D89FCCC71C2BA02E22F1EB66F987</EntityKey>
@@ -296,7 +296,7 @@
                             <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-11-02T14:00:00</StartDate>
+                            <StartDate>2018-11-02T14:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
@@ -336,8 +336,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2033-09-05T09:11:03</NotAfter>
-            <NotBefore>2018-09-20T09:22:28</NotBefore>
+            <NotAfter>2033-09-05T09:11:03Z</NotAfter>
+            <NotBefore>2018-09-20T09:22:28Z</NotBefore>
             <PublicKeySize>521</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-545AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31</EntityKey>
@@ -406,7 +406,7 @@
                             <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-11-02T14:00:00</StartDate>
+                            <StartDate>2018-11-02T14:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -432,8 +432,8 @@
             <Sources>
                 <Source>AIA</Source>
             </Sources>
-            <NotAfter>2033-09-05T09:11:03</NotAfter>
-            <NotBefore>2018-09-05T09:11:03</NotBefore>
+            <NotAfter>2033-09-05T09:11:03Z</NotAfter>
+            <NotBefore>2018-09-05T09:11:03Z</NotBefore>
             <PublicKeySize>521</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0</EntityKey>
@@ -500,9 +500,9 @@
         <Revocation Id="R-74C4C865C864D10FB8803FC210EF5F588C61DD6133B5F1C8AC5C22F4BD8B9815">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2019-09-23T14:25:28</ProductionDate>
-            <ThisUpdate>2019-09-23T14:25:28</ThisUpdate>
-            <ArchiveCutOff>2018-09-20T09:22:28</ArchiveCutOff>
+            <ProductionDate>2019-09-23T14:25:28Z</ProductionDate>
+            <ThisUpdate>2019-09-23T14:25:28Z</ThisUpdate>
+            <ArchiveCutOff>2018-09-20T09:22:28Z</ArchiveCutOff>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -523,7 +523,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-5A4869AA02C119D31348B4F5A3CA2268B13A741EADC993475A9B76B8902CF845">
-            <ProductionTime>2019-09-23T14:25:28</ProductionTime>
+            <ProductionTime>2019-09-23T14:25:28Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>ZcWkLqzwFY+Wy+zKeXWPmYKUaWySHo75Ghud7FI6u2Q=</DigestValue>
@@ -567,9 +567,9 @@
             <Url>https://sr.riik.ee/tsl/estonian-tsl.xml</Url>
             <SequenceNumber>47</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2019-10-07T07:14:08</LastLoading>
-            <IssueDate>2019-09-05T01:00:00</IssueDate>
-            <NextUpdate>2020-03-05T00:00:00</NextUpdate>
+            <LastLoading>2019-10-07T07:14:08Z</LastLoading>
+            <IssueDate>2019-09-05T01:00:00Z</IssueDate>
+            <NextUpdate>2020-03-05T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="LOTL-EU" LOTL="true">
@@ -577,9 +577,9 @@
 	        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
 	        <SequenceNumber>250</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2019-10-07T07:14:04</LastLoading>
-	        <IssueDate>2019-10-04T11:00:00</IssueDate>
-	        <NextUpdate>2020-04-04T00:00:00</NextUpdate>
+	        <LastLoading>2019-10-07T07:14:04Z</LastLoading>
+	        <IssueDate>2019-10-04T11:00:00Z</IssueDate>
+	        <NextUpdate>2020-04-04T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

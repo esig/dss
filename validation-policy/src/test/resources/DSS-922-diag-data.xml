@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>META-INF/signatures0.xml</DocumentName>
-    <ValidationDate>2016-08-25T08:05:00</ValidationDate>
+    <ValidationDate>2016-08-25T08:05:00Z</ValidationDate>
     <Signatures>
 	    <Signature Id="S0">
 			<SignatureFilename>MVC.xml</SignatureFilename>
-	        <ClaimedSigningTime>2013-10-11T14:27:54</ClaimedSigningTime>
+	        <ClaimedSigningTime>2013-10-11T14:27:54Z</ClaimedSigningTime>
 	        <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="REFERENCE" name="Hello world.pdf">
@@ -83,8 +83,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2024-09-07T15:22:45</NotAfter>
-            <NotBefore>2011-03-07T15:22:45</NotBefore>
+            <NotAfter>2024-09-07T15:22:45Z</NotAfter>
+            <NotBefore>2011-03-07T15:22:45Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05</EntityKey>
@@ -121,8 +121,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2016-08-21T23:59:59</NotAfter>
-            <NotBefore>2011-12-28T14:09:14</NotBefore>
+            <NotAfter>2016-08-21T23:59:59Z</NotAfter>
+            <NotBefore>2011-12-28T14:09:14Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E5F7727489506D7F7CBCB375028D19A433B296CFC28ADA46CDE6D2EE93BA74A4</EntityKey>
@@ -171,8 +171,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2023-09-07T15:06:09</NotAfter>
-            <NotBefore>2011-03-07T15:06:09</NotBefore>
+            <NotAfter>2023-09-07T15:06:09Z</NotAfter>
+            <NotBefore>2011-03-07T15:06:09Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643</EntityKey>
@@ -203,8 +203,8 @@
         <Revocation Id="R-DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2013-10-11T14:27:58</ProductionDate>
-            <ThisUpdate>2013-10-11T14:27:57</ThisUpdate>
+            <ProductionDate>2013-10-11T14:27:58Z</ProductionDate>
+            <ThisUpdate>2013-10-11T14:27:57Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

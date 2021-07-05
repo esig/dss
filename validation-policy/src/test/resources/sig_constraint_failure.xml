@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-C-RO_TRA-5.p7m</DocumentName>
-    <ValidationDate>2016-05-04T15:55:00</ValidationDate>
+    <ValidationDate>2016-05-04T15:55:00Z</ValidationDate>
     <Signatures>
 	    <Signature Id="id-f6fa8e7d67936a16b15109757654e3db">
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
@@ -68,8 +68,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2023-01-02T22:59:59</NotAfter>
-            <NotBefore>2013-01-10T15:13:21</NotBefore>
+            <NotAfter>2023-01-02T22:59:59Z</NotAfter>
+            <NotBefore>2013-01-10T15:13:21Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67</EntityKey>
@@ -109,8 +109,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2029-12-31T13:07:37</NotAfter>
-            <NotBefore>2008-10-22T14:07:37</NotBefore>
+            <NotAfter>2029-12-31T13:07:37Z</NotAfter>
+            <NotBefore>2008-10-22T14:07:37Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E</EntityKey>
@@ -147,8 +147,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2017-04-16T01:59:59</NotAfter>
-            <NotBefore>2016-04-15T02:00:00</NotBefore>
+            <NotAfter>2017-04-16T01:59:59Z</NotAfter>
+            <NotBefore>2016-04-15T02:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314</EntityKey>
@@ -200,8 +200,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2027-05-30T15:10:43</NotAfter>
-            <NotBefore>2016-03-08T14:10:43</NotBefore>
+            <NotAfter>2027-05-30T15:10:43Z</NotAfter>
+            <NotBefore>2016-03-08T14:10:43Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D9CAABC3225B7030CDB83E3846E3691C14ED790B1764CE1B4F043157899C5C58</EntityKey>
@@ -248,8 +248,8 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2017-02-06T14:04:39</NotAfter>
-            <NotBefore>2016-01-07T14:04:39</NotBefore>
+            <NotAfter>2017-02-06T14:04:39Z</NotAfter>
+            <NotBefore>2016-01-07T14:04:39Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-DF3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733</EntityKey>
@@ -292,8 +292,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2025-12-31T23:59:59</NotAfter>
-            <NotBefore>2006-01-12T15:41:57</NotBefore>
+            <NotAfter>2025-12-31T23:59:59Z</NotAfter>
+            <NotBefore>2006-01-12T15:41:57Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-8DA084FCF99CE07722F89B3205939806FA5CB811E1C813F6A108C7D336B3408E</EntityKey>
@@ -330,8 +330,8 @@
             <Sources>
             	 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2016-11-01T00:59:59</NotAfter>
-            <NotBefore>2015-09-01T02:00:00</NotBefore>
+            <NotAfter>2016-11-01T00:59:59Z</NotAfter>
+            <NotBefore>2015-09-01T02:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-819F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C062085751900</EntityKey>
@@ -365,8 +365,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.s-trust.de</SourceAddress>
-            <ProductionDate>2016-05-04T15:55:17</ProductionDate>
-            <ThisUpdate>2016-05-04T15:55:17</ThisUpdate>
+            <ProductionDate>2016-05-04T15:55:17Z</ProductionDate>
+            <ThisUpdate>2016-05-04T15:55:17Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -388,9 +388,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://subca.ocsp-certum.com</SourceAddress>
-            <ProductionDate>2016-05-04T15:55:21</ProductionDate>
-            <ThisUpdate>2016-05-04T15:55:21</ThisUpdate>
-            <NextUpdate>2016-05-11T15:55:21</NextUpdate>
+            <ProductionDate>2016-05-04T15:55:21Z</ProductionDate>
+            <ThisUpdate>2016-05-04T15:55:21Z</ThisUpdate>
+            <NextUpdate>2016-05-11T15:55:21Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

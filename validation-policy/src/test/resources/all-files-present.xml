@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>1543416167552_FUL_pain.xxx.qes.xades.b (1).asice</DocumentName>
-    <ValidationDate>2018-11-29T07:01:40</ValidationDate>
+    <ValidationDate>2018-11-29T07:01:40Z</ValidationDate>
     <ContainerInfo>
         <ContainerType>ASiC-E</ContainerType>
         <MimeTypeFilePresent>true</MimeTypeFilePresent>
@@ -22,7 +22,7 @@
     <Signatures>
         <Signature Id="S-1543416150409">
             <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
-            <ClaimedSigningTime>2018-11-28T14:42:30</ClaimedSigningTime>
+            <ClaimedSigningTime>2018-11-28T14:42:30Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -132,8 +132,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2022-05-12T20:59:59</NotAfter>
-            <NotBefore>2018-11-27T09:26:54</NotBefore>
+            <NotAfter>2022-05-12T20:59:59Z</NotAfter>
+            <NotBefore>2018-11-27T09:26:54Z</NotBefore>
             <PublicKeySize>384</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-709E9CB89541807694D261D1EB3E80232AF173B5AAD235771AD9291D01B04B09</EntityKey>
@@ -175,7 +175,7 @@
                             <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-11-02T14:00:00</StartDate>
+                            <StartDate>2018-11-02T14:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
@@ -214,8 +214,8 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2018-12-05T21:00:00</NotAfter>
-            <NotBefore>2018-10-31T21:00:00</NotBefore>
+            <NotAfter>2018-12-05T21:00:00Z</NotAfter>
+            <NotBefore>2018-10-31T21:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683</EntityKey>
@@ -249,7 +249,7 @@
                             <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-11-02T14:00:00</StartDate>
+                            <StartDate>2018-11-02T14:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
@@ -261,8 +261,8 @@
                             <ServiceNames><ServiceName lang="en">ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2018-11-02T14:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-11-02T14:00:00Z</EndDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
@@ -300,8 +300,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2030-12-17T23:59:59</NotAfter>
-            <NotBefore>2015-12-17T12:38:43</NotBefore>
+            <NotAfter>2030-12-17T23:59:59Z</NotAfter>
+            <NotBefore>2015-12-17T12:38:43Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</EntityKey>
@@ -341,7 +341,7 @@
                             <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-11-02T14:00:00</StartDate>
+                            <StartDate>2018-11-02T14:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
@@ -353,8 +353,8 @@
                             <ServiceNames><ServiceName lang="en">ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2018-11-02T14:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-11-02T14:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -363,8 +363,8 @@
                             <ServiceNames><ServiceName lang="en">ESTEID-SK 2015: Qualified certificates for Estonian ID-card, the residence permit card, the digital identity card, the digital identity card in form of the Mobile-ID</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2015-12-17T12:38:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2015-12-17T12:38:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -381,9 +381,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://aia.sk.ee/esteid2015</SourceAddress>
-            <ProductionDate>2018-11-29T07:01:41</ProductionDate>
-            <ThisUpdate>2018-11-29T07:01:41</ThisUpdate>
-            <ArchiveCutOff>2015-12-17T12:38:43</ArchiveCutOff>
+            <ProductionDate>2018-11-29T07:01:41Z</ProductionDate>
+            <ThisUpdate>2018-11-29T07:01:41Z</ThisUpdate>
+            <ArchiveCutOff>2015-12-17T12:38:43Z</ArchiveCutOff>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -431,9 +431,9 @@
             <Url>https://sr.riik.ee/tsl/estonian-tsl.xml</Url>
             <SequenceNumber>45</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2018-11-28T11:54:14</LastLoading>
-            <IssueDate>2018-11-09T13:00:00</IssueDate>
-            <NextUpdate>2019-05-09T12:00:00</NextUpdate>
+            <LastLoading>2018-11-28T11:54:14Z</LastLoading>
+            <IssueDate>2018-11-09T13:00:00Z</IssueDate>
+            <NextUpdate>2019-05-09T12:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -441,9 +441,9 @@
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>224</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2018-11-28T11:54:13</LastLoading>
-	        <IssueDate>2018-11-26T15:00:00</IssueDate>
-	        <NextUpdate>2019-05-26T00:00:00</NextUpdate>
+	        <LastLoading>2018-11-28T11:54:13Z</LastLoading>
+	        <IssueDate>2018-11-26T15:00:00Z</IssueDate>
+	        <NextUpdate>2019-05-26T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

@@ -13,7 +13,7 @@
                 <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data for the certificate</Errors>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2019-12-17T10:12:32</Time>
+                <Time>2019-12-17T10:12:32Z</Time>
             </ProofOfExistence>
         </ValidationProcessBasicSignature>
         <ValidationProcessLongTermData Title="Validation Process for Signatures with Time and Signatures with Long-Term Validation Data">
@@ -33,7 +33,7 @@
                 <Errors Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Errors>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2019-12-17T10:12:32</Time>
+                <Time>2019-12-17T10:12:32Z</Time>
             </ProofOfExistence>
         </ValidationProcessLongTermData>
         <ValidationProcessArchivalData Title="Validation Process for Signatures with Archival Data">
@@ -48,7 +48,7 @@
                 <Errors Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Errors>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2019-12-17T10:12:32</Time>
+                <Time>2019-12-17T10:12:32Z</Time>
             </ProofOfExistence>
         </ValidationProcessArchivalData>
         <ValidationSignatureQualification SignatureQualification="N/A" Title="Signature Qualification">
@@ -87,7 +87,7 @@
                 <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data for the certificate</Errors>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2019-12-17T10:12:32</Time>
+                <Time>2019-12-17T10:12:32Z</Time>
             </ProofOfExistence>
         </ValidationProcessBasicSignature>
         <ValidationProcessLongTermData Title="Validation Process for Signatures with Time and Signatures with Long-Term Validation Data">
@@ -107,7 +107,7 @@
                 <Errors Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Errors>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2019-12-17T10:12:32</Time>
+                <Time>2019-12-17T10:12:32Z</Time>
             </ProofOfExistence>
         </ValidationProcessLongTermData>
         <ValidationProcessArchivalData Title="Validation Process for Signatures with Archival Data">
@@ -122,7 +122,7 @@
                 <Errors Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Errors>
             </Conclusion>
             <ProofOfExistence>
-                <Time>2019-12-17T10:12:32</Time>
+                <Time>2019-12-17T10:12:32Z</Time>
             </ProofOfExistence>
         </ValidationProcessArchivalData>
         <ValidationSignatureQualification SignatureQualification="N/A" Title="Signature Qualification">
@@ -149,7 +149,7 @@
         </Conclusion>
     </Signature>
     <Timestamp Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
-        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-12-17T10:12:31" Title="Validation Process for Timestamps">
+        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-12-17T10:12:31Z" Title="Validation Process for Timestamps">
             <Constraint Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
                 <Name Key="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
                 <Status>OK</Status>
@@ -171,7 +171,7 @@
         </ValidationTimestampQualification>
     </Timestamp>
     <Timestamp Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
-        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-12-17T10:12:30" Title="Validation Process for Timestamps">
+        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-12-17T10:12:30Z" Title="Validation Process for Timestamps">
             <Constraint Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
                 <Name Key="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
                 <Status>OK</Status>

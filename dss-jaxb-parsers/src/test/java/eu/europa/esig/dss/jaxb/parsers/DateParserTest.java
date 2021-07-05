@@ -18,15 +18,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.validationreport.parsers;
+package eu.europa.esig.dss.jaxb.parsers;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class DateParserTest {
@@ -46,8 +47,13 @@ public class DateParserTest {
 	@Test
 	public void testInvalid() {
 		String invalidDateString = "aaa";
-		Date date = DateParser.parse(invalidDateString);
-		assertNull(date);
+		assertThrows(IllegalArgumentException.class, () -> DateParser.parse(invalidDateString));
+	}
+
+	@Test
+	public void testNull() {
+		assertNull(DateParser.parse(null));
+		assertNull(DateParser.print(null));
 	}
 
 }

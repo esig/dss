@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>test_eid-sk2016.asice</DocumentName>
-    <ValidationDate>2019-10-04T07:18:36</ValidationDate>
+    <ValidationDate>2019-10-04T07:18:36Z</ValidationDate>
     <ContainerInfo>
         <ContainerType>ASiC-E</ContainerType>
         <ZipComment>LIB DigiDoc4j/DEV format: application/vnd.etsi.asic-e+zip signatureProfile: ASiC_E_BASELINE_LT Java: 1.8.0_161/Oracle Corporation OS: Linux/amd64/3.10.0-514.el7.x86_64 JVM: OpenJDK 64-Bit Server VM/Oracle Corporation/25.161-b14</ZipComment>
@@ -24,7 +24,7 @@
         <Signature Id="S-2F3BB2B6290792FB8928065EF4E2EB36FADBDAB8CF4DB41BE1D4DFD00CB68155">
             <DAIdentifier>S1568982874411</DAIdentifier>
             <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
-            <ClaimedSigningTime>2019-09-20T12:34:34</ClaimedSigningTime>
+            <ClaimedSigningTime>2019-09-20T12:34:34Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -126,8 +126,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2019-10-04T21:00:00</NotAfter>
-            <NotBefore>2019-08-30T21:00:00</NotBefore>
+            <NotAfter>2019-10-04T21:00:00Z</NotAfter>
+            <NotBefore>2019-08-30T21:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-FB704940EA123E4B26FA6CA9D998B5BBA0A823BE0B6BA99116220C1015105C2B</EntityKey>
@@ -162,7 +162,7 @@
                             <ServiceNames><ServiceName lang="en">EID-SK 2016 qualified certificates for electronic signatures</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-12-21T10:00:00</StartDate>
+                            <StartDate>2016-12-21T10:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -193,8 +193,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2022-08-29T13:50:53</NotAfter>
-            <NotBefore>2019-08-29T13:50:53</NotBefore>
+            <NotAfter>2022-08-29T13:50:53Z</NotAfter>
+            <NotBefore>2019-08-29T13:50:53Z</NotBefore>
             <PublicKeySize>6144</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7C7A9FE7D2806E276868C5DDC67C0587C4D4B875A2E2DD4DD299A7A3576F20B1</EntityKey>
@@ -238,7 +238,7 @@
                             <ServiceNames><ServiceName lang="en">EID-SK 2016 qualified certificates for electronic signatures</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-12-21T10:00:00</StartDate>
+                            <StartDate>2016-12-21T10:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig</Qualifier>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
@@ -277,8 +277,8 @@
                 <Source>TRUSTED_LIST</Source>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2024-01-01T21:00:00</NotAfter>
-            <NotBefore>2019-01-01T21:00:00</NotBefore>
+            <NotAfter>2024-01-01T21:00:00Z</NotAfter>
+            <NotBefore>2019-01-01T21:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754</EntityKey>
@@ -313,7 +313,7 @@
                             <ServiceNames><ServiceName lang="en">SK Time-Stamping Authority for qualified electronic time stamps (SK-TSA 2019)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-03-10T22:00:00</StartDate>
+                            <StartDate>2019-03-10T22:00:00Z</StartDate>
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://tsa.sk.ee</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
@@ -346,8 +346,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2030-12-17T23:59:59</NotAfter>
-            <NotBefore>2016-08-30T09:21:09</NotBefore>
+            <NotAfter>2030-12-17T23:59:59Z</NotAfter>
+            <NotBefore>2016-08-30T09:21:09Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2E73F1F19A4459A6067A45E84DB585D6C1DF8F12A739D733F5B28996546F1875</EntityKey>
@@ -391,7 +391,7 @@
                             <ServiceNames><ServiceName lang="en">EID-SK 2016 qualified certificates for electronic signatures</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-12-21T10:00:00</StartDate>
+                            <StartDate>2016-12-21T10:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -418,8 +418,8 @@
             <Sources>
                 <Source>AIA</Source>
             </Sources>
-            <NotAfter>2030-12-17T23:59:59</NotAfter>
-            <NotBefore>2010-10-30T10:10:30</NotBefore>
+            <NotAfter>2030-12-17T23:59:59Z</NotAfter>
+            <NotBefore>2010-10-30T10:10:30Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76</EntityKey>
@@ -455,9 +455,9 @@
         <Revocation Id="R-748238795970CAF5EE7ACA4F4F35BCD54CFDFE93B43E8D92CC0AAB8F88910F90">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2019-09-20T12:34:47</ProductionDate>
-            <ThisUpdate>2019-09-20T12:34:47</ThisUpdate>
-            <ArchiveCutOff>2016-08-30T09:21:09</ArchiveCutOff>
+            <ProductionDate>2019-09-20T12:34:47Z</ProductionDate>
+            <ThisUpdate>2019-09-20T12:34:47Z</ThisUpdate>
+            <ArchiveCutOff>2016-08-30T09:21:09Z</ArchiveCutOff>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -478,7 +478,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-B3DA13E90CB01EBD6045C6015858560539F52E67F7F7D4C6853326B4FC90BAFB">
-            <ProductionTime>2019-09-20T12:34:45</ProductionTime>
+            <ProductionTime>2019-09-20T12:34:45Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>uhunqnx4YdJEqfv+K1VRJbl4SwaVglyxa+4POdtQRao=</DigestValue>
@@ -523,9 +523,9 @@
             <Url>https://sr.riik.ee/tsl/estonian-tsl.xml</Url>
             <SequenceNumber>47</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2019-10-07T07:14:08</LastLoading>
-            <IssueDate>2019-09-05T01:00:00</IssueDate>
-            <NextUpdate>2020-03-05T00:00:00</NextUpdate>
+            <LastLoading>2019-10-07T07:14:08Z</LastLoading>
+            <IssueDate>2019-09-05T01:00:00Z</IssueDate>
+            <NextUpdate>2020-03-05T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="LOTL-EU" LOTL="true">
@@ -533,9 +533,9 @@
 	        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
 	        <SequenceNumber>250</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2019-10-07T07:14:04</LastLoading>
-	        <IssueDate>2019-10-04T11:00:00</IssueDate>
-	        <NextUpdate>2020-04-04T00:00:00</NextUpdate>
+	        <LastLoading>2019-10-07T07:14:04Z</LastLoading>
+	        <IssueDate>2019-10-04T11:00:00Z</IssueDate>
+	        <NextUpdate>2020-04-04T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

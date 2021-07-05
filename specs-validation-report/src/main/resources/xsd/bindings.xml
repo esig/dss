@@ -7,10 +7,10 @@
 
 	<jaxb:globalBindings>
 		<jaxb:serializable uid="1" />
-		
-	  	<jaxb:javaType name="java.util.Date" xmlType="xs:dateTime"
-	          parseMethod="eu.europa.esig.validationreport.parsers.DateParser.parse"
-	          printMethod="eu.europa.esig.validationreport.parsers.DateParser.print" />
+
+		<jaxb:javaType name="java.util.Date" xmlType="xs:dateTime"
+					   parseMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.parse"
+					   printMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.print" />
 	</jaxb:globalBindings>
 	
 	<jaxb:bindings

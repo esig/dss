@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
-    <ValidationDate>2019-02-21T07:21:22</ValidationDate>
+    <ValidationDate>2019-02-21T07:21:22Z</ValidationDate>
     <UsedCertificates>
         <Certificate Id="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
             <SubjectDistinguishedName Format="CANONICAL">cn=svk eid aca,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</SubjectDistinguishedName>
@@ -27,8 +27,8 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <NotAfter>2025-11-01T10:13:27</NotAfter>
-            <NotBefore>2013-11-20T10:14:56</NotBefore>
+            <NotAfter>2025-11-01T10:13:27Z</NotAfter>
+            <NotBefore>2013-11-20T10:14:56Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7</EntityKey>
@@ -82,8 +82,8 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <NotAfter>2025-11-06T07:29:09</NotAfter>
-            <NotBefore>2009-11-06T09:59:39</NotBefore>
+            <NotAfter>2025-11-06T07:29:09Z</NotAfter>
+            <NotBefore>2009-11-06T09:59:39Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F</EntityKey>
@@ -141,8 +141,8 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <NotAfter>2023-11-30T09:36:32</NotAfter>
-            <NotBefore>2018-10-31T09:36:32</NotBefore>
+            <NotAfter>2023-11-30T09:36:32Z</NotAfter>
+            <NotBefore>2018-10-31T09:36:32Z</NotBefore>
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368</EntityKey>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName></DocumentName>
-    <ValidationDate>2020-04-22T11:22:40</ValidationDate>
+    <ValidationDate>2020-04-22T11:22:40Z</ValidationDate>
     <Signatures>
         <Signature Id="S-AA92364FEAC3246312E35C32B06F3FD226FDFAF7453628EC66ED870E82193A25">
             <SignatureFilename></SignatureFilename>
-            <ClaimedSigningTime>2019-01-29T19:52:10</ClaimedSigningTime>
+            <ClaimedSigningTime>2019-01-29T19:52:10Z</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -107,8 +107,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2019-03-09T12:24:00</NotAfter>
-            <NotBefore>2018-03-09T12:24:00</NotBefore>
+            <NotAfter>2019-03-09T12:24:00Z</NotAfter>
+            <NotBefore>2018-03-09T12:24:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-335E71F8847B4DBC0E9B4840062626F4A4A88CCAA441B0CD97A7D75FE6E407B1</EntityKey>
@@ -161,8 +161,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-01-25T07:38:08</NotAfter>
-            <NotBefore>2018-01-25T07:38:08</NotBefore>
+            <NotAfter>2020-01-25T07:38:08Z</NotAfter>
+            <NotBefore>2018-01-25T07:38:08Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3E574CB06DCB78EE6EB0A40848C8127B99D74E1C0C0D02FDE556EAAEC849AA8B</EntityKey>
@@ -219,8 +219,8 @@
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2028-03-15T23:59:59</NotAfter>
-            <NotBefore>2017-03-15T10:23:18</NotBefore>
+            <NotAfter>2028-03-15T23:59:59Z</NotAfter>
+            <NotBefore>2017-03-15T10:23:18Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-673BE8A1DA927DB63CCAB7CB3E7AC352DC3AEB6A8DA3E2A359CA158D0A440DB8</EntityKey>
@@ -275,8 +275,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2028-03-15T23:59:59</NotAfter>
-            <NotBefore>2017-03-15T10:17:34</NotBefore>
+            <NotAfter>2028-03-15T23:59:59Z</NotAfter>
+            <NotBefore>2017-03-15T10:17:34Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-ED380189EB280F5D86C914BFDD28D89795E5676AE893F3C3D75B12F3E42CC914</EntityKey>
@@ -308,9 +308,9 @@
         <Revocation Id="R-C6CCE3DE29054602EB4D937163EB4F8E4083F31408AFDA37A9C82E32D4F60F46">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2019-01-29T19:51:59</ProductionDate>
-            <ThisUpdate>2019-01-29T19:51:59</ThisUpdate>
-            <NextUpdate>2019-02-05T19:51:59</NextUpdate>
+            <ProductionDate>2019-01-29T19:51:59Z</ProductionDate>
+            <ThisUpdate>2019-01-29T19:51:59Z</ThisUpdate>
+            <NextUpdate>2019-02-05T19:51:59Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -343,7 +343,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-B33214FDF416CEB644D68B0D1555F4018D52A5747E54691FF7AE1F7E6607DF82">
-            <ProductionTime>2019-01-29T19:52:24</ProductionTime>
+            <ProductionTime>2019-01-29T19:52:24Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>xBQW1GIO0MCyxsDNzW00rO1Xnv5nPJcfxReF6ghE/WY=</DigestValue>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>XSW-enveloped-fake-content-two-same-id.xml</DocumentName>
-    <ValidationDate>2020-10-19T13:43:30</ValidationDate>
+    <ValidationDate>2020-10-19T13:43:30Z</ValidationDate>
     <Signatures>
         <Signature Id="S-1770BA6ACBB6FC400380EF43ED51AFF4E6945B32810BDFC85D94010D3C088AB7">
             <DAIdentifier>Signature-865906529</DAIdentifier>
             <SignatureFilename>XSW-enveloped-fake-content-two-same-id.xml</SignatureFilename>
-            <ClaimedSigningTime>2018-07-20T08:00:00</ClaimedSigningTime>
+            <ClaimedSigningTime>2018-07-20T08:00:00Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -106,8 +106,8 @@
                 <Source>TRUSTED_STORE</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2019-06-06T12:11:15</NotAfter>
-            <NotBefore>2016-06-06T12:13:37</NotBefore>
+            <NotAfter>2019-06-06T12:11:15Z</NotAfter>
+            <NotBefore>2016-06-06T12:13:37Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9ABEDC446B4659236AEE9A198224FF5BA1993ECEEBAD9008AF1EEBF1F48A0E29</EntityKey>

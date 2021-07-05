@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-C-DE_OPE-6.p7m</DocumentName>
-    <ValidationDate>2020-11-02T08:34:22</ValidationDate>
+    <ValidationDate>2020-11-02T08:34:22Z</ValidationDate>
     <Signatures>
         <Signature Id="S-7DDA717AF2E601BDD95B8AA352B81ADD04B09B1531ABD7924AD2FB1AE8B5998C">
             <SignatureFilename>Signature-C-DE_OPE-6.p7m</SignatureFilename>
-            <ClaimedSigningTime>2019-11-06T08:24:25</ClaimedSigningTime>
+            <ClaimedSigningTime>2019-11-06T08:24:25Z</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -121,8 +121,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-04-11T23:59:00</NotAfter>
-            <NotBefore>2020-04-08T10:08:00</NotBefore>
+            <NotAfter>2021-04-11T23:59:00Z</NotAfter>
+            <NotBefore>2020-04-08T10:08:00Z</NotBefore>
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-45EA5BE3D09B72FD91EDC2E3A313C4884EF12F1D2EEF33C6E4D8A40BBF575763</EntityKey>
@@ -180,8 +180,8 @@
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2023-05-02T11:05:17</NotAfter>
-            <NotBefore>2018-05-03T11:05:18</NotBefore>
+            <NotAfter>2023-05-02T11:05:17Z</NotAfter>
+            <NotBefore>2018-05-03T11:05:18Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-458667B8201CA0FBFB7F360B78EE64CEA0F8DDC6394824686295D84FD7058C68</EntityKey>
@@ -243,8 +243,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-08-19T23:59:00</NotAfter>
-            <NotBefore>2019-08-19T09:13:23</NotBefore>
+            <NotAfter>2021-08-19T23:59:00Z</NotAfter>
+            <NotBefore>2019-08-19T09:13:23Z</NotBefore>
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EBB8D610F0960344055DE2E166B38C797C8B5996B1DFE38A5AC74DDAA82649C5</EntityKey>
@@ -304,8 +304,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2047-04-05T23:59:59</NotAfter>
-            <NotBefore>2017-04-05T09:30:31</NotBefore>
+            <NotAfter>2047-04-05T23:59:59Z</NotAfter>
+            <NotBefore>2017-04-05T09:30:31Z</NotBefore>
             <PublicKeySize>521</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2971695C1F8194FDCF19A7BF6C80278A89DE685A250723B74A8F2262478351FC</EntityKey>
@@ -351,8 +351,8 @@
                 <Source>TRUSTED_LIST</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2036-07-27T08:45:44</NotAfter>
-            <NotBefore>2016-08-01T08:45:44</NotBefore>
+            <NotAfter>2036-07-27T08:45:44Z</NotAfter>
+            <NotBefore>2016-08-01T08:45:44Z</NotBefore>
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-0C1E8E7BC95C19B220A14C909E1104C4277B77C4EC9E41D377F325A2BED8E637</EntityKey>
@@ -400,8 +400,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-07-31T08:47:20</NotAfter>
-            <NotBefore>2016-08-01T08:47:21</NotBefore>
+            <NotAfter>2021-07-31T08:47:20Z</NotAfter>
+            <NotBefore>2016-08-01T08:47:21Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C71FD22AD707EA5C02D60F7845D5824D76C835B19B203D698A6AD96F43B6A340</EntityKey>
@@ -459,8 +459,8 @@
                 <Source>TRUSTED_LIST</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2032-05-03T23:59:59</NotAfter>
-            <NotBefore>2017-05-03T10:45:04</NotBefore>
+            <NotAfter>2032-05-03T23:59:59Z</NotAfter>
+            <NotBefore>2017-05-03T10:45:04Z</NotBefore>
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-DB177620ABBA8A3A832C90FFB94918047C87762EF732A5780F93532A34D55EE5</EntityKey>
@@ -513,8 +513,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-05-05T23:59:00</NotAfter>
-            <NotBefore>2018-05-02T13:19:45</NotBefore>
+            <NotAfter>2020-05-05T23:59:00Z</NotAfter>
+            <NotBefore>2018-05-02T13:19:45Z</NotBefore>
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2DAC85F32BF7CE26D21D2D160A886E8570DBE54993FE084A9C2F601855482E0E</EntityKey>
@@ -558,8 +558,8 @@
         <Revocation Id="R-470D91719C6C2C8DCABA187313EAF16DBBD2E5FED5EA1828BE4FCB3B30C90F75">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2019-11-14T09:41:30</ProductionDate>
-            <ThisUpdate>2019-11-14T09:41:30</ThisUpdate>
+            <ProductionDate>2019-11-14T09:41:30Z</ProductionDate>
+            <ThisUpdate>2019-11-14T09:41:30Z</ThisUpdate>
             <CertHashExtensionPresent>true</CertHashExtensionPresent>
             <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
@@ -592,8 +592,8 @@
         <Revocation Id="R-6779870BA341124B5BE084F2970A492D798C29882F8F5832637FE237D3F095A0">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2019-11-14T09:41:30</ProductionDate>
-            <ThisUpdate>2019-11-14T09:41:30</ThisUpdate>
+            <ProductionDate>2019-11-14T09:41:30Z</ProductionDate>
+            <ThisUpdate>2019-11-14T09:41:30Z</ThisUpdate>
             <CertHashExtensionPresent>true</CertHashExtensionPresent>
             <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
@@ -627,9 +627,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.pks.telesec.de/ocspr</SourceAddress>
-            <ProductionDate>2020-11-02T08:34:21</ProductionDate>
-            <ThisUpdate>2020-11-02T08:34:21</ThisUpdate>
-            <ArchiveCutOff>2017-05-03T10:45:04</ArchiveCutOff>
+            <ProductionDate>2020-11-02T08:34:21Z</ProductionDate>
+            <ThisUpdate>2020-11-02T08:34:21Z</ThisUpdate>
+            <ArchiveCutOff>2017-05-03T10:45:04Z</ArchiveCutOff>
             <CertHashExtensionPresent>true</CertHashExtensionPresent>
             <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
@@ -663,9 +663,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://pks.telesec.de/ocspr</SourceAddress>
-            <ProductionDate>2020-11-02T08:34:20</ProductionDate>
-            <ThisUpdate>2020-11-02T08:34:20</ThisUpdate>
-            <ArchiveCutOff>2017-05-03T10:45:04</ArchiveCutOff>
+            <ProductionDate>2020-11-02T08:34:20Z</ProductionDate>
+            <ThisUpdate>2020-11-02T08:34:20Z</ThisUpdate>
+            <ArchiveCutOff>2017-05-03T10:45:04Z</ArchiveCutOff>
             <CertHashExtensionPresent>true</CertHashExtensionPresent>
             <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
@@ -700,8 +700,8 @@
         <Revocation Id="R-AEB1958FE4517F52D8488F4E7DBE4A82E2DE0ADFE01B7BF11DEE0B53BFE12C55">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2019-11-14T09:41:30</ProductionDate>
-            <ThisUpdate>2019-11-14T09:41:30</ThisUpdate>
+            <ProductionDate>2019-11-14T09:41:30Z</ProductionDate>
+            <ThisUpdate>2019-11-14T09:41:30Z</ThisUpdate>
             <CertHashExtensionPresent>true</CertHashExtensionPresent>
             <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
@@ -734,7 +734,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-C4AA07E6BB16219A07AB8275786B6DEA0243F3BF24E2C60869FEB87C8FE8296A">
-            <ProductionTime>2019-11-06T08:24:34</ProductionTime>
+            <ProductionTime>2019-11-06T08:24:34Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>McqaTjGr9fxlnj9QsOyJqsIXcKIKkq6hHEATbNbQ2ko=</DigestValue>
@@ -803,9 +803,9 @@
             <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
             <SequenceNumber>275</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-11-02T07:55:41</LastLoading>
-            <IssueDate>2020-10-21T12:00:00</IssueDate>
-            <NextUpdate>2021-04-20T00:00:00</NextUpdate>
+            <LastLoading>2020-11-02T07:55:41Z</LastLoading>
+            <IssueDate>2020-10-21T12:00:00Z</IssueDate>
+            <NextUpdate>2021-04-20T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="TL-9D6AE04C6116D10A8ECA538ABCDE8FE5B7F30A339496427502348337D7EA033C">
@@ -813,9 +813,9 @@
             <Url>https://tl.bundesnetzagentur.de/TL-DE.XML</Url>
             <SequenceNumber>92</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-11-02T07:55:42</LastLoading>
-            <IssueDate>2020-09-08T10:00:00</IssueDate>
-            <NextUpdate>2021-03-07T00:00:00</NextUpdate>
+            <LastLoading>2020-11-02T07:55:42Z</LastLoading>
+            <IssueDate>2020-09-08T10:00:00Z</IssueDate>
+            <NextUpdate>2021-03-07T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

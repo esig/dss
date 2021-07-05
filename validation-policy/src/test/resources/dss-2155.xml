@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Hello world.pdf</DocumentName>
-    <ValidationDate>2021-04-27T12:50:43</ValidationDate>
+    <ValidationDate>2021-04-27T12:50:43Z</ValidationDate>
     <Signatures>
         <Signature Id="S-A89E6EE34611565E5C2E4C9A468EDFE614A0CE1B1CDB084C9FDCD65FB1AB2F02">
             <SignatureFilename></SignatureFilename>
-            <ClaimedSigningTime>2020-07-22T10:04:38</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-07-22T10:04:38Z</ClaimedSigningTime>
             <SignatureFormat>PKCS7-T</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -96,8 +96,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2028-06-26T14:02:46</NotAfter>
-            <NotBefore>2018-06-29T14:02:46</NotBefore>
+            <NotAfter>2028-06-26T14:02:46Z</NotAfter>
+            <NotBefore>2018-06-29T14:02:46Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-67A47F50CD907C4BC6C87E49F15F88399824A59A2BCA2F21EDB6956C6BE8C113</EntityKey>
@@ -141,8 +141,8 @@
                 <Source>TIMESTAMP</Source>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2021-07-23T11:07:59</NotAfter>
-            <NotBefore>2020-07-23T11:07:59</NotBefore>
+            <NotAfter>2021-07-23T11:07:59Z</NotAfter>
+            <NotBefore>2020-07-23T11:07:59Z</NotBefore>
             <PublicKeySize>1024</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-99D740BF6735D0602EC70888A2CC2709176935F73C6F44DD523FBC59EEA130</EntityKey>
@@ -172,7 +172,7 @@
     <UsedRevocations/>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-99A2A2FE9A6D506AD381E0B3E794863DFCBFC53E7FED0487B275B3DD38C2648A">
-            <ProductionTime>2020-07-24T05:41:00</ProductionTime>
+            <ProductionTime>2020-07-24T05:41:00Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>UFQtU6XNr2OR8YtJWW6M1doNjok=</DigestValue>

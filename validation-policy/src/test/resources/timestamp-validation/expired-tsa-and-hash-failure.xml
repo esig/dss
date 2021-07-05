@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-P-LU_NOW-5.pdf</DocumentName>
-    <ValidationDate>2022-12-17T05:45:36</ValidationDate>
+    <ValidationDate>2022-12-17T05:45:36Z</ValidationDate>
     <Signatures/>
     <UsedCertificates>
         <Certificate Id="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
@@ -19,8 +19,8 @@
                 <Source>TIMESTAMP</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2020-10-22T12:00:00</NotAfter>
-            <NotBefore>2013-06-26T12:00:00</NotBefore>
+            <NotAfter>2020-10-22T12:00:00Z</NotAfter>
+            <NotBefore>2013-06-26T12:00:00Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</EntityKey>
@@ -58,7 +58,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -70,8 +70,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2013-06-26T12:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2013-06-26T12:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -98,8 +98,8 @@
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2022-02-28T10:00:00</NotAfter>
-            <NotBefore>2016-11-28T10:00:00</NotBefore>
+            <NotAfter>2022-02-28T10:00:00Z</NotAfter>
+            <NotBefore>2016-11-28T10:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE</EntityKey>
@@ -142,7 +142,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
@@ -165,9 +165,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.pki.belgium.be/belgium4.crl</SourceAddress>
-            <ProductionDate>2019-07-01T11:00:00</ProductionDate>
-            <ThisUpdate>2019-07-01T11:00:00</ThisUpdate>
-            <NextUpdate>2020-01-31T11:00:00</NextUpdate>
+            <ProductionDate>2019-07-01T11:00:00Z</ProductionDate>
+            <ThisUpdate>2019-07-01T11:00:00Z</ThisUpdate>
+            <NextUpdate>2020-01-31T11:00:00Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -187,7 +187,7 @@
     <UsedTimestamps>
         <Timestamp Type="CONTENT_TIMESTAMP" Id="T-AC9EBD6B29CC8366FA0D87CA03B1ED616D6A639112C438B2EFA32A0B6F0029EE">
             <TimestampFilename>Signature-P-LU_NOW-5.pdf</TimestampFilename>
-            <ProductionTime>2019-11-26T07:18:26</ProductionTime>
+            <ProductionTime>2019-11-26T07:18:26Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>3fhBtGr5H44x0lwz0mJHeO23SbgYVuwaAoo4Aza0lcs=</DigestValue>
@@ -245,9 +245,9 @@
             <Url>https://tsl.belgium.be/tsl-be.xml</Url>
             <SequenceNumber>44</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2019-12-17T05:31:39</LastLoading>
-            <IssueDate>2019-09-05T00:00:00</IssueDate>
-            <NextUpdate>2020-03-02T00:00:00</NextUpdate>
+            <LastLoading>2019-12-17T05:31:39Z</LastLoading>
+            <IssueDate>2019-09-05T00:00:00Z</IssueDate>
+            <NextUpdate>2020-03-02T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
@@ -255,9 +255,9 @@
             <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
             <SequenceNumber>252</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2019-12-17T05:31:39</LastLoading>
-            <IssueDate>2019-11-20T12:00:00</IssueDate>
-            <NextUpdate>2020-05-20T00:00:00</NextUpdate>
+            <LastLoading>2019-12-17T05:31:39Z</LastLoading>
+            <IssueDate>2019-11-20T12:00:00Z</IssueDate>
+            <NextUpdate>2020-05-20T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

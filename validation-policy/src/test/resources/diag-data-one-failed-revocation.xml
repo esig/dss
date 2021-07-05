@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>doc.pdf</DocumentName>
-    <ValidationDate>2021-01-21T13:54:58</ValidationDate>
+    <ValidationDate>2021-01-21T13:54:58Z</ValidationDate>
     <Signatures>
         <Signature Id="S-9A35ABEA78868EC5AA9DED167728ABEB840776562CC5E07F8327C5FC47E98947">
             <SignatureFilename>pades-5-signatures-and-1-document-timestamp.pdf</SignatureFilename>
-            <ClaimedSigningTime>2011-05-05T09:59:50</ClaimedSigningTime>
+            <ClaimedSigningTime>2011-05-05T09:59:50Z</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -152,8 +152,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>OTHER</Source>
             </Sources>
-            <NotAfter>2011-08-09T11:48:41</NotAfter>
-            <NotBefore>2010-08-09T11:48:41</NotBefore>
+            <NotAfter>2011-08-09T11:48:41Z</NotAfter>
+            <NotBefore>2010-08-09T11:48:41Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-B35ED6F40A37F05F3DE50C4AED3CC3CF18DF6DE8922326A396AFFBB3B8721213</EntityKey>
@@ -228,8 +228,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2019-12-08T12:46:25</NotAfter>
-            <NotBefore>2009-12-08T12:47:30</NotBefore>
+            <NotAfter>2019-12-08T12:46:25Z</NotAfter>
+            <NotBefore>2009-12-08T12:47:30Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-70FF571CA54F1356A63CC06FBABC94457E2A8948FB38715AAEB13BBE8690A020</EntityKey>
@@ -286,8 +286,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2025-11-06T07:29:09</NotAfter>
-            <NotBefore>2009-11-06T09:59:39</NotBefore>
+            <NotAfter>2025-11-06T07:29:09Z</NotAfter>
+            <NotBefore>2009-11-06T09:59:39Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-8EFC8349B1D083224E7D4B427F27B0381977864A53196B83CB9816CE5BC952C6</EntityKey>
@@ -347,8 +347,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2019-12-07T17:33:38</NotAfter>
-            <NotBefore>2017-11-13T17:33:38</NotBefore>
+            <NotAfter>2019-12-07T17:33:38Z</NotAfter>
+            <NotBefore>2017-11-13T17:33:38Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F4D7600ED99D0D0BF7310D4E3E6477DDB789E1FF58220CDC851AB36C8C0B1159</EntityKey>
@@ -409,8 +409,8 @@
                 <Source>OTHER</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2022-05-15T11:34:54</NotAfter>
-            <NotBefore>2002-05-15T11:34:54</NotBefore>
+            <NotAfter>2022-05-15T11:34:54Z</NotAfter>
+            <NotBefore>2002-05-15T11:34:54Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-6B8F751FB030568FCEC7D43BBCD238B3876AD05E7ADEA61C2F1A493A306ACB2A</EntityKey>
@@ -469,8 +469,8 @@
                 <Source>OTHER</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2026-10-25T12:05:00</NotAfter>
-            <NotBefore>2012-03-03T11:00:17</NotBefore>
+            <NotAfter>2026-10-25T12:05:00Z</NotAfter>
+            <NotBefore>2012-03-03T11:00:17Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-19EC2E86A9C59098407E816C29554E0CB566EDA0F53E92CC600FA01D36A42C8A</EntityKey>
@@ -522,8 +522,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>OTHER</Source>
             </Sources>
-            <NotAfter>2026-12-28T12:05:04</NotAfter>
-            <NotBefore>2006-12-27T12:18:52</NotBefore>
+            <NotAfter>2026-12-28T12:05:04Z</NotAfter>
+            <NotBefore>2006-12-27T12:18:52Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D1ECACCA44012C3E1E6D1B39DD2968FC7FD3127AAA57AB5182A3BEABCCD7A3A9</EntityKey>
@@ -557,10 +557,10 @@
         <Revocation Id="R-1D509D65FB5806266FCA8935FD527B55BDD11CDDD09FC193CB29DB4A7A63F8DF">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2019-12-05T15:31:10</ProductionDate>
-            <ThisUpdate>2019-12-05T15:31:06</ThisUpdate>
-            <NextUpdate>2019-12-05T15:41:06</NextUpdate>
-            <ArchiveCutOff>2009-12-08T12:47:30</ArchiveCutOff>
+            <ProductionDate>2019-12-05T15:31:10Z</ProductionDate>
+            <ThisUpdate>2019-12-05T15:31:06Z</ThisUpdate>
+            <NextUpdate>2019-12-05T15:41:06Z</NextUpdate>
+            <ArchiveCutOff>2009-12-08T12:47:30Z</ArchiveCutOff>
             <CertHashExtensionPresent>true</CertHashExtensionPresent>
             <CertHashExtensionMatch>true</CertHashExtensionMatch>
             <BasicSignature>
@@ -602,9 +602,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://www.disig.sk/aca2/crl/aca2_disig.crl</SourceAddress>
-            <ProductionDate>2019-12-06T10:33:58</ProductionDate>
-            <ThisUpdate>2019-12-06T10:33:58</ThisUpdate>
-            <NextUpdate>2019-12-08T22:33:58</NextUpdate>
+            <ProductionDate>2019-12-06T10:33:58Z</ProductionDate>
+            <ThisUpdate>2019-12-06T10:33:58Z</ThisUpdate>
+            <NextUpdate>2019-12-08T22:33:58Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -628,7 +628,7 @@
     <UsedTimestamps>
         <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-B3A3D298EFC2086488AE7AA5F0031A75FF08A9EB471AEFA4D3A6B73C7E052C53">
             <ArchiveTimestampType>PAdES</ArchiveTimestampType>
-            <ProductionTime>2010-12-05T15:34:02</ProductionTime>
+            <ProductionTime>2010-12-05T15:34:02Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>cu3Robk8jiPaRWgEP0X9xg2mPcFi49uOGBqS7RucWk8=</DigestValue>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName></DocumentName>
-    <ValidationDate>2019-03-15T14:05:37</ValidationDate>
+    <ValidationDate>2019-03-15T14:05:37Z</ValidationDate>
     <Signatures>
         <Signature Id="id-eb2ce89008eb1ef77a4f96ee8738c07daceee2957537d5bdea0bd2e3af393f28">
             <SignatureFilename></SignatureFilename>
-            <ClaimedSigningTime>2017-04-28T00:58:24</ClaimedSigningTime>
+            <ClaimedSigningTime>2017-04-28T00:58:24Z</ClaimedSigningTime>
             <SignatureFormat>PDF-NOT-ETSI</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -88,7 +88,7 @@
         </Signature>
         <Signature Id="id-db705a41fda3e98f53acef69eae86ed559c9059a3cb67f9898d1488a8b8a1225">
             <SignatureFilename></SignatureFilename>
-            <ClaimedSigningTime>2017-04-28T00:58:36</ClaimedSigningTime>
+            <ClaimedSigningTime>2017-04-28T00:58:36Z</ClaimedSigningTime>
             <SignatureFormat>PKCS7-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -179,8 +179,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2019-06-29T21:00:00</NotAfter>
-            <NotBefore>2016-06-29T21:00:00</NotBefore>
+            <NotAfter>2019-06-29T21:00:00Z</NotAfter>
+            <NotBefore>2016-06-29T21:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B</EntityKey>
@@ -237,8 +237,8 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <NotAfter>2023-06-21T19:04:57</NotAfter>
-            <NotBefore>2010-06-21T19:04:57</NotBefore>
+            <NotAfter>2023-06-21T19:04:57Z</NotAfter>
+            <NotBefore>2010-06-21T19:04:57Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B09150CB</EntityKey>
@@ -291,8 +291,8 @@
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2021-07-25T23:59:59</NotAfter>
-            <NotBefore>2017-02-20T00:00:00</NotBefore>
+            <NotAfter>2021-07-25T23:59:59Z</NotAfter>
+            <NotBefore>2017-02-20T00:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E</EntityKey>
@@ -348,8 +348,8 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <NotAfter>2019-12-16T13:39:42</NotAfter>
-            <NotBefore>2011-12-16T13:39:42</NotBefore>
+            <NotAfter>2019-12-16T13:39:42Z</NotAfter>
+            <NotBefore>2011-12-16T13:39:42Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0</EntityKey>
@@ -404,8 +404,8 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <NotAfter>2021-09-20T18:51:40</NotAfter>
-            <NotBefore>2011-09-20T18:51:40</NotBefore>
+            <NotAfter>2021-09-20T18:51:40Z</NotAfter>
+            <NotBefore>2011-09-20T18:51:40Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505</EntityKey>
@@ -460,8 +460,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2017-11-06T23:44:20</NotAfter>
-            <NotBefore>2017-01-10T19:04:16</NotBefore>
+            <NotAfter>2017-11-06T23:44:20Z</NotAfter>
+            <NotBefore>2017-01-10T19:04:16Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5</EntityKey>
@@ -509,8 +509,8 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <NotAfter>2021-10-21T12:16:29</NotAfter>
-            <NotBefore>2011-10-21T12:16:29</NotBefore>
+            <NotAfter>2021-10-21T12:16:29Z</NotAfter>
+            <NotBefore>2011-10-21T12:16:29Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9</EntityKey>
@@ -561,8 +561,8 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <NotAfter>2021-07-25T23:59:59</NotAfter>
-            <NotBefore>2014-07-25T00:00:00</NotBefore>
+            <NotAfter>2021-07-25T23:59:59Z</NotAfter>
+            <NotBefore>2014-07-25T00:00:00Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D</EntityKey>
@@ -600,7 +600,7 @@
     </UsedCertificates>
     <UsedTimestamps>
         <Timestamp Id="T-30662A206DBD6A4EB55C545C0EFD3101E9B0BBD31010B4A8CF0CD7C9FC58BD02" Type="SIGNATURE_TIMESTAMP">
-            <ProductionTime>2017-04-28T00:58:29</ProductionTime>
+            <ProductionTime>2017-04-28T00:58:29Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>dI5uMiqg0USizkv/5sinZ70nvVsEazWB4bBVlqP4L4U=</DigestValue>
