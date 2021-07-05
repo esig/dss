@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
@@ -66,6 +68,21 @@ public class ExternalResourcesCRLSourceTest {
 	public void testPaths() {
 		ExternalResourcesCRLSource source = new ExternalResourcesCRLSource("/crl/LTRCA.crl", "/crl/LTGRCA.crl");
 		assertEquals(2, source.getAllRevocationBinaries().size());
+	}
+
+	@Test
+	public void testDSSDocuments() throws IOException {
+		DSSDocument crl1 = new FileDocument("src/test/resources/crl/LTRCA.crl");
+		DSSDocument crl2 = new FileDocument("src/test/resources/crl/LTGRCA.crl");
+		ExternalResourcesCRLSource source = new ExternalResourcesCRLSource(crl1, crl2);
+
+		assertEquals(2, source.getAllRevocationBinaries().size());
+		Map<EncapsulatedRevocationTokenIdentifier<CRL>, Set<RevocationOrigin>> allRevocationBinariesWithOrigins = source.getAllRevocationBinariesWithOrigins();
+		assertEquals(2, allRevocationBinariesWithOrigins.size());
+		for (Set<RevocationOrigin> origins : allRevocationBinariesWithOrigins.values()) {
+			assertEquals(1, origins.size());
+			assertEquals(RevocationOrigin.EXTERNAL, origins.iterator().next());
+		}
 	}
 
 	@Test
