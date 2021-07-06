@@ -286,8 +286,10 @@
 			        	</dt>
 			            <dd>
 			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
-			            	
-			            	<xsl:value-of select="dss:SigningTime"/>
+
+							<xsl:call-template name="formatdate">
+								<xsl:with-param name="DateTimeStr" select="dss:SigningTime"/>
+							</xsl:call-template>
 			            </dd>
 			        </dl>
 		        </xsl:if>
@@ -303,7 +305,9 @@
 			            <dd>
 			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
 			            	
-			            	<xsl:value-of select="dss:ProductionTime"/>
+							<xsl:call-template name="formatdate">
+								<xsl:with-param name="DateTimeStr" select="dss:ProductionTime"/>
+							</xsl:call-template>
 			            </dd>
 			        </dl>
 		        </xsl:if>
@@ -318,8 +322,11 @@
 			            </dt>
 			            <dd>
 			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
-			            	
-			            	<xsl:value-of select="dss:BestSignatureTime"/>
+
+							<xsl:call-template name="formatdate">
+								<xsl:with-param name="DateTimeStr" select="dss:BestSignatureTime"/>
+							</xsl:call-template>
+
 			            	<i>
 				    			<xsl:attribute name="class">fa fa-info-circle text-info ml-2</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
@@ -532,4 +539,34 @@
     		</div>
     	</div>
     </xsl:template>
+
+	<xsl:template name="formatdate">
+		<xsl:param name="DateTimeStr" />
+
+		<xsl:variable name="date">
+			<xsl:value-of select="substring-before($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="after-T">
+			<xsl:value-of select="substring-after($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="time">
+			<xsl:value-of select="substring-before($after-T,'Z')" />
+		</xsl:variable>
+
+		<xsl:choose>
+			<xsl:when test="string-length($date) &gt; 0 and string-length($time) &gt; 0">
+				<xsl:value-of select="concat($date,' ', $time, ' (UTC)')" />
+			</xsl:when>
+			<xsl:when test="string-length($date) &gt; 0">
+				<xsl:value-of select="$date" />
+			</xsl:when>
+			<xsl:when test="string-length($time) &gt; 0">
+				<xsl:value-of select="$time" />
+			</xsl:when>
+			<xsl:otherwise>-</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 </xsl:stylesheet>

@@ -190,9 +190,9 @@
 						<xsl:attribute name="class">constraint-tooltip fa fa-clock-o</xsl:attribute>
 						<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 						<xsl:attribute name="data-placement">top</xsl:attribute>
-						<xsl:attribute name="title">Best signature time : <xsl:value-of select="dss:ProofOfExistence/dss:Time" /></xsl:attribute>
+						<xsl:attribute name="title">Best signature time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template></xsl:attribute>
 	       			</i>
-					<span class="constraint-text d-none">(Best signature time : <xsl:value-of select="dss:ProofOfExistence/dss:Time" />)</span>
+					<span class="constraint-text d-none">(Best signature time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template>)</span>
        			</xsl:if>
        			
 			</div>
@@ -229,9 +229,9 @@
 					<xsl:attribute name="class">constraint-tooltip fa fa-clock-o</xsl:attribute>
 					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 					<xsl:attribute name="data-placement">top</xsl:attribute>
-					<xsl:attribute name="title">Production time : <xsl:value-of select="@ProductionTime"/></xsl:attribute>
-       			</i>
-				<span class="constraint-text d-none">(Production time : <xsl:value-of select="@ProductionTime"/>)</span>
+					<xsl:attribute name="title">Production time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@ProductionTime"/></xsl:call-template></xsl:attribute>
+				</i>
+				<span class="constraint-text d-none">(Production time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@ProductionTime"/></xsl:call-template>)</span>
 	        </div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 	    		<div>
@@ -347,9 +347,9 @@
 					<xsl:attribute name="class">constraint-tooltip fa fa-clock-o</xsl:attribute>
 					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 					<xsl:attribute name="data-placement">top</xsl:attribute>
-					<xsl:attribute name="title"><xsl:value-of select="@DateTime"/></xsl:attribute>
+					<xsl:attribute name="title"><xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@DateTime"/></xsl:call-template></xsl:attribute>
        			</i>
-				<span class="constraint-text d-none">(<xsl:value-of select="@DateTime"/>)</span>
+				<span class="constraint-text d-none">(<xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@DateTime"/></xsl:call-template>)</span>
 	 			<xsl:if test="@Id">
 	       			<br />
 					<span><xsl:value-of select="concat('Id = ', @Id)"/></span>
@@ -682,6 +682,35 @@
 			Ignored tag:
 			<xsl:value-of select="name()" />
 		</xsl:comment>
+	</xsl:template>
+
+	<xsl:template name="formatdate">
+		<xsl:param name="DateTimeStr" />
+
+		<xsl:variable name="date">
+			<xsl:value-of select="substring-before($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="after-T">
+			<xsl:value-of select="substring-after($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="time">
+			<xsl:value-of select="substring-before($after-T,'Z')" />
+		</xsl:variable>
+
+		<xsl:choose>
+			<xsl:when test="string-length($date) &gt; 0 and string-length($time) &gt; 0">
+				<xsl:value-of select="concat($date,' ', $time, ' (UTC)')" />
+			</xsl:when>
+			<xsl:when test="string-length($date) &gt; 0">
+				<xsl:value-of select="$date" />
+			</xsl:when>
+			<xsl:when test="string-length($time) &gt; 0">
+				<xsl:value-of select="$time" />
+			</xsl:when>
+			<xsl:otherwise>-</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 </xsl:stylesheet>

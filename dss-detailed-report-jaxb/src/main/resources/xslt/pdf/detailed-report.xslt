@@ -255,7 +255,7 @@
 								<fo:inline>
 									<xsl:attribute name="font-weight">normal</xsl:attribute>
 									<xsl:attribute name="font-size">6pt</xsl:attribute>
-									(Best signature time : <xsl:value-of select="dss:ProofOfExistence/dss:Time" />)
+									(Best signature time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template>)
 								</fo:inline>
 							</xsl:if>
 
@@ -263,7 +263,7 @@
 								<fo:inline>
 									<xsl:attribute name="font-weight">normal</xsl:attribute>
 									<xsl:attribute name="font-size">6pt</xsl:attribute>
-									(Production time : <xsl:value-of select="@ProductionTime"/>)
+									(Production time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@ProductionTime"/></xsl:call-template>)
 								</fo:inline>
 							</xsl:if>
 			       		</fo:block>
@@ -338,7 +338,7 @@
 								<fo:inline>
 									<xsl:attribute name="font-weight">normal</xsl:attribute>
 									<xsl:attribute name="font-size">6pt</xsl:attribute>
-									(<xsl:value-of select="@DateTime" />)
+									(<xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@DateTime"/></xsl:call-template>)
 								</fo:inline>
 							</xsl:if>
    						</fo:block>
@@ -668,6 +668,35 @@
 	<xsl:template match="dss:EquivalentCertificate" />
 	<xsl:template match="dss:CryptographicValidation" />
 	<xsl:template match="dss:ControlTime" />
+
+	<xsl:template name="formatdate">
+		<xsl:param name="DateTimeStr" />
+
+		<xsl:variable name="date">
+			<xsl:value-of select="substring-before($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="after-T">
+			<xsl:value-of select="substring-after($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="time">
+			<xsl:value-of select="substring-before($after-T,'Z')" />
+		</xsl:variable>
+
+		<xsl:choose>
+			<xsl:when test="string-length($date) &gt; 0 and string-length($time) &gt; 0">
+				<xsl:value-of select="concat($date,' ', $time, ' (UTC)')" />
+			</xsl:when>
+			<xsl:when test="string-length($date) &gt; 0">
+				<xsl:value-of select="$date" />
+			</xsl:when>
+			<xsl:when test="string-length($time) &gt; 0">
+				<xsl:value-of select="$time" />
+			</xsl:when>
+			<xsl:otherwise>-</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 </xsl:stylesheet>
 

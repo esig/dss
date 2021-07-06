@@ -6,10 +6,10 @@
 	<xsl:output method="html" encoding="utf-8" indent="yes" omit-xml-declaration="yes" />
 	
 	<xsl:param name="rootTrustmarkUrlInTlBrowser">
-		https://webgate.ec.europa.eu/tl-browser/#/trustmark/
+		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/trustmark/
 	</xsl:param>
 	<xsl:param name="rootCountryUrlInTlBrowser">
-		https://webgate.ec.europa.eu/tl-browser/#/tl/
+		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/
 	</xsl:param>
 	
    	<xsl:variable name="validationTime">
@@ -80,7 +80,7 @@
 	            				<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
 			    		
 			    				<li>
-			    					Issuance Time (<xsl:value-of select="dss:notBefore"/>) : 
+			    					Issuance Time (<xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:notBefore"/></xsl:call-template>) :
 					    			<span>
 					    				<xsl:attribute name="class">
 					    					<xsl:choose>
@@ -94,7 +94,7 @@
 					    		</li>
 					    		
 			    				<li>
-				    				Validation Time (<xsl:value-of select="$validationTime"/>) : 
+				    				Validation Time (<xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="$validationTime"/></xsl:call-template>) :
 					    			<span>
 					    				<xsl:attribute name="class">
 					    					<xsl:choose>
@@ -139,7 +139,13 @@
 			        </dt>
 	        		<dd>
 	        			<xsl:attribute name="class">col-sm-9</xsl:attribute>
-	        			<xsl:value-of select="dss:notBefore"/> - <xsl:value-of select="dss:notAfter"/>
+						<xsl:call-template name="formatdate">
+							<xsl:with-param name="DateTimeStr" select="dss:notBefore"/>
+						</xsl:call-template>
+						-
+						<xsl:call-template name="formatdate">
+							<xsl:with-param name="DateTimeStr" select="dss:notAfter"/>
+						</xsl:call-template>
 	        		</dd>
 	        		
 	        		<xsl:if test="not(dss:trustAnchors)">
@@ -331,7 +337,10 @@
 					<xsl:attribute name="class">fa fa-times-circle text-danger</xsl:attribute>
 					<xsl:attribute name="title">Revoked</xsl:attribute>
 				</i>
-     			Revoked (reason:<xsl:value-of select="dss:revocationReason" /> @ <xsl:value-of select="dss:revocationDate" />)
+     			Revoked (reason:<xsl:value-of select="dss:revocationReason" /> @
+				<xsl:call-template name="formatdate">
+					<xsl:with-param name="DateTimeStr" select="dss:revocationDate"/>
+				</xsl:call-template>)
 			</xsl:when>    	
 			<xsl:when test="dss:productionDate">
       			<i>
@@ -499,5 +508,34 @@
     		</a>
     	</li>
     </xsl:template>
+
+	<xsl:template name="formatdate">
+		<xsl:param name="DateTimeStr" />
+
+		<xsl:variable name="date">
+			<xsl:value-of select="substring-before($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="after-T">
+			<xsl:value-of select="substring-after($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="time">
+			<xsl:value-of select="substring-before($after-T,'Z')" />
+		</xsl:variable>
+
+		<xsl:choose>
+			<xsl:when test="string-length($date) &gt; 0 and string-length($time) &gt; 0">
+				<xsl:value-of select="concat($date,' ', $time)" />
+			</xsl:when>
+			<xsl:when test="string-length($date) &gt; 0">
+				<xsl:value-of select="$date" />
+			</xsl:when>
+			<xsl:when test="string-length($time) &gt; 0">
+				<xsl:value-of select="$time" />
+			</xsl:when>
+			<xsl:otherwise>-</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 </xsl:stylesheet>

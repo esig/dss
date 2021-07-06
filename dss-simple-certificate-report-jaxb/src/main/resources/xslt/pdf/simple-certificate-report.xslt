@@ -5,9 +5,13 @@
 	xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
 	xmlns:dss="http://dss.esig.europa.eu/validation/simple-certificate-report">
 	<xsl:output method="xml" indent="yes" />
-	
-	<xsl:param name="rootTrustmarkUrlInTlBrowser">https://webgate.ec.europa.eu/tl-browser/#/trustmark/</xsl:param>
-	<xsl:param name="rootCountryUrlInTlBrowser">https://webgate.ec.europa.eu/tl-browser/#/tl/</xsl:param>
+
+	<xsl:param name="rootTrustmarkUrlInTlBrowser">
+		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/trustmark/
+	</xsl:param>
+	<xsl:param name="rootCountryUrlInTlBrowser">
+		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/
+	</xsl:param>
 
 	<xsl:template match="/dss:SimpleCertificateReport">
 		<fo:root>
@@ -474,5 +478,5 @@
 			</fo:table-row>
 		</xsl:if>
     </xsl:template>
-	
+
 </xsl:stylesheet>
