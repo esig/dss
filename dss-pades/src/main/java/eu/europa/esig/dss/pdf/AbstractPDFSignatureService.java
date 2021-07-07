@@ -33,9 +33,11 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
 import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
 import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfModification;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
@@ -48,7 +50,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
@@ -244,7 +245,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 					// add signature/timestamp revision
 					if (newRevision != null) {
-						newRevision.setModificationDetection(getPdfModificationDetection(reader, revisionContent, pwd));
 						revisions.add(newRevision);
 					}
 
@@ -590,19 +590,27 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		alertOnSignatureFieldOverlap.alert(new Status(alertMessage));
 	}
 
-	/**
-	 * Proceeds PDF modification detection
-	 * 
-	 * @param finalRevisionReader {@link PdfDocumentReader} the reader for the final
-	 *                            PDF content
-	 * @param signedContent       a byte array representing a signed revision
-	 *                            content
-	 * @param pwd                 {@link String} password protection
-	 * @return {@link PdfModificationDetection}
-	 */
-	protected PdfModificationDetection getPdfModificationDetection(final PdfDocumentReader finalRevisionReader,
-			byte[] signedContent, String pwd) {
-		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(new InMemoryDocument(signedContent), pwd)) {
+	@Override
+	public void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd) {
+		try (PdfDocumentReader finalRevisionReader = loadPdfDocumentReader(document, pwd)) {
+			for (AdvancedSignature signature : signatures) {
+				PAdESSignature padesSignature = (PAdESSignature) signature;
+				PdfSignatureRevision pdfRevision = padesSignature.getPdfRevision();
+				byte[] revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
+				pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, new InMemoryDocument(revisionContent), pdfRevision, pwd));
+			}
+		} catch (IOException e) {
+			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.error(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.error(errorMessage, e.getMessage());
+			}
+		}
+	}
+
+	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader, DSSDocument originalDocument, PdfSignatureRevision revision, String pwd) throws IOException {
+		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(originalDocument , pwd)) {
 			PdfModificationDetectionImpl pdfModificationDetection = new PdfModificationDetectionImpl();
 
 			pdfModificationDetection
@@ -611,19 +619,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					PdfModificationDetectionUtils.getPagesDifferences(signedRevisionReader, finalRevisionReader));
 			pdfModificationDetection
 					.setVisualDifferences(getVisualDifferences(signedRevisionReader, finalRevisionReader));
-
 			return pdfModificationDetection;
-
-		} catch (Exception e) {
-			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
-			if (LOG.isDebugEnabled()) {
-				LOG.error(errorMessage, e.getMessage(), e);
-			} else {
-				LOG.error(errorMessage, e.getMessage());
-			}
 		}
-
-		return null;
 	}
 
 	/**

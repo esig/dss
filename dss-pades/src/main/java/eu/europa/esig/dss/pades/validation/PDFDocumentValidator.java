@@ -141,6 +141,18 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
+    protected List<AdvancedSignature> getAllSignatures() {
+        List<AdvancedSignature> allSignatures = super.getAllSignatures();
+        postProcessing(allSignatures);
+        return allSignatures;
+    }
+
+    protected void postProcessing(List<AdvancedSignature> signatures) {
+        PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
+        pdfSignatureService.analyzePdfModifications(document, signatures, passwordProtection);
+    }
+
+    @Override
     public List<AdvancedSignature> getSignatures() {
         final List<AdvancedSignature> signatures = new ArrayList<>();
 
@@ -148,27 +160,35 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
         final ListRevocationSource<CRL> dssCRLSource = new ListRevocationSource<>();
         final ListRevocationSource<OCSP> dssOCSPSource = new ListRevocationSource<>();
 
-        List<PdfRevision> revisions = getRevisions();
-        revisions = Utils.reverseList(revisions);
-        for (PdfRevision pdfRevision : revisions) {
+        for (PdfRevision pdfRevision : getRevisions()) {
+
             if (pdfRevision instanceof PdfDocDssRevision) {
+
                 PdfDssDict dssDictionary = ((PdfDocDssRevision) pdfRevision).getDssDictionary();
                 dssCertificateSource.add(new PdfDssDictCertificateSource(dssDictionary));
                 dssCRLSource.add(new PdfDssDictCRLSource(dssDictionary));
                 dssOCSPSource.add(new PdfDssDictOCSPSource(dssDictionary));
-            }
-        }
 
-        for (PdfRevision pdfRevision : revisions) {
-            if (pdfRevision instanceof PdfSignatureRevision) {
+            } else if (pdfRevision instanceof PdfSignatureRevision) {
+
                 PdfSignatureRevision pdfSignatureRevision = (PdfSignatureRevision) pdfRevision;
                 try {
                     final PAdESSignature padesSignature = new PAdESSignature(pdfSignatureRevision, documentRevisions);
                     padesSignature.setSignatureFilename(document.getName());
                     padesSignature.setSigningCertificateSource(signingCertificateSource);
-                    padesSignature.setDssCertificateSource(dssCertificateSource);
-                    padesSignature.setDssCRLSource(dssCRLSource);
-                    padesSignature.setDssOCSPSource(dssOCSPSource);
+
+                    ListCertificateSource listCertificateSource = new ListCertificateSource();
+                    listCertificateSource.addAll(dssCertificateSource);
+                    padesSignature.setDssCertificateSource(listCertificateSource);
+
+                    ListRevocationSource<CRL> listCRLSource = new ListRevocationSource<>();
+                    listCRLSource.addAll(dssCRLSource);
+                    padesSignature.setDssCRLSource(listCRLSource);
+
+                    ListRevocationSource<OCSP> listOCSPSource = new ListRevocationSource<>();
+                    listOCSPSource.addAll(dssOCSPSource);
+                    padesSignature.setDssOCSPSource(listOCSPSource);
+
                     padesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
                     signatures.add(padesSignature);
 
@@ -179,7 +199,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
             }
         }
-        return signatures;
+        return Utils.reverseList(signatures);
     }
 
     @Override

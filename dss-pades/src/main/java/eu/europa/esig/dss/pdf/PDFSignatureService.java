@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
 
 import java.util.List;
@@ -137,5 +138,14 @@ public interface PDFSignatureService {
 	 * @return the pdf document with the new added signature field
 	 */
 	DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, final String pwd);
+
+	/**
+	 * Analyze the PDF revision and try to detect any modification (shadow attacks)
+	 *
+	 * @param document {@link DSSDocument} the document
+	 * @param signatures       the different signatures to analyse
+	 * @param pwd                 {@link String} password protection
+	 */
+	void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd);
 
 }
