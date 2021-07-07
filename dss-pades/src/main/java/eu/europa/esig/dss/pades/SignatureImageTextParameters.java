@@ -23,10 +23,12 @@ package eu.europa.esig.dss.pades;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+import eu.europa.esig.dss.enumerations.TextWrapping;
 import eu.europa.esig.dss.utils.Utils;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This class allows to custom text generation in the PAdES visible signature
@@ -75,6 +77,13 @@ public class SignatureImageTextParameters implements Serializable {
 	 * (default is PTSerifRegular)
 	 */
 	private DSSFont dssFont;
+
+	/**
+	 * This variable defines how the given text should be wrapped within the signature field's box
+	 *
+	 * Default : TextWrapping.FONT_BASED - the text is computed based on the {@code dssFont} configuration
+	 */
+	private TextWrapping textWrapping = TextWrapping.FONT_BASED;
 	
 	/**
 	 * This variable defines a padding in pixels to bound text around
@@ -174,6 +183,27 @@ public class SignatureImageTextParameters implements Serializable {
 		this.dssFont = dssFont;
 	}
 	
+	/**
+	 * Gets {@code TextWrapping}
+	 *
+	 * @return {@link TextWrapping}
+	 */
+	public TextWrapping getTextWrapping() {
+		return textWrapping;
+	}
+
+	/**
+	 * Sets the {@code TextWrapping} parameter, defining a way the text will be generated
+	 *
+	 * Default : TextWrapping.FONT_BASED - text is generated based in the provided {@code dssFont} configuration
+	 *
+	 * @param textWrapping {@link TextWrapping}
+	 */
+	public void setTextWrapping(TextWrapping textWrapping) {
+		Objects.requireNonNull(textWrapping, "TextWrapping cannot be null!");
+		this.textWrapping = textWrapping;
+	}
+
 	/**
 	 * Returns padding between text and its area
 	 * 

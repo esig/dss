@@ -86,7 +86,7 @@ public class SignatureImageParameters implements Serializable {
 	/**
 	 * Defines the image scaling behavior within a signature field with a fixed size
 	 *
-	 * DEFAULT : ImageScaling.STRETCH (stretches the image ib both directions to fill the signature field)
+	 * DEFAULT : ImageScaling.STRETCH (stretches the image in both directions to fill the signature field)
 	 */
 	private ImageScaling imageScaling = ImageScaling.STRETCH;
 

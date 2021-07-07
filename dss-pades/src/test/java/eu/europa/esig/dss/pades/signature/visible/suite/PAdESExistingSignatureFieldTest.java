@@ -2,6 +2,7 @@ package eu.europa.esig.dss.pades.signature.visible.suite;
 
 import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TextWrapping;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -80,6 +81,40 @@ public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature 
         imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
         imageParameters.setBackgroundColor(Color.PINK);
         imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+        super.signAndVerify();
+    }
+
+    @Test
+    public void autoFitTest() throws IOException {
+        SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
+
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+        textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+                "Date: 2021.01.01 01:01:01 WET\n" +
+                "Reason: my-reason\n" +
+                "Location: my-location");
+        textParameters.setTextWrapping(TextWrapping.FILL_BOX);
+        imageParameters.setTextParameters(textParameters);
+
+        signatureParameters.setImageParameters(imageParameters);
+
+        super.signAndVerify();
+    }
+
+    @Test
+    public void autoFitAndLinebreakTest() throws IOException {
+        SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
+
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+        textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+                "Date: 2021.01.01 01:01:01 WET\n" +
+                "Reason: my-reason\n" +
+                "Location: my-location");
+        textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+        imageParameters.setTextParameters(textParameters);
+
+        signatureParameters.setImageParameters(imageParameters);
 
         super.signAndVerify();
     }

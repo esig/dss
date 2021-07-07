@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+import eu.europa.esig.dss.enumerations.TextWrapping;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
@@ -788,6 +789,7 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("Signature");
+		// TOP not set
 		imageParameters.setTextParameters(textParameters);
 		
 		imageParameters.setZoom(50);
@@ -919,6 +921,266 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
 
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void textBasicFittingTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+				"Date: 2021.01.01 01:01:01 WET\n" +
+				"Reason: my-reason\n" +
+				"Location: my-location");
+		textParameters.setTextWrapping(TextWrapping.FONT_BASED);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void textAutoFitTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+				"Date: 2021.01.01 01:01:01 WET\n" +
+				"Reason: my-reason\n" +
+				"Location: my-location");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void textAutoFitAndFormatTest() throws IOException {
+		initPdfATest();
+		similarityLimit = 0.994f;
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+				"Date: 2021.01.01 01:01:01 WET\n" +
+				"Reason: my-reason\n" +
+				"Location: my-location");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void longWordWithZoomTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(200);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally signed by Adolph Blaine Charles David Earl Frederick Gerald Hubert " +
+				"Irvin John Kenneth Lloyd Martin Nero Oliver Paul Quincy Randolph Sherman Thomas Uncas Victor William " +
+				"Xerxes Yancy Zeus Wolfeschlegelsteinhausenbergerdorffwelchevoralternwarengewissenhaftschaferswessensc" +
+				"hafewarenwohlgepflegeundsorgfaltigkeitbeschutzenvorangreifendurchihrraubgierigfeindewelchevoralternzw" +
+				"olfhunderttausendjahresvorandieerscheinenvonderersteerdemenschderraumschiffgenachtmittungsteinundsiebe" +
+				"niridiumelektrischmotorsgebrauchlichtalsseinursprungvonkraftgestartseinlangefahrthinzwischensternartig" +
+				"raumaufdersuchennachbarschaftdersternwelchegehabtbewohnbarplanetenkreisedrehensichundwohinderneuerasse" +
+				"vonverstandigmenschlichkeitkonntefortpflanzenundsicherfreuenanlebenslanglichfreudeundruhemitnichteinfur" +
+				"chtvorangreifenvorandererintelligentgeschopfsvonhinzwischensternartigraum Sr.");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+		imageParameters.setTextParameters(textParameters);
+		imageParameters.setZoom(200);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void smallHeightLinebreaksTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setHeight(20);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+				"Date: 2021.01.01 01:01:01 WET\n" +
+				"Reason: my-reason\n" +
+				"Location: my-location");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void charactersFillBoxTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(20);
+		fieldParameters.setHeight(200);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\np\no\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX);
+		textParameters.setPadding(0);
+		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
+		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void charactersLinebreakTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(2);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("a b c d e f g h i j k l m n p o q r s t u v w x y z");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+		textParameters.setPadding(0);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void fillBoxWithImageTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(200);
+		fieldParameters.setHeight(40);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+				"Date: 2021.01.01 01:01:01 WET\n" +
+				"Reason: my-reason\n" +
+				"Location: my-location");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void fillBoxWithLineBreaksWithImageTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(200);
+		fieldParameters.setHeight(50);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+				"Date: 2021.01.01 01:01:01 WET\n" +
+				"Reason: my-reason\n" +
+				"Location: my-location");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+		textParameters.setPadding(10);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void fillBoxWithBreaksWithImageAndRotationTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(200);
+		fieldParameters.setHeight(40);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+				"Date: 2021.01.01 01:01:01 WET\n" +
+				"Reason: my-reason\n" +
+				"Location: my-location");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+		textParameters.setSignerTextPosition(SignerTextPosition.RIGHT);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
 		drawAndCompareVisually();
 	}
 

@@ -34,7 +34,7 @@ public abstract class AbstractDSSFontMetrics implements DSSFontMetrics {
 	}
 
 	@Override
-	public AnnotationBox computeTextBoundaryBox(String text, float fontSize, float padding) {
+	public AnnotationBox computeTextBoundaryBox(String text, float fontSize) {
 		String[] lines = getLines(text);
 		float width = 0;
 		for (String line : lines) {
@@ -43,10 +43,8 @@ public abstract class AbstractDSSFontMetrics implements DSSFontMetrics {
 				width = lineWidth;
 			}
 		}
-		float doublePadding = padding * 2;
-		width += doublePadding;
 		float strHeight = getHeight(text, fontSize);
-		float height = (strHeight * lines.length) + doublePadding;
+		float height = (strHeight * lines.length);
 		
 		return new AnnotationBox(0, 0, width, height);
 	}

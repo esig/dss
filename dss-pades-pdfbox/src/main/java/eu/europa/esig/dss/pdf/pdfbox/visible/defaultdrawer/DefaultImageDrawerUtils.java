@@ -14,13 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Contains the util methods used by the
@@ -31,19 +29,10 @@ public final class DefaultImageDrawerUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultImageDrawerUtils.class);
 
-    private static final int[] IMAGE_TRANSPARENT_TYPES;
-
     /**
      * Default constructor
      */
     private DefaultImageDrawerUtils() {
-    }
-
-    static {
-        int[] imageAlphaTypes = new int[] { BufferedImage.TYPE_4BYTE_ABGR, BufferedImage.TYPE_4BYTE_ABGR_PRE,
-                BufferedImage.TYPE_INT_ARGB, BufferedImage.TYPE_INT_ARGB_PRE };
-        Arrays.sort(imageAlphaTypes);
-        IMAGE_TRANSPARENT_TYPES = imageAlphaTypes;
     }
 
     /**
@@ -54,9 +43,10 @@ public final class DefaultImageDrawerUtils {
      * @return {@link BufferedImage} of the text picture
      */
     public static BufferedImage createTextImage(final SignatureImageParameters imageParameters,
-                                                final SignatureFieldDimensionAndPosition dimensionAndPosition) {
+                                                final SignatureFieldDimensionAndPosition dimensionAndPosition,
+                                                final JavaDSSFontMetrics fontMetrics) {
         SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
-        String[] lines = textParameters.getText().split("\n");
+        String[] lines = dimensionAndPosition.getText().split("\n");
 
         int imageType;
         if (isTransparent(textParameters.getTextColor(), textParameters.getBackgroundColor())) {
@@ -71,7 +61,7 @@ public final class DefaultImageDrawerUtils {
                 (int) DPIUtils.computeProperSize(dimensionAndPosition.getTextBoxHeight(), textDPI), imageType);
 
         Graphics2D g = img.createGraphics();
-        Font font = getJavaFont(imageParameters, textDPI);
+        Font font = getJavaFont(imageParameters, dimensionAndPosition.getTextSize(), textDPI);
         g.setFont(font);
 
         // Improve text rendering
@@ -90,10 +80,9 @@ public final class DefaultImageDrawerUtils {
             g.setPaint(textParameters.getTextColor());
         }
 
-        FontMetrics fm = g.getFontMetrics(font);
-        int lineHeight = fm.getHeight();
-        float y = fm.getMaxAscent() + DPIUtils.computeProperSize(dimensionAndPosition.getTextY() - dimensionAndPosition.getTextBoxY(),
-                textDPI);
+        float lineHeight = fontMetrics.getHeight(lines[0], font.getSize());
+        float y = fontMetrics.getMaxAscent(font.getSize()) + DPIUtils.computeProperSize(
+                dimensionAndPosition.getTextY() - dimensionAndPosition.getTextBoxY(), textDPI);
 
         for (String line : lines) {
             // left alignment by default
@@ -101,10 +90,10 @@ public final class DefaultImageDrawerUtils {
             if (textParameters.getSignerTextHorizontalAlignment() != null) {
                 switch (textParameters.getSignerTextHorizontalAlignment()) {
                     case RIGHT:
-                        x = img.getWidth() - fm.stringWidth(line) - x; // -x because of margin
+                        x = img.getWidth() - fontMetrics.getWidth(line, font.getSize()) - x; // -x because of margin
                         break;
                     case CENTER:
-                        x = (float) (img.getWidth() - fm.stringWidth(line)) / 2;
+                        x = (img.getWidth() - fontMetrics.getWidth(line, font.getSize())) / 2;
                         break;
                     case LEFT:
                     default:
@@ -120,10 +109,9 @@ public final class DefaultImageDrawerUtils {
         return img;
     }
 
-    private static Font getJavaFont(SignatureImageParameters imageParameters, int dpi) {
+    private static Font getJavaFont(SignatureImageParameters imageParameters, float textSize, int dpi) {
         DSSFont dssFont = imageParameters.getTextParameters().getFont();
-        float fontSize = DPIUtils.computeProperSize(dssFont.getSize(), dpi)
-                * ImageUtils.getScaleFactor(imageParameters.getZoom());
+        float fontSize = DPIUtils.computeProperSize(textSize, dpi);
 
         Font javaFont = dssFont.getJavaFont();
         return javaFont.deriveFont(fontSize);

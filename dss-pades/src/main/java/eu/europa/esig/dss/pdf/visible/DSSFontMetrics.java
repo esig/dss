@@ -21,10 +21,9 @@ public interface DSSFontMetrics {
      *
      * @param text {@link String} the original text to get Dimension for
      * @param fontSize the size of a font
-     * @param padding the padding between text and its boundaries
      * @return {@link AnnotationBox} of the text
      */
-    AnnotationBox computeTextBoundaryBox(String text, float fontSize, float padding);
+    AnnotationBox computeTextBoundaryBox(String text, float fontSize);
 
     /**
      * Computes a width for a string of a given size

@@ -52,6 +52,9 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	private float textBoxY = 0;
 	private float textBoxWidth = 0;
 	private float textBoxHeight = 0;
+
+	private String text = null;
+	private float textSize = 0;
 	
 	private int globalRotation;
 
@@ -215,6 +218,22 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	
 	public void setTextBoxHeight(float textBoxHeight) {
 		this.textBoxHeight = textBoxHeight;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public float getTextSize() {
+		return textSize;
+	}
+
+	public void setTextSize(float textSize) {
+		this.textSize = textSize;
 	}
 
 	public int getGlobalRotation() {

@@ -2,10 +2,10 @@ package eu.europa.esig.dss.pdf.visible;
 
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+import eu.europa.esig.dss.enumerations.TextWrapping;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -75,6 +75,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
      * @return {@link SignatureFieldDimensionAndPosition}
      */
     public SignatureFieldDimensionAndPosition build() {
+        assertConfigurationValid();
         if (dimensionAndPosition == null) {
             dimensionAndPosition = new SignatureFieldDimensionAndPosition();
             initDpi();
@@ -128,15 +129,18 @@ public class SignatureFieldDimensionAndPositionBuilder {
             }
 
             float padding = textParameters.getPadding();
+            float properTextSize = textParameters.getFont().getSize() * ImageUtils.getScaleFactor(imageParameters.getZoom());
             // native implementation uses dpi-independent font
-            AnnotationBox textBox;
-            if (textParameters.getFont().getSize() >= 0) {
-                textBox = computeTextDimension(textParameters, padding);
-            } else {
-                textBox = computeAutoFitTextDimensions(textParameters, width, height, padding);
-            }
-            float textWidth = textBox.getWidth();
-            float textHeight = textBox.getHeight();
+            final AnnotationBox estimatedTextBox = computeTextBox(textParameters, width, height, padding, properTextSize);
+            TextFitter.Result fitResult = TextFitter.fitSignatureText(textParameters, properTextSize, fontMetrics, estimatedTextBox);
+            dimensionAndPosition.setText(fitResult.getText());
+            dimensionAndPosition.setTextSize(fitResult.getSize());
+
+            final AnnotationBox textBox = fontMetrics.computeTextBoundaryBox(fitResult.getText(), fitResult.getSize());
+            float textHeight = textBox.getHeight() < estimatedTextBox.getHeight() ? textBox.getHeight() : estimatedTextBox.getHeight();
+            float textWidth = textBox.getWidth() < estimatedTextBox.getWidth() ? textBox.getWidth() : estimatedTextBox.getWidth();
+            textHeight += padding * 2;
+            textWidth += padding * 2;
 
             switch (textParameters.getSignerTextPosition()) {
                 case LEFT:
@@ -252,6 +256,20 @@ public class SignatureFieldDimensionAndPositionBuilder {
 
         return new AnnotationBox(0, 0, width, height);
     }
+
+    private AnnotationBox computeTextBox(SignatureImageTextParameters textParameters,
+                                         float width, float height, float padding, float fontSize) throws IllegalArgumentException {
+        switch (textParameters.getTextWrapping()) {
+            case FILL_BOX:
+            case FILL_BOX_AND_LINEBREAK:
+                return computeAutoFitTextDimensions(textParameters, width, height, padding);
+            case FONT_BASED:
+                return computeTextDimension(textParameters.getText(), fontSize);
+            default:
+                throw new IllegalArgumentException(String.format("The TextWrapping '%s' is not supported!",
+                        textParameters.getTextWrapping()));
+        }
+    }
     
     /**
      * Attempts to fit the signature's text content into as much of the
@@ -267,12 +285,11 @@ public class SignatureFieldDimensionAndPositionBuilder {
      * @param width the width of the signature box
      * @param height the height of the signature box
      * @param padding the padding of the text box
-     * @return the computed text box using the updated text content and font
-     * size
-     * @throws IllegalArgumentException if an unsupported signer text position
-     * is supplied
+     * @return the computed text box using the updated text content and font size
+     * @throws IllegalArgumentException if an unsupported signer text position is supplied
      */
-    private AnnotationBox computeAutoFitTextDimensions(SignatureImageTextParameters textParameters, float width, float height, float padding) throws IllegalArgumentException {
+    private AnnotationBox computeAutoFitTextDimensions(SignatureImageTextParameters textParameters,
+                                                       float width, float height, float padding) throws IllegalArgumentException {
         float doublePadding = 2 * padding;
 
         AnnotationBox estimatedTextBox;
@@ -280,39 +297,27 @@ public class SignatureFieldDimensionAndPositionBuilder {
             switch (textParameters.getSignerTextPosition()) {
                 case LEFT:
                 case RIGHT:
-                    estimatedTextBox = new AnnotationBox(0, 0, (width / 2) - doublePadding, height - doublePadding);
+                    estimatedTextBox = new AnnotationBox(0, 0,
+                            width - dimensionAndPosition.getImageWidth() - doublePadding, height - doublePadding);
                     break;
                 case TOP:
                 case BOTTOM:
-                    estimatedTextBox = new AnnotationBox(0, 0, width - doublePadding, (height / 2) - doublePadding);
+                    estimatedTextBox = new AnnotationBox(0, 0,
+                            width - doublePadding, height - dimensionAndPosition.getImageHeight() - doublePadding);
                     break;
                 default:
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException(String.format("The SignerTextPosition '%s' is not supported!",
+                            textParameters.getSignerTextPosition()));
             }
         } else {
-            estimatedTextBox = new AnnotationBox(0, 0, width - doublePadding,
-                    height - doublePadding);
+            estimatedTextBox = new AnnotationBox(0, 0, width - doublePadding, height - doublePadding);
         }
 
-        TextFitter fitter = new TextFitter();
-        TextFitter.Result fitResult = fitter.fitSignatureText(
-                textParameters.getText(), fontMetrics, estimatedTextBox);
-
-        if (fitResult.isFitted()) {
-            textParameters.getFont().setSize(fitResult.getSize());
-            textParameters.setText(fitResult.getText());
-        } else {
-            textParameters.getFont().setSize(-textParameters.getFont().getSize());
-        }
-
-        return computeTextDimension(textParameters, padding);
+        return estimatedTextBox;
     }
 
-    private AnnotationBox computeTextDimension(SignatureImageTextParameters textParameters, float padding) {
-        float properSize = textParameters.getFont().getSize()
-                * ImageUtils.getScaleFactor(imageParameters.getZoom()); // scale text block
-
-        return fontMetrics.computeTextBoundaryBox(textParameters.getText(), properSize, padding);
+    private AnnotationBox computeTextDimension(String text, float fontSize) {
+        return fontMetrics.computeTextBoundaryBox(text, fontSize);
     }
 
     private void textImageVerticalAlignment(float height, float imageHeight, float textHeight) {
@@ -480,6 +485,16 @@ public class SignatureFieldDimensionAndPositionBuilder {
                 break;
             default:
                 throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
+        }
+    }
+
+    private void assertConfigurationValid() {
+        if (imageParameters.getTextParameters() != null &&
+                (TextWrapping.FILL_BOX.equals(imageParameters.getTextParameters().getTextWrapping()) || TextWrapping.FILL_BOX_AND_LINEBREAK.equals(imageParameters.getTextParameters().getTextWrapping())) &&
+                (signatureFieldAnnotationBox == null || signatureFieldAnnotationBox.getWidth() == 0 || signatureFieldAnnotationBox.getHeight() == 0) &&
+                (imageParameters.getFieldParameters() == null || imageParameters.getFieldParameters().getWidth() == 0 || imageParameters.getFieldParameters().getHeight() == 0)) {
+            throw new IllegalArgumentException(String.format("Signature field dimensions are not defined! " +
+                    "Unable to use '%s' option.", imageParameters.getTextParameters().getTextWrapping()));
         }
     }
 

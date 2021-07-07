@@ -256,9 +256,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
 		if (!textParameters.isEmpty()) {
 			setTextBackground(cs, textParameters, dimensionAndPosition);
-			DSSFont dssFont = textParameters.getFont();
-			float fontSize = dssFont.getSize();
-			fontSize *= ImageUtils.getScaleFactor(parameters.getZoom());
+			float fontSize = dimensionAndPosition.getTextSize();
 			cs.beginText();
 			cs.setFont(pdFont, fontSize);
 			cs.setNonStrokingColor(textParameters.getTextColor());
@@ -266,9 +264,10 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 			PdfBoxDSSFontMetrics pdfBoxFontMetrics = new PdfBoxDSSFontMetrics(pdFont);
 
-			String[] strings = pdfBoxFontMetrics.getLines(textParameters.getText());
+			String text = dimensionAndPosition.getText();
+			String[] strings = pdfBoxFontMetrics.getLines(text);
 
-			float lineHeight = pdfBoxFontMetrics.getHeight(textParameters.getText(), textParameters.getFont().getSize());
+			float lineHeight = pdfBoxFontMetrics.getHeight(text, dimensionAndPosition.getTextSize());
 			cs.setLeading(lineHeight);
 
 			cs.newLineAtOffset(dimensionAndPosition.getTextX(),

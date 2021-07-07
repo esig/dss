@@ -32,7 +32,6 @@ import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -112,9 +111,9 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 		ITextDSSFontMetrics iTextFontMetrics = getDSSFontMetrics();
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
-		String text = textParameters.getText();
+		String text = dimensionAndPosition.getText();
 
-		float size = getProperSize();
+		float size = dimensionAndPosition.getTextSize();
 		
 		PdfTemplate layer = appearance.getLayer(2);
 		layer.setFontAndSize(iTextFont.getBaseFont(), size);
@@ -162,12 +161,6 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 		
 		layer.endText();
-	}
-
-	private float getProperSize() {
-		float size = parameters.getTextParameters().getFont().getSize();
-		size *= ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
-		return size;
 	}
 
 }
