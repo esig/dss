@@ -35,6 +35,8 @@ import java.util.Objects;
  */
 public abstract class AbstractTransform implements DSSTransform {
 
+	private static final long serialVersionUID = 7176619121506452500L;
+
 	/** The algorithm url string */
 	protected final String algorithm;
 

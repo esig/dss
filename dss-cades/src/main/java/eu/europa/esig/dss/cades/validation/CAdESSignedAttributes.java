@@ -28,6 +28,8 @@ import org.bouncycastle.cms.SignerInformation;
  */
 public class CAdESSignedAttributes extends CAdESSigProperties {
 
+	private static final long serialVersionUID = 7180428714024547376L;
+
 	/**
 	 * The default constructor
 	 *

@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class XmlRootSignatureScope extends XmlElementSignatureScope {
 
+    private static final long serialVersionUID = 7325542318746995759L;
+
     /**
      * Default constructor
      *

@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateValidity;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.security.PublicKey;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.security.PublicKey;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificateValidity;
 
 public class CertificateValidityTest {
 	
@@ -109,17 +108,13 @@ public class CertificateValidityTest {
 	
 	@Test
 	public void nullCertificateTokenTest() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			new CertificateValidity((CertificateToken) null);
-		});
+		Exception exception = assertThrows(NullPointerException.class, () -> new CertificateValidity((CertificateToken) null));
 		assertEquals("CertificateToken cannot be null!", exception.getMessage());
 	}
 	
 	@Test
 	public void nullPublicKeyTest() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			new CertificateValidity((PublicKey) null);
-		});
+		Exception exception = assertThrows(NullPointerException.class, () -> new CertificateValidity((PublicKey) null));
 		assertEquals("PublicKey cannot be null!", exception.getMessage());
 	}
 

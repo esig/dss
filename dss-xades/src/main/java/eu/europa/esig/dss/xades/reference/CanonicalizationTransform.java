@@ -29,6 +29,8 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
  */
 public class CanonicalizationTransform extends ComplexTransform {
 
+	private static final long serialVersionUID = 4876071474579456586L;
+
 	/**
 	 * Default constructor
 	 *

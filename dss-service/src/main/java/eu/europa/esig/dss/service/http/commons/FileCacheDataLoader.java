@@ -60,7 +60,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	private File fileCacheDirectory = new File(System.getProperty("java.io.tmpdir"));
 
 	/** Loads absolute path */
-	private ResourceLoader resourceLoader = new ResourceLoader();
+	private transient ResourceLoader resourceLoader = new ResourceLoader();
 
 	/** List of URIs to be loaded */
 	private List<String> toBeLoaded;

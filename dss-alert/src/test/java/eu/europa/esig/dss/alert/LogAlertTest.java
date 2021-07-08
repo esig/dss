@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.alert;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.event.Level;
-
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.alert.handler.LogHandler;
 import eu.europa.esig.dss.alert.status.Status;
+import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
+
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LogAlertTest {
 	
@@ -42,9 +41,9 @@ public class LogAlertTest {
 		Status exception = new Status(EXCEPTION_MESSAGE);
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogHandler<Status> logExceptionAlertHandler = new LogHandler<Status>(Level.WARN);
+		LogHandler<Status> logExceptionAlertHandler = new LogHandler<>(Level.WARN);
 		
-		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<Status>(Arrays.asList(callback, logExceptionAlertHandler));
+		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<>(Arrays.asList(callback, logExceptionAlertHandler));
 		
 		CustomStatusAlert exceptionAlert = new CustomStatusAlert(alertHandler);
 		exceptionAlert.alert(exception);
@@ -57,9 +56,9 @@ public class LogAlertTest {
 		Status exception = new Status(EXCEPTION_MESSAGE);
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogHandler<Status> logExceptionAlertHandler = new LogHandler<Status>(Level.ERROR);
+		LogHandler<Status> logExceptionAlertHandler = new LogHandler<>(Level.ERROR);
 		
-		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<Status>(Arrays.asList(callback, logExceptionAlertHandler));
+		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<>(Arrays.asList(callback, logExceptionAlertHandler));
 		
 		CustomStatusAlert exceptionAlert = new CustomStatusAlert(alertHandler);
 		exceptionAlert.alert(exception);

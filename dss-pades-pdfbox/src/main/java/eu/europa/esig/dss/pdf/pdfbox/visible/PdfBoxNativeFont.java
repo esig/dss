@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.AbstractDSSFont;
 import eu.europa.esig.dss.pades.DSSNativeFont;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
-import java.awt.*;
+import java.awt.Font;
 
 /**
  * The PDFBox native implementation of a Font

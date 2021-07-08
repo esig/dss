@@ -51,9 +51,7 @@ public class DomUtilsTest {
 
 	@Test
 	public void testNoHeaderError() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			DomUtils.buildDOM(INCORRECT_XML_TEXT);
-		});
+		Exception exception = assertThrows(DSSException.class, () -> DomUtils.buildDOM(INCORRECT_XML_TEXT));
 		assertTrue(exception.getMessage().contains("Unable to parse content (XML expected)"));
 	}
 
@@ -67,9 +65,7 @@ public class DomUtilsTest {
 
 	@Test
 	public void testHeaderError() {
-		Exception exception = assertThrows(DSSException.class, () -> {
-			DomUtils.buildDOM(XML_HEADER + INCORRECT_XML_TEXT);
-		});
+		Exception exception = assertThrows(DSSException.class, () -> DomUtils.buildDOM(XML_HEADER + INCORRECT_XML_TEXT));
 		assertTrue(exception.getMessage().contains("Unable to parse content (XML expected)"));
 	}
 

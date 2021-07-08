@@ -156,12 +156,6 @@ public class SignatureValidationContext implements ValidationContext {
 	protected Date currentTime = new Date();
 
 	/**
-	 * This constructor is used during the signature creation process.
-	 */
-	public SignatureValidationContext() {
-	}
-
-	/**
 	 * @param certificateVerifier
 	 *            The certificates verifier (eg: using the TSL as list of trusted certificates).
 	 */

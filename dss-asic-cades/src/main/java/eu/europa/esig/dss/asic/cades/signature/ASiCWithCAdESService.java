@@ -606,19 +606,15 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 
 	private void assertTimestampPossible(GetDataToSignASiCWithCAdESHelper dataToSignHelper, ASiCParameters asicParameters) {
-		if (ASiCUtils.isASiCS(asicParameters)) {
-			if (Utils.isCollectionNotEmpty(dataToSignHelper.getSignatures())) {
-				throw new IllegalInputException("Unable to timestamp an ASiC-S with CAdES container containing signature files! " +
-						"Use extendDocument(...) method for signature extension.");
-			}
+		if (ASiCUtils.isASiCS(asicParameters) && Utils.isCollectionNotEmpty(dataToSignHelper.getSignatures())) {
+			throw new IllegalInputException("Unable to timestamp an ASiC-S with CAdES container containing signature files! " +
+					"Use extendDocument(...) method for signature extension.");
 		}
 	}
 
 	private void assertSignaturePossible(GetDataToSignASiCWithCAdESHelper dataToSignHelper, ASiCParameters asicParameters) {
-		if (ASiCUtils.isASiCS(asicParameters)) {
-			if (Utils.isCollectionNotEmpty(dataToSignHelper.getTimestamps())) {
-				throw new IllegalInputException("Unable to sign an ASiC-S with CAdES container containing time assertion files!");
-			}
+		if (ASiCUtils.isASiCS(asicParameters) && Utils.isCollectionNotEmpty(dataToSignHelper.getTimestamps())) {
+			throw new IllegalInputException("Unable to sign an ASiC-S with CAdES container containing time assertion files!");
 		}
 	}
 

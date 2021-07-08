@@ -23,8 +23,20 @@ package eu.europa.esig.dss.validation.scope;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
 
+/**
+ * The signature scope represents a partially signed document
+ *
+ */
 public class PartialSignatureScope extends SignatureScope {
 
+    private static final long serialVersionUID = 901568709629933531L;
+
+    /**
+     * Default constructor
+     *
+     * @param name {@link String} filename
+     * @param digest {@link Digest}
+     */
     public PartialSignatureScope(final String name, Digest digest) {
         super(name, digest);
     }

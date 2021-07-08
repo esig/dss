@@ -37,8 +37,11 @@ import java.util.List;
  */
 public class PdfDocTimestampRevision extends PdfCMSRevision {
 
+	private static final long serialVersionUID = -1526261963945359026L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(PdfDocTimestampRevision.class);
 
+	/** The document timestamp token from the revision */
 	private final TimestampToken timestampToken;
 
 	/**

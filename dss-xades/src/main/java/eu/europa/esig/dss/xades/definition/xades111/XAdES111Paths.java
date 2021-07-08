@@ -34,6 +34,8 @@ import eu.europa.esig.xmldsig.XSDAbstractUtils;
  */
 public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 
+	private static final long serialVersionUID = -4625230696899261996L;
+
 	/** The path "./xades111:DigestMethod/xades111:Algorithm" */
 	public static final String DIGEST_METHOD_ALGORITHM_PATH = fromCurrentPosition(XAdES111Element.DIGEST_METHOD, XMLDSigAttribute.ALGORITHM);
 

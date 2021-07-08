@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  */
-public interface PdfRevision {
+public interface PdfRevision extends Serializable {
 	
 	/**
 	 * Returns a PDF Signature Dictionary info container

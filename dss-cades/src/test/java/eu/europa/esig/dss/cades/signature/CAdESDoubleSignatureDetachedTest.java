@@ -122,9 +122,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 		// explicit missing file
 		// signatureParameters.setDetachedContents(Arrays.asList(documentToSign));
 
-		DSSException e = assertThrows(DSSException.class, () -> {
-			sign();
-		});
+		DSSException e = assertThrows(DSSException.class, () -> sign());
 		assertEquals("Unknown SignedContent", e.getMessage());
 
 	}

@@ -283,8 +283,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			ASN1Integer[] noticeNumbers = noticeRef.getNoticeNumbers();
 			if (noticeNumbers != null && noticeNumbers.length != 0) {
 				noticeNumbersList = new ArrayList<>();
-				for (int ii = 0; ii < noticeNumbers.length; ii++) {
-					ASN1Integer integer = noticeNumbers[ii];
+				for (ASN1Integer integer : noticeNumbers) {
 					noticeNumbersList.add(integer.intValueExact());
 				}
 			}
@@ -413,7 +412,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public List<eu.europa.esig.dss.validation.CommitmentTypeIndication> getCommitmentTypeIndications() {
 		final Attribute commitmentTypeIndicationAttribute = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_commitmentType);
 		if (commitmentTypeIndicationAttribute == null) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		try {
@@ -642,18 +641,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		try {
 			final SignatureAlgorithm signatureAlgorithm = getEncryptedDigestAlgo();
-			if (signatureAlgorithm != null) {
-				if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
-
-					byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
-					if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
-						RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
-						AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
-						if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
-							return MaskGenerationFunction.MGF1;
-						} else {
-							LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
-						}
+			if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
+				byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
+				if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
+					RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
+					AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
+					if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
+						return MaskGenerationFunction.MGF1;
+					} else {
+						LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
 					}
 				}
 			}

@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.definition;
 
+import java.io.Serializable;
+
 /**
  * The XML element
  */
-public interface DSSElement {
+public interface DSSElement extends Serializable {
 
 	/**
 	 * Returns element tag name

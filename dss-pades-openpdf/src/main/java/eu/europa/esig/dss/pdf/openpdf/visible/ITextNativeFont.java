@@ -32,6 +32,8 @@ import java.awt.*;
  */
 public class ITextNativeFont extends AbstractDSSFont implements DSSNativeFont<BaseFont> {
 
+	private static final long serialVersionUID = 6440459797629392086L;
+
 	/** The OpenPDF font */
 	private final BaseFont baseFont;
 

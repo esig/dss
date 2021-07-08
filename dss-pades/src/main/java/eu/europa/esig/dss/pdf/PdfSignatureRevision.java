@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class PdfSignatureRevision extends PdfCMSRevision {
 
+	private static final long serialVersionUID = -7955378314622568135L;
+
 	/** The corresponding DSS dictionary */
 	private final PdfDssDict dssDictionarySource;
 

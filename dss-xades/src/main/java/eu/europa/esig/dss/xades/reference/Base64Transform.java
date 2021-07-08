@@ -37,6 +37,8 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
  */
 public class Base64Transform extends AbstractTransform {
 
+	private static final long serialVersionUID = -3517468564871841676L;
+
 	/**
 	 * Default constructor
 	 */

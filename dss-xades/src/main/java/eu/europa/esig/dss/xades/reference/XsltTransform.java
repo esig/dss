@@ -33,6 +33,8 @@ import java.util.Objects;
  */
 public class XsltTransform extends ComplexTransform {
 
+	private static final long serialVersionUID = -5119986978252813925L;
+
 	/** The document to be added */
 	private final Document content;
 

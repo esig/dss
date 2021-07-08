@@ -42,9 +42,7 @@ public class SignatureFormatParserTest {
 
 	@Test
 	public void parseUnknown() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			SignatureFormatParser.parse("non-value");
-		});
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> SignatureFormatParser.parse("non-value"));
 		assertEquals("No enum constant eu.europa.esig.dss.enumerations.SignatureLevel.non_value", exception.getMessage());
 	}
 

@@ -177,7 +177,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			int csize = parameters.getContentSize();
 			HashMap exc = new HashMap();
-			exc.put(PdfName.CONTENTS, Integer.valueOf((csize * 2) + 2));
+			exc.put(PdfName.CONTENTS, csize * 2 + 2);
 
 			sap.preClose(exc);
 

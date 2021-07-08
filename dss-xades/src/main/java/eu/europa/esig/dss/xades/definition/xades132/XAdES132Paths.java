@@ -34,6 +34,8 @@ import eu.europa.esig.xmldsig.XSDAbstractUtils;
  */
 public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 
+	private static final long serialVersionUID = 1878591854613359863L;
+
 	// TODO find a proper way (namespace independent)
 	/** Gets all signatures without counter signatures */
 	public static final String ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH = allNotParent(XMLDSigElement.SIGNATURE,

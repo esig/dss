@@ -23,8 +23,20 @@ package eu.europa.esig.dss.validation.scope;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
 
+/**
+ * The Signature Scope defines a Digest document
+ *
+ */
 public class DigestSignatureScope extends SignatureScope {
 
+	private static final long serialVersionUID = -5483258316745203622L;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String} filename
+	 * @param digest {@link Digest}
+	 */
 	public DigestSignatureScope(String name, Digest digest) {
 		super(name, digest);
 	}

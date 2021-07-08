@@ -30,6 +30,8 @@ import java.util.Map;
  */
 public class EtsiUComponent extends JAdESAttribute {
 
+	private static final long serialVersionUID = -4134366074771198071L;
+
 	/** If the component is a base64url encoded instance */
 	private final boolean base64UrlEncoded;
 

@@ -86,7 +86,7 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 
 			// Identifies the commitment undertaken by the signer in signing (a) signed data object(s)
 			// in the context of the selected signature policy
-			List<CommitmentType> commitmentTypeIndications = new ArrayList<CommitmentType>();
+			List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
 			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfOrigin);
 			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
 			// NOTE: CommitmentType supports also IDQualifier and documentationReferences.

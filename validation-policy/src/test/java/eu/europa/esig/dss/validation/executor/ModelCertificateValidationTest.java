@@ -157,7 +157,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 				String id = sub.getId().substring(sub.getId().length() - 4);
 				Indication ind = sub.getConclusion().getIndication();
 				if (!Indication.PASSED.equals(ind)) {
-					StringBuffer buf = new StringBuffer();
+					StringBuilder buf = new StringBuilder();
 					for (XmlMessage n : sub.getConclusion().getInfos()) {
 						if (buf.length() > 0) {
 							buf.append("\n\t");
@@ -166,7 +166,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 					}
 					String str = buf.length() > 0 ? ("Info:\n" + buf.toString()) : "";
 					
-					buf = new StringBuffer();
+					buf = new StringBuilder();
 					for (XmlMessage n : sub.getConclusion().getWarnings()) {
 						if (buf.length() > 0) {
 							buf.append("\n\t");
@@ -175,7 +175,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 					}
 					str += buf.length() > 0 ? (str.length() > 0 ? "\n" : "") + "Warn:\n" + buf.toString() : str;
 					
-					buf = new StringBuffer();
+					buf = new StringBuilder();
 					for (XmlMessage n : sub.getConclusion().getErrors()) {
 						if (buf.length() > 0) {
 							buf.append("\n\t");

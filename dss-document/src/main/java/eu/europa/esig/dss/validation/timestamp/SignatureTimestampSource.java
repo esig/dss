@@ -236,7 +236,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         final List<TimestampToken> archiveTimestamps = new ArrayList<>(getArchiveTimestamps());
         archiveTimestamps.addAll(getDocumentTimestamps()); // can be a document timestamp for PAdES
         archiveTimestamps.addAll(getDetachedTimestamps()); // can be a detached timestamp for ASiC with CAdES
-        Collections.sort(archiveTimestamps, new TimestampTokenComparator());
+        archiveTimestamps.sort(new TimestampTokenComparator());
         if (archiveTimestamps.size() > 0) {
             for (int ii = 0; ii < archiveTimestamps.size() - 1; ii++) {
                 TimestampToken timestampToken = archiveTimestamps.get(ii);

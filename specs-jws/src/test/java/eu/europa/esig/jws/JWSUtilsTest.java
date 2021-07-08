@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.jws;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.InputStream;
-import java.util.Base64;
-import java.util.Iterator;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.InputStream;
+import java.util.Base64;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JWSUtilsTest {
 	
@@ -50,14 +49,13 @@ public class JWSUtilsTest {
 		List<String> errors = jwsUtils.validateAgainstJWSSchema(jws);
 		assertTrue(errors.isEmpty(), errors.toString());
 		
-		JSONArray signartures = jws.getJSONArray("signatures");
-		assertNotNull(signartures);
-		assertTrue(signartures.length() > 0);
-		
-		Iterator<Object> iterator = signartures.iterator();
-		while (iterator.hasNext()) {
-			JSONObject signature = (JSONObject) iterator.next();
-			validateSignature(signature);
+		JSONArray signatures = jws.getJSONArray("signatures");
+		assertNotNull(signatures);
+		assertTrue(signatures.length() > 0);
+
+		for (Object signature : signatures) {
+			JSONObject jsonSignature = (JSONObject) signature;
+			validateSignature(jsonSignature);
 		}
 	}
 	

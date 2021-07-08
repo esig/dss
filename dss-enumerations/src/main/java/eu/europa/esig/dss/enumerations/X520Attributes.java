@@ -207,7 +207,7 @@ public enum X520Attributes implements OidDescription {
 
 	MEMBER("member", "2.5.4.31"),
 
-	member("member", "2.5.4.31.2"),
+	ENCRYPTEDMEMBER("encryptedMember", "2.5.4.31.2"),
 
 	OWNER("owner", "2.5.4.32"),
 

@@ -40,6 +40,8 @@ import java.util.Map.Entry;
  */
 public abstract class ComplexTransform extends AbstractTransform {
 
+	private static final long serialVersionUID = -2344414065328072642L;
+
 	/** Internal object, used to build the Transformation */
 	private Transform transformObject;
 

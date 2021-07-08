@@ -276,7 +276,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	@Deprecated
 	public void setDataLoader(final DataLoader dataLoader) {
 		LOG.warn("Use of deprecated method setDataLoader(DataLoader)! This method will override the defined AIASource.");
 		aiaSource = new DefaultAIASource(dataLoader);

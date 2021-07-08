@@ -77,7 +77,7 @@ public class PdfSignatureDictionaryComparatorTest {
 		listToSort.add(mock1);
 		listToSort.add(mock2);
 
-		Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
+		listToSort.sort(new PdfSignatureDictionaryComparator());
 
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(mock1, listToSort.get(1));
@@ -93,7 +93,7 @@ public class PdfSignatureDictionaryComparatorTest {
 		listToSort.add(mock1);
 		listToSort.add(mock0);
 
-		Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
+		listToSort.sort(new PdfSignatureDictionaryComparator());
 
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(mock1, listToSort.get(1));
@@ -108,7 +108,7 @@ public class PdfSignatureDictionaryComparatorTest {
 		listToSort.add(mock2);
 		listToSort.add(mock0);
 
-		Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
+		listToSort.sort(new PdfSignatureDictionaryComparator());
 
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(mock1, listToSort.get(1));
@@ -122,7 +122,7 @@ public class PdfSignatureDictionaryComparatorTest {
 		listToSort.add(mock0bis);
 		listToSort.add(mock0);
 
-		Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
+		listToSort.sort(new PdfSignatureDictionaryComparator());
 		
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(mock0bis, listToSort.get(1));
@@ -135,7 +135,7 @@ public class PdfSignatureDictionaryComparatorTest {
 		listToSort.add(nonZero);
 		listToSort.add(mock0);
 
-		Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
+		listToSort.sort(new PdfSignatureDictionaryComparator());
 
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(nonZero, listToSort.get(1));
@@ -148,7 +148,7 @@ public class PdfSignatureDictionaryComparatorTest {
 		PdfSignatureDictionary archivalTST2 = new MockPdfSignatureDictionary(new int[] { 0, 200002, 237892, 637 });
 
 		List<PdfSignatureDictionary> listToSort = Arrays.asList(archivalTST1, sig, archivalTST2);
-		Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
+		listToSort.sort(new PdfSignatureDictionaryComparator());
 
 		assertEquals(sig, listToSort.get(0));
 		assertEquals(archivalTST1, listToSort.get(1));
@@ -162,7 +162,7 @@ public class PdfSignatureDictionaryComparatorTest {
 		listToSort.add(strange1);
 		listToSort.add(strange2);
 
-		Collections.sort(listToSort, new PdfSignatureDictionaryComparator());
+		listToSort.sort(new PdfSignatureDictionaryComparator());
 
 		assertEquals(strange1, listToSort.get(0));
 		assertEquals(strange2, listToSort.get(1));

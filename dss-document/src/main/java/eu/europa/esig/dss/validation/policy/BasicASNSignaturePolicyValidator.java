@@ -62,14 +62,14 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 
 		final DSSDocument policyContent = signaturePolicy.getPolicyContent();
 		if (policyContent == null) {
-			validationResult.addError("general", "The signature policy content is not obtained.");
+			validationResult.addError(GENERAL_ERROR_KEY, "The signature policy content is not obtained.");
 			return validationResult;
 		}
 		validationResult.setIdentified(true);
 
 		final Digest digest = signaturePolicy.getDigest();
 		if (digest == null) {
-			validationResult.addError("general", "The policy digest value is not defined.");
+			validationResult.addError(GENERAL_ERROR_KEY, "The policy digest value is not defined.");
 			return validationResult;
 		}
 		// valid if no errors occur
@@ -109,7 +109,7 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 					boolean equal = digest.equals(recalculatedDigest);
 					validationResult.setDigestValid(equal);
 					if (!equal) {
-						validationResult.addError("general",
+						validationResult.addError(GENERAL_ERROR_KEY,
 								"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
 										+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
 					}
@@ -119,13 +119,13 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 					equal = Arrays.equals(digest.getValue(), policyDigestValueFromPolicy);
 					validationResult.setDigestValid(equal);
 					if (!equal) {
-						validationResult.addError("general", "The policy digest value (" + Utils.toBase64(digest.getValue())
+						validationResult.addError(GENERAL_ERROR_KEY, "The policy digest value (" + Utils.toBase64(digest.getValue())
 								+ ") does not match the digest value from the policy file ("
 								+ Utils.toBase64(policyDigestValueFromPolicy) + ").");
 					}
 
 				} else {
-					validationResult.addError("general", "The digest algorithm indicated in the SignPolicyHashAlg from the resulting document (" + signPolicyHashAlgFromPolicy
+					validationResult.addError(GENERAL_ERROR_KEY, "The digest algorithm indicated in the SignPolicyHashAlg from the resulting document (" + signPolicyHashAlgFromPolicy
 							+ ") is not equal to the digest " + "algorithm (" + digest.getAlgorithm() + ").");
 					validationResult.setDigestAlgorithmsEqual(false);
 					validationResult.setDigestValid(false);
@@ -135,7 +135,7 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 		} catch (Exception e) {
 			// When any error (communication) we just set the status to false
 			validationResult.setDigestValid(false);
-			validationResult.addError("general", e.getMessage());
+			validationResult.addError(GENERAL_ERROR_KEY, e.getMessage());
 			// Do nothing
 			LOG.warn(e.getMessage(), e);
 		}

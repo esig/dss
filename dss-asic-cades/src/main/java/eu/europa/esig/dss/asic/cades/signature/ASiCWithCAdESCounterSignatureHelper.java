@@ -74,8 +74,7 @@ public class ASiCWithCAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 		ASiCExtractResult extractResult = getASiCExtractResult();
 		DSSDocument signatureManifest = ASiCWithCAdESManifestParser.getLinkedManifest(extractResult.getAllManifestDocuments(), signatureFilename);
 		if (signatureManifest != null) {
-			ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(signatureManifest);
-			return manifestFile;
+			return ASiCWithCAdESManifestParser.getManifestFile(signatureManifest);
 		}
 		return null;
 	}

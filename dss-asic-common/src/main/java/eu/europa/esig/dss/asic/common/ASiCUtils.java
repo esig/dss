@@ -351,10 +351,7 @@ public final class ASiCUtils {
 	 */
 	public static boolean isContainerOpenDocument(final DSSDocument archiveContainer) {
 		DSSDocument mimetype = getMimetypeDocument(archiveContainer);
-		if (mimetype != null && ASiCUtils.isOpenDocument(mimetype)) {
-			return true;
-		}
-		return false;
+		return mimetype != null && ASiCUtils.isOpenDocument(mimetype);
 	}
 
 	private static DSSDocument getMimetypeDocument(DSSDocument dssDocument) {

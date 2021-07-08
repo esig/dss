@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
+import java.io.Serializable;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,8 +37,10 @@ import java.util.Set;
  * This class operates on several {@link CertificateSource} with the composite
  * design pattern.
  */
-public class ListCertificateSource {
-	
+public class ListCertificateSource implements Serializable {
+
+	private static final long serialVersionUID = -7790810642120721289L;
+
 	/**
 	 * A list of certificate sources
 	 */

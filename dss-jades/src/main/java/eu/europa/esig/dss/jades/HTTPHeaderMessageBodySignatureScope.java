@@ -27,6 +27,8 @@ import eu.europa.esig.dss.model.Digest;
  */
 public class HTTPHeaderMessageBodySignatureScope extends HTTPHeaderSignatureScope {
 
+	private static final long serialVersionUID = -5673209077313838023L;
+
 	/**
 	 * The default constructor
 	 *

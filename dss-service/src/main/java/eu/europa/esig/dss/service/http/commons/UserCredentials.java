@@ -1,10 +1,14 @@
 package eu.europa.esig.dss.service.http.commons;
 
+import java.io.Serializable;
+
 /**
  * This class represents a user credentials object used to authenticate to a remote host
  *
  */
-public class UserCredentials {
+public class UserCredentials implements Serializable {
+
+    private static final long serialVersionUID = -3095450289231987392L;
 
     /** Identifies user's login name or username */
     private String username;

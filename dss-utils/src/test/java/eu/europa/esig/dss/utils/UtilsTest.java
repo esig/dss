@@ -29,9 +29,7 @@ public class UtilsTest {
 
 	@Test
 	public void testNoImplementationException() {
-		ExceptionInInitializerError exception = assertThrows(ExceptionInInitializerError.class, () -> {
-			Utils.isStringBlank("test");
-		});
+		ExceptionInInitializerError exception = assertThrows(ExceptionInInitializerError.class, () -> Utils.isStringBlank("test"));
 		assertEquals("No implementation found for IUtils in classpath, please choose between dss-utils-apache-commons or dss-utils-google-guava", exception.getMessage());
 	}
 

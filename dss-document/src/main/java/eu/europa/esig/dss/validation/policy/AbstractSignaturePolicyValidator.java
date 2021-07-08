@@ -11,6 +11,9 @@ import eu.europa.esig.dss.spi.DSSUtils;
  */
 public abstract class AbstractSignaturePolicyValidator implements SignaturePolicyValidator {
 
+    /** The error key to be used for general errors */
+    protected static final String GENERAL_ERROR_KEY = "general";
+
     @Override
     public Digest getComputedDigest(DSSDocument policyDocument, DigestAlgorithm digestAlgorithm) {
         return DSSUtils.getDigest(digestAlgorithm, policyDocument);

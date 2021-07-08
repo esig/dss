@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.definition;
 
+import java.io.Serializable;
+
 /**
  * Defines the namespaces
  */
-public class DSSNamespace {
+public class DSSNamespace implements Serializable {
+
+	private static final long serialVersionUID = 470380729820070418L;
 
 	/** The namespace URI */
 	private final String uri;

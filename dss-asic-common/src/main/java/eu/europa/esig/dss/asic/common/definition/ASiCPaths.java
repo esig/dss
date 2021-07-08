@@ -22,7 +22,12 @@ package eu.europa.esig.dss.asic.common.definition;
 
 import eu.europa.esig.dss.definition.AbstractPaths;
 
+/**
+ * Contains paths for an ASiC scheme
+ */
 public class ASiCPaths extends AbstractPaths {
+
+	private static final long serialVersionUID = 2410165510311258998L;
 
 	public static final String ASIC_MANIFEST_PATH = fromCurrentPosition(ASiCElement.ASIC_MANIFEST);
 

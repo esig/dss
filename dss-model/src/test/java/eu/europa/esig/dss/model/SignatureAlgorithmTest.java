@@ -51,9 +51,7 @@ public class SignatureAlgorithmTest {
 
 	@Test
 	public void forXMLException() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			SignatureAlgorithm.forXML("aaa");
-		});
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> SignatureAlgorithm.forXML("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
@@ -69,9 +67,7 @@ public class SignatureAlgorithmTest {
 
 	@Test
 	public void forOidException() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			SignatureAlgorithm.forOID("1.2.3");
-		});
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> SignatureAlgorithm.forOID("1.2.3"));
 		assertEquals("Unsupported algorithm: 1.2.3", exception.getMessage());
 	}
 
@@ -89,9 +85,7 @@ public class SignatureAlgorithmTest {
 
 	@Test
 	public void forJWAException() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			SignatureAlgorithm.forJWA("aaa");
-		});
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> SignatureAlgorithm.forJWA("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 

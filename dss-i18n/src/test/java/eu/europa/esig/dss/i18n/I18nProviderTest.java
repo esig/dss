@@ -42,7 +42,7 @@ public class I18nProviderTest {
 			assertNotNull(message);
 			assertEquals("Can the certificate chain be built till a trust anchor?", message);
 			
-			IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> { i18nProvider.getMessage(null); });
+			IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> i18nProvider.getMessage(null));
 			assertEquals("messageTag cannot be null!", exception.getMessage());
 			
 			final I18nProvider i18nFranceProvider = new I18nProvider(Locale.FRANCE);

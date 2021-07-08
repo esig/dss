@@ -28,6 +28,8 @@ import java.security.SecureRandom;
  */
 public class SecureRandomNonceSource implements NonceSource {
 
+	private static final long serialVersionUID = 8999041563539837258L;
+
 	/** The secure random instance */
 	private final SecureRandom secureRandom = new SecureRandom();
 

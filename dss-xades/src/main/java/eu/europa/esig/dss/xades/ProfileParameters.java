@@ -32,6 +32,16 @@ public class ProfileParameters implements Serializable {
 	private SignatureProfile profile;
 
 	/**
+	 * The builder used to create the signature structure. Currently used only for XAdES.
+	 */
+	private SignatureBuilder builder;
+
+	/**
+	 * Indicates the type of the operation to be done
+	 */
+	private Operation operationKind;
+
+	/**
 	 * Returns the current Profile used to generate the signature or its extension
 	 *
 	 * @return the SignatureProfile
@@ -49,11 +59,6 @@ public class ProfileParameters implements Serializable {
 	public void setProfile(SignatureProfile profile) {
 		this.profile = profile;
 	}
-
-	/**
-	 * The builder used to create the signature structure. Currently used only for XAdES.
-	 */
-	private SignatureBuilder builder;
 
 	/**
 	 * Gets the signature builder
@@ -74,18 +79,6 @@ public class ProfileParameters implements Serializable {
 	}
 
 	/**
-	 * The type of operation to perform.
-	 */
-	public enum Operation {
-		SIGNING, EXTENDING
-	}
-
-	/**
-	 * Indicates the type of the operation to be done
-	 */
-	private Operation operationKind;
-
-	/**
 	 * Gets the current operation type
 	 *
 	 * @return {@link Operation}
@@ -101,6 +94,13 @@ public class ProfileParameters implements Serializable {
 	 */
 	public void setOperationKind(Operation operationKind) {
 		this.operationKind = operationKind;
+	}
+
+	/**
+	 * The type of operation to perform.
+	 */
+	public enum Operation {
+		SIGNING, EXTENDING
 	}
 
 }

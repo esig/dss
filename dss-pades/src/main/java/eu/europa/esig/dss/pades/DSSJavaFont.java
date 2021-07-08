@@ -27,6 +27,8 @@ import java.awt.Font;
  */
 public class DSSJavaFont extends AbstractDSSFont {
 
+	private static final long serialVersionUID = 5555902178825682245L;
+
 	/** The default font style */
 	private static final int DEFAULT_FONT_STYLE = Font.PLAIN;
 

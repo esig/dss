@@ -324,7 +324,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		if (policyStore != null) {
 			return policyStore.getDocumentationReferences();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	public boolean isBLevelTechnicallyValid() {

@@ -112,7 +112,7 @@ public class CertificateDiagnosticDataBuilderTest {
 		Set<CertificateToken> usedCertificates = new HashSet<>(Arrays.asList(sigCert, ocspCert, caToken, rootToken));
 
 		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
-		trustedCertSource.setSummary(new TLValidationJobSummary(new ArrayList<LOTLInfo>(), new ArrayList<TLInfo>()));
+		trustedCertSource.setSummary(new TLValidationJobSummary(new ArrayList<>(), new ArrayList<>()));
 		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
 		TrustServiceStatusAndInformationExtensionsBuilder builder = new TrustServiceStatusAndInformationExtensionsBuilder();
 		builder.setStatus("bla");

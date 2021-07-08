@@ -36,6 +36,8 @@ import java.util.Objects;
  */
 public abstract class PdfCMSRevision implements PdfRevision {
 
+	private static final long serialVersionUID = 7392943800496129517L;
+
 	/**
 	 *  The PDF Signature Dictionary
 	 */

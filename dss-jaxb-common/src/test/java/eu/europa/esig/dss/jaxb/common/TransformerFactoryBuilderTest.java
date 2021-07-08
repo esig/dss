@@ -20,21 +20,19 @@
  */
 package eu.europa.esig.dss.jaxb.common;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-
-import javax.xml.transform.TransformerFactory;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.event.Level;
-
 import eu.europa.esig.dss.alert.AbstractStatusAlert;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.alert.handler.LogHandler;
 import eu.europa.esig.dss.alert.status.Status;
+import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
+
+import javax.xml.transform.TransformerFactory;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TransformerFactoryBuilderTest {
 	
@@ -51,8 +49,8 @@ public class TransformerFactoryBuilderTest {
 		secureTransformerBuilder.enableFeature("CUSTOM_FEATURE");
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogHandler<Status> logExceptionAlertHandler = new LogHandler<Status>(Level.INFO);
-		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<Status>(Arrays.asList(callback, logExceptionAlertHandler));
+		LogHandler<Status> logExceptionAlertHandler = new LogHandler<>(Level.INFO);
+		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<>(Arrays.asList(callback, logExceptionAlertHandler));
 
 		secureTransformerBuilder.setSecurityExceptionAlert(new CustomStatusAlert(alertHandler));
 		
@@ -67,8 +65,8 @@ public class TransformerFactoryBuilderTest {
 		secureTransformerBuilder.setAttribute("CUSTOM_ATTRIBUTE", "CUSTOM_VALUE");
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
-		LogHandler<Status> logExceptionAlertHandler = new LogHandler<Status>(Level.ERROR);
-		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<Status>(Arrays.asList(callback, logExceptionAlertHandler));
+		LogHandler<Status> logExceptionAlertHandler = new LogHandler<>(Level.ERROR);
+		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<>(Arrays.asList(callback, logExceptionAlertHandler));
 		
 		secureTransformerBuilder.setSecurityExceptionAlert(new CustomStatusAlert(alertHandler));
 		

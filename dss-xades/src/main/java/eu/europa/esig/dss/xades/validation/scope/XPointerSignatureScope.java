@@ -32,6 +32,8 @@ import java.util.List;
  */
 public class XPointerSignatureScope extends SignatureScopeWithTransformations {
 
+	private static final long serialVersionUID = 203530674533107438L;
+
 	/**
 	 * XPointer query
 	 */

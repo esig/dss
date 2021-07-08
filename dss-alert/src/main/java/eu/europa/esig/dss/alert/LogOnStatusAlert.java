@@ -34,7 +34,7 @@ public class LogOnStatusAlert extends AbstractStatusAlert {
 	 * Default constructor which LOG with WARN
 	 */
 	public LogOnStatusAlert() {
-		super(new LogHandler<Status>());
+		super(new LogHandler<>());
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class LogOnStatusAlert extends AbstractStatusAlert {
 	 * @param level the log level to be used
 	 */
 	public LogOnStatusAlert(Level level) {
-		super(new LogHandler<Status>(level));
+		super(new LogHandler<>(level));
 	}
 
 }

@@ -30,6 +30,8 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
  */
 public class XAdESSignedDataObjectProperties extends XAdESSigProperties {
 
+	private static final long serialVersionUID = -8340742069424121438L;
+
 	/**
 	 * Default constructor
 	 *

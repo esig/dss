@@ -858,7 +858,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		List<XmlTimestamp> xmlTimestampsList = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(timestamps)) {
 			List<TimestampToken> tokens = new ArrayList<>(timestamps);
-			Collections.sort(tokens, new TimestampTokenComparator());
+			tokens.sort(new TimestampTokenComparator());
 			for (TimestampToken timestampToken : tokens) {
 				String id = timestampToken.getDSSIdAsString();
 				XmlTimestamp xmlTimestamp = buildDetachedXmlTimestamp(timestampToken);

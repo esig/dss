@@ -105,11 +105,14 @@ public final class DSSUtils {
 	/** Empty byte array */
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-	/** Default DateTime format */
-	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-	
 	/** The URN OID prefix (RFC 3061) */
 	public static final String OID_NAMESPACE_PREFIX = "urn:oid:";
+
+	/** The UTF-8 encoding name string */
+	public static final String UTF8_ENCODING = "UTF-8";
+
+	/** Default DateTime format */
+	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -688,7 +691,7 @@ public final class DSSUtils {
 	public static String getNormalizedString(final String str) {
 		String normalizedStr = str;
 		try {
-			normalizedStr = URLDecoder.decode(str, "UTF-8");
+			normalizedStr = URLDecoder.decode(str, UTF8_ENCODING);
 		} catch (UnsupportedEncodingException e) {
 			LOG.debug("Cannot decode fileName [{}]. Reason : {}", str, e.getMessage());
 		}
@@ -890,7 +893,7 @@ public final class DSSUtils {
 	public static String decodeURI(String uri) {
 		try {
 			uri = uri.replace("+", "%2B"); // preserve '+' characters
-			return URLDecoder.decode(uri, "UTF-8");
+			return URLDecoder.decode(uri, UTF8_ENCODING);
 		} catch (UnsupportedEncodingException e) {
 			LOG.error("Unable to decode '{}' : {}", uri, e.getMessage(), e);
 		}
@@ -999,7 +1002,7 @@ public final class DSSUtils {
 	 */
 	private static String encodePartURI(String uriPart) {
 		try {
-			return URLEncoder.encode(uriPart, "UTF-8").replace("+", "%20");
+			return URLEncoder.encode(uriPart, UTF8_ENCODING).replace("+", "%20");
 		} catch (Exception e) {
 			LOG.warn("Unable to encode uri '{}' : {}", uriPart, e.getMessage());
 			return uriPart;

@@ -20,17 +20,36 @@
  */
 package eu.europa.esig.dss.validation.scope;
 
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
 
+import java.util.List;
+
+/**
+ * The Signature Scope represents a Manifest document
+ *
+ */
 public final class ManifestSignatureScope extends SignatureScopeWithTransformations {
 
+	private static final long serialVersionUID = -5343386923285755160L;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String} manifest filename
+	 * @param digest {@link Digest}
+	 */
 	public ManifestSignatureScope(final String name, final Digest digest) {
 		super(name, digest, null);
 	}
 
+	/**
+	 * Constructor with a list of XML transformations (to be used for XAdES only)
+	 *
+	 * @param name {@link String} manifest filename
+	 * @param digest {@link Digest}
+	 * @param transformations a list of {@link String} transforms definitions
+	 */
 	public ManifestSignatureScope(final String name, final Digest digest, final List<String> transformations) {
 		super(name, digest, transformations);
 	}

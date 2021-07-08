@@ -20,14 +20,21 @@
  */
 package eu.europa.esig.dss.validation.scope;
 
-import java.util.List;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
 
+import java.util.List;
+
+/**
+ * This SignatureScope represents a Manifest entry document
+ *
+ */
 public class ManifestEntrySignatureScope extends SignatureScopeWithTransformations {
 	
+	private static final long serialVersionUID = 8764813918985821868L;
+
+	/** Manifest filename */
 	private final String manifestName;
 
 	/**

@@ -304,7 +304,7 @@ public final class DomUtils {
 	 *            the value for the given attribute
 	 */
 	public static void setAttributeNS(Element element, DSSNamespace namespace, DSSAttribute attribute, String value) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(namespace.getPrefix());
 		sb.append(':');
 		sb.append(attribute.getAttributeName());

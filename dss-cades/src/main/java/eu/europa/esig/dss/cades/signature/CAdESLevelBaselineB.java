@@ -26,7 +26,6 @@ import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.CommitmentType;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;

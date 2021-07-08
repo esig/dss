@@ -219,9 +219,7 @@ public class ValidationJobSummaryBuilder {
 			List<CertificateToken> currentCertificates) {
 		Map<CertificateToken, CertificatePivotStatus> certificateChangesMap = new LinkedHashMap<>();
 		
-		List<CertificateToken> commonCertificates = pivotSourceCertificates.stream().filter(cert -> { 
-				return currentCertificates.contains(cert); 
-			}).collect(Collectors.toList());
+		List<CertificateToken> commonCertificates = pivotSourceCertificates.stream().filter(cert -> currentCertificates.contains(cert)).collect(Collectors.toList());
 		
 		// added certificates
 		for (CertificateToken certificateToken : pivotSourceCertificates) {

@@ -23,10 +23,12 @@ package eu.europa.esig.dss.xades.definition;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.xmldsig.XSDAbstractUtils;
 
+import java.io.Serializable;
+
 /**
  * Contains a list of useful XAdES XPaths
  */
-public interface XAdESPaths {
+public interface XAdESPaths extends Serializable {
 
 	/**
 	 * Gets the current namespace

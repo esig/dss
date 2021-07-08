@@ -43,7 +43,7 @@ public class OCSPDataLoader extends CommonsDataLoader {
 	 */
 	@Override
 	public void setContentType(final String contentType) {
-		// do nothing: in case of OCSPDataLoader the contentType is fixed.
+		throw new UnsupportedOperationException("Content type change is not supported by this implementation!");
 	}
 
 }

@@ -24,13 +24,16 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Represents a parsed Manifest File object
  */
-public class ManifestFile {
+public class ManifestFile implements Serializable {
+
+	private static final long serialVersionUID = -5971045309587760817L;
 
 	/** The DSSDocument represented by the ManifestFile */
 	private DSSDocument document;

@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * This class is a DTO representation for qualifier and conditions
  *
  */
-public class ConditionForQualifiers {
+public class ConditionForQualifiers implements Serializable {
+
+	private static final long serialVersionUID = 6284808669027768365L;
 
 	/** The condition */
 	private Condition condition;

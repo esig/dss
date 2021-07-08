@@ -40,16 +40,12 @@ public class FileDocumentTest {
 
 	@Test
 	public void testNull() {
-		assertThrows(NullPointerException.class, () -> {
-			new FileDocument((String) null);
-		});
+		assertThrows(NullPointerException.class, () -> new FileDocument((String) null));
 	}
 
 	@Test
 	public void testNull2() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			new FileDocument((File) null);
-		});
+		Exception exception = assertThrows(NullPointerException.class, () -> new FileDocument((File) null));
 		assertEquals("File cannot be null", exception.getMessage());
 	}
 

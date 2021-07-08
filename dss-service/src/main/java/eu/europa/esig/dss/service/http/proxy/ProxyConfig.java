@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.service.http.proxy;
 
+import java.io.Serializable;
+
 /**
  * This class is a DTO which contains the proxy configuration (HTTP and/or HTTPS)
  */
-public class ProxyConfig {
+public class ProxyConfig implements Serializable {
+
+	private static final long serialVersionUID = 1593348076007277826L;
 
 	/** Properties for HTTP Proxy (null if disabled) */
 	private ProxyProperties httpProperties;

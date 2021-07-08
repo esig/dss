@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
+import eu.europa.esig.dss.spi.DSSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +103,7 @@ public class LdapURLUtils {
 				return false;
 			}
 			String subString = str.substring(i, i+3);
-			if (!subString.equals(URLDecoder.decode(subString, "UTF-8"))) {
+			if (!subString.equals(URLDecoder.decode(subString, DSSUtils.UTF8_ENCODING))) {
 				return true;
 			}
 		} catch (Exception e) {

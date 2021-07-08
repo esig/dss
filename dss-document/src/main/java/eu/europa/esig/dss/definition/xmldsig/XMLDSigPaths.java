@@ -28,6 +28,8 @@ import eu.europa.esig.dss.definition.AbstractPaths;
  */
 public class XMLDSigPaths extends AbstractPaths {
 
+	private static final long serialVersionUID = 7404631861282645939L;
+
 	/** The "Type" attribute value for a ds:Reference element referring an "ds:Object" element */
 	public static final String OBJECT_TYPE = "http://www.w3.org/2000/09/xmldsig#Object";
 

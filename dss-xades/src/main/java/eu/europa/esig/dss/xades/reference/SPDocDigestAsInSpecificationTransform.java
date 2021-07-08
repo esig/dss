@@ -11,6 +11,8 @@ import org.w3c.dom.Node;
  *
  */
 public class SPDocDigestAsInSpecificationTransform extends AbstractTransform {
+    
+    private static final long serialVersionUID = -2521900114294437390L;
 
     /** The SPDocDigestAsInSpecification algorithm URI */
     private static final String ALGORITHM_URI = DSSXMLUtils.SP_DOC_DIGEST_AS_IN_SPECIFICATION_ALGORITHM_URI;

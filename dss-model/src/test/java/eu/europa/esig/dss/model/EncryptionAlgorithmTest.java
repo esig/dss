@@ -36,9 +36,7 @@ public class EncryptionAlgorithmTest {
 
 	@Test
 	public void forNameException() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			EncryptionAlgorithm.forName("aaa");
-		});
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> EncryptionAlgorithm.forName("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
@@ -60,9 +58,7 @@ public class EncryptionAlgorithmTest {
 
 	@Test
 	public void forOIDException() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			EncryptionAlgorithm.forOID("aaa");
-		});
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> EncryptionAlgorithm.forOID("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 

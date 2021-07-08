@@ -193,7 +193,7 @@ public class OnlineOCSPSourceTest {
 		List<String> alternativeOCSPUrls = new ArrayList<>();
 		alternativeOCSPUrls.add("http://wrong.url.com");
 
-		RevocationSource<OCSP> currentOCSPSource = new AlternateUrlsSourceAdapter<OCSP>(ocspSource,
+		RevocationSource<OCSP> currentOCSPSource = new AlternateUrlsSourceAdapter<>(ocspSource,
 				alternativeOCSPUrls);
 		OCSPToken ocspToken = (OCSPToken) currentOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);

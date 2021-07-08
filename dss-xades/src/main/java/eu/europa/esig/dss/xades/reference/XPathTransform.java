@@ -35,6 +35,8 @@ import java.util.Objects;
  */
 public class XPathTransform extends ComplexTransform {
 
+	private static final long serialVersionUID = 4223069758436340714L;
+
 	/** The XPath expression to use */
 	protected final String xPathExpression;
 

@@ -74,6 +74,7 @@ public class MemoryDataLoader implements DataLoader {
 
 	@Override
 	public void setContentType(String contentType) {
+		throw new UnsupportedOperationException("Content type change is not supported by this implementation!");
 	}
 
 }

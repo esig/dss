@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.alert;
 
 import eu.europa.esig.dss.alert.handler.ThrowAlertExceptionHandler;
-import eu.europa.esig.dss.alert.status.Status;
 
 /**
  * The class throws an exception on a {@code Status} event
@@ -32,7 +31,7 @@ public class ExceptionOnStatusAlert extends AbstractStatusAlert {
 	 * The default constructor
 	 */
 	public ExceptionOnStatusAlert() {
-		super(new ThrowAlertExceptionHandler<Status>());
+		super(new ThrowAlertExceptionHandler<>());
 	}
 
 }

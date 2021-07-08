@@ -45,7 +45,7 @@ public final class RuleUtils {
 		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
 		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
 		Long convert = to.convert(value, from);
-		return convert.longValue();
+		return convert;
 	}
 
 	/**

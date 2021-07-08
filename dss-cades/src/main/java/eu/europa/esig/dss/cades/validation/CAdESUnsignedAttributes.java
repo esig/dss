@@ -35,6 +35,8 @@ import java.util.List;
  */
 public class CAdESUnsignedAttributes extends CAdESSigProperties {
 
+	private static final long serialVersionUID = -2908905249481936152L;
+
 	/**
 	 * The default constructor
 	 *

@@ -53,7 +53,7 @@ public class CommonCertificateSource implements CertificateSource {
 	/**
 	 * This object is used to match {@code CertificateToken}s and {@code CertificateRef}s
 	 */
-	protected final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
+	protected transient final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
 
 	/**
 	 * Map of entries, the key is a hash of the public key.

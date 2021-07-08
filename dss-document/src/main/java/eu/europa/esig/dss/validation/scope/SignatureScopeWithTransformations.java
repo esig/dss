@@ -30,6 +30,8 @@ import java.util.List;
  */
 public abstract class SignatureScopeWithTransformations extends SignatureScope {
 
+	private static final long serialVersionUID = -7049827869970167023L;
+
 	/** List of transform definitions */
 	private final List<String> transformations;
 

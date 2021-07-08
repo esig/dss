@@ -50,8 +50,8 @@ public class DSSSecureRandomProviderTest {
 
 	static Stream<Arguments> random(Object[] arr) {
 		List<Arguments> args = new ArrayList<>();
-		for (int i = 0; i < arr.length; i++) {
-			args.add(Arguments.of(arr[i], getRandomLength()));
+		for (Object o : arr) {
+			args.add(Arguments.of(o, getRandomLength()));
 		}
 		return args.stream();
 	}

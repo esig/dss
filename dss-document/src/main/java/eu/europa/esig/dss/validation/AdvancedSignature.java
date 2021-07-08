@@ -526,8 +526,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	byte[] getSignatureValue();
 
 	/**
-	 * Returns individual validation foreach reference (XAdES) or for the
-	 * message-imprint (CAdES)
+	 * Returns individual validation foreach reference (XAdES, JAdES) or for the message-imprint (CAdES)
 	 * 
 	 * @return a list with one or more {@code ReferenceValidation}
 	 */

@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.checks;
 
-import java.util.Date;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 
@@ -66,7 +65,7 @@ public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 		}
 
 		Integer tlVersion = currentTL.getVersion();
-		return (tlVersion != null) && (tlVersion.intValue() == version);
+		return (tlVersion != null) && (tlVersion == version);
 	}
 
 	@Override

@@ -81,11 +81,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			if (ASiCUtils.isASiCWithCAdES(filenames)) {
 				return true;
 			}
-			if (ASiCUtils.isASiCWithXAdES(filenames) ||
-					(ASiCUtils.areFilesContainMimetype(filenames) && ASiCUtils.isContainerOpenDocument(dssDocument))) {
-				return false;
-			}
-			return true;
+			// NOTE : areFilesContainMimetype check is executed in order to avoid documents reading
+			return !ASiCUtils.isASiCWithXAdES(filenames) &&
+					(!ASiCUtils.areFilesContainMimetype(filenames) || !ASiCUtils.isContainerOpenDocument(dssDocument));
 		}
 		return false;
 	}
@@ -168,7 +166,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 				timestampValidators.add(timestampValidator);
 			}
-			Collections.sort(timestampValidators, new TimestampValidatorComparator());
+			timestampValidators.sort(new TimestampValidatorComparator());
 		}
 		return timestampValidators;
 	}

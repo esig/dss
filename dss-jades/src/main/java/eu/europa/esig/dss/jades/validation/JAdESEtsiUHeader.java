@@ -39,6 +39,8 @@ import java.util.Map;
  */
 public class JAdESEtsiUHeader implements SignatureProperties<EtsiUComponent> {
 
+	private static final long serialVersionUID = 2141375341919119408L;
+
 	/** The JWS signature */
 	private final JWS jws;
 

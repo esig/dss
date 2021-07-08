@@ -38,7 +38,7 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
      * @param signature {@link DefaultAdvancedSignature} to validate
      * @param offlineCertificateVerifier {@link CertificateVerifier} offline copy of a used CertificateVerifier
      */
-    public BaselineRequirementsChecker(final AS signature, final CertificateVerifier offlineCertificateVerifier) {
+    protected BaselineRequirementsChecker(final AS signature, final CertificateVerifier offlineCertificateVerifier) {
         this.signature = signature;
         this.offlineCertificateVerifier = offlineCertificateVerifier;
     }

@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.service;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
  * Interface which allows to produce Nonce value.
  */
-public interface NonceSource {
+public interface NonceSource extends Serializable {
 
 	/**
 	 * This methods allows to retrieve an unique new value to be use as nonce.

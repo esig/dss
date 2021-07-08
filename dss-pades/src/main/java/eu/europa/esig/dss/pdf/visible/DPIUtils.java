@@ -55,8 +55,8 @@ public class DPIUtils {
 	 */
 	public static int getDpi(Integer dpi) {
 		int result = DPI;
-		if (dpi != null && dpi.intValue() > 0) {
-			result = dpi.intValue();
+		if (dpi != null && dpi > 0) {
+			result = dpi;
 		}
 		return result;
 	}

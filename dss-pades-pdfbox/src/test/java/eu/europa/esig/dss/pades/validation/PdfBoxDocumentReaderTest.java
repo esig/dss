@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PdfBoxDocumentReaderTest {
 
@@ -49,20 +48,14 @@ public class PdfBoxDocumentReaderTest {
 	
 	@Test
 	public void testPdfBoxUtilsEmptyDocument() throws Exception {
-		assertThrows(IOException.class, () ->  {
-			new PdfBoxDocumentReader(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "empty_doc"));
-		});
+		assertThrows(IOException.class, () -> new PdfBoxDocumentReader(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "empty_doc")));
 	}
 	
 	@Test
 	public void testPdfBoxUtilsNull() throws Exception {
-		Exception exception = assertThrows(NullPointerException.class, () ->  {
-			new PdfBoxDocumentReader((DSSDocument)null);
-		});
+		Exception exception = assertThrows(NullPointerException.class, () -> new PdfBoxDocumentReader((DSSDocument)null));
 		assertEquals("The document must be defined!", exception.getMessage());
-		exception = assertThrows(NullPointerException.class, () ->  {
-			new PdfBoxDocumentReader((byte[])null, null);
-		});
+		exception = assertThrows(NullPointerException.class, () -> new PdfBoxDocumentReader((byte[])null, null));
 		assertEquals("The document binaries must be defined!", exception.getMessage());
 	}
 }

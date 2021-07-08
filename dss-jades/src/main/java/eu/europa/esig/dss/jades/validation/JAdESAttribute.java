@@ -29,6 +29,8 @@ import java.util.Objects;
  */
 public class JAdESAttribute implements SignatureAttribute {
 
+	private static final long serialVersionUID = -5225041807617983947L;
+	
 	/** Name if the header */
 	protected String name;
 

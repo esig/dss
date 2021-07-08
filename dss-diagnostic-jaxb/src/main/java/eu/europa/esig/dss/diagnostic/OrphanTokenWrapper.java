@@ -96,7 +96,7 @@ public abstract class OrphanTokenWrapper<T extends XmlOrphanToken> {
 	
 	@Override
 	public String toString() {
-		return "OrphanTokenWrappper Class='" + getClass() + "', Id='" + getId() + "'";
+		return "OrphanTokenWrapper Class='" + getClass() + "', Id='" + getId() + "'";
 	}
 
 }

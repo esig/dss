@@ -46,9 +46,7 @@ public class ASiCECAdESSignOpenDocumentTest extends PKIFactoryAccess {
 		
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> {
-			service.getDataToSign(documentToSign, signatureParameters);
-		});
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> service.getDataToSign(documentToSign, signatureParameters));
 		assertEquals("Container type doesn't match", exception.getMessage());
 	}
 

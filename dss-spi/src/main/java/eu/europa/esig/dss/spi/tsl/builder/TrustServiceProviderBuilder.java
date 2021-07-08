@@ -31,7 +31,6 @@ import eu.europa.esig.dss.utils.Utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -297,15 +296,11 @@ public class TrustServiceProviderBuilder {
 	
 	private TimeDependentValues<TrustServiceStatusAndInformationExtensions> getUnmodifiableTimeDependentValues(
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> timeDependentValues) {
-		
 		List<TrustServiceStatusAndInformationExtensions> copyTSSAndIEs = new ArrayList<>();
-		
-		Iterator<TrustServiceStatusAndInformationExtensions> iterator = timeDependentValues.iterator();
-		while (iterator.hasNext()) {
-			TrustServiceStatusAndInformationExtensions status = iterator.next();
-			
-			TrustServiceStatusAndInformationExtensionsBuilder builder = 
-					new TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder();
+
+		for (TrustServiceStatusAndInformationExtensions status : timeDependentValues) {
+			TrustServiceStatusAndInformationExtensionsBuilder builder =
+					new TrustServiceStatusAndInformationExtensionsBuilder();
 			TrustServiceStatusAndInformationExtensions copyStatus = builder.setNames(getUnmodifiableMapWithLists(status.getNames()))
 					.setType(status.getType())
 					.setStatus(status.getStatus())

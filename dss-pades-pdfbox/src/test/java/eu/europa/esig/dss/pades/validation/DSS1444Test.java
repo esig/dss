@@ -148,10 +148,10 @@ public class DSS1444Test {
 		assertNotNull(xmlConclusion);
 		List<XmlMessage> messages = xmlConclusion.getErrors();
 		assertNotNull(messages);
-		for (int i = 0; i < messages.size(); i++) {
-			if (MessageTag.ASCCM_EAA_ANS.name().equals(messages.get(i).getKey())) {
+		for (XmlMessage message : messages) {
+			if (MessageTag.ASCCM_EAA_ANS.name().equals(message.getKey())) {
 				assertEquals(new I18nProvider().getMessage(MessageTag.ASCCM_EAA_ANS, EncryptionAlgorithm.PLAIN_ECDSA.getName(), MessageTag.ACCM_POS_SIG_SIG),
-						messages.get(i).getValue());
+						message.getValue());
 				return;
 			}
 		}

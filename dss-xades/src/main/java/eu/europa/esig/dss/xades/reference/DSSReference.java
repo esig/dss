@@ -23,12 +23,15 @@ package eu.europa.esig.dss.xades.reference;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Defines a ds:Reference element to be built
  */
-public class DSSReference {
+public class DSSReference implements Serializable {
+
+	private static final long serialVersionUID = 1121091037126466008L;
 
 	/** The Id attribute of the reference */
 	private String id;

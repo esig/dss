@@ -20,17 +20,20 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import java.util.List;
-
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Computes summary for TLValidationJob
  *
  */
-public class TLValidationJobSummary {
-	
+public class TLValidationJobSummary implements Serializable {
+
+	private static final long serialVersionUID = -1035891155378415013L;
+
 	/**
 	 * A list of LOTLs with a relationship between their TLs and pivots
 	 */

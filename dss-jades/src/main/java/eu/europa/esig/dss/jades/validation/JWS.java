@@ -26,6 +26,7 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +34,9 @@ import java.util.Objects;
 /**
  * Extension of a JSON web Signature according to RFC 7515
  */
-public class JWS extends JsonWebSignature {
+public class JWS extends JsonWebSignature implements Serializable {
+
+	private static final long serialVersionUID = -3465226120689258742L;
 
 	/**
 	 * The unprotected header map

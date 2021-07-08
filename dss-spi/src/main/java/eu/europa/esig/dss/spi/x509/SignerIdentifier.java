@@ -29,6 +29,7 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 
 import javax.security.auth.x500.X500Principal;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -36,7 +37,9 @@ import java.util.Arrays;
  * Represents an ASN.1 SignerId DTO
  *
  */
-public class SignerIdentifier {
+public class SignerIdentifier implements Serializable {
+
+	private static final long serialVersionUID = 8539151269599455910L;
 
 	/** The X500Principal name of the certificate issue */
 	private X500Principal issuerName;

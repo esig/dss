@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.service.http.proxy;
 
+import java.io.Serializable;
+
 /**
  * This class is a DTO which contains proxy properties for HTTP or HTTPS
  * 
  */
-public class ProxyProperties {
+public class ProxyProperties implements Serializable {
+
+	private static final long serialVersionUID = 1570253159682776873L;
 
 	/** The host to use */
 	private String host;

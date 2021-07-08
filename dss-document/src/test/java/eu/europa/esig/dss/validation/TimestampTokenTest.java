@@ -77,9 +77,7 @@ public class TimestampTokenTest {
 
 	@Test
 	public void incorrectTimestamp() throws Exception {
-		Exception exception = assertThrows(CMSException.class, () -> {
-			new TimestampToken(new byte[] { 1, 2, 3 }, TimestampType.ARCHIVE_TIMESTAMP);
-		});
+		Exception exception = assertThrows(CMSException.class, () -> new TimestampToken(new byte[] { 1, 2, 3 }, TimestampType.ARCHIVE_TIMESTAMP));
 		assertEquals("IOException reading content.", exception.getMessage());
 	}
 

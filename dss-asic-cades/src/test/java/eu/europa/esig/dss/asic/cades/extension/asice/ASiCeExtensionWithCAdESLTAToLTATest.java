@@ -141,9 +141,9 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
 		
 		List<DSSDocument> archiveManifests = asicValidator.getArchiveManifestDocuments();
 		assertTrue(Utils.isCollectionNotEmpty(archiveManifests));
-		
-		for (int ii = 0; ii < archiveManifests.size(); ii++) {
-			ManifestFile archiveManifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifests.get(ii));
+
+		for (DSSDocument archiveManifest : archiveManifests) {
+			ManifestFile archiveManifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
 			Digest archManifestSigDigest = getSignatureDigest(archiveManifestFile);
 			assertEquals(signatureDigest, Utils.toBase64(archManifestSigDigest.getValue()));
 		}

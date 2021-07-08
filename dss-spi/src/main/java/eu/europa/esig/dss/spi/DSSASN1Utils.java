@@ -1744,9 +1744,9 @@ public final class DSSASN1Utils {
 	 */
 	public static BasicOCSPResp[] toBasicOCSPResps(OCSPResponse[] ocspResponses) {
 		List<BasicOCSPResp> basicOCSPResps = new ArrayList<>();
-		for (int ii = 0; ii < ocspResponses.length; ii++) {
+		for (OCSPResponse ocspRespons : ocspResponses) {
 			try {
-				basicOCSPResps.add(toBasicOCSPResp(ocspResponses[ii]));
+				basicOCSPResps.add(toBasicOCSPResp(ocspRespons));
 			} catch (OCSPException e) {
 				LOG.warn("Error while converting OCSPResponse to BasicOCSPResp : {}", e.getMessage());
 				return null;
@@ -1763,8 +1763,8 @@ public final class DSSASN1Utils {
 	 */
 	public static BasicOCSPResp[] toBasicOCSPResps(BasicOCSPResponse[] basicOCSPResponses) {
 		List<BasicOCSPResp> basicOCSPResps = new ArrayList<>();
-		for (int ii = 0; ii < basicOCSPResponses.length; ii++) {
-			basicOCSPResps.add(new BasicOCSPResp(basicOCSPResponses[ii]));
+		for (BasicOCSPResponse basicOCSPRespons : basicOCSPResponses) {
+			basicOCSPResps.add(new BasicOCSPResp(basicOCSPRespons));
 		}
 		return basicOCSPResps.toArray(new BasicOCSPResp[0]);
 	}

@@ -25,13 +25,17 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.validation.DataIdentifier;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class describes the scope of the signature
+ *
  */
-public abstract class SignatureScope implements IdentifierBasedObject {
+public abstract class SignatureScope implements IdentifierBasedObject, Serializable {
+
+	private static final long serialVersionUID = -5579782848203348145L;
 
 	/**
 	 * The name of the item on which this signature scope applies

@@ -31,6 +31,8 @@ import java.util.Map;
  */
 public abstract class AbstractPdfDssDict implements PdfDssDict {
 
+	private static final long serialVersionUID = 625347967057384829L;
+
 	/** The map of CRL objects */
 	private final Map<Long, CRLBinary> crlMap;
 

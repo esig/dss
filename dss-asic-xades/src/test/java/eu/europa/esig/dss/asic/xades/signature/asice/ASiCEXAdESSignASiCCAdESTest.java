@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -34,6 +27,12 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ASiCEXAdESSignASiCCAdESTest extends PKIFactoryAccess {
 	
@@ -50,9 +49,7 @@ public class ASiCEXAdESSignASiCCAdESTest extends PKIFactoryAccess {
 		
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> {
-			service.getDataToSign(documentToSign, signatureParameters);
-		});
+		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> service.getDataToSign(documentToSign, signatureParameters));
 		assertEquals("Container type doesn't match", exception.getMessage());
 	}
 

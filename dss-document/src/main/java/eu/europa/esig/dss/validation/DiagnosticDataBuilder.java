@@ -308,7 +308,7 @@ public abstract class DiagnosticDataBuilder {
 		List<XmlCertificate> builtCertificates = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			List<CertificateToken> tokens = new ArrayList<>(certificates);
-			Collections.sort(tokens, new TokenComparator());
+			tokens.sort(new TokenComparator());
 			for (CertificateToken certificateToken : tokens) {
 				String id = certificateToken.getDSSIdAsString();
 				XmlCertificate xmlCertificate = xmlCertsMap.get(id);
@@ -349,7 +349,7 @@ public abstract class DiagnosticDataBuilder {
 		List<XmlRevocation> builtRevocations = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(revocations)) {
 			List<RevocationToken> tokens = new ArrayList<>(revocations);
-			Collections.sort(tokens, new TokenComparator());
+			tokens.sort(new TokenComparator());
 			List<String> uniqueIds = new ArrayList<>(); // CRL can contain multiple entries
 			for (RevocationToken revocationToken : tokens) {
 				String id = revocationToken.getDSSIdAsString();

@@ -29,6 +29,7 @@ import org.bouncycastle.asn1.DERSequence;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * SignedAssertions ::= SEQUENCE OF SignedAssertion
@@ -64,6 +65,12 @@ public class SignedAssertions extends ASN1Object {
         this.assertions = assertions;
     }
 
+    /**
+     * Local constructor from {@code ASN1Sequence}
+     *
+     * @param seq {@link ASN1Sequence}
+     */
+    @SuppressWarnings("rawtypes")
     private SignedAssertions(ASN1Sequence seq) {
         assertions = new ArrayList<>(seq.size());
         for (Enumeration e = seq.getObjects(); e.hasMoreElements();) {

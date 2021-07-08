@@ -3,10 +3,14 @@ package eu.europa.esig.dss.xades;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 
+import java.io.Serializable;
+
 /**
  * Allows creation of custom ds:Object element
  */
-public class DSSObject {
+public class DSSObject implements Serializable {
+
+    private static final long serialVersionUID = -4680201985310575707L;
 
     /**
      * Represents a content of the ds:Object element

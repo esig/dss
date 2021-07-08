@@ -23,8 +23,20 @@ package eu.europa.esig.dss.validation.scope;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
 
+/**
+ * This signature scope is used to refer a counter-signed SignatureValue
+ *
+ */
 public class CounterSignatureScope extends SignatureScope {
 
+    private static final long serialVersionUID = 8599151632129217473L;
+
+    /**
+     * Default constructor
+     *
+     * @param masterSignatureId {@link String}
+     * @param digest {@link Digest}
+     */
     public CounterSignatureScope(final String masterSignatureId, Digest digest) {
         super(masterSignatureId, digest);
     }

@@ -35,6 +35,8 @@ import java.util.Map.Entry;
  */
 public class JAdESSignedProperties implements SignatureProperties<JAdESAttribute> {
 
+	private static final long serialVersionUID = 5541470950403288039L;
+
 	/** Represent the protected header map */
 	private final Headers headers;
 

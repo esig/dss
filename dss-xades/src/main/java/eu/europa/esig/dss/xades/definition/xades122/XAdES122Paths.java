@@ -33,6 +33,8 @@ import eu.europa.esig.xmldsig.XSDAbstractUtils;
  */
 public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
 
+	private static final long serialVersionUID = 5349623288353583493L;
+
 	@Override
 	public DSSNamespace getNamespace() {
 		return XAdESNamespaces.XADES_122;

@@ -1,10 +1,14 @@
 package eu.europa.esig.dss.service.http.commons;
 
+import java.io.Serializable;
+
 /**
  * This object defines a configuration details for HTTP connection to the given host
  *
  */
-public class HostConnection {
+public class HostConnection implements Serializable {
+
+    private static final long serialVersionUID = -7172356669516643532L;
 
     /** The name of the remote host */
     private String host;

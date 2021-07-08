@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +114,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 
 	@Override
 	public void setContentType(String contentType) {
-		throw new UnsupportedOperationException("Not implemented");
+		throw new UnsupportedOperationException("Content type change is not supported by this implementation!");
 	}
 
 	/**

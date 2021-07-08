@@ -27,52 +27,104 @@ import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 
 import java.io.Serializable;
 
+/**
+ * This class represents a Certificate Reference entry extracted from a signature
+ *
+ */
 public class CertificateRef implements IdentifierBasedObject, Serializable {
 
 	private static final long serialVersionUID = -325165164194282066L;
 	
+	/** The digest of the certificate */
 	private Digest certDigest;
-	private SignerIdentifier signerIdentifier; // signature/timestamp source
-	private ResponderId responderId; // in case of OCSP response
-	
+
+	/** ASN.1 SignerId (signature or timestamp) */
+	private SignerIdentifier signerIdentifier;
+
+	/** ResponderId in case of OCSP response */
+	private ResponderId responderId;
+
+	/** The origin of the certificate reference */
 	private CertificateRefOrigin origin;
 	
+	/** An unique identifier of the reference */
 	private Identifier identifier;
 
+	/**
+	 * Gets the certificate digest
+	 *
+	 * @return {@link Digest}
+	 */
 	public Digest getCertDigest() {
 		return certDigest;
 	}
 
+	/**
+	 * Sets the certificate digest
+	 *
+	 * @param certDigest {@link Digest}
+	 */
 	public void setCertDigest(Digest certDigest) {
 		this.certDigest = certDigest;
 	}
 
+	/**
+	 * Gets the {@code SignerIdentifier} (for a reference extracted from a signature or timestamp, when present)
+	 *
+	 * @return {@link SignerIdentifier}
+	 */
 	public SignerIdentifier getCertificateIdentifier() {
 		return signerIdentifier;
 	}
 
+	/**
+	 * Sets the {@code SignerIdentifier}
+	 *
+	 * @param signerIdentifier {@link SignerIdentifier}
+	 */
 	public void setCertificateIdentifier(SignerIdentifier signerIdentifier) {
 		this.signerIdentifier = signerIdentifier;
 	}
 
+	/**
+	 * Gets the {@code ResponderId} (for a reference extracted from an OCSP response)
+	 *
+	 * @return {@link SignerIdentifier}
+	 */
 	public ResponderId getResponderId() {
 		return responderId;
 	}
 
+	/**
+	 * Sets the {@code ResponderId}
+	 *
+	 * @param responderId {@link ResponderId}
+	 */
 	public void setResponderId(ResponderId responderId) {
 		this.responderId = responderId;
 	}
 	
+	/**
+	 * Gets the certificate reference origin
+	 *
+	 * @return {@link CertificateRefOrigin}
+	 */
 	public CertificateRefOrigin getOrigin() {
 		return origin;
 	}
 	
+	/**
+	 * Sets the certificate reference origin
+	 *
+	 * @param origin {@link CertificateRefOrigin}
+	 */
 	public void setOrigin(CertificateRefOrigin origin) {
 		this.origin = origin;
 	}
 	
 	/**
 	 * Returns the certificate reference identifier
+	 *
 	 * @return {@link Identifier}
 	 */
 	@Override
@@ -85,6 +137,7 @@ public class CertificateRef implements IdentifierBasedObject, Serializable {
 	
 	/**
 	 * Returns the certificate reference {@link String} id
+	 *
 	 * @return {@link String} id
 	 */
 	public String getDSSIdAsString() {

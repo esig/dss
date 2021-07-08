@@ -281,7 +281,7 @@ public class TLValidationJobTest {
 		List<String> additionalServiceInfoUris = latest.getAdditionalServiceInfoUris();
 		assertThrows(UnsupportedOperationException.class, () -> additionalServiceInfoUris.add(key));
 		List<ConditionForQualifiers> conditionsForQualifiers = latest.getConditionsForQualifiers();
-		ConditionForQualifiers conditionForQualifiers = new ConditionForQualifiers(new CompositeCondition(), new ArrayList<String>());
+		ConditionForQualifiers conditionForQualifiers = new ConditionForQualifiers(new CompositeCondition(), new ArrayList<>());
 		assertThrows(UnsupportedOperationException.class, () -> conditionsForQualifiers.add(conditionForQualifiers));
 		Map<String, List<String>> latestNames = latest.getNames();
 		assertThrows(UnsupportedOperationException.class, () -> latestNames.put(key, emptyList));

@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,7 +32,9 @@ import java.util.List;
  * Represents the values of a SignaturePolicy
  *
  */
-public class SignaturePolicy {
+public class SignaturePolicy implements Serializable {
+
+	private static final long serialVersionUID = -7123856626729507608L;
 
 	/** The signature policy identifier */
 	private final String identifier;

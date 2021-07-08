@@ -206,7 +206,7 @@ public class CommonsDataLoader implements DataLoader {
 	/**
 	 * The trust strategy
 	 */
-	private TrustStrategy trustStrategy;
+	private transient TrustStrategy trustStrategy;
 
 	/**
 	 * Array of supported SSL protocols
@@ -221,17 +221,17 @@ public class CommonsDataLoader implements DataLoader {
 	/**
 	 * The hostname verifier
 	 */
-	private HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+	private transient HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
 
 	/**
 	 * The connection retry handler
 	 */
-	private HttpRequestRetryHandler retryHandler;
+	private transient HttpRequestRetryHandler retryHandler;
 
 	/**
 	 * The strategy to retry for unavailable services
 	 */
-	private ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
+	private transient ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
 
 	/**
 	 * The default constructor for CommonsDataLoader.

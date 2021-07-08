@@ -1478,8 +1478,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 					List<ValidationObjectType> validationObjects = getValidationObjects(signersDocument);
 					assertEquals(signatureScopes.size(), validationObjects.size());
-					for (int i = 0; i < signatureScopes.size(); i++) {
-						XmlSignatureScope xmlSignatureScope = signatureScopes.get(i);
+					for (XmlSignatureScope xmlSignatureScope : signatureScopes) {
 						XmlSignerData signerData = xmlSignatureScope.getSignerData();
 						assertNotNull(signerData);
 						XmlDigestAlgoAndValue xmlDigestAlgoAndValue = signerData.getDigestAlgoAndValue();

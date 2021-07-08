@@ -48,6 +48,9 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 
 	private static final Logger LOG = LoggerFactory.getLogger(XMLSignaturePolicyValidator.class);
 
+	/** The error key to be used for XML processing related issues */
+	protected static final String XML_ERROR_KEY = "xmlProcessing";
+
 	@Override
 	public boolean canValidate(SignaturePolicy signaturePolicy) {
 		if (signaturePolicy.getPolicyContent() != null) {
@@ -62,14 +65,14 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 
 		DSSDocument policyContent = signaturePolicy.getPolicyContent();
 		if (policyContent == null) {
-			validationResult.addError("general", "The signature policy content is not obtained.");
+			validationResult.addError(GENERAL_ERROR_KEY, "The signature policy content is not obtained.");
 			return validationResult;
 		}
 		validationResult.setIdentified(true);
 
 		Digest digest = signaturePolicy.getDigest();
 		if (digest == null) {
-			validationResult.addError("general", "The policy digest value is not defined.");
+			validationResult.addError(GENERAL_ERROR_KEY, "The policy digest value is not defined.");
 			return validationResult;
 		}
 		validationResult.setDigestAlgorithmsEqual(true);
@@ -88,7 +91,7 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 			} catch (Exception e) {
 				String errorMessage = String.format("Unable to perform transforms on an XML Policy. Reason : %s", e.getMessage());
 				LOG.warn(errorMessage, e);
-				validationResult.addError("xmlProcessing", errorMessage);
+				validationResult.addError(XML_ERROR_KEY, errorMessage);
 			}
 		} else {
 			recalculatedDigest = getComputedDigest(signaturePolicy.getPolicyContent(), digest.getAlgorithm());
@@ -99,7 +102,7 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 			if (digest.equals(recalculatedDigest)) {
 				validationResult.setDigestValid(true);
 			} else {
-				validationResult.addError("general",
+				validationResult.addError(GENERAL_ERROR_KEY,
 						"The policy digest value (" + Utils.toBase64(digest.getValue()) + ") does not match the re-calculated digest value ("
 								+ Utils.toBase64(recalculatedDigest.getValue()) + ").");
 			}

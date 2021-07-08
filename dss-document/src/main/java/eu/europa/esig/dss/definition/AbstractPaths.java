@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.definition;
 
+import java.io.Serializable;
+
 /**
  * Contains a list of common XML xpaths
  */
-public abstract class AbstractPaths {
+public abstract class AbstractPaths implements Serializable {
+
+	private static final long serialVersionUID = 4685307161693054765L;
 
 	/**
 	 * Builds the xpath expression to return entries of the {@code element}

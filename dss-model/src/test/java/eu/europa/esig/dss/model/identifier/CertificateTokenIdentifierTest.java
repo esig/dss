@@ -64,9 +64,7 @@ public class CertificateTokenIdentifierTest {
 
 	@Test
 	public void testWithNullValue() {
-		assertThrows(NullPointerException.class, () -> {
-			new CertificateTokenIdentifier(null);
-		});
+		assertThrows(NullPointerException.class, () -> new CertificateTokenIdentifier(null));
 	}
 
 }
