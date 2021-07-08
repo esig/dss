@@ -30,8 +30,11 @@ import java.awt.image.BufferedImage;
  */
 public class JavaDSSFontMetrics extends AbstractDSSFontMetrics {
 
-	/** Java FontMetrics */
-	private final FontMetrics fontMetrics;
+	/** The Java font to be used */
+	private Font javaFont;
+
+	/** Cached instance of font metrics */
+	private FontMetrics fontMetrics;
 
 	/**
 	 * Default constructor
@@ -39,26 +42,40 @@ public class JavaDSSFontMetrics extends AbstractDSSFontMetrics {
 	 * @param javaFont {@link Font}
 	 */
 	public JavaDSSFontMetrics(Font javaFont) {
-		this.fontMetrics = getFontMetrics(javaFont);
+		this.javaFont = javaFont;
 	}
 
-	private static FontMetrics getFontMetrics(Font font) {
+	private FontMetrics getFontMetrics(float fontSize) {
+		if (fontMetrics != null && javaFont.getSize() == fontSize) {
+			return fontMetrics;
+		}
+		this.javaFont = javaFont.deriveFont(fontSize);
 		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics g = img.getGraphics();
-		g.setFont(font);
-		FontMetrics fontMetrics = g.getFontMetrics(font);
+		g.setFont(javaFont);
+		this.fontMetrics = g.getFontMetrics(javaFont);
 		g.dispose();
 		return fontMetrics;
 	}
 
 	@Override
 	public float getWidth(String str, float size) {
-		return fontMetrics.stringWidth(str);
+		return getFontMetrics(size).stringWidth(str);
 	}
 
 	@Override
 	public float getHeight(String str, float size) {
-		return fontMetrics.getHeight() / 1.05f; // default height is too large
+		return getFontMetrics(size).getHeight() / 1.05f; // default height is too large
+	}
+
+	/**
+	 * Returns the max ascent for the given font {@code size}
+	 *
+	 * @param size font size
+	 * @return max ascent
+	 */
+	public float getMaxAscent(float size) {
+		return getFontMetrics(size).getMaxAscent();
 	}
 
 }

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
@@ -47,8 +46,7 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 		DSSFont dssFont = textParameters.getFont();
 
 		Font javaFont = dssFont.getJavaFont();
-		float properSize = dssFont.getSize()
-				* ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
+		float properSize = dssFont.getSize() * ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
 		Font properFont = javaFont.deriveFont(properSize);
 
 		return new JavaDSSFontMetrics(properFont);
@@ -63,7 +61,7 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 			image = DefaultImageDrawerUtils.toBufferedImage(parameters.getImage());
 		}
 		if (parameters.getTextParameters() != null && !parameters.getTextParameters().isEmpty()) {
-			textImage = DefaultImageDrawerUtils.createTextImage(parameters, dimensionAndPosition);
+			textImage = DefaultImageDrawerUtils.createTextImage(parameters, dimensionAndPosition, getDSSFontMetrics());
 		}
 		if (image == null && textImage == null) {
 			throw new IllegalArgumentException("Image or text shall be defined in order to build a visual signature!");
