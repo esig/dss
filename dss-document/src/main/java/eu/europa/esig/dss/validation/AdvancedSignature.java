@@ -474,22 +474,6 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	boolean areAllSelfSignedCertificates();
 
 	/**
-	 * This method adds to the {@code ValidationContext} all timestamps to be validated.
-	 *
-	 * @param validationContext
-	 *            {@code ValidationContext} to which the timestamps must be added
-	 */
-	void prepareTimestamps(ValidationContext validationContext);
-
-	/**
-	 * This method adds to the {@code ValidationContext} all counter signatures embedded into the current signature.
-	 *
-	 * @param validationContext
-	 *            {@code ValidationContext} to which the counter signature content must be added
-	 */
-	void prepareCounterSignatures(ValidationContext validationContext);
-
-	/**
 	 * Returns a message if the structure validation fails
 	 * 
 	 * @return a list of {@link String} error messages if validation fails,
