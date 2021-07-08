@@ -137,8 +137,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
             dimensionAndPosition.setTextSize(fitResult.getSize());
 
             final AnnotationBox textBox = fontMetrics.computeTextBoundaryBox(fitResult.getText(), fitResult.getSize());
-            float textHeight = textBox.getHeight() < estimatedTextBox.getHeight() ? textBox.getHeight() : estimatedTextBox.getHeight();
-            float textWidth = textBox.getWidth() < estimatedTextBox.getWidth() ? textBox.getWidth() : estimatedTextBox.getWidth();
+            float textHeight = Math.min(textBox.getHeight(), estimatedTextBox.getHeight());
+            float textWidth = Math.min(textBox.getWidth(), estimatedTextBox.getWidth());
             textHeight += padding * 2;
             textWidth += padding * 2;
 
@@ -311,6 +311,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
             }
         } else {
             estimatedTextBox = new AnnotationBox(0, 0, width - doublePadding, height - doublePadding);
+        }
+
+        if (estimatedTextBox.getWidth() <= 0 || estimatedTextBox.getHeight() <= 0) {
+            throw new IllegalArgumentException("Unable to create a visual signature. The signature field box is too small!");
         }
 
         return estimatedTextBox;

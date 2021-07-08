@@ -38,7 +38,7 @@ public final class TextFitter {
 		}
 		switch (textParameters.getTextWrapping()) {
 			case FILL_BOX:
-				float fontSize = getMaxFontSize(textBox, lines, fontMetrics);
+				float fontSize = getMaxPossibleFontSize(textBox, lines, fontMetrics);
 				return new Result(fontSize, textParameters.getText());
 			case FILL_BOX_AND_LINEBREAK:
 				return getBestMaxFontSize(textBox, lines, fontMetrics);
@@ -60,10 +60,10 @@ public final class TextFitter {
 	 * @param fontMetrics the font metrics to estimate line heights
 	 * @return the maximum font size that will fit {@code height}
 	 */
-	private static float getMaxFontSize(final AnnotationBox textBox, final List<String> lines, final DSSFontMetrics fontMetrics) {
+	private static float getMaxPossibleFontSize(final AnnotationBox textBox, final List<String> lines, final DSSFontMetrics fontMetrics) {
 		float maxFontSizeByHeight = getMaxFontSizeByHeight(textBox.getHeight(), lines, fontMetrics);
 		float maxFontSizeByWidth = getMaxFontSizeByWidth(textBox.getWidth(), lines, fontMetrics);
-		return maxFontSizeByHeight < maxFontSizeByWidth ? maxFontSizeByHeight : maxFontSizeByWidth;
+		return Math.min(maxFontSizeByHeight, maxFontSizeByWidth);
 	}
 
 	private static float getMaxFontSizeByHeight(float textBoxHeight, final List<String> lines, final DSSFontMetrics fontMetrics) {
@@ -113,9 +113,9 @@ public final class TextFitter {
 				}
 			}
 		}
-		float maxFontSize = maxFontSizeByHeight < maxFontSizeByWidth ? maxFontSizeByHeight : maxFontSizeByWidth;
+		float computedFontSize = Math.min(maxFontSizeByHeight, maxFontSizeByWidth);
 		String joinedText = Utils.joinStrings(wrappedLines, "\n");
-		return new Result(maxFontSize, joinedText);
+		return new Result(computedFontSize, joinedText);
 	}
 
 	private static int getMaxPossibleLinesNumber(final List<String> lines) {

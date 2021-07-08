@@ -1184,6 +1184,42 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		drawAndCompareVisually();
 	}
 
+	@Test
+	public void largeImageFillBoxWithLinebreaksTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png")));
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(50);
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(30);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
+				"Date: 2021.01.01 01:01:01 WET\n" +
+				"Reason: my-reason\n" +
+				"Location: my-location");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> drawAndCompareVisually());
+		assertEquals("Unable to create a visual signature. The signature field box is too small!", exception.getMessage());
+
+		// change zoom parameters
+		imageParameters.setZoom(25);
+		fieldParameters.setWidth(600);
+		fieldParameters.setHeight(120);
+
+		drawAndCompareVisually();
+	}
+
 	@Override
 	protected String getTestName() {
 		return testName;

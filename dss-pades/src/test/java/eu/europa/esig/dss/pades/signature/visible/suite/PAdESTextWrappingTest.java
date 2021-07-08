@@ -40,7 +40,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
         service = new PAdESService(getOfflineCertificateVerifier());
     }
 
-    //@Test
+    @Test
     public void testOverflow() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
 
@@ -64,7 +64,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
         super.signAndVerify();
     }
 
-    //@Test
+    @Test
     public void testFillBox() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
 
@@ -88,7 +88,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
         super.signAndVerify();
     }
 
-    //@Test
+    @Test
     public void testFillBoxAndLinebreak() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
 
@@ -112,7 +112,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
         super.signAndVerify();
     }
 
-    //@Test
+    @Test
     public void loremIpsumLinebreakTest() throws IOException {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
 
