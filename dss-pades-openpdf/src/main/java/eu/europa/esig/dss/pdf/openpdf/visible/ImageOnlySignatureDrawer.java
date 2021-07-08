@@ -66,7 +66,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 		image.setAbsolutePosition(x, y);
 		image.scaleAbsolute(width, height);
-		image.setRotationDegrees(360 - dimensionAndPosition.getGlobalRotation()); // opposite rotation
+		image.setRotationDegrees((float) (ImageRotationUtils.ANGLE_360 - dimensionAndPosition.getGlobalRotation())); // opposite rotation
 
 		PdfTemplate layer = appearance.getLayer(2);
 		Rectangle boundingBox = layer.getBoundingBox();
