@@ -32,8 +32,10 @@ import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
@@ -91,6 +93,10 @@ public class InfiniteLoopDSS621Test {
 
     		final PDFDocumentValidator signedDocumentValidator = new PDFDocumentValidator(signDocument);
     		signedDocumentValidator.setCertificateVerifier(certificateVerifier);
+
+			SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+			signaturePolicyProvider.setDataLoader(new IgnoreDataLoader());
+			signedDocumentValidator.setSignaturePolicyProvider(signaturePolicyProvider);
     		
     		List<PdfDssDict> dssDictionaries = signedDocumentValidator.getDssDictionaries();
     		assertEquals(1, dssDictionaries.size());

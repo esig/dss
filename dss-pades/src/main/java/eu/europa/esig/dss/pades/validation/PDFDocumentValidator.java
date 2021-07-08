@@ -189,7 +189,10 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
                     listOCSPSource.addAll(dssOCSPSource);
                     padesSignature.setDssOCSPSource(listOCSPSource);
 
-                    padesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
+                    if (certificateVerifier != null) {
+                        padesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
+                    }
+
                     signatures.add(padesSignature);
 
                 } catch (Exception e) {
