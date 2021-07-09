@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2020-12-14T15:38:59",
+    "ValidationDate" : "2021-07-09T08:02:39Z",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -41,14 +41,13 @@
       "crlUrl" : [ ],
       "ocspServerUrl" : [ ],
       "Source" : [ "OTHER" ],
-      "NotAfter" : "2047-07-04T07:57:24",
-      "NotBefore" : "2017-06-08T11:26:01",
+      "NotAfter" : "2047-07-04T07:57:24Z",
+      "NotBefore" : "2017-06-08T11:26:01Z",
       "PublicKeySize" : 2048,
       "PublicKeyEncryptionAlgo" : "RSA",
       "EntityKey" : "PK-3CFCA257859E202BCC83864D02B267B08A997C357AB98D923BBC63F00607C7B6",
       "KeyUsage" : [ "keyCertSign", "crlSign" ],
       "extendedKeyUsagesOid" : [ ],
-      "PSD2Info" : null,
       "IdPkixOcspNoCheck" : false,
       "BasicSignature" : {
         "EncryptionAlgoUsedToSignThisToken" : "RSA",
@@ -63,10 +62,7 @@
       "Trusted" : false,
       "SelfSigned" : false,
       "certificatePolicy" : [ ],
-      "qcStatementOid" : [ ],
-      "qcTypeOid" : [ ],
-      "QCLimitValue" : null,
-      "SemanticsIdentifier" : null,
+      "QcStatements" : null,
       "TrustedServiceProvider" : [ ],
       "CertificateRevocation" : [ ],
       "Base64Encoded" : null,
@@ -98,8 +94,8 @@
         "country" : null
       },
       "issuerId" : null,
-      "notBefore" : "2017-06-08T11:26:01",
-      "notAfter" : "2047-07-04T07:57:24",
+      "notBefore" : "2017-06-08T11:26:01Z",
+      "notAfter" : "2047-07-04T07:57:24Z",
       "keyUsage" : [ "keyCertSign", "crlSign" ],
       "extendedKeyUsage" : null,
       "ocspUrl" : null,
@@ -118,7 +114,7 @@
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2020-12-14T15:38:59"
+    "ValidationTime" : "2021-07-09T08:02:39Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {
@@ -127,17 +123,18 @@
         "Constraint" : [ {
           "Name" : {
             "value" : "Is the result of the Basic Building Block conclusive?",
-            "NameId" : "BBB_ACCEPT"
+            "Key" : "BBB_ACCEPT"
           },
           "Status" : "WARNING",
           "Error" : null,
           "Warning" : {
             "value" : "The result of the Basic Building Block is not conclusive!",
-            "NameId" : "BBB_ACCEPT_ANS"
+            "Key" : "BBB_ACCEPT_ANS"
           },
           "Info" : null,
           "AdditionalInfo" : null,
-          "Id" : null
+          "Id" : null,
+          "BlockType" : null
         } ],
         "Conclusion" : {
           "Indication" : "INDETERMINATE",
@@ -145,7 +142,7 @@
           "Errors" : [ ],
           "Warnings" : [ {
             "value" : "The result of the Basic Building Block is not conclusive!",
-            "NameId" : "BBB_ACCEPT_ANS"
+            "Key" : "BBB_ACCEPT_ANS"
           } ],
           "Infos" : null
         },
@@ -162,27 +159,28 @@
         "Constraint" : [ {
           "Name" : {
             "value" : "Can the certificate chain be built till a trust anchor?",
-            "NameId" : "BBB_XCV_CCCBB"
+            "Key" : "BBB_XCV_CCCBB"
           },
           "Status" : "NOT OK",
           "Error" : {
             "value" : "The certificate chain is not trusted, it does not contain a trust anchor.",
-            "NameId" : "BBB_XCV_CCCBB_ANS"
+            "Key" : "BBB_XCV_CCCBB_ANS"
           },
           "Warning" : null,
           "Info" : null,
           "AdditionalInfo" : null,
-          "Id" : null
+          "Id" : null,
+          "BlockType" : null
         } ],
         "Conclusion" : {
           "Indication" : "INDETERMINATE",
           "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
           "Errors" : [ {
             "value" : "The certificate chain is not trusted, it does not contain a trust anchor.",
-            "NameId" : "BBB_XCV_CCCBB_ANS"
+            "Key" : "BBB_XCV_CCCBB_ANS"
           } ],
-          "Warnings" : null,
-          "Infos" : null
+          "Warnings" : [ ],
+          "Infos" : [ ]
         },
         "Title" : "X509 Certificate Validation"
       },
@@ -197,10 +195,10 @@
         "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
         "Errors" : [ {
           "value" : "The certificate chain is not trusted, it does not contain a trust anchor.",
-          "NameId" : "BBB_XCV_CCCBB_ANS"
+          "Key" : "BBB_XCV_CCCBB_ANS"
         } ],
-        "Warnings" : null,
-        "Infos" : null
+        "Warnings" : [ ],
+        "Infos" : [ ]
       },
       "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
       "Type" : "CERTIFICATE"
