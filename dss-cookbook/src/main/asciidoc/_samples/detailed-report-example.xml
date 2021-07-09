@@ -1,0 +1,349 @@
+<DetailedReport ValidationTime="2021-07-09T10:04:33Z" xmlns="http://dss.esig.europa.eu/validation/detailed-report">
+    <Signature Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28">
+        <ValidationProcessBasicSignature Title="Validation Process for Basic Signatures">
+            <Constraint Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28-FC">
+                <Name Key="BSV_IFCRC">Is the result of the 'Format Checking' building block conclusive?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28-ISC">
+                <Name Key="BSV_IISCRC">Is the result of the 'Identification of Signing Certificate' building block conclusive?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28-VCI">
+                <Name Key="BSV_IVCIRC">Is the result of the 'Validation Context Initialization' building block conclusive?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28-XCV">
+                <Name Key="BSV_IXCVRC">Is the result of the 'X.509 Certificate Validation' building block conclusive?</Name>
+                <Status>WARNING</Status>
+                <Warning Key="BSV_IXCVRC_ANS">The result of the 'X.509 Certificate Validation' building block is not conclusive!</Warning>
+            </Constraint>
+            <Constraint Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28-XCV">
+                <Name Key="BSV_ISCRAVTC">Is the signing certificate not revoked at validation time?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28-XCV">
+                <Name Key="BSV_IVTAVRSC">Is the validation time in the validity range of the signing certificate?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28-CV">
+                <Name Key="BSV_ICVRC">Is the result of the 'Cryptographic Verification' building block conclusive?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28">
+                <Name Key="ADEST_ROBVPIIC">Is the result of the Basic Validation Process conclusive?</Name>
+                <Status>NOT OK</Status>
+                <Error Key="ADEST_ROBVPIIC_ANS">The result of the Basic validation process is not conclusive!</Error>
+                <AdditionalInfo>Basic Signature Validation process failed with INDETERMINATE/TRY_LATER indication</AdditionalInfo>
+            </Constraint>
+            <Conclusion>
+                <Indication>INDETERMINATE</Indication>
+                <SubIndication>TRY_LATER</SubIndication>
+                <Errors Key="BBB_XCV_SUB_ANS">The certificate validation is not conclusive!</Errors>
+                <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Errors>
+                <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Errors>
+            </Conclusion>
+            <ProofOfExistence>
+                <Time>2021-07-09T10:04:33Z</Time>
+            </ProofOfExistence>
+        </ValidationProcessBasicSignature>
+        <ValidationProcessLongTermData Title="Validation Process for Signatures with Time and Signatures with Long-Term Validation Data">
+            <Constraint>
+                <Name Key="LTV_ABSV">Is the result of the Basic Validation Process acceptable?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
+                <Status>NOT OK</Status>
+                <Error Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Error>
+                <AdditionalInfo>Certificate Id = C-CF2E8D7B9B949524B8CE689CFCF337A48BAE0C0D5FA5F8C894FC1D69227B1014</AdditionalInfo>
+            </Constraint>
+            <Conclusion>
+                <Indication>INDETERMINATE</Indication>
+                <SubIndication>TRY_LATER</SubIndication>
+                <Errors Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Errors>
+            </Conclusion>
+            <ProofOfExistence>
+                <Time>2021-07-09T10:04:33Z</Time>
+            </ProofOfExistence>
+        </ValidationProcessLongTermData>
+        <ValidationProcessArchivalData Title="Validation Process for Signatures with Archival Data">
+            <Constraint>
+                <Name Key="ARCH_LTVV">Is the result of the LTV validation process acceptable?</Name>
+                <Status>NOT OK</Status>
+                <Error Key="ARCH_LTVV_ANS">The result of the LTV validation process is not acceptable to continue the process!</Error>
+            </Constraint>
+            <Conclusion>
+                <Indication>INDETERMINATE</Indication>
+                <SubIndication>TRY_LATER</SubIndication>
+                <Errors Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Errors>
+            </Conclusion>
+            <ProofOfExistence>
+                <Time>2021-07-09T10:04:33Z</Time>
+            </ProofOfExistence>
+        </ValidationProcessArchivalData>
+        <ValidationSignatureQualification SignatureQualification="N/A" Title="Signature Qualification">
+            <Constraint>
+                <Name Key="QUAL_IS_ADES">Is the signature/seal an acceptable AdES digital signature (ETSI EN 319 102-1)?</Name>
+                <Status>WARNING</Status>
+                <Warning Key="QUAL_IS_ADES_IND">The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
+            </Constraint>
+            <Constraint>
+                <Name Key="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
+                <Status>NOT OK</Status>
+                <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+            </Constraint>
+            <Conclusion>
+                <Indication>FAILED</Indication>
+                <Errors Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Errors>
+                <Warnings Key="QUAL_IS_ADES_IND">The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
+            </Conclusion>
+        </ValidationSignatureQualification>
+        <Conclusion>
+            <Indication>INDETERMINATE</Indication>
+            <SubIndication>TRY_LATER</SubIndication>
+        </Conclusion>
+    </Signature>
+    <BasicBuildingBlocks Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28" Type="SIGNATURE">
+        <FC Title="Format Checking">
+            <Constraint>
+                <Name Key="BBB_FC_IEFF">Does the signature format correspond to an expected format?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_FC_ISD">Is the signature identification not ambiguous?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_FC_ISRIA">Is the signed references identification not ambiguous?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </FC>
+        <ISC Title="Identification of the Signing Certificate">
+            <Constraint>
+                <Name Key="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_ICS_ISACDP">Is the signed attribute: 'cert-digest' of the certificate present?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_ICS_ICDVV">Does the certificate digest value match a digest value found in the certificate reference(s)?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CertificateChain>
+                <ChainItem Id="C-CF2E8D7B9B949524B8CE689CFCF337A48BAE0C0D5FA5F8C894FC1D69227B1014">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="C-DD7496F8B6C574ECFA0B356A3D1A00DCFEC2111A3094B3B148A978D3C31F6126">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="C-DE4E0E6E69ED670AC0AE41C815735B21F9394EA8A202F2497510EAAF5A4F998F">
+                    <Source>TRUSTED_STORE</Source>
+                </ChainItem>
+            </CertificateChain>
+        </ISC>
+        <VCI Title="Validation Context Initialization">
+            <Constraint>
+                <Name Key="BBB_VCI_ISPK">Is the signature policy known?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </VCI>
+        <XCV Title="X509 Certificate Validation">
+            <Constraint>
+                <Name Key="BBB_XCV_CCCBB">Can the certificate chain be built till a trust anchor?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint Id="C-CF2E8D7B9B949524B8CE689CFCF337A48BAE0C0D5FA5F8C894FC1D69227B1014" BlockType="SUB_XCV">
+                <Name Key="BBB_XCV_SUB">Is the certificate validation conclusive?</Name>
+                <Status>NOT OK</Status>
+                <Error Key="BBB_XCV_SUB_ANS">The certificate validation is not conclusive!</Error>
+            </Constraint>
+            <Conclusion>
+                <Indication>INDETERMINATE</Indication>
+                <SubIndication>TRY_LATER</SubIndication>
+                <Errors Key="BBB_XCV_SUB_ANS">The certificate validation is not conclusive!</Errors>
+                <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Errors>
+                <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Errors>
+            </Conclusion>
+            <SubXCV Id="C-CF2E8D7B9B949524B8CE689CFCF337A48BAE0C0D5FA5F8C894FC1D69227B1014" TrustAnchor="false" SelfSigned="false" Title="Certificate">
+                <Constraint>
+                    <Name Key="QUAL_UNIQUE_CERT">Is the certificate unique?</Name>
+                    <Status>OK</Status>
+                </Constraint>
+                <Constraint>
+                    <Name Key="BBB_XCV_PSEUDO_USE">Is a pseudonym used?</Name>
+                    <Status>OK</Status>
+                </Constraint>
+                <Constraint>
+                    <Name Key="BBB_XCV_ISNSSC">Is certificate not self-signed?</Name>
+                    <Status>OK</Status>
+                </Constraint>
+                <Constraint>
+                    <Name Key="BBB_XCV_ICSI">Is the certificate signature intact?</Name>
+                    <Status>OK</Status>
+                </Constraint>
+                <Constraint>
+                    <Name Key="BBB_XCV_ISCGKU">Does the signer's certificate have an expected key-usage?</Name>
+                    <Status>OK</Status>
+                    <AdditionalInfo>Key usage : [NON_REPUDIATION]</AdditionalInfo>
+                </Constraint>
+                <Constraint>
+                    <Name Key="BBB_XCV_AIA_PRES">Is the authority info access present?</Name>
+                    <Status>OK</Status>
+                </Constraint>
+                <Constraint>
+                    <Name Key="BBB_XCV_REVOC_PRES">Is the revocation info access present?</Name>
+                    <Status>OK</Status>
+                </Constraint>
+                <Constraint>
+                    <Name Key="BBB_XCV_IRDPFC">Is the revocation data present for the certificate?</Name>
+                    <Status>NOT OK</Status>
+                    <Error Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Error>
+                </Constraint>
+                <Conclusion>
+                    <Indication>INDETERMINATE</Indication>
+                    <SubIndication>TRY_LATER</SubIndication>
+                    <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Errors>
+                </Conclusion>
+                <RFC Title="Revocation Freshness Checker">
+                    <Constraint>
+                        <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
+                        <Status>NOT OK</Status>
+                        <Error Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Error>
+                    </Constraint>
+                    <Conclusion>
+                        <Indication>INDETERMINATE</Indication>
+                        <SubIndication>TRY_LATER</SubIndication>
+                        <Errors Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Errors>
+                    </Conclusion>
+                </RFC>
+            </SubXCV>
+            <SubXCV Id="C-DD7496F8B6C574ECFA0B356A3D1A00DCFEC2111A3094B3B148A978D3C31F6126" TrustAnchor="false" SelfSigned="false" Title="Certificate">
+                <Constraint>
+                    <Name Key="BBB_XCV_ICSI">Is the certificate signature intact?</Name>
+                    <Status>OK</Status>
+                </Constraint>
+                <Constraint>
+                    <Name Key="BBB_XCV_IRDPFC">Is the revocation data present for the certificate?</Name>
+                    <Status>NOT OK</Status>
+                    <Error Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Error>
+                </Constraint>
+                <Conclusion>
+                    <Indication>INDETERMINATE</Indication>
+                    <SubIndication>TRY_LATER</SubIndication>
+                    <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Errors>
+                </Conclusion>
+                <RFC Title="Revocation Freshness Checker">
+                    <Constraint>
+                        <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
+                        <Status>NOT OK</Status>
+                        <Error Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Error>
+                    </Constraint>
+                    <Conclusion>
+                        <Indication>INDETERMINATE</Indication>
+                        <SubIndication>TRY_LATER</SubIndication>
+                        <Errors Key="BBB_XCV_IARDPFC_ANS">No acceptable revocation data for the certificate!</Errors>
+                    </Conclusion>
+                </RFC>
+            </SubXCV>
+            <SubXCV Id="C-DE4E0E6E69ED670AC0AE41C815735B21F9394EA8A202F2497510EAAF5A4F998F" TrustAnchor="true" SelfSigned="true" Title="Certificate">
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+            </SubXCV>
+        </XCV>
+        <CV Title="Cryptographic Verification">
+            <Constraint>
+                <Name Key="BBB_CV_IRDOF">Has the reference data object been found?</Name>
+                <Status>OK</Status>
+                <AdditionalInfo>Reference : JWS_SIGNING_INPUT_DIGEST</AdditionalInfo>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_CV_IRDOI">Is the reference data object intact?</Name>
+                <Status>OK</Status>
+                <AdditionalInfo>Reference : JWS_SIGNING_INPUT_DIGEST</AdditionalInfo>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_CV_ISI">Is the signature intact?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </CV>
+        <SAV Title="Signature Acceptance Validation">
+            <Constraint>
+                <Name Key="BBB_SAV_ISSV">Is the structure of the signature valid?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_ICS_ISASCP">Is the signed attribute: 'signing-certificate' present?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_ICS_ISASCPU">Is the signed attribute: 'signing-certificate' present only once?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_SAV_DSCACRCC">Does the 'Signing Certificate' attribute contain references only to the certificate chain?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="BBB_SAV_ISQPSTP">Is the signed qualifying property: 'signing-time' present?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Constraint>
+                <Name Key="ACCM">Are cryptographic constraints met for the signature creation?</Name>
+                <Status>OK</Status>
+                <AdditionalInfo>Signature algorithm RSA with SHA256 with key size 2048 at validation time : 2021-07-09 10:04</AdditionalInfo>
+            </Constraint>
+            <Constraint>
+                <Name Key="ACCM">Are cryptographic constraints met for the jws signing input?</Name>
+                <Status>OK</Status>
+                <AdditionalInfo>Digest algorithm SHA256 at validation time : 2021-07-09 10:04 for jws signing input</AdditionalInfo>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>RSA with SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Uri>
+                    <KeyLength>2048</KeyLength>
+                </Algorithm>
+                <NotAfter>2022-12-31T23:00:00Z</NotAfter>
+                <ValidationTime>2021-07-09T10:04:33Z</ValidationTime>
+                <ConcernedMaterial>S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28</ConcernedMaterial>
+            </CryptographicValidation>
+        </SAV>
+        <CertificateChain>
+            <ChainItem Id="C-CF2E8D7B9B949524B8CE689CFCF337A48BAE0C0D5FA5F8C894FC1D69227B1014">
+                <Source>SIGNATURE</Source>
+            </ChainItem>
+            <ChainItem Id="C-DD7496F8B6C574ECFA0B356A3D1A00DCFEC2111A3094B3B148A978D3C31F6126">
+                <Source>SIGNATURE</Source>
+            </ChainItem>
+            <ChainItem Id="C-DE4E0E6E69ED670AC0AE41C815735B21F9394EA8A202F2497510EAAF5A4F998F">
+                <Source>TRUSTED_STORE</Source>
+            </ChainItem>
+        </CertificateChain>
+        <Conclusion>
+            <Indication>INDETERMINATE</Indication>
+            <SubIndication>TRY_LATER</SubIndication>
+            <Errors Key="BBB_XCV_SUB_ANS">The certificate validation is not conclusive!</Errors>
+            <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Errors>
+            <Errors Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Errors>
+        </Conclusion>
+    </BasicBuildingBlocks>
+</DetailedReport>

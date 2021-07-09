@@ -1,6 +1,3 @@
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ValidationReport xmlns="http://uri.etsi.org/19102/v1.2.1#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns4="http://uri.etsi.org/02231/v2#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#">
     <SignatureValidationReport>
         <SignatureIdentifier id="S-08113A9BAB65F6271F837FF4992635CC725B49D27B1AED0D714EAD428BE98C6E">
@@ -408,4 +405,3 @@
         </ValidationObject>
     </SignatureValidationObjects>
 </ValidationReport>
-----

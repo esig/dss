@@ -1031,8 +1031,12 @@ You will find below a detailed description of each of these elements.
 
 This is a sample of the simple validation report:
 
-.Simple Report 
-include::_samples/simple-report-example.adoc[]
+.Simple Report
+
+[source,xml]
+----
+include::_samples/simple-report-example.xml[]
+----
 
 The result of the validation process is based on very complex rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
 
@@ -1040,8 +1044,12 @@ The result of the validation process is based on very complex rules. The purpose
 
 This is a sample of the detailed validation report. Its structure is based on the ETSI standard <<R09>> and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data. Some segments were deleted to make reading easier. They are marked by three dots:
 
-.Detailed Report 
-include::_samples/detailed-report-example.adoc[]
+.Detailed Report
+
+[source,xml]
+----
+include::_samples/detailed-report-example.xml[]
+----
 
 For example the Basic Building Blocks are divided into seven elements:
 
@@ -1073,7 +1081,11 @@ This is a data set constructed from the information contained in the signature i
 This is an example of the diagnostic data for a XAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
 
 .Diagnostic Data
-include::_samples/diagnostic-data-example.adoc[]
+
+[source,xml]
+----
+include::_samples/diagnostic-data-example.xml[]
+----
 
 ==== ETSI Validation Report
 
@@ -1082,7 +1094,11 @@ The ETSI Validation Report represents an implementation of TS 119 102-2 (cf. <<R
 This is an example of the ETSI validation report:
 
 .ETSI Validation Report (TS 119 102-2)
-include::_samples/etsi-validation-report-example.adoc[]
+
+[source,xml]
+----
+include::_samples/etsi-validation-report-example.xml[]
+----
 
 [[validationPolicy]]
 === Validation Policy
@@ -1152,7 +1168,11 @@ Cryptographic constraints define a list of acceptable cryptographic algorithms a
 The default XML validation policy is present below.
 
 .constraint.xml (default policy is provided in dss-policy-jaxb module)
-include::_samples/constraint.adoc[]
+
+[source,xml]
+----
+include::_samples/constraint.xml[]
+----
 
 == CAdES signature (CMS)
 
@@ -1621,7 +1641,11 @@ Three qualification levels are supported by DSS and can be obtained :
 An example of a produced Detailed Report you can see below:
 
 .Timestamp Detailed Report
-include::_samples/timestamp-detailed-report-example.adoc[]
+
+[source,xml]
+----
+include::_samples/timestamp-detailed-report-example.xml[]
+----
 
 == Available implementations of DSSDocument
 
