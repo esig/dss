@@ -46,13 +46,26 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An utils class to retrieve qc-statement from a certificate token
+ *
+ */
 public class QcStatementUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(QcStatementUtils.class);
 
+    /**
+     * Singleton
+     */
     private QcStatementUtils() {
     }
 
+    /**
+     * Extracts the QCStatements from a certificate token
+     *
+     * @param certToken {@link CertificateToken}
+     * @return {@link QcStatements}
+     */
     public static QcStatements getQcStatements(CertificateToken certToken) {
         final byte[] qcStatements = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
         if (Utils.isArrayNotEmpty(qcStatements)) {
@@ -62,6 +75,12 @@ public class QcStatementUtils {
         return null;
     }
 
+    /**
+     * Extracts the QCStatements from a qcStatementsSeq
+     *
+     * @param qcStatementsSeq {@link ASN1Sequence}
+     * @return {@link QcStatements}
+     */
     public static QcStatements getQcStatements(ASN1Sequence qcStatementsSeq) {
         if (qcStatementsSeq == null) {
             return null;

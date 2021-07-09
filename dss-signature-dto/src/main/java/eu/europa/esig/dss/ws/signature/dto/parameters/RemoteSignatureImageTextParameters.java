@@ -20,104 +20,207 @@
  */
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
-import java.io.Serializable;
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.ws.dto.RemoteColor;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * The signature parameters for text image creation
+ *
+ */
 @SuppressWarnings("serial")
 public class RemoteSignatureImageTextParameters implements Serializable {
 
+    /** The text bounding box background color */
 	private RemoteColor backgroundColor;
 
+	/** The Font document file */
     private RemoteDocument font;
 
+    /** The padding of the text boundary box */
     private Float padding;
 
+    /** The horizontal alignment of the text */
 	private SignerTextHorizontalAlignment signerTextHorizontalAlignment;
 
+    /** The vertical alignment of the text */
+    private SignerTextVerticalAlignment signerTextVerticalAlignment;
+
+    /** The text position relatively to the image (if present) */
 	private SignerTextPosition signerTextPosition;
 
-	private SignerTextVerticalAlignment signerTextVerticalAlignment;
-
+	/** The text size */
     private Integer size;
 
+    /** The text string */
     private String text;
 
+    /** The text color */
 	private RemoteColor textColor;
 
+    /**
+     * Gets the background color of text bounding box
+     *
+     * @return {@link RemoteColor}
+     */
 	public RemoteColor getBackgroundColor() {
         return this.backgroundColor;
     }
 
+    /**
+     * Sets the background color of text bounding box
+     *
+     * @param backgroundColor {@link RemoteColor}
+     */
 	public void setBackgroundColor(final RemoteColor backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
+    /**
+     * Gets the font document
+     *
+     * @return {@link RemoteDocument}
+     */
     public RemoteDocument getFont() {
         return this.font;
     }
 
+    /**
+     * Sets the font document
+     *
+     * @param font {@link RemoteDocument}
+     */
     public void setFont(final RemoteDocument font) {
         this.font = font;
     }
 
+    /**
+     * Gets text bounding box padding
+     *
+     * @return {@link Float}
+     */
     public Float getPadding() {
         return this.padding;
     }
 
+    /**
+     * Sets text bounding box padding
+     *
+     * @param padding {@link Float}
+     */
     public void setPadding(final Float padding) {
         this.padding = padding;
     }
 
+    /**
+     * Gets text horizontal alignment
+     *
+     * @return {@link SignerTextHorizontalAlignment}
+     */
 	public SignerTextHorizontalAlignment getSignerTextHorizontalAlignment() {
         return this.signerTextHorizontalAlignment;
     }
 
+    /**
+     * Sets text horizontal alignment
+     *
+     * @param signerTextHorizontalAlignment {@link SignerTextHorizontalAlignment}
+     */
 	public void setSignerTextHorizontalAlignment(final SignerTextHorizontalAlignment signerTextHorizontalAlignment) {
         this.signerTextHorizontalAlignment = signerTextHorizontalAlignment;
     }
 
+    /**
+     * Gets text vertical alignment
+     *
+     * @return {@link SignerTextHorizontalAlignment}
+     */
+    public SignerTextVerticalAlignment getSignerTextVerticalAlignment() {
+        return this.signerTextVerticalAlignment;
+    }
+
+    /**
+     * Sets text vertical alignment
+     *
+     * @param signerTextVerticalAlignment {@link SignerTextVerticalAlignment}
+     */
+    public void setSignerTextVerticalAlignment(final SignerTextVerticalAlignment signerTextVerticalAlignment) {
+        this.signerTextVerticalAlignment = signerTextVerticalAlignment;
+    }
+
+    /**
+     * Gets SingerText position relatively to an image
+     *
+     * @return {@link SignerTextPosition}
+     */
 	public SignerTextPosition getSignerTextPosition() {
         return this.signerTextPosition;
     }
 
+    /**
+     * Sets SingerText position relatively to an image
+     *
+     * @param signerTextPosition {@link SignerTextPosition}
+     */
 	public void setSignerTextPosition(final SignerTextPosition signerTextPosition) {
         this.signerTextPosition = signerTextPosition;
     }
 
-	public SignerTextVerticalAlignment getSignerTextVerticalAlignment() {
-        return this.signerTextVerticalAlignment;
-    }
-
-	public void setSignerTextVerticalAlignment(final SignerTextVerticalAlignment signerTextVerticalAlignment) {
-        this.signerTextVerticalAlignment = signerTextVerticalAlignment;
-    }
-
+    /**
+     * Gets the font size
+     *
+     * @return {@link Integer}
+     */
     public Integer getSize() {
         return this.size;
     }
 
+    /**
+     * Sets the font size
+     *
+     * @param size {@link Integer}
+     */
     public void setSize(final Integer size) {
         this.size = size;
     }
 
+    /**
+     * Gets the text string
+     *
+     * @return {@link String}
+     */
     public String getText() {
         return this.text;
     }
 
+    /**
+     * Sets the text string
+     *
+     * @param text {@link String}
+     */
     public void setText(final String text) {
         this.text = text;
     }
 
+    /**
+     * Gets the text color
+     *
+     * @return {@link RemoteColor}
+     */
 	public RemoteColor getTextColor() {
         return this.textColor;
     }
 
+    /**
+     * Sets the text color
+     *
+     * @param textColor {@link RemoteColor}
+     */
 	public void setTextColor(final RemoteColor textColor) {
         this.textColor = textColor;
     }

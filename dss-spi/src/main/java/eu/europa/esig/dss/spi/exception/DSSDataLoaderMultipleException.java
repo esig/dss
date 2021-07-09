@@ -31,9 +31,15 @@ import java.util.Map;
 public class DSSDataLoaderMultipleException extends DSSExternalResourceException {
 
 	private static final long serialVersionUID = 4981228392826668216L;
-	
+
+	/** A map between failed URLs and caused exceptions */
 	private final Map<String, Throwable> urlExceptionMap;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param urlExceptionMap a map between failed URLs and caused exceptions
+	 */
 	public DSSDataLoaderMultipleException(Map<String, Throwable> urlExceptionMap) {
 		this.urlExceptionMap = urlExceptionMap;
 	}

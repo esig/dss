@@ -22,6 +22,10 @@ package eu.europa.esig.dss.model.x509.revocation.crl;
 
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
+/**
+ * This interface represents a CRL token
+ *
+ */
 public interface CRL extends Revocation {
 
 }

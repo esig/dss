@@ -27,15 +27,23 @@ import eu.europa.esig.dss.definition.DSSAttribute;
  */
 public enum ManifestAttribute implements DSSAttribute {
 
+	/** version */
 	VERSION("version"),
 
+	/** full-path */
 	FULL_PATH("full-path"),
 
+	/** media-type */
 	MEDIA_TYPE("media-type");
 
 	/** The attribute name */
 	private final String attributeName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param attributeName {@link String}
+	 */
 	ManifestAttribute(String attributeName) {
 		this.attributeName = attributeName;
 	}

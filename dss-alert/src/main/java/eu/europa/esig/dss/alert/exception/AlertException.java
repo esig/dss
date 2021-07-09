@@ -28,18 +28,37 @@ public class AlertException extends RuntimeException {
 
 	private static final long serialVersionUID = 4633744799611311623L;
 
+    /**
+     * Empty constructor
+     */
 	public AlertException() {
         super();
     }
 
+    /**
+     * Constructor with a message
+     *
+     * @param message {@link String}
+     */
     public AlertException(String message) {
         super(message);
     }
 
+    /**
+     * Re-throwable constructor
+     *
+     * @param cause {@link Throwable}
+     */
     public AlertException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Re-throwable constructor with a custom message
+     *
+     * @param message {@link String}
+     * @param cause {@link Throwable}
+     */
     public AlertException(String message, Throwable cause) {
         super(message, cause);
     }

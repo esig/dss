@@ -25,8 +25,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.revocation.JdbcRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationException;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -142,7 +142,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 
 	@Override
 	protected RevocationToken<OCSP> buildRevocationTokenFromResult(JdbcCacheConnector.JdbcResultRecord resultRecord,
-				CertificateToken certificateToken, CertificateToken issuerCert) throws RevocationException {
+				CertificateToken certificateToken, CertificateToken issuerCert) throws DSSExternalResourceException {
 		try {
 			final byte[] data = (byte[]) resultRecord.get(SQL_FIND_QUERY_DATA);
 			final String url = (String) resultRecord.get(SQL_FIND_QUERY_LOC);
@@ -155,7 +155,8 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 			ocspToken.setExternalOrigin(RevocationOrigin.CACHED);
 			return ocspToken;
 		} catch (IOException | OCSPException e) {
-			throw new RevocationException("An error occurred during an attempt to obtain a revocation token");
+			throw new DSSExternalResourceException(String.format(
+					"An error occurred during an attempt to obtain a revocation token. Reason : %s", e.getMessage()), e);
 		}
 	}
 

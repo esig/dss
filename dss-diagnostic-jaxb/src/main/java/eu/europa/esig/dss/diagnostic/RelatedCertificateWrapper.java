@@ -20,26 +20,46 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Wrapper for a {@code XmlRelatedCertificate} object
+ *
+ */
 public class RelatedCertificateWrapper extends CertificateWrapper {
 	
+	/** Wrapped {@code XmlRelatedCertificate} */
 	private final XmlRelatedCertificate relatedCertificate;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param relatedCertificate {@link XmlRelatedCertificate}
+	 */
 	public RelatedCertificateWrapper(XmlRelatedCertificate relatedCertificate) {
 		super(relatedCertificate.getCertificate());
 		this.relatedCertificate = relatedCertificate;
 	}
 	
+	/**
+	 * Returns a list of certificate token origins
+	 *
+	 * @return a list of {@link CertificateOrigin}s
+	 */
 	public List<CertificateOrigin> getOrigins() {
 		return relatedCertificate.getOrigins();
 	}
 	
+	/**
+	 * Returns a list of certificate token references from the signature
+	 *
+	 * @return a list of {@link CertificateRefWrapper}s
+	 */
 	public List<CertificateRefWrapper> getReferences() {
 		List<CertificateRefWrapper> references = new ArrayList<>();
 		for (XmlCertificateRef certificateRef : relatedCertificate.getCertificateRefs()) {

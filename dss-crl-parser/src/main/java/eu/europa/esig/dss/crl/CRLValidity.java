@@ -97,6 +97,11 @@ public class CRLValidity {
 		this.crlBinary = crlBinary;
 	}
 
+	/**
+	 * Returns binary of the CRL
+	 *
+	 * @return {@link CRLBinary}
+	 */
 	public CRLBinary getCrlBinary() {
 		return crlBinary;
 	}

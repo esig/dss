@@ -30,10 +30,20 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles method logic to process {@code XmlFoundRevocations} and returns wrappers
+ *
+ */
 public class FoundRevocationsProxy {
 	
+	/** Wrapped {@code XmlFoundRevocations} */
 	private XmlFoundRevocations foundRevocations;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param foundRevocations {@link XmlFoundRevocations}
+	 */
 	public FoundRevocationsProxy(final XmlFoundRevocations foundRevocations) {
 		this.foundRevocations = foundRevocations;
 	}

@@ -23,6 +23,10 @@ package eu.europa.esig.dss.model.x509;
 import java.io.Serializable;
 import java.util.Comparator;
 
+/**
+ * This class is used to compare and sort tokens by their DSS identifier
+ *
+ */
 public class TokenComparator implements Comparator<Token>, Serializable {
 
 	private static final long serialVersionUID = -6552184098542873764L;

@@ -74,6 +74,7 @@ public interface ValidationContext {
 	 *
 	 * @param revocationToken an instance of {@code RevocationToken} revocation
 	 *                        tokens to verify
+	 * @param <R> {@link RevocationToken}
 	 */
 	<R extends Revocation> void addRevocationTokenForVerification(final RevocationToken<R> revocationToken);
 

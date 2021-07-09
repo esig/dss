@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.utils.Utils;
@@ -32,6 +27,15 @@ import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.trustedlist.jaxb.tsl.ServiceDigitalIdentityListType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+
+/**
+ * The class is used to convert {@code OtherTSLPointerType} to {@code OtherTSLPointer}
+ *
+ */
 public class OtherTSLPointerConverter implements Function<OtherTSLPointerType, OtherTSLPointer> {
 
 	@Override

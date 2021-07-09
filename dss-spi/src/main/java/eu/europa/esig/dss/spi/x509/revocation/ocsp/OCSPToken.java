@@ -217,10 +217,20 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		return signatureAlgorithm;
 	}
 
+	/**
+	 * Returns the {@code BasicOCSPResp}
+	 *
+	 * @return {@link BasicOCSPResp}
+	 */
 	public BasicOCSPResp getBasicOCSPResp() {
 		return basicOCSPResp;
 	}
 
+	/**
+	 * Returns the latest single response
+	 *
+	 * @return {@link SingleResp}
+	 */
 	public SingleResp getLatestSingleResp() {
 		return latestSingleResp;
 	}

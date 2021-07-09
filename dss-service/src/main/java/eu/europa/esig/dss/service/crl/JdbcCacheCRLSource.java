@@ -29,8 +29,8 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.revocation.JdbcRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationException;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -155,7 +155,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 
 	@Override
 	protected RevocationToken<CRL> buildRevocationTokenFromResult(JdbcCacheConnector.JdbcResultRecord resultRecord,
-				CertificateToken certificateToken, CertificateToken issuerCertificateToken) throws RevocationException {
+				CertificateToken certificateToken, CertificateToken issuerCertificateToken) throws DSSExternalResourceException {
 		try {
 			CRLBinary crlBinary = CRLUtils.buildCRLBinary((byte[]) resultRecord.get(SQL_FIND_QUERY_DATA));
 			CertificateToken cachedIssuerCertificate = DSSUtils.loadCertificate((byte[]) resultRecord.get(SQL_FIND_QUERY_ISSUER));
@@ -168,8 +168,8 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 			return crlToken;
 			
 		} catch (Exception e) {
-			throw new RevocationException(
-					String.format("An error occurred during an attempt to get a revocation token. Reason : %s", e.getMessage()), e);
+			throw new DSSExternalResourceException(String.format(
+					"An error occurred during an attempt to get a revocation token. Reason : %s", e.getMessage()), e);
 		}
 	}
 

@@ -50,10 +50,14 @@ import java.util.Objects;
 
 import static eu.europa.esig.dss.spi.OID.adbe_revocationInfoArchival;
 
+/**
+ * Extracts timestamps for a PAdES document
+ */
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
 
-    private final transient List<PdfRevision> documentRevisions;
+    /** List of {@link PdfRevision}s */
+    private final List<PdfRevision> documentRevisions;
 
     /**
      * This variable contains the list of embedded document timestamps.

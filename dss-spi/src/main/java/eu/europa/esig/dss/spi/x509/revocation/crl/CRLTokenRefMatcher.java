@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import java.util.Arrays;
-
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -31,6 +29,12 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationTokenRefMatcher;
 
+import java.util.Arrays;
+
+/**
+ * This class is used to match a CRL with a reference
+ *
+ */
 public class CRLTokenRefMatcher implements RevocationTokenRefMatcher<CRL> {
 
 	@Override

@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
+import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,19 +31,28 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
-import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
-
+/**
+ * The class is used to extract language based values
+ *
+ */
 public class InternationalNamesTypeConverter implements Function<InternationalNamesType, Map<String, List<String>>> {
 
+	/** The predicate to be used */
 	private final Predicate<String> predicate;
 
+	/**
+	 * Default constructor (selects all)
+	 */
 	public InternationalNamesTypeConverter() {
 		// select all
 		this(x -> true);
 	}
 
+	/**
+	 * Default constructor with a filter predicate
+	 *
+	 * @param predicate {@link Predicate}
+	 */
 	public InternationalNamesTypeConverter(Predicate<String> predicate) {
 		super();
 		this.predicate = predicate;

@@ -20,16 +20,27 @@
  */
 package eu.europa.esig.dss.asic.common.signature.asics;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 
+import java.util.Date;
+import java.util.List;
+
+/**
+ * This class is used to get DataToSign for ASiC-S container
+ *
+ */
 public abstract class AbstractGetDataToSignASiCS {
 
-	/* In case of multi-files and ASiC-S, we need to create a zip with all files to be signed */
+	/**
+	 * Creates a zip with all files to be signed
+	 *
+	 * @param documents a list of {@link DSSDocument}s
+	 * @param signingDate {@link Date}
+	 * @param zipComment {@link String}
+	 * @return {@link DSSDocument}
+	 */
 	protected DSSDocument createPackageZip(List<DSSDocument> documents, Date signingDate, String zipComment) {
 		DSSDocument packageZip = ZipUtils.getInstance().createZipArchive(documents, signingDate, zipComment);
 		packageZip.setName(ASiCUtils.PACKAGE_ZIP);

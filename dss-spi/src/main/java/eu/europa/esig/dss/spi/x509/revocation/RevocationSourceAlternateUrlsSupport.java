@@ -20,11 +20,16 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
-import java.util.List;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
+import java.util.List;
+
+/**
+ * This interface provides a method to retrieve a revocation data with a list of alternative URL access points
+ *
+ * @param <R> {@code Revocation}
+ */
 public interface RevocationSourceAlternateUrlsSupport<R extends Revocation> extends RevocationSource<R> {
 
 	/**
@@ -43,6 +48,7 @@ public interface RevocationSourceAlternateUrlsSupport<R extends Revocation> exte
 	 * @return {@code RevocationToken} containing information about the validity of
 	 *         the cert
 	 */
-	RevocationToken<R> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls);
+	RevocationToken<R> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken,
+										  List<String> alternativeUrls);
 			
 }

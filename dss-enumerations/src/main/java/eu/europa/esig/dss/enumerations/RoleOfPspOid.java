@@ -56,9 +56,18 @@ public enum RoleOfPspOid implements OidDescription {
 	 */
 	PSP_IC("psp-ic", "0.4.0.19495.1.4");
 
+	/** The name of the PSP role */
 	private final String description;
+
+	/** The OID of the PSP role */
 	private final String oid;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param description {@link String} name
+	 * @param oid {@link String}
+	 */
 	RoleOfPspOid(String description, String oid) {
 		this.description = description;
 		this.oid = oid;
@@ -74,6 +83,12 @@ public enum RoleOfPspOid implements OidDescription {
 		return description;
 	}
 
+	/**
+	 * Returns a {@code RoleOfPspOid} by the given OID
+	 *
+	 * @param oid {@link String} to get {@link RoleOfPspOid} for
+	 * @return {@link RoleOfPspOid}
+	 */
 	public static RoleOfPspOid fromOid(String oid) {
 		for (RoleOfPspOid role : RoleOfPspOid.values()) {
 			if (role.oid.equals(oid)) {

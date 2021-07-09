@@ -43,9 +43,18 @@ public enum QCType implements OidDescription {
 	 */
 	QCT_WEB("qc-type-web", "0.4.0.1862.1.6.3");
 
+	/** The QCType description */
 	private final String description;
+
+	/** The QCType OID */
 	private final String oid;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param description {@link String}
+	 * @param oid {@link String}
+	 */
 	QCType(String description, String oid) {
 		this.description = description;
 		this.oid = oid;
@@ -61,6 +70,12 @@ public enum QCType implements OidDescription {
 		return description;
 	}
 
+	/**
+	 * Returns a {@code QCType} by the given OID, if exists
+	 *
+	 * @param oid {@link String} to get {@link QCType} for
+	 * @return {@link QCType} if exists, NULL otherwise
+	 */
 	public static QCType fromOid(String oid)  {
 		for (QCType type : QCType.values()) {
 			if (type.getOid().equals(oid)) {
@@ -69,4 +84,5 @@ public enum QCType implements OidDescription {
 		}
 		return null;
 	}
+
 }

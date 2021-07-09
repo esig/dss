@@ -87,74 +87,164 @@ public class QcStatements {
      */
     private PSD2QcType psd2QcType;
 
+    /**
+     * Gets if the certificate is qc-compliant
+     *
+     * @return TRUE if qc-compliance extension is present, FALSE otherwise
+     */
     public boolean isQcCompliance() {
         return qcCompliance;
     }
 
+    /**
+     * Sets if the qc-compliance extension is present
+     *
+     * @param qcCompliance if qc-compliance extension is present
+     */
     public void setQcCompliance(boolean qcCompliance) {
         this.qcCompliance = qcCompliance;
     }
 
+    /**
+     * Gets the qc-limit-value
+     *
+     * @return {@link QCLimitValue}
+     */
     public QCLimitValue getQcLimitValue() {
         return qcLimitValue;
     }
 
+    /**
+     * Sets the qc-limit-value
+     *
+     * @param qcLimitValue {@link QCLimitValue}
+     */
     public void setQcLimitValue(QCLimitValue qcLimitValue) {
         this.qcLimitValue = qcLimitValue;
     }
 
+    /**
+     * Gets the qc-eu-retention-period
+     *
+     * @return {@link Integer}
+     */
     public Integer getQcEuRetentionPeriod() {
         return qcEuRetentionPeriod;
     }
 
+    /**
+     * Sets the qc-eu-retention-period
+     *
+     * @param qcEuRetentionPeriod {@link Integer}
+     */
     public void setQcEuRetentionPeriod(Integer qcEuRetentionPeriod) {
         this.qcEuRetentionPeriod = qcEuRetentionPeriod;
     }
 
+    /**
+     * Gets if the certificate is qc-qscd
+     *
+     * @return TRUE if the qc-qscd extension is present, FALSE otherwise
+     */
     public boolean isQcQSCD() {
         return qcQSCD;
     }
 
+    /**
+     * Sets if the certificate is qc-qscd
+     *
+     * @param qcQSCD if the qc-qscd extension is present
+     */
     public void setQcQSCD(boolean qcQSCD) {
         this.qcQSCD = qcQSCD;
     }
 
+    /**
+     * Gets the qc-eu-pds
+     *
+     * @return a list of {@link PdsLocation}s
+     */
     public List<PdsLocation> getQcEuPDS() {
         return qcEuPDS;
     }
 
+    /**
+     * Sets the qc-eu-pds
+     *
+     * @param qcEuPDS a list of {@link PdsLocation}s
+     */
     public void setQcEuPDS(List<PdsLocation> qcEuPDS) {
         this.qcEuPDS = qcEuPDS;
     }
 
+    /**
+     * Gets a list of {@code QCType}s
+     *
+     * @return a list of {@link QCType}s
+     */
     public List<QCType> getQcTypes() {
         return qcTypes;
     }
 
+    /**
+     * Sets a list of {@code QCType}s
+     *
+     * @param qcTypes a list of {@link QCType}s
+     */
     public void setQcTypes(List<QCType> qcTypes) {
         this.qcTypes = qcTypes;
     }
 
+    /**
+     * Gets qc-legislation-country-codes
+     *
+     * @return a list of {@link String} country codes
+     */
     public List<String> getQcLegislationCountryCodes() {
         return qcLegislationCountryCodes;
     }
 
+    /**
+     * Sets qc-legislation-country-codes
+     *
+     * @param qcLegislationCountryCodes a list of {@link String} country codes
+     */
     public void setQcLegislationCountryCodes(List<String> qcLegislationCountryCodes) {
         this.qcLegislationCountryCodes = qcLegislationCountryCodes;
     }
 
+    /**
+     * Gets the qc-semantics-identifier
+     *
+     * @return {@link SemanticsIdentifier}
+     */
     public SemanticsIdentifier getQcSemanticsIdentifier() {
         return qcSemanticsIdentifier;
     }
 
+    /**
+     * Sets the qc-semantics-identifier
+     *
+     * @param qcSemanticsIdentifier {@link SemanticsIdentifier}
+     */
     public void setQcSemanticsIdentifier(SemanticsIdentifier qcSemanticsIdentifier) {
         this.qcSemanticsIdentifier = qcSemanticsIdentifier;
     }
 
+    /**
+     * Gets the psd2-qc-type
+     *
+     * @return {@link PSD2QcType}
+     */
     public PSD2QcType getPsd2QcType() {
         return psd2QcType;
     }
 
+    /**
+     * Sets the psd2-qc-type
+     *
+     * @param psd2QcType {@link PSD2QcType}
+     */
     public void setPsd2QcType(PSD2QcType psd2QcType) {
         this.psd2QcType = psd2QcType;
     }

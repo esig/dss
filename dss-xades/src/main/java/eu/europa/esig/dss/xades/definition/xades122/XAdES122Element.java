@@ -218,11 +218,20 @@ public enum XAdES122Element implements XAdESElement {
 
 	XML_TIMESTAMP("XMLTimeStamp");
 
+	/** An error message */
 	private static final String NOT_SUPPORTED_XADES_122 = "Element not supported by " + XAdESNamespaces.XADES_122.getUri();
 
+	/** Namespace */
 	private final DSSNamespace namespace;
+
+	/** The tag name */
 	private final String tagName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param tagName {@link String}
+	 */
 	XAdES122Element(String tagName) {
 		this.tagName = tagName;
 		this.namespace = XAdESNamespaces.XADES_122;

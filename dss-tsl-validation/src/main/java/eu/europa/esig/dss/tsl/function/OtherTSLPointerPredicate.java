@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import java.util.function.Predicate;
-
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 
+import java.util.function.Predicate;
+
+/**
+ * A predicate allowing to filter TSL pointers
+ *
+ */
 public interface OtherTSLPointerPredicate extends Predicate<OtherTSLPointerType> {
 
 }

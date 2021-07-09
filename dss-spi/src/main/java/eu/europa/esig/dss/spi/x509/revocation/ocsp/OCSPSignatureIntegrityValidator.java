@@ -20,15 +20,25 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.security.PublicKey;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 
+import java.security.PublicKey;
+
+/**
+ * This validator is used to verify integrity of the OCSP token signature
+ *
+ */
 public class OCSPSignatureIntegrityValidator extends SignatureIntegrityValidator {
-	
+
+	/** OCSPToken in question */
 	private final OCSPToken ocspToken;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param ocspToken {@link OCSPToken}
+	 */
 	public OCSPSignatureIntegrityValidator(final OCSPToken ocspToken) {
 		this.ocspToken = ocspToken;
 	}

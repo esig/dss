@@ -68,6 +68,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * The class converts {@code TSPServiceType} to {@code TrustService}
+ *
+ */
 public class TrustServiceConverter implements Function<TSPServiceType, TrustService> {
 
 	@Override
@@ -220,7 +224,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 		return qualifiers;
 	}
 
-	protected Condition getCondition(CriteriaListType criteriaList) {
+	private Condition getCondition(CriteriaListType criteriaList) {
 		Assert matchingCriteriaIndicator = criteriaList.getAssert();
 		CompositeCondition condition = new CompositeCondition(matchingCriteriaIndicator);
 

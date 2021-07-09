@@ -29,6 +29,11 @@ public class InvalidPasswordException extends DSSException {
 
 	private static final long serialVersionUID = -624171256740572085L;
 
+	/**
+	 * Default constructor with a message
+	 *
+	 * @param message {@link String}
+	 */
 	public InvalidPasswordException(String message) {
 		super(message);
 	}

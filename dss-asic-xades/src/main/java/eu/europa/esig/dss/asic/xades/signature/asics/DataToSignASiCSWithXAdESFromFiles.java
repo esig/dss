@@ -20,26 +20,43 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * This class is used to get DataToSign for ASiC-S with XAdES container from files
+ *
+ */
 public class DataToSignASiCSWithXAdESFromFiles extends AbstractGetDataToSignASiCSWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 
+	/** List of files ot be signed */
 	private final List<DSSDocument> filesToBeSigned;
+
+	/** The signing time */
 	private final Date signingDate;
+
+	/** Asic parameters */
 	private final ASiCParameters asicParameters;
 
+	/** Cached list of signed documents */
 	private List<DSSDocument> signedDocuments;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param filesToBeSigned a list of {@link DSSDocument}s
+	 * @param signingDate {@link Date}
+	 * @param asicParameters {@link ASiCParameters}
+	 */
 	public DataToSignASiCSWithXAdESFromFiles(List<DSSDocument> filesToBeSigned, Date signingDate, ASiCParameters asicParameters) {
 		this.filesToBeSigned = filesToBeSigned;
 		this.signingDate = signingDate;

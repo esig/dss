@@ -26,6 +26,10 @@ import eu.europa.esig.dss.pdf.PAdESConstants;
 
 import java.util.Date;
 
+/**
+ * Parameters for a PAdES timestamp creation
+ *
+ */
 @SuppressWarnings("serial")
 public class PAdESTimestampParameters extends CAdESTimestampParameters implements PAdESCommonParameters {
 	

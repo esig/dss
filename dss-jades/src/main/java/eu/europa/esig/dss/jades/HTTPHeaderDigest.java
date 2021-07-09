@@ -31,7 +31,8 @@ import java.util.Objects;
  */
 @SuppressWarnings("serial")
 public class HTTPHeaderDigest extends HTTPHeader {
-	
+
+	/** The message body content document */
 	private final DSSDocument messageBodyDocument;
 
 	/**

@@ -20,10 +20,18 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
+/**
+ * This predicate allows filtering of TSL pointers by an XML MimeType
+ *
+ */
 public final class XMLOtherTSLPointer extends MimetypeOtherTSLPointer {
 
+	/** The XML MimeType */
 	private static final String EXPECTED_MIMETYPE = "application/vnd.etsi.tsl+xml";
 
+	/**
+	 * Default constructor
+	 */
 	public XMLOtherTSLPointer() {
 		super(EXPECTED_MIMETYPE);
 	}

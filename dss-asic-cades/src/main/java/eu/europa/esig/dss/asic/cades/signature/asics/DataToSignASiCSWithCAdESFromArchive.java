@@ -47,6 +47,12 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 	/** The list of timestamp documents */
 	private final List<DSSDocument> embeddedTimestamps;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param result {@link ASiCExtractResult}
+	 * @param asicParameters {@link ASiCParameters}
+	 */
 	public DataToSignASiCSWithCAdESFromArchive(final ASiCExtractResult result, final ASiCParameters asicParameters) {
 		super(asicParameters);
 		this.asicContainer = result.getAsicContainer();

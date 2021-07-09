@@ -302,7 +302,10 @@ public abstract class XAdESBuilder {
 		inMemoryDocument.setMimeType(MimeType.XML);
 		return inMemoryDocument;
 	}
-	
+
+	/**
+	 * This method is used to align children indents
+	 */
 	protected abstract void alignNodes();
 	
 	/**

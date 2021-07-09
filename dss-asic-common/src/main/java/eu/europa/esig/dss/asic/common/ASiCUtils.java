@@ -556,6 +556,7 @@ public final class ASiCUtils {
 	/**
 	 * Checks if the manifestFile covers a signature
 	 *
+	 * @param manifestFile {@link ManifestFile}
 	 * @return TRUE if manifest entries contain a signature, FALSE otherwise
 	 */
 	public static boolean coversSignature(ManifestFile manifestFile) {

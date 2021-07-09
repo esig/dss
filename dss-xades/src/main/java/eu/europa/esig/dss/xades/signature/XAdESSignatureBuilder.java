@@ -90,32 +90,45 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 */
 	protected DSSDocument document;
 
+	/** The canonicalication method used for KeyInfo signing */
 	protected String keyInfoCanonicalizationMethod;
+
+	/** The canonicalication method used for SignedInfo signing */
 	protected String signedInfoCanonicalizationMethod;
+
+	/** The canonicalication method used for SignedProperties signing */
 	protected String signedPropertiesCanonicalizationMethod;
 
+	/** The deterministic Id used for elements creation */
 	protected final String deterministicId;
 
-	/*
-	 * This variable represents the current DOM signature object.
-	 */
+	/** This variable represents the current DOM signature object. */
 	protected Element signatureDom;
 
+	/** Cached KeyInfo element */
 	protected Element keyInfoDom;
+	/** Cached SignedInfo element */
 	protected Element signedInfoDom;
+	/** Cached SignatureValue element */
 	protected Element signatureValueDom;
+	/** Cached QualifyingProperties element */
 	protected Element qualifyingPropertiesDom;
+	/** Cached SignedProperties element */
 	protected Element signedPropertiesDom;
+	/** Cached SignedSignatureProperties element */
 	protected Element signedSignaturePropertiesDom;
+	/** Cached SignedDataObjectProperties element */
 	protected Element signedDataObjectPropertiesDom;
+	/** Cached UnsignedSignatureProperties element */
 	protected Element unsignedSignaturePropertiesDom;
 
-	/**
-	 * id-suffixes for DOM elements
-	 */
+	/** Id-suffix for KeyInfo element */
 	protected static final String KEYINFO_SUFFIX = "keyInfo-";
+	/** Id-suffix for Timestamp element */
 	protected static final String TIMESTAMP_SUFFIX = "TS-";
+	/** Id-suffix for SignatureValue element */
 	protected static final String VALUE_SUFFIX = "value-";
+	/** Id-suffix for Signature element */
 	protected static final String XADES_SUFFIX = "xades-";
 
 	/**
@@ -295,9 +308,18 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 	}
 
+	/**
+	 * This method is used to incorporate the provided documents within the final file
+	 */
 	protected void incorporateFiles() {
+		// not implemented by default
 	}
 
+	/**
+	 * Builds an empty {@code Document}
+	 *
+	 * @return {@link Document}
+	 */
 	protected Document buildRootDocumentDom() {
 		return DomUtils.buildDOM();
 	}
@@ -314,10 +336,20 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		incorporateSignatureDom(parentNodeOfSignature);
 	}
 
+	/**
+	 * Returns a parent node of the signature
+	 *
+	 * @return {@link Node}
+	 */
 	protected Node getParentNodeOfSignature() {
 		return documentDom;
 	}
 
+	/**
+	 * Incorporates the signature element to the parent node
+	 *
+	 * @param parentNodeOfSignature {@link Node} the parent node
+	 */
 	protected void incorporateSignatureDom(Node parentNodeOfSignature) {
 		parentNodeOfSignature.appendChild(signatureDom);
 	}
@@ -1279,7 +1311,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		timestampElement.appendChild(encapsulatedTimestampElement);
 	}
-	
+
+	/**
+	 * Returns a node to be canonicalized (applies indents if required)
+	 *
+	 * @param node {@link Node}
+	 * @return {@link Node}
+	 */
 	protected Node getNodeToCanonicalize(Node node) {
 		if (params.isPrettyPrint()) {
 			return DSSXMLUtils.getIndentedNode(documentDom, node);

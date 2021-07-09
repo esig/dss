@@ -29,7 +29,8 @@ import eu.europa.esig.dss.utils.Utils;
 import java.io.InputStream;
 
 /**
- * This class allows to provide a CRL source based on the list of external CRL(s);
+ * This class allows to provide a CRL source based on the list of external CRL(s).
+ *
  */
 public class ExternalResourcesCRLSource extends OfflineCRLSource {
 

@@ -29,6 +29,7 @@ import org.apache.xml.security.signature.XMLSignatureException;
  */
 public class SignatureRSARIPEMD160AT extends SignatureBaseRSA {
 
+	/** XML id */
 	public static final String XML_ID = "http://www.w3.org/2001/04/xmldsig-more/rsa-ripemd160";
 
 	/**

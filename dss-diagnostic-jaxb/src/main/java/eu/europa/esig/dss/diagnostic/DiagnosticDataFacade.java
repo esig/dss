@@ -38,8 +38,17 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+/**
+ * This class is used to marshall/unmarshal DiagnosticData report
+ *
+ */
 public class DiagnosticDataFacade extends AbstractJaxbFacade<XmlDiagnosticData> {
 
+	/**
+	 * Creates a new instance of {@link DiagnosticDataFacade}
+	 *
+	 * @return {@link DiagnosticDataFacade}
+	 */
 	public static DiagnosticDataFacade newFacade() {
 		return new DiagnosticDataFacade();
 	}

@@ -28,8 +28,10 @@ import eu.europa.esig.dss.definition.DSSNamespace;
  */
 public enum ManifestElement implements DSSElement {
 
+	/** manifest */
 	MANIFEST("manifest"),
 
+	/** file-entry */
 	FILE_ENTRY("file-entry");
 
 	/** The namespace */
@@ -38,6 +40,11 @@ public enum ManifestElement implements DSSElement {
 	/** The element tag name */
 	private final String tagName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param tagName {@link String}
+	 */
 	ManifestElement(String tagName) {
 		this.tagName = tagName;
 		this.namespace = ManifestNamespace.NS;

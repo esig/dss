@@ -33,29 +33,37 @@ public class CertificateValidity implements Serializable {
 
 	private static final long serialVersionUID = -8840096915238342503L;
 	
-	/**
-	 * This field is used when only the public key is available (non AdES signature)
-	 */
+	/** This field is used when only the public key is available (non AdES signature) */
 	private PublicKey publicKey;
-	
+
+	/** The certificate token, when available */
 	private CertificateToken certificateToken;
-	
+
+	/** The signer identifier (used in CAdES) */
 	private SignerIdentifier signerIdentifier;
 	
 	/** CMS Signer id */
 	private boolean signerIdMatch;
 
-	/** Digest parameters */
+	/** Digest present */
 	private boolean digestPresent;
+
+	/** Digest equal */
 	private boolean digestEqual;
 
-	/** Issuer Serial */
+	/** Issuer Serial present */
 	private boolean issuerSerialPresent;
+
+	/** Issuer Serial Number equal */
 	private boolean serialNumberEqual;
+
+	/** Issuer Serial Distinguished Name equal */
 	private boolean distinguishedNameEqual;
 	
-	/** OCSP Responder Id */
+	/** OCSP Responder Id present */
 	private boolean responderIdPresent;
+
+	/** OCSP Responder Id match */
 	private boolean responderIdMatch;
 
 	/**
@@ -123,30 +131,65 @@ public class CertificateValidity implements Serializable {
 		return signerIdentifierFromCert;
 	}
 
+	/**
+	 * Gets the {@code CertificateToken}
+	 *
+	 * @return {@link CertificateToken}
+	 */
 	public CertificateToken getCertificateToken() {
 		return certificateToken;
 	}
 
+	/**
+	 * Gets if CMS Signer Id matches
+	 *
+	 * @return TRUE if CMS Signer Id matches, FALSE otherwise
+	 */
 	public boolean isSignerIdMatch() {
 		return signerIdMatch;
 	}
 
+	/**
+	 * Sets if CMS Signer Id matches
+	 *
+	 * @param signerIdMatch if CMS Signer Id matches
+	 */
 	public void setSignerIdMatch(boolean signerIdMatch) {
 		this.signerIdMatch = signerIdMatch;
 	}
 
+	/**
+	 * Gets if digest is present
+	 *
+	 * @return TRUE if digest is present, FALSE otherwise
+	 */
 	public boolean isDigestPresent() {
 		return digestPresent;
 	}
 
+	/**
+	 * Sets if digest is present
+	 *
+	 * @param digestPresent if digest is present
+	 */
 	public void setDigestPresent(boolean digestPresent) {
 		this.digestPresent = digestPresent;
 	}
 
+	/**
+	 * Gets if digest is equal
+	 *
+	 * @return TRUE if digest is equal, FALSE otherwise
+	 */
 	public boolean isDigestEqual() {
 		return digestEqual;
 	}
 
+	/**
+	 * Sets if digest is equal
+	 *
+	 * @param digestEqual if digest is equal
+	 */
 	public void setDigestEqual(final boolean digestEqual) {
 		this.digestEqual = digestEqual;
 	}

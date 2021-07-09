@@ -704,7 +704,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		
 		return signatureValueReferenceValidation;
 	}
-	
+
+	/**
+	 * Gets Kid value when present
+	 *
+	 * @return {@link String}
+	 */
 	public String getKid() {
 		return jws.getKeyIdHeaderValue();
 	}

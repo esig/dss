@@ -30,8 +30,14 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
  */
 public class CertificateRefWrapper {
 	
+	/** The wrapped {@code XmlCertificateRef} */
 	private final XmlCertificateRef certificateRef;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param certificateRef {@link XmlCertificateRef}
+	 */
 	public CertificateRefWrapper(final XmlCertificateRef certificateRef) {
 		this.certificateRef = certificateRef;
 	}
@@ -57,10 +63,20 @@ public class CertificateRefWrapper {
 		return null;
 	}
 	
+	/**
+	 * Returns of IssuerSerial is present within the certificate reference
+	 *
+	 * @return TRUE if IssuerSerial is present, FALSE otherwise
+	 */
 	public boolean isIssuerSerialPresent() {
 		return certificateRef.getIssuerSerial() != null;
 	}
 	
+	/**
+	 * Returns of IssuerSerial match with a found certificate
+	 *
+	 * @return TRUE if IssuerSerial matches with a found certificate , FALSE otherwise
+	 */
 	public boolean isIssuerSerialMatch() {
 		if (certificateRef.getIssuerSerial() != null && certificateRef.getIssuerSerial().isMatch() != null) {
 			return certificateRef.getIssuerSerial().isMatch();

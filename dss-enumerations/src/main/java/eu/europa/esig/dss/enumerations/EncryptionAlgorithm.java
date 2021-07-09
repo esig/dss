@@ -29,28 +29,42 @@ import java.util.Map;
  */
 public enum EncryptionAlgorithm implements OidBasedEnum {
 
+	/** RSA */
 	RSA("RSA", "1.2.840.113549.1.1.1", "RSA/ECB/PKCS1Padding"),
 
+	/** DSA */
 	DSA("DSA", "1.2.840.10040.4.1", "DSA"),
 
+	/** ECDSA */
 	ECDSA("ECDSA", "1.2.840.10045.2.1", "ECDSA"),
-	
+
+	/** PLAIN-ECDSA */
 	PLAIN_ECDSA("PLAIN-ECDSA", "0.4.0.127.0.7.1.1.4.1", "PLAIN-ECDSA"),
-	
+
+	/** X25519 */
 	X25519("X25519", "1.3.101.110", "X25519"),
-	
+
+	/** X448 */
 	X448("X448", "1.3.101.111", "X448"),
 
+	/** EdDSA */
 	EDDSA("EdDSA", "", "EdDSA"),
-	
+
+	/** HMAC */
 	HMAC("HMAC", "", "");
 
+	/** The name of the algorithm */
 	private String name;
+
+	/** OID of the algorithm */
 	private String oid;
+
+	/** Padding string for the algorithm */
 	private String padding;
 
 	private static class Registry {
 
+		/** A map between OID URIs of the algorithms */
 		private static final Map<String, EncryptionAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
 
 		private static Map<String, EncryptionAlgorithm> registerOIDAlgorithms() {

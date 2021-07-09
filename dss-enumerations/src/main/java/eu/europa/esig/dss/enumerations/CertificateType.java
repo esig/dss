@@ -20,18 +20,22 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Contains a list of possible certificate types
+ *
+ */
 public enum CertificateType {
 
-	/* For electronic signature */
+	/** For electronic signature */
 	ESIGN("eSig"),
 
-	/* For electronic seal */
+	/** For electronic seal */
 	ESEAL("eSeal"),
 
-	/* For Web authentication */
+	/** For Web authentication */
 	WSA("WSA"),
 
-	/* Unknown */
+	/** Unknown */
 	UNKNOWN("unknown");
 
 	/** Represents a user-friendly string */

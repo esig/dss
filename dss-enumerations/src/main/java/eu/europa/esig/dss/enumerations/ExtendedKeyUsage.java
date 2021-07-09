@@ -29,18 +29,24 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum ExtendedKeyUsage implements OidDescription {
 
+	/** serverAuth */
 	SERVER_AUTH("serverAuth", "1.3.6.1.5.5.7.3.1"),
 
+	/** clientAuth */
 	CLIENT_AUTH("clientAuth", "1.3.6.1.5.5.7.3.2"),
 
+	/** codeSigning */
 	CODE_SIGNING("codeSigning", "1.3.6.1.5.5.7.3.3"),
 
+	/** emailProtection */
 	EMAIL_PROTECTION("emailProtection", "1.3.6.1.5.5.7.3.4"),
 
 	// 5,6,7 deprecated by RFC4945
 
+	/** timeStamping */
 	TIMESTAMPING("timeStamping", "1.3.6.1.5.5.7.3.8"),
 
+	/** ocspSigning */
 	OCSP_SIGNING("ocspSigning", "1.3.6.1.5.5.7.3.9"),
 
 	/**
@@ -53,9 +59,18 @@ public enum ExtendedKeyUsage implements OidDescription {
 	 */
 	TSL_SIGNING("tslSigning", "0.4.0.2231.3.0");
 
+	/** KeyUsage description */
 	private final String description;
+
+	/** KeyUsage OID */
 	private final String oid;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param description {@link String}
+	 * @param oid {@link String}
+	 */
 	ExtendedKeyUsage(String description, String oid) {
 		this.description = description;
 		this.oid = oid;

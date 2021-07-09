@@ -28,6 +28,10 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 
 import java.io.InputStream;
 
+/**
+ * This class is used to provide a collection of OCSP tokens by the user.
+ *
+ */
 public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 
 	private static final long serialVersionUID = -332201368387706970L;

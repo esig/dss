@@ -25,6 +25,11 @@ package eu.europa.esig.dss.enumerations;
  */
 public interface UriBasedEnum {
 
+	/**
+	 * Returns a URI
+	 *
+	 * @return {@link String}
+	 */
 	String getUri();
 
 }

@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.spi.tsl.TrustService;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
@@ -46,10 +38,29 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServicesListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
+ * The class is used to convert {@code TSPType} to {@code TrustServiceProvider}
+ *
+ */
 public class TrustServiceProviderConverter implements Function<TSPType, TrustServiceProvider> {
-	
+
+	/** The country code */
 	private String territory;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param territory {@link String}
+	 * @return {@link TrustServiceProviderConverter}
+	 */
 	public TrustServiceProviderConverter setTerritory(String territory) {
 		this.territory = territory;
 		return this;

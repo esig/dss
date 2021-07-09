@@ -23,17 +23,32 @@ package eu.europa.esig.dss.jaxb.common.exception;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * An exception to be throwed in case of XSD validation error(s)
+ *
+ */
 public class XSDValidationException extends RuntimeException {
 
 	private static final long serialVersionUID = 4928003472348809475L;
 
+	/** A list of XSD validation error messages */
 	private final List<String> exceptionMessages;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param exceptionMessages a list of {@link String} XSD validation error messages
+	 */
 	public XSDValidationException(List<String> exceptionMessages) {
 		super();
 		this.exceptionMessages = exceptionMessages;
 	}
 
+	/**
+	 * Returns the XSD validation error messages
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getAllMessages() {
 		if (exceptionMessages == null) {
 			return Collections.emptyList();

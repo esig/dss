@@ -27,16 +27,24 @@ import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
  *
  */
 public class ImageRotationUtils {
-	
+
+    /** A message with supported angles */
 	public static final String SUPPORTED_ANGLES_ERROR_MESSAGE = "rotation angle must be 90, 180, 270 or 360 (0)";
 
+	/** Default 0 degrees */
     public static final int ANGLE_0 = 0;
+    /** 90 degrees */
     public static final int ANGLE_90 = 90;
+    /** 180 degrees */
 	public static final int ANGLE_180 = 180;
+    /** 270 degrees */
 	public static final int ANGLE_270 = 270;
+    /** 360 degrees (= 0 degrees) */
     public static final int ANGLE_360 = 360;
 
-
+    /**
+     * Utils class
+     */
 	private ImageRotationUtils() {
 	}
 	

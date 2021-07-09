@@ -22,10 +22,19 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
+/**
+ * Identifier for a timestamp token
+ *
+ */
 public final class TimestampTokenIdentifier extends TokenIdentifier {
 
 	private static final long serialVersionUID = 4260120806950705848L;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param timestampToken {@link TimestampToken}
+	 */
 	public TimestampTokenIdentifier(TimestampToken timestampToken) {
 		super("T-", timestampToken);
 	}

@@ -20,17 +20,27 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
-
+/**
+ * Filters the Official Journal Scheme information URI
+ *
+ */
 public class OfficialJournalSchemeInformationURI implements LOTLSigningCertificatesAnnouncementSchemeInformationURI {
 
+	/** The OJ URL */
 	private final String officialJournalURL;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param officialJournalURL {@link String} OJ URL
+	 */
 	public OfficialJournalSchemeInformationURI(String officialJournalURL) {
 		Objects.requireNonNull(officialJournalURL);
 		this.officialJournalURL = officialJournalURL;
@@ -53,7 +63,13 @@ public class OfficialJournalSchemeInformationURI implements LOTLSigningCertifica
 		}
 	}
 
+	/**
+	 * Gets the OJ URL
+	 *
+	 * @return {@link String}
+	 */
 	public String getOfficialJournalURL() {
 		return this.officialJournalURL;
 	}
+
 }

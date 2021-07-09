@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.util.List;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+
+import java.util.List;
 
 /**
  * This class allows to inject alternative urls to collect revocation data. This
@@ -38,9 +38,18 @@ public class AlternateUrlsSourceAdapter<R extends Revocation> implements Revocat
 
 	private static final long serialVersionUID = 3375119421036319160L;
 
+	/** The source to extract revocation tokens */
 	private final RevocationSourceAlternateUrlsSupport<R> wrappedSource;
+
+	/** List of alternative URLs */
 	private final List<String> alternateUrls;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param source {@link RevocationSourceAlternateUrlsSupport}
+	 * @param alternateUrls a list of {@link String} access points
+	 */
 	public AlternateUrlsSourceAdapter(RevocationSourceAlternateUrlsSupport<R> source, List<String> alternateUrls) {
 		this.wrappedSource = source;
 		this.alternateUrls = alternateUrls;

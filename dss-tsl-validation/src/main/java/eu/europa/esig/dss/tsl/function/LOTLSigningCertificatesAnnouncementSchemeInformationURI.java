@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import java.util.function.Predicate;
-
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
 
+import java.util.function.Predicate;
+
+/**
+ * The predicate to filter the LOTL signing certificates scheme information URI
+ *
+ */
 public interface LOTLSigningCertificatesAnnouncementSchemeInformationURI extends Predicate<NonEmptyMultiLangURIType> {
 
 }

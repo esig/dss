@@ -58,34 +58,74 @@ public class LOTLSource extends TLSource {
 	 */
 	private LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate;
 
+	/**
+	 * Gets if the LOTL configuration supports pivots
+	 *
+	 * @return TRUE if supports pivots, FALSE otherwise
+	 */
 	public boolean isPivotSupport() {
 		return pivotSupport;
 	}
 
+	/**
+	 * Sets if the LOTLSource shall support pivots
+	 *
+	 * @param pivotSupport if supports pivots
+	 */
 	public void setPivotSupport(boolean pivotSupport) {
 		this.pivotSupport = pivotSupport;
 	}
 
+	/**
+	 * Gets the LOTL filtering predicate
+	 *
+	 * @return {@link Predicate}
+	 */
 	public Predicate<OtherTSLPointerType> getLotlPredicate() {
 		return lotlPredicate;
 	}
 
+	/**
+	 * Sets the LOTL filtering predicate
+	 *
+	 * @param lotlPredicate {@link Predicate}
+	 */
 	public void setLotlPredicate(Predicate<OtherTSLPointerType> lotlPredicate) {
 		this.lotlPredicate = lotlPredicate;
 	}
 
+	/**
+	 * Gets the TL filtering predicate
+	 *
+	 * @return {@link Predicate}
+	 */
 	public Predicate<OtherTSLPointerType> getTlPredicate() {
 		return tlPredicate;
 	}
 
+	/**
+	 * Sets the TL filtering predicate
+	 *
+	 * @param tlPredicate {@link Predicate}
+	 */
 	public void setTlPredicate(Predicate<OtherTSLPointerType> tlPredicate) {
 		this.tlPredicate = tlPredicate;
 	}
 
+	/**
+	 * Gets the {@code LOTLSigningCertificatesAnnouncementSchemeInformationURI}
+	 *
+	 * @return {@link LOTLSigningCertificatesAnnouncementSchemeInformationURI}
+	 */
 	public LOTLSigningCertificatesAnnouncementSchemeInformationURI getSigningCertificatesAnnouncementPredicate() {
 		return signingCertificatesAnnouncementPredicate;
 	}
 
+	/**
+	 * Sets the {@code LOTLSigningCertificatesAnnouncementSchemeInformationURI}
+	 *
+	 * @param signingCertificatesAnnouncementPredicate {@link LOTLSigningCertificatesAnnouncementSchemeInformationURI}
+	 */
 	public void setSigningCertificatesAnnouncementPredicate(LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate) {
 		this.signingCertificatesAnnouncementPredicate = signingCertificatesAnnouncementPredicate;
 	}
