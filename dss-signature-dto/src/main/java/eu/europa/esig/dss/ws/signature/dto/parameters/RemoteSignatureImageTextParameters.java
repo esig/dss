@@ -23,6 +23,7 @@ package eu.europa.esig.dss.ws.signature.dto.parameters;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+import eu.europa.esig.dss.enumerations.TextWrapping;
 import eu.europa.esig.dss.ws.dto.RemoteColor;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
@@ -41,6 +42,9 @@ public class RemoteSignatureImageTextParameters implements Serializable {
 
 	/** The Font document file */
     private RemoteDocument font;
+
+    /** Defines how the given text should be wrapped within the signature field's box */
+    private TextWrapping textWrapping;
 
     /** The padding of the text boundary box */
     private Float padding;
@@ -97,6 +101,24 @@ public class RemoteSignatureImageTextParameters implements Serializable {
      */
     public void setFont(final RemoteDocument font) {
         this.font = font;
+    }
+
+    /**
+     * Gets the text wrapping
+     *
+     * @return {@link TextWrapping}
+     */
+    public TextWrapping getTextWrapping() {
+        return textWrapping;
+    }
+
+    /**
+     * Sets the text wrapping, defining a way the text will be generated
+     *
+     * @param textWrapping {@link TextWrapping}
+     */
+    public void setTextWrapping(TextWrapping textWrapping) {
+        this.textWrapping = textWrapping;
     }
 
     /**

@@ -20,16 +20,13 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.awt.Color;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+import eu.europa.esig.dss.enumerations.TextWrapping;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -45,6 +42,9 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import org.junit.jupiter.api.Test;
+
+import java.awt.Color;
 
 /**
  * How to sign PDF Document with PAdES-BASELINE-B and include a visual representation
@@ -114,6 +114,13 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			textParameters.setBackgroundColor(Color.YELLOW);
 			// Defines a padding between the text and a border of its bounding area
 			textParameters.setPadding(20);
+			// TextWrapping parameter allows defining the text wrapping behavior within  the signature field
+			/*
+			  FONT_BASED - the default text wrapping, the text is computed based on the given font size;
+			  FILL_BOX - finds optimal font size to wrap the text to a signature field box;
+			  FILL_BOX_AND_LINEBREAK - breaks the words to multiple lines in order to find the biggest possible font size to wrap the text into a signature field box.
+			*/
+			textParameters.setTextWrapping(TextWrapping.FONT_BASED);
 			// Set textParameters to a SignatureImageParameters object
 			imageParameters.setTextParameters(textParameters);
 			// end::text[]

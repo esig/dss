@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
+import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
@@ -40,6 +41,9 @@ public class RemoteSignatureImageParameters implements Serializable {
 
 	/** Visual signature vertical position on the pdf page */
 	private VisualSignatureAlignmentVertical alignmentVertical;
+
+	/** Defines the image scaling behavior within a signature field with a fixed size */
+	private ImageScaling imageScaling;
 
 	/** The signature field's background color */
 	private RemoteColor backgroundColor;
@@ -97,6 +101,24 @@ public class RemoteSignatureImageParameters implements Serializable {
 	public void setAlignmentVertical(final VisualSignatureAlignmentVertical alignmentVertical) {
         this.alignmentVertical = alignmentVertical;
     }
+
+	/**
+	 * Gets the image scaling
+	 *
+	 * @return {@link ImageScaling}
+	 */
+	public ImageScaling getImageScaling() {
+		return imageScaling;
+	}
+
+	/**
+	 * Sets the image scaling behavior for a signature field with a fixed size
+	 *
+	 * @param imageScaling {@link ImageScaling}
+	 */
+	public void setImageScaling(ImageScaling imageScaling) {
+		this.imageScaling = imageScaling;
+	}
 
 	/**
 	 * Gets the signature field background color

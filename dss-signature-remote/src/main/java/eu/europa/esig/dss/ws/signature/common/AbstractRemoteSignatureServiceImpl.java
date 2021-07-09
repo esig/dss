@@ -351,6 +351,10 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		if (remoteImageParameters.getAlignmentVertical() != null) {
 			imageParameters.setAlignmentVertical(remoteImageParameters.getAlignmentVertical());
 		}
+		// imageScaling
+		if (remoteImageParameters.getImageScaling() != null) {
+			imageParameters.setImageScaling(remoteImageParameters.getImageScaling());
+		}
 		// backgroundColor
 		if (remoteImageParameters.getBackgroundColor() != null) {
 			imageParameters.setBackgroundColor(ColorConverter.toColor(remoteImageParameters.getBackgroundColor()));
@@ -423,6 +427,10 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		if (remoteTextParameters.getSize() != null) {
 			DSSFont font = textParameters.getFont();
 			font.setSize(remoteTextParameters.getSize());
+		}
+		// text wrapping
+		if (remoteTextParameters.getTextWrapping() != null) {
+			textParameters.setTextWrapping(remoteTextParameters.getTextWrapping());
 		}
 		// padding
 		if (remoteTextParameters.getPadding() != null) {

@@ -38,6 +38,7 @@ $ echo '{
     "imageParameters" : {
       "alignmentHorizontal" : null,
       "alignmentVertical" : null,
+      "imageScaling" : null,
       "backgroundColor" : null,
       "dpi" : null,
       "image" : null,
@@ -58,10 +59,11 @@ $ echo '{
           "alpha" : 255
         },
         "font" : null,
+        "textWrapping" : null,
         "padding" : null,
         "signerTextHorizontalAlignment" : "CENTER",
-        "signerTextPosition" : "TOP",
         "signerTextVerticalAlignment" : null,
+        "signerTextPosition" : "TOP",
         "size" : null,
         "text" : "Signature",
         "textColor" : {
@@ -76,7 +78,7 @@ $ echo '{
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1625817753100,
+      "signingDate" : 1625849392257,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
