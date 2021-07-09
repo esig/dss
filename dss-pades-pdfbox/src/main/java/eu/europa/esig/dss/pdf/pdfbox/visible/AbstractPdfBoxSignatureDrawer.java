@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;

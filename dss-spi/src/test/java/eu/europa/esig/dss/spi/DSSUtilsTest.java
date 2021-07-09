@@ -51,7 +51,6 @@ import java.security.Signature;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPrivateKey;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;

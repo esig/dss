@@ -33,7 +33,6 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Security;
 import java.security.Signature;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

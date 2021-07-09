@@ -29,7 +29,6 @@ import org.bouncycastle.asn1.DERSequence;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * SignedAssertions ::= SEQUENCE OF SignedAssertion

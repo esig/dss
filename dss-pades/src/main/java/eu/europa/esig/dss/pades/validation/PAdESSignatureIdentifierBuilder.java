@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 

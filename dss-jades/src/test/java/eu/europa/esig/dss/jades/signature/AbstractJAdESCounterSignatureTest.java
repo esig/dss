@@ -48,7 +48,6 @@ import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.jwx.Headers;
 import org.jose4j.lang.JoseException;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

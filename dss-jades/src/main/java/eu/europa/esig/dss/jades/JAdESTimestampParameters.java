@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampParameters;
 
 /**

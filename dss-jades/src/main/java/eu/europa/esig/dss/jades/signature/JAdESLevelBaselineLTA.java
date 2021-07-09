@@ -30,7 +30,6 @@ import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;

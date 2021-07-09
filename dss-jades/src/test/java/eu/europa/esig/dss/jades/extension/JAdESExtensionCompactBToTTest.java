@@ -23,7 +23,6 @@ package eu.europa.esig.dss.jades.extension;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.model.DSSException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

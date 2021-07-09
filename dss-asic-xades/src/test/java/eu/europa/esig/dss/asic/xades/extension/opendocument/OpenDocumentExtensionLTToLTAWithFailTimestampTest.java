@@ -29,7 +29,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import eu.europa.esig.dss.asic.xades.extension.AbstractTestOpenDocumentExtension;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 

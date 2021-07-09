@@ -43,13 +43,11 @@ import org.bouncycastle.cms.CMSSignedData;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<CAdESSignatureParameters, CAdESTimestampParameters> {
 
