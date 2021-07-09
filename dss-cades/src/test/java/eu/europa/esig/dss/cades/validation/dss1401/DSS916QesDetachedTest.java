@@ -45,7 +45,7 @@ public class DSS916QesDetachedTest extends AbstractCAdESTestValidation {
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		return Arrays.<DSSDocument>asList(new FileDocument("src/test/resources/validation/dss-916/test.txt"));
+		return Arrays.asList(new FileDocument("src/test/resources/validation/dss-916/test.txt"));
 	}
 	
 	@Override

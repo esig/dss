@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.xades111;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -36,6 +30,12 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdES111PTTest extends AbstractXAdESTestValidation {
 
@@ -96,6 +96,7 @@ public class XAdES111PTTest extends AbstractXAdESTestValidation {
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {
 			if (error.contains("\"http://uri.etsi.org/01903/v1.3.2#\":CRLValues")) {
 				crlValuesOrderErrorFound = true;
+				break;
 			}
 		}
 		assertTrue(crlValuesOrderErrorFound);

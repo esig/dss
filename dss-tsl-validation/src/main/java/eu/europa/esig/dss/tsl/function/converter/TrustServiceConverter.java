@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.function.Function;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.Condition;
@@ -68,6 +59,14 @@ import eu.europa.esig.trustedlist.jaxb.tslx.CertSubjectDNAttributeType;
 import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
 import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
 import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.function.Function;
 
 public class TrustServiceConverter implements Function<TSPServiceType, TrustService> {
 
@@ -236,11 +235,12 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 	/**
 	 * ETSI TS 119 612 V1.1.1 / 5.5.9.2.2.3
 	 * 
-	 * @param otherCriteriaList
-	 * @param condition
+	 * @param otherCriteriaList {@link eu.europa.esig.xades.jaxb.xades132.AnyType}
+	 * @param condition {@link CompositeCondition}
 	 */
 	@SuppressWarnings("rawtypes")
-	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.xades.jaxb.xades132.AnyType otherCriteriaList, CompositeCondition condition) {
+	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.xades.jaxb.xades132.AnyType otherCriteriaList,
+														 CompositeCondition condition) {
 		if (otherCriteriaList != null && Utils.isCollectionNotEmpty(otherCriteriaList.getContent())) {
 			for (Object content : otherCriteriaList.getContent()) {
 				if (content instanceof JAXBElement) {

@@ -69,6 +69,7 @@ public class ASiCEWithXAdESDetachedCounterSignatureTest extends AbstractASiCWith
 			for (String error : signatureWrapper.getStructuralValidationMessages()) {
 				if (error.contains("NCName")) {
 					notValidNameErrorFound = true;
+					break;
 				}
 			}
 			assertTrue(notValidNameErrorFound);

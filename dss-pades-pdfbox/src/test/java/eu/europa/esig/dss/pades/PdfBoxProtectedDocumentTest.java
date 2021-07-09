@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -41,6 +33,13 @@ import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 
@@ -62,9 +61,7 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 
 	@Test
 	public void signatureOperationsCorrectPassword() throws Exception {
-		DSSDocument document = null;
-
-		document = sign(openProtected, correctProtectionPhrase);
+		DSSDocument document = sign(openProtected, correctProtectionPhrase);
 		verify(document);
 
 		document = sign(editionProtectedNone, correctProtectionPhrase);

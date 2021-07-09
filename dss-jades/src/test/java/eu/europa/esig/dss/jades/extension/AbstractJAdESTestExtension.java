@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.jades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.UUID;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
@@ -49,6 +39,15 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class AbstractJAdESTestExtension
 		extends AbstractTestExtension<JAdESSignatureParameters, JAdESTimestampParameters> {
@@ -83,8 +82,7 @@ public abstract class AbstractJAdESTestExtension
 			assertNotNull(signatureIdentifier);
 
 			assertNotNull(signatureIdentifier.getSignatureValue());
-			assertTrue(
-					Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+            assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 		}
 	}
 
@@ -92,7 +90,7 @@ public abstract class AbstractJAdESTestExtension
 	protected FileDocument getOriginalDocument() {
 		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".xml");
 		try (FileOutputStream fos = new FileOutputStream(originalDoc);
-				FileInputStream fis = new FileInputStream(new File("src/test/resources/sample.json"))) {
+				FileInputStream fis = new FileInputStream("src/test/resources/sample.json")) {
 			Utils.copy(fis, fos);
 		} catch (IOException e) {
 			throw new DSSException("Unable to create the original document", e);

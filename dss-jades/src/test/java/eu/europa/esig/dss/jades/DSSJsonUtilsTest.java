@@ -92,10 +92,10 @@ public class DSSJsonUtilsTest {
 	private void assertSignatureValid(String string) throws Exception {
 		byte[] signatureValueConcatenated = Utils.fromHex(string);
 		byte[] derEncoded = EcdsaUsingShaAlgorithm.convertConcatenatedToDer(signatureValueConcatenated);
-		assertTrue(Arrays.equals(derEncoded, DSSASN1Utils.toStandardDSASignatureValue(signatureValueConcatenated)));
+		assertArrayEquals(derEncoded, DSSASN1Utils.toStandardDSASignatureValue(signatureValueConcatenated));
 		
 		byte[] joseConverted = EcdsaUsingShaAlgorithm.convertDerToConcatenated(derEncoded, 0);
-		assertTrue(Arrays.equals(joseConverted, DSSASN1Utils.toPlainDSASignatureValue(derEncoded)));
+		assertArrayEquals(joseConverted, DSSASN1Utils.toPlainDSASignatureValue(derEncoded));
 
 		byte[] signatureValue = DSSASN1Utils.ensurePlainSignatureValue(EncryptionAlgorithm.ECDSA, derEncoded);
 		assertArrayEquals(joseConverted, signatureValue);

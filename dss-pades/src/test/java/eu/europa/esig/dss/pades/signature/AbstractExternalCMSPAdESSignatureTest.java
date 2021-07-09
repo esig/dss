@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.bouncycastle.cms.CMSProcessableByteArray;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
@@ -42,6 +34,13 @@ import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import org.bouncycastle.cms.CMSProcessableByteArray;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSSignedDataGenerator;
+import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class AbstractExternalCMSPAdESSignatureTest extends AbstractPAdESTestSignature {
 
@@ -124,7 +123,7 @@ public abstract class AbstractExternalCMSPAdESSignatureTest extends AbstractPAdE
 		return GOOD_USER;
 	}
 
-	private class ExternalCMSPAdESService extends PAdESService {
+	private static class ExternalCMSPAdESService extends PAdESService {
 
 		private static final long serialVersionUID = -2003453716888412577L;
 

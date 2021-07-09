@@ -40,7 +40,7 @@ public class XAdESEnvelopingMultiDocSignatureTest extends AbstractXAdESMultipleD
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSigns = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.xml"), new FileDocument("src/test/resources/sample.png"));
+		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.xml"), new FileDocument("src/test/resources/sample.png"));
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

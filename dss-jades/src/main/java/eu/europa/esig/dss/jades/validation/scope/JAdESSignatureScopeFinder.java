@@ -178,23 +178,13 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<JAdE
 		SignatureScope httpHeadersPayloadSignatureScope = getHttpHeadersPayloadSignatureScope(originalDocuments);
 		httpHeadersSignatureScopes.add(httpHeadersPayloadSignatureScope);
 
-		HTTPHeader digestHttpHeader = null;
-		
-		List<HTTPHeader> httpHeaders = new ArrayList<>();
 		for (DSSDocument document : originalDocuments) {
-			if (document instanceof HTTPHeader) {
-				httpHeaders.add((HTTPHeader) document);
-				
-				if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
-					digestHttpHeader = (HTTPHeader) document;
+			if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(document.getName()) && document instanceof HTTPHeader) {
+				SignatureScope httpHeaderDigestSignatureScope = getHttpHeaderDigestSignatureScope((HTTPHeader) document);
+				if (httpHeaderDigestSignatureScope != null) {
+					httpHeadersSignatureScopes.add(httpHeaderDigestSignatureScope);
 				}
-			}
-		}
-		
-		if (digestHttpHeader != null) {
-			SignatureScope httpHeaderDigestSignatureScope = getHttpHeaderDigestSignatureScope(digestHttpHeader);
-			if (httpHeaderDigestSignatureScope != null) {
-				httpHeadersSignatureScopes.add(httpHeaderDigestSignatureScope);
+				break; // only one shall be present
 			}
 		}
 		

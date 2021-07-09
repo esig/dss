@@ -102,8 +102,6 @@ public class DSS1444Test {
 
 	/**
 	 * Positive test with default policy with PLAIN-ECDSA constrains.
-	 * 
-	 * @throws IOException
 	 */
 	@Test
 	public void test5() throws IOException {
@@ -123,10 +121,7 @@ public class DSS1444Test {
 	}
 
 	/**
-	 * 
 	 * Negative test with policy without PLAIN-ECDSA constrains.
-	 * 
-	 * @throws IOException
 	 */
 	@Test
 	public void test6() throws IOException {

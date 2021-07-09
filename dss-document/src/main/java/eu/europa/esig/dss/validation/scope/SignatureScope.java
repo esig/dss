@@ -159,7 +159,7 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || !(obj instanceof SignatureScope)) {
+		if (!(obj instanceof SignatureScope)) {
 			return false;
 		}
 		SignatureScope s = (SignatureScope) obj;

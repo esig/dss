@@ -182,7 +182,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
 	}
 	
 	@SuppressWarnings("serial")
-	private class MockCRLDataLoader extends CommonsDataLoader {
+	private static class MockCRLDataLoader extends CommonsDataLoader {
 		
 		private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
 		

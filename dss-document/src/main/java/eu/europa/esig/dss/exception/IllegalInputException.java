@@ -6,6 +6,8 @@ package eu.europa.esig.dss.exception;
  */
 public class IllegalInputException extends RuntimeException {
 
+    private static final long serialVersionUID = -1729275289834218194L;
+
     /**
      * Default constructor
      *

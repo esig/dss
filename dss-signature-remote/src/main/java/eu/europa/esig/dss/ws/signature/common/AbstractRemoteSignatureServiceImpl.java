@@ -35,7 +35,6 @@ import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.signature.JAdESCounterSignatureParameters;
 import eu.europa.esig.dss.model.BLevelParameters;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
@@ -109,7 +108,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 	 */
 	@SuppressWarnings("unchecked")
 	protected SerializableSignatureParameters createParameters(RemoteSignatureParameters remoteParameters) {
-		SerializableSignatureParameters parameters = null;
+		SerializableSignatureParameters parameters;
 		ASiCContainerType asicContainerType = remoteParameters.getAsicContainerType();
 		SignatureForm signatureForm = remoteParameters.getSignatureLevel().getSignatureForm();
 		if (asicContainerType != null) {

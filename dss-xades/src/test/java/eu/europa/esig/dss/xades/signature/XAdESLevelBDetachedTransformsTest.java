@@ -28,7 +28,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -46,6 +45,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -102,9 +102,7 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	private List<DSSReference> buildReferences(DSSDocument document, DSSTransform... transforms) {
 		
 		List<DSSTransform> dssTransforms = new ArrayList<>();
-		for (DSSTransform transform : transforms) {
-			dssTransforms.add(transform);
-		}
+		dssTransforms.addAll(Arrays.asList(transforms));
 
 		DSSReference ref1 = new DSSReference();
 		ref1.setContents(document);

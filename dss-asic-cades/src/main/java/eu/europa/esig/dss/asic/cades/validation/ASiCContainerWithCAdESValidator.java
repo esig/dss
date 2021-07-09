@@ -131,7 +131,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			timestampValidators = new ArrayList<>();
 			for (final DSSDocument timestamp : getTimestampDocuments()) {
 
-				DSSDocument timestampedDocument = null;
+				DSSDocument timestampedDocument;
 				TimestampType timestampType = TimestampType.CONTENT_TIMESTAMP;
 				ManifestFile manifestFile = null;
 

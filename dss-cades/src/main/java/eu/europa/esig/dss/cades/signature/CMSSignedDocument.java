@@ -41,6 +41,8 @@ import java.util.Objects;
  */
 public class CMSSignedDocument extends CommonDocument {
 
+	private static final long serialVersionUID = 1413370170096318058L;
+
 	/**
 	 * The CMSSignedData representing the document
 	 */

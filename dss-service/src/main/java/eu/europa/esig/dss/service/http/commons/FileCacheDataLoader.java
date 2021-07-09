@@ -218,7 +218,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 			
 		}
 		
-		byte[] bytes = null;
+		byte[] bytes;
 		if (!isNetworkProtocol(url)) {
 			bytes = getLocalFileContent(url);
 			

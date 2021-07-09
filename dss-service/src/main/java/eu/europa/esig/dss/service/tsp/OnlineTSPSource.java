@@ -163,7 +163,7 @@ public class OnlineTSPSource implements TSPSource {
 			}
 
 			ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
-			TimeStampRequest timeStampRequest = null;
+			TimeStampRequest timeStampRequest;
 			if (nonceSource == null) {
 				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest);
 			} else {

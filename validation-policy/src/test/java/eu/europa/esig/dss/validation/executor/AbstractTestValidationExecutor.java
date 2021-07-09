@@ -223,7 +223,7 @@ public abstract class AbstractTestValidationExecutor {
 			XmlTimestampedObject timestampedObject = new XmlTimestampedObject();
 			timestampedObject.setCategory(category);
 
-			XmlAbstractToken token = null;
+			XmlAbstractToken token;
 			switch (category) {
 				case SIGNATURE:
 					token = new eu.europa.esig.dss.diagnostic.jaxb.XmlSignature();

@@ -187,6 +187,13 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	}
 
 	@Override
+	protected List<TimestampedReference> getSignatureTimestampReferences() {
+		List<TimestampedReference> timestampedReferences = super.getSignatureTimestampReferences();
+		addReferences(timestampedReferences, getKeyInfoReferences());
+		return timestampedReferences;
+	}
+
+	@Override
 	protected List<CertificateRef> getCertificateRefs(JAdESAttribute unsignedAttribute) {
 		List<CertificateRef> result = new ArrayList<>();
 		List<?> certificateRefsList = (List<?>) unsignedAttribute.getValue();
@@ -242,7 +249,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	@Override
 	@SuppressWarnings("unchecked")
 	protected List<Identifier> getEncapsulatedCertificateIdentifiers(JAdESAttribute unsignedAttribute) {
-		List<Object> xVals = null;
+		List<Object> xVals;
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<String, Object> tstVd = (Map<String, Object>) unsignedAttribute.getValue();
 			xVals = (List<Object>) tstVd.get(JAdESHeaderParameterNames.X_VALS);
@@ -284,7 +291,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	@Override
 	@SuppressWarnings("unchecked")
 	protected List<Identifier> getEncapsulatedCRLIdentifiers(JAdESAttribute unsignedAttribute) {
-		Map<String, Object> rVals = null;
+		Map<String, Object> rVals;
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<String, Object> tstVd = (Map<String, Object>) unsignedAttribute.getValue();
 			rVals = (Map<String, Object>) tstVd.get(JAdESHeaderParameterNames.R_VALS);
@@ -319,7 +326,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	@Override
 	@SuppressWarnings("unchecked")
 	protected List<Identifier> getEncapsulatedOCSPIdentifiers(JAdESAttribute unsignedAttribute) {
-		Map<String, Object> rVals = null;
+		Map<String, Object> rVals;
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<String, Object> tstVd = (Map<String, Object>) unsignedAttribute.getValue();
 			rVals = (Map<String, Object>) tstVd.get(JAdESHeaderParameterNames.R_VALS);

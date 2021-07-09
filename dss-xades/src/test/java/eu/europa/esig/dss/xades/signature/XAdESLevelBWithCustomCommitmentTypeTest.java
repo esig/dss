@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -37,6 +29,13 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSignature {
 
@@ -102,14 +101,16 @@ public class XAdESLevelBWithCustomCommitmentTypeTest extends AbstractXAdESTestSi
 		return documentToSign;
 	}
 	
-	private class MockCommitmentType implements CommitmentType {
-		
+	private static class MockCommitmentType implements CommitmentType {
+
+		private static final long serialVersionUID = -8371847686841801005L;
+
 		private final String uri;
 		private ObjectIdentifierQualifier qualifier;
 		private String description;
 		private String[] documentReferences;
 		
-		public MockCommitmentType(String uri) {
+		private MockCommitmentType(String uri) {
 			this.uri = uri;
 		}
 		

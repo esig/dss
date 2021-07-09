@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1972Test extends AbstractPAdESTestValidation {
@@ -75,11 +76,11 @@ public class DSS1972Test extends AbstractPAdESTestValidation {
 			if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestampWrapper.getType())) {
 				List<RevocationWrapper> allTimestampedRevocations = timestampWrapper.getTimestampedRevocations();
 				if (allTimestampedRevocations.size() == 1) {
-					assertEquals(false, timestampWrapper.getTimestampedRevocations().stream().
+					assertFalse(timestampWrapper.getTimestampedRevocations().stream().
 							map(RevocationWrapper::getId).collect(Collectors.toList()).contains(revocationId));
 					++firstDssDictTimestampCounter;
 				} else if (allTimestampedRevocations.size() == 2) {
-					assertEquals(true, timestampWrapper.getTimestampedRevocations().stream().
+					assertTrue(timestampWrapper.getTimestampedRevocations().stream().
 							map(RevocationWrapper::getId).collect(Collectors.toList()).contains(revocationId));
 					++secondDssDictTimestampCounter;
 				}
@@ -113,7 +114,10 @@ public class DSS1972Test extends AbstractPAdESTestValidation {
 	private void assertCertificateChainWithinFoundCertificates(List<CertificateWrapper> certChain, FoundCertificatesProxy foundCertificates) {
 		Set<String> certIds = foundCertificates.getRelatedCertificates().stream().map(c -> c.getId()).collect(Collectors.toSet());
 		for (CertificateWrapper certificateWrapper : certChain) {
-			certIds.contains(certificateWrapper.getId());
+			if (certificateWrapper.isTrusted()) {
+				break;
+			}
+			assertTrue(certIds.contains(certificateWrapper.getId()));
 		}
 	}
 

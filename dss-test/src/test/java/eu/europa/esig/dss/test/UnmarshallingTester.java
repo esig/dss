@@ -209,7 +209,7 @@ public class UnmarshallingTester {
 		@Override
 		public XmlTimestampedObject deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 			ObjectMapper mapper = (ObjectMapper) jp.getCodec();
-			ObjectNode root = (ObjectNode) mapper.readTree(jp);
+			ObjectNode root = mapper.readTree(jp);
 			JsonNode categoryNode = root.get("Category");
 			TimestampedObjectType category = TimestampedObjectType.valueOf(categoryNode.textValue());
 			JsonNode tokenNode = root.get("Token");
@@ -217,7 +217,7 @@ public class UnmarshallingTester {
 			XmlTimestampedObject timestampedObject = new XmlTimestampedObject();
 			timestampedObject.setCategory(category);
 
-			XmlAbstractToken token = null;
+			XmlAbstractToken token;
 			switch (category) {
 				case SIGNATURE:
 					token = new XmlSignature();

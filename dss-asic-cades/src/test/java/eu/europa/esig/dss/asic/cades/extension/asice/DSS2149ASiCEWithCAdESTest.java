@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.cades.extension.asice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -103,7 +104,7 @@ public class DSS2149ASiCEWithCAdESTest extends PKIFactoryAccess {
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			List<RelatedRevocationWrapper> relatedRevocationData = timestampWrapper.foundRevocations().getRelatedRevocationData();
 			for (RelatedRevocationWrapper revocation : relatedRevocationData) {
-				assertTrue(!signedDataRevocationIds.contains(revocation.getId()));
+				assertFalse(signedDataRevocationIds.contains(revocation.getId()));
 			}
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
 				List<String> timestampedCertificateIds = timestampWrapper.getTimestampedCertificates()

@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.pades.validation.PdfModification;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.pades.validation.PdfModification;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * The class contains utils for modification detection
@@ -144,8 +143,8 @@ public class PdfModificationDetectionUtils {
 		int signedPages = signedRevisionReader.getNumberOfPages();
 		int finalPages = finalRevisionReader.getNumberOfPages();
 
-		int maxNumberOfPages = signedPages > finalPages ? signedPages : finalPages;
-		int minNumberOfPages = signedPages > finalPages ? finalPages : signedPages;
+		int maxNumberOfPages = Math.max(signedPages, finalPages);
+		int minNumberOfPages = Math.min(signedPages, finalPages);
 
 		List<PdfModification> missingPages = new ArrayList<>();
 		for (int ii = maxNumberOfPages; ii > minNumberOfPages; ii--) {

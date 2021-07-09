@@ -280,7 +280,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 					String indication = xmlCommitmentTypeIndication.getIdentifier();
 					assertNotNull(indication);
 					
-					boolean uriMatch = false;
+					boolean uriMatch;
 					SignatureForm signatureForm = signatureWrapper.getSignatureFormat().getSignatureForm();
 					switch (signatureForm) {
 						case XAdES:

@@ -218,7 +218,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	private XAdESSignatureParameters getXAdESParameters(ASiCWithXAdESSignatureParameters parameters, DSSDocument existingXAdESSignature, boolean openDocument) {
 		XAdESSignatureParameters xadesParameters = parameters;
 		xadesParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		Document rootDocument = null;
+		Document rootDocument;
 		// If ASiC-S OR OpenDocument + already existing signature file, we re-use the same signature file
 		if (existingXAdESSignature != null) {
 			rootDocument = DomUtils.buildDOM(existingXAdESSignature);
@@ -231,7 +231,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	private Document buildDomRoot(boolean openDocument) {
 		Document rootDocument = DomUtils.buildDOM();
-		Element xadesSignatures = null;
+		Element xadesSignatures;
 		if (openDocument) {
 			xadesSignatures = rootDocument.createElementNS(ASiCNamespace.LIBREOFFICE_NS, ASiCNamespace.LIBREOFFICE_SIGNATURES);
 		} else {

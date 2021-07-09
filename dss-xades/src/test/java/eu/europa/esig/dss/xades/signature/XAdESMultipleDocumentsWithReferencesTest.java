@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.transforms.Transforms;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -47,6 +36,16 @@ import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPath2FilterTransform;
+import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.transforms.Transforms;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESMultipleDocumentsWithReferencesTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
@@ -61,7 +60,7 @@ public class XAdESMultipleDocumentsWithReferencesTest extends AbstractXAdESMulti
 		
 		FileDocument firstDocument = new FileDocument("src/test/resources/sample-c14n.xml");
 		FileDocument secondDocument = new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml");
-		documentToSigns = Arrays.<DSSDocument> asList(firstDocument, secondDocument);
+		documentToSigns = Arrays.asList(firstDocument, secondDocument);
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

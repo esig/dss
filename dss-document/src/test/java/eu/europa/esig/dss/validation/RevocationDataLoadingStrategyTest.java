@@ -91,7 +91,9 @@ public class RevocationDataLoadingStrategyTest {
         assertNull(revocationToken);
     }
 
-    private class MockOCSPSource implements OCSPSource {
+    private static class MockOCSPSource implements OCSPSource {
+
+        private static final long serialVersionUID = -3854454644299458096L;
 
         @Override
         public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
@@ -104,7 +106,9 @@ public class RevocationDataLoadingStrategyTest {
 
     }
 
-    private class MockCRLSource implements CRLSource {
+    private static class MockCRLSource implements CRLSource {
+
+        private static final long serialVersionUID = 1976433101367636586L;
 
         @Override
         public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {

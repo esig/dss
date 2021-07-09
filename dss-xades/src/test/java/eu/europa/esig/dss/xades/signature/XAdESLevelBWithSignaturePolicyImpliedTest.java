@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -74,7 +75,7 @@ public class XAdESLevelBWithSignaturePolicyImpliedTest extends AbstractXAdESTest
 		String xmlContent = new String(byteArray);
 		logger.info(xmlContent);
 		assertTrue(xmlContent.contains(":SignaturePolicyImplied"));
-		assertTrue(!xmlContent.contains(":SignaturePolicyId>"));
+        assertFalse(xmlContent.contains(":SignaturePolicyId>"));
 	}
 
 	@Override

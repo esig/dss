@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.ws.validation.common;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -186,7 +187,7 @@ public class RemoteDocumentValidationServiceTest {
 		assertEquals(1, result.size());
 		RemoteDocument document = result.get(0);
 		assertNotNull(document);
-		assertTrue(Arrays.equals(DSSUtils.toByteArray(RemoteDocumentConverter.toDSSDocument(originalDocument)), document.getBytes()));
+		assertArrayEquals(DSSUtils.toByteArray(RemoteDocumentConverter.toDSSDocument(originalDocument)), document.getBytes());
 	}
 
 	private void validateReports(WSReportsDTO result) {

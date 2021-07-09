@@ -66,6 +66,7 @@ public class XAdESWithManifestDuplicatedReferenceTest extends AbstractXAdESTestV
         for (String error : signature.getStructuralValidationMessages()) {
             if (error.contains("o-id-1075588d58231c730f94fb897ed0d7a9-1")) {
                 duplicatedIdFound = true;
+                break;
             }
         }
         assertTrue(duplicatedIdFound);

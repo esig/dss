@@ -412,7 +412,7 @@ public abstract class DiagnosticDataBuilder {
 						if (!mapListOfTrustedLists.containsKey(lotlId)) {
 							LOTLInfo lotlInfoById = summary.getLOTLInfoById(lotlId);
 							if (lotlInfoById != null) {
-								mapTrustedLists.put(lotlId, getXmlTrustedList(lotlInfoById));
+								mapListOfTrustedLists.put(lotlId, getXmlTrustedList(lotlInfoById));
 							}
 						}
 					}
@@ -560,7 +560,7 @@ public abstract class DiagnosticDataBuilder {
 		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : refsAndOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
 			Set<RevocationRefOrigin> origins = entry.getValue();
-			XmlRevocationRef xmlRef = null;
+			XmlRevocationRef xmlRef;
 			if (ref instanceof CRLRef) {
 				xmlRef = getXmlCRLRevocationRef((CRLRef) ref, origins);
 			} else {

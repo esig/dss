@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Date;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -47,6 +35,16 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.io.File;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature {
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBExternalSignatureTest.class);
@@ -155,8 +153,10 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 		return GOOD_USER;
 	}
 
-	private class DummyXAdESSignatureBuilder extends EnvelopedSignatureBuilder {
-		public DummyXAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
+	private static class DummyXAdESSignatureBuilder extends EnvelopedSignatureBuilder {
+
+		private DummyXAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc,
+										   final CertificateVerifier certificateVerifier) {
 			super(params, origDoc, certificateVerifier);
 		}
 

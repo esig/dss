@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -121,7 +122,7 @@ public abstract class AbstractJAdESMultipleDocumentSignatureTest extends Abstrac
 			assertNotNull(signatureIdentifier);
 			
 			assertNotNull(signatureIdentifier.getSignatureValue());
-			assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+			assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 		}
 	}
 	

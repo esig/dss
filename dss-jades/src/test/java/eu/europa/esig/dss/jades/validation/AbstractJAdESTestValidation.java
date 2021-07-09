@@ -34,6 +34,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -59,7 +60,7 @@ public abstract class AbstractJAdESTestValidation extends AbstractDocumentTestVa
 			assertNotNull(signatureIdentifier);
 			
 			assertNotNull(signatureIdentifier.getSignatureValue());
-			assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+            assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 		}
 	}
 

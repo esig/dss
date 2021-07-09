@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.cache.state;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -53,6 +38,20 @@ import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.parsing.LOTLParsingResult;
 import eu.europa.esig.dss.tsl.parsing.TLParsingResult;
 import eu.europa.esig.dss.tsl.validation.ValidationResult;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CacheCleanerTest {
 	
@@ -86,9 +85,9 @@ public class CacheCleanerTest {
 		fileLoader.setFileCacheDirectory(cacheDirectory);
 		
 		byte[] sampleContent = fileLoader.get(SAMPLE_FILE_NAME);
-		assertTrue(Arrays.equals(SAMPLE_FILE_NAME.getBytes(), sampleContent));
+		assertArrayEquals(SAMPLE_FILE_NAME.getBytes(), sampleContent);
 		byte[] lotlContent = fileLoader.get(LOTL_FILE_NAME);
-		assertTrue(Arrays.equals(LOTL_FILE_NAME.getBytes(), lotlContent));
+		assertArrayEquals(LOTL_FILE_NAME.getBytes(), lotlContent);
 		
 		cacheCleaner = new CacheCleaner();
 		

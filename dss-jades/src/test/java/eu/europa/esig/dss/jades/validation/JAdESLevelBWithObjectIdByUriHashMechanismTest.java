@@ -16,6 +16,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -53,8 +54,7 @@ public class JAdESLevelBWithObjectIdByUriHashMechanismTest extends AbstractJAdES
                 assertNotNull(digestMatcher.getDigestValue());
                 assertFalse(Arrays.equals(DSSUtils.digest(digestMatcher.getDigestMethod(), DSSUtils.toByteArray(originalDocument)),
                         digestMatcher.getDigestValue()));
-                assertTrue(Arrays.equals(DSSUtils.digest(digestMatcher.getDigestMethod(), DSSJsonUtils.toBase64Url(originalDocument).getBytes()),
-                        digestMatcher.getDigestValue()));
+                assertArrayEquals(DSSUtils.digest(digestMatcher.getDigestMethod(), DSSJsonUtils.toBase64Url(originalDocument).getBytes()), digestMatcher.getDigestValue());
                 sigDEntryFound = true;
             }
         }
@@ -81,8 +81,8 @@ public class JAdESLevelBWithObjectIdByUriHashMechanismTest extends AbstractJAdES
         assertNotNull(signerData.getDigestAlgoAndValue().getDigestMethod());
         assertNotNull(signerData.getDigestAlgoAndValue().getDigestValue());
 
-        assertTrue(Arrays.equals(DSSUtils.digest(signerData.getDigestAlgoAndValue().getDigestMethod(),
-                DSSUtils.toByteArray(originalDocument)), signerData.getDigestAlgoAndValue().getDigestValue()));
+        assertArrayEquals(DSSUtils.digest(signerData.getDigestAlgoAndValue().getDigestMethod(),
+                DSSUtils.toByteArray(originalDocument)), signerData.getDigestAlgoAndValue().getDigestValue());
     }
 
 }

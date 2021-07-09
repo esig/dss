@@ -31,6 +31,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -147,14 +148,19 @@ public class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 			assertCertificateChainWithinFoundCertificates(timestampWrapper.getCertificateChain(), timestampWrapper.foundCertificates());
 		}
 		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
-			assertCertificateChainWithinFoundCertificates(revocationWrapper.getCertificateChain(), revocationWrapper.foundCertificates());
+			if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
+				assertCertificateChainWithinFoundCertificates(revocationWrapper.getCertificateChain(), revocationWrapper.foundCertificates());
+			}
 		}
 	}
 
 	private void assertCertificateChainWithinFoundCertificates(List<CertificateWrapper> certChain, FoundCertificatesProxy foundCertificates) {
 		Set<String> certIds = foundCertificates.getRelatedCertificates().stream().map(c -> c.getId()).collect(Collectors.toSet());
 		for (CertificateWrapper certificateWrapper : certChain) {
-			certIds.contains(certificateWrapper.getId());
+			if (certificateWrapper.isTrusted()) {
+				break;
+			}
+			assertTrue(certIds.contains(certificateWrapper.getId()));
 		}
 	}
 

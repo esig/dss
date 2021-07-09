@@ -126,7 +126,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		TrustedServiceFilter filterByCertificateType = TrustedServicesFilterFactory.createFilterByCertificateType(signingCertificate);
 		caqcServicesAtTime = filterByCertificateType.filter(caqcServicesAtTime);
 
-		ChainItem<XmlValidationCertificateQualification> item = firstItem = item = hasCaQc(caqcServicesAtTime);
+		ChainItem<XmlValidationCertificateQualification> item = firstItem = hasCaQc(caqcServicesAtTime);
 
 		// 3. Run consistency checks to get warnings
 		for (TrustedServiceWrapper trustedService : caqcServicesAtTime) {

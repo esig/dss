@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -61,7 +62,7 @@ public class CommonsDataLoaderTest {
 		NativeHTTPDataLoader dataLoader2 = new NativeHTTPDataLoader();
 		byte[] bytesArrays2 = dataLoader2.get(URL_TO_LOAD);
 
-		assertTrue(Arrays.equals(bytesArray, bytesArrays2));
+		assertArrayEquals(bytesArray, bytesArrays2);
 
 		CertificateToken certificate = DSSUtils.loadCertificate(bytesArray);
 		assertNotNull(certificate);
@@ -156,7 +157,7 @@ public class CommonsDataLoaderTest {
 		DataAndUrl dataAndUrl = dataLoader.get(Arrays.asList(URL_TO_LOAD, "http://ncrl.ssc.lt/class3nqc/cacrl.crl",
 				"http://www.ssc.lt/cacert/ssc_class3nqc.crt"));
 		assertEquals(URL_TO_LOAD, dataAndUrl.getUrlString());
-		assertTrue(Arrays.equals(firstUrlData, dataAndUrl.getData()));
+		assertArrayEquals(firstUrlData, dataAndUrl.getData());
 
 		dataAndUrl = dataLoader.get(Arrays.asList("http://wrong.url", "does_not_exist", URL_TO_LOAD));
 		assertEquals(URL_TO_LOAD, dataAndUrl.getUrlString());

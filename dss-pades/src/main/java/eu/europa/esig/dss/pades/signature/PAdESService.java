@@ -63,6 +63,8 @@ import java.util.Objects;
  */
 public class PAdESService extends AbstractSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> {
 
+	private static final long serialVersionUID = -6518552348520127617L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESService.class);
 
 	/** Builds the CMSSignedData */

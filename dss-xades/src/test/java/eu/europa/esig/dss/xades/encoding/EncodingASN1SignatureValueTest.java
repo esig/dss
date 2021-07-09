@@ -35,6 +35,7 @@ import java.security.Security;
 import java.security.Signature;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EncodingASN1SignatureValueTest {
@@ -50,7 +51,7 @@ public class EncodingASN1SignatureValueTest {
 		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 
 		byte[] xmlsec = SignatureECDSA.convertASN1toXMLDSIG(signatureValue);
-		assertTrue(Arrays.equals(convertToXmlDSig, xmlsec));
+        assertArrayEquals(convertToXmlDSig, xmlsec);
 	}
 
 	@Test
@@ -76,7 +77,7 @@ public class EncodingASN1SignatureValueTest {
 		s.initSign(pair.getPrivate());
 		s.update(HELLO_WORLD.getBytes());
 		byte[] binary = s.sign();
-		assertTrue(Arrays.equals(binary, DSSASN1Utils.ensurePlainSignatureValue(EncryptionAlgorithm.RSA, binary)));
+		assertArrayEquals(binary, DSSASN1Utils.ensurePlainSignatureValue(EncryptionAlgorithm.RSA, binary));
 	}
 
 	@Test
@@ -154,13 +155,13 @@ public class EncodingASN1SignatureValueTest {
 	private void assertCvcSignatureValid(String cvcSignatureInHex) throws IOException {
 		byte[] signatureValue = DatatypeConverter.parseHexBinary(cvcSignatureInHex);
 		byte[] xmlDSigValue = DSSASN1Utils.ensurePlainSignatureValue(EncryptionAlgorithm.ECDSA, signatureValue);
-		assertTrue(Arrays.equals(signatureValue, xmlDSigValue));
+		assertArrayEquals(signatureValue, xmlDSigValue);
 
 		byte[] asn1Value = SignatureECDSA.convertXMLDSIGtoASN1(signatureValue);
-		assertTrue(Arrays.equals(asn1Value, DSSASN1Utils.toStandardDSASignatureValue(signatureValue)));
+		assertArrayEquals(asn1Value, DSSASN1Utils.toStandardDSASignatureValue(signatureValue));
 
 		byte[] plainSignatureValue = SignatureECDSA.convertASN1toXMLDSIG(asn1Value);
-		assertTrue(Arrays.equals(plainSignatureValue, DSSASN1Utils.toPlainDSASignatureValue(asn1Value)));
+		assertArrayEquals(plainSignatureValue, DSSASN1Utils.toPlainDSASignatureValue(asn1Value));
 	}
 
 }

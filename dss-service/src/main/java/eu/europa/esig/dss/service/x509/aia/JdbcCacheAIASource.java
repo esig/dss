@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
  */
 public class JdbcCacheAIASource extends RepositoryAIASource {
 
+    private static final long serialVersionUID = -4332455769204417938L;
+
     private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheAIASource.class);
 
     /**

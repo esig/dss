@@ -23,6 +23,8 @@ import java.util.Set;
  */
 public abstract class RepositoryAIASource implements AIASource, Serializable {
 
+    private static final long serialVersionUID = -8629948836670094079L;
+
     private static final Logger LOG = LoggerFactory.getLogger(RepositoryAIASource.class);
 
     /**

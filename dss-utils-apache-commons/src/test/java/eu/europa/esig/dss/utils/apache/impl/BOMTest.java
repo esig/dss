@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.utils.apache.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import org.apache.commons.io.input.BOMInputStream;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.apache.commons.io.input.BOMInputStream;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class BOMTest {
 
@@ -36,13 +35,13 @@ public class BOMTest {
 	public void test() throws IOException {
 		ApacheCommonsUtils acu = new ApacheCommonsUtils();
 
-		FileInputStream fis = new FileInputStream(new File("src/test/resources/lotl_utf-8-sansbom.xml"));
-		FileInputStream fisBom = new FileInputStream(new File("src/test/resources/lotl_utf-8.xml"));
+		FileInputStream fis = new FileInputStream("src/test/resources/lotl_utf-8-sansbom.xml");
+		FileInputStream fisBom = new FileInputStream("src/test/resources/lotl_utf-8.xml");
 
 		assertNotEquals(acu.toBase64(acu.toByteArray(fis)), acu.toBase64(acu.toByteArray(fisBom)));
 
-		fis = new FileInputStream(new File("src/test/resources/lotl_utf-8-sansbom.xml"));
-		fisBom = new FileInputStream(new File("src/test/resources/lotl_utf-8.xml"));
+		fis = new FileInputStream("src/test/resources/lotl_utf-8-sansbom.xml");
+		fisBom = new FileInputStream("src/test/resources/lotl_utf-8.xml");
 
 		BOMInputStream bomIS = new BOMInputStream(fis);
 		BOMInputStream bomISSkipped = new BOMInputStream(fisBom);

@@ -57,6 +57,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -412,7 +413,7 @@ public class DSSUtilsTest {
 	
 	@Test
 	public void getOidCodeTest() {
-		assertEquals(null, DSSUtils.getOidCode(null));
+		assertNull(DSSUtils.getOidCode(null));
 		assertEquals("", DSSUtils.getOidCode(""));
 		assertEquals("1.2.3.4", DSSUtils.getOidCode("aurn:oid:1.2.3.4"));
 		assertEquals("1.2.3.4", DSSUtils.getOidCode("urn:oid:1.2.3.4"));
@@ -422,7 +423,7 @@ public class DSSUtilsTest {
 	
 	@Test
 	public void stripFirstLeadingOccurrenceTest() {
-		assertEquals(null, DSSUtils.stripFirstLeadingOccurrence(null, null));
+		assertNull(DSSUtils.stripFirstLeadingOccurrence(null, null));
 		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", null));
 		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", ""));
 		assertEquals("aabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", "a"));
@@ -524,7 +525,7 @@ public class DSSUtilsTest {
 		}
 
 		convertedSignatureValue = DSSUtils.convertECSignatureValue(currentAlgorithm, convertedSignatureValue);
-		assertTrue(Arrays.equals(originalBinaries, convertedSignatureValue.getValue()));
+		assertArrayEquals(originalBinaries, convertedSignatureValue.getValue());
 	}
 
 }

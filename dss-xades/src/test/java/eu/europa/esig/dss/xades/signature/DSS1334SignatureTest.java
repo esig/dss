@@ -78,7 +78,7 @@ public class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		parameters.setDetachedContents(Arrays.<DSSDocument>asList(ORIGINAL_FILE));
+		parameters.setDetachedContents(Arrays.asList(ORIGINAL_FILE));
 		
 		DSSDocument extendedDocument = service.extendDocument(doc, parameters);
 		assertNotNull(extendedDocument);
@@ -94,14 +94,14 @@ public class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		parameters.setDetachedContents(Arrays.<DSSDocument>asList(ORIGINAL_FILE));
+		parameters.setDetachedContents(Arrays.asList(ORIGINAL_FILE));
 		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(doc, parameters));
 		assertEquals("Cryptographic signature verification has failed / Signature verification failed against the best candidate.", exception.getMessage());
 	}
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		return Arrays.<DSSDocument>asList(ORIGINAL_FILE);
+		return Arrays.asList(ORIGINAL_FILE);
 	}
 	
 	@Override

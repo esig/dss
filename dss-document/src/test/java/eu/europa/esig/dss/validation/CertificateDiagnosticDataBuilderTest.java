@@ -119,7 +119,7 @@ public class CertificateDiagnosticDataBuilderTest {
 		builder.setType("bla");
 		builder.setStartDate(new Date());
 		TrustServiceStatusAndInformationExtensions serviceStatus = new TrustServiceStatusAndInformationExtensions(builder);
-		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.<TrustServiceStatusAndInformationExtensions>asList(serviceStatus);
+		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.asList(serviceStatus);
 		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<>(
 				srcList);
 

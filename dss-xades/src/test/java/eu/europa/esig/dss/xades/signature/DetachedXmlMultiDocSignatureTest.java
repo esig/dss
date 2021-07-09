@@ -46,7 +46,7 @@ public class DetachedXmlMultiDocSignatureTest extends AbstractXAdESMultipleDocum
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSigns = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.xml"),
+		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.xml"),
 				new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml"),
 				new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 

@@ -86,6 +86,7 @@ public class XAdESRevocationSourceBGTest extends AbstractXAdESTestValidation {
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {
 			if (error.contains("xades:StateOrProvince")) {
 				mixedSequenceOrderErrorFound = true;
+				break;
 			}
 		}
 		assertTrue(mixedSequenceOrderErrorFound);

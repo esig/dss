@@ -140,7 +140,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 	 * }
 	 */
 	private ASN1Primitive getSPDocSpecificationId(String oidOrUri) {
-		ASN1Primitive spDocSpecification = null;
+		ASN1Primitive spDocSpecification;
 		if (DSSUtils.isOidCode(oidOrUri)) {
 			spDocSpecification = new ASN1ObjectIdentifier(oidOrUri);
 		} else {

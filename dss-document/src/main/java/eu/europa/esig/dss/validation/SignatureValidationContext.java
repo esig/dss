@@ -694,9 +694,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		// add processed revocation tokens
-		for (RevocationToken revocationToken : getRelatedRevocationTokens(certToken)) {
-			revocations.add(revocationToken);
-		}
+		revocations.addAll(getRelatedRevocationTokens(certToken));
 		
 		if (Utils.isCollectionEmpty(revocations) || isRevocationDataRefreshNeeded(certToken, revocations)) {
 			LOG.debug("The signature does not contain relative revocation data.");
@@ -1203,7 +1201,7 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * This class defines a POE provided to the validation process or obtained from processed timestamps
 	 */
-	private class POE {
+	private static class POE {
 
 		/** The POE time */
 		private final Date time;

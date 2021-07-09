@@ -20,21 +20,20 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.trustedlist.TrustedListFacade;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.trustedlist.TrustedListFacade;
-import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIListType;
-import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SchemeInformationURIPredicatesTest {
 
@@ -86,8 +85,8 @@ public class SchemeInformationURIPredicatesTest {
 		assertEquals(1, list.size());
 		assertEquals(currentPivotOjUrl, list.get(0));
 
-		assertThrows(DSSException.class, () -> SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new OfficialJournalSchemeInformationURI("blabla"))
-				.collect(Collectors.toList()));
+		assertThrows(DSSException.class, () -> SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream()
+				.filter(new OfficialJournalSchemeInformationURI("blabla")).collect(Collectors.toList()));
 		assertThrows(NullPointerException.class, () -> new OfficialJournalSchemeInformationURI(null));
 
 	}

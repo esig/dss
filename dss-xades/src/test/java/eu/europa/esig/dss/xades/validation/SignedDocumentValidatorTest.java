@@ -55,7 +55,7 @@ public class SignedDocumentValidatorTest {
 
 	@Test
 	public void testXmlUTF8InMemory() throws IOException {
-		FileInputStream fis = new FileInputStream(new File("src/test/resources/sample.xml"));
+		FileInputStream fis = new FileInputStream("src/test/resources/sample.xml");
 		byte[] byteArray = Utils.toByteArray(fis);
 		Utils.closeQuietly(fis);
 		DSSDocument document = new InMemoryDocument(byteArray);

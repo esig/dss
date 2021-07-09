@@ -90,7 +90,7 @@ public class PolicySPURITest extends AbstractCAdESTestValidation {
 		assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 	
-	public class MockDataLoader extends CommonsDataLoader {
+	private static class MockDataLoader extends CommonsDataLoader {
 
 		private static final long serialVersionUID = -8743201861357700742L;
 		

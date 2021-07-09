@@ -65,7 +65,7 @@ public class JdbcCacheCrlSourceTest {
 
 	@Test
 	public void test() throws Exception {
-		CRLToken revocationToken = null;
+		CRLToken revocationToken;
 		
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.crt"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
@@ -125,7 +125,7 @@ public class JdbcCacheCrlSourceTest {
 	
 	@Test
 	public void testExpired() throws SQLException {
-		CRLToken revocationToken = null;
+		CRLToken revocationToken;
 
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
@@ -154,7 +154,7 @@ public class JdbcCacheCrlSourceTest {
 	}
 	
 	@SuppressWarnings("serial")
-	private class MockJdbcCacheCRLSource extends JdbcCacheCRLSource {
+	private static class MockJdbcCacheCRLSource extends JdbcCacheCRLSource {
 		
 		@Override
 		protected void removeRevocation(String revocationTokenKey) {

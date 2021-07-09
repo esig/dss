@@ -9,6 +9,8 @@ import java.util.Comparator;
  */
 public class TimestampValidatorComparator implements Comparator<TimestampValidator>, Serializable {
 
+    private static final long serialVersionUID = 4909403725265623858L;
+
     /** Used to compare the timestamps */
     private static final TimestampTokenComparator timestampComparator = new TimestampTokenComparator();
 

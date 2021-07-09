@@ -69,7 +69,7 @@ public class CertSubjectDNAttributeCondition implements Condition {
      */
     public final List<String> getAttributeOids() {
         return subjectAttributeOids == null ?
-            Collections.<String> emptyList() :
+            Collections.emptyList() :
             unmodifiableList(subjectAttributeOids);
     }
 

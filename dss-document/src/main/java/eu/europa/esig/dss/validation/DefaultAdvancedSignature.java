@@ -571,7 +571,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || !(obj instanceof DefaultAdvancedSignature)) {
+		if (!(obj instanceof DefaultAdvancedSignature)) {
 			return false;
 		}
 		DefaultAdvancedSignature das = (DefaultAdvancedSignature) obj;

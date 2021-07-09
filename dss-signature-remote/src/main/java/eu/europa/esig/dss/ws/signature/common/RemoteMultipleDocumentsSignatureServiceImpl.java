@@ -29,7 +29,6 @@ import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -135,8 +134,9 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 			case ASiC_S:
 				return asicWithCAdESService;
 			default:
-				throw new UnsupportedOperationException(String.format("The format is not recognized or not allowed "
-						+ "(only ASiC-E and ASiC-S are allowed for a multiple document timestamping)", timestampContainerForm.getReadable()));
+				throw new UnsupportedOperationException(String.format("The format '%s' is not recognized or not allowed "
+						+ "(only ASiC-E and ASiC-S are allowed for a multiple document timestamping)!",
+						timestampContainerForm.getReadable()));
 		}
 	}
 

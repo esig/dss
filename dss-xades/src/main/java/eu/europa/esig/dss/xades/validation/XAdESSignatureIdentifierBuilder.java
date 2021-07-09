@@ -68,7 +68,7 @@ public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 		
 		int counter = 0;
 		while (counter < signatureNodeList.getLength()) {
-			if (signatureElement == (Element) signatureNodeList.item(counter)) {
+			if (signatureElement == signatureNodeList.item(counter)) {
 				break;
 			}
 			++counter;

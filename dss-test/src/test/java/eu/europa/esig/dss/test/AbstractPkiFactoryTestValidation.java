@@ -137,7 +137,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -693,7 +693,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+		List<SignatureWrapper> allSignatures = diagnosticData.getSignatures();
+		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<String> timestampIdList = diagnosticData.getTimestampIdList(signatureWrapper.getId());
 	
 			boolean foundSignatureTimeStamp = false;
@@ -772,91 +773,122 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertTrue(Utils.isCollectionEmpty(timestampWrapper.foundCertificates()
 						.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)));
 
-				List<String> certIds = timestampWrapper.getTimestampedCertificates().stream()
-						.map(CertificateWrapper::getId).collect(Collectors.toList());
-				if (timestampWrapper.getType().coversSignature()) {
-					for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO)) {
-						certIds.contains(certificate.getId());
-					}
-					for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)) {
-						certIds.contains(certificate.getId());
-					}
-				}
-				if (timestampWrapper.getType().isArchivalTimestamp()) {
-					for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
-						certIds.contains(certificate.getId());
-					}
-					for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
-						certIds.contains(certificate.getId());
-					}
-				}
-				
-				List<String> orphanCertIds = timestampWrapper.getTimestampedOrphanCertificates().stream()
-						.map(OrphanTokenWrapper::getId).collect(Collectors.toList());
-				if (timestampWrapper.getType().coversSignature()) {
-					for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO)) {
-						orphanCertIds.contains(certificate.getId());
-					}
-					for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getOrphanCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)) {
-						orphanCertIds.contains(certificate.getId());
-					}
-				}
-				if (timestampWrapper.getType().isArchivalTimestamp()) {
-					for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
-						orphanCertIds.contains(certificate.getId());
-					}
-					for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
-						orphanCertIds.contains(certificate.getId());
-					}
+				List<SignatureWrapper> timestampedSignatures = timestampWrapper.getTimestampedSignatures();
+				if (timestampedSignatures.stream().map(SignatureWrapper::getId)
+						.collect(Collectors.toList()).contains(signatureWrapper.getId())) {
+					checkTimestampedProperties(allTimestamps, timestampWrapper, allSignatures, signatureWrapper);
 				}
 
-				List<String> revocIds = timestampWrapper.getTimestampedRevocations().stream()
-						.map(RevocationWrapper::getId).collect(Collectors.toList());
-				if (timestampWrapper.getType().coversSignature()) {
-					for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getRelatedRevocationsByOrigin(RevocationOrigin.CMS_SIGNED_DATA)) {
-						revocIds.contains(revocation.getId());
-					}
-				}
-				if (timestampWrapper.getType().isArchivalTimestamp()) {
-					for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
-						revocIds.contains(revocation.getId());
-					}
-					for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getRelatedRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
-						revocIds.contains(revocation.getId());
-					}
-				}
-
-				List<String> orphanRevocIds = timestampWrapper.getTimestampedOrphanRevocations().stream()
-						.map(OrphanTokenWrapper::getId).collect(Collectors.toList());
-				if (timestampWrapper.getType().coversSignature()) {
-					for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getOrphanRevocationsByOrigin(RevocationOrigin.CMS_SIGNED_DATA)) {
-						orphanRevocIds.contains(revocation.getId());
-					}
-				}
-				if (timestampWrapper.getType().isArchivalTimestamp()) {
-					for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
-						orphanRevocIds.contains(revocation.getId());
-					}
-					for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getOrphanRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
-						orphanRevocIds.contains(revocation.getId());
-					}
-				}
-				
 				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
+			}
+		}
+	}
+
+	protected void checkTimestampedProperties(Collection<TimestampWrapper> allTimestamps, TimestampWrapper timestampWrapper,
+											  Collection<SignatureWrapper> allSignatures, SignatureWrapper signatureWrapper) {
+		boolean timestampedTimestamp = false;
+		for (TimestampWrapper timestamp : allTimestamps) {
+			List<String> timestampedTstIds = timestamp.getTimestampedTimestamps().stream().map(TimestampWrapper::getId)
+					.collect(Collectors.toList());
+			if (timestampedTstIds.contains(timestampWrapper.getId())) {
+				timestampedTimestamp = true;
+				break;
+			}
+		}
+
+		List<String> certIds = timestampWrapper.getTimestampedCertificates().stream()
+				.map(CertificateWrapper::getId).collect(Collectors.toList());
+		if (timestampWrapper.getType().isArchivalTimestamp()) {
+			for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO)) {
+				assertTrue(certIds.contains(certificate.getId()));
+			}
+			if (!timestampedTimestamp && Utils.collectionSize(allSignatures) < 2) {
+				for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
+						.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)) {
+					assertTrue(certIds.contains(certificate.getId()));
+				}
+			}
+			for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
+				assertTrue(certIds.contains(certificate.getId()));
+			}
+			for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
+				assertTrue(certIds.contains(certificate.getId()));
+			}
+		}
+
+		List<String> orphanCertIds = timestampWrapper.getTimestampedOrphanCertificates().stream()
+				.map(OrphanTokenWrapper::getId).collect(Collectors.toList());
+		if (timestampWrapper.getType().isArchivalTimestamp()) {
+			for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO)) {
+				assertTrue(orphanCertIds.contains(certificate.getId()));
+			}
+			if (!timestampedTimestamp && Utils.collectionSize(allSignatures) < 2) {
+				for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
+						.getOrphanCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)) {
+					assertTrue(orphanCertIds.contains(certificate.getId()));
+				}
+			}
+			for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
+				assertTrue(orphanCertIds.contains(certificate.getId()));
+			}
+			for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
+				assertTrue(orphanCertIds.contains(certificate.getId()));
+			}
+		}
+
+		List<String> revocIds = timestampWrapper.getTimestampedRevocations().stream()
+				.map(RevocationWrapper::getId).collect(Collectors.toList());
+		if (timestampWrapper.getType().coversSignature()) {
+			for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getRelatedRevocationsByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL)) {
+				assertTrue(revocIds.contains(revocation.getId()));
+			}
+		}
+		if (timestampWrapper.getType().isArchivalTimestamp()) {
+			if (!timestampedTimestamp && Utils.collectionSize(allSignatures) < 2) {
+				for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
+						.getRelatedRevocationsByOrigin(RevocationOrigin.CMS_SIGNED_DATA)) {
+					assertTrue(revocIds.contains(revocation.getId()));
+				}
+			}
+			for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
+				assertTrue(revocIds.contains(revocation.getId()));
+			}
+			for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getRelatedRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
+				assertTrue(revocIds.contains(revocation.getId()));
+			}
+		}
+
+		List<String> orphanRevocIds = timestampWrapper.getTimestampedOrphanRevocations().stream()
+				.map(OrphanTokenWrapper::getId).collect(Collectors.toList());
+		if (timestampWrapper.getType().coversSignature()) {
+			for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getOrphanRevocationsByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL)) {
+				assertTrue(orphanRevocIds.contains(revocation.getId()));
+			}
+		}
+		if (timestampWrapper.getType().isArchivalTimestamp()) {
+			if (!timestampedTimestamp && Utils.collectionSize(allSignatures) < 2) {
+				for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
+						.getOrphanRevocationsByOrigin(RevocationOrigin.CMS_SIGNED_DATA)) {
+					assertTrue(orphanRevocIds.contains(revocation.getId()));
+				}
+			}
+			for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
+				assertTrue(orphanRevocIds.contains(revocation.getId()));
+			}
+			for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getOrphanRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
+				assertTrue(orphanRevocIds.contains(revocation.getId()));
 			}
 		}
 	}
@@ -1614,7 +1646,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertNotNull(signatureIdentifier);
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+				assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 				assertNotNull(signatureIdentifier.getDAIdentifier());
 				assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
 			}
@@ -1731,7 +1763,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
 
-		String marshalledSimpleReport = null;
+		String marshalledSimpleReport;
 		try {
 			marshalledSimpleReport = simpleReportFacade.marshall(reports.getSimpleReportJaxb(), true);
 			assertNotNull(marshalledSimpleReport);
@@ -1764,7 +1796,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
 
-		String marshalledDetailedReport = null;
+		String marshalledDetailedReport;
 		try {
 			marshalledDetailedReport = detailedReportFacade.marshall(reports.getDetailedReportJaxb(), true);
 			assertNotNull(marshalledDetailedReport);
@@ -1798,7 +1830,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		/* Diagnostic Data SVG */
 		DiagnosticDataFacade diagnosticDataFacade = DiagnosticDataFacade.newFacade();
 
-		String marshalledDiagnosticData = null;
+		String marshalledDiagnosticData;
 		try {
 			marshalledDiagnosticData = diagnosticDataFacade.marshall(reports.getDiagnosticDataJaxb(), true);
 			assertNotNull(marshalledDiagnosticData);

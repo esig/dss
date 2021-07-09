@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class XAdESSignaturePolicy extends SignaturePolicy {
 
+    private static final long serialVersionUID = 7680417705376716706L;
+
     /** The transforms Element (used in XAdES) */
     private Element transforms;
 

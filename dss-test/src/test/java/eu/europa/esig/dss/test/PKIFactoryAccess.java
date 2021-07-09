@@ -194,7 +194,7 @@ public abstract class PKIFactoryAccess {
 		cacheCRLSource.setProxySource(onlineCrlSource());
 		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
 		cacheCRLSource.setJdbcCacheConnector(jdbcCacheConnector);
-		cacheCRLSource.setDefaultNextUpdateDelay(3 * 24 * 60 * 60l); // 3 days
+		cacheCRLSource.setDefaultNextUpdateDelay(3 * 24 * 60 * 60L); // 3 days
 		try {
 			cacheCRLSource.initTable();
 		} catch (SQLException e) {
@@ -214,7 +214,7 @@ public abstract class PKIFactoryAccess {
 		cacheOCSPSource.setProxySource(onlineOcspSource());
 		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
 		cacheOCSPSource.setJdbcCacheConnector(jdbcCacheConnector);
-		cacheOCSPSource.setDefaultNextUpdateDelay(3 * 60l); // 3 minutes
+		cacheOCSPSource.setDefaultNextUpdateDelay(3 * 60L); // 3 minutes
 		try {
 			cacheOCSPSource.initTable();
 		} catch (SQLException e) {

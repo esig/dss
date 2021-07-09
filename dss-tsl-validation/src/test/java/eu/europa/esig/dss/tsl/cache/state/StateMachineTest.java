@@ -20,6 +20,12 @@
  */
 package eu.europa.esig.dss.tsl.cache.state;
 
+import eu.europa.esig.dss.tsl.cache.CachedResult;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,13 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.tsl.cache.CachedResult;
 
 public class StateMachineTest {
 
@@ -55,7 +54,7 @@ public class StateMachineTest {
 		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
 		assertEquals(emptyStateDate, cachedEntry.getLastStateTransitionTime());
 
-		await().atMost(1, TimeUnit.SECONDS).until(() -> emptyStateDate != new Date());
+		await().atMost(1, TimeUnit.SECONDS).until(() -> !emptyStateDate.equals(new Date()));
 
 		assertThrows(NullPointerException.class, () -> cachedEntry.update(null));
 
@@ -74,7 +73,7 @@ public class StateMachineTest {
 
 		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
 
-		await().atMost(1, TimeUnit.SECONDS).until(() -> desynchonizedStateDate != new Date());
+		await().atMost(1, TimeUnit.SECONDS).until(() -> !desynchonizedStateDate.equals(new Date()));
 		cachedEntry.sync();
 
 		assertEquals(CacheStateEnum.SYNCHRONIZED, cachedEntry.getCurrentState());
@@ -125,11 +124,11 @@ public class StateMachineTest {
 		assertNotNull(cachedEntry.getLastStateTransitionTime());
 	}
 	
-	private class MockCachedResult implements CachedResult {
+	private static class MockCachedResult implements CachedResult {
 		
 		private Integer integer;
 		
-		MockCachedResult(Integer integer) {
+		private MockCachedResult(Integer integer) {
 			this.integer = integer;
 		}
 		

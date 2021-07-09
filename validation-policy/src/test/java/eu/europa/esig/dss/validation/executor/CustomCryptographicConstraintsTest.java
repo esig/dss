@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
@@ -69,9 +70,9 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
-		XmlBasicBuildingBlocks revocationBasicBuildingBlock = null;
+		Indication result;
+		DetailedReport detailedReport;
+		XmlBasicBuildingBlocks revocationBasicBuildingBlock;
 		
 		result = defaultConstraintValidationDateIsBeforeExpirationDateTest(ALGORITHM_SHA256, 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -149,8 +150,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		// tests change only default constraints
 		result = defaultConstraintValidationDateIsBeforeExpirationDateTest(ALGORITHM_SHA256, 0);
@@ -275,8 +276,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2020-01-01", 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -332,8 +333,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/diag_data_intermediate_algo_valid.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 2048);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -350,8 +351,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/diag_data_intermediate_algo_invalid.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		result = signatureConstraintAlgorithmExpired("RSA", "2018-01-01", 1536);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -368,8 +369,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/diag_data_inexisting_algo_date.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 4096);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -386,8 +387,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		XmlDiagnosticData diagnosticData = initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2018-01-01", 0);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -714,8 +715,10 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 	
 	private void checkErrorMessageAbsence(SimpleReport simpleReport, MessageTag messageKey) {
-		assertTrue(!simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
-		assertTrue(!simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertFalse(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId())
+				.contains(messageKey));
+		assertFalse(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId())
+				.contains(messageKey));
 	}
 	
 	private void checkErrorMessagePresence(String message) {

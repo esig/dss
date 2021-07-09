@@ -77,7 +77,7 @@ public class LogAlertTest {
 		});
 	}
 	
-	class CustomStatusAlert extends AbstractStatusAlert {
+	private static class CustomStatusAlert extends AbstractStatusAlert {
 
 		public CustomStatusAlert(AlertHandler<Status> handler) {
 			super(handler);
@@ -85,7 +85,7 @@ public class LogAlertTest {
 
 	}
 
-	class CallbackExceptionAlertHandler implements AlertHandler<Status> {
+	private static class CallbackExceptionAlertHandler implements AlertHandler<Status> {
 		
 		private boolean called = false;
 

@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.openpdf.ITextDefaultPdfObjFactory;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ITextPdfObjFactoryTest {
 
@@ -64,7 +63,7 @@ public class ITextPdfObjFactoryTest {
 		assertEquals(ITEXT_SIGNATURE_SERVICE, signatureService.getClass().getSimpleName());
 	}
 
-	private class EmptyPdfObjectFactory implements IPdfObjFactory {
+	private static class EmptyPdfObjectFactory implements IPdfObjFactory {
 
 		@Override
 		public PDFSignatureService newPAdESSignatureService() {

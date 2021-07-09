@@ -60,7 +60,7 @@ public class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends Abstr
 		
 		FileDocument f1 = new FileDocument(new File("src/test/resources/sample-with-id.xml"));
 		FileDocument f2 = new FileDocument(new File("src/test/resources/sample-with-different-id.xml"));
-		documentsToSign = Arrays.<DSSDocument>asList(f1, f2);
+		documentsToSign = Arrays.asList(f1, f2);
 		
 		signingDate = new Date();
 	}

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.model.identifier;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
-import org.junit.jupiter.api.Test;
 
 public class IdentifierTest {
 
@@ -49,7 +49,7 @@ public class IdentifierTest {
 		assertNotEquals(id2, id3);
 	}
 
-	private class MockIdentifier extends Identifier {
+	private static class MockIdentifier extends Identifier {
 
 		private static final long serialVersionUID = 473449731636785224L;
 

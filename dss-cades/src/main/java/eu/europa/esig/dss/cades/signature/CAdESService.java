@@ -67,6 +67,8 @@ public class CAdESService extends
 		AbstractSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> 
 		implements CounterSignatureService<CAdESCounterSignatureParameters> {
 
+	private static final long serialVersionUID = -7744554779153433450L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESService.class);
 
 	/**
@@ -188,7 +190,7 @@ public class CAdESService extends
 	 *            set of the driving signing parameters
 	 * @param originalCmsSignedData
 	 *            the signed data extracted from an existing signature or null
-	 * @return
+	 * @return {@link DSSDocument} toSignData
 	 */
 	private DSSDocument getToSignData(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, final CMSSignedData originalCmsSignedData) {
 		final List<DSSDocument> detachedContents = parameters.getDetachedContents();

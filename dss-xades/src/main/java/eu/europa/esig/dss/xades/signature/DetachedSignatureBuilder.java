@@ -43,8 +43,10 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 	 * @param document
 	 *            The original document to sign.
 	 * @param certificateVerifier
+	 *            {@link CertificateVerifier}
 	 */
-	public DetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
+	public DetachedSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document,
+									final CertificateVerifier certificateVerifier) {
 		super(params, document, certificateVerifier);
 	}
 
