@@ -89,13 +89,15 @@ public final class TextFitter {
 	}
 
 	private static Result getBestMaxFontSize(final AnnotationBox textBox, final List<String> lines, final DSSFontMetrics fontMetrics) {
+		final StringBuilder sb = new StringBuilder(); // use a single instance for performance reasons
 		List<String> wrappedLines = lines;
 		float maxFontSizeByHeight = getMaxFontSizeByHeight(textBox.getHeight(), wrappedLines, fontMetrics);
 		float maxFontSizeByWidth = getMaxFontSizeByWidth(textBox.getWidth(), wrappedLines, fontMetrics);
 		if (maxFontSizeByHeight > maxFontSizeByWidth) {
 			int maxPossibleLinesNumber = getMaxPossibleLinesNumber(lines);
 			for (int ii = 0; ii < maxPossibleLinesNumber - lines.size() && maxFontSizeByWidth <= maxFontSizeByHeight; ii++) {
-				final List<String> newLines = wrapLineWithMetrics(lines, fontMetrics, maxFontSizeByHeight, textBox.getWidth(), ii + 1);
+				final List<String> newLines = wrapLineWithMetrics(lines, fontMetrics, sb,
+						maxFontSizeByHeight, textBox.getWidth(), ii + 1);
 
 				wrappedLines = newLines;
 				float newFontSizeByHeight = getMaxFontSizeByHeight(textBox.getHeight(), newLines, fontMetrics);
@@ -128,8 +130,8 @@ public final class TextFitter {
 	}
 
 	private static List<String> wrapLineWithMetrics(final List<String> lines, final DSSFontMetrics fontMetrics,
-											 final float fontSize, final float maxWidth, int linesToAdd) {
-
+													final StringBuilder sb, final float fontSize, final float maxWidth,
+													int linesToAdd) {
 		List<String> result = lines;
 
 		for (int ii = 0; ii < linesToAdd; ii++) {
@@ -161,7 +163,6 @@ public final class TextFitter {
 							firstWord = lastWord + 1;
 
 						} else {
-							StringBuilder sb = new StringBuilder();
 							for (int j = firstWord; j <= lastWord; j++) {
 								if (j > firstWord) {
 									sb.append(' ');
@@ -174,12 +175,12 @@ public final class TextFitter {
 							if (fontMetrics.getWidth(substring, fontSize) <= maxWidth) {
 								stringToAdd = substring;
 							}
+							sb.setLength(0); // clean the buffer
 						}
 
 						if (Utils.isStringNotEmpty(stringToAdd)) {
 							wrappedLines.add(stringToAdd);
 
-							StringBuilder sb = new StringBuilder();
 							for (int j = lastWord + 1; j < words.length; j++) {
 								if (j > lastWord + 1) {
 									sb.append(' ');
@@ -192,6 +193,7 @@ public final class TextFitter {
 							if (Utils.isStringNotEmpty(substringAfter)) {
 								wrappedLines.add(substringAfter);
 							}
+							sb.setLength(0); // clean the buffer
 							break;
 						}
 					}
