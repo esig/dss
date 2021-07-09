@@ -754,6 +754,16 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     }
 
     /**
+     * Returns references from the KeyInfo (for XAdES) encapsulated elements
+     *
+     * @return list of {@link TimestampedReference}s
+     */
+    protected List<TimestampedReference> getKeyInfoReferences() {
+        SignatureCertificateSource signatureCertificateSource = signature.getCertificateSource();
+        return createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates());
+    }
+
+    /**
      * Returns a list of {@link TimestampedReference} certificate refs found in the
      * given {@code unsignedAttribute}
      *

@@ -187,6 +187,13 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	}
 
 	@Override
+	protected List<TimestampedReference> getSignatureTimestampReferences() {
+		List<TimestampedReference> timestampedReferences = super.getSignatureTimestampReferences();
+		addReferences(timestampedReferences, getKeyInfoReferences());
+		return timestampedReferences;
+	}
+
+	@Override
 	protected List<CertificateRef> getCertificateRefs(JAdESAttribute unsignedAttribute) {
 		List<CertificateRef> result = new ArrayList<>();
 		List<?> certificateRefsList = (List<?>) unsignedAttribute.getValue();

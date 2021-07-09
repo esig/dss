@@ -36,7 +36,6 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
@@ -350,16 +349,6 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			addReferences(timestampedReferences, getKeyInfoReferences());
 		}
 		return timestampedReferences;
-	}
-
-	/**
-	 * Returns references from the KeyInfo encapsulated elements
-	 *
-	 * @return list of {@link TimestampedReference}s
-	 */
-	protected List<TimestampedReference> getKeyInfoReferences() {
-		SignatureCertificateSource signatureCertificateSource = signature.getCertificateSource();
-		return createReferencesForCertificates(signatureCertificateSource.getKeyInfoCertificates());
 	}
 
 	private boolean isKeyInfoCovered() {
