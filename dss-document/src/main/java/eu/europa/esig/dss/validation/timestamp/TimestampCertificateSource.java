@@ -26,9 +26,18 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.validation.CMSCertificateSource;
 
+/**
+ * A timestamp CMS certificate source
+ *
+ */
 @SuppressWarnings("serial")
 public class TimestampCertificateSource extends CMSCertificateSource {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param timestampToken {@link TimeStampToken}
+	 */
 	public TimestampCertificateSource(final TimeStampToken timestampToken) {
 		super(timestampToken.toCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(timestampToken.toCMSSignedData()));
 	}

@@ -20,10 +20,18 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
+/**
+ * This predicate allows filtering of TSL pointers by a PDF MimeType
+ *
+ */
 public final class PDFOtherTSLPointer extends MimetypeOtherTSLPointer {
 
+	/** The PDF MimeType */
 	private static final String EXPECTED_MIMETYPE = "application/pdf";
 
+	/**
+	 * Default constructor
+	 */
 	public PDFOtherTSLPointer() {
 		super(EXPECTED_MIMETYPE);
 	}

@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.validation.timestamp;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+
+import java.io.Serializable;
 
 /**
  * This class stocks the timestamped reference, which is composed of: - the
@@ -32,19 +32,38 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 public class TimestampedReference implements Serializable {
 
 	private static final long serialVersionUID = -6147592379027843583L;
-	
+
+	/** Id of the timestamped object */
 	private final String objectId;
+
+	/** Timestamped object type */
 	private final TimestampedObjectType category;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param objectId {@link String}
+	 * @param category {@link TimestampedObjectType}
+	 */
 	public TimestampedReference(final String objectId, final TimestampedObjectType category) {
 		this.objectId = objectId;
 		this.category = category;
 	}
 
+	/**
+	 * Gets the timestamped object type
+	 *
+	 * @return {@link TimestampedObjectType}
+	 */
 	public TimestampedObjectType getCategory() {
 		return category;
 	}
 
+	/**
+	 * Gets the timestamped object Id
+	 *
+	 * @return {@link String}
+	 */
 	public String getObjectId() {
 		return objectId;
 	}

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.spi.x509.revocation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,14 +79,16 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	protected abstract String getRemoveRevocationTokenEntryQuery();
 	
 	/**
-	 * Build {@link RevocationToken} from the obtained {@link ResultSet}
+	 * Builds {@link RevocationToken} from the obtained {@link ResultSet}
+	 *
 	 * @param resultRecord represent the extract record row
 	 * @param certificateToken {@link CertificateToken} of certificate to get revocation data for
 	 * @param issuerCertificateToken {@link CertificateToken} if issuer of the certificateToken
 	 * @return {@link RevocationToken}
+	 * @throws DSSExternalResourceException if an exception occurs during the attempt to extract token
 	 */
 	protected abstract RevocationToken<R> buildRevocationTokenFromResult(JdbcCacheConnector.JdbcResultRecord resultRecord,
-			CertificateToken certificateToken,CertificateToken issuerCertificateToken) throws RevocationException;
+			CertificateToken certificateToken,CertificateToken issuerCertificateToken) throws DSSExternalResourceException;
 
 	/**
 	 * Sets {@code DataSource}

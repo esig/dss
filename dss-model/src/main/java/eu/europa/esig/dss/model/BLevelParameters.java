@@ -27,6 +27,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class is used to define common b-level parameters for a signature creation
+ *
+ */
 @SuppressWarnings("serial")
 public class BLevelParameters implements Serializable {
 

@@ -244,6 +244,13 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		return getSignatureTimestampData(null, canonicalizationMethod);
 	}
 
+	/**
+	 * Returns a message-imprint for a signature timestamp
+	 *
+	 * @param timestampToken {@link TimestampToken}
+	 * @param canonicalizationMethod {@link String}
+	 * @return message-imprint
+	 */
 	protected byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {

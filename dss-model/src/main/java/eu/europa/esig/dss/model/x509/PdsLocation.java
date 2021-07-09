@@ -7,21 +7,44 @@ package eu.europa.esig.dss.model.x509;
  */
 public class PdsLocation {
 
+    /** The URL */
     private String url;
+
+    /** The language */
     private String language;
 
+    /**
+     * Returns URL
+     *
+     * @return {@link String}
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * Sets URL
+     *
+     * @param url {@link String}
+     */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * Returns the language
+     *
+     * @return {@link String}
+     */
     public String getLanguage() {
         return language;
     }
 
+    /**
+     * Sets language
+     *
+     * @param language {@link String}
+     */
     public void setLanguage(String language) {
         this.language = language;
     }

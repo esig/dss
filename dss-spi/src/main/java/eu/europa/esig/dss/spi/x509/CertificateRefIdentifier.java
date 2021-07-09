@@ -26,16 +26,26 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.DSSUtils;
 
+/**
+ * An identifier for a certificate token reference
+ *
+ */
 public class CertificateRefIdentifier extends Identifier {
 
 	private static final long serialVersionUID = -957484858420900350L;
-	
+
+	/** The digest algorithm used to compute SKI */
 	private static final DigestAlgorithm SKI_DIGEST_ALGO = DigestAlgorithm.SHA1; // by RFC 6960
 
+	/**
+	 * Default constructor
+	 *
+	 * @param certificateRef {@link CertificateRef}
+	 */
 	protected CertificateRefIdentifier(CertificateRef certificateRef) {
 		super("C-", getDigest(certificateRef));
 	}
-	
+
 	private static Digest getDigest(CertificateRef certificateRef) {
 		Digest certDigest = certificateRef.getCertDigest();
 		if (certDigest != null) {

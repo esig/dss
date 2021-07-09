@@ -20,40 +20,71 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.RevocationReason;
+
+import java.util.Date;
 
 /**
  * Complete revocation wrapper, containing detailed certificate revocation and common information
  */
 public class CertificateRevocationWrapper extends RevocationWrapper {
 	
+	/** Wrapped {@code XmlCertificateRevocation} */
 	private final XmlCertificateRevocation certificateRevocation;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param certificateRevocation {@link XmlCertificateRevocation}
+	 */
 	public CertificateRevocationWrapper(XmlCertificateRevocation certificateRevocation) {
 		super(certificateRevocation.getRevocation());
 		this.certificateRevocation = certificateRevocation;
 	}
 
+	/**
+	 * Returns the revocation status of the concerned certificate
+	 *
+	 * @return {@link CertificateStatus}
+	 */
 	public CertificateStatus getStatus() {
 		return certificateRevocation.getStatus();
 	}
 
+	/**
+	 * Returns the revocation reason for the concerned certificate
+	 *
+	 * @return {@link RevocationReason}
+	 */
 	public RevocationReason getReason() {
 		return certificateRevocation.getReason();
 	}
 
+	/**
+	 * Returns the revocation time for the concerned certificate
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getRevocationDate() {
 		return certificateRevocation.getRevocationDate();
 	}
-	
+
+	/**
+	 * Gets if the concerned certificate has been revoked
+	 *
+	 * @return TRUE if the certificate has been revoked, FALSE otherwise
+	 */
 	public boolean isRevoked() {
 		return getStatus().isRevoked();
 	}
-	
+
+	/**
+	 * Gets if the revocation status is known
+	 *
+	 * @return TRUE if the revocation status is known, FALSE otherwise
+	 */
 	public boolean isKnown() {
 		return getStatus().isKnown();
 	}

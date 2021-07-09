@@ -23,14 +23,28 @@ package eu.europa.esig.dss.spi.x509.revocation;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 
+/**
+ * An identifier for a revocation reference
+ *
+ */
 public class RevocationRefIdentifier extends Identifier {
 
 	private static final long serialVersionUID = 7648525025665164890L;
 
+	/**
+	 * Constructor from a {@code RevocationRef}
+	 *
+	 * @param revocationRef {@link RevocationRef}
+	 */
 	public RevocationRefIdentifier(RevocationRef revocationRef) {
 		this(revocationRef.getDigest());
 	}
-	
+
+	/**
+	 * Digest only constructor
+	 *
+	 * @param digest {@link Digest}
+	 */
 	protected RevocationRefIdentifier(final Digest digest) {
 		super("R-", digest);
 	}

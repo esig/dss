@@ -22,14 +22,29 @@ package eu.europa.esig.dss.spi.x509.revocation;
 
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
+/**
+ * An identifier for a revocation token
+ *
+ */
 public class RevocationTokenIdentifier extends TokenIdentifier {
 
 	private static final long serialVersionUID = -6238848475533856942L;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param revocationToken {@link RevocationToken}
+	 */
 	public RevocationTokenIdentifier(RevocationToken revocationToken) {
 		this("R-", revocationToken);
 	}
-	
+
+	/**
+	 * Internal constructor with a custom prefix
+	 *
+	 * @param prefix {@link String}
+	 * @param revocationToken {@link RevocationToken}
+	 */
 	RevocationTokenIdentifier(String prefix, RevocationToken revocationToken) {
 		super(prefix, revocationToken);
 	}

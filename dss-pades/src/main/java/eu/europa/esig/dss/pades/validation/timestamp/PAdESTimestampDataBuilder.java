@@ -32,18 +32,35 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Builds a message-imprint for a PAdES timestamps
+ */
 public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
-	
+
+	/** A list of PDF revisions */
 	private final List<PdfRevision> documentRevisions;
-	
+
+	/** A list of signature timestamps */
 	private List<TimestampToken> signatureTimestamps = new ArrayList<>();
 
+	/**
+	 * Default constructor
+	 *
+	 * @param documentRevisions a list of {@link PdfRevision}s
+	 * @param signature {@link PAdESSignature}
+	 * @param certificateSource {@link ListCertificateSource}
+	 */
 	public PAdESTimestampDataBuilder(final List<PdfRevision> documentRevisions, final PAdESSignature signature,
 									 final ListCertificateSource certificateSource) {
 		super(signature, certificateSource);
 		this.documentRevisions = documentRevisions;
 	}
-	
+
+	/**
+	 * Sets the extracted list of signature timestamps
+	 *
+	 * @param signatureTimestamps a list of {@link TimestampToken}s
+	 */
 	public void setSignatureTimestamps(List<TimestampToken> signatureTimestamps) {
 		this.signatureTimestamps = signatureTimestamps;
 	}

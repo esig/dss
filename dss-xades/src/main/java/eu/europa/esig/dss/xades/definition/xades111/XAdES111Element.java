@@ -229,6 +229,11 @@ public enum XAdES111Element implements XAdESElement {
 	/** Tag name */
 	private final String tagName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param tagName {@link String}
+	 */
 	XAdES111Element(String tagName) {
 		this.tagName = tagName;
 		this.namespace = XAdESNamespaces.XADES_111;

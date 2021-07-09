@@ -24,8 +24,18 @@ import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.signature.asics.AbstractGetDataToSignASiCS;
 import eu.europa.esig.dss.utils.Utils;
 
+/**
+ * This class is used to get DataToSign for ASiC-S with XAdES container
+ *
+ */
 public abstract class AbstractGetDataToSignASiCSWithXAdES extends AbstractGetDataToSignASiCS {
 
+	/**
+	 * Returns the signature filename
+	 *
+	 * @param asicParameters {@link ASiCParameters}
+	 * @return {@link String}
+	 */
 	protected String getSignatureFileName(final ASiCParameters asicParameters) {
 		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
 			return "META-INF/" + asicParameters.getSignatureFileName();

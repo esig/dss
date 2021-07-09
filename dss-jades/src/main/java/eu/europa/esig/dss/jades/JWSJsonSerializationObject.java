@@ -69,6 +69,11 @@ public class JWSJsonSerializationObject implements Serializable {
 		this.payload = encodedPayload;
 	}
 
+	/**
+	 * Returns JWS signatures
+	 *
+	 * @return a list of {@link JWS}s
+	 */
 	public List<JWS> getSignatures() {
 		if (signatures == null) {
 			signatures = new ArrayList<>();

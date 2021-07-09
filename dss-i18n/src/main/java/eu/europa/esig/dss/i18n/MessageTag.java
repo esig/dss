@@ -731,7 +731,13 @@ public enum MessageTag {
 	public String getId() {
 		return name();
 	}
-	
+
+	/**
+	 * This method returns a semantics {@code MessageTag} to be used by ETSI Indication/SubIndication
+	 *
+	 * @param etsiCode {@link String} Indication/SubIndication
+	 * @return {@link MessageTag}
+	 */
 	public static final MessageTag getSemantic(String etsiCode) {
 		String expectedEnumValue = "SEMANTICS_" + etsiCode;
 		for (MessageTag messageTag : values()) {

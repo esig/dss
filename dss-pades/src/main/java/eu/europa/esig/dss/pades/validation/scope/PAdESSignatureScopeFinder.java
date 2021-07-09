@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.scope;
 
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.pades.PAdESUtils;
@@ -31,6 +28,9 @@ import eu.europa.esig.dss.pdf.PdfCMSRevision;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The classes finds a signer data for a PAdESSignature /
@@ -44,6 +44,12 @@ public class PAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<PAdE
 		return Arrays.asList(findSignatureScope(pAdESSignature.getPdfRevision()));
 	}
 
+	/**
+	 * Finds signature scopes from a {@code PdfCMSRevision}
+	 *
+	 * @param pdfRevision {@link PdfCMSRevision}
+	 * @return {@link SignatureScope}
+	 */
 	public SignatureScope findSignatureScope(final PdfCMSRevision pdfRevision) {
 
 		if (pdfRevision.areAllOriginalBytesCovered()) {

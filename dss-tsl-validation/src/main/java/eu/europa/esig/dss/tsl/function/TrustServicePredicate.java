@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import java.util.function.Predicate;
-
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 
+import java.util.function.Predicate;
+
+/**
+ * The predicate allowing TrustServices filtering
+ *
+ */
 public interface TrustServicePredicate extends Predicate<TSPServiceType> {
 
 }

@@ -22,6 +22,10 @@ package eu.europa.esig.dss.pdf.encryption;
 
 import java.security.SecureRandom;
 
+/**
+ * The class is used to provide a {@code SecureRandom} to be used for encrypted PDF signing/extension
+ *
+ */
 public interface SecureRandomProvider {
 	
 	/**

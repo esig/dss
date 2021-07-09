@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import java.util.List;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestAttribute;
 import eu.europa.esig.dss.asic.xades.definition.ManifestElement;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * This class is used to build the manifest.xml file (ASiC-E).
@@ -51,12 +50,23 @@ import eu.europa.esig.dss.model.MimeType;
  */
 public class ASiCEWithXAdESManifestBuilder {
 
+	/** List of documents to be included into the manifest */
 	private final List<DSSDocument> documents;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param documents a list of {@link DSSDocument}s
+	 */
 	public ASiCEWithXAdESManifestBuilder(List<DSSDocument> documents) {
 		this.documents = documents;
 	}
 
+	/**
+	 * Builds the XML manifest
+	 *
+	 * @return {@link Document}
+	 */
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
 		final Element manifestDom = DomUtils.createElementNS(documentDom, ManifestNamespace.NS, ManifestElement.MANIFEST);

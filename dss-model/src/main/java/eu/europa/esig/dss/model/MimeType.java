@@ -39,32 +39,57 @@ public class MimeType implements Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MimeType.class);
 
+	/** Map of registered MimeTypes */
 	private static Map<String, MimeType> mimeTypes = new HashMap<>();
+
+	/** Map of registered MimeType names and corresponding file extensions */
 	private static Map<String, MimeType> fileExtensions = new HashMap<>();
 
+	/** octet-stream */
 	public static final MimeType BINARY = new MimeType("application/octet-stream");
+	/** xml */
 	public static final MimeType XML = new MimeType("text/xml");
+	/** html */
 	public static final MimeType HTML = new MimeType("text/html");
+	/** pdf */
 	public static final MimeType PDF = new MimeType("application/pdf");
+	/** pkcs7-signature */
 	public static final MimeType PKCS7 = new MimeType("application/pkcs7-signature");
+	/** json */
 	public static final MimeType JSON = new MimeType("application/json");
+	/** jose */
 	public static final MimeType JOSE = new MimeType("application/jose");
+	/** jose+json */
 	public static final MimeType JOSE_JSON = new MimeType("application/jose+json");
+	/** timestamp-token */
 	public static final MimeType TST = new MimeType("application/vnd.etsi.timestamp-token");
+	/** asic-s */
 	public static final MimeType ASICS = new MimeType("application/vnd.etsi.asic-s+zip");
+	/** asic-e */
 	public static final MimeType ASICE = new MimeType("application/vnd.etsi.asic-e+zip");
+	/** opendocument text */
 	public static final MimeType ODT = new MimeType("application/vnd.oasis.opendocument.text");
+	/** opendocument spreadsheet */
 	public static final MimeType ODS = new MimeType("application/vnd.oasis.opendocument.spreadsheet");
+	/** opendocument presentation */
 	public static final MimeType ODP = new MimeType("application/vnd.oasis.opendocument.presentation");
+	/** opendocument graphics */
 	public static final MimeType ODG = new MimeType("application/vnd.oasis.opendocument.graphics");
+	/** plain text */
 	public static final MimeType TEXT = new MimeType("text/plain");
+	/** crl */
 	public static final MimeType CRL = new MimeType("application/pkix-crl");
+	/** certificate */
 	public static final MimeType CER = new MimeType("application/pkix-cert");
 
+	/** png */
 	public static final MimeType PNG = new MimeType("image/png");
+	/** jpeg */
 	public static final MimeType JPEG = new MimeType("image/jpeg");
+	/** svg */
 	public static final MimeType SVG = new MimeType("image/svg+xml");
 
+	/** The MimeType string */
 	private String mimeTypeString;
 
 	static {

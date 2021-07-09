@@ -43,6 +43,7 @@ public class CompositeTSPSource implements TSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CompositeTSPSource.class);
 
+	/** A map of source keys and corresponding TSP Sources */
 	private Map<String, TSPSource> tspSources;
 
 	/**

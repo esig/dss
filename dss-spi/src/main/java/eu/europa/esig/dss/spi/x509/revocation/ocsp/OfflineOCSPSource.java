@@ -46,6 +46,9 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
+	/**
+	 * Default constructor
+	 */
 	protected OfflineOCSPSource() {
 		super(new OCSPTokenRefMatcher());
 	}

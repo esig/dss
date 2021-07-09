@@ -22,32 +22,71 @@ package eu.europa.esig.dss.model.x509;
 
 import java.util.List;
 
+/**
+ * Represents a PSD-2-QC type
+ *
+ */
 public class PSD2QcType {
 
+	/** A list of {@code RoleOfPSP}s */
 	private List<RoleOfPSP> rolesOfPSP;
+
+	/** NCA name */
 	private String ncaName;
+
+	/** NCA Id */
 	private String ncaId;
 
+	/**
+	 * Gets a list of {@code RoleOfPSP}s
+	 *
+	 * @return a list of {@link RoleOfPSP}s
+	 */
 	public List<RoleOfPSP> getRolesOfPSP() {
 		return rolesOfPSP;
 	}
 
+	/**
+	 * Sets a list of {@code RoleOfPSP}s
+	 *
+	 * @param rolesOfPSP a list of {@link RoleOfPSP}s
+	 */
 	public void setRolesOfPSP(List<RoleOfPSP> rolesOfPSP) {
 		this.rolesOfPSP = rolesOfPSP;
 	}
 
+	/**
+	 * Gets an NCA name
+	 *
+	 * @return {@link String}
+	 */
 	public String getNcaName() {
 		return ncaName;
 	}
 
+	/**
+	 * Sets an NCA name
+	 *
+	 * @param ncaName {@link String}
+	 */
 	public void setNcaName(String ncaName) {
 		this.ncaName = ncaName;
 	}
 
+	/**
+	 * Gets an NCA Id
+	 *
+	 * @return {@link String}
+	 */
 	public String getNcaId() {
 		return ncaId;
 	}
 
+	/**
+	 * Sets an NCA Id
+	 *
+	 * @param ncaId {@link String}
+	 */
 	public void setNcaId(String ncaId) {
 		this.ncaId = ncaId;
 	}

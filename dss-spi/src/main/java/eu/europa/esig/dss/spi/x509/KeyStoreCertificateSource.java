@@ -52,7 +52,10 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(KeyStoreCertificateSource.class);
 
+	/** The KeyStore */
 	private KeyStore keyStore;
+
+	/** A password to the KeyStore */
 	private PasswordProtection passwordProtection;
 
 	/**

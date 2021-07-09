@@ -20,21 +20,29 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
+import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AnyType;
+import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
+import org.w3c.dom.Element;
+
+import javax.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBElement;
-
-import org.w3c.dom.Element;
-
-import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalInformationType;
-import eu.europa.esig.trustedlist.jaxb.tsl.AnyType;
-import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
-
+/**
+ * An abstract implementation of {@code OtherTSLPointerPredicate}
+ *
+ */
 public abstract class AbstractOtherTSLPointerPredicate implements OtherTSLPointerPredicate {
 
+	/**
+	 * Extracts the additional information map
+	 *
+	 * @param o {@link OtherTSLPointerType}
+	 * @return a map of property names and values
+	 */
 	protected Map<String, Object> extractAdditionalInformation(OtherTSLPointerType o) {
 		Map<String, Object> result = new HashMap<>();
 

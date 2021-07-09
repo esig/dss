@@ -355,7 +355,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		}
 	}
 
-	protected XmlSignerData buildXmlSignerData(SignatureScope signatureScope) {
+	private XmlSignerData buildXmlSignerData(SignatureScope signatureScope) {
 		String id = signatureScope.getDSSIdAsString();
 		XmlSignerData xmlSignerData = xmlSignedDataMap.get(id);
 		if (xmlSignerData == null) {
@@ -516,6 +516,12 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return null;
 	}
 
+	/**
+	 * If text is empty returns NULL, or original text otherwise
+	 *
+	 * @param text {@link String}
+	 * @return {@link String}
+	 */
 	protected String emptyToNull(String text) {
 		if (Utils.isStringEmpty(text)) {
 			return null;
@@ -786,6 +792,13 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return xmlOrphanRevocation;
 	}
 
+	/**
+	 * Creates an orphan revocation token from {@code EncapsulatedRevocationTokenIdentifier}
+	 *
+	 * @param revocationIdentifier {@link EncapsulatedRevocationTokenIdentifier}
+	 * @param <R> {@link Revocation}
+	 * @return {@link XmlOrphanRevocationToken}
+	 */
 	protected <R extends Revocation> XmlOrphanRevocationToken createOrphanTokenFromRevocationIdentifier(
 			EncapsulatedRevocationTokenIdentifier<R> revocationIdentifier) {
 		XmlOrphanRevocationToken orphanToken = new XmlOrphanRevocationToken();
@@ -869,6 +882,12 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return xmlTimestampsList;
 	}
 
+	/**
+	 * This method builds {@code XmlTimestamp} from {@code TimestampToken}
+	 *
+	 * @param timestampToken {@link TimestampToken}
+	 * @return {@link XmlTimestamp}
+	 */
 	protected XmlTimestamp buildDetachedXmlTimestamp(final TimestampToken timestampToken) {
 
 		final XmlTimestamp xmlTimestampToken = new XmlTimestamp();
@@ -953,7 +972,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return digestMatchers;
 	}
 
-	protected XmlBasicSignature getXmlBasicSignature(final TimestampToken timestampToken) {
+	private XmlBasicSignature getXmlBasicSignature(final TimestampToken timestampToken) {
 		final XmlBasicSignature xmlBasicSignatureType = new XmlBasicSignature();
 
 		SignatureAlgorithm signatureAlgorithm = timestampToken.getSignatureAlgorithm();
@@ -970,6 +989,12 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return xmlBasicSignatureType;
 	}
 
+	/**
+	 * Builds a list of {@code XmlSignerInfo} from {@code SignerIdentifier}s
+	 *
+	 * @param signerIdentifiers a set of {@link SignerIdentifier}
+	 * @return a list of {@link XmlSignerInfo}s
+	 */
 	protected List<XmlSignerInfo> getXmlSignerInformationStore(Set<SignerIdentifier> signerIdentifiers) {
 		if (Utils.isCollectionNotEmpty(signerIdentifiers)) {
 			List<XmlSignerInfo> signerInfos = new ArrayList<>();
@@ -981,7 +1006,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return null;
 	}
 
-	protected XmlTSAGeneralName getXmlTSAGeneralName(TimestampToken timestampToken) {
+	private XmlTSAGeneralName getXmlTSAGeneralName(TimestampToken timestampToken) {
 		X500Principal tstInfoTsa = timestampToken.getTSTInfoTsa();
 		if (tstInfoTsa != null) {
 			XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();
@@ -1018,6 +1043,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return foundTimestamps;
 	}
 
+	/**
+	 * Builds a list of {@code XmlOrphanTokens}
+	 *
+	 * @return {@link XmlOrphanTokens}
+	 */
 	protected XmlOrphanTokens buildXmlOrphanTokens() {
 		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap) || Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
 			XmlOrphanTokens xmlOrphanTokens = new XmlOrphanTokens();

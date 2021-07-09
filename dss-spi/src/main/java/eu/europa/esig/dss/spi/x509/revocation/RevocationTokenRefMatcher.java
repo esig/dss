@@ -23,6 +23,11 @@ package eu.europa.esig.dss.spi.x509.revocation;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
+/**
+ * This class is used to validate a revocation reference against a revocation token
+ *
+ * @param <R> {@link Revocation}
+ */
 public interface RevocationTokenRefMatcher<R extends Revocation> {
 
 	/**

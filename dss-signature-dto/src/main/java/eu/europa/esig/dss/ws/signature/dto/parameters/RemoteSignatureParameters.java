@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -38,10 +33,26 @@ import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.TimestampDTO;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * The parameters for a signature creation
+ *
+ */
 @SuppressWarnings("serial")
 public class RemoteSignatureParameters implements Serializable {
 
+	/**
+	 * Signing certificate
+	 */
 	private RemoteCertificate signingCertificate;
+
+	/**
+	 * Signing certificate chain
+	 */
 	private List<RemoteCertificate> certificateChain = new ArrayList<>();
 
 	/**
@@ -146,37 +157,80 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	private String signatureIdToCounterSign;
 
+	/**
+	 * Default constructor
+	 */
 	public RemoteSignatureParameters() {
 	}
 
+	/**
+	 * Gets the signing certificate
+	 *
+	 * @return {@link RemoteCertificate}
+	 */
 	public RemoteCertificate getSigningCertificate() {
 		return signingCertificate;
 	}
 
+	/**
+	 * Sets the signing certificate
+	 *
+	 * @param signingCertificate {@link RemoteCertificate}
+	 */
 	public void setSigningCertificate(RemoteCertificate signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}
 
+	/**
+	 * Gets the certificate chain
+	 *
+	 * @return a list of {@link RemoteCertificate}s
+	 */
 	public List<RemoteCertificate> getCertificateChain() {
 		return certificateChain;
 	}
 
+	/**
+	 * Sets the certificate chain of the signing certificate
+	 *
+	 * @param certificateChain a list of {@link RemoteCertificate}s
+	 */
 	public void setCertificateChain(List<RemoteCertificate> certificateChain) {
 		this.certificateChain = certificateChain;
 	}
 
+	/**
+	 * Gets the detached contents
+	 *
+	 * @return a list of {@link RemoteDocument}s
+	 */
 	public List<RemoteDocument> getDetachedContents() {
 		return detachedContents;
 	}
 
+	/**
+	 * Sets a list of signed detached documents
+	 *
+	 * @param detachedContents a  ist of {@link RemoteDocument}s
+	 */
 	public void setDetachedContents(List<RemoteDocument> detachedContents) {
 		this.detachedContents = detachedContents;
 	}
 
+	/**
+	 * Gets ASiC container type
+	 *
+	 * @return {@link ASiCContainerType}
+	 */
 	public ASiCContainerType getAsicContainerType() {
 		return asicContainerType;
 	}
 
+	/**
+	 * Sets ASiCContainerType for ASiC format creation
+	 *
+	 * @param asicContainerType {@link ASiCContainerType}
+	 */
 	public void setAsicContainerType(ASiCContainerType asicContainerType) {
 		this.asicContainerType = asicContainerType;
 	}
@@ -249,6 +303,11 @@ public class RemoteSignatureParameters implements Serializable {
 		return referenceDigestAlgorithm;
 	}
 
+	/**
+	 * Sets the digest algorithm for ds:Reference or message-digest attribute
+	 *
+	 * @param referenceDigestAlgorithm {@link DigestAlgorithm}
+	 */
 	public void setReferenceDigestAlgorithm(DigestAlgorithm referenceDigestAlgorithm) {
 		this.referenceDigestAlgorithm = referenceDigestAlgorithm;
 	}
@@ -327,6 +386,11 @@ public class RemoteSignatureParameters implements Serializable {
 		}
 	}
 
+	/**
+	 * Sets the mask generation function of the signature algorithm, when applicable
+	 *
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 */
 	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
 		this.maskGenerationFunction = maskGenerationFunction;
 		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {

@@ -26,7 +26,6 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -303,7 +302,10 @@ public abstract class XAdESBuilder {
 		inMemoryDocument.setMimeType(MimeType.XML);
 		return inMemoryDocument;
 	}
-	
+
+	/**
+	 * This method is used to align children indents
+	 */
 	protected abstract void alignNodes();
 	
 	/**

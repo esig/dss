@@ -49,12 +49,24 @@ public enum OCSPRespStatus {
 	/** Request unauthorized */
 	UNAUTHORIZED(OCSPResp.UNAUTHORIZED);
 
+	/** The status code value */
 	private final int statusCode;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param statusCode
+	 */
 	OCSPRespStatus(int statusCode) {
 		this.statusCode = statusCode;
 	}
 
+	/**
+	 * Returns a corresponding {@code OCSPRespStatus} for the int value code
+	 *
+	 * @param value int code
+	 * @return {@link OCSPRespStatus}
+	 */
 	public static OCSPRespStatus fromInt(int value) {
 		for (OCSPRespStatus status : OCSPRespStatus.values()) {
 			if (status.statusCode == value) {
@@ -64,6 +76,11 @@ public enum OCSPRespStatus {
 		return OCSPRespStatus.UNKNOWN_STATUS;
 	}
 
+	/**
+	 * Returns the status code
+	 *
+	 * @return status code
+	 */
 	public int getStatusCode() {
 		return statusCode;
 	}

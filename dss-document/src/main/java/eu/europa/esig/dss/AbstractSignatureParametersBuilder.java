@@ -20,13 +20,18 @@
  */
 package eu.europa.esig.dss;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.SignatureParametersBuilder;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * An abstract class to build a signature parameters instance
+ *
+ * @param <SP> {@code AbstractSignatureParameters}
+ */
 @SuppressWarnings("rawtypes")
 public abstract class AbstractSignatureParametersBuilder<SP extends AbstractSignatureParameters> implements SignatureParametersBuilder<SP> {
 	

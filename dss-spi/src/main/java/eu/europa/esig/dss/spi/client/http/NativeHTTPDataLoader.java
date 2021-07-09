@@ -44,7 +44,10 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 * Available HTTPMethods
 	 */
 	protected enum HttpMethod {
-		GET, POST
+		/** GET method */
+		GET,
+		/** POST method */
+		POST
 	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NativeHTTPDataLoader.class);

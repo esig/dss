@@ -37,7 +37,6 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.IOException;
@@ -302,27 +301,6 @@ public class ImageUtils {
 			}
 		}
 		return rgbImage;
-	}
-
-	public static BufferedImage rotate(BufferedImage image, double angle) {
-		double sin = Math.abs(Math.sin(Math.toRadians(angle)));
-		double cos = Math.abs(Math.cos(Math.toRadians(angle)));
-
-		int w = image.getWidth();
-		int h = image.getHeight();
-
-		double neww = Math.floor(w * cos + h * sin);
-		double newh = Math.floor(h * cos + w * sin);
-
-		BufferedImage result = new BufferedImage((int) neww, (int) newh, image.getType());
-		Graphics2D g = result.createGraphics();
-
-		g.translate((neww - w) / 2, (newh - h) / 2);
-		g.rotate(Math.toRadians(angle), (double) w / 2, (double) h / 2);
-		g.drawRenderedImage(image, null);
-		g.dispose();
-
-		return result;
 	}
 
 	private static ImageReader getImageReader(String type) {

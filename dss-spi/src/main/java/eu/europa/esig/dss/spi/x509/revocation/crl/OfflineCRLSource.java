@@ -45,6 +45,7 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
+	/** A cached list of processed {@link CRLValidity}s */
 	private final List<CRLValidity> cachedValidCRLValidities = new ArrayList<>();
 
 	/**

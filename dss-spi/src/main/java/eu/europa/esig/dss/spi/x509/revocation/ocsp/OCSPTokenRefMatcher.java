@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.util.Arrays;
-
-import org.bouncycastle.asn1.ocsp.ResponderID;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -35,7 +28,17 @@ import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationTokenRefMatcher;
+import org.bouncycastle.asn1.ocsp.ResponderID;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
+/**
+ * The class is used to check OCSP token reference
+ *
+ */
 public class OCSPTokenRefMatcher implements RevocationTokenRefMatcher<OCSP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPTokenRefMatcher.class);

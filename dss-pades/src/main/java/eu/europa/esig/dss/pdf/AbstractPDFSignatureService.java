@@ -462,6 +462,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				&& !PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter);
 	}
 
+	/**
+	 * Builds a map of token identifiers and their corresponding PDF object indexes
+	 *
+	 * @param signatures a collection of {@link AdvancedSignature}s
+	 * @return a map
+	 */
 	protected Map<String, Long> buildKnownObjects(Collection<AdvancedSignature> signatures) {
 		Map<String, Long> result = new HashMap<>();
 

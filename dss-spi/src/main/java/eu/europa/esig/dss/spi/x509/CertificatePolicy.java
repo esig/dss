@@ -20,23 +20,50 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+/**
+ * The class represents a certificate policy
+ *
+ */
 public class CertificatePolicy {
 
+	/** Certificate policy OID */
 	private String oid;
+
+	/** Certificate policy URL */
 	private String cpsUrl;
 
+	/**
+	 * Gets OID of the certificate policy
+	 *
+	 * @return {@link String}
+	 */
 	public String getOid() {
 		return oid;
 	}
 
+	/**
+	 * Sets OID of the certificate policy
+	 *
+	 * @param oid {@link String}
+	 */
 	public void setOid(String oid) {
 		this.oid = oid;
 	}
 
+	/**
+	 * Gets URL of the certificate policy
+	 *
+	 * @return {@link String}
+	 */
 	public String getCpsUrl() {
 		return cpsUrl;
 	}
 
+	/**
+	 * Sets URL of the certificate policy
+	 *
+	 * @param cpsUrl {@link String}
+	 */
 	public void setCpsUrl(String cpsUrl) {
 		this.cpsUrl = cpsUrl;
 	}

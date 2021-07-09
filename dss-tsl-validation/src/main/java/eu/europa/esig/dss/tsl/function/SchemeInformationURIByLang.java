@@ -20,15 +20,25 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
+
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
-
+/**
+ * Predicate to filter scheme information by language
+ *
+ */
 public final class SchemeInformationURIByLang implements Predicate<NonEmptyMultiLangURIType> {
 
+	/** Language code */
 	private final String lang;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param lang {@link String} language code to filter by
+	 */
 	public SchemeInformationURIByLang(String lang) {
 		Objects.requireNonNull(lang);
 		this.lang = lang;

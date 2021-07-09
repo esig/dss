@@ -43,12 +43,18 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public abstract class TokenCertificateSource extends CommonCertificateSource {
 
+	/** A map between {@code SignerIdentifier}s and {@code CertificateOrigin}s */
 	private final Map<SignerIdentifier, List<CertificateOrigin>> certificateIdentifierOrigins = new LinkedHashMap<>();
-	
+
+	/** A map between {@code CertificateToken}s and {@code CertificateOrigin}s */
 	private final Map<CertificateToken, List<CertificateOrigin>> certificateOrigins = new LinkedHashMap<>();
 
+	/** A map between {@code CertificateRef}s and {@code CertificateOrigin}s */
 	private final Map<CertificateRef, List<CertificateRefOrigin>> certificateRefOrigins = new LinkedHashMap<>();
 
+	/**
+	 * Default constructor
+	 */
 	protected TokenCertificateSource() {
 		super();
 	}
@@ -165,6 +171,7 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	
 	/**
 	 * Returns a list of orphan certificate refs
+	 *
 	 * @return list of {@link CertificateRef}s
 	 */
 	public List<CertificateRef> getOrphanCertificateRefs() {
@@ -186,6 +193,12 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		return true;
 	}
 
+	/**
+	 * Gets a {@code CertificateToken} by the given {@code SignerIdentifier}
+	 *
+	 * @param signerIdentifier {@link SignerIdentifier}
+	 * @return {@link CertificateToken}
+	 */
 	protected CertificateToken getCertificateToken(SignerIdentifier signerIdentifier) {
 		for (CertificateToken certificateToken : certificateOrigins.keySet()) {
 			if (signerIdentifier.isRelatedToCertificate(certificateToken)) {
@@ -195,6 +208,12 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		return null;
 	}
 
+	/**
+	 * Gets a list of {@code CertificateToken}s by the given {@code CertificateOrigin}
+	 *
+	 * @param origin {@link CertificateOrigin}
+	 * @return a list of {@link CertificateToken}s
+	 */
 	protected List<CertificateToken> getCertificateTokensByOrigin(CertificateOrigin origin) {
 		List<CertificateToken> result = new LinkedList<>();
 		for (Entry<CertificateToken, List<CertificateOrigin>> entry : certificateOrigins.entrySet()) {
@@ -206,6 +225,12 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		return result;
 	}
 
+	/**
+	 * Gets a list of {@code CertificateRef}s by the given {@code CertificateRefOrigin}
+	 *
+	 * @param origin {@link CertificateRefOrigin}
+	 * @return a list of {@link CertificateRef}s
+	 */
 	protected List<CertificateRef> getCertificateRefsByOrigin(CertificateRefOrigin origin) {
 		List<CertificateRef> result = new LinkedList<>();
 		for (Entry<CertificateRef, List<CertificateRefOrigin>> entry : certificateRefOrigins.entrySet()) {

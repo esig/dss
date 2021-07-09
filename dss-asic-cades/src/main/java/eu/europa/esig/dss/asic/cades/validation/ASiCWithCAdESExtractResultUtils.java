@@ -30,8 +30,15 @@ import eu.europa.esig.dss.validation.ManifestFile;
 
 import java.util.List;
 
+/**
+ * Class containing utils methods for dealing with ASiC with CAdES container
+ *
+ */
 public class ASiCWithCAdESExtractResultUtils {
 
+	/**
+	 * Utils class
+	 */
 	private ASiCWithCAdESExtractResultUtils() {
 	}
 	

@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import java.util.function.Predicate;
-
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
 
+import java.util.function.Predicate;
+
+/**
+ * The Pivot scheme information URI filter predicate
+ * 
+ */
 public final class PivotSchemeInformationURI implements Predicate<NonEmptyMultiLangURIType> {
 
 	/**

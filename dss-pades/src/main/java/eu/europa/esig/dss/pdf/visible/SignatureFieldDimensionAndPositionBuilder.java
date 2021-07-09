@@ -13,11 +13,17 @@ import eu.europa.esig.dss.pdf.AnnotationBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Builds a {@code SignatureFieldDimensionAndPosition} for visual signature creation
+ *
+ */
 public class SignatureFieldDimensionAndPositionBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(SignatureFieldDimensionAndPositionBuilder.class);
 
+    /** An error message for an unsupported vertical alignment */
     private static final String NOT_SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
+    /** An error message for an unsupported horizontal alignment */
     private static final String NOT_SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
 
     private static final int DEFAULT_DPI = DPIUtils.getDpi(null);

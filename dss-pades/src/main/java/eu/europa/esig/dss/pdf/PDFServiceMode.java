@@ -24,13 +24,17 @@ package eu.europa.esig.dss.pdf;
  * Defines the executing PDF service modes
  */
 public enum PDFServiceMode {
-	
+
+	/** Used for independent timestamp creation */
 	CONTENT_TIMESTAMP,
-	
+
+	/** Used for signature creation */
 	SIGNATURE,
 
+	/** Used for signature timestamp creation */
 	SIGNATURE_TIMESTAMP,
 
+	/** Used for document timestamp creation */
 	ARCHIVE_TIMESTAMP
 
 }

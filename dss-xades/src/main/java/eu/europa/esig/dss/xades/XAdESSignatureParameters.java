@@ -327,6 +327,11 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		this.xPathLocationString = xPathLocationString;
 	}
 
+	/**
+	 * Returns the XPath element placement for Enveloped signature creation
+	 *
+	 * @return {@link XPathElementPlacement}
+	 */
 	public XPathElementPlacement getXPathElementPlacement() {
         return xPathElementPlacement;
     }

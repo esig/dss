@@ -23,25 +23,43 @@ package eu.europa.esig.dss.asic.common.definition;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;
 
+/**
+ * ASiC XSD elements
+ */
 public enum ASiCElement implements DSSElement {
 
+	/** XAdESSignatures */
 	XADES_SIGNATURES("XAdESSignatures"),
 
+	/** ASiCManifest */
 	ASIC_MANIFEST("ASiCManifest"),
 
+	/** SigReference */
 	SIG_REFERENCE("SigReference"),
 	
+	/** Extension */
 	EXTENSION("Extension"),
 
+	/** DataObjectReference */
 	DATA_OBJECT_REFERENCE("DataObjectReference"),
 	
+	/** ASiCManifestExtensions */
 	ASIC_MANIFEST_EXTENSIONS("ASiCManifestExtensions"),
 	
+	/** DataObjectReferenceExtensions */
 	DATA_OBJECT_REFERENCE_EXTENSIONS("DataObjectReferenceExtensions");
 
+	/** Namespace */
 	private final DSSNamespace namespace;
+
+	/** The tag name */
 	private final String tagName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param tagName {@link String}
+	 */
 	ASiCElement(String tagName) {
 		this.tagName = tagName;
 		this.namespace = ASiCNamespace.NS;

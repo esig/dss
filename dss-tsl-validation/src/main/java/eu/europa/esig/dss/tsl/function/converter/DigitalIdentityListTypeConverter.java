@@ -20,19 +20,22 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+/**
+ * The class is used to extract {@code CertificateToken}s from a {@code DigitalIdentityListType}
+ *
+ */
 public class DigitalIdentityListTypeConverter implements Function<DigitalIdentityListType, List<CertificateToken>> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DigitalIdentityListTypeConverter.class);

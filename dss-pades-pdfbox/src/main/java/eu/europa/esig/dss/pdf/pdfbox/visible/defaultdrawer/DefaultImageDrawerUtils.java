@@ -40,6 +40,7 @@ public final class DefaultImageDrawerUtils {
      *
      * @param imageParameters {@link SignatureImageParameters} to use
      * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition}
+     * @param fontMetrics {@link JavaDSSFontMetrics}
      * @return {@link BufferedImage} of the text picture
      */
     public static BufferedImage createTextImage(final SignatureImageParameters imageParameters,
@@ -135,6 +136,7 @@ public final class DefaultImageDrawerUtils {
      * Reads and converts the given image document to a {@code BufferedImage}
      *
      * @param imageDocument {@link BufferedImage}
+     * @return {@link BufferedImage}
      */
     public static BufferedImage toBufferedImage(final DSSDocument imageDocument) {
         try {

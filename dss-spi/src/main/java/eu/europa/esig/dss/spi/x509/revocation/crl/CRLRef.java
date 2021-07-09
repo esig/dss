@@ -39,9 +39,14 @@ import java.util.Date;
 public final class CRLRef extends RevocationRef<CRL> {
 
 	private static final long serialVersionUID = -6785644604097791548L;
-	
+
+	/** Name of the CRL issuer */
 	private X500Name crlIssuer;
+
+	/** The time of CRL production */
 	private Date crlIssuedTime;
+
+	/** CRL number */
 	private BigInteger crlNumber;
 
 	/**

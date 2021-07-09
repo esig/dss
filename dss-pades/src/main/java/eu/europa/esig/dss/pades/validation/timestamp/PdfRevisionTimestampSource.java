@@ -37,14 +37,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Extracts a timestamp from a single {@code PdfRevision}
+ */
 public class PdfRevisionTimestampSource extends AbstractTimestampSource {
 
-    public final PdfRevision pdfRevision;
+    /** The PdfRevision */
+    private final PdfRevision pdfRevision;
 
+    /**
+     * Default constructor
+     *
+     * @param pdfRevision {@link PdfRevision}
+     */
     public PdfRevisionTimestampSource(final PdfRevision pdfRevision) {
         this.pdfRevision = pdfRevision;
     }
 
+    /**
+     * Returns incorporated references for the revision
+     *
+     * @return a list of {@link TimestampedReference}s
+     */
     public List<TimestampedReference> getIncorporatedReferences() {
         if (pdfRevision instanceof PdfDocTimestampRevision) {
             PdfDocTimestampRevision pdfDocTimestampRevision = (PdfDocTimestampRevision) pdfRevision;

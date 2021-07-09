@@ -323,6 +323,11 @@ public abstract class DiagnosticDataBuilder {
 		return builtCertificates;
 	}
 
+	/**
+	 * Links the certificates and their certificate chains
+	 *
+	 * @param certificates a set of {@link CertificateToken}s
+	 */
 	protected void linkSigningCertificateAndChains(Set<CertificateToken> certificates) {
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateToken certificateToken : certificates) {
@@ -507,6 +512,12 @@ public abstract class DiagnosticDataBuilder {
 		return xmlSignerInfo;
 	}
 
+	/**
+	 * This method builds an {@code XmlRevocation} from the given {@code RevocationToken}
+	 *
+	 * @param revocationToken {@link RevocationToken}
+	 * @return {@link XmlRevocation}
+	 */
 	protected XmlRevocation buildDetachedXmlRevocation(RevocationToken<Revocation> revocationToken) {
 
 		final XmlRevocation xmlRevocation = new XmlRevocation();
@@ -554,8 +565,16 @@ public abstract class DiagnosticDataBuilder {
 		return xmlRevocation;
 	}
 
+	/**
+	 * Returns a list of {@code XmlRevocationRef} for a token with {@code tokenId}
+	 *
+	 * @param tokenId {@link String}
+	 * @param refsAndOrigins a map of {@link RevocationRef}s and their {@link RevocationRefOrigin}s
+	 * @param <R> {@link Revocation}
+	 * @return a list of {@link XmlRevocationRef}s
+	 */
 	protected <R extends Revocation> List<XmlRevocationRef> getXmlRevocationRefs(String tokenId,
-																				 Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {
+	 		Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {
 		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<>();
 		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : refsAndOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
@@ -572,6 +591,13 @@ public abstract class DiagnosticDataBuilder {
 		return xmlRevocationRefs;
 	}
 
+	/**
+	 * Builds a {@code XmlRevocationRef} from {@code CRLRef}
+	 *
+	 * @param crlRef {@link CRLRef}
+	 * @param origins a set of {@link RevocationRefOrigin}s
+	 * @return {@link XmlRevocationRef}
+	 */
 	protected XmlRevocationRef getXmlCRLRevocationRef(CRLRef crlRef, Set<RevocationRefOrigin> origins) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
 		xmlRevocationRef.getOrigins().addAll(origins);
@@ -581,6 +607,13 @@ public abstract class DiagnosticDataBuilder {
 		return xmlRevocationRef;
 	}
 
+	/**
+	 * Builds a {@code XmlRevocationRef} from {@code OCSPRef}
+	 *
+	 * @param ocspRef {@link OCSPRef}
+	 * @param origins a set of {@link RevocationRefOrigin}s
+	 * @return {@link XmlRevocationRef}
+	 */
 	protected XmlRevocationRef getXmlOCSPRevocationRef(OCSPRef ocspRef, Set<RevocationRefOrigin> origins) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
 		xmlRevocationRef.getOrigins().addAll(origins);
@@ -595,10 +628,23 @@ public abstract class DiagnosticDataBuilder {
 		return xmlRevocationRef;
 	}
 
+	/**
+	 * Returns a certificate chain for the {@code token}
+	 *
+	 * @param token {@link Token}
+	 * @return a list of {@link XmlChainItem}
+	 */
 	protected List<XmlChainItem> getXmlForCertificateChain(final Token token) {
 		return getXmlForCertificateChain(token, null);
 	}
 
+	/**
+	 * Returns a certificate chain for the {@code token} from the {@code certificateSource}
+	 *
+	 * @param token {@link Token}
+	 * @param certificateSource {@link CertificateSource}
+	 * @return a list of {@link XmlChainItem}
+	 */
 	protected List<XmlChainItem> getXmlForCertificateChain(final Token token, final CertificateSource certificateSource) {
 		if (token != null) {
 			final List<XmlChainItem> certChainTokens = new ArrayList<>();
@@ -651,7 +697,15 @@ public abstract class DiagnosticDataBuilder {
 		return result;
 	}
 
-	protected List<XmlChainItem> getXmlForCertificateChain(final CertificateValidity certificateValidity, CertificateSource certificateSource) {
+	/**
+	 * Builds a certificate chain for a {@code CertificateValidity}
+	 *
+	 * @param certificateValidity {@link CertificateValidity}
+	 * @param certificateSource {@link CertificateSource}
+	 * @return a list of {@link XmlChainItem}
+	 */
+	protected List<XmlChainItem> getXmlForCertificateChain(final CertificateValidity certificateValidity,
+														   CertificateSource certificateSource) {
 		if (certificateValidity != null) {
 			CertificateToken signingCertificate = getSigningCertificate(certificateValidity);
 			if (signingCertificate != null) {
@@ -788,6 +842,13 @@ public abstract class DiagnosticDataBuilder {
 		return processedCertificateToken;
 	}
 
+	/**
+	 * Gets a signing certificate token for a token with {@code tokenIdentifier}
+	 *
+	 * @param tokenIdentifier {@link Identifier}
+	 * @param certificateValidity {@link CertificateValidity}
+	 * @return {@link XmlSigningCertificate}
+	 */
 	protected XmlSigningCertificate getXmlSigningCertificate(Identifier tokenIdentifier, CertificateValidity certificateValidity) {
 		XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
 		CertificateToken signingCertificate = getSigningCertificate(certificateValidity);
@@ -872,6 +933,13 @@ public abstract class DiagnosticDataBuilder {
 		return cleanedUrls;
 	}
 
+	/**
+	 * Returns found certificates from the source
+	 *
+	 * @param tokenIdentifier {@link Identifier} of the token
+	 * @param certificateSource {@link TokenCertificateSource}
+	 * @return {@link XmlFoundCertificates}
+	 */
 	protected XmlFoundCertificates getXmlFoundCertificates(Identifier tokenIdentifier,
 														   TokenCertificateSource certificateSource) {
 		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
@@ -912,6 +980,14 @@ public abstract class DiagnosticDataBuilder {
 		return new ArrayList<>(relatedCertificatesMap.values());
 	}
 
+	/**
+	 * Fills the certificates origins map with the given properties
+	 *
+	 * @param relatedCertificatesMap a map to fill
+	 * @param origin {@link CertificateOrigin}
+	 * @param certificateTokens a list of {@link CertificateToken}s
+	 * @param certificateSource {@link TokenCertificateSource}
+	 */
 	protected void populateCertificateOriginMap(Map<String, XmlRelatedCertificate> relatedCertificatesMap,
 			CertificateOrigin origin, List<CertificateToken> certificateTokens,
 			TokenCertificateSource certificateSource) {
@@ -930,6 +1006,14 @@ public abstract class DiagnosticDataBuilder {
 		}
 	}
 
+	/**
+	 * Builds an {@code XmlRelatedCertificate}
+	 *
+	 * @param origin {@link CertificateOrigin}
+	 * @param cert {@link CertificateToken}
+	 * @param certificateSource {@link TokenCertificateSource}
+	 * @return {@link XmlRelatedCertificate}
+	 */
 	protected XmlRelatedCertificate getXmlRelatedCertificate(CertificateOrigin origin, CertificateToken cert,
 			TokenCertificateSource certificateSource) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
@@ -949,6 +1033,14 @@ public abstract class DiagnosticDataBuilder {
 		return xrc;
 	}
 
+	/**
+	 * Builds an {@code XmlRelatedCertificate}
+	 *
+	 * @param certificateSource {@link TokenCertificateSource}
+	 * @param cert {@link CertificateToken}
+	 * @param certificateRef {@link CertificateRef}
+	 * @return {@link XmlRelatedCertificate}
+	 */
 	protected XmlRelatedCertificate getXmlRelatedCertificate(TokenCertificateSource certificateSource,
 			CertificateToken cert, CertificateRef certificateRef) {
 		XmlRelatedCertificate xrc = new XmlRelatedCertificate();
@@ -964,6 +1056,13 @@ public abstract class DiagnosticDataBuilder {
 		return xrc;
 	}
 
+	/**
+	 * Builds a {@code XmlCertificateRef} from {@code CertificateRef}
+	 *
+	 * @param ref {@link XmlCertificateRef}
+	 * @param origin {@link CertificateRefOrigin}
+	 * @return {@link XmlCertificateRef}
+	 */
 	protected XmlCertificateRef getXmlCertificateRef(CertificateRef ref, CertificateRefOrigin origin) {
 		XmlCertificateRef certificateRef = new XmlCertificateRef();
 		SignerIdentifier signerIdentifier = ref.getCertificateIdentifier();
@@ -1014,6 +1113,15 @@ public abstract class DiagnosticDataBuilder {
 		return new ArrayList<>(orphanCertificatesMap.values());
 	}
 
+	/**
+	 * Fills the orphan certificate map with the given values
+	 *
+	 * @param orphanCertificatesMap a map to fill
+	 * @param origin {@link CertificateOrigin}
+	 * @param certificateTokens a list of {@link CertificateToken}s
+	 * @param certificateSource {@link TokenCertificateSource}
+	 * @param signingCertificate {@link CertificateToken}
+	 */
 	protected void populateOrphanCertificateOriginMap(Map<String, XmlOrphanCertificate> orphanCertificatesMap,
 												CertificateOrigin origin, List<CertificateToken> certificateTokens,
 												TokenCertificateSource certificateSource, CertificateToken signingCertificate) {
@@ -1033,6 +1141,15 @@ public abstract class DiagnosticDataBuilder {
 		}
 	}
 
+	/**
+	 * This method builds an {@code XmlOrphanCertificateToken}
+	 *
+	 * @param origin {@link CertificateOrigin}
+	 * @param certificateToken {@link CertificateToken}
+	 * @param certificateSource {@link TokenCertificateSource}
+	 * @param signingCertificate {@link CertificateToken}
+	 * @return {@link XmlOrphanCertificateToken}
+	 */
 	protected XmlOrphanCertificate getXmlOrphanCertificate(CertificateOrigin origin, CertificateToken certificateToken,
 														 TokenCertificateSource certificateSource, CertificateToken signingCertificate) {
 		XmlOrphanCertificate xoc = new XmlOrphanCertificate();
@@ -1052,6 +1169,12 @@ public abstract class DiagnosticDataBuilder {
 		return xoc;
 	}
 
+	/**
+	 * This method builds an {@code XmlOrphanCertificateToken} from the given {@code CertificateToken}
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @return {@link XmlOrphanCertificateToken}
+	 */
 	protected XmlOrphanCertificateToken buildXmlOrphanCertificateToken(CertificateToken certificateToken) {
 		XmlOrphanCertificateToken orphanToken = xmlOrphanCertificateTokensMap.get(certificateToken.getDSSIdAsString());
 		if (orphanToken == null) {
@@ -1132,8 +1255,13 @@ public abstract class DiagnosticDataBuilder {
 		return orphanToken;
 	}
 
-	protected List<XmlRelatedCertificate> getXmlRelatedCertificateForOrphanReferences(
-			TokenCertificateSource certificateSource) {
+	/**
+	 * Returns a list of {@code XmlRelatedCertificate}s for orphan references within {@code certificateSource}
+	 *
+	 * @param certificateSource {@link TokenCertificateSource}
+	 * @return a list of {@link XmlRelatedCertificate}s
+	 */
+	protected List<XmlRelatedCertificate> getXmlRelatedCertificateForOrphanReferences(TokenCertificateSource certificateSource) {
 		List<XmlRelatedCertificate> relatedCertificates = new ArrayList<>();
 		for (CertificateRef certificateRef : certificateSource.getOrphanCertificateRefs()) {
 			CertificateToken certificateToken = getUsedCertificateByCertificateRef(certificateRef);
@@ -1144,6 +1272,12 @@ public abstract class DiagnosticDataBuilder {
 		return relatedCertificates;
 	}
 
+	/**
+	 * Returns used certificate by the {@code certificateRef}
+	 *
+	 * @param certificateRef {@link CertificateRef}
+	 * @return {@link CertificateToken}
+	 */
 	protected CertificateToken getUsedCertificateByCertificateRef(CertificateRef certificateRef) {
 		CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
 		for (CertificateToken certificateToken : usedCertificates) {
@@ -1154,6 +1288,13 @@ public abstract class DiagnosticDataBuilder {
 		return null;
 	}
 
+	/**
+	 * Verifies the reference against a certificate token
+	 *
+	 * @param xmlCertificateRef {@link XmlCertificateRef}
+	 * @param ref {@link CertificateRef}
+	 * @param signingCertificate {@link CertificateToken}
+	 */
 	protected void verifyAgainstCertificateToken(XmlCertificateRef xmlCertificateRef, CertificateRef ref,
 			CertificateToken signingCertificate) {
 		CertificateTokenRefMatcher tokenRefMatcher = new CertificateTokenRefMatcher();
@@ -1174,6 +1315,12 @@ public abstract class DiagnosticDataBuilder {
 		return xmlIssuerSerial;
 	}
 
+	/**
+	 * Gets {@code XmlBasicSignature} for a {@code Token}
+	 *
+	 * @param token {@link Token}
+	 * @return {@link XmlBasicSignature}
+	 */
 	protected XmlBasicSignature getXmlBasicSignature(final Token token) {
 		final XmlBasicSignature xmlBasicSignatureType = new XmlBasicSignature();
 
@@ -1195,6 +1342,12 @@ public abstract class DiagnosticDataBuilder {
 		return xmlBasicSignatureType;
 	}
 
+	/**
+	 * This method builds an {@code XmlCertificate} from the given {@code CertificateToken}
+	 *
+	 * @param certToken {@link CertificateToken}
+	 * @return {@link XmlCertificate}
+	 */
 	protected XmlCertificate buildDetachedXmlCertificate(CertificateToken certToken) {
 		final XmlCertificate xmlCert = new XmlCertificate();
 		xmlCert.setId(identifierProvider.getIdAsString(certToken));
@@ -1299,7 +1452,7 @@ public abstract class DiagnosticDataBuilder {
 		return result;
 	}
 
-	protected List<XmlLangAndValue> getXmlQcEuPSD(List<PdsLocation> qcEuPDS) {
+	private List<XmlLangAndValue> getXmlQcEuPSD(List<PdsLocation> qcEuPDS) {
 		List<XmlLangAndValue> result = new ArrayList<>();
 		for (PdsLocation pdsLocation : qcEuPDS) {
 			XmlLangAndValue xmlPdsLocation = new XmlLangAndValue();
@@ -1310,13 +1463,13 @@ public abstract class DiagnosticDataBuilder {
 		return result;
 	}
 
-	protected XmlQcSSCD getXmlQcSSCD(boolean present) {
+	private XmlQcSSCD getXmlQcSSCD(boolean present) {
 		XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
 		xmlQcSSCD.setPresent(present);
 		return xmlQcSSCD;
 	}
 
-	protected XmlQcCompliance getXmlQcCompliance(boolean present) {
+	private XmlQcCompliance getXmlQcCompliance(boolean present) {
 		XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
 		xmlQcCompliance.setPresent(present);
 		return xmlQcCompliance;
@@ -1582,6 +1735,12 @@ public abstract class DiagnosticDataBuilder {
 		return list;
 	}
 
+	/**
+	 * Builds a {@code XmlDigestAlgoAndValue} for {@code Digest}
+	 *
+	 * @param digest {@link Digest}
+	 * @return {@link XmlDigestAlgoAndValue}
+	 */
 	protected XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(Digest digest) {
 		if (digest == null) {
 			return getXmlDigestAlgoAndValue(null, null);
@@ -1590,6 +1749,13 @@ public abstract class DiagnosticDataBuilder {
 		}
 	}
 
+	/**
+	 * Builds a {@code XmlDigestAlgoAndValue} for {@code DigestAlgorithm} and {@code digestValue}
+	 *
+	 * @param digestAlgo {@link DigestAlgorithm}
+	 * @param digestValue digest value bytes
+	 * @return {@link XmlDigestAlgoAndValue}
+	 */
 	protected XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(DigestAlgorithm digestAlgo, byte[] digestValue) {
 		XmlDigestAlgoAndValue xmlDigestAlgAndValue = new XmlDigestAlgoAndValue();
 		xmlDigestAlgAndValue.setDigestMethod(digestAlgo);

@@ -27,19 +27,30 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum PKIEncoding implements UriBasedEnum {
 
+	/** http://uri.etsi.org/01903/v1.2.2#DER */
 	DER("http://uri.etsi.org/01903/v1.2.2#DER"),
 
+	/** http://uri.etsi.org/01903/v1.2.2#BER */
 	BER("http://uri.etsi.org/01903/v1.2.2#BER"),
 
+	/** http://uri.etsi.org/01903/v1.2.2#CER */
 	CER("http://uri.etsi.org/01903/v1.2.2#CER"),
 
+	/** http://uri.etsi.org/01903/v1.2.2#PER */
 	PER("http://uri.etsi.org/01903/v1.2.2#PER"),
 
+	/** http://uri.etsi.org/01903/v1.2.2#XER */
 	XER("http://uri.etsi.org/01903/v1.2.2#XER");
 
+	/** Encoding URI */
 	private final String uri;
 
-	private PKIEncoding(String uri) {
+	/**
+	 * Default constructor
+	 *
+	 * @param uri {@link String}
+	 */
+	PKIEncoding(String uri) {
 		this.uri = uri;
 	}
 

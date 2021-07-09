@@ -20,16 +20,19 @@
  */
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
-
+/**
+ * The common parameters used for a b-level signature creation
+ */
 @SuppressWarnings("serial")
 public class RemoteBLevelParameters implements Serializable {
 
@@ -48,29 +51,44 @@ public class RemoteBLevelParameters implements Serializable {
 	 */
 	private boolean trustAnchorBPPolicy = true;
 
+	/** The claimed signign time */
 	private Date signingDate = new Date();
 
+	/** The claimed signer roles */
 	private List<String> claimedSignerRoles;
 
-	/* Policy */
+	/** Signature policy id */
 	private String policyId;
-	/* Qualifier attribute for XAdES Identifier */
+	/** Qualifier attribute for XAdES Identifier */
 	private ObjectIdentifierQualifier policyQualifier;
+	/** The signature policy description */
 	private String policyDescription;
+	/** The signature policy digest algorithm */
 	private DigestAlgorithm policyDigestAlgorithm;
+	/** The signature policy digest value */
 	private byte[] policyDigestValue;
+	/** The signature policy access URI */
 	private String policySpuri;
 
+	/** Commitment type indications */
 	private List<CommitmentTypeEnum> commitmentTypeIndications;
 
-	/* SignerLocation */
+	/** SignerLocation postal address */
 	private List<String> signerLocationPostalAddress = new ArrayList<>();
+	/** SignerLocation postal code */
 	private String signerLocationPostalCode;
+	/** SignerLocation locality */
 	private String signerLocationLocality;
+	/** SignerLocation state or province */
 	private String signerLocationStateOrProvince;
+	/** SignerLocation country */
 	private String signerLocationCountry;
+	/** SignerLocation street */
 	private String signerLocationStreet;
 
+	/**
+	 * Default constructor
+	 */
 	public RemoteBLevelParameters() {
 	}
 
@@ -264,51 +282,110 @@ public class RemoteBLevelParameters implements Serializable {
 		this.commitmentTypeIndications = commitmentTypeIndications;
 	}
 
-
+	/**
+	 * Gets the signer location country
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignerLocationCountry() {
 		return signerLocationCountry;
 	}
 
+	/**
+	 * Sets the signer location country
+	 *
+	 * @param country {@link String}
+	 */
 	public void setSignerLocationCountry(final String country) {
 		this.signerLocationCountry = country;
 	}
 
+	/**
+	 * Gets the signer location locality (city)
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignerLocationLocality() {
 		return signerLocationLocality;
 	}
 
+	/**
+	 * Sets the signer location locality (city)
+	 *
+	 * @param locality {@link String}
+	 */
 	public void setSignerLocationLocality(final String locality) {
 		this.signerLocationLocality = locality;
 	}
 
+	/**
+	 * Gets the signer location postal address
+	 *
+	 * @return a list of postal address {@link String}s
+	 */
 	public List<String> getSignerLocationPostalAddress() {
 		return signerLocationPostalAddress;
 	}
 
+	/**
+	 * Sets the signer location postal address
+	 *
+	 * @param postalAddress a list of postal address {@link String}s
+	 */
 	public void setSignerLocationPostalAddress(final List<String> postalAddress) {
 		this.signerLocationPostalAddress = postalAddress;
 	}
 
+	/**
+	 * Gets the signer location postal code
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignerLocationPostalCode() {
 		return signerLocationPostalCode;
 	}
 
+	/**
+	 * Sets the signer location postal code
+	 *
+	 * @param postalCode {@link String}
+	 */
 	public void setSignerLocationPostalCode(String postalCode) {
 		this.signerLocationPostalCode = postalCode;
 	}
 
+	/**
+	 * Gets the signer location state or province
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignerLocationStateOrProvince() {
 		return signerLocationStateOrProvince;
 	}
 
+	/**
+	 * Sets the signer location state or province
+	 *
+	 * @param stateOrProvince {@link String}
+	 */
 	public void setSignerLocationStateOrProvince(String stateOrProvince) {
 		this.signerLocationStateOrProvince = stateOrProvince;
 	}
 
+	/**
+	 * Gets the signer location street
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignerLocationStreet() {
 		return signerLocationStreet;
 	}
 
+	/**
+	 * Sets the signer location street
+	 *
+	 * @param street {@link String}
+	 */
 	public void setSignerLocationStreet(String street) {
 		this.signerLocationStreet = street;
 	}

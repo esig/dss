@@ -64,7 +64,11 @@ public class PdfVRIDict extends AbstractPdfDssDict {
 		return PAdESConstants.OCSP_ARRAY_NAME_VRI;
 	}
 
-
+	/**
+	 * Returns key of the VRI dictionary
+	 *
+	 * @return {@link String}
+	 */
 	public String getName() {
 		return name;
 	}

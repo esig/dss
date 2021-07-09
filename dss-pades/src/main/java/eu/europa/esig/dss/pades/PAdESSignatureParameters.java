@@ -169,6 +169,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		this.signatureSubFilter = signatureSubFilter;
 	}
 
+	/**
+	 * Returns the Signer Name
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignerName() {
 		return signerName;
 	}

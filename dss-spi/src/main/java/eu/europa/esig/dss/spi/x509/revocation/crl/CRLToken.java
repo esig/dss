@@ -140,6 +140,11 @@ public class CRLToken extends RevocationToken<CRL> {
 		return null;
 	}
 
+	/**
+	 * Returns a {@code CRLValidity}
+	 *
+	 * @return {@link CRLValidity}
+	 */
 	public CRLValidity getCrlValidity() {
 		return crlValidity;
 	}
@@ -163,6 +168,11 @@ public class CRLToken extends RevocationToken<CRL> {
 		return crlValidity.getDerEncoded();
 	}
 
+	/**
+	 * Opens InputStream of the CRL binaries
+	 *
+	 * @return {@link InputStream}
+	 */
 	public InputStream getCRLStream() {
 		return crlValidity.toCRLInputStream();
 	}

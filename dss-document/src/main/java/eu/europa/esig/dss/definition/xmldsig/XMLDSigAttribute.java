@@ -22,24 +22,41 @@ package eu.europa.esig.dss.definition.xmldsig;
 
 import eu.europa.esig.dss.definition.DSSAttribute;
 
+/**
+ * Represents a collection of attributes defined in https://www.w3.org/TR/xmldsig-core1/
+ *
+ */
 public enum XMLDSigAttribute implements DSSAttribute {
 
+	/** Algorithm */
 	ALGORITHM("Algorithm"),
 
+	/** Encoding */
 	ENCODING("Encoding"),
 
+	/** Id */
 	ID("Id"),
 
+	/** MimeType */
 	MIME_TYPE("MimeType"),
 
+	/** Target */
 	TARGET("Target"),
 
+	/** Type */
 	TYPE("Type"),
 
+	/** URI */
 	URI("URI");
 
+	/** Attribute name */
 	private final String attributeName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param attributeName {@link String}
+	 */
 	XMLDSigAttribute(String attributeName) {
 		this.attributeName = attributeName;
 	}

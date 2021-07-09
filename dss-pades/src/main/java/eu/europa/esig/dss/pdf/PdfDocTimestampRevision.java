@@ -75,6 +75,11 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 		return timestampToken.getGenerationTime();
 	}
 
+	/**
+	 * Returns the corresponding {@code TimestampToken}
+	 *
+	 * @return {@link TimestampToken}
+	 */
 	public TimestampToken getTimestampToken() {
 		return timestampToken;
 	}

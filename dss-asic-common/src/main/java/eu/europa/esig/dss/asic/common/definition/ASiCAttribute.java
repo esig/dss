@@ -22,18 +22,32 @@ package eu.europa.esig.dss.asic.common.definition;
 
 import eu.europa.esig.dss.definition.DSSAttribute;
 
+/**
+ * Represents a collection of attributes defined in ASiC XSD schema
+ *
+ */
 public enum ASiCAttribute implements DSSAttribute {
 
+	/** URI */
 	URI("URI"),
 
+	/** MimeType */
 	MIME_TYPE("MimeType"),
 
+	/** Rootfile */
 	ROOTFILE("Rootfile"),
 	
+	/** Critical */
 	CRITICAL("Critical");
 	
+	/** Attribute name */
 	private final String attributeName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param attributeName {@link String}
+	 */
 	ASiCAttribute(String attributeName) {
 		this.attributeName = attributeName;
 	}

@@ -24,11 +24,17 @@ import java.security.PublicKey;
 
 /**
  * This class is used to obtain a unique id for Public key
+ *
  */
 public final class EntityIdentifier extends Identifier {
 
 	private static final long serialVersionUID = -3608001942910223023L;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param publicKey {@link PublicKey}
+	 */
 	public EntityIdentifier(final PublicKey publicKey) {
 		super("PK-", publicKey.getEncoded());
 	}

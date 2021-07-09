@@ -27,21 +27,32 @@ import eu.europa.esig.dss.definition.DSSAttribute;
  */
 public enum XAdES111Attribute implements DSSAttribute {
 
+	/** Id */
 	ID("Id"),
 
+	/** ObjectReference */
 	OBJECT_REFERENCE("ObjectReference"),
 
+	/** Qualifier */
 	QUALIFIER("Qualifier"),
 
+	/** Target */
 	TARGET("Target"),
 
+	/** uri */
 	URI("uri"),
 
+	/** URI */
 	URI2("URI");
 
 	/** Attribute name */
 	private final String attributeName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param attributeName {@link String}
+	 */
 	XAdES111Attribute(String attributeName) {
 		this.attributeName = attributeName;
 	}

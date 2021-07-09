@@ -32,6 +32,11 @@ import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * Represents a revocation data token
+ *
+ * @param <R> {@code Revocation}
+ */
 @SuppressWarnings("serial")
 public abstract class RevocationToken<R extends Revocation> extends Token {
 
@@ -76,8 +81,14 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	 */
 	protected Date revocationDate;
 
+	/**
+	 * expired-certs-on-crl time extension
+	 */
 	protected Date expiredCertsOnCRL;
 
+	/**
+	 * archive-cut-off time extension
+	 */
 	protected Date archiveCutOff;
 
 	/**
@@ -164,6 +175,11 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 		return productionDate;
 	}
 
+	/**
+	 * Returns the date of the this update
+	 *
+	 * @return the this update date
+	 */
 	public Date getThisUpdate() {
 		return thisUpdate;
 	}
@@ -235,7 +251,12 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	 * @return {@link RevocationCertificateSource}
 	 */
 	public abstract RevocationCertificateSource getCertificateSource();
-	
+
+	/**
+	 * Sets the external origin
+	 *
+	 * @param origin {@link RevocationOrigin}
+	 */
 	public void setExternalOrigin(RevocationOrigin origin) {
 		Objects.requireNonNull(origin, "The origin is null");
 		if (origin.isInternalOrigin()) {
@@ -244,6 +265,11 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 		this.externalOrigin = origin;
 	}
 
+	/**
+	 * Gets the external origin
+	 *
+	 * @return {@link RevocationOrigin}
+	 */
 	public RevocationOrigin getExternalOrigin() {
 		return externalOrigin;
 	}

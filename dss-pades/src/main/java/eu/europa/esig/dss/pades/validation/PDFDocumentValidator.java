@@ -147,6 +147,13 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
         return allSignatures;
     }
 
+    /**
+     * Post process the extracted signatures
+     *
+     * NOTE: the method shall be used only for the document validation
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
     protected void postProcessing(List<AdvancedSignature> signatures) {
         PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
         pdfSignatureService.analyzePdfModifications(document, signatures, passwordProtection);

@@ -20,14 +20,17 @@
  */
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ * Parameters for a timestamp creation
+ *
+ */
 @SuppressWarnings("serial")
 public class RemoteTimestampParameters implements Serializable {
 
@@ -52,40 +55,89 @@ public class RemoteTimestampParameters implements Serializable {
 	 */
 	private TimestampContainerForm timestampContainerForm;
 
+	/**
+	 * Empty constructor
+	 */
 	public RemoteTimestampParameters() {
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param timestampForm {@link TimestampContainerForm}
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 */
 	public RemoteTimestampParameters(TimestampContainerForm timestampForm, DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
 		this.timestampContainerForm = timestampForm;
 	}
 
-	public RemoteTimestampParameters(TimestampContainerForm timestampForm, DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
+	/**
+	 * Constructor with a canonicalization method (to be used for XAdES)
+	 *
+	 * @param timestampForm {@link TimestampContainerForm}
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param canonicalizationMethod {@link String}
+	 */
+	public RemoteTimestampParameters(TimestampContainerForm timestampForm, DigestAlgorithm digestAlgorithm,
+									 String canonicalizationMethod) {
 		this(timestampForm, digestAlgorithm);
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
+	/**
+	 * Gets the digest algorithm
+	 *
+	 * @return {@link DigestAlgorithm}
+	 */
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}
 
+	/**
+	 * Sets the digest algorithm for message-imprint hash computation
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 */
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 		Objects.requireNonNull(digestAlgorithm, "digestAlgorithm must be specified!");
 		this.digestAlgorithm = digestAlgorithm;
 	}
 
+	/**
+	 * Gets the canonicalization method
+	 *
+	 * @return {@link String}
+	 */
 	public String getCanonicalizationMethod() {
 		return canonicalizationMethod;
 	}
 
+	/**
+	 * Sets the canonicalization algorithm
+	 *
+	 * NOTE: to be used for XAdES format only
+	 *
+	 * @param canonicalizationMethod {@link String}
+	 */
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 
+	/**
+	 * Gets the timestamp container form
+	 *
+	 * @return {@link TimestampContainerForm}
+	 */
 	public TimestampContainerForm getTimestampContainerForm() {
 		return timestampContainerForm;
 	}
 
+	/**
+	 * Sets the timestamp container form for a standalone timestamp creation
+	 *
+	 * @param timestampForm {@link TimestampContainerForm}
+	 */
 	public void setTimestampContainerForm(TimestampContainerForm timestampForm) {
 		this.timestampContainerForm = timestampForm;
 	}
@@ -134,8 +186,8 @@ public class RemoteTimestampParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "RemoteTimestampParameters{format=" + timestampContainerForm + ", digestAlgorithm=" + digestAlgorithm.getName() + 
-				", canonicalizationMethod=" + canonicalizationMethod + "}";
+		return "RemoteTimestampParameters{digestAlgorithm='" + digestAlgorithm + "', canonicalizationMethod='"
+				+ canonicalizationMethod + "', timestampContainerForm=" + timestampContainerForm + '}';
 	}
-	
+
 }

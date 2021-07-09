@@ -1245,6 +1245,7 @@ public final class DSSUtils {
 	 * @param organization {@link String}
 	 * @param noticeNumbers a list of {@link Number}s
 	 * @param explicitText {@link String}
+	 * @param <N> {@link Number}
 	 * @return {@link String}
 	 */
 	public static <N extends Number> String getSPUserNoticeString(String organization, List<N> noticeNumbers, String explicitText) {

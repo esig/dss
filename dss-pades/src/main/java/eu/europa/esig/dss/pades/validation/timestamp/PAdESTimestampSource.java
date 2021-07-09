@@ -42,8 +42,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,12 +50,14 @@ import java.util.Objects;
 
 import static eu.europa.esig.dss.spi.OID.adbe_revocationInfoArchival;
 
+/**
+ * Extracts timestamps for a PAdES document
+ */
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PAdESTimestampSource.class);
-
-    private final transient List<PdfRevision> documentRevisions;
+    /** List of {@link PdfRevision}s */
+    private final List<PdfRevision> documentRevisions;
 
     /**
      * This variable contains the list of embedded document timestamps.

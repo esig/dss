@@ -28,11 +28,17 @@ import eu.europa.esig.dss.definition.DSSNamespace;
  */
 public final class ASiCNamespace {
 
+	/** Namespace URI */
 	public static final DSSNamespace NS = new DSSNamespace("http://uri.etsi.org/02918/v1.2.1#", "asic");
 	
+	/** LibreOffice signatures */
 	public static final String LIBREOFFICE_SIGNATURES = "document-signatures";
+	/** LibreOffice namespace URI */
 	public static final String LIBREOFFICE_NS = "urn:oasis:names:tc:opendocument:xmlns:digitalsignature:1.0";
 
+	/**
+	 * Utils class
+	 */
 	private ASiCNamespace() {
 	}
 	

@@ -20,12 +20,24 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * Defines if the certificate is QSCD
+ *
+ */
 public enum QSCDStatus {
 
+	/** Certificate to be used with Qualified Electronic Signature Creation Device */
 	QSCD,
 
+	/** Not a certificate to be used with Qualified Electronic Signature Creation Device */
 	NOT_QSCD;
 
+	/**
+	 * Checks if the certificate is a QSCD
+	 *
+	 * @param status {@link QSCDStatus} to check
+	 * @return TRUE if the certificate is to be used with QSCD, FALSE otherwise
+	 */
 	public static boolean isQSCD(QSCDStatus status) {
 		return QSCD == status;
 	}

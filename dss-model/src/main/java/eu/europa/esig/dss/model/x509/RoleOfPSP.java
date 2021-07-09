@@ -22,23 +22,50 @@ package eu.europa.esig.dss.model.x509;
 
 import eu.europa.esig.dss.enumerations.RoleOfPspOid;
 
+/**
+ * Object Identifier for roles of payment service providers
+ *
+ */
 public class RoleOfPSP {
 
+	/** Role OID */
 	private RoleOfPspOid pspOid;
+
+	/** PSP name */
 	private String pspName;
 
+	/**
+	 * Gets the role OID
+	 *
+	 * @return {@link RoleOfPspOid}
+	 */
 	public RoleOfPspOid getPspOid() {
 		return pspOid;
 	}
 
+	/**
+	 * Sets the role OID
+	 *
+	 * @param pspOid {@link RoleOfPspOid}
+	 */
 	public void setPspOid(RoleOfPspOid pspOid) {
 		this.pspOid = pspOid;
 	}
 
+	/**
+	 * Gets the PSP name
+	 *
+	 * @return {@link String}
+	 */
 	public String getPspName() {
 		return pspName;
 	}
 
+	/**
+	 * Sets the PSP name
+	 *
+	 * @param pspName {@link String}
+	 */
 	public void setPspName(String pspName) {
 		this.pspName = pspName;
 	}
