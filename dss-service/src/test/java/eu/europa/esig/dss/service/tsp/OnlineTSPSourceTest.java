@@ -28,9 +28,15 @@ import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
+import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,6 +47,7 @@ public class OnlineTSPSourceTest {
 
 	private static final String TSA_URL = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
 	private static final String ED25519_TSA_URL = "http://dss.nowina.lu/pki-factory/tsa/Ed25519-good-tsa";
+	private static final String ERROR_500_TSA_URL = "http://dss.nowina.lu/pki-factory/tsa/error-500/good-tsa";
 
 	@Test
 	public void testWithoutNonce() {
@@ -50,6 +57,22 @@ public class OnlineTSPSourceTest {
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
 		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
+	}
+
+	@Test
+	public void error500() {
+		OnlineTSPSource tspSource = new OnlineTSPSource(ERROR_500_TSA_URL);
+
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+		assertThrows(DSSExternalResourceException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
+
+		Map<String, TSPSource> tspSources = new HashMap<>();
+		tspSources.put("A", tspSource);
+		tspSources.put("B", tspSource);
+
+		CompositeTSPSource compositeTSPSource = new CompositeTSPSource();
+		compositeTSPSource.setTspSources(tspSources);
+		assertThrows(DSSExternalResourceException.class, () -> compositeTSPSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
 	}
 
 	@Test
@@ -77,7 +100,9 @@ public class OnlineTSPSourceTest {
 	public void testWithTimestampDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource("http://demo.sk.ee/tsa/");
 		tspSource.setPolicyOid("0.4.0.2023.1.1");
-		tspSource.setDataLoader(new TimestampDataLoader()); // content-type is different
+        TimestampDataLoader dataLoader = new TimestampDataLoader();
+        assertThrows(UnsupportedOperationException.class, () -> dataLoader.setContentType("application/ocsp-request"));
+        tspSource.setDataLoader(dataLoader); // content-type is different
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA512, "Hello world".getBytes());
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA512, digest);

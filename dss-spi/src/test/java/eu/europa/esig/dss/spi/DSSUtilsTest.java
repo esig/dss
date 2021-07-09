@@ -62,6 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -347,6 +348,7 @@ public class DSSUtilsTest {
 		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\n", "?"));
 		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\r\n", "?"));
 		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("---____   ??? !!!!", "?"));
+		assertNull(DSSUtils.replaceAllNonAlphanumericCharacters(null, "-"));
 	}
 
 	@Test

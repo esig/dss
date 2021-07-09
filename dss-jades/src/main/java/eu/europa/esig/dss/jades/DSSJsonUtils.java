@@ -124,6 +124,9 @@ public class DSSJsonUtils {
 
 	/** Format date-time as specified in RFC 3339 5.6 */
 	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+	/** The URN OID prefix (RFC 3061) */
+	public static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 	
 	/**
 	 * Copied from org.jose4j.base64url.internal.apache.commons.codec.binary.Base64
@@ -367,8 +370,41 @@ public class DSSJsonUtils {
 	 * @return 'oid' {@link JsonObject}
 	 */
 	public static JsonObject getOidObject(ObjectIdentifier objectIdentifier) {
-		return getOidObject(DSSUtils.getUriOrUrnOid(objectIdentifier), objectIdentifier.getDescription(), 
+		return getOidObject(getUriOrUrnOid(objectIdentifier), objectIdentifier.getDescription(),
 				objectIdentifier.getDocumentationReferences());
+	}
+
+	/**
+	 * Returns URI if present, otherwise URN encoded OID (see RFC 3061)
+	 * Returns NULL if non of them is present
+	 *
+	 * @param objectIdentifier {@link ObjectIdentifier} used to build an object of 'oid' type
+	 * @return {@link String} URI
+	 */
+	public static String getUriOrUrnOid(ObjectIdentifier objectIdentifier) {
+		/*
+		 * TS 119 182-1 : 5.4.1 The oId data type
+		 * If both an OID and a URI exist identifying one object, the URI value should be used in the id member.
+		 */
+		String uri = objectIdentifier.getUri();
+		if (uri == null && objectIdentifier.getOid() != null) {
+			uri = toUrnOid(objectIdentifier.getOid());
+		}
+		return uri;
+	}
+
+	/**
+	 * Returns a URN URI generated from the given OID:
+	 *
+	 * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
+	 *
+	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
+	 *
+	 * @param oid {@link String} to be converted to URN URI
+	 * @return URI based on the algorithm's OID
+	 */
+	public static String toUrnOid(String oid) {
+		return OID_NAMESPACE_PREFIX + oid;
 	}
 
 	/**

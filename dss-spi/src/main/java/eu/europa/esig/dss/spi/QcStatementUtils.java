@@ -109,10 +109,7 @@ public class QcStatementUtils {
                 final ASN1Encodable e1 = sequence.getObjectAt(i);
                 if (e1 instanceof ASN1Sequence) {
                     ASN1Sequence seq = (ASN1Sequence) e1;
-                    PdsLocation pds = getPdsLocation(seq);
-                    if (pds != null) {
-                        result.add(pds);
-                    }
+                    result.add(getPdsLocation(seq));
                 } else {
                     LOG.warn("ASN1Sequence in QcEuPDS does not contain ASN1Sequence, but {}",
                             e1.getClass().getName());

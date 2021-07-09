@@ -20,21 +20,24 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class KeyStoreCertificateSourceTest {
 
@@ -51,6 +54,7 @@ public class KeyStoreCertificateSourceTest {
 		assertTrue(startSize > 0);
 
 		CertificateToken token = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
+		CertificateToken token2 = DSSUtils.loadCertificate(new File("src/test/resources/ecdsa.cer"));
 		kscs.addCertificateToKeyStore(token);
 
 		int sizeAfterAdd = Utils.collectionSize(kscs.getCertificates());
@@ -64,6 +68,13 @@ public class KeyStoreCertificateSourceTest {
 
 		int sizeAfterDelete = Utils.collectionSize(kscs.getCertificates());
 		assertEquals(sizeAfterDelete,startSize);
+
+		kscs.addAllCertificatesToKeyStore(Arrays.asList(token, token2));
+
+		sizeAfterAdd = Utils.collectionSize(kscs.getCertificates());
+		assertEquals(sizeAfterAdd,startSize + 2);
+
+		assertNull(kscs.getCertificate("AAAAAAAAAAAAAAAA"));
 	}
 
 	@Test
@@ -98,6 +109,22 @@ public class KeyStoreCertificateSourceTest {
 		File wrongFile = new File("src/test/resources/keystore.p13");
 		assertThrows(IOException.class,
 				() -> new KeyStoreCertificateSource(wrongFile, KEYSTORE_TYPE, KEYSTORE_PASSWORD));
+	}
+
+	@Test
+	void clearAllCertificates() throws IOException {
+		String tempJKS = "target/temp.jks";
+		Utils.copy(new FileInputStream(KEYSTORE_FILEPATH), new FileOutputStream(tempJKS));
+
+		File ksFile = new File(tempJKS);
+		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(ksFile, KEYSTORE_TYPE, KEYSTORE_PASSWORD);
+		List<CertificateToken> certificates = kscs.getCertificates();
+		assertTrue(Utils.isCollectionNotEmpty(certificates));
+
+		kscs.clearAllCertificates();
+
+		certificates = kscs.getCertificates();
+		assertTrue(Utils.isCollectionEmpty(certificates));
 	}
 
 }

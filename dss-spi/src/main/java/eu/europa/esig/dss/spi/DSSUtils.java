@@ -22,7 +22,6 @@ package eu.europa.esig.dss.spi;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.ObjectIdentifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.X520Attributes;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -30,7 +29,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -83,7 +81,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -104,9 +101,6 @@ public final class DSSUtils {
 
 	/** Empty byte array */
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
-
-	/** The URN OID prefix (RFC 3061) */
-	public static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 
 	/** The UTF-8 encoding name string */
 	public static final String UTF8_ENCODING = "UTF-8";
@@ -1086,19 +1080,6 @@ public final class DSSUtils {
 		return id != null && id.matches("^(?i)urn:oid:.*$");
 	}
 
-	/**
-	 * Returns a URN URI generated from the given OID:
-	 * 
-	 * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
-	 * 
-	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
-	 *
-	 * @param oid {@link String} to be converted to URN URI
-	 * @return URI based on the algorithm's OID
-	 */
-	public static String toUrnOid(String oid) {
-		return OID_NAMESPACE_PREFIX + oid;
-	}
 	
 	/**
 	 * Checks if the given {@code oid} is a valid OID
@@ -1126,25 +1107,6 @@ public final class DSSUtils {
 			return null;
 		}
 		return urnOid.substring(urnOid.lastIndexOf(':') + 1);
-	}
-	
-	/**
-	 * Returns URI if present, otherwise URN encoded OID (see RFC 3061)
-	 * Returns NULL if non of them is present
-	 * 
-	 * @param objectIdentifier {@link ObjectIdentifier} used to build an object of 'oid' type
-	 * @return {@link String} URI
-	 */
-	public static String getUriOrUrnOid(ObjectIdentifier objectIdentifier) {
-		/*
-		 * TS 119 182-1 : 5.4.1 The oId data type
-		 * If both an OID and a URI exist identifying one object, the URI value should be used in the id member.
-		 */
-		String uri = objectIdentifier.getUri();
-		if (uri == null && objectIdentifier.getOid() != null) {
-			uri = DSSUtils.toUrnOid(objectIdentifier.getOid());
-		}
-		return uri;
 	}
 	
 	/**
@@ -1247,29 +1209,14 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Returns a collection of public key identifiers from the given collection of certificate tokens
-	 *
-	 * @param certificateTokens a collection of {@link CertificateToken}s to get public keys from
-	 * @return a collection of {@link EntityIdentifier}s
-	 */
-	public static Collection<EntityIdentifier> getEntityIdentifierList(Collection<CertificateToken> certificateTokens) {
-		final Set<EntityIdentifier> entityIdentifiers = new HashSet<>();
-		for (CertificateToken certificateToken : certificateTokens) {
-			entityIdentifiers.add(certificateToken.getEntityKey());
-		}
-		return entityIdentifiers;
-	}
-
-	/**
 	 * This method ensures the {@code SignatureValue} has an expected format and converts it when required
 	 *
 	 * @param expectedAlgorithm {@link SignatureAlgorithm} the target SignatureAlgorithm
 	 * @param signatureValue {@link SignatureValue} the obtained SignatureValue
 	 * @return {@link SignatureValue} with the target {@link SignatureAlgorithm}
-	 * @throws IOException if an exception occurs
 	 */
 	public static SignatureValue convertECSignatureValue(SignatureAlgorithm expectedAlgorithm,
-														 SignatureValue signatureValue) throws IOException {
+														 SignatureValue signatureValue)   {
 		SignatureValue newSignatureValue = new SignatureValue();
 		newSignatureValue.setAlgorithm(expectedAlgorithm);
 

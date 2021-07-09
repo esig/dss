@@ -41,7 +41,6 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.Signature;
@@ -169,17 +168,10 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 		}
 
 		if (EncryptionAlgorithm.ECDSA.isEquivalent(targetSignatureAlgorithm.getEncryptionAlgorithm())) {
-			try {
-				SignatureValue newSignatureValue = DSSUtils.convertECSignatureValue(targetSignatureAlgorithm, signatureValue);
-				LOG.info("The algorithm '{}' has been obtained from the SignatureValue. The SignatureValue converted to " +
-						"the expected algorithm '{}'.", signatureValue.getAlgorithm(), targetSignatureAlgorithm);
-				return newSignatureValue;
-
-			} catch (IOException e) {
-				throw new DSSException(String.format(
-						"An error occurred during the SignatureValue conversion. Reason : %s", e.getMessage()), e);
-			}
-
+			SignatureValue newSignatureValue = DSSUtils.convertECSignatureValue(targetSignatureAlgorithm, signatureValue);
+			LOG.info("The algorithm '{}' has been obtained from the SignatureValue. The SignatureValue converted to " +
+					"the expected algorithm '{}'.", signatureValue.getAlgorithm(), targetSignatureAlgorithm);
+			return newSignatureValue;
 		}
 		throw new DSSException(String.format("The SignatureAlgorithm within the SignatureValue '%s' " +
 				"does not match the expected value : '%s'. Conversion is not supported!",

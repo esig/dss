@@ -100,7 +100,6 @@ import org.bouncycastle.util.BigIntegers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -969,85 +968,6 @@ public final class DSSASN1Utils {
 			}
 		}
 		return treeMap;
-	}
-
-	/**
-	 * This method normalizes the X500Principal object
-	 * 
-	 * @param x500Principal
-	 *            to be normalized
-	 * @return {@code X500Principal} normalized
-	 */
-	public static X500Principal getNormalizedX500Principal(final X500Principal x500Principal) {
-		final String utf8Name = DSSASN1Utils.getUtf8String(x500Principal);
-		return new X500Principal(utf8Name);
-	}
-
-	/**
-	 * Gets the UTF-8 distinguished names of {@code X500Principal}
-	 *
-	 * @param x500Principal {@link X500Principal}
-	 * @return {@link String} utf-8
-	 */
-	public static String getUtf8String(final X500Principal x500Principal) {
-
-		final byte[] encoded = x500Principal.getEncoded();
-		final ASN1Sequence asn1Sequence = ASN1Sequence.getInstance(encoded);
-		final ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
-		final StringBuilder stringBuilder = new StringBuilder();
-		/**
-		 * RFC 4514 LDAP: Distinguished Names
-		 * 2.1. Converting the RDNSequence
-		 *
-		 * If the RDNSequence is an empty sequence, the result is the empty or
-		 * zero-length string.
-		 *
-		 * Otherwise, the output consists of the string encodings of each
-		 * RelativeDistinguishedName in the RDNSequence (according to Section
-		 * 2.2), starting with the last element of the sequence and moving
-		 * backwards toward the first.
-		 * ...
-		 */
-		for (int ii = asn1Encodables.length - 1; ii >= 0; ii--) {
-
-			final ASN1Encodable asn1Encodable = asn1Encodables[ii];
-
-			final DLSet dlSet = (DLSet) asn1Encodable;
-			for (int jj = 0; jj < dlSet.size(); jj++) {
-
-				final DLSequence dlSequence = (DLSequence) dlSet.getObjectAt(jj);
-				if (dlSequence.size() != 2) {
-
-					throw new DSSException("The DLSequence must contains exactly 2 elements.");
-				}
-				final ASN1Encodable attributeType = dlSequence.getObjectAt(0);
-				final ASN1Encodable attributeValue = dlSequence.getObjectAt(1);
-				String string = getString(attributeValue);
-
-				/**
-				 * RFC 4514 LDAP: Distinguished Names
-				 * ...
-				 * Other characters may be escaped.
-				 *
-				 * Each octet of the character to be escaped is replaced by a backslash
-				 * and two hex digits, which form a single octet in the code of the
-				 * character. Alternatively, if and only if the character to be escaped
-				 * is one of
-				 *
-				 * ' ', '"', '#', '+', ',', ';', '<', '=', '>', or '\'
-				 * (U+0020, U+0022, U+0023, U+002B, U+002C, U+003B,
-				 * U+003C, U+003D, U+003E, U+005C, respectively)
-				 *
-				 * it can be prefixed by a backslash ('\' U+005C).
-				 */
-				string = Rdn.escapeValue(string);
-				if (stringBuilder.length() != 0) {
-					stringBuilder.append(',');
-				}
-				stringBuilder.append(attributeType).append('=').append(string);
-			}
-		}
-		return stringBuilder.toString();
 	}
 
 	/**
