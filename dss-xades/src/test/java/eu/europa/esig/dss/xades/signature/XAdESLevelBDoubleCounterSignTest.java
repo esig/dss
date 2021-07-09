@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -42,6 +31,16 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBDoubleCounterSignTest extends AbstractXAdESCounterSignatureTest {
 
@@ -124,6 +123,7 @@ public class XAdESLevelBDoubleCounterSignTest extends AbstractXAdESCounterSignat
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {
 			if (error.contains("ID")) {
 				duplicateIdErrorFound = true;
+				break;
 			}
 		}
 		assertTrue(duplicateIdErrorFound);

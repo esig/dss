@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -36,6 +30,11 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractCAdESTestSigningTime extends AbstractCAdESTestSignature {
 
@@ -96,7 +95,7 @@ public abstract class AbstractCAdESTestSigningTime extends AbstractCAdESTestSign
 	}
 	
 	@SuppressWarnings("serial")
-	protected class MockCAdESService extends CAdESService {
+	private static class MockCAdESService extends CAdESService {
 
 		public MockCAdESService(CertificateVerifier certificateVerifier) {
 			super(certificateVerifier);

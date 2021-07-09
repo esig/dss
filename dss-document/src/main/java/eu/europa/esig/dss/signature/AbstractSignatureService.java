@@ -198,7 +198,7 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 	protected String getFinalDocumentName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level, MimeType containerMimeType) {
 		StringBuilder finalName = new StringBuilder();
 
-		String originalName = null;
+		String originalName;
 		if (containerMimeType != null) {
 			originalName = "container";
 		} else {
@@ -210,7 +210,7 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 			int dotPosition = originalName.lastIndexOf('.');
 			if (dotPosition > 0) {
 				// remove extension
-				finalName.append(originalName.substring(0, dotPosition));
+				finalName.append(originalName, 0, dotPosition);
 				originalExtension = originalName.substring(dotPosition + 1);
 			} else {
 				finalName.append(originalName);

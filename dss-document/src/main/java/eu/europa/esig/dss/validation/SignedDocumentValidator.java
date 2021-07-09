@@ -389,7 +389,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
-		ValidationPolicy validationPolicy = null;
+		ValidationPolicy validationPolicy;
 		try {
 			if (policyDataStream == null) {
 				LOG.debug("No provided validation policy : use the default policy");

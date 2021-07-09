@@ -40,7 +40,7 @@ public class XmlMultiDocSignatureTest extends AbstractXAdESMultipleDocumentsSign
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSigns = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.xml"),
+		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.xml"),
 				new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

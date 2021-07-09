@@ -27,6 +27,8 @@ import java.util.Set;
  */
 public class DefaultAIASource implements OnlineAIASource {
 
+    private static final long serialVersionUID = 3968373722847675203L;
+
     private static final Logger LOG = LoggerFactory.getLogger(DefaultAIASource.class);
 
     /**

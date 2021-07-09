@@ -41,10 +41,10 @@ public class OCSPRef extends RevocationRef<OCSP> {
     private static final long serialVersionUID = -4757221403735075782L;
 
     /** OCSP's production time */
-    private Date producedAt = null;
+    private Date producedAt;
 
     /** The OCSP Responder Id */
-    private ResponderId responderId = null;
+    private ResponderId responderId;
 
     /**
      * The default constructor for OCSPRef.

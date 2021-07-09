@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
@@ -43,6 +35,14 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractASiCCAdESCounterSignatureTest extends AbstractCounterSignatureTest<ASiCWithCAdESSignatureParameters, 
 					ASiCWithCAdESTimestampParameters, CAdESCounterSignatureParameters> {
@@ -100,7 +100,7 @@ public abstract class AbstractASiCCAdESCounterSignatureTest extends AbstractCoun
 				assertNotNull(signatureIdentifier);
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+				assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 			}
 		}
 	}

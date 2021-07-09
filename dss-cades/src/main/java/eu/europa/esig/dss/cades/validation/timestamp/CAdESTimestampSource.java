@@ -444,14 +444,14 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		
 		OfflineCRLSource signatureCRLSource = signature.getCRLSource();
 		if (signatureCRLSource instanceof CMSCRLSource) {
-			for (EncapsulatedRevocationTokenIdentifier<CRL> token : ((CMSCRLSource) signatureCRLSource).getCMSSignedDataRevocationBinaries()) {
+			for (EncapsulatedRevocationTokenIdentifier<CRL> token : signatureCRLSource.getCMSSignedDataRevocationBinaries()) {
 				addReference(references, token, TimestampedObjectType.REVOCATION);
 			}
 		}
 		
 		OfflineOCSPSource signatureOCSPSource = signature.getOCSPSource();
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
-			for (EncapsulatedRevocationTokenIdentifier<OCSP> token : ((CMSOCSPSource) signatureOCSPSource).getCMSSignedDataRevocationBinaries()) {
+			for (EncapsulatedRevocationTokenIdentifier<OCSP> token : signatureOCSPSource.getCMSSignedDataRevocationBinaries()) {
 				addReference(references, token, TimestampedObjectType.REVOCATION);
 			}
 		}

@@ -153,7 +153,7 @@ public final class DomUtils {
 	 */
 	public static Transformer getSecureTransformer() {
 		TransformerFactory transformerFactory = getSecureTransformerFactory();
-		Transformer transformer = null;
+		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.METHOD, TRANSFORMER_METHOD_VALUE);

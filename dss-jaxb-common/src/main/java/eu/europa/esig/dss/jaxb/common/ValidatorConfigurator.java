@@ -126,7 +126,7 @@ public class ValidatorConfigurator extends AbstractFactoryBuilder<Validator> {
 	 */
 	public void postProcess(Validator validator) {
 		ErrorHandler errorHandler = validator.getErrorHandler();
-		if (errorHandler != null && errorHandler instanceof DSSErrorHandler) {
+		if (errorHandler instanceof DSSErrorHandler) {
 			errorHandlerAlert.alert((DSSErrorHandler) errorHandler);
 		}
 	}

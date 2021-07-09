@@ -37,6 +37,8 @@ import java.util.Map;
  */
 public class PdfDssDictOCSPSource extends OfflineOCSPSource {
 
+    private static final long serialVersionUID = 1503525374769179608L;
+
     /** The map of PDF object ids and corresponding OCSP binaries */
     private transient Map<Long, BasicOCSPResp> ocspMap;
 

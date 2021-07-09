@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OfflineCRLSourceTest {
 
@@ -67,7 +66,7 @@ public class OfflineCRLSourceTest {
 	}
 
 	@SuppressWarnings("serial")
-	private class MockCRLSource extends OfflineCRLSource {
+	private static class MockCRLSource extends OfflineCRLSource {
 
 	}
 

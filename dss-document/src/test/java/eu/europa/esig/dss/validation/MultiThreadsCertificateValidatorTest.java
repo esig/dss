@@ -73,7 +73,7 @@ public class MultiThreadsCertificateValidatorTest {
 
 	}
 
-	class TestConcurrent implements Callable<CertificateReports> {
+	private static class TestConcurrent implements Callable<CertificateReports> {
 
 		private final CertificateToken certificate;
 

@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -196,7 +197,7 @@ public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExt
 				assertNotNull(signatureIdentifier);
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+                assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 			}
 		}
 	}

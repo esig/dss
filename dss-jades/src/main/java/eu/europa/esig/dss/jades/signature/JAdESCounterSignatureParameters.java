@@ -25,6 +25,8 @@ import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 
 public class JAdESCounterSignatureParameters extends JAdESSignatureParameters implements SerializableCounterSignatureParameters {
 	
+	private static final long serialVersionUID = 369732165720690096L;
+
 	/**
 	 * Signature Id to be counter signed
 	 */

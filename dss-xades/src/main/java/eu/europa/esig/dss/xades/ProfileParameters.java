@@ -28,6 +28,8 @@ import java.io.Serializable;
  */
 public class ProfileParameters implements Serializable {
 
+	private static final long serialVersionUID = 2655781283234085565L;
+
 	/** The XAdES creation profile */
 	private SignatureProfile profile;
 

@@ -72,7 +72,7 @@ public class JdbcCacheOcspSourceTest {
 	
 	@Test
 	public void test() throws Exception {
-		OCSPToken revocationToken = null;
+		OCSPToken revocationToken;
 		
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		CertificateToken rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));

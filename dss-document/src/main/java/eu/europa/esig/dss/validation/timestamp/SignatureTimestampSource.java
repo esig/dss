@@ -61,6 +61,8 @@ import java.util.Set;
 public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA extends SignatureAttribute>
         extends AbstractTimestampSource implements TimestampSource {
 
+    private static final long serialVersionUID = -6099954395130813702L;
+
     private static final Logger LOG = LoggerFactory.getLogger(SignatureTimestampSource.class);
 
     /**

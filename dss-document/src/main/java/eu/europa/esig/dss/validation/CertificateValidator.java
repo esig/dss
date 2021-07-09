@@ -143,7 +143,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link CertificateReports}
 	 */
 	public CertificateReports validate() {
-		ValidationPolicy defaultPolicy = null;
+		ValidationPolicy defaultPolicy;
 		try {
 			defaultPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 		} catch (Exception e) {

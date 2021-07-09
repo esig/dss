@@ -82,6 +82,7 @@ public class XAdESLTACorruptedCertTest extends AbstractXAdESTestValidation {
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {
 			if (error.contains("base64Binary")) {
 				notValidValueErrorFound = true;
+				break;
 			}
 		}
 		assertTrue(notValidValueErrorFound);

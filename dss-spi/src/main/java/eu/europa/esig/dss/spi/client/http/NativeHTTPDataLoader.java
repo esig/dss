@@ -38,6 +38,8 @@ import java.util.concurrent.TimeoutException;
  */
 public class NativeHTTPDataLoader implements DataLoader {
 
+	private static final long serialVersionUID = 4075489539157157286L;
+
 	/**
 	 * Available HTTPMethods
 	 */

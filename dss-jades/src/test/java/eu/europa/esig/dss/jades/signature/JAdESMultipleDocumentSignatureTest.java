@@ -44,7 +44,7 @@ public class JAdESMultipleDocumentSignatureTest extends AbstractJAdESMultipleDoc
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSigns = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.json"),
+		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.json"),
 				new FileDocument("src/test/resources/sample.png"),
 				new InMemoryDocument("Hello World!".getBytes(), "helloWorld"));
 

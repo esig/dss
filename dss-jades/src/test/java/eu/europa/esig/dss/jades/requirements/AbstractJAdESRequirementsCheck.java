@@ -20,28 +20,6 @@
  */
 package eu.europa.esig.dss.jades.requirements;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-
-import org.jose4j.base64url.Base64Url;
-import org.jose4j.json.JsonUtil;
-import org.jose4j.jwx.HeaderParameterNames;
-import org.jose4j.lang.JoseException;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -56,6 +34,28 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.jose4j.base64url.Base64Url;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.jwx.HeaderParameterNames;
+import org.jose4j.lang.JoseException;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSignature {
 	
@@ -196,7 +196,7 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		for (Object critEntry : crit) {
 			assertNotNull(critEntry);
 			assertTrue(critEntry instanceof String);
-			assertTrue(!excludedHeaders.contains(critEntry));
+			assertFalse(excludedHeaders.contains(critEntry));
 			assertTrue(includedHeaders.contains(critEntry));
 		}
 	}
@@ -274,7 +274,7 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 			String val = (String) pkiObMap.get("val");
 			assertNotNull(val);
 			assertTrue(Utils.isBase64Encoded(val));
-			assertTrue(!valsList.contains(val));
+			assertFalse(valsList.contains(val));
 			valsList.add(val);
 		}
 	}

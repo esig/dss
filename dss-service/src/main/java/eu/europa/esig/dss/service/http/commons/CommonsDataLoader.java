@@ -444,7 +444,7 @@ public class CommonsDataLoader implements DataLoader {
 		final boolean proxyHTTPS = Protocol.isHttps(protocol) && (proxyConfig.getHttpsProperties() != null);
 		final boolean proxyHTTP = Protocol.isHttp(protocol) && (proxyConfig.getHttpProperties() != null);
 
-		ProxyProperties proxyProps = null;
+		ProxyProperties proxyProps;
 		if (proxyHTTPS) {
 			LOG.debug("Use proxy https parameters");
 			proxyProps = proxyConfig.getHttpsProperties();

@@ -234,8 +234,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 		} else if (trustedListCertificateSource.areAllCertSourcesTrusted()) {
 			this.trustedCertSources = trustedListCertificateSource;
 		} else {
-            throw new UnsupportedOperationException(String.format("The trusted ListCertificateSource must contain only trusted sources "
-                    + "with a type TRUSTED_STORE or TRUSTED_LIST."));
+            throw new UnsupportedOperationException("The trusted ListCertificateSource must contain only trusted sources "
+                    + "with a type TRUSTED_STORE or TRUSTED_LIST.");
 		}
 	}
 

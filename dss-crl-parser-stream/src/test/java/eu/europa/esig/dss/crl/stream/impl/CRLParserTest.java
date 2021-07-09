@@ -22,6 +22,7 @@ package eu.europa.esig.dss.crl.stream.impl;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -151,11 +152,11 @@ public class CRLParserTest {
 			assertNotNull(handler.getThisUpdate());
 			assertNotNull(handler.getNextUpdate());
 
-			assertTrue(!handler.getCriticalExtensions().isEmpty());
+			assertFalse(handler.getCriticalExtensions().isEmpty());
 			assertTrue(Utils.isArrayNotEmpty(handler.getCriticalExtension("2.5.29.28")));
 			assertTrue(Utils.isArrayEmpty(handler.getNonCriticalExtension("2.5.29.28")));
 
-			assertTrue(!handler.getNonCriticalExtensions().isEmpty());
+			assertFalse(handler.getNonCriticalExtensions().isEmpty());
 			assertTrue(Utils.isArrayNotEmpty(handler.getNonCriticalExtension("2.5.29.60")));
 			assertTrue(Utils.isArrayEmpty(handler.getCriticalExtension("2.5.29.60")));
 
@@ -228,7 +229,7 @@ public class CRLParserTest {
 
 			assertTrue(handler.getCriticalExtensions().isEmpty());
 
-			assertTrue(!handler.getNonCriticalExtensions().isEmpty());
+			assertFalse(handler.getNonCriticalExtensions().isEmpty());
 			assertTrue(Utils.isArrayEmpty(handler.getNonCriticalExtension("2.5.29.60")));
 
 			assertEquals("1.2.840.113549.1.1.11", handler.getTbsSignatureAlgorithmOid());

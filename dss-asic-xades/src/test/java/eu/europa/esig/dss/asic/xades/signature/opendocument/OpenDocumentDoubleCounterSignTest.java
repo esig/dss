@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -43,6 +33,15 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OpenDocumentDoubleCounterSignTest extends AbstractOpenDocumentCounterSignatureTest {
 
@@ -122,6 +121,7 @@ public class OpenDocumentDoubleCounterSignTest extends AbstractOpenDocumentCount
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {
 			if (error.contains("ID")) {
 				duplicateIdErrorFound = true;
+				break;
 			}
 		}
 		assertTrue(duplicateIdErrorFound);

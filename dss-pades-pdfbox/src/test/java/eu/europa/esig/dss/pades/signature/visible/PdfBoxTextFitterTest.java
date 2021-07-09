@@ -66,11 +66,6 @@ public class PdfBoxTextFitterTest {
 	@ParameterizedTest
 	@MethodSource
 	public void testFitSignatureText(float width, float height, String expectedWrappedText) throws Exception {
-		TextFitter fitter = new TextFitter();
-		testFitSignatureText(width, height, fitter, expectedWrappedText);
-	}
-
-	private void testFitSignatureText(float width, float height, TextFitter fitter, String expectedWrappedText) throws IllegalStateException {
 		AnnotationBox textDimensions = new AnnotationBox(0, 0, width, height);
 		TextFitter.Result fitResult;
 		try (PDDocument doc = new PDDocument()) {
@@ -81,7 +76,7 @@ public class PdfBoxTextFitterTest {
 			textParameters.setText(DEFAULT_LINES);
 			textParameters.setFont(new PdfBoxNativeFont(font));
 			textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
-			fitResult = fitter.fitSignatureText(textParameters, textParameters.getFont().getSize(), fontMetrics, textDimensions);
+			fitResult = TextFitter.fitSignatureText(textParameters, textParameters.getFont().getSize(), fontMetrics, textDimensions);
 		} catch (IOException ex) {
 			throw new IllegalStateException(ex);
 		}

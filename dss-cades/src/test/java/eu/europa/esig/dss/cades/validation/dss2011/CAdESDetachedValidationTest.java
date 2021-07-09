@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation.dss2011;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -64,7 +65,7 @@ public class CAdESDetachedValidationTest extends AbstractCAdESTestValidation {
 		for (XmlDigestMatcher digestMatcher : signature.getDigestMatchers()) {
 			if (DigestMatcherType.MESSAGE_DIGEST.equals(digestMatcher.getType())) {
 				assertEquals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestMethod(), digestMatcher.getDigestMethod());
-				assertTrue(Arrays.equals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestValue(), digestMatcher.getDigestValue()));
+                assertArrayEquals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestValue(), digestMatcher.getDigestValue());
 				referenceDigestMatcherFound = true;
 			}
 		}

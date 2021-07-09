@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -49,6 +37,18 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
@@ -122,8 +122,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		assertNotNull(originalDocDigestAlgoAndValue);
 		DigestAlgorithm digestAlgorithmOriginalDocument = originalDocDigestAlgoAndValue.getDigestMethod();
 		assertNotNull(digestAlgorithmOriginalDocument);
-		assertTrue(Arrays.equals(Utils.fromBase64(document.getDigest(digestAlgorithmOriginalDocument)), 
-				originalDocDigestAlgoAndValue.getDigestValue()));
+        assertArrayEquals(Utils.fromBase64(document.getDigest(digestAlgorithmOriginalDocument)), originalDocDigestAlgoAndValue.getDigestValue());
 		
 		SignatureWrapper secondSignature = diagnosticData.getSignatures().get(1);
 		assertNotNull(secondSignature);
@@ -139,8 +138,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		assertNotNull(firstDocDigestAlgoAndValue);
 		DigestAlgorithm digestAlgorithmSignedDocument = firstDocDigestAlgoAndValue.getDigestMethod();
 		assertNotNull(digestAlgorithmSignedDocument);
-		assertTrue(Arrays.equals(Utils.fromBase64(signedDocument.getDigest(digestAlgorithmSignedDocument)), 
-				firstDocDigestAlgoAndValue.getDigestValue()));
+		assertArrayEquals(Utils.fromBase64(signedDocument.getDigest(digestAlgorithmSignedDocument)), firstDocDigestAlgoAndValue.getDigestValue());
 		
 	}
 

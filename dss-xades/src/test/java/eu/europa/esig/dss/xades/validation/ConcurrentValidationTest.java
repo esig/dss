@@ -71,7 +71,7 @@ public class ConcurrentValidationTest {
 		executor.shutdown();
 	}
 
-	class TestConcurrent implements Callable<Boolean> {
+	private static class TestConcurrent implements Callable<Boolean> {
 
 		private final CommonCertificateVerifier certificateVerifier;
 

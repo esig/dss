@@ -58,6 +58,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 					implements MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters>,
 					CounterSignatureService<XAdESCounterSignatureParameters> {
 
+	private static final long serialVersionUID = -391276429698752703L;
+
 	static {
 		SantuarioInitializer.init();
 		XAdESNamespaces.registerNamespaces();

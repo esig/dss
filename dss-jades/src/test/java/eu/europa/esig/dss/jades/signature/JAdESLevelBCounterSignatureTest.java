@@ -140,7 +140,7 @@ public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatu
 		assertNotNull(counterJWS.getSignatureValue());
 		assertTrue(Utils.isArrayNotEmpty(counterJWS.getUnverifiedPayloadBytes()));
 
-		assertTrue(Arrays.equals(jws.getSignatureValue(), counterJWS.getUnverifiedPayloadBytes()));
+		assertArrayEquals(jws.getSignatureValue(), counterJWS.getUnverifiedPayloadBytes());
 		assertEquals(jws.getEncodedSignature(), counterJWS.getEncodedPayload());
 
 		assertFalse(counterJWS.isRfc7797UnencodedPayload());

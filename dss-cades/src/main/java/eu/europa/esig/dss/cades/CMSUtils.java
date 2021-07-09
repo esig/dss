@@ -239,13 +239,13 @@ public final class CMSUtils {
 			LOG.debug("Adding Certificate Hash {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm.getName());
 		}
 
-		Attribute attribute = null;
+		Attribute attribute;
 		if (digestAlgorithm == DigestAlgorithm.SHA1) {
 			final ESSCertID essCertID = new ESSCertID(certHash, issuerSerial);
 			SigningCertificate signingCertificate = new SigningCertificate(essCertID);
 			attribute = new Attribute(id_aa_signingCertificate, new DERSet(signingCertificate));
 		} else {
-			ESSCertIDv2 essCertIdv2 = null;
+			ESSCertIDv2 essCertIdv2;
 			if (DigestAlgorithm.SHA256 == digestAlgorithm) {
 				// SHA-256 is default
 				essCertIdv2 = new ESSCertIDv2(null, certHash, issuerSerial);
@@ -337,7 +337,7 @@ public final class CMSUtils {
 	 */
 	public static CMSTypedData getContentToBeSigned(final DSSDocument toSignData) {
 		Objects.requireNonNull(toSignData, "Document to be signed is missing");
-		CMSTypedData content = null;
+		CMSTypedData content;
 		if (toSignData instanceof DigestDocument) {
 			content = new CMSAbsentContent();
 		} else if (toSignData instanceof FileDocument) {

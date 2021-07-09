@@ -49,7 +49,7 @@ public class DSS1524Test extends AbstractXAdESTestValidation {
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
 		DigestDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA512, "kSi69weRFM3ehJVf/RZ6ASMoHUuY2g0toUYNFr68FU3nS5fT48NZK4W4Ks33zDOo+0GzIbOFMa7GRQ1r0gCXzg==");
-		return Arrays.<DSSDocument>asList(digestDoc);
+		return Arrays.asList(digestDoc);
 	}
 	
 	@Override

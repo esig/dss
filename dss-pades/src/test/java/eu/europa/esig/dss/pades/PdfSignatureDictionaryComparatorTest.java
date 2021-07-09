@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pdf.PdfSignatureDictionaryComparator;
-import eu.europa.esig.dss.pades.validation.ByteRange;
 import org.bouncycastle.cms.CMSSignedData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -168,7 +167,7 @@ public class PdfSignatureDictionaryComparatorTest {
 		assertEquals(strange2, listToSort.get(1));
 	}
 
-	private class MockPdfSignatureDictionary implements PdfSignatureDictionary {
+	private static class MockPdfSignatureDictionary implements PdfSignatureDictionary {
 
 		private ByteRange byteRange;
         private Date signingDate;

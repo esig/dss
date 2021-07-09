@@ -25,7 +25,6 @@ import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
@@ -39,6 +38,8 @@ import java.util.Objects;
  * Defines SignatureParameters to deal with XAdES signature creation/extension
  */
 public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdESTimestampParameters> {
+
+	private static final long serialVersionUID = 9131889715562901184L;
 
 	/**
 	 * Enumeration defining ways to embed a signature

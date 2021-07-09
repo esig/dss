@@ -561,9 +561,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 								
 				Element identifierElement = DomUtils.getElement(signaturePolicyStoreElement, xadesPaths.getCurrentSPDocSpecificationIdentifier());
-				String spDocSpecId = null;
 				if (identifierElement != null) {
-					spDocSpecId = identifierElement.getTextContent();
+					String spDocSpecId = identifierElement.getTextContent();
 					spDocSpec.setId(DSSUtils.getObjectIdentifier(spDocSpecId));
 					
 					String qualifierString = identifierElement.getAttribute(XAdES132Attribute.QUALIFIER.getAttributeName());
@@ -581,7 +580,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (documentReferenceList != null && documentReferenceList.getLength() > 0) {
 					documentationReferences = new String[documentReferenceList.getLength()];
 					for (int i = 0; i < documentReferenceList.getLength(); i++) {
-						documentationReferences[i] = ((Element) documentReferenceList.item(i)).getTextContent();
+						documentationReferences[i] = documentReferenceList.item(i).getTextContent();
 					}
 				}
 				spDocSpec.setDocumentationReferences(documentationReferences);

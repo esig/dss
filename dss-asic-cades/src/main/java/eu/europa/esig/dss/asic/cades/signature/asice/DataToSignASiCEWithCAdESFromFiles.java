@@ -63,8 +63,8 @@ public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWi
 	@Override
 	public DSSDocument getToBeSigned() {
 		if (toBeSigned == null) {
-			toBeSigned = getASiCManifest(filesToBeSigned, Collections.<DSSDocument>emptyList(),
-					Collections.<DSSDocument>emptyList(), Collections.<DSSDocument>emptyList());
+			toBeSigned = getASiCManifest(filesToBeSigned, Collections.emptyList(),
+					Collections.emptyList(), Collections.emptyList());
 		}
 		return toBeSigned;
 	}
@@ -76,12 +76,12 @@ public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWi
 
 	@Override
 	public String getSignatureFilename() {
-		return getSignatureFileName(Collections.<DSSDocument> emptyList());
+		return getSignatureFileName(Collections.emptyList());
 	}
 
 	@Override
 	public String getTimestampFilename() {
-		return getTimestampFileName(Collections.<DSSDocument>emptyList());
+		return getTimestampFileName(Collections.emptyList());
 	}
 
 	@Override

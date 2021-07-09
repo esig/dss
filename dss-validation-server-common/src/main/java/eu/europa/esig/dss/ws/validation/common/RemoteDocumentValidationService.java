@@ -68,7 +68,7 @@ public class RemoteDocumentValidationService {
 		LOG.info("ValidateDocument in process...");
 		SignedDocumentValidator validator = initValidator(dataToValidate);
 
-		Reports reports = null;
+		Reports reports;
 		RemoteDocument policy = dataToValidate.getPolicy();
 		if (policy == null) {
 			reports = validator.validateDocument();

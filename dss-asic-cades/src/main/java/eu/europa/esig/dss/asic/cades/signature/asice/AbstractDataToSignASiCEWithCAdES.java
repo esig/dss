@@ -71,7 +71,7 @@ public abstract class AbstractDataToSignASiCEWithCAdES {
 										  List<DSSDocument> signatures, List<DSSDocument> timestamps,
 										  List<DSSDocument> manifests) {
 
-		String uri = null;
+		String uri;
 		if (SigningOperation.SIGN == operation) {
 			uri = getSignatureFileName(signatures);
 		} else {

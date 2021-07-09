@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -218,7 +219,7 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 				assertNotNull(signatureIdentifier);
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+				assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 			}
 		}
 	}

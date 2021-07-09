@@ -141,6 +141,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -229,11 +230,11 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertTrue(x509OutOfBoundsCheckFound);
 		assertTrue(basicSignatureValidationCheckFound);
 
-		assertTrue(!checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getWarnings()),
+		assertFalse(checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getWarnings()),
 				i18nProvider.getMessage(MessageTag.BSV_IXCVRC_ANS)));
-		assertTrue(!checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getWarnings()),
+		assertFalse(checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getWarnings()),
 				i18nProvider.getMessage(MessageTag.BSV_IVTAVRSC_ANS)));
-		assertTrue(!checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
+		assertFalse(checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
 				i18nProvider.getMessage(MessageTag.ADEST_ROBVPIIC_ANS)));
 
 		assertEquals(0, detailedReport.getTimestampIds().size());
@@ -894,7 +895,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		}
 		assertTrue(fcCheckFound);
 
-		assertTrue(!checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
+		assertFalse(checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
 				i18nProvider.getMessage(MessageTag.BSV_IFCRC_ANS)));
 
 		XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
@@ -2928,7 +2929,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SignatureReferenceType signatureReferenceType = signatureReferences.get(0);
 		assertEquals(signatureDigestReference.getCanonicalizationMethod(), signatureReferenceType.getCanonicalizationMethod());
 		assertEquals(signatureDigestReference.getDigestMethod(), DigestAlgorithm.forXML(signatureReferenceType.getDigestMethod()));
-		assertTrue(Arrays.equals(signatureDigestReference.getDigestValue(), signatureReferenceType.getDigestValue()));
+		assertArrayEquals(signatureDigestReference.getDigestValue(), signatureReferenceType.getDigestValue());
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		
@@ -3190,7 +3191,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertTrue(tstAfterRevocationTimeCheckFound);
 		assertTrue(basicSignatureValidationCheckFound);
 
-		assertTrue(!checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
+		assertFalse(checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
 				i18nProvider.getMessage(MessageTag.ADEST_ROBVPIIC_ANS)));
 		assertTrue(checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
 				i18nProvider.getMessage(MessageTag.BBB_XCV_ISCR_ANS)));
@@ -3246,7 +3247,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertTrue(tstAfterExpirationTimeCheckFound);
 		assertTrue(basicSignatureValidationCheckFound);
 
-		assertTrue(!checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
+		assertFalse(checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
 				i18nProvider.getMessage(MessageTag.ADEST_ROBVPIIC_ANS)));
 		assertTrue(checkMessageValuePresence(convert(validationProcessBasicSignature.getConclusion().getErrors()),
 				i18nProvider.getMessage(MessageTag.BBB_XCV_ICTIVRSC_ANS)));
@@ -5549,6 +5550,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 					for (XmlConstraint constraint : constraints) {
 						if (MessageTag.BBB_RFC_NUP.getId().equals(constraint.getName().getKey())) {
 							nextUpdateCheckPerformed = true;
+							break;
 						}
 					}
 					assertFalse(nextUpdateCheckPerformed);

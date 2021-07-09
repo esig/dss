@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -89,7 +90,7 @@ public class XPointerValidationTest extends AbstractXAdESTestValidation {
 		
 		assertEquals(xPointerDigestMatcher.getDigestMethod(), xmlSignerData.getDigestAlgoAndValue().getDigestMethod());
 		assertEquals(Utils.toBase64(xPointerDigestMatcher.getDigestValue()), Utils.toBase64(xmlSignerData.getDigestAlgoAndValue().getDigestValue()));
-		assertTrue(Arrays.equals(xPointerDigestMatcher.getDigestValue(), xmlSignerData.getDigestAlgoAndValue().getDigestValue()));
+        assertArrayEquals(xPointerDigestMatcher.getDigestValue(), xmlSignerData.getDigestAlgoAndValue().getDigestValue());
 	}
 
 }

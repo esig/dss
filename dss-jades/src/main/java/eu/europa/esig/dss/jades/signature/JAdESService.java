@@ -66,6 +66,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 					MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters>,
 					CounterSignatureService<JAdESCounterSignatureParameters> {
 
+	private static final long serialVersionUID = -7057603783915654317L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESService.class);
 
 	/**
@@ -101,8 +103,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			throw new IllegalArgumentException("Original documents must be provided to generate a content timestamp!");
 		}
 		
-		byte[] messageImprint = DSSUtils.EMPTY_BYTE_ARRAY;
-
+		byte[] messageImprint;
 		if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
 			HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(toSignDocuments, true);
 			messageImprint = httpHeadersPayloadBuilder.build();

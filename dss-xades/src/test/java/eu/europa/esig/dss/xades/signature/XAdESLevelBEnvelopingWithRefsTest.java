@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -150,10 +151,10 @@ public class XAdESLevelBEnvelopingWithRefsTest extends AbstractXAdESTestSignatur
 		assertNotNull(digestAlgoAndValueSignatureOne);
 		
 		DigestAlgorithm digestAlgorithm = digestAlgoAndValueSignatureOne.getDigestMethod();
-		assertTrue(Arrays.equals(digestAlgoAndValueSignatureOne.getDigestValue(), DSSUtils.digest(digestAlgorithm, doc1)));
+		assertArrayEquals(digestAlgoAndValueSignatureOne.getDigestValue(), DSSUtils.digest(digestAlgorithm, doc1));
 		XmlDigestAlgoAndValue digestAlgoAndValueSignatureTwo = signerData.get(1).getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValueSignatureTwo);
-		assertTrue(Arrays.equals(digestAlgoAndValueSignatureTwo.getDigestValue(), DSSUtils.digest(digestAlgorithm, doc2)));
+        assertArrayEquals(digestAlgoAndValueSignatureTwo.getDigestValue(), DSSUtils.digest(digestAlgorithm, doc2));
 	}
 
 	@Override

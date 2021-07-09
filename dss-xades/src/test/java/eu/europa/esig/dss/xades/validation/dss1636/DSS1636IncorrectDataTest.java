@@ -52,7 +52,7 @@ public class DSS1636IncorrectDataTest extends AbstractXAdESTestValidation {
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		return Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 }));
+		return Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }));
 	}
 	
 	@Override

@@ -35,7 +35,7 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 
 	@Override
 	protected KeyStore getKeyStore() throws DSSException {
-		KeyStore keyStore = null;
+		KeyStore keyStore;
 		try {
 			keyStore = KeyStore.getInstance("Windows-MY");
 			keyStore.load(null, null);

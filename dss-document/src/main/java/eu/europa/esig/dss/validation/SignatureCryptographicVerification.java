@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class SignatureCryptographicVerification implements Serializable {
 
+	private static final long serialVersionUID = -7343772251223888821L;
+
 	/** Builds the error message if applicable. Empty value if validation succeeds. */
 	private final StringBuilder errorMessageBuilder = new StringBuilder();
 

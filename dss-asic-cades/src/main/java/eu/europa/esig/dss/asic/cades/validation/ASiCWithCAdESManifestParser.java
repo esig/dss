@@ -154,7 +154,7 @@ public class ASiCWithCAdESManifestParser {
 		Element sigReference = DomUtils.getElement(root, ASiCPaths.SIG_REFERENCE_PATH);
 		if (sigReference != null) {
 			MimeType mimeType = getMimeType(sigReference);
-			return mimeType != null && MimeType.TST == mimeType;
+			return MimeType.TST == mimeType;
 		}
 		return false;
 	}

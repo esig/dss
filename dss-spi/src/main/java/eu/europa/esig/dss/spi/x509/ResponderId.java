@@ -32,6 +32,8 @@ import java.util.Arrays;
  */
 public class ResponderId implements Serializable {
 
+	private static final long serialVersionUID = 651463368797656154L;
+
 	/** The {@code X500Principal} of the OCSP issuer */
 	private X500Principal subjectX500Principal;
 

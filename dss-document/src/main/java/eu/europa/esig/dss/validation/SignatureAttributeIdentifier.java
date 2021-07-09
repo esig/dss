@@ -7,6 +7,8 @@ import eu.europa.esig.dss.model.identifier.Identifier;
  */
 public class SignatureAttributeIdentifier extends Identifier {
 
+    private static final long serialVersionUID = -137902040976540872L;
+
     /**
      * Default constructor
      *

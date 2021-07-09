@@ -44,8 +44,7 @@ public final class RuleUtils {
 									   eu.europa.esig.dss.policy.jaxb.TimeUnit toJaxb, int value) {
 		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
 		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
-		Long convert = to.convert(value, from);
-		return convert;
+		return to.convert(value, from);
 	}
 
 	/**

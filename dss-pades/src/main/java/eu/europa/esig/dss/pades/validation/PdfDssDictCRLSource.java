@@ -35,6 +35,8 @@ import java.util.Map;
  */
 public class PdfDssDictCRLSource extends OfflineCRLSource {
 
+    private static final long serialVersionUID = 7920126699012690199L;
+
     /** The map of PDF object ids and corresponding CRL binaries */
     private transient Map<Long, CRLBinary> crlMap;
 

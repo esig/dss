@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.tsl.job;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
+
+import java.util.List;
+import java.util.Map;
 
 public class MockDataLoader implements DataLoader {
 
 	private static final long serialVersionUID = 4624853984865942793L;
 	
-	private Map<String, DSSDocument> dataMap = new HashMap<>();
+	private Map<String, DSSDocument> dataMap;
 	
 	public MockDataLoader(Map<String, DSSDocument> dataMap) {
 		this.dataMap = dataMap;

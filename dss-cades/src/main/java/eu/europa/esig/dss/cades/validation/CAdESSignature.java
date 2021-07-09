@@ -731,7 +731,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				LOG.warn("Original document not found");
 			}
 
-			ReferenceValidation validation = null;
+			ReferenceValidation validation;
 			final byte[] messageDigestValue = getMessageDigestValue();
 			if (messageDigestValue != null) {
 				validation = getMessageDigestReferenceValidation(originalDocument, messageDigestValue);
@@ -884,14 +884,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * This method recreates a {@code SignerInformation} with the content using
 	 * a {@code CMSSignedDataParser}.
 	 *
-	 * @return{@link SignerInformation
+	 * @return {@link SignerInformation}
 	 * @throws CMSException if CMS exception occurs
 	 * @throws IOException if IOException occurs
 	 */
 	private SignerInformation recreateSignerInformation() throws CMSException, IOException {
 
 		final DSSDocument dssDocument = detachedContents.get(0); // only one element for CAdES Signature
-		CMSSignedDataParser cmsSignedDataParser = null;
+		CMSSignedDataParser cmsSignedDataParser;
 		if (dssDocument instanceof DigestDocument) {
 			cmsSignedDataParser = new CMSSignedDataParser(new PrecomputedDigestCalculatorProvider((DigestDocument) dssDocument), cmsSignedData.getEncoded());
 		} else {

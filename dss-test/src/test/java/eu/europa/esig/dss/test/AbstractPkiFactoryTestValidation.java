@@ -1614,7 +1614,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertNotNull(signatureIdentifier);
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+				assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 				assertNotNull(signatureIdentifier.getDAIdentifier());
 				assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
 			}
@@ -1731,7 +1731,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
 
-		String marshalledSimpleReport = null;
+		String marshalledSimpleReport;
 		try {
 			marshalledSimpleReport = simpleReportFacade.marshall(reports.getSimpleReportJaxb(), true);
 			assertNotNull(marshalledSimpleReport);
@@ -1764,7 +1764,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
 
-		String marshalledDetailedReport = null;
+		String marshalledDetailedReport;
 		try {
 			marshalledDetailedReport = detailedReportFacade.marshall(reports.getDetailedReportJaxb(), true);
 			assertNotNull(marshalledDetailedReport);
@@ -1798,7 +1798,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		/* Diagnostic Data SVG */
 		DiagnosticDataFacade diagnosticDataFacade = DiagnosticDataFacade.newFacade();
 
-		String marshalledDiagnosticData = null;
+		String marshalledDiagnosticData;
 		try {
 			marshalledDiagnosticData = diagnosticDataFacade.marshall(reports.getDiagnosticDataJaxb(), true);
 			assertNotNull(marshalledDiagnosticData);

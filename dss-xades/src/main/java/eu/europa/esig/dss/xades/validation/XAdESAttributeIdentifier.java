@@ -15,6 +15,8 @@ import java.io.IOException;
  */
 public class XAdESAttributeIdentifier extends SignatureAttributeIdentifier {
 
+    private static final long serialVersionUID = 178331193990451357L;
+
     /**
      * Default constructor
      *

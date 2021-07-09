@@ -31,6 +31,8 @@ import java.awt.Font;
  */
 public class PdfBoxNativeFont extends AbstractDSSFont implements DSSNativeFont<PDFont> {
 
+	private static final long serialVersionUID = -7122453492359548221L;
+
 	/** PDFBox font */
 	private final PDFont pdFont;
 

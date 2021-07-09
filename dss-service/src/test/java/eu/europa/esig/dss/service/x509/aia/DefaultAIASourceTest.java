@@ -131,7 +131,9 @@ public class DefaultAIASourceTest {
         }
     }
 
-    private class MockCommonsDataLoader extends CommonsDataLoader {
+    private static class MockCommonsDataLoader extends CommonsDataLoader {
+
+        private static final long serialVersionUID = -7893617030310292695L;
 
         private int counter = 0;
 

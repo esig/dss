@@ -428,7 +428,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 				break;
 			}
 
-			Date lastTrustedUsage = null;
+			Date lastTrustedUsage;
 			if (usageTime != null) {
 				lastTrustedUsage = usageTime;
 			} else {

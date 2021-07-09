@@ -129,6 +129,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 			for (CertificateSourceType source : sources) {
 				if (CertificateSourceType.TIMESTAMP.equals(source)) {
 					timestampSource = true;
+					break;
 				}
 			}
 			assertTrue(timestampSource);

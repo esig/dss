@@ -514,7 +514,7 @@ public class SimpleReport {
 	 */
 	private XmlSignature getSignatureById(String signatureId) {
 		XmlToken token = getTokenById(signatureId);
-		if (token != null && token instanceof XmlSignature) {
+		if (token instanceof XmlSignature) {
 			return (XmlSignature) token;
 		}
 		return null;
@@ -529,7 +529,7 @@ public class SimpleReport {
 	 */
 	private XmlTimestamp getTimestampById(String timestampId) {
 		XmlToken token = getTokenById(timestampId);
-		if (token != null && token instanceof XmlTimestamp) {
+		if (token instanceof XmlTimestamp) {
 			return (XmlTimestamp) token;
 		}
 		return null;

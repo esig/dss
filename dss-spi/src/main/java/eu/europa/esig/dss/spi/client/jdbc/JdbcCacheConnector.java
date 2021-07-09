@@ -250,7 +250,7 @@ public class JdbcCacheConnector {
     /**
      * This class represents a row result object of an SQL SELECT query
      */
-    public class JdbcResultRecord {
+    public static class JdbcResultRecord {
 
         /**
          * The map between the column names and the extracted values for a Db row

@@ -153,7 +153,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 
 	@Override
 	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
-		return getRevocationToken(certificateToken, issuerCertificateToken, Collections.<String>emptyList());
+		return getRevocationToken(certificateToken, issuerCertificateToken, Collections.emptyList());
 	}
 
 	@Override

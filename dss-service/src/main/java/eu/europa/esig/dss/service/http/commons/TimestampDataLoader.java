@@ -25,6 +25,8 @@ package eu.europa.esig.dss.service.http.commons;
  */
 public class TimestampDataLoader extends CommonsDataLoader {
 
+	private static final long serialVersionUID = 7215904514623575104L;
+
 	private static final String TIMESTAMP_QUERY_CONTENT_TYPE = "application/timestamp-query";
 
 	/**

@@ -132,6 +132,8 @@ public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
 
     private class OnlineCRLSourceCounter extends OnlineCRLSource {
 
+        private static final long serialVersionUID = 7677238056219199658L;
+
         @Override
         public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
             if (certificateToken.equals(getSigningCert())) {

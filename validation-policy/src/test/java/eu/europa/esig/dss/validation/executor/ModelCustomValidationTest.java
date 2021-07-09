@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -113,7 +114,7 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File(testCase.getTestData().getDiagnosticData()));
 		assertNotNull(diagnosticData);
 		assertNotNull(diagnosticData.getSignatures());
-		assertTrue(!diagnosticData.getSignatures().isEmpty());
+        assertFalse(diagnosticData.getSignatures().isEmpty());
 		
 		diagnosticData.setValidationDate(testCase.getValidationDate());
 		

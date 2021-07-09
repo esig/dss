@@ -99,7 +99,7 @@ public class AllDataObjectsTimeStampBuilder {
 			signatureParameters.setReferences(references);
 		}
 
-		byte[] dataToBeDigested = null;
+		byte[] dataToBeDigested;
 		XAdESTimestampParameters contentTimestampParameters = signatureParameters.getContentTimestampParameters();
 		String canonicalizationMethod = contentTimestampParameters.getCanonicalizationMethod();
 		

@@ -58,6 +58,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -113,7 +114,7 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         	List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
         	List<String> revocationIds = new ArrayList<>();
         	for (CertificateRevocationWrapper revocationWrapper : certificateRevocationData) {
-        		assertTrue(!revocationIds.contains(revocationWrapper.getId()));
+                assertFalse(revocationIds.contains(revocationWrapper.getId()));
         		revocationIds.add(revocationWrapper.getId());
         	}
         	assertEquals(certificateRevocationData.size(), revocationIds.size());

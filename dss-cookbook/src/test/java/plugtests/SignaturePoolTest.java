@@ -96,6 +96,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.time.Duration.ofSeconds;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
@@ -644,7 +645,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 				assertNotNull(signatureIdentifier);
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+				assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 			}
 		}
 	}

@@ -353,7 +353,7 @@ public final class DSSXMLUtils {
 	public static Node getIndentedNode(final Node documentDom, final Node xmlNode) {
 		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
 
-		String pathAllFromCurrentPosition = null;
+		String pathAllFromCurrentPosition;
 		// TODO handle by namespace
 		DSSElement element = XAdES132Element.fromTagName(xmlNode.getLocalName());
 		if (element != null) {
@@ -456,7 +456,7 @@ public final class DSSXMLUtils {
 	public static byte[] serializeNode(final Node xmlNode) {
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 			Transformer transformer = DomUtils.getSecureTransformer();
-			Document document = null;
+			Document document;
 			if (Node.DOCUMENT_NODE == xmlNode.getNodeType()) {
 				document = (Document) xmlNode;
 			} else {
@@ -778,8 +778,8 @@ public final class DSSXMLUtils {
 			return null;
 		}
 
-		String digestAlgorithmUri = null;
-		String digestValueBase64 = null;
+		String digestAlgorithmUri;
+		String digestValueBase64;
 		if (XAdESNamespaces.XADES_111.isSameUri(element.getNamespaceURI())) {
 			digestAlgorithmUri = DomUtils.getValue(element, XAdES111Paths.DIGEST_METHOD_ALGORITHM_PATH);
 			digestValueBase64 = DomUtils.getValue(element, XAdES111Paths.DIGEST_VALUE_PATH);

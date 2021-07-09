@@ -28,6 +28,8 @@ import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
  */
 public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdESTimestampParameters> {
 
+	private static final long serialVersionUID = 9035260907528290973L;
+
 	/** Defines if the signature shall be created according ti ETSI EN 319 122 */
 	private boolean en319122 = true;
 

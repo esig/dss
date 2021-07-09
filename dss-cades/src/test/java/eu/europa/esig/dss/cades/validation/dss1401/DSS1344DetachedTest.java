@@ -45,7 +45,7 @@ public class DSS1344DetachedTest extends AbstractCAdESTestValidation {
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		return Arrays.<DSSDocument>asList(new FileDocument("src/test/resources/validation/dss-1344/screenshot.png"));
+		return Arrays.asList(new FileDocument("src/test/resources/validation/dss-1344/screenshot.png"));
 	}
 	
 	@Override

@@ -47,12 +47,12 @@ import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.jwx.Headers;
 import org.jose4j.lang.JoseException;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -168,7 +168,7 @@ public abstract class AbstractJAdESTestSignature
 			assertNotNull(signatureIdentifier);
 			
 			assertNotNull(signatureIdentifier.getSignatureValue());
-			assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+			assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 		}
 	}
 	

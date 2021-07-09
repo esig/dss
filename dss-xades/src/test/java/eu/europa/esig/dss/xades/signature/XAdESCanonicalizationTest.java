@@ -20,33 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.security.Signature;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.stream.Stream;
-
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.AbstractPaths;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
@@ -62,6 +35,32 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.security.Signature;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("slow")
 public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
@@ -167,9 +166,8 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 	private void checkOriginalDocument(Document doc) throws Exception {
 		// ------------------------------------ ORIGINAL FILE
 		// -----------------------------------------------------
-		String originalFileDigest = "";
-		byte[] originalFileByteArray = null;
-
+		String originalFileDigest;
+		byte[] originalFileByteArray;
 		if (packaging == SignaturePackaging.ENVELOPED) {
 			// Original File base64 extraction + Verification
 			originalFileDigest = getReferenceDigest(doc, "");

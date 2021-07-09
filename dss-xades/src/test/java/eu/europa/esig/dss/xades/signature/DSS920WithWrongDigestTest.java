@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -106,9 +107,7 @@ public class DSS920WithWrongDigestTest extends AbstractXAdESTestSignature {
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 
-		assertTrue(Arrays.equals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(), 
-				Utils.fromBase64(documentToSign.getDigest(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod()))
-				));
+        assertArrayEquals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(), Utils.fromBase64(documentToSign.getDigest(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod())));
 	}
 	
 	@Override

@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.security.SecureRandom;
-
-import org.bouncycastle.util.test.FixedSecureRandom;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -41,6 +36,10 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.bouncycastle.util.test.FixedSecureRandom;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.security.SecureRandom;
 
 public class PdfBoxSignEncryptedWithCustomFixedSecureRandomTest extends AbstractPAdESTestSignature {
 	
@@ -94,7 +93,7 @@ public class PdfBoxSignEncryptedWithCustomFixedSecureRandomTest extends Abstract
 		return GOOD_USER;
 	}
 	
-	private class MockFixedSecureRandomProvider implements SecureRandomProvider {
+	private static class MockFixedSecureRandomProvider implements SecureRandomProvider {
 		
 		private final byte[] seed;
 		
@@ -109,7 +108,7 @@ public class PdfBoxSignEncryptedWithCustomFixedSecureRandomTest extends Abstract
 		
 	}
 	
-	private class MockPdfBoxDefaultObjectFactory extends PdfBoxDefaultObjectFactory {
+	private static class MockPdfBoxDefaultObjectFactory extends PdfBoxDefaultObjectFactory {
 		
 		private SecureRandomProvider secureRandomProvider;
 		

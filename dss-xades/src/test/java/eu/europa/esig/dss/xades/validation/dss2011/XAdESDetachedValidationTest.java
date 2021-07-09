@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation.dss2011;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -67,7 +68,7 @@ public class XAdESDetachedValidationTest extends AbstractXAdESTestValidation {
 				assertTrue(digestMatcher.isDataFound());
 				assertTrue(digestMatcher.isDataIntact());
 				assertEquals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestMethod(), digestMatcher.getDigestMethod());
-				assertTrue(Arrays.equals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestValue(), digestMatcher.getDigestValue()));
+                assertArrayEquals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestValue(), digestMatcher.getDigestValue());
 				referenceDigestMatcherFound = true;
 			}
 		}

@@ -73,7 +73,7 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 	public byte[] call() {
 		OutputStream out = null;
 		InputStream inputStream = null;
-		byte[] result = null;
+		byte[] result;
 		try {
 			URLConnection connection = createConnection();
 
