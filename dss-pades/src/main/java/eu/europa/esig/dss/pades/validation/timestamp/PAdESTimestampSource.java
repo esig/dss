@@ -42,8 +42,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,8 +52,6 @@ import static eu.europa.esig.dss.spi.OID.adbe_revocationInfoArchival;
 
 @SuppressWarnings("serial")
 public class PAdESTimestampSource extends CAdESTimestampSource {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PAdESTimestampSource.class);
 
     private final transient List<PdfRevision> documentRevisions;
 

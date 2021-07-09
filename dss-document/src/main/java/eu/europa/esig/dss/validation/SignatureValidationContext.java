@@ -766,7 +766,7 @@ public class SignatureValidationContext implements ValidationContext {
 	private RevocationSource<OCSP> instantiateOCSPWithTrustServices(CertificateToken trustAnchor) {
 		List<String> alternativeOCSPUrls = getAlternativeOCSPUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && remoteOCSPSource instanceof RevocationSourceAlternateUrlsSupport) {
-			return new AlternateUrlsSourceAdapter<OCSP>((RevocationSourceAlternateUrlsSupport) remoteOCSPSource, alternativeOCSPUrls);
+			return new AlternateUrlsSourceAdapter<>((RevocationSourceAlternateUrlsSupport) remoteOCSPSource, alternativeOCSPUrls);
 		} else {
 			return remoteOCSPSource;
 		}
@@ -775,7 +775,7 @@ public class SignatureValidationContext implements ValidationContext {
 	private RevocationSource<CRL> instantiateCRLWithTrustServices(CertificateToken trustAnchor) {
 		List<String> alternativeCRLUrls = getAlternativeCRLUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && remoteCRLSource instanceof RevocationSourceAlternateUrlsSupport) {
-			return new AlternateUrlsSourceAdapter<CRL>((RevocationSourceAlternateUrlsSupport) remoteCRLSource, alternativeCRLUrls);
+			return new AlternateUrlsSourceAdapter<>((RevocationSourceAlternateUrlsSupport) remoteCRLSource, alternativeCRLUrls);
 		} else {
 			return remoteCRLSource;
 		}

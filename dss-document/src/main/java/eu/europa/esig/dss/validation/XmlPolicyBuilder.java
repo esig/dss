@@ -31,8 +31,6 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,8 +41,6 @@ import java.util.Objects;
  *
  */
 public class XmlPolicyBuilder {
-
-	private static final Logger LOG = LoggerFactory.getLogger(XmlPolicyBuilder.class);
 
 	/** The {@code SignaturePolicy} to incorporate into the DiagnosticData */
 	private final SignaturePolicy signaturePolicy;

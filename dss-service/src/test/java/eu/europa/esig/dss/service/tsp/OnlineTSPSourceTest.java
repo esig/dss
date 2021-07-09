@@ -75,6 +75,22 @@ public class OnlineTSPSourceTest {
 		assertThrows(DSSExternalResourceException.class, () -> compositeTSPSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
 	}
 
+    @Test
+    public void composite() {
+        OnlineTSPSource errorTspSource = new OnlineTSPSource(ERROR_500_TSA_URL);
+        OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
+
+        Map<String, TSPSource> tspSources = new HashMap<>();
+        tspSources.put("A", errorTspSource);
+        tspSources.put("B", tspSource);
+
+        CompositeTSPSource compositeTSPSource = new CompositeTSPSource();
+        compositeTSPSource.setTspSources(tspSources);
+
+        byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+        assertNotNull(compositeTSPSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
+    }
+
 	@Test
 	public void testEd25519WithoutNonce() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(ED25519_TSA_URL, new TimestampDataLoader());
@@ -83,7 +99,6 @@ public class OnlineTSPSourceTest {
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
 		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
-//		System.out.println(Utils.toBase64(timeStampResponse.getBytes()));
 	}
 
 	@Disabled("Content-type is required")

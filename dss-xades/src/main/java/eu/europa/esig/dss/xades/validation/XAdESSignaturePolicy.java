@@ -79,6 +79,7 @@ public class XAdESSignaturePolicy extends SignaturePolicy {
      *
      * @return a description of 'ds:Transforms' if present, null otherwise
      */
+    @Override
     public List<String> getTransformsDescription() {
         if (transforms != null) {
             return new TransformsDescriptionBuilder(transforms).build();

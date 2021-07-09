@@ -42,7 +42,7 @@ import java.util.List;
  */
 public class XAdESLevelX extends XAdESLevelC {
 
-	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignature.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelX.class);
 
 	/**
 	 * The default constructor for XAdESLevelX.

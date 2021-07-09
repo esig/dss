@@ -304,6 +304,7 @@ public class PAdESSignature extends CAdESSignature {
 	 *
 	 * @return true if the -A extension is present
 	 */
+	@Override
 	public boolean hasAProfile() {
 		return getBaselineRequirementsChecker().hasExtendedAProfile();
 	}
