@@ -50,7 +50,7 @@ public class CAdESWithSPUserNoticeTest extends AbstractCAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertEquals("1.2.3.4.5.1", signature.getPolicyId());
         assertEquals("../../Data/TARGET-SIGPOL-ETSI1.der", signature.getPolicyUrl());
-        assertEquals("../../Data/TARGET-SIGPOL-ETSI1.der", signature.getPolicyNotice());
+        assertEquals("../../Data/TARGET-SIGPOL-ETSI1.der", signature.getPolicyUserNotice());
     }
 
 }

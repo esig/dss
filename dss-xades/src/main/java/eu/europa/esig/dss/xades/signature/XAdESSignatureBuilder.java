@@ -39,6 +39,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
+import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -52,6 +54,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SignatureBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
@@ -809,63 +812,185 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	}
 
+	/**
+	 * Creates SignaturePolicyIdentifier DOM object:
+	 *
+	 * <pre>
+	 * {@code
+	 * 	<xades:SignaturePolicyIdentifier>
+	 * 	    <xades:SignaturePolicyId>
+	 * 	        <xades:SigPolicyId>
+	 * 	            <xades:Identifier Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.10015.1000.3.2.1</xades:Identifier>
+	 * 	        </xades:SigPolicyId>
+	 * 	        <xades:SigPolicyHash>
+	 * 	            <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+	 * 	            <ds:DigestValue>3Tl1oILSvOAWomdI9VeWV6IA/32eSXRUri9kPEz1IVs=</ds:DigestValue>
+	 * 	        </xades:SigPolicyHash>
+	 * 	        <xades:SigPolicyQualifiers>
+	 * 	            <xades:SigPolicyQualifier>
+	 * 	                <xades:SPURI>http://spuri.test</xades:SPURI>
+	 * 	            </xades:SigPolicyQualifier>
+	 * 	        </xades:SigPolicyQualifiers>
+	 * 	    </xades:SignaturePolicyId>
+	 * 	</xades:SignaturePolicyIdentifier>
+	 * }
+	 * </pre>
+	 */
 	private void incorporatePolicy() {
 
 		final Policy signaturePolicy = params.bLevel().getSignaturePolicy();
-		if ((signaturePolicy != null)) {// && (signaturePolicy.getId() != null)) {
-
+		if (signaturePolicy != null) {
 			final Element signaturePolicyIdentifierDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, 
 					getXadesNamespace(), getCurrentXAdESElements().getElementSignaturePolicyIdentifier());
 
-			String signaturePolicyId = signaturePolicy.getId();
+			final String signaturePolicyId = signaturePolicy.getId();
 			if (Utils.isStringEmpty(signaturePolicyId)) { // implicit
-				DomUtils.addElement(documentDom, signaturePolicyIdentifierDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignaturePolicyImplied());
+				DomUtils.addElement(documentDom, signaturePolicyIdentifierDom, getXadesNamespace(),
+						getCurrentXAdESElements().getElementSignaturePolicyImplied());
+
 			} else { // explicit
 				final Element signaturePolicyIdDom = DomUtils.addElement(documentDom, signaturePolicyIdentifierDom, 
 						getXadesNamespace(), getCurrentXAdESElements().getElementSignaturePolicyId());
 				final Element sigPolicyIdDom = DomUtils.addElement(documentDom, signaturePolicyIdDom, 
 						getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyId());
 
-				Element identifierDom = DomUtils.addTextElement(documentDom, sigPolicyIdDom, getXadesNamespace(),
+				final Element identifierDom = DomUtils.addTextElement(documentDom, sigPolicyIdDom, getXadesNamespace(),
 					getCurrentXAdESElements().getElementIdentifier(), signaturePolicyId);
-				
-				ObjectIdentifierQualifier qualifier = signaturePolicy.getQualifier();
+
+				final ObjectIdentifierQualifier qualifier = signaturePolicy.getQualifier();
 				if (qualifier != null) {
 					identifierDom.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(), qualifier.getValue());
 				}
 
-				String description = signaturePolicy.getDescription();
+				final String description = signaturePolicy.getDescription();
 				if (Utils.isStringNotEmpty(description)) {
-					DomUtils.addTextElement(documentDom, sigPolicyIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementDescription(), description);
+					DomUtils.addTextElement(documentDom, sigPolicyIdDom, getXadesNamespace(),
+							getCurrentXAdESElements().getElementDescription(), description);
 				}
-				
-				String[] documentationReferences = signaturePolicy.getDocumentationReferences();
+
+				final String[] documentationReferences = signaturePolicy.getDocumentationReferences();
 				if (Utils.isArrayNotEmpty(documentationReferences)) {
 					incorporateDocumentationReferences(sigPolicyIdDom, documentationReferences);
 				}
 
 				if (signaturePolicy instanceof XmlPolicyWithTransforms) {
-					XmlPolicyWithTransforms xmlPolicy = (XmlPolicyWithTransforms) signaturePolicy;
+					final XmlPolicyWithTransforms xmlPolicy = (XmlPolicyWithTransforms) signaturePolicy;
 					DSSXMLUtils.incorporateTransforms(signaturePolicyIdDom, xmlPolicy.getTransforms(), getXmldsigNamespace());
 				}
 
 				if (signaturePolicy.getDigestAlgorithm() != null && signaturePolicy.getDigestValue() != null) {
-					final Element sigPolicyHashDom = DomUtils.addElement(documentDom, signaturePolicyIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyHash());
+					final Element sigPolicyHashDom = DomUtils.addElement(documentDom, signaturePolicyIdDom,
+							getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyHash());
 
 					final DigestAlgorithm digestAlgorithm = signaturePolicy.getDigestAlgorithm();
 					DSSXMLUtils.incorporateDigestMethod(sigPolicyHashDom, digestAlgorithm, getXmldsigNamespace());
 
 					final byte[] hashValue = signaturePolicy.getDigestValue();
 					final String bas64EncodedHashValue = Utils.toBase64(hashValue);
-					DomUtils.addTextElement(documentDom, sigPolicyHashDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE, bas64EncodedHashValue);
+					DomUtils.addTextElement(documentDom, sigPolicyHashDom, getXmldsigNamespace(),
+							XMLDSigElement.DIGEST_VALUE, bas64EncodedHashValue);
 				}
 
-				String spuri = signaturePolicy.getSpuri();
-				if (Utils.isStringNotEmpty(spuri)) {
-					Element sigPolicyQualifiers = DomUtils.addElement(documentDom, signaturePolicyIdDom, getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyQualifiers());
-					Element sigPolicyQualifier = DomUtils.addElement(documentDom, sigPolicyQualifiers, getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyQualifier());
+				if (signaturePolicy.isSPQualifierPresent()) {
+					incorporateSigPolicyQualifiers(signaturePolicyIdDom, signaturePolicy);
+				}
+			}
+		}
+	}
 
-					DomUtils.addTextElement(documentDom, sigPolicyQualifier, getXadesNamespace(), getCurrentXAdESElements().getElementSPURI(), spuri);
+	/**
+	 * Creates SigPolicyQualifiers DOM object:
+	 *
+	 * <pre>
+	 * {@code
+	 * 	<xades:SigPolicyQualifiers>
+	 * 	    <xades:SigPolicyQualifier>
+	 * 	        <xades:SPURI>http://signinghubbeta.cloudapp.net:7777/adss/policy/sample_sig_policy_document.txt</xades:SPURI>
+	 * 	    </xades:SigPolicyQualifier>
+	 * 	    <xades:SigPolicyQualifier>
+	 * 	        <xades:SPUserNotice>
+	 * 	            <xades:ExplicitText>This is a test policy</xades:ExplicitText>
+	 * 	        </xades:SPUserNotice>
+	 * 	    </xades:SigPolicyQualifier>
+	 * 	</xades:SigPolicyQualifiers>
+	 * }
+	 * </pre>
+	 */
+	private void incorporateSigPolicyQualifiers(Element signaturePolicyIdDom, Policy signaturePolicy) {
+		final Element sigPolicyQualifiers = DomUtils.addElement(documentDom, signaturePolicyIdDom,
+				getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyQualifiers());
+
+		final String spUri = signaturePolicy.getSpuri();
+		if (Utils.isStringNotEmpty(spUri)) {
+			final Element sigPolicyQualifier = DomUtils.addElement(documentDom, sigPolicyQualifiers,
+					getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyQualifier());
+			DomUtils.addTextElement(documentDom, sigPolicyQualifier, getXadesNamespace(),
+					getCurrentXAdESElements().getElementSPURI(), spUri);
+		}
+
+		final UserNotice userNotice = signaturePolicy.getUserNotice();
+		if (userNotice != null && !userNotice.isEmpty()) {
+			DSSUtils.assertSPUserNoticeConfigurationValid(userNotice);
+
+			final Element sigPolicyQualifier = DomUtils.addElement(documentDom, sigPolicyQualifiers,
+					getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyQualifier());
+			final Element spUserNotice = DomUtils.addElement(documentDom, sigPolicyQualifier,
+					getXadesNamespace(), getCurrentXAdESElements().getElementSPUserNotice());
+
+			final String organization = userNotice.getOrganization();
+			final int[] noticeNumbers = userNotice.getNoticeNumbers();
+			if (Utils.isStringNotEmpty(organization) && noticeNumbers != null && noticeNumbers.length > 0) {
+				final Element noticeRef = DomUtils.addElement(documentDom, spUserNotice,
+						getXadesNamespace(), getCurrentXAdESElements().getElementNoticeRef());
+				DomUtils.addTextElement(documentDom, noticeRef, getXadesNamespace(),
+						getCurrentXAdESElements().getElementOrganization(), organization);
+
+				final Element noticeNumbersElement = DomUtils.addElement(documentDom, noticeRef,
+						getXadesNamespace(), getCurrentXAdESElements().getElementNoticeNumbers());
+				for (int number : noticeNumbers) {
+					DomUtils.addTextElement(documentDom, noticeNumbersElement, getXadesNamespace(),
+							getCurrentXAdESElements().getElementint(), String.valueOf(number));
+				}
+			}
+
+			final String explicitText = userNotice.getExplicitText();
+			if (Utils.isStringNotEmpty(explicitText)) {
+				DomUtils.addTextElement(documentDom, spUserNotice, getXadesNamespace(),
+						getCurrentXAdESElements().getElementExplicitText(), explicitText);
+			}
+		}
+
+		final SpDocSpecification spDocSpecification = signaturePolicy.getSpDocSpecification();
+		if (spDocSpecification != null && Utils.isStringNotEmpty(spDocSpecification.getId())) {
+			final Element sigPolicyQualifier = DomUtils.addElement(documentDom, sigPolicyQualifiers,
+					getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyQualifier());
+
+			final Element spDocSpecElement = DomUtils.addElement(documentDom, sigPolicyQualifier,
+					getXades141Namespace(), XAdES141Element.SP_DOC_SPECIFICATION);
+			DomUtils.addNamespaceAttribute(spDocSpecElement, getXades141Namespace());
+
+			Element identifierElement = DomUtils.addElement(documentDom, spDocSpecElement,
+					getXadesNamespace(), getCurrentXAdESElements().getElementIdentifier());
+			if (spDocSpecification.getQualifier() != null) {
+				identifierElement.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(),
+						spDocSpecification.getQualifier().getValue());
+			}
+			DomUtils.setTextNode(documentDom, identifierElement, spDocSpecification.getId());
+
+			if (Utils.isStringNotEmpty(spDocSpecification.getDescription())) {
+				Element descriptionElement = DomUtils.addElement(documentDom, spDocSpecElement, getXadesNamespace(),
+						getCurrentXAdESElements().getElementDescription());
+				DomUtils.setTextNode(documentDom, descriptionElement, spDocSpecification.getDescription());
+			}
+
+			if (Utils.isArrayNotEmpty(spDocSpecification.getDocumentationReferences())) {
+				Element documentReferencesElement = DomUtils.addElement(documentDom, spDocSpecElement, getXadesNamespace(),
+						getCurrentXAdESElements().getElementDocumentationReferences());
+
+				for (String docRef : spDocSpecification.getDocumentationReferences()) {
+					Element documentReferenceElement = DomUtils.addElement(documentDom, documentReferencesElement, getXadesNamespace(),
+							getCurrentXAdESElements().getElementDocumentationReference());
+					DomUtils.setTextNode(documentDom, documentReferenceElement, docRef);
 				}
 			}
 		}

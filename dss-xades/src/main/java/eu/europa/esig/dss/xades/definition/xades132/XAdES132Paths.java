@@ -478,9 +478,15 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentSignaturePolicySPDocSpecification() {
+		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS,
+				XAdES132Element.SIG_POLICY_QUALIFIER, XAdES141Element.SP_DOC_SPECIFICATION);
+	}
+
+	@Override
 	public String getCurrentSignaturePolicySPDocSpecificationIdentifier() {
-		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS, XAdES132Element.SIG_POLICY_QUALIFIER,
-				XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.IDENTIFIER);
+		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS,
+				XAdES132Element.SIG_POLICY_QUALIFIER, XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.IDENTIFIER);
 	}
 
 	@Override
@@ -606,6 +612,16 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	// --------------------------- Signature Policy Store
 
 	@Override
+	public String getCurrentSPDocSpecification() {
+		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION);
+	}
+
+	@Override
+	public String getCurrentIdentifier() {
+		return fromCurrentPosition(XAdES132Element.IDENTIFIER);
+	}
+
+	@Override
 	public String getCurrentSPDocSpecificationIdentifier() {
 		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.IDENTIFIER);
 	}
@@ -616,8 +632,15 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public String getCurrentSPDocSpecificationDocumentReferenceElements() {
-		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.DOCUMENTATION_REFERENCES, XAdES132Element.DOCUMENTATION_REFERENCE);
+	public String getCurrentDocumentationReferenceElements() {
+		return fromCurrentPosition(XAdES132Element.DOCUMENTATION_REFERENCES,
+				XAdES132Element.DOCUMENTATION_REFERENCE);
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDocumentationReferenceElements() {
+		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.DOCUMENTATION_REFERENCES,
+				XAdES132Element.DOCUMENTATION_REFERENCE);
 	}
 
 	@Override

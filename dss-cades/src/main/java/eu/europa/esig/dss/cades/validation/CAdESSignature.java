@@ -253,7 +253,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						signaturePolicy.setUrl(policyQualifierInfoValue);
 					} else if (PKCSObjectIdentifiers.id_spq_ets_unotice.equals(policyQualifierInfoId)) {
 						SPUserNotice spUserNotice = SPUserNotice.getInstance(policyQualifierInfo.getSigQualifier());
-						signaturePolicy.setNotice(buildSPUserNoticeString(spUserNotice));
+						signaturePolicy.setUserNotice(buildSPUserNoticeString(spUserNotice));
 					} else if (OID.id_sp_doc_specification.equals(policyQualifierInfoId)) {
 						signaturePolicy.setDocSpecification(policyQualifierInfoValue);
 					} else {

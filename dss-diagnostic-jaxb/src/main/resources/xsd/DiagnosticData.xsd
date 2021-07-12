@@ -206,8 +206,8 @@
 		<xs:sequence>
 			<xs:element name="Id" type="xs:string" />
 			<xs:element name="Url" type="xs:string" minOccurs="0" />
-			<xs:element name="Notice" type="xs:string" minOccurs="0" />
-			<xs:element name="DocSpecification" type="xs:string" minOccurs="0" />
+			<xs:element name="UserNotice" type="UserNotice" minOccurs="0" />
+			<xs:element name="DocSpecification" type="SPDocSpecification" minOccurs="0" />
 			<xs:element name="Description" type="xs:string" minOccurs="0" />
 			<xs:element name="Identified" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Asn1Processable" type="xs:boolean" minOccurs="0" />
@@ -215,6 +215,18 @@
 			<xs:element name="DocumentationReferences" type="DocumentationReferences" minOccurs="0" />
 			<xs:element name="ProcessingError" type="xs:string" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="PolicyDigestAlgoAndValue" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="UserNotice">
+		<xs:sequence>
+			<xs:element name="Organization" type="xs:string" minOccurs="0" />
+			<xs:element name="NoticeNumbers" minOccurs="0" >
+				<xs:simpleType>
+					<xs:list itemType="xs:integer"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ExplicitText" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -228,11 +240,20 @@
 	</xs:complexType>
 	
 	<xs:complexType name="SignaturePolicyStore">
+		<xs:complexContent>
+			<xs:extension base="SPDocSpecification">
+				<xs:sequence>
+					<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="SPDocSpecification">
 		<xs:sequence>
 			<xs:element name="Id" type="xs:string" />
 			<xs:element name="Description" type="xs:string" minOccurs="0" />
 			<xs:element name="DocumentationReferences" type="DocumentationReferences" minOccurs="0" />
-			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	

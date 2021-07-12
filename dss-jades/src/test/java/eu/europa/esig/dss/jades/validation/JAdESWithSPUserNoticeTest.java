@@ -50,7 +50,7 @@ public class JAdESWithSPUserNoticeTest extends AbstractJAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertEquals("1.2.3.4.5.6", signature.getPolicyId());
         assertEquals("Test description", signature.getPolicyDescription());
-        assertEquals("Nowina; 1, 2, 3; Test signature", signature.getPolicyNotice());
+        assertEquals("Nowina; 1, 2, 3; Test signature", signature.getPolicyUserNotice());
     }
 
 }

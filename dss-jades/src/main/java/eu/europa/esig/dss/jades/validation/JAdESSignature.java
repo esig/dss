@@ -454,7 +454,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			List<Object> qualifiers = (List<Object>) sigPolicy.get(JAdESHeaderParameterNames.SIG_PQUALS);
 			if (Utils.isCollectionNotEmpty(qualifiers)) {
 				signaturePolicy.setUrl(getSPUri(qualifiers));
-				signaturePolicy.setNotice(getSPUserNotice(qualifiers));
+				signaturePolicy.setUserNotice(getSPUserNotice(qualifiers));
 				signaturePolicy.setDocSpecification(getSPDSpec(qualifiers));
 			}
 

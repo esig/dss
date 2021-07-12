@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -65,6 +66,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -1273,6 +1275,47 @@ public final class DSSUtils {
 			spUserNoticeStringBuilder.append(explicitText);
 		}
 		return spUserNoticeStringBuilder.toString();
+	}
+
+	/**
+	 * This method verifies the validity of thw provided {@code UserNotice} object
+	 *
+	 * @param userNotice {@link UserNotice} to check
+	 * @throws IllegalArgumentException in case of an invalid configuration
+	 */
+	public static void assertSPUserNoticeConfigurationValid(final UserNotice userNotice) throws IllegalArgumentException {
+		boolean organizationEmpty = Utils.isStringEmpty(userNotice.getOrganization());
+		boolean noticeNumbersEmpty = userNotice.getNoticeNumbers() == null || userNotice.getNoticeNumbers().length == 0;
+		if (organizationEmpty != noticeNumbersEmpty) {
+			throw new IllegalArgumentException("Both Organization name and NoticeNumbers shall be defined " +
+					"within the UserNotice configuration!");
+		}
+	}
+	/**
+	 * Transforms the given array of integers to a list of {@code BigInteger}s
+	 *
+	 * @return a list of {@link BigInteger}s
+	 */
+	public static List<BigInteger> toBigIntegerList(int[] integers) {
+		List<BigInteger> bi = new ArrayList<>();
+		for (int i : integers) {
+			bi.add(BigInteger.valueOf(i));
+		}
+		return bi;
+	}
+
+	/**
+	 * Converts a list of {@code Integer}s to an integers array
+	 *
+	 * @param integers a list of {@link Integer}s to convert
+	 * @return an integer array
+	 */
+	public static int[] toIntArray(List<Integer> integers) {
+		int[] intArray = new int[integers.size()];
+		for (int i = 0; i < integers.size(); i++) {
+			intArray[i] = integers.get(i).intValue();
+		}
+		return intArray;
 	}
 
 }

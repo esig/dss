@@ -58,6 +58,8 @@ import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignerLocation;
+import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -414,27 +416,53 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		if (signaturePolicy != null) {
 			SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 			assertTrue(signature.isPolicyPresent());
+
 			if (Utils.isStringNotEmpty(signaturePolicy.getId())) {
 				assertTrue(signaturePolicy.getId().contains(diagnosticData.getFirstPolicyId())); // initial Id can contain "urn:oid:"
 				// or IMPLICIT_POLICY by default if it is not specified
 			}
+
 			if (Utils.isStringNotEmpty(signaturePolicy.getDescription())) {
 				assertEquals(signaturePolicy.getDescription(), diagnosticData.getPolicyDescription(signature.getId()));
 			} else {
 				assertTrue(Utils.isStringEmpty(signature.getPolicyDescription()));
 			}
+
 			if (Utils.isArrayNotEmpty(signaturePolicy.getDocumentationReferences())) {
 				assertEquals(Arrays.asList(signaturePolicy.getDocumentationReferences()), diagnosticData.
 						getPolicyDocumentationReferences(signature.getId()));
 			} else {
 				assertTrue(Utils.isCollectionEmpty(signature.getPolicyDocumentationReferences()));
 			}
+
 			if (Utils.isStringNotEmpty(signaturePolicy.getSpuri())) {
 				assertEquals(signaturePolicy.getSpuri(), signature.getPolicyUrl());
 			} else if (Utils.isStringNotEmpty(signaturePolicy.getId())) {
 				assertEquals(signaturePolicy.getId(), signature.getPolicyUrl());
 			} else {
 				assertTrue(Utils.isStringEmpty(signature.getPolicyUrl()));
+			}
+
+			UserNotice userNotice = signaturePolicy.getUserNotice();
+			if (userNotice != null) {
+				assertNotNull(signature.getPolicyUserNotice());
+				if (Utils.isStringNotEmpty(userNotice.getOrganization())) {
+					assertEquals(userNotice.getOrganization(), signature.getPolicyUserNotice().getOrganization());
+				}
+				if (userNotice.getNoticeNumbers() != null && userNotice.getNoticeNumbers().length > 0) {
+					assertEquals(DSSUtils.toBigIntegerList(userNotice.getNoticeNumbers()), signature.getPolicyUserNotice().getNoticeNumbers());
+				}
+				if (Utils.isStringNotEmpty(userNotice.getExplicitText())) {
+					assertEquals(userNotice.getExplicitText(), signature.getPolicyUserNotice().getExplicitText());
+				}
+			}
+
+			SpDocSpecification spDocSpecification = signaturePolicy.getSpDocSpecification();
+			if (spDocSpecification != null) {
+				assertNotNull(signature.getPolicyDocSpecification());
+				if (Utils.isStringNotEmpty(spDocSpecification.getId())) {
+					assertEquals(spDocSpecification.getId(), signature.getPolicyDocSpecification().getId());
+				}
 			}
 		}
 	}

@@ -23,11 +23,14 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSPDocSpecification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlUserNotice;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
@@ -84,11 +87,31 @@ public class XmlPolicyBuilder {
 		final XmlPolicy xmlPolicy = new XmlPolicy();
 
 		xmlPolicy.setId(signaturePolicy.getIdentifier());
-		xmlPolicy.setUrl(DSSUtils.removeControlCharacters(signaturePolicy.getUrl()));
-		xmlPolicy.setNotice(signaturePolicy.getNotice());
-		xmlPolicy.setDocSpecification(signaturePolicy.getDocSpecification());
 		xmlPolicy.setDescription(signaturePolicy.getDescription());
 		xmlPolicy.setDocumentationReferences(signaturePolicy.getDocumentationReferences());
+
+		xmlPolicy.setUrl(DSSUtils.removeControlCharacters(signaturePolicy.getUrl()));
+		final UserNotice userNotice = signaturePolicy.getUserNotice();
+		if (userNotice != null) {
+			XmlUserNotice xmlUserNotice = new XmlUserNotice();
+			xmlUserNotice.setOrganization(userNotice.getOrganization());
+			if (userNotice.getNoticeNumbers() != null && userNotice.getNoticeNumbers().length > 0) {
+				xmlUserNotice.getNoticeNumbers().addAll(DSSUtils.toBigIntegerList(userNotice.getNoticeNumbers()));
+			}
+			xmlUserNotice.setExplicitText(userNotice.getExplicitText());
+			xmlPolicy.setUserNotice(xmlUserNotice);
+		}
+		final SpDocSpecification spDocSpecification = signaturePolicy.getDocSpecification();
+		if (spDocSpecification != null) {
+			XmlSPDocSpecification xmlSPDocSpecification = new XmlSPDocSpecification();
+			xmlSPDocSpecification.setId(spDocSpecification.getId());
+			xmlSPDocSpecification.setDescription(spDocSpecification.getDescription());
+			String[] documentationReferences = spDocSpecification.getDocumentationReferences();
+			if (Utils.isArrayNotEmpty(documentationReferences)) {
+				xmlSPDocSpecification.setDocumentationReferences(Arrays.asList(documentationReferences));
+			}
+			xmlPolicy.setDocSpecification(xmlSPDocSpecification);
+		}
 		
 		List<String> transformsDescription = signaturePolicy.getTransformsDescription();
 		if (Utils.isCollectionNotEmpty(transformsDescription)) {
