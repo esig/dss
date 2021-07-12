@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -41,12 +32,20 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCounterSignatureTest {
 
@@ -142,7 +141,7 @@ public class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCou
 	public void counterSignLtaLevelTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		Exception exception = assertThrows(DSSException.class, () -> signAndVerify());
+		Exception exception = assertThrows(IllegalInputException.class, () -> signAndVerify());
 		assertEquals("The counter signature is not possible! "
 				+ "Reason : a signature with a filename 'META-INF/signature001.p7s' is covered by another manifest.", exception.getMessage());
 	}
@@ -151,7 +150,7 @@ public class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCou
 	public void tLevelCounterSignatureTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		Exception exception = assertThrows(DSSException.class, () -> signAndVerify());
+		Exception exception = assertThrows(UnsupportedOperationException.class, () -> signAndVerify());
 		assertEquals("A counter signature with a level 'CAdES-BASELINE-T' is not supported! "
 				+ "Please, use CAdES-BASELINE-B", exception.getMessage());
 	}

@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.definition;
 
+import java.io.Serializable;
+
 /**
  * Defines the namespaces
  */
-public class DSSNamespace {
+public class DSSNamespace implements Serializable {
+
+	private static final long serialVersionUID = 470380729820070418L;
 
 	/** The namespace URI */
 	private final String uri;
@@ -68,6 +72,11 @@ public class DSSNamespace {
 	 */
 	public boolean isSameUri(String paramUri) {
 		return this.uri.equals(paramUri);
+	}
+
+	@Override
+	public String toString() {
+		return "DSSNamespace [uri='" + uri + ", prefix='" + prefix + ']';
 	}
 
 }

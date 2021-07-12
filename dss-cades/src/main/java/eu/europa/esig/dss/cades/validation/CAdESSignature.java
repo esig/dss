@@ -44,13 +44,14 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -61,7 +62,9 @@ import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -72,6 +75,7 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
+import org.bouncycastle.asn1.esf.SPUserNotice;
 import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
 import org.bouncycastle.asn1.esf.SigPolicyQualifiers;
 import org.bouncycastle.asn1.esf.SignaturePolicyId;
@@ -86,6 +90,8 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
 import org.bouncycastle.asn1.x509.AttributeCertificate;
 import org.bouncycastle.asn1.x509.AttributeCertificateInfo;
+import org.bouncycastle.asn1.x509.DisplayText;
+import org.bouncycastle.asn1.x509.NoticeReference;
 import org.bouncycastle.asn1.x509.RoleSyntax;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -109,13 +115,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
 /**
  * CAdES Signature class helper
@@ -206,12 +206,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public SignaturePolicy getSignaturePolicy() {
-		if (signaturePolicy != null) {
-			return signaturePolicy;
-		}
-		
-		final Attribute attribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
+	protected SignaturePolicy buildSignaturePolicy() {
+		final Attribute attribute = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
 		if (attribute == null) {
 			return null;
 		}
@@ -253,10 +249,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					final ASN1ObjectIdentifier policyQualifierInfoId = policyQualifierInfo.getSigPolicyQualifierId();
 					final String policyQualifierInfoValue = policyQualifierInfo.getSigQualifier().toString();
 
-					if (PKCSObjectIdentifiers.id_spq_ets_unotice.equals(policyQualifierInfoId)) {
-						signaturePolicy.setNotice(policyQualifierInfoValue);
-					} else if (PKCSObjectIdentifiers.id_spq_ets_uri.equals(policyQualifierInfoId)) {
+					if (PKCSObjectIdentifiers.id_spq_ets_uri.equals(policyQualifierInfoId)) {
 						signaturePolicy.setUrl(policyQualifierInfoValue);
+					} else if (PKCSObjectIdentifiers.id_spq_ets_unotice.equals(policyQualifierInfoId)) {
+						SPUserNotice spUserNotice = SPUserNotice.getInstance(policyQualifierInfo.getSigQualifier());
+						signaturePolicy.setNotice(buildSPUserNoticeString(spUserNotice));
+					} else if (OID.id_sp_doc_specification.equals(policyQualifierInfoId)) {
+						signaturePolicy.setDocSpecification(policyQualifierInfoValue);
 					} else {
 						LOG.error("Unknown signature policy qualifier id: {} with value: {}", policyQualifierInfoId,
 								policyQualifierInfoValue);
@@ -268,6 +267,33 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		
 		return signaturePolicy;
+	}
+
+	private String buildSPUserNoticeString(SPUserNotice spUserNotice) {
+		String organizationString = null;
+		List<Integer> noticeNumbersList = null;
+		String explicitTextString = null;
+
+		NoticeReference noticeRef = spUserNotice.getNoticeRef();
+		if (noticeRef != null) {
+			DisplayText organization = noticeRef.getOrganization();
+			if (organization != null) {
+				organizationString = organization.getString();
+			}
+			ASN1Integer[] noticeNumbers = noticeRef.getNoticeNumbers();
+			if (noticeNumbers != null && noticeNumbers.length != 0) {
+				noticeNumbersList = new ArrayList<>();
+				for (ASN1Integer integer : noticeNumbers) {
+					noticeNumbersList.add(integer.intValueExact());
+				}
+			}
+		}
+		DisplayText explicitText = spUserNotice.getExplicitText();
+		if (explicitText != null) {
+			explicitTextString = explicitText.getString();
+		}
+
+		return DSSUtils.getSPUserNoticeString(organizationString, noticeNumbersList, explicitTextString);
 	}
 	
 	@Override
@@ -288,13 +314,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					ASN1OctetString spDocument = ASN1OctetString.getInstance(sequence.getObjectAt(1));
 					signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(spDocument.getOctets()));
 				} catch (Exception e) {
-					LOG.warn("Unable to extact a SignaturePolicyStore content. 'sigPolicyEncoded OCTET STRING' is expected!");
+					LOG.warn("Unable to extract a SignaturePolicyStore content. 'sigPolicyEncoded OCTET STRING' is expected!");
 				}
 				
 				signaturePolicyStore.setSpDocSpecification(spDocSpecification);
 				return signaturePolicyStore;
 			} else {
-				LOG.warn("Unable to extact a SignaturePolicyStore. The element shall contain two attributes.");
+				LOG.warn("Unable to extract a SignaturePolicyStore. The element shall contain two attributes.");
 			}
 		}
 		return null;
@@ -316,7 +342,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public Date getSigningTime() {
-		final Attribute attr = getSignedAttribute(PKCSObjectIdentifiers.pkcs_9_at_signingTime);
+		final Attribute attr = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_signingTime);
 		if (attr == null) {
 			return null;
 		}
@@ -336,7 +362,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureProductionPlace getSignatureProductionPlace() {
-		Attribute signatureProductionPlaceAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerLocation);
+		Attribute signatureProductionPlaceAttr = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerLocation);
 		if (signatureProductionPlaceAttr == null) {
 			return null;
 		}
@@ -384,9 +410,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<eu.europa.esig.dss.validation.CommitmentTypeIndication> getCommitmentTypeIndications() {
-		final Attribute commitmentTypeIndicationAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_commitmentType);
+		final Attribute commitmentTypeIndicationAttribute = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_commitmentType);
 		if (commitmentTypeIndicationAttribute == null) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		try {
@@ -408,7 +434,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return commitmentTypeIndications;
 		} catch (Exception e) {
-			throw new DSSException("Error when dealing with CommitmentTypeIndication!", e);
+			LOG.warn("An error while extracting CommitmentTypeIndication. Reason : {}", e.getMessage(), e);
+			return Collections.emptyList();
 		}
 	}
 
@@ -519,7 +546,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private SignerAttribute getSignerAttributeV1() {
-		final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
+		final Attribute id_aa_ets_signerAttr = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerAttr);
 		if (id_aa_ets_signerAttr != null) {
 			final ASN1Set attrValues = id_aa_ets_signerAttr.getAttrValues();
 			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
@@ -538,7 +565,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private SignerAttributeV2 getSignerAttributeV2() {
-		final Attribute id_aa_ets_signerAttrV2 = getSignedAttribute(OID.id_aa_ets_signerAttrV2);
+		final Attribute id_aa_ets_signerAttrV2 = CMSUtils.getSignedAttribute(signerInformation, OID.id_aa_ets_signerAttrV2);
 		if (id_aa_ets_signerAttrV2 != null) {
 			final ASN1Set attrValues = id_aa_ets_signerAttrV2.getAttrValues();
 			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
@@ -614,18 +641,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		try {
 			final SignatureAlgorithm signatureAlgorithm = getEncryptedDigestAlgo();
-			if (signatureAlgorithm != null) {
-				if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
-
-					byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
-					if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
-						RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
-						AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
-						if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
-							return MaskGenerationFunction.MGF1;
-						} else {
-							LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
-						}
+			if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
+				byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
+				if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
+					RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
+					AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
+					if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
+						return MaskGenerationFunction.MGF1;
+					} else {
+						LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
 					}
 				}
 			}
@@ -707,7 +731,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				LOG.warn("Original document not found");
 			}
 
-			ReferenceValidation validation = null;
+			ReferenceValidation validation;
 			final byte[] messageDigestValue = getMessageDigestValue();
 			if (messageDigestValue != null) {
 				validation = getMessageDigestReferenceValidation(originalDocument, messageDigestValue);
@@ -774,16 +798,21 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		Digest messageDigest = new Digest();
 		messageDigest.setValue(messageDigestValue);
 		messageDigestValidation.setDigest(messageDigest);
+
+		Set<DigestAlgorithm> digestAlgorithmCandidates = new HashSet<>();
+		DigestAlgorithm signerInformationDigestAlgorithm = getDigestAlgorithm();
+		if (signerInformationDigestAlgorithm != null) {
+			digestAlgorithmCandidates.add(signerInformationDigestAlgorithm);
+		}
+		digestAlgorithmCandidates.addAll(getMessageDigestAlgorithms());
 		
-		Set<DigestAlgorithm> messageDigestAlgorithms = getMessageDigestAlgorithms();
-		
-		if (Utils.collectionSize(messageDigestAlgorithms) == 1) {
-			messageDigest.setAlgorithm(messageDigestAlgorithms.iterator().next());
+		if (Utils.collectionSize(digestAlgorithmCandidates) == 1) {
+			messageDigest.setAlgorithm(digestAlgorithmCandidates.iterator().next());
 		}
 
 		if (originalDocument != null) {
 			messageDigestValidation.setFound(true);
-			messageDigestValidation.setIntact(verifyDigestAlgorithm(originalDocument, messageDigestAlgorithms, messageDigest));
+			messageDigestValidation.setIntact(verifyDigestAlgorithm(originalDocument, digestAlgorithmCandidates, messageDigest));
 
 			if (manifestFile != null && 
 					Utils.toBase64(messageDigest.getValue()).equals(manifestFile.getDigestBase64String(messageDigest.getAlgorithm()))) {
@@ -838,7 +867,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			case MESSAGE_DIGEST:
 				DigestAlgorithm digestAlgorithm = getDigestAlgorithm();
 				if (digestAlgorithm != null) {
-					AttributeTable signedAttributes = signerInformation.getSignedAttributes();
+					AttributeTable signedAttributes = CMSUtils.getSignedAttributes(signerInformation);
 					byte[] derEncoded = DSSASN1Utils.getDEREncoded(signedAttributes.toASN1Structure());
 					return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, derEncoded));
 				}
@@ -855,14 +884,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * This method recreates a {@code SignerInformation} with the content using
 	 * a {@code CMSSignedDataParser}.
 	 *
-	 * @return{@link SignerInformation
+	 * @return {@link SignerInformation}
 	 * @throws CMSException if CMS exception occurs
 	 * @throws IOException if IOException occurs
 	 */
 	private SignerInformation recreateSignerInformation() throws CMSException, IOException {
 
 		final DSSDocument dssDocument = detachedContents.get(0); // only one element for CAdES Signature
-		CMSSignedDataParser cmsSignedDataParser = null;
+		CMSSignedDataParser cmsSignedDataParser;
 		if (dssDocument instanceof DigestDocument) {
 			cmsSignedDataParser = new CMSSignedDataParser(new PrecomputedDigestCalculatorProvider((DigestDocument) dssDocument), cmsSignedData.getEncoded());
 		} else {
@@ -912,7 +941,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @return a byte array representing a signed content digest value
 	 */
 	public byte[] getMessageDigestValue() {
-		final Attribute messageDigestAttribute = getSignedAttribute(PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
+		final Attribute messageDigestAttribute = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
 		if (messageDigestAttribute == null) {
 			return null;
 		}
@@ -922,7 +951,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentType() {
-		final Attribute contentTypeAttribute = getSignedAttribute(PKCSObjectIdentifiers.pkcs_9_at_contentType);
+		final Attribute contentTypeAttribute = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_contentType);
 		if (contentTypeAttribute == null) {
 			return null;
 		}
@@ -932,7 +961,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getMimeType() {
-		final Attribute mimeTypeAttribute = getSignedAttribute(OID.id_aa_ets_mimeType);
+		final Attribute mimeTypeAttribute = CMSUtils.getSignedAttribute(signerInformation, OID.id_aa_ets_mimeType);
 		if (mimeTypeAttribute == null) {
 			return null;
 		}
@@ -945,7 +974,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @return content identifier as {@code String}
 	 */
 	public String getContentIdentifier() {
-		final Attribute contentIdentifierAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_contentIdentifier);
+		final Attribute contentIdentifierAttribute = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_contentIdentifier);
 		if (contentIdentifierAttribute == null) {
 			return null;
 		}
@@ -961,7 +990,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @return content hints as {@code String}
 	 */
 	public String getContentHints() {
-		final Attribute contentHintAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_contentHint);
+		final Attribute contentHintAttribute = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_contentHint);
 		if (contentHintAttribute == null) {
 			return null;
 		}
@@ -1061,22 +1090,22 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
-	private Attribute getSignedAttribute(ASN1ObjectIdentifier oid) {
-		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
-		if (signedAttributes == null) {
-			return null;
-		}
-		return signedAttributes.get(oid);
-	}
-
 	/**
 	 * Returns a Set of CertificateIdentifier extracted from a
 	 * SignerInformationStore of CMS Signed Data
 	 * 
-	 * @return a Set of {@link CertificateIdentifier}s
+	 * @return a Set of {@link SignerIdentifier}s
 	 */
-	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
+	public Set<SignerIdentifier> getSignerInformationStoreInfos() {
 		return getCertificateSource().getAllCertificateIdentifiers();
+	}
+
+	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		if (!timestamp.isProcessed()) {
+			throw new DSSException("Timestamp token must be validated first !");
+		}
+		getTimestampSource().addExternalTimestamp(timestamp);
 	}
 
 	@Override
@@ -1094,26 +1123,31 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return SignatureLevel.CAdES_BASELINE_LT;
 		} else if (hasCProfile()) {
-			if (hasXProfile()) {
-// Revocation are not complete
-//				if (hasAProfile()) {
-//					return SignatureLevel.CAdES_101733_A;
-//				}
-				return SignatureLevel.CAdES_101733_X;
+			if (hasXLProfile()) {
+				if (hasAProfile()) {
+					return SignatureLevel.CAdES_A;
+				}
+				if (hasXProfile()) {
+					return SignatureLevel.CAdES_XL;
+				}
 			}
-			return SignatureLevel.CAdES_101733_C;
+			if (hasXProfile()) {
+				return SignatureLevel.CAdES_X;
+			}
+			return SignatureLevel.CAdES_C;
 		} else {
 			return SignatureLevel.CAdES_BASELINE_T;
 		}
 	}
 
-	/**
-	 * Checks if the signature has the BASELINE-B profile
-	 *
-	 * @return TRUE if the signature has a BASELINE-B profile, FALSE otherwise
-	 */
-	public boolean hasBProfile() {
-		return ((getSignedAttribute(id_aa_signingCertificate) != null) || (getSignedAttribute(id_aa_signingCertificateV2) != null));
+	@Override
+	protected CAdESBaselineRequirementsChecker getBaselineRequirementsChecker() {
+		return (CAdESBaselineRequirementsChecker) super.getBaselineRequirementsChecker();
+	}
+
+	@Override
+	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
+		return new CAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 
 	/**
@@ -1122,8 +1156,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @return TRUE if the signature has a 101733-C profile, FALSE otherwise
 	 */
 	public boolean hasCProfile() {
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		return unsignedAttributes.get(id_aa_ets_certificateRefs) != null;
+		return getBaselineRequirementsChecker().hasExtendedCProfile();
 	}
 
 	/**
@@ -1132,8 +1165,16 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @return TRUE if the signature has a 101733-X profile, FALSE otherwise
 	 */
 	public boolean hasXProfile() {
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		return ((unsignedAttributes.get(id_aa_ets_certCRLTimestamp) != null) || (unsignedAttributes.get(id_aa_ets_escTimeStamp) != null));
+		return getBaselineRequirementsChecker().hasExtendedXProfile();
+	}
+
+	/**
+	 * Checks if the signature has the 101733-XL profile
+	 *
+	 * @return TRUE if the signature has a 101733-XL profile, FALSE otherwise
+	 */
+	public boolean hasXLProfile() {
+		return getBaselineRequirementsChecker().hasExtendedXLProfile();
 	}
 
 	/**
@@ -1142,8 +1183,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @return TRUE if the signature has a 101733-A profile, FALSE otherwise
 	 */
 	public boolean hasAProfile() {
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		return unsignedAttributes.get(id_aa_ets_archiveTimestampV2) != null;
+		return getBaselineRequirementsChecker().hasExtendedAProfile();
 	}
 
 }

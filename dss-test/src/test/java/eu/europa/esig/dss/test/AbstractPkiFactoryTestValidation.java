@@ -29,8 +29,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
@@ -56,6 +58,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
@@ -66,6 +69,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -111,22 +115,29 @@ import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 import eu.europa.esig.validationreport.jaxb.VOReferenceType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectRepresentationType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.FopFactoryBuilder;
+import org.apache.fop.apps.MimeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.Result;
+import javax.xml.transform.sax.SAXResult;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -148,6 +159,15 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				TP extends SerializableTimestampParameters> extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestValidation.class);
+
+	private static FopFactory fopFactory;
+
+	static {
+		FopFactoryBuilder builder = new FopFactoryBuilder(new File(".").toURI());
+		builder.setAccessibility(true);
+
+		fopFactory = builder.build();
+	}
 	
 	protected Reports verify(DSSDocument signedDocument) {
 
@@ -265,8 +285,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					Iterator<SignaturePolicyValidator> validatorOptions = loader.iterator();
 					if (validatorOptions.hasNext()) {
 						for (SignaturePolicyValidator signaturePolicyValidator : loader) {
-							signaturePolicyValidator.setSignaturePolicy(signature.getSignaturePolicy());
-							if (signaturePolicyValidator.canValidate()) {
+							if (signaturePolicyValidator.canValidate(signature.getSignaturePolicy())) {
 								validators.add(signaturePolicyValidator);
 							}
 						}
@@ -286,30 +305,14 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
 			FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
 
-			// Tokens
-			assertEquals(certificateSource.getKeyInfoCertificates().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-			assertEquals(certificateSource.getCertificateValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
-			assertEquals(certificateSource.getSignedDataCertificates().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
-			assertEquals(certificateSource.getDSSDictionaryCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
-			assertEquals(certificateSource.getVRIDictionaryCertValues().size(),
-					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
-			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+			verifyCertificateSourceData(certificateSource, foundCertificates);
 
-			// Refs
-			assertEquals(certificateSource.getSigningCertificateRefs().size(),
-					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-			assertEquals(certificateSource.getAttributeCertificateRefs().size(),
-					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
-			assertEquals(certificateSource.getCompleteCertificateRefs().size(),
-					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+			OfflineRevocationSource<CRL> crlSource = advancedSignature.getCRLSource();
+			OfflineRevocationSource<OCSP> ocspSource = advancedSignature.getOCSPSource();
+			FoundRevocationsProxy foundRevocations = signatureWrapper.foundRevocations();
+
+			verifyRevocationSourceData(crlSource, foundRevocations, RevocationType.CRL);
+			verifyRevocationSourceData(ocspSource, foundRevocations, RevocationType.OCSP);
 
 			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
 			for (TimestampToken timestampToken : timestamps) {
@@ -318,34 +321,16 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				certificateSource = timestampToken.getCertificateSource();
 				foundCertificates = timestampWrapper.foundCertificates();
 
-				// Tokens
-				assertEquals(certificateSource.getKeyInfoCertificates().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-				assertEquals(certificateSource.getCertificateValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-				assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-				assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
-				assertEquals(certificateSource.getSignedDataCertificates()
-						.size(),
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
-				assertEquals(certificateSource.getDSSDictionaryCertValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
-				assertEquals(certificateSource.getVRIDictionaryCertValues().size(), 
-						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
-				assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+				verifyCertificateSourceData(certificateSource, foundCertificates);
 
-				// Refs
-				assertEquals(certificateSource.getSigningCertificateRefs().size(),
-						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-				assertEquals(certificateSource.getAttributeCertificateRefs().size(), 
-						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
-				assertEquals(certificateSource.getCompleteCertificateRefs().size(), 
-						foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+				crlSource = timestampToken.getCRLSource();
+				ocspSource = timestampToken.getOCSPSource();
+				foundRevocations = timestampWrapper.foundRevocations();
+
+				verifyRevocationSourceData(crlSource, foundRevocations, RevocationType.CRL);
+				verifyRevocationSourceData(ocspSource, foundRevocations, RevocationType.OCSP);
 			}
 
-			OfflineRevocationSource<OCSP> ocspSource = advancedSignature.getOCSPSource();
 			Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
 			for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
 				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
@@ -354,13 +339,85 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					foundCertificates = revocationWrapper.foundCertificates();
 
 					assertEquals(revocationCertificateSource.getCertificates().size(), 
-							foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+							foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() +
+									foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
 					assertEquals(revocationCertificateSource.getAllCertificateRefs().size(), foundCertificates.getRelatedCertificateRefs().size());
 				}
 			}
 		}
 		
 		checkOrphanTokens(diagnosticData);
+	}
+
+	protected void verifyCertificateSourceData(SignatureCertificateSource certificateSource, FoundCertificatesProxy foundCertificates) {
+		// Tokens
+		assertEquals(certificateSource.getKeyInfoCertificates().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+		assertEquals(certificateSource.getCertificateValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+		assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
+		assertEquals(certificateSource.getSignedDataCertificates().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size());
+		assertEquals(certificateSource.getDSSDictionaryCertValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY).size());
+		assertEquals(certificateSource.getVRIDictionaryCertValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY).size());
+		assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() +
+				foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+
+		// Refs
+		assertEquals(certificateSource.getSigningCertificateRefs().size(),
+				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size() +
+						foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+		assertEquals(certificateSource.getAttributeCertificateRefs().size(),
+				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size() +
+						foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS).size());
+		assertEquals(certificateSource.getCompleteCertificateRefs().size(),
+				foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size() +
+						foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS).size());
+	}
+
+	protected void verifyRevocationSourceData(OfflineRevocationSource<?> revocationSource, FoundRevocationsProxy foundRevocations,
+											RevocationType revocationType) {
+		assertEquals(revocationSource.getCMSSignedDataRevocationBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.CMS_SIGNED_DATA).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.CMS_SIGNED_DATA).size());
+		assertEquals(revocationSource.getRevocationValuesBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.REVOCATION_VALUES).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.REVOCATION_VALUES).size());
+		assertEquals(revocationSource.getAttributeRevocationValuesBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES).size());
+		assertEquals(revocationSource.getTimestampValidationDataBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(revocationSource.getDSSDictionaryBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.DSS_DICTIONARY).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.DSS_DICTIONARY).size());
+		assertEquals(revocationSource.getVRIDictionaryBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.VRI_DICTIONARY).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.VRI_DICTIONARY).size());
+		assertEquals(revocationSource.getADBERevocationValuesBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL).size());
+
+		// Refs
+		assertEquals(revocationSource.getCompleteRevocationRefs().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndRefOrigin(revocationType, RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size() +
+						foundRevocations.getOrphanRevocationsByTypeAndRefOrigin(revocationType, RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(revocationSource.getAttributeRevocationRefs().size(), foundRevocations.
+				getRelatedRevocationsByTypeAndRefOrigin(revocationType, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size() +
+				foundRevocations.getOrphanRevocationsByTypeAndRefOrigin(revocationType, RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
 	}
 
 	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
@@ -559,10 +616,18 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			if (Utils.isCollectionNotEmpty(signingCertificateChain)) {
 				if (signingCertificate.getId().equals(signingCertificateChain.get(0).getId())) {
 					assertEquals(1, signingCertificateChain.size());
-				} else {
-					assertEquals(certificateChain.size(), signingCertificateChain.size() + 1);
+
+				} else if (certificateChain.size() == signingCertificateChain.size() + 1) {
 					for (int ii = 0; ii < signingCertificateChain.size(); ii++) {
-						assertEquals(certificateChain.get(ii + 1).getId(), signingCertificateChain.get(ii).getId());
+						assertTrue(certificateChain.get(ii + 1).getId().equals(signingCertificateChain.get(ii).getId()) ||
+								certificateChain.get(ii + 1).getEntityKey().equals(signingCertificateChain.get(ii).getEntityKey()));
+					}
+
+				} else {
+					int length = certificateChain.size() < signingCertificateChain.size() + 1 ? certificateChain.size() - 1 : signingCertificateChain.size();
+					for (int ii = 0; ii < length; ii++) {
+						assertTrue(certificateChain.get(ii + 1).getId().equals(signingCertificateChain.get(ii).getId()) ||
+								certificateChain.get(ii + 1).getEntityKey().equals(signingCertificateChain.get(ii).getEntityKey()));
 					}
 				}
 			}
@@ -628,7 +693,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+		List<SignatureWrapper> allSignatures = diagnosticData.getSignatures();
+		for (SignatureWrapper signatureWrapper : allSignatures) {
 			List<String> timestampIdList = diagnosticData.getTimestampIdList(signatureWrapper.getId());
 	
 			boolean foundSignatureTimeStamp = false;
@@ -682,7 +748,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertTrue(timestampWrapper.isSigningCertificateIdentified());
 				assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
 				assertTrue(timestampWrapper.isSigningCertificateReferenceUnique());
-				
+
+				if (timestampWrapper.isTSAGeneralNamePresent()) {
+					assertTrue(timestampWrapper.isTSAGeneralNameMatch());
+					assertTrue(timestampWrapper.isTSAGeneralNameOrderMatch());
+				}
+
 				CertificateRefWrapper signingCertificateReference = timestampWrapper.getSigningCertificateReference();
 				assertNotNull(signingCertificateReference);
 				assertTrue(signingCertificateReference.isDigestValuePresent());
@@ -702,91 +773,122 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertTrue(Utils.isCollectionEmpty(timestampWrapper.foundCertificates()
 						.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)));
 
-				List<String> certIds = timestampWrapper.getTimestampedCertificates().stream()
-						.map(CertificateWrapper::getId).collect(Collectors.toList());
-				if (timestampWrapper.getType().coversSignature()) {
-					for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO)) {
-						certIds.contains(certificate.getId());
-					}
-					for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)) {
-						certIds.contains(certificate.getId());
-					}
-				}
-				if (timestampWrapper.getType().isArchivalTimestamp()) {
-					for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
-						certIds.contains(certificate.getId());
-					}
-					for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
-						certIds.contains(certificate.getId());
-					}
-				}
-				
-				List<String> orphanCertIds = timestampWrapper.getTimestampedOrphanCertificates().stream()
-						.map(OrphanTokenWrapper::getId).collect(Collectors.toList());
-				if (timestampWrapper.getType().coversSignature()) {
-					for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO)) {
-						orphanCertIds.contains(certificate.getId());
-					}
-					for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getOrphanCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)) {
-						orphanCertIds.contains(certificate.getId());
-					}
-				}
-				if (timestampWrapper.getType().isArchivalTimestamp()) {
-					for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
-						orphanCertIds.contains(certificate.getId());
-					}
-					for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
-							.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
-						orphanCertIds.contains(certificate.getId());
-					}
+				List<SignatureWrapper> timestampedSignatures = timestampWrapper.getTimestampedSignatures();
+				if (timestampedSignatures.stream().map(SignatureWrapper::getId)
+						.collect(Collectors.toList()).contains(signatureWrapper.getId())) {
+					checkTimestampedProperties(allTimestamps, timestampWrapper, allSignatures, signatureWrapper);
 				}
 
-				List<String> revocIds = timestampWrapper.getTimestampedRevocations().stream()
-						.map(RevocationWrapper::getId).collect(Collectors.toList());
-				if (timestampWrapper.getType().coversSignature()) {
-					for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getRelatedRevocationsByOrigin(RevocationOrigin.CMS_SIGNED_DATA)) {
-						revocIds.contains(revocation.getId());
-					}
-				}
-				if (timestampWrapper.getType().isArchivalTimestamp()) {
-					for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
-						revocIds.contains(revocation.getId());
-					}
-					for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getRelatedRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
-						revocIds.contains(revocation.getId());
-					}
-				}
-
-				List<String> orphanRevocIds = timestampWrapper.getTimestampedOrphanRevocations().stream()
-						.map(OrphanTokenWrapper::getId).collect(Collectors.toList());
-				if (timestampWrapper.getType().coversSignature()) {
-					for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getOrphanRevocationsByOrigin(RevocationOrigin.CMS_SIGNED_DATA)) {
-						orphanRevocIds.contains(revocation.getId());
-					}
-				}
-				if (timestampWrapper.getType().isArchivalTimestamp()) {
-					for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
-						orphanRevocIds.contains(revocation.getId());
-					}
-					for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
-							.getOrphanRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
-						orphanRevocIds.contains(revocation.getId());
-					}
-				}
-				
 				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
+			}
+		}
+	}
+
+	protected void checkTimestampedProperties(Collection<TimestampWrapper> allTimestamps, TimestampWrapper timestampWrapper,
+											  Collection<SignatureWrapper> allSignatures, SignatureWrapper signatureWrapper) {
+		boolean timestampedTimestamp = false;
+		for (TimestampWrapper timestamp : allTimestamps) {
+			List<String> timestampedTstIds = timestamp.getTimestampedTimestamps().stream().map(TimestampWrapper::getId)
+					.collect(Collectors.toList());
+			if (timestampedTstIds.contains(timestampWrapper.getId())) {
+				timestampedTimestamp = true;
+				break;
+			}
+		}
+
+		List<String> certIds = timestampWrapper.getTimestampedCertificates().stream()
+				.map(CertificateWrapper::getId).collect(Collectors.toList());
+		if (timestampWrapper.getType().isArchivalTimestamp()) {
+			for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO)) {
+				assertTrue(certIds.contains(certificate.getId()));
+			}
+			if (!timestampedTimestamp && Utils.collectionSize(allSignatures) < 2) {
+				for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
+						.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)) {
+					assertTrue(certIds.contains(certificate.getId()));
+				}
+			}
+			for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
+				assertTrue(certIds.contains(certificate.getId()));
+			}
+			for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
+				assertTrue(certIds.contains(certificate.getId()));
+			}
+		}
+
+		List<String> orphanCertIds = timestampWrapper.getTimestampedOrphanCertificates().stream()
+				.map(OrphanTokenWrapper::getId).collect(Collectors.toList());
+		if (timestampWrapper.getType().isArchivalTimestamp()) {
+			for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO)) {
+				assertTrue(orphanCertIds.contains(certificate.getId()));
+			}
+			if (!timestampedTimestamp && Utils.collectionSize(allSignatures) < 2) {
+				for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
+						.getOrphanCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)) {
+					assertTrue(orphanCertIds.contains(certificate.getId()));
+				}
+			}
+			for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
+				assertTrue(orphanCertIds.contains(certificate.getId()));
+			}
+			for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
+				assertTrue(orphanCertIds.contains(certificate.getId()));
+			}
+		}
+
+		List<String> revocIds = timestampWrapper.getTimestampedRevocations().stream()
+				.map(RevocationWrapper::getId).collect(Collectors.toList());
+		if (timestampWrapper.getType().coversSignature()) {
+			for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getRelatedRevocationsByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL)) {
+				assertTrue(revocIds.contains(revocation.getId()));
+			}
+		}
+		if (timestampWrapper.getType().isArchivalTimestamp()) {
+			if (!timestampedTimestamp && Utils.collectionSize(allSignatures) < 2) {
+				for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
+						.getRelatedRevocationsByOrigin(RevocationOrigin.CMS_SIGNED_DATA)) {
+					assertTrue(revocIds.contains(revocation.getId()));
+				}
+			}
+			for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
+				assertTrue(revocIds.contains(revocation.getId()));
+			}
+			for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getRelatedRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
+				assertTrue(revocIds.contains(revocation.getId()));
+			}
+		}
+
+		List<String> orphanRevocIds = timestampWrapper.getTimestampedOrphanRevocations().stream()
+				.map(OrphanTokenWrapper::getId).collect(Collectors.toList());
+		if (timestampWrapper.getType().coversSignature()) {
+			for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getOrphanRevocationsByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL)) {
+				assertTrue(orphanRevocIds.contains(revocation.getId()));
+			}
+		}
+		if (timestampWrapper.getType().isArchivalTimestamp()) {
+			if (!timestampedTimestamp && Utils.collectionSize(allSignatures) < 2) {
+				for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
+						.getOrphanRevocationsByOrigin(RevocationOrigin.CMS_SIGNED_DATA)) {
+					assertTrue(orphanRevocIds.contains(revocation.getId()));
+				}
+			}
+			for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
+				assertTrue(orphanRevocIds.contains(revocation.getId()));
+			}
+			for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
+					.getOrphanRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
+				assertTrue(orphanRevocIds.contains(revocation.getId()));
 			}
 		}
 	}
@@ -818,8 +920,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-				assertNotNull(xmlDigestMatcher.getDigestMethod());
-				assertNotNull(xmlDigestMatcher.getDigestValue());
+				if (!DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(xmlDigestMatcher.getType()) &&
+						xmlDigestMatcher.isDataIntact()) {
+					assertNotNull(xmlDigestMatcher.getDigestMethod());
+					assertNotNull(xmlDigestMatcher.getDigestValue());
+				}
 			}
 		}
 	}
@@ -1063,7 +1168,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			
 			XmlSignature xmlSignature = detailedReport.getXmlSignatureById(sigId);
 			assertNotNull(xmlSignature);
-			List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> xmlTimestamps = xmlSignature.getTimestamp();
+			List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> xmlTimestamps = xmlSignature.getTimestamps();
 			if (Utils.isCollectionNotEmpty(xmlTimestamps)) {
 				for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : xmlTimestamps) {
 					Indication timestampIndication = detailedReport.getTimestampValidationIndication(xmlTimestamp.getId());
@@ -1119,9 +1224,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				
 				SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
 				validateETSISignatureAttributes(signatureAttributes);
-				
-				List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
-				validateETSISignerDocuments(signersDocuments);
+
+				SignersDocumentType signersDocument = signatureValidationReport.getSignersDocument();
+				validateETSISignersDocument(signersDocument);
 				
 			}
 		}
@@ -1352,8 +1457,27 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 	}
 
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
-		assertTrue(Utils.isCollectionNotEmpty(signersDocuments));
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		assertNotNull(signersDocument);
+		boolean signerDocumentFound = false;
+		for (JAXBElement<?> jaxbElement : signersDocument.getContent()) {
+			Object value = jaxbElement.getValue();
+			if (value instanceof DigestAlgAndValueType) {
+				DigestAlgAndValueType digestAlgAndValueType = (DigestAlgAndValueType) value;
+				assertNotNull(digestAlgAndValueType.getDigestMethod());
+				assertNotNull(digestAlgAndValueType.getDigestValue());
+				signerDocumentFound = true;
+			} else if (value instanceof VOReferenceType) {
+				VOReferenceType voReferenceType = (VOReferenceType) value;
+				List<Object> voReferences = voReferenceType.getVOReference();
+				assertNotNull(voReferences);
+				signerDocumentFound = true;
+				for (Object object : voReferences) {
+					assertTrue(object instanceof ValidationObjectType);
+				}
+			}
+		}
+		assertTrue(signerDocumentFound);
 	}
 
 	protected void verifyReportsData(Reports reports) {
@@ -1379,32 +1503,70 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
 				assertNotNull(signature);
 				
+				SignersDocumentType signersDocument = signatureValidationReport.getSignersDocument();
 				List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-				List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
-				
-				if (signatureScopes != null) {
-					assertNotNull(signersDocuments);
-					assertEquals(signatureScopes.size(), signersDocuments.size());
-					for (int i = 0; i < signatureScopes.size(); i++) {
-						XmlSignatureScope xmlSignatureScope = signatureScopes.get(i);
+				if (signatureScopes != null && signatureScopes.size() > 0) {
+					assertNotNull(signersDocument);
+
+					List<ValidationObjectType> validationObjects = getValidationObjects(signersDocument);
+					assertEquals(signatureScopes.size(), validationObjects.size());
+					for (XmlSignatureScope xmlSignatureScope : signatureScopes) {
 						XmlSignerData signerData = xmlSignatureScope.getSignerData();
 						assertNotNull(signerData);
-						XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
-						assertNotNull(digestAlgoAndValue);
-						
-						SignersDocumentType signersDocument = signersDocuments.get(i);
-						DigestAlgAndValueType digestAlgAndValue = signersDocument.getDigestAlgAndValue();
-						assertNotNull(digestAlgAndValue);
-	
-						assertEquals(digestAlgoAndValue.getDigestMethod(),
-								DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
-						assertArrayEquals(digestAlgoAndValue.getDigestValue(), digestAlgAndValue.getDigestValue());
+						XmlDigestAlgoAndValue xmlDigestAlgoAndValue = signerData.getDigestAlgoAndValue();
+						assertNotNull(xmlDigestAlgoAndValue);
+
+						boolean correspondingValidationObjectFound = false;
+						for (ValidationObjectType validationObject : validationObjects) {
+							if (signerData.getId().equals(validationObject.getId())) {
+								ValidationObjectRepresentationType validationObjectRepresentation = validationObject.getValidationObjectRepresentation();
+								assertNotNull(validationObjectRepresentation);
+								DigestAlgAndValueType digestAlgAndValue = validationObjectRepresentation.getDigestAlgAndValue();
+								assertNotNull(digestAlgAndValue);
+								assertEquals(xmlDigestAlgoAndValue.getDigestMethod(), DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
+								assertArrayEquals(xmlDigestAlgoAndValue.getDigestValue(), digestAlgAndValue.getDigestValue());
+								correspondingValidationObjectFound = true;
+								break;
+							}
+						}
+						assertTrue(correspondingValidationObjectFound);
 					}
 				} else {
-					assertNull(signersDocuments);
+					assertNull(signersDocument);
 				}
 			}
 		}
+	}
+
+	protected DigestAlgAndValueType getDigestAlgoAndValue(SignersDocumentType signersDocument) {
+		for (JAXBElement<?> jaxbElement : signersDocument.getContent()) {
+			Object value = jaxbElement.getValue();
+			if (value instanceof DigestAlgAndValueType) {
+				DigestAlgAndValueType digestAlgAndValueType = (DigestAlgAndValueType) value;
+				assertNotNull(digestAlgAndValueType.getDigestMethod());
+				assertNotNull(digestAlgAndValueType.getDigestValue());
+				return digestAlgAndValueType;
+			}
+		}
+		return null;
+	}
+
+	protected List<ValidationObjectType> getValidationObjects(SignersDocumentType signersDocument) {
+		List<ValidationObjectType> validationObjects = new ArrayList<>();
+		for (JAXBElement<?> jaxbElement : signersDocument.getContent()) {
+			Object value = jaxbElement.getValue();
+			if (value instanceof VOReferenceType) {
+				VOReferenceType voReferenceType = (VOReferenceType) value;
+				List<Object> voReferences = voReferenceType.getVOReference();
+				assertNotNull(voReferences);
+				for (Object object : voReferences) {
+					assertTrue(object instanceof ValidationObjectType);
+					ValidationObjectType validationObjectType = (ValidationObjectType) object;
+					validationObjects.add(validationObjectType);
+				}
+			}
+		}
+		return validationObjects;
 	}
 	
 	protected void checkReportsTokens(Reports reports) {
@@ -1443,8 +1605,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						++otherCounter;
 				}
 			}
-			
-			assertEquals(diagnosticData.getUsedCertificates().size(), certificateCounter);
+
+			long ddCerts = diagnosticData.getUsedCertificates().size() +
+					diagnosticData.getAllOrphanCertificateObjects().size();
+			assertEquals(ddCerts, certificateCounter);
 			long ddCrls = diagnosticData.getAllRevocationData().stream()
 					.filter(r -> RevocationType.CRL.equals(r.getRevocationType())).count();
 			ddCrls += diagnosticData.getAllOrphanRevocationObjects().stream()
@@ -1482,7 +1646,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertNotNull(signatureIdentifier);
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+				assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 				assertNotNull(signatureIdentifier.getDAIdentifier());
 				assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
 			}
@@ -1547,20 +1711,35 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					equivalentCertsFound = true;
 					for (String crossCertId : subXCV.getCrossCertificates()) {
 						assertNotEquals(certId, crossCertId);
-						CertificateWrapper crossCert = diagnosticData.getUsedCertificateById(crossCertId);
-						assertEquals(certificateWrapper.getEntityKey(), crossCert.getEntityKey());
+						CertificateWrapper usedCertificate = diagnosticData.getUsedCertificateById(crossCertId);
+						OrphanCertificateTokenWrapper orphanCertificate = diagnosticData.getOrphanCertificateById(crossCertId);
+						assertTrue(usedCertificate != null || orphanCertificate != null);
+						if (usedCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), usedCertificate.getEntityKey());
+						}
+						if (orphanCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), orphanCertificate.getEntityKey());
+						}
 					}
 				}
 				if (Utils.isCollectionNotEmpty(subXCV.getEquivalentCertificates())) {
 					equivalentCertsFound = true;
 					for (String equivalentCertId : subXCV.getEquivalentCertificates()) {
 						assertNotEquals(certId, equivalentCertId);
-						CertificateWrapper equivalentCert = diagnosticData.getUsedCertificateById(equivalentCertId);
-						assertEquals(certificateWrapper.getEntityKey(), equivalentCert.getEntityKey());
+						CertificateWrapper usedCertificate = diagnosticData.getUsedCertificateById(equivalentCertId);
+						OrphanCertificateTokenWrapper orphanCertificate = diagnosticData.getOrphanCertificateById(equivalentCertId);
+						assertTrue(usedCertificate != null || orphanCertificate != null);
+						if (usedCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), usedCertificate.getEntityKey());
+						}
+						if (orphanCertificate != null) {
+							assertEquals(certificateWrapper.getEntityKey(), orphanCertificate.getEntityKey());
+						}
 					}
 				}
 				if (!equivalentCertsFound) {
 					assertTrue(Utils.isCollectionEmpty(diagnosticData.getEquivalentCertificates(certificateWrapper)));
+					assertTrue(Utils.isCollectionEmpty(diagnosticData.getOrphanEquivalentCertificates(certificateWrapper)));
 				}
 			}
 		}
@@ -1584,7 +1763,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
 
-		String marshalledSimpleReport = null;
+		String marshalledSimpleReport;
 		try {
 			marshalledSimpleReport = simpleReportFacade.marshall(reports.getSimpleReportJaxb(), true);
 			assertNotNull(marshalledSimpleReport);
@@ -1596,14 +1775,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		/* Bootstrap 4 Simple Report */
 		try {
-			assertNotNull(simpleReportFacade.generateHtmlReport(marshalledSimpleReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
 			assertNotNull(simpleReportFacade.generateHtmlReport(reports.getSimpleReportJaxb()));
 		} catch (Exception e) {
 			String message = "Unable to generate the html simple report from the jaxb source";
@@ -1611,36 +1782,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			fail(message);
 		}
 
-		/* Bootstrap 3 Simple Report */
-		try {
-			assertNotNull(simpleReportFacade.generateHtmlBootstrap3Report(marshalledSimpleReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
-			assertNotNull(simpleReportFacade.generateHtmlBootstrap3Report(reports.getSimpleReportJaxb()));
-		} catch (Exception e) {
-			String message = "Unable to generate the html simple report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
 		/* PDF Simple Report */
-		try (StringWriter sw = new StringWriter()) {
-			simpleReportFacade.generatePdfReport(marshalledSimpleReport, new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
-		} catch (Exception e) {
-			String message = "Unable to generate the pdf simple report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try (StringWriter sw = new StringWriter()) {
-			simpleReportFacade.generatePdfReport(reports.getSimpleReportJaxb(), new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, baos);
+			Result result = new SAXResult(fop.getDefaultHandler());
+			simpleReportFacade.generatePdfReport(reports.getSimpleReportJaxb(), result);
+			assertTrue(Utils.isArrayNotEmpty(baos.toByteArray()));
 		} catch (Exception e) {
 			String message = "Unable to generate the pdf simple report from the jaxb source";
 			LOG.error(message, e);
@@ -1649,7 +1796,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
 
-		String marshalledDetailedReport = null;
+		String marshalledDetailedReport;
 		try {
 			marshalledDetailedReport = detailedReportFacade.marshall(reports.getDetailedReportJaxb(), true);
 			assertNotNull(marshalledDetailedReport);
@@ -1661,14 +1808,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 		/* Bootstrap 4 Detailed Report */
 		try {
-			assertNotNull(detailedReportFacade.generateHtmlReport(marshalledDetailedReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
 			assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
 		} catch (Exception e) {
 			String message = "Unable to generate the html detailed report from the jaxb source";
@@ -1676,38 +1815,35 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			fail(message);
 		}
 
-		/* Bootstrap 3 Detailed Report */
-		try {
-			assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(marshalledDetailedReport));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try {
-			assertNotNull(detailedReportFacade.generateHtmlBootstrap3Report(reports.getDetailedReportJaxb()));
-		} catch (Exception e) {
-			String message = "Unable to generate the html detailed report from the jaxb source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
 		/* PDF Detailed Report */
-		try (StringWriter sw = new StringWriter()) {
-			detailedReportFacade.generatePdfReport(marshalledDetailedReport, new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
-		} catch (Exception e) {
-			String message = "Unable to generate the pdf detailed report from the string source";
-			LOG.error(message, e);
-			fail(message);
-		}
-
-		try (StringWriter sw = new StringWriter()) {
-			detailedReportFacade.generatePdfReport(reports.getDetailedReportJaxb(), new StreamResult(sw));
-			assertTrue(Utils.isStringNotBlank(sw.toString()));
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, baos);
+			Result result = new SAXResult(fop.getDefaultHandler());
+			detailedReportFacade.generatePdfReport(reports.getDetailedReportJaxb(), result);
+			assertTrue(Utils.isArrayNotEmpty(baos.toByteArray()));
 		} catch (Exception e) {
 			String message = "Unable to generate the pdf detailed report from the jaxb source";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		/* Diagnostic Data SVG */
+		DiagnosticDataFacade diagnosticDataFacade = DiagnosticDataFacade.newFacade();
+
+		String marshalledDiagnosticData;
+		try {
+			marshalledDiagnosticData = diagnosticDataFacade.marshall(reports.getDiagnosticDataJaxb(), true);
+			assertNotNull(marshalledDiagnosticData);
+		} catch (Exception e) {
+			String message = "Unable to marshall the diagnostic data";
+			LOG.error(message, e);
+			fail(message);
+		}
+
+		try {
+			assertNotNull(diagnosticDataFacade.generateSVG(reports.getDiagnosticDataJaxb()));
+		} catch (Exception e) {
+			String message = "Unable to generate the SVG for diagnostic data from the jaxb source";
 			LOG.error(message, e);
 			fail(message);
 		}

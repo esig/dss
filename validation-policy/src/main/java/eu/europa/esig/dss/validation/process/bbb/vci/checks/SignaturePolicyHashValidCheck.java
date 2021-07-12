@@ -53,7 +53,7 @@ public class SignaturePolicyHashValidCheck extends ChainItem<XmlVCI> {
 
 	@Override
 	protected boolean process() {
-		return signature.isPolicyPresent() && signature.isPolicyStatus();
+		return signature.isPolicyPresent() && signature.isPolicyDigestValid();
 	}
 
 	@Override

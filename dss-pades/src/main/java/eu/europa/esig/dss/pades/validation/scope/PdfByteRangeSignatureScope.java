@@ -21,13 +21,27 @@
 package eu.europa.esig.dss.pades.validation.scope;
 
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.validation.scope.PartialSignatureScope;
 
+/**
+ * The signature scope represents a signed PDF byte range
+ *
+ */
 public class PdfByteRangeSignatureScope extends PartialSignatureScope {
 
+	private static final long serialVersionUID = -5812599751054145819L;
+
+	/** The covered byte range */
 	private final ByteRange byteRange;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String} document name
+	 * @param byteRange {@link ByteRange}
+	 * @param digest {@link Digest}
+	 */
 	public PdfByteRangeSignatureScope(final String name, final ByteRange byteRange, final Digest digest) {
 		super(name, digest);
 		this.byteRange = byteRange;

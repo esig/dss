@@ -20,22 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.util.Arrays;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -47,6 +32,18 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TrustedListSignatureParametersBuilderTest extends AbstractXAdESTestSignature {
 	
@@ -62,7 +59,7 @@ public class TrustedListSignatureParametersBuilderTest extends AbstractXAdESTest
 		documentToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
 		service = new XAdESService(getOfflineCertificateVerifier());
 		
-		signatureParameters = new TrustedListSignatureParametersBuilder(getSigningCert(), Arrays.asList(getCertificateChain()), documentToSign)
+		signatureParameters = new TrustedListSignatureParametersBuilder(getSigningCert(), documentToSign)
 				.setReferenceId(REFERENCE_ID)
 				.setReferenceDigestAlgorithm(REFERENCE_DIGEST_ALGORITHM)
 				.build();
@@ -83,9 +80,8 @@ public class TrustedListSignatureParametersBuilderTest extends AbstractXAdESTest
 		super.onDocumentSigned(byteArray);
 
 		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setNamespaceAware(true);
-			Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(byteArray));
+			Document doc = DomUtils.getSecureDocumentBuilderFactory()
+					.newDocumentBuilder().parse(new ByteArrayInputStream(byteArray));
 
 			NodeList signlist = doc.getDocumentElement().getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Signature");
 			assertEquals(1, signlist.getLength());
@@ -107,6 +103,15 @@ public class TrustedListSignatureParametersBuilderTest extends AbstractXAdESTest
 			assertEquals("http://www.w3.org/2000/09/xmldsig#enveloped-signature", ((Element) transormfList.item(0)).getAttribute("Algorithm"));
 
 			assertEquals("http://www.w3.org/2001/10/xml-exc-c14n#", ((Element) transormfList.item(1)).getAttribute("Algorithm"));
+
+			NodeList keyInfoList = ((Element) signlist.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "KeyInfo");
+			assertEquals(1, keyInfoList.getLength());
+
+			NodeList x509DataList = ((Element) keyInfoList.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "X509Data");
+			assertEquals(1, x509DataList.getLength());
+
+			NodeList x509CertificateList = ((Element) x509DataList.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "X509Certificate");
+			assertEquals(1, x509CertificateList.getLength());
 			
 			NodeList objectlist = ((Element) signlist.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Object");
 			assertEquals(1, objectlist.getLength());

@@ -196,7 +196,7 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 		
 		assertFalse(signature.isPolicyAsn1Processable());
 		assertTrue(signature.isPolicyIdentified());
-		assertTrue(signature.isPolicyStatus());
+		assertTrue(signature.isPolicyDigestValid());
 		assertTrue(signature.isPolicyDigestAlgorithmsEqual());
 	}
 	

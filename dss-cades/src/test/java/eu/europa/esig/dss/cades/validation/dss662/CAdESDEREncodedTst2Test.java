@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation.dss662;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.bouncycastle.cms.CMSSignedData;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -38,6 +29,14 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.bouncycastle.cms.CMSSignedData;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESDEREncodedTst2Test extends AbstractCAdESTestValidation {
 
@@ -72,6 +71,12 @@ public class CAdESDEREncodedTst2Test extends AbstractCAdESTestValidation {
 		CAdESSignature signature = (CAdESSignature) signatures.get(0);
 		CMSSignedData cmsSignedData = signature.getCmsSignedData();
 		assertNotNull(cmsSignedData);
+	}
+
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		assertEquals(3, diagnosticData.getAllOrphanCertificateObjects().size());
+		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
 	}
 
 }

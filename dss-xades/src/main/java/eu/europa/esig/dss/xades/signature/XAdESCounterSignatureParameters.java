@@ -31,6 +31,8 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
  */
 public class XAdESCounterSignatureParameters extends XAdESSignatureParameters implements SerializableCounterSignatureParameters {
 	
+	private static final long serialVersionUID = -1443369404631708953L;
+
 	/**
 	 * Signature Id to be counter signed
 	 * 

@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -42,6 +35,12 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AllFilesSignedCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AllFilesSignedCheckTest extends AbstractTestCheck {
 
@@ -263,6 +262,149 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 
 		XmlFC result = new XmlFC();
 		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		afsc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void asicEWithXAdESSignedMimetype() throws Exception {
+		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
+		sig.setSignatureFilename("signature1");
+
+		XmlSignatureScope xmlSignatureScope1 = new XmlSignatureScope();
+		xmlSignatureScope1.setScope(SignatureScopeType.FULL);
+		xmlSignatureScope1.setName("file.txt");
+
+		XmlSignatureScope xmlSignatureScope2 = new XmlSignatureScope();
+		xmlSignatureScope2.setScope(SignatureScopeType.FULL);
+		xmlSignatureScope2.setName("mimetype");
+
+		sig.setSignatureScopes(Arrays.asList(xmlSignatureScope1, xmlSignatureScope2));
+
+		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
+		xmlContainerInfo.setContentFiles(Arrays.asList("file.txt"));
+
+		XmlManifestFile xmlManifestFile = new XmlManifestFile();
+		xmlManifestFile.setSignatureFilename("signature1");
+		xmlManifestFile.setEntries(Arrays.asList("file.txt"));
+		xmlContainerInfo.setManifestFiles(Arrays.asList(xmlManifestFile, new XmlManifestFile()));
+
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlFC result = new XmlFC();
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result,
+				new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		afsc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void asicEWithXAdESSignedManifest() throws Exception {
+		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
+		sig.setSignatureFilename("signature1");
+
+		XmlSignatureScope xmlSignatureScope1 = new XmlSignatureScope();
+		xmlSignatureScope1.setScope(SignatureScopeType.FULL);
+		xmlSignatureScope1.setName("file.txt");
+
+		XmlSignatureScope xmlSignatureScope2 = new XmlSignatureScope();
+		xmlSignatureScope2.setScope(SignatureScopeType.FULL);
+		xmlSignatureScope2.setName("META-INF/manifest.xml");
+
+		sig.setSignatureScopes(Arrays.asList(xmlSignatureScope1, xmlSignatureScope2));
+
+		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
+		xmlContainerInfo.setContentFiles(Arrays.asList("file.txt"));
+
+		XmlManifestFile xmlManifestFile = new XmlManifestFile();
+		xmlManifestFile.setSignatureFilename("signature1");
+		xmlManifestFile.setFilename("META-INF/manifest.xml");
+		xmlManifestFile.setEntries(Arrays.asList("file.txt"));
+		xmlContainerInfo.setManifestFiles(Arrays.asList(xmlManifestFile, new XmlManifestFile()));
+
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlFC result = new XmlFC();
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result,
+				new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		afsc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void asicEWithXAdESNoManifest() throws Exception {
+		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
+		sig.setSignatureFilename("signature1");
+
+		XmlSignatureScope xmlSignatureScope1 = new XmlSignatureScope();
+		xmlSignatureScope1.setScope(SignatureScopeType.FULL);
+		xmlSignatureScope1.setName("file.txt");
+
+		XmlSignatureScope xmlSignatureScope2 = new XmlSignatureScope();
+		xmlSignatureScope2.setScope(SignatureScopeType.FULL);
+		xmlSignatureScope2.setName("hello.world");
+
+		sig.setSignatureScopes(Arrays.asList(xmlSignatureScope1, xmlSignatureScope2));
+
+		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
+		xmlContainerInfo.setContentFiles(Arrays.asList("file.txt", "hello.world"));
+
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlFC result = new XmlFC();
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result,
+				new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		afsc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void asicEWithXAdESNoManifestNotAllFilesCovered() throws Exception {
+		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
+		sig.setSignatureFilename("signature1");
+
+		XmlSignatureScope xmlSignatureScope1 = new XmlSignatureScope();
+		xmlSignatureScope1.setScope(SignatureScopeType.FULL);
+		xmlSignatureScope1.setName("file.txt");
+
+		XmlSignatureScope xmlSignatureScope2 = new XmlSignatureScope();
+		xmlSignatureScope2.setScope(SignatureScopeType.FULL);
+		xmlSignatureScope2.setName("hello.world");
+
+		sig.setSignatureScopes(Arrays.asList(xmlSignatureScope1, xmlSignatureScope2));
+
+		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
+		xmlContainerInfo.setContentFiles(Arrays.asList("file.txt", "hello.world", "image.png"));
+
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlFC result = new XmlFC();
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result,
+				new SignatureWrapper(sig), xmlContainerInfo, constraint);
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

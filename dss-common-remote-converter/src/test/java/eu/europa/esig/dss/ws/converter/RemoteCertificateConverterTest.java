@@ -20,20 +20,18 @@
  */
 package eu.europa.esig.dss.ws.converter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RemoteCertificateConverterTest {
 	
@@ -61,14 +59,14 @@ public class RemoteCertificateConverterTest {
 	public void toCertificateTokenTest() {
 		RemoteCertificate remoteCertificate = new RemoteCertificate(encodedCertificate);
 		CertificateToken certificateToken = RemoteCertificateConverter.toCertificateToken(remoteCertificate);
-		assertTrue(Arrays.equals(remoteCertificate.getEncodedCertificate(), certificateToken.getEncoded()));
+        assertArrayEquals(remoteCertificate.getEncodedCertificate(), certificateToken.getEncoded());
 	}
 	
 	@Test
 	public void toRemoteCertificateTest() {
 		CertificateToken certificateToken = DSSUtils.loadCertificate(encodedCertificate);
 		RemoteCertificate remoteCertificate = RemoteCertificateConverter.toRemoteCertificate(certificateToken);
-		assertTrue(Arrays.equals(remoteCertificate.getEncodedCertificate(), certificateToken.getEncoded()));
+		assertArrayEquals(remoteCertificate.getEncodedCertificate(), certificateToken.getEncoded());
 	}
 	
 	@Test
@@ -79,7 +77,7 @@ public class RemoteCertificateConverterTest {
 		remoteCertificates.add(null);
 		List<CertificateToken> certificateTokens = RemoteCertificateConverter.toCertificateTokens(remoteCertificates);
 		assertEquals(1, certificateTokens.size());
-		assertTrue(Arrays.equals(certificateTokens.get(0).getEncoded(), remoteCertificates.get(0).getEncodedCertificate()));
+		assertArrayEquals(certificateTokens.get(0).getEncoded(), remoteCertificates.get(0).getEncodedCertificate());
 	}
 
 }

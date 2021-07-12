@@ -20,21 +20,19 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PDFBoxSignatureFieldTest {
 
@@ -91,7 +89,7 @@ public class PDFBoxSignatureFieldTest {
 		parameters.setWidth(200);
 		parameters.setHeight(200);
 
-		Exception exception = assertThrows(DSSException.class,
+		Exception exception = assertThrows(IllegalArgumentException.class,
 				() -> padesService.addNewSignatureField(document, parameters));
 		assertEquals("The page number '10' does not exist in the file!", exception.getMessage());
 	}

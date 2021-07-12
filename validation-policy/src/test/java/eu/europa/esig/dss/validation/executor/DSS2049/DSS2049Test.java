@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor.DSS2049;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
@@ -53,6 +43,15 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.AbstractTestValidationExecutor;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS2049Test extends AbstractTestValidationExecutor {
 	
@@ -60,63 +59,63 @@ public class DSS2049Test extends AbstractTestValidationExecutor {
 	public void dss2049() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true, true);
 		Reports reports = execute(diagnosticData, Level.FAIL);
-		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.NONE);
+		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.NONE, false);
 	}
 	
 	@Test
 	public void lotlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(false, true, true);
 		Reports reports = execute(diagnosticData, Level.WARN);
-		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN);
+		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN, false);
 	}
 	
 	@Test
 	public void lotlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(false, true, true);
 		Reports reports = execute(diagnosticData, Level.FAIL);
-		assertValid(reports, SignatureQualification.NA, TimestampQualification.NA, false, false, false, MessageType.ERROR);
+		assertValid(reports, SignatureQualification.NA, TimestampQualification.NA, false, false, false, MessageType.ERROR, false);
 	}
 	
 	@Test
 	public void sigTlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, true);
 		Reports reports = execute(diagnosticData, Level.WARN);
-		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN);
+		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN, false);
 	}
 	
 	@Test
 	public void sigTlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, true);
 		Reports reports = execute(diagnosticData, Level.FAIL);
-		assertValid(reports, SignatureQualification.NA, TimestampQualification.QTSA, true, false, true, MessageType.ERROR);
+		assertValid(reports, SignatureQualification.NA, TimestampQualification.QTSA, true, false, true, MessageType.ERROR, false);
 	}
 	
 	@Test
 	public void tstTlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true, false);
 		Reports reports = execute(diagnosticData, Level.WARN);
-		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN);
+		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN, true);
 	}
 	
 	@Test
 	public void tstTlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true, false);
 		Reports reports = execute(diagnosticData, Level.FAIL);
-		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.NA, true, true, false, MessageType.ERROR);
+		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.NA, true, true, false, MessageType.ERROR, true);
 	}
 	
 	@Test
 	public void bothTlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, false);
 		Reports reports = execute(diagnosticData, Level.WARN);
-		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN);
+		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN, false);
 	}
 	
 	@Test
 	public void bothTlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, false);
 		Reports reports = execute(diagnosticData, Level.FAIL);
-		assertValid(reports, SignatureQualification.NA, TimestampQualification.NA, true, false, false, MessageType.ERROR);
+		assertValid(reports, SignatureQualification.NA, TimestampQualification.NA, true, false, false, MessageType.ERROR, false);
 	}
 	
 	private XmlDiagnosticData getDiagnosticData(boolean isLOTLWellSigned, boolean isSigTLWellSigned, boolean isTstTLWellSigned) throws Exception {
@@ -152,24 +151,46 @@ public class DSS2049Test extends AbstractTestValidationExecutor {
 		return executor.execute();
 	}
 	
-	private void assertValid(Reports reports, SignatureQualification sigQual, TimestampQualification tstQual, 
-			boolean assertLOTLValid, boolean assertSigTLValid, boolean assertTstTLValid, MessageType expectedMessage) {
+	private void assertValid(Reports reports, SignatureQualification sigQual, TimestampQualification tstQual,
+							 boolean assertLOTLValid, boolean assertSigTLValid, boolean assertTstTLValid,
+							 MessageType expectedMessage, boolean tstConcerned) {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(sigQual, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 		
 		switch (expectedMessage) {
 			case NONE:
-				assertTrue(Utils.isCollectionEmpty(simpleReport.getWarnings(simpleReport.getFirstSignatureId())));
-				assertTrue(Utils.isCollectionEmpty(simpleReport.getErrors(simpleReport.getFirstSignatureId())));
+				if (tstConcerned) {
+					assertTrue(Utils.isCollectionEmpty(simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId())
+							.get(0).getQualificationDetails().getWarning()));
+					assertTrue(Utils.isCollectionEmpty(simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId())
+							.get(0).getQualificationDetails().getError()));
+				} else {
+					assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+					assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+				}
 				break;
 			case WARN:
-				assertFalse(Utils.isCollectionEmpty(simpleReport.getWarnings(simpleReport.getFirstSignatureId())));
-				assertTrue(Utils.isCollectionEmpty(simpleReport.getErrors(simpleReport.getFirstSignatureId())));
+				if (tstConcerned) {
+					assertFalse(Utils.isCollectionEmpty(simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId())
+							.get(0).getQualificationDetails().getWarning()));
+					assertTrue(Utils.isCollectionEmpty(simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId())
+							.get(0).getQualificationDetails().getError()));
+				} else {
+					assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+					assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+				}
 				break;
 			case ERROR:
-				assertFalse(Utils.isCollectionEmpty(simpleReport.getWarnings(simpleReport.getFirstSignatureId())));
-				assertFalse(Utils.isCollectionEmpty(simpleReport.getErrors(simpleReport.getFirstSignatureId())));
+				if (tstConcerned) {
+					assertFalse(Utils.isCollectionEmpty(simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId())
+							.get(0).getQualificationDetails().getWarning()));
+					assertFalse(Utils.isCollectionEmpty(simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId())
+							.get(0).getQualificationDetails().getError()));
+				} else {
+					assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+					assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+				}
 			default:
 				break;
 		}
@@ -184,7 +205,7 @@ public class DSS2049Test extends AbstractTestValidationExecutor {
 		List<XmlConstraint> constraints = validationSignatureQualification.getConstraint();
 		assertConstraintsValid(constraints, assertLOTLValid, assertSigTLValid, assertLOTLValid && assertSigTLValid);
 		
-		List<XmlTimestamp> timestamps = xmlSignature.getTimestamp();
+		List<XmlTimestamp> timestamps = xmlSignature.getTimestamps();
 		assertEquals(1, timestamps.size());
 		XmlTimestamp xmlTimestamp = timestamps.get(0);
 		
@@ -203,17 +224,17 @@ public class DSS2049Test extends AbstractTestValidationExecutor {
 		boolean isTLValid = false;
 		boolean acceptableFound = false;
 		for (XmlConstraint constraint : constraints) {
-			if (MessageTag.QUAL_LIST_OF_TRUSTED_LISTS_ACCEPT.name().equals(constraint.getName().getNameId())) {
+			if (MessageTag.QUAL_LIST_OF_TRUSTED_LISTS_ACCEPT.name().equals(constraint.getName().getKey())) {
 				++lotlsProcessed;
 				if (XmlStatus.OK.equals(constraint.getStatus())) {
 					isLOTLValid = true;
 				}
-			} else if (MessageTag.QUAL_TRUSTED_LIST_ACCEPT.name().equals(constraint.getName().getNameId())) {
+			} else if (MessageTag.QUAL_TRUSTED_LIST_ACCEPT.name().equals(constraint.getName().getKey())) {
 				++tlsProcessed;
 				if (XmlStatus.OK.equals(constraint.getStatus())) {
 					isTLValid = true;
 				}
-			} else if (MessageTag.QUAL_VALID_TRUSTED_LIST_PRESENT.name().equals(constraint.getName().getNameId())) {
+			} else if (MessageTag.QUAL_VALID_TRUSTED_LIST_PRESENT.name().equals(constraint.getName().getKey())) {
 				if (XmlStatus.OK.equals(constraint.getStatus())) {
 					acceptableFound = true;
 				}

@@ -20,10 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import java.awt.Color;
-
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-
+import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
@@ -32,6 +29,9 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
+import java.awt.Color;
 
 public class PAdESVisibleSignatureSnippet {
 	
@@ -75,6 +75,15 @@ public class PAdESVisibleSignatureSnippet {
 		// Specifies a background color for a signature field.
 		signatureImageParameters.setBackgroundColor(Color.GREEN);
 		
+		// Defines the image scaling behavior within a signature field with a fixed size
+		/*
+		  STRETCH - the default behavior, stretches the image in both directions in order to fill the signature field box;
+		  ZOOM_AND_CENTER - zooms the image to fill the signature box to the closest side, and centers in another dimension;
+		  CENTER - centers the image in both dimensions.
+		*/
+		signatureImageParameters.setImageScaling(ImageScaling.CENTER);
+
+		// set the image parameters to signature parameters
 		padesSignatureParameters.setImageParameters(signatureImageParameters);
 		
 		// end::positioning[]

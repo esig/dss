@@ -20,18 +20,19 @@
  */
 package eu.europa.esig.dss.xades.validation.dss1788;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1788PublicKeyTest extends AbstractXAdESTestValidation {
 
@@ -49,6 +50,12 @@ public class DSS1788PublicKeyTest extends AbstractXAdESTestValidation {
 		assertNotNull(signingCertificateReference);
 		assertTrue(signingCertificateReference.isIssuerSerialPresent());
 		assertTrue(signingCertificateReference.isIssuerSerialMatch());
+	}
+
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		// The SigningCertificate shall be present in ds:KeyInfo
+		assertEquals(SignatureLevel.XML_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 	
 	@Override

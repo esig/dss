@@ -43,6 +43,8 @@ import java.util.Objects;
  */
 public class XAdESAttribute implements SignatureAttribute {
 	
+	private static final long serialVersionUID = 7860166312054634028L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESAttribute.class);
 
 	/** The corresponding element */

@@ -20,18 +20,11 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Collections;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -41,6 +34,12 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 
@@ -54,7 +53,7 @@ public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
-		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(doc, parameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, parameters));
 		assertEquals("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.",
 				exception.getMessage());
 	}
@@ -69,7 +68,7 @@ public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
-		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(doc, parameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, parameters));
 		assertEquals("There is no signature to extend!", exception.getMessage());
 	}
 	
@@ -95,7 +94,7 @@ public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		extensionParameters.setDetachedContents(Collections.singletonList(digestDocument));
 
-		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, extensionParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.extendDocument(signedDocument, extensionParameters));
 		assertEquals("XAdES-LTA requires complete binaries of signed documents! Extension with a DigestDocument is not possible.", exception.getMessage());
 	}
 

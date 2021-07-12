@@ -32,16 +32,12 @@ public class CAdESSignatureTest {
 
 	@Test
 	public void initNull() throws CMSException {
-		assertThrows(NullPointerException.class, () -> {
-			new CAdESSignature(null, null);
-		});
+		assertThrows(NullPointerException.class, () -> new CAdESSignature(null, null));
 	}
 
 	@Test
 	public void initEmptyByteArray() throws CMSException {
-		assertThrows(CMSException.class, () -> {
-			new CAdESSignature(new CMSSignedData(new byte[] {}), null);
-		});
+		assertThrows(CMSException.class, () -> new CAdESSignature(new CMSSignedData(new byte[] {}), null));
 	}
 
 }

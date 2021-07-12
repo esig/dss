@@ -78,11 +78,9 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -282,7 +280,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 					String indication = xmlCommitmentTypeIndication.getIdentifier();
 					assertNotNull(indication);
 					
-					boolean uriMatch = false;
+					boolean uriMatch;
 					SignatureForm signatureForm = signatureWrapper.getSignatureFormat().getSignatureForm();
 					switch (signatureForm) {
 						case XAdES:
@@ -392,14 +390,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
 		super.checkMessageDigestAlgorithm(diagnosticData);
 
-		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
-			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
-			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-				assertNotNull(xmlDigestMatcher.getDigestMethod());
-				assertNotNull(xmlDigestMatcher.getDigestValue());
-			}
-		}
 		AbstractSerializableSignatureParameters<TP> signatureParameters = (AbstractSerializableSignatureParameters<TP>) getSignatureParameters();
 		DigestAlgorithm expectedDigestAlgorithm = signatureParameters.getReferenceDigestAlgorithm();
 		if (expectedDigestAlgorithm == null) {
@@ -489,11 +479,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		
 		List<RelatedCertificateWrapper> relatedCertificates = foundCertificates.getRelatedCertificates();
 		for (RelatedCertificateWrapper foundCert : relatedCertificates) {
-			assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+			assertTrue(foundCert.getOrigins().size() < 2, "Duplicate certificate in " + foundCert.getOrigins());
 		}
 		List<OrphanCertificateWrapper> orphanCertificates = foundCertificates.getOrphanCertificates();
 		for (OrphanCertificateWrapper foundCert : orphanCertificates) {
-			assertEquals(1, foundCert.getOrigins().size(), "Duplicate certificate in " + foundCert.getOrigins());
+			assertTrue(foundCert.getOrigins().size() < 2, "Duplicate certificate in " + foundCert.getOrigins());
 		}
 	}
 
@@ -503,11 +493,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		
 		List<RelatedRevocationWrapper> relatedRevocations = foundRevocations.getRelatedRevocationData();
 		for (RelatedRevocationWrapper foundRevocation : relatedRevocations) {
-			assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
+			assertTrue(foundRevocation.getOrigins().size() < 2, "Duplicate revocation data in " + foundRevocation.getOrigins());
 		}
 		List<OrphanRevocationWrapper> orphanRevocations = foundRevocations.getOrphanRevocationData();
 		for (OrphanRevocationWrapper foundRevocation : orphanRevocations) {
-			assertEquals(1, foundRevocation.getOrigins().size(), "Duplicate revocation data in " + foundRevocation.getOrigins());
+			assertTrue(foundRevocation.getOrigins().size() < 2, "Duplicate revocation data in " + foundRevocation.getOrigins());
 		}
 	}
 	
@@ -761,11 +751,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
 		byte[] byteArray = DSSUtils.toByteArray(doc);
 		if (toBeCanonicalized) {
-			try {
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 				// we canonicalize to ignore the header (which is not covered by the signature)
 				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
-				byteArray = c14n.canonicalize(byteArray);
-			} catch (XMLSecurityException | ParserConfigurationException | IOException | SAXException e) {
+				c14n.canonicalize(byteArray, baos, true);
+				byteArray = baos.toByteArray();
+			} catch (XMLSecurityException | IOException e) {
 				// Not always able to canonicalize (more than one file can be covered (XML +
 				// something else) )
 			}

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -71,9 +71,9 @@ public class PdfVisualDifferenceCheck extends ChainItem<XmlFC> {
 	}
 	
 	@Override
-	protected XmlName buildErrorMessage() {
+	protected XmlMessage buildErrorMessage() {
 		List<BigInteger> visualDifferencePages = signature.getPdfVisualDifferenceConcernedPages();
-		return buildXmlName(getErrorMessageTag(), visualDifferencePages.toString());
+		return buildXmlMessage(getErrorMessageTag(), visualDifferencePages.toString());
 	}
 
 	@Override

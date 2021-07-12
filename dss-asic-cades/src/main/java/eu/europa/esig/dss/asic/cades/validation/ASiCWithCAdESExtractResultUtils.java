@@ -20,18 +20,25 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 
+import java.util.List;
+
+/**
+ * Class containing utils methods for dealing with ASiC with CAdES container
+ *
+ */
 public class ASiCWithCAdESExtractResultUtils {
 
+	/**
+	 * Utils class
+	 */
 	private ASiCWithCAdESExtractResultUtils() {
 	}
 	
@@ -53,14 +60,14 @@ public class ASiCWithCAdESExtractResultUtils {
 				return manifestDocuments.iterator().next();
 			}
 			// we need to check the manifest file and its digest
-			DSSDocument linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(extractResult.getManifestDocuments(), signatureFilename);
+			DSSDocument linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(extractResult.getManifestDocuments(), signatureFilename);
 			if (linkedManifest != null) {
 				return linkedManifest;
 			} else {
 				return null; // related manifest not found
 			}
 		}
-		throw new DSSException("Unable to extract a signed document. Reason : Unknown asic container type.");
+		throw new IllegalInputException("Unable to extract a signed document. Reason : Unknown asic container type.");
 	}
 	
 	/**
@@ -74,7 +81,7 @@ public class ASiCWithCAdESExtractResultUtils {
 		List<DSSDocument> manifests = extractResult.getAllManifestDocuments();
 		if (Utils.isCollectionNotEmpty(manifests)) {
 			for (DSSDocument archiveManifest : manifests) {
-				ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifest);
+				ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
 				for (ManifestEntry entry : manifestFile.getEntries()) {
 					if (signatureFilename != null && signatureFilename.equals(entry.getFileName())) {
 						return true;

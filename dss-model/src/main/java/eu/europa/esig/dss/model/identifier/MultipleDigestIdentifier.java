@@ -20,23 +20,32 @@
  */
 package eu.europa.esig.dss.model.identifier;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 
+import java.util.Arrays;
+import java.util.EnumMap;
+
 /**
  * This class is used to obtain a requested digest from a stored binary array
+ *
  */
 public abstract class MultipleDigestIdentifier extends Identifier {
 
 	private static final long serialVersionUID = 8499261315144968564L;
 
+	/** Binary to compute the identifier for */
 	private final byte[] binaries;
 
+	/** Digest map */
 	private final EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<>(DigestAlgorithm.class);
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param prefix {@link String} for the identifier
+	 * @param binaries token binaries
+	 */
 	protected MultipleDigestIdentifier(final String prefix, byte[] binaries) {
 		super(prefix, binaries);
 		this.binaries = binaries;
@@ -44,15 +53,32 @@ public abstract class MultipleDigestIdentifier extends Identifier {
 		Digest id = getDigestId();
 		digestMap.put(id.getAlgorithm(), id.getValue());
 	}
-	
+
+	/**
+	 * Gets token binaries
+	 *
+	 * @return byte array
+	 */
 	public byte[] getBinaries() {
 		return binaries;
 	}
-	
+
+	/**
+	 * Returns a digest value for the given {@code digestAlgorithm}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @return digests
+	 */
 	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
 		return digestMap.computeIfAbsent(digestAlgorithm, k -> getMessageDigest(digestAlgorithm).digest(getBinaries()));
 	}
 
+	/**
+	 * Checks if the given digests match to the token
+	 *
+	 * @param expectedDigest {@link Digest} to verify
+	 * @return TRUE if the digest match, FALSE otherwise
+	 */
 	public boolean isMatch(Digest expectedDigest) {
 		return Arrays.equals(expectedDigest.getValue(), getDigestValue(expectedDigest.getAlgorithm()));
 	}

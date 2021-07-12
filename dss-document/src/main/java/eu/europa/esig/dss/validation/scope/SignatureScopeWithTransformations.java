@@ -30,6 +30,8 @@ import java.util.List;
  */
 public abstract class SignatureScopeWithTransformations extends SignatureScope {
 
+	private static final long serialVersionUID = -7049827869970167023L;
+
 	/** List of transform definitions */
 	private final List<String> transformations;
 
@@ -46,23 +48,16 @@ public abstract class SignatureScopeWithTransformations extends SignatureScope {
 	}
 
 	/**
-	 * Adds a description to the signature scope
+	 * Adds a description to the signature scope if needed
 	 *
 	 * @param description {@link String} to add
 	 * @return {@link String}
 	 */
-	protected String addTransformationDescription(String description) {
-		description += " with transformations.";
+	protected String addTransformationIfNeeded(String description) {
+		if (Utils.isCollectionNotEmpty(transformations)) {
+			description += " with transformations.";
+		}
 		return description;
-	}
-
-	/**
-	 * Checks if the list of transforms is not empty
-	 *
-	 * @return TRUE if transforms are not empty, FALSE otherwise
-	 */
-	protected boolean isTransformationsNotEmpty() {
-		return Utils.isCollectionNotEmpty(transformations);
 	}
 
 	@Override

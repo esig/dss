@@ -38,6 +38,8 @@ import java.util.Map;
  */
 public class PdfDssDictCertificateSource extends TokenCertificateSource {
 
+    private static final long serialVersionUID = 7254611440571170316L;
+
     /** The DSS dictionary */
     private final PdfDssDict dssDictionary;
 

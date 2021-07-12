@@ -23,6 +23,7 @@ package eu.europa.esig.dss.test.extension;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -42,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public abstract class AbstractTestExtension<SP extends SerializableSignatureParameters, 
 				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
 
-	protected abstract DSSDocument getOriginalDocument();
+	protected abstract FileDocument getOriginalDocument();
 
 	protected abstract DSSDocument getSignedDocument(DSSDocument originalDoc);
 
@@ -60,7 +61,7 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 
 	@Test
 	public void extendAndVerify() throws Exception {
-		DSSDocument originalDocument = getOriginalDocument();
+		FileDocument originalDocument = getOriginalDocument();
 
 		DSSDocument signedDocument = getSignedDocument(originalDocument);
 
@@ -99,7 +100,7 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 		assertFalse(fileToBeDeleted.exists());
 	}
 
-	protected void deleteOriginalFile(DSSDocument originalDocument) {
+	protected void deleteOriginalFile(FileDocument originalDocument) {
 		File fileToBeDeleted = new File(originalDocument.getAbsolutePath());
 		assertTrue(fileToBeDeleted.exists());
 		assertTrue(fileToBeDeleted.delete(), "Cannot delete original document (IO error)");

@@ -42,6 +42,9 @@ public final class DSSPKUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSPKUtils.class);
 
+	/** Defines the String returned in case of unknown key size */
+	private static final String UNKNOWN_KEY_SIZE = "?";
+
 	private DSSPKUtils() {
 	}
 
@@ -52,8 +55,8 @@ public final class DSSPKUtils {
 	 *            {@link Token} (certificate, crl,...) to be checked
 	 * @return the used key size to sign the given token
 	 */
-	public static String getPublicKeySize(Token token) {
-		String keyLength = "?";
+	public static String getStringPublicKeySize(Token token) {
+		String keyLength = UNKNOWN_KEY_SIZE;
 		PublicKey issuerPublicKey = null;
 		if (token.getPublicKeyOfTheSigner() != null) {
 			issuerPublicKey = token.getPublicKeyOfTheSigner();
@@ -61,7 +64,25 @@ public final class DSSPKUtils {
 			issuerPublicKey = ((CertificateToken) token).getPublicKey();
 		}
 		if (issuerPublicKey != null) {
-			keyLength = String.valueOf(getPublicKeySize(issuerPublicKey));
+			keyLength = getStringPublicKeySize(issuerPublicKey);
+		}
+		return keyLength;
+	}
+
+	/**
+	 * This method returns a key length extracted from the public key.
+	 *
+	 * @param publicKey
+	 *            {@link PublicKey} to be checked
+	 * @return {@link String} key size
+	 */
+	public static String getStringPublicKeySize(final PublicKey publicKey) {
+		String keyLength = UNKNOWN_KEY_SIZE;
+		if (publicKey != null) {
+			int publicKeySize = getPublicKeySize(publicKey);
+			if (publicKeySize > 0)  {
+				keyLength = String.valueOf(publicKeySize);
+			}
 		}
 		return keyLength;
 	}

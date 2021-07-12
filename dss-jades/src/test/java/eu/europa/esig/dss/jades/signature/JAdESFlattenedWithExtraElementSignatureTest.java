@@ -23,10 +23,10 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +63,7 @@ public class JAdESFlattenedWithExtraElementSignatureTest extends AbstractJAdESTe
 	@Test
 	@Override
 	public void signAndVerify() {
-		Exception exception = assertThrows(DSSException.class, () -> super.sign());
+		Exception exception = assertThrows(IllegalInputException.class, () -> super.sign());
 		assertTrue(exception.getMessage().contains("Parallel signing is not supported for invalid RFC 7515 signatures."));
 		assertTrue(exception.getMessage().contains("extraneous key [evil] is not permitted"));
 	}

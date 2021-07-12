@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -49,9 +42,16 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class ASiCSWithXAdESMultiFilesValidationTest extends AbstractASiCWithXAdESTestValidation {
 
-	private final List<DSSDocument> EXPECTED_MULTIFILES = Arrays.<DSSDocument> asList(
+	private final List<DSSDocument> EXPECTED_MULTIFILES = Arrays.asList(
 			new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT),
 			new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 
@@ -131,9 +131,9 @@ public class ASiCSWithXAdESMultiFilesValidationTest extends AbstractASiCWithXAdE
 		assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
 		
 		for (XmlConstraint xmlConstraint : fc.getConstraint()) {
-			if (MessageTag.BBB_FC_ISFP_ASICS.getId().equals(xmlConstraint.getName().getNameId())) {
+			if (MessageTag.BBB_FC_ISFP_ASICS.getId().equals(xmlConstraint.getName().getKey())) {
 				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-				assertEquals(MessageTag.BBB_FC_ISFP_ASICS_ANS.getId(), xmlConstraint.getError().getNameId());
+				assertEquals(MessageTag.BBB_FC_ISFP_ASICS_ANS.getId(), xmlConstraint.getError().getKey());
 			} else {
 				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
 			}

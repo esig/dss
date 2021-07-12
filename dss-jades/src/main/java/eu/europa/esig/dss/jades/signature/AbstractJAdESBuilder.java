@@ -24,7 +24,6 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -60,7 +59,7 @@ public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 		Objects.requireNonNull(certificateVerifier, "CertificateVerifier must be defined!");
 		Objects.requireNonNull(parameters, "SignatureParameters must be defined!");
 		if (Utils.isCollectionEmpty(documentsToSign)) {
-			throw new DSSException("Documents to sign must be provided!");
+			throw new IllegalArgumentException("Documents to sign must be provided!");
 		}
 		this.parameters = parameters;
 		this.jadesLevelBaselineB = new JAdESLevelBaselineB(certificateVerifier, parameters, documentsToSign);
@@ -74,33 +73,7 @@ public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 		incorporateHeader(jws);
 		incorporatePayload(jws);
 		
-		/*
-        https://tools.ietf.org/html/rfc7797#section-3
-        +-------+-----------------------------------------------------------+
-        | "b64" | JWS Signing Input Formula                                 |
-        +-------+-----------------------------------------------------------+
-        | true  | ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.' ||     |
-        |       | BASE64URL(JWS Payload))                                   |
-        |       |                                                           |
-        | false | ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.') ||    |
-        |       | JWS Payload                                               |
-        +-------+-----------------------------------------------------------+
-		*/
-		byte[] dataToSign;
-		if (parameters.isBase64UrlEncodedPayload()) {
-			String dataToBeSignedString = DSSJsonUtils.concatenate(jws.getEncodedHeader(), jws.getEncodedPayload());
-			dataToSign = DSSJsonUtils.getAsciiBytes(dataToBeSignedString);
-		} else {
-			String encodedHeader = new String(DSSJsonUtils.getAsciiBytes(jws.getEncodedHeader()));
-			String dataToBeSignedString = DSSJsonUtils.concatenate(encodedHeader, jws.getUnverifiedPayload());
-			dataToSign = dataToBeSignedString.getBytes();
-		}
-		
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Data to sign: ");
-			LOG.trace(new String(dataToSign));
-		}
-		
+		byte[] dataToSign = DSSJsonUtils.getSigningInputBytes(jws);
 		return new ToBeSigned(dataToSign);
 	}
 	

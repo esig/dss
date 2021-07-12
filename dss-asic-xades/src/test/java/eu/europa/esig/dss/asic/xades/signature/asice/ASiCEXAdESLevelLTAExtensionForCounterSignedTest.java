@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.asic.xades.validation.AbstractASiCWithXAdESTestValidation;
@@ -48,8 +33,8 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -59,6 +44,20 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEXAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXAdESTestValidation {
 	
@@ -153,7 +152,7 @@ public class ASiCEXAdESLevelLTAExtensionForCounterSignedTest extends AbstractASi
 		// impossible to counter sign an extended signature
 		counterSignatureParameters.bLevel().setSigningDate(new Date());
 		counterSignatureParameters.setSignatureIdToCounterSign(counterSignatureId);
-		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(ltaXAdES, counterSignatureParameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(ltaXAdES, counterSignatureParameters));
 		assertEquals(String.format("Unable to counter sign a signature with Id '%s'. "
 				+ "The signature is timestamped by a master signature!", counterSignature.getId()), exception.getMessage());
 		

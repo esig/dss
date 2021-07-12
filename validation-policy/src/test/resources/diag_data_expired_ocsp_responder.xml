@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>sample-signed-xades-baseline-b.xml</DocumentName>
-    <ValidationDate>2021-02-04T08:55:50</ValidationDate>
+    <ValidationDate>2021-02-04T08:55:50Z</ValidationDate>
     <Signatures>
         <Signature Id="S-02AA8ECDB7A68731BCAF2FD8E28FA75E16724036604594EF0619474787C9694A">
             <DAIdentifier>id-ffb596d0d9a10815978f54fc09eea41a</DAIdentifier>
             <SignatureFilename>sample-signed-xades-baseline-b.xml</SignatureFilename>
-            <ClaimedSigningTime>2021-02-04T08:55:47</ClaimedSigningTime>
+            <ClaimedSigningTime>2021-02-04T08:55:47Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -99,8 +99,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2022-01-04T08:40:45</NotAfter>
-            <NotBefore>2020-03-04T08:40:45</NotBefore>
+            <NotAfter>2022-01-04T08:40:45Z</NotAfter>
+            <NotBefore>2020-03-04T08:40:45Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-366C4B2EE93282F158FB1EDFBC052E739FA4861554502E3365412B655D866D0D</EntityKey>
@@ -152,8 +152,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
-            <NotAfter>2022-02-04T08:40:43</NotAfter>
-            <NotBefore>2020-02-04T08:40:43</NotBefore>
+            <NotAfter>2022-02-04T08:40:43Z</NotAfter>
+            <NotBefore>2020-02-04T08:40:43Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-482BCA9A7D4E2A0DAA0CB5D564DE2D047DCA66FFBA9F90B1EED85FF34BF5C915</EntityKey>
@@ -195,8 +195,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-01-04T08:40:43</NotAfter>
-            <NotBefore>2020-11-04T08:40:43</NotBefore>
+            <NotAfter>2021-01-04T08:40:43Z</NotAfter>
+            <NotBefore>2020-11-04T08:40:43Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-6F2A24E0B7F7F18063D84F4026BD612CDF452206D4312C750C8F4E8F4B2820CE</EntityKey>
@@ -247,8 +247,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2024-02-04T08:40:43</NotAfter>
-            <NotBefore>2018-02-04T08:40:43</NotBefore>
+            <NotAfter>2024-02-04T08:40:43Z</NotAfter>
+            <NotBefore>2018-02-04T08:40:43Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-135FFBE9A102029D376A618F07DF49BECD9B94EE7A5F0AC15A7985A45270CC86</EntityKey>
@@ -288,8 +288,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://localhost:9999/pki-factory/ocsp/ocsp-skip-valid-ca</SourceAddress>
-            <ProductionDate>2021-02-04T08:55:50</ProductionDate>
-            <ThisUpdate>2021-02-04T08:55:50</ThisUpdate>
+            <ProductionDate>2021-02-04T08:55:50Z</ProductionDate>
+            <ThisUpdate>2021-02-04T08:55:50Z</ThisUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -327,9 +327,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://localhost:9999/pki-factory/crl/ocsp-skip-root-ca.crl</SourceAddress>
-            <ProductionDate>2021-02-04T08:55:50</ProductionDate>
-            <ThisUpdate>2021-02-04T08:55:50</ThisUpdate>
-            <NextUpdate>2021-08-04T07:55:50</NextUpdate>
+            <ProductionDate>2021-02-04T08:55:50Z</ProductionDate>
+            <ThisUpdate>2021-02-04T08:55:50Z</ThisUpdate>
+            <NextUpdate>2021-08-04T07:55:50Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>

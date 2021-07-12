@@ -20,31 +20,47 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
+/**
+ * The predicate is used to filter certain TLs by the accepted country codes
+ *
+ */
 public class SchemeTerritoryOtherTSLPointer extends AbstractOtherTSLPointerPredicate {
 
+	/** The element name containing the country code */
 	private static final String EXPECTED_TAG_NAME = "{http://uri.etsi.org/02231/v2#}SchemeTerritory";
 
-	private final Set<String> countyCodes;
+	/** A collection of country codes to be accepted */
+	private final Collection<String> countryCodes;
 
+	/**
+	 * Constructor allowing to filter a single country code
+	 *
+	 * @param countryCode {@link String} country code to be loaded
+	 */
 	public SchemeTerritoryOtherTSLPointer(String countryCode) {
 		this(Collections.singleton(countryCode));
 	}
 
-	public SchemeTerritoryOtherTSLPointer(Set<String> countryCodes) {
-		this.countyCodes = countryCodes;
+	/**
+	 * Constructor allowing to filter a collection of country coded
+	 *
+	 * @param countryCodes a collection of {@link String}s country codes to be loaded
+	 */
+	public SchemeTerritoryOtherTSLPointer(Collection<String> countryCodes) {
+		this.countryCodes = countryCodes;
 	}
 
 	@Override
 	public boolean test(OtherTSLPointerType o) {
 		Map<String, Object> extractAdditionalInformation = extractAdditionalInformation(o);
 		String schemeTerritory = (String) extractAdditionalInformation.get(EXPECTED_TAG_NAME);
-		return countyCodes.contains(schemeTerritory);
+		return countryCodes.contains(schemeTerritory);
 	}
 
 }

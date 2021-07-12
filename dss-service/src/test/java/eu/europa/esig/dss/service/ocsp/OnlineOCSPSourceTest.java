@@ -23,7 +23,6 @@ package eu.europa.esig.dss.service.ocsp;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
@@ -32,6 +31,7 @@ import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -154,8 +154,8 @@ public class OnlineOCSPSourceTest {
 		
 		// nothing in cache
 		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource(fileCacheDataLoader);
-		Exception exception = assertThrows(DSSException.class, () -> onlineOCSPSource.getRevocationToken(certificateToken, rootToken));
-		assertEquals("Unable to retrieve OCSP response", exception.getMessage());
+		Exception exception = assertThrows(DSSExternalResourceException.class, () -> onlineOCSPSource.getRevocationToken(certificateToken, rootToken));
+		assertTrue(exception.getMessage().contains("Unable to retrieve OCSP response for certificate with Id "));
 
 		/* 3) Test OnlineOCSPSource with a custom FileCacheDataLoader (with online loader) */
 
@@ -193,7 +193,7 @@ public class OnlineOCSPSourceTest {
 		List<String> alternativeOCSPUrls = new ArrayList<>();
 		alternativeOCSPUrls.add("http://wrong.url.com");
 
-		RevocationSource<OCSP> currentOCSPSource = new AlternateUrlsSourceAdapter<OCSP>(ocspSource,
+		RevocationSource<OCSP> currentOCSPSource = new AlternateUrlsSourceAdapter<>(ocspSource,
 				alternativeOCSPUrls);
 		OCSPToken ocspToken = (OCSPToken) currentOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
@@ -212,6 +212,7 @@ public class OnlineOCSPSourceTest {
 		ocspSource.setDigestAlgorithmsForExclusion(Collections.emptyList());
 
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
+		assertNotNull(ocspToken);
 		assertEquals(SignatureAlgorithm.RSA_SHA1, ocspToken.getSignatureAlgorithm()); // default value
 		
 		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA256);

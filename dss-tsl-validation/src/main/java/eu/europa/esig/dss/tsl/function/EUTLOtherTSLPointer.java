@@ -26,8 +26,12 @@ package eu.europa.esig.dss.tsl.function;
  */
 public final class EUTLOtherTSLPointer extends TypeOtherTSLPointer {
 
+	/** Default EU TL pointer */
 	private static final String EXPECTED_EU_TL_TYPE = "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric";
 
+	/**
+	 * Default constructor
+	 */
 	public EUTLOtherTSLPointer() {
 		super(EXPECTED_EU_TL_TYPE);
 	}

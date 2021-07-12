@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,10 +23,12 @@ package eu.europa.esig.dss.pades;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+import eu.europa.esig.dss.enumerations.TextWrapping;
 import eu.europa.esig.dss.utils.Utils;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This class allows to custom text generation in the PAdES visible signature
@@ -60,10 +62,10 @@ public class SignatureImageTextParameters implements Serializable {
 	 */
 	private SignerTextVerticalAlignment signerTextVerticalAlignment = SignerTextVerticalAlignment.MIDDLE;
 
-	/**
-	 * This variable set the more line text horizontal alignment
-	 */
-	private SignerTextHorizontalAlignment signerTextHorizontalAlignment = SignerTextHorizontalAlignment.LEFT;
+    /**
+     * This variable set the more line text horizontal alignment
+     */
+    private SignerTextHorizontalAlignment signerTextHorizontalAlignment = SignerTextHorizontalAlignment.LEFT;
 
 	/**
 	 * This variable defines the text to sign
@@ -77,6 +79,13 @@ public class SignatureImageTextParameters implements Serializable {
 	private DSSFont dssFont;
 
 	/**
+	 * This variable defines how the given text should be wrapped within the signature field's box
+	 *
+	 * Default : TextWrapping.FONT_BASED - the text is computed based on the {@code dssFont} configuration
+	 */
+	private TextWrapping textWrapping = TextWrapping.FONT_BASED;
+	
+	/**
 	 * This variable defines a padding in pixels to bound text around
 	 * (default is 5)
 	 */
@@ -84,7 +93,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * This variable defines the text color to use 
-	 * (default is BLACK)
+     * (default is BLACK)
 	 */
 	private Color textColor = DEFAULT_TEXT_COLOR;
 
@@ -95,7 +104,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns a signer text position respectively to an image
-	 *
+	 * 
 	 * @return {@link SignerTextPosition}
 	 */
 	public SignerTextPosition getSignerTextPosition() {
@@ -105,7 +114,7 @@ public class SignatureImageTextParameters implements Serializable {
 	/**
 	 * Specifies a text position respectively to an image inside the signature field
 	 * area
-	 *
+	 * 
 	 * @param signerTextPosition {@link SignerTextPosition} (TOP, BOTTOM, RIGHT,
 	 *                           LEFT)
 	 */
@@ -115,7 +124,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns a signer text vertical alignment value
-	 *
+	 * 
 	 * @return {@link SignerTextVerticalAlignment}
 	 */
 	public SignerTextVerticalAlignment getSignerTextVerticalAlignment() {
@@ -125,7 +134,7 @@ public class SignatureImageTextParameters implements Serializable {
 	/**
 	 * Defines a vertical alignment (positioning) of signer text inside the
 	 * signature field
-	 *
+	 * 
 	 * @param signerTextVerticalAlignment {@link SignerTextVerticalAlignment} (TOP,
 	 *                                    MIDDLE, BOTTOM)
 	 */
@@ -135,57 +144,78 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns a signer text horizontal alignment value
-	 *
+	 * 
 	 * @return {@link SignerTextHorizontalAlignment}
 	 */
-	public SignerTextHorizontalAlignment getSignerTextHorizontalAlignment() {
-		return signerTextHorizontalAlignment;
-	}
+    public SignerTextHorizontalAlignment getSignerTextHorizontalAlignment() {
+        return signerTextHorizontalAlignment;
+    }
 
-	/**
+    /**
 	 * Allows a horizontal alignment of a text with respect to its area
-	 *
+	 * 
 	 * @param signerTextHorizontalAlignment {@link SignerTextHorizontalAlignment}
 	 *                                      (LEFT, CENTER, RIGHT)
 	 */
-	public void setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment signerTextHorizontalAlignment) {
-		this.signerTextHorizontalAlignment = signerTextHorizontalAlignment;
-	}
+    public void setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment signerTextHorizontalAlignment) {
+        this.signerTextHorizontalAlignment = signerTextHorizontalAlignment;
+    }
 
-	/**
-	 * Returns specified text font
-	 * If not defined, returns a Default Font instance (PTSerifRegular)
-	 *
-	 * @return {@link DSSFont}
-	 */
+    /**
+     * Returns specified text font
+     * If not defined, returns a Default Font instance (PTSerifRegular)
+     * 
+     * @return {@link DSSFont}
+     */
 	public DSSFont getFont() {
 		if (dssFont == null) {
 			dssFont = DSSFileFont.initializeDefault();
 		}
 		return dssFont;
 	}
-
+	
 	/**
 	 * Sets a text font
-	 *
+	 * 
 	 * @param dssFont {@link DSSFont}
 	 */
 	public void setFont(DSSFont dssFont) {
 		this.dssFont = dssFont;
 	}
+	
+	/**
+	 * Gets {@code TextWrapping}
+	 *
+	 * @return {@link TextWrapping}
+	 */
+	public TextWrapping getTextWrapping() {
+		return textWrapping;
+	}
+
+	/**
+	 * Sets the {@code TextWrapping} parameter, defining a way the text will be generated
+	 *
+	 * Default : TextWrapping.FONT_BASED - text is generated based in the provided {@code dssFont} configuration
+	 *
+	 * @param textWrapping {@link TextWrapping}
+	 */
+	public void setTextWrapping(TextWrapping textWrapping) {
+		Objects.requireNonNull(textWrapping, "TextWrapping cannot be null!");
+		this.textWrapping = textWrapping;
+	}
 
 	/**
 	 * Returns padding between text and its area
-	 *
+	 * 
 	 * @return {@code float} padding value
 	 */
 	public float getPadding() {
 		return padding;
 	}
-
+	
 	/**
 	 * Sets a padding between text and its area
-	 *
+	 * 
 	 * @param padding {@code float} padding value
 	 */
 	public void setPadding(float padding) {
@@ -194,7 +224,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns text color parameter
-	 *
+	 * 
 	 * @return {@link Color}
 	 */
 	public Color getTextColor() {
@@ -203,7 +233,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Sets color for the text
-	 *
+	 * 
 	 * @param textColor {@link Color} to set
 	 */
 	public void setTextColor(Color textColor) {
@@ -212,7 +242,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns background color for the text's area
-	 *
+	 * 
 	 * @return {@link Color} of the text area background
 	 */
 	public Color getBackgroundColor() {
@@ -221,10 +251,10 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Sets the provided background color for a test's area
-	 *
+	 * 
 	 * NOTE: use NULL for a transparent background (if supported by a selected implementation)
 	 * DEFAULT: Color.WHITE 
-	 *
+	 * 
 	 * @param backgroundColor {@link Color} to set
 	 */
 	public void setBackgroundColor(Color backgroundColor) {
@@ -233,7 +263,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns defines text content
-	 *
+	 * 
 	 * @return {@link String} text
 	 */
 	public String getText() {
@@ -242,16 +272,16 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Sets a text content parameter
-	 *
+	 * 
 	 * @param text {@link String} text to display
 	 */
 	public void setText(String text) {
 		this.text = text;
 	}
-
+	
 	/**
 	 * Checks if the text property is set for the parameters
-	 *
+	 * 
 	 * @return TRUE if the text is defined, FALSE otherwise
 	 */
 	public boolean isEmpty() {

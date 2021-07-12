@@ -20,21 +20,34 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.utils.Utils;
 
-public abstract class RevocationRef<R extends Revocation> implements Serializable {
+import java.io.Serializable;
+
+/**
+ * This class represents an extracted revocation reference from a signature
+ *
+ * @param <R> {@code Revocation}
+ */
+public abstract class RevocationRef<R extends Revocation> implements IdentifierBasedObject, Serializable {
 
 	private static final long serialVersionUID = 7313118727647264457L;
 
+	/** Digest within the reference */
 	protected Digest digest = null;
-	
+
+	/** Reference unique identifier */
 	private Identifier identifier;
 
+	/**
+	 * Returns digests of the reference
+	 *
+	 * @return {@link Digest}
+	 */
 	public Digest getDigest() {
 		return digest;
 	}
@@ -50,13 +63,19 @@ public abstract class RevocationRef<R extends Revocation> implements Serializabl
 		}
 		return identifier;
 	}
-	
+
+	/**
+	 * Creates the unique identifier
+	 *
+	 * @return {@link Identifier}
+	 */
 	protected Identifier createIdentifier() {
 		return new RevocationRefIdentifier(this);
 	}
 	
 	/**
 	 * Returns revocation reference {@link String} id
+	 *
 	 * @return {@link String} id
 	 */
 	public String getDSSIdAsString() {

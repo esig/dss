@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -75,7 +75,8 @@ public class XPointerValidationTest extends AbstractXAdESTestValidation {
 		assertEquals(1, signatureScopes.size());
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 		assertEquals(SignatureScopeType.PARTIAL, xmlSignatureScope.getScope());
-		assertNotNull(xmlSignatureScope.getDescription());
+		assertEquals("XPointer query to element with Id 'SignedObject-1516693867353'",
+				xmlSignatureScope.getDescription());
 		XmlSignerData xPointerSignerData = xmlSignatureScope.getSignerData();
 		
 		List<SignerDataWrapper> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
@@ -88,7 +89,7 @@ public class XPointerValidationTest extends AbstractXAdESTestValidation {
 		
 		assertEquals(xPointerDigestMatcher.getDigestMethod(), xmlSignerData.getDigestAlgoAndValue().getDigestMethod());
 		assertEquals(Utils.toBase64(xPointerDigestMatcher.getDigestValue()), Utils.toBase64(xmlSignerData.getDigestAlgoAndValue().getDigestValue()));
-		assertTrue(Arrays.equals(xPointerDigestMatcher.getDigestValue(), xmlSignerData.getDigestAlgoAndValue().getDigestValue()));
+        assertArrayEquals(xPointerDigestMatcher.getDigestValue(), xmlSignerData.getDigestAlgoAndValue().getDigestValue());
 	}
 
 }

@@ -25,7 +25,6 @@ import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
@@ -39,6 +38,8 @@ import java.util.Objects;
  * Defines SignatureParameters to deal with XAdES signature creation/extension
  */
 public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdESTimestampParameters> {
+
+	private static final long serialVersionUID = 9131889715562901184L;
 
 	/**
 	 * Enumeration defining ways to embed a signature
@@ -161,7 +162,19 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * XAdES 1.4.1 definition
 	 */
 	private DSSNamespace xades141Namespace = XAdESNamespaces.XADES_141;
+
+	/**
+	 * List of custom ds:Object elements to be incorporated inside the signature
+	 */
+	private List<DSSObject> objects;
 	
+	/**
+	 * The {@code DigestAlgorithm} used to incorporate CompleteCertificateRefs/CompleteRevocationRefs on -C level
+	 *
+	 * Default: SHA256
+	 */
+	private DigestAlgorithm tokenReferencesDigestAlgorithm = DigestAlgorithm.SHA256;
+
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
 		if (signatureLevel == null || SignatureForm.XAdES != signatureLevel.getSignatureForm()) {
@@ -314,6 +327,11 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		this.xPathLocationString = xPathLocationString;
 	}
 
+	/**
+	 * Returns the XPath element placement for Enveloped signature creation
+	 *
+	 * @return {@link XPathElementPlacement}
+	 */
 	public XPathElementPlacement getXPathElementPlacement() {
         return xPathElementPlacement;
     }
@@ -499,7 +517,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		if (XAdESNamespaces.XMLDSIG.isSameUri(uri)) {
 			this.xmldsigNamespace = xmldsigNamespace;
 		} else {
-			throw new DSSException("Not accepted URI");
+			throw new IllegalArgumentException("Not accepted URI");
 		}
 	}
 
@@ -526,7 +544,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		if (XAdESNamespaces.XADES_111.isSameUri(uri) || XAdESNamespaces.XADES_122.isSameUri(uri) || XAdESNamespaces.XADES_132.isSameUri(uri)) {
 			this.xadesNamespace = xadesNamespace;
 		} else {
-			throw new DSSException("Not accepted URI");
+			throw new IllegalArgumentException("Not accepted URI");
 		}
 	}
 
@@ -553,8 +571,46 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		if (XAdESNamespaces.XADES_141.isSameUri(uri)) {
 			this.xades141Namespace = xades141Namespace;
 		} else {
-			throw new DSSException("Not accepted URI");
+			throw new IllegalArgumentException("Not accepted URI");
 		}
+	}
+
+	/**
+	 * Gets the list of custom ds:Object elements
+	 *
+	 * @return a list of {@link DSSObject}s
+	 */
+	public List<DSSObject> getObjects() {
+		return objects;
+	}
+
+	/**
+	 * Sets the list of custom ds:Object elements to be incorporated within the ds:Signature
+	 *
+	 * @param objects a list of {@link DSSObject} to be included
+	 */
+	public void setObjects(List<DSSObject> objects) {
+		this.objects = objects;
+	}
+
+	/**
+	 * Gets a {@code DigestAlgorithm} to create CompleteCertificateRefs/CompleteRevocationRefs with
+	 *
+	 * @return {@link DigestAlgorithm}
+	 */
+	public DigestAlgorithm getTokenReferencesDigestAlgorithm() {
+		return tokenReferencesDigestAlgorithm;
+	}
+
+	/**
+	 * Sets a {@code DigestAlgorithm} to create CompleteCertificateRefs/CompleteRevocationRefs for -C level
+	 *
+	 * Default : SHA256
+	 *
+	 * @param tokenReferencesDigestAlgorithm {@link DigestAlgorithm}
+	 */
+	public void setTokenReferencesDigestAlgorithm(DigestAlgorithm tokenReferencesDigestAlgorithm) {
+		this.tokenReferencesDigestAlgorithm = tokenReferencesDigestAlgorithm;
 	}
 
 	@Override

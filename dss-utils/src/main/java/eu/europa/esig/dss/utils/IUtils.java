@@ -29,6 +29,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The interface contains the common methods to be used within the DSS core
+ *
+ */
 public interface IUtils {
 
 	/**

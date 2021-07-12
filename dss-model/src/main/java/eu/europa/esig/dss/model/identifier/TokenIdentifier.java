@@ -24,11 +24,18 @@ import eu.europa.esig.dss.model.x509.Token;
 
 /**
  * This class is used to obtain a unique id for Token
+ *
  */
 public abstract class TokenIdentifier extends MultipleDigestIdentifier {
 
 	private static final long serialVersionUID = 1201653840828853681L;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param prefix {@link String} identifier prefix
+	 * @param token {@link Token}
+	 */
 	protected TokenIdentifier(final String prefix, Token token) {
 		super(prefix, token.getEncoded());
 	}

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 

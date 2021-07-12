@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -86,7 +86,7 @@ public abstract class AbstractCAdESCounterSignatureTest
 			assertNotNull(signatureIdentifier);
 
 			assertNotNull(signatureIdentifier.getSignatureValue());
-			assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+            assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 		}
 	}
 

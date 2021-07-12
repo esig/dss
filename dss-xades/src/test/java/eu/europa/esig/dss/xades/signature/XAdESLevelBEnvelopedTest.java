@@ -41,6 +41,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
@@ -93,9 +94,8 @@ public class XAdESLevelBEnvelopedTest extends AbstractXAdESTestSignature {
 		DSSDocument original = originals.get(0);
 
 		try {
-			Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-			String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(documentToSign)));
-			String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(original)));
+			String firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(documentToSign)));
+			String secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(original)));
 			assertEquals(firstDocument, secondDocument);
 		} catch (Exception e) {
 			fail(e);

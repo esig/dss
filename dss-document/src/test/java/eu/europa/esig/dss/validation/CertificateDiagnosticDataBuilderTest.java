@@ -20,20 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -49,6 +35,19 @@ import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CertificateDiagnosticDataBuilderTest {
 
@@ -113,27 +112,27 @@ public class CertificateDiagnosticDataBuilderTest {
 		Set<CertificateToken> usedCertificates = new HashSet<>(Arrays.asList(sigCert, ocspCert, caToken, rootToken));
 
 		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
-		trustedCertSource.setSummary(new TLValidationJobSummary(new ArrayList<LOTLInfo>(), new ArrayList<TLInfo>()));
+		trustedCertSource.setSummary(new TLValidationJobSummary(new ArrayList<>(), new ArrayList<>()));
 		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
 		TrustServiceStatusAndInformationExtensionsBuilder builder = new TrustServiceStatusAndInformationExtensionsBuilder();
 		builder.setStatus("bla");
 		builder.setType("bla");
 		builder.setStartDate(new Date());
 		TrustServiceStatusAndInformationExtensions serviceStatus = new TrustServiceStatusAndInformationExtensions(builder);
-		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.<TrustServiceStatusAndInformationExtensions>asList(serviceStatus);
+		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.asList(serviceStatus);
 		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<>(
 				srcList);
 
 		LOTLInfo lotlInfo = new LOTLInfo(null, null, null, "aaaa");
 		TLInfo tlInfo = new TLInfo(null, null, null, "bbb");
-		TrustProperties trustProperties = new TrustProperties(lotlInfo.getIdentifier(), tlInfo.getIdentifier(), trustServiceProvider, status);
+		TrustProperties trustProperties = new TrustProperties(lotlInfo.getDSSId(), tlInfo.getDSSId(), trustServiceProvider, status);
 		
 		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<>();
 		hashMap.put(rootToken, Arrays.asList(trustProperties));
 		trustedCertSource.setTrustPropertiesByCertificates(hashMap);
 
 		DiagnosticDataBuilder ddb = new CertificateDiagnosticDataBuilder().usedCertificates(usedCertificates)
-				.trustedCertificateSources(new ListCertificateSource(trustedCertSource));
+				.allCertificateSources(new ListCertificateSource(trustedCertSource));
 		XmlDiagnosticData dd = ddb.build();
 
 		assertNotNull(dd);

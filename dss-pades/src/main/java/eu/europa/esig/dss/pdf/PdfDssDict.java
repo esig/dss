@@ -24,13 +24,14 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Represents the DSS dictionary
  */
-public interface PdfDssDict {
+public interface PdfDssDict extends Serializable {
 	
 	/**
 	 * Returns a map of uniques identifiers and CRL binaries

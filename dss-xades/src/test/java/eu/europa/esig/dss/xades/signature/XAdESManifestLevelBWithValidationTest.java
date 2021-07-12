@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -41,6 +33,17 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSignature {
 
@@ -119,6 +122,19 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 		assertTrue(foundManifest);
 		assertEquals(3, nbManifestEntries);
 		assertTrue(foundSignedProperties);
+	}
+
+	@Override
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		super.validateETSISignersDocument(signersDocument);
+
+		DigestAlgAndValueType digestAlgoAndValue = getDigestAlgoAndValue(signersDocument);
+		assertNotNull(digestAlgoAndValue);
+		assertNotNull(digestAlgoAndValue.getDigestMethod());
+		assertNotNull(digestAlgoAndValue.getDigestValue());
+
+		List<ValidationObjectType> validationObjects = getValidationObjects(signersDocument);
+		assertEquals(4, validationObjects.size());
 	}
 
 	@Override

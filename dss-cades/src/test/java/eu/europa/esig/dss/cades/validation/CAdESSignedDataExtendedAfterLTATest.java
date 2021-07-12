@@ -20,16 +20,17 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESSignedDataExtendedAfterLTATest extends AbstractCAdESTestValidation {
 
@@ -54,6 +55,12 @@ public class CAdESSignedDataExtendedAfterLTATest extends AbstractCAdESTestValida
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Override
+	protected void checkTimestampedProperties(Collection<TimestampWrapper> allTimestamps, TimestampWrapper timestampWrapper,
+											  Collection<SignatureWrapper> allSignatures, SignatureWrapper signatureWrapper) {
+		// skip (wrong hash of ats-hash-index-v3)
 	}
 
 }

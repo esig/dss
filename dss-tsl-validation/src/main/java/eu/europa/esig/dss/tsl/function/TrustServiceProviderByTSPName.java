@@ -26,10 +26,20 @@ import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
+/**
+ * Filters TrustServicesProviders by TSP name
+ *
+ */
 public class TrustServiceProviderByTSPName implements TrustServiceProviderPredicate {
 
+	/** The TSP name */
 	private final String tspName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param tspName {@link String} to filter by
+	 */
 	public TrustServiceProviderByTSPName(String tspName) {
 		this.tspName = tspName;
 	}

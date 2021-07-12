@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import eu.europa.esig.dss.model.TimestampParameters;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 
 import java.io.FileInputStream;
 import java.util.Calendar;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
-
-import eu.europa.esig.dss.model.TimestampParameters;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class DeterministicIdGenerationTest {
 
@@ -70,7 +69,7 @@ public class DeterministicIdGenerationTest {
 	}
 
 	@SuppressWarnings("serial")
-	private class SignatureParameters extends AbstractSignatureParameters<TimestampParameters> {
+	private static class SignatureParameters extends AbstractSignatureParameters<TimestampParameters> {
 
 	}
 

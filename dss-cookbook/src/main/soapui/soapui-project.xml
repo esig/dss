@@ -1647,6 +1647,7 @@
           <xs:element minOccurs="0" name="dpi" type="xs:int"/>
           <xs:element minOccurs="0" name="fieldParameters" type="tns:remoteSignatureFieldParameters"/>
           <xs:element minOccurs="0" name="image" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="imageScaling" type="tns:imageScaling"/>
           <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
           <xs:element minOccurs="0" name="textParameters" type="tns:remoteSignatureImageTextParameters"/>
           <xs:element minOccurs="0" name="zoom" type="xs:int"/>
@@ -1681,6 +1682,7 @@
           <xs:element minOccurs="0" name="size" type="xs:int"/>
           <xs:element minOccurs="0" name="text" type="xs:string"/>
           <xs:element minOccurs="0" name="textColor" type="tns:remoteColor"/>
+          <xs:element minOccurs="0" name="textWrapping" type="tns:textWrapping"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="signatureValueDTO">
@@ -1858,6 +1860,7 @@
           <xs:enumeration value="SIGNATURE_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_TIMESTAMP"/>
+          <xs:enumeration value="DOCUMENT_TIMESTAMP"/>
           <xs:enumeration value="ARCHIVE_TIMESTAMP"/>
         </xs:restriction>
       </xs:simpleType>
@@ -1869,8 +1872,7 @@
           <xs:enumeration value="PLAIN_ECDSA"/>
           <xs:enumeration value="X25519"/>
           <xs:enumeration value="X448"/>
-          <xs:enumeration value="ED25519"/>
-          <xs:enumeration value="ED448"/>
+          <xs:enumeration value="EDDSA"/>
           <xs:enumeration value="HMAC"/>
         </xs:restriction>
       </xs:simpleType>
@@ -1888,6 +1890,13 @@
           <xs:enumeration value="TOP"/>
           <xs:enumeration value="MIDDLE"/>
           <xs:enumeration value="BOTTOM"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="imageScaling">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="STRETCH"/>
+          <xs:enumeration value="ZOOM_AND_CENTER"/>
+          <xs:enumeration value="CENTER"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="visualSignatureRotation">
@@ -1919,6 +1928,13 @@
           <xs:enumeration value="TOP"/>
           <xs:enumeration value="MIDDLE"/>
           <xs:enumeration value="BOTTOM"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="textWrapping">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="FILL_BOX"/>
+          <xs:enumeration value="FILL_BOX_AND_LINEBREAK"/>
+          <xs:enumeration value="FONT_BASED"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="jwsSerializationType">
@@ -1953,13 +1969,14 @@
           <xs:enumeration value="XAdES_BASELINE_T"/>
           <xs:enumeration value="XAdES_BASELINE_B"/>
           <xs:enumeration value="CMS_NOT_ETSI"/>
+          <xs:enumeration value="CAdES_C"/>
+          <xs:enumeration value="CAdES_X"/>
+          <xs:enumeration value="CAdES_XL"/>
+          <xs:enumeration value="CAdES_A"/>
           <xs:enumeration value="CAdES_BASELINE_LTA"/>
           <xs:enumeration value="CAdES_BASELINE_LT"/>
           <xs:enumeration value="CAdES_BASELINE_T"/>
           <xs:enumeration value="CAdES_BASELINE_B"/>
-          <xs:enumeration value="CAdES_101733_C"/>
-          <xs:enumeration value="CAdES_101733_X"/>
-          <xs:enumeration value="CAdES_101733_A"/>
           <xs:enumeration value="PDF_NOT_ETSI"/>
           <xs:enumeration value="PAdES_BASELINE_LTA"/>
           <xs:enumeration value="PAdES_BASELINE_LT"/>
@@ -2008,8 +2025,8 @@
           <xs:enumeration value="RSA_SSA_PSS_SHA3_384_MGF1"/>
           <xs:enumeration value="RSA_SSA_PSS_SHA3_512_MGF1"/>
           <xs:enumeration value="RSA_RIPEMD160"/>
-          <xs:enumeration value="RSA_MD5"/>
           <xs:enumeration value="RSA_MD2"/>
+          <xs:enumeration value="RSA_MD5"/>
           <xs:enumeration value="ECDSA_RAW"/>
           <xs:enumeration value="ECDSA_SHA1"/>
           <xs:enumeration value="ECDSA_SHA224"/>
@@ -2026,6 +2043,10 @@
           <xs:enumeration value="PLAIN_ECDSA_SHA256"/>
           <xs:enumeration value="PLAIN_ECDSA_SHA384"/>
           <xs:enumeration value="PLAIN_ECDSA_SHA512"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_512"/>
           <xs:enumeration value="PLAIN_ECDSA_RIPEMD160"/>
           <xs:enumeration value="DSA_RAW"/>
           <xs:enumeration value="DSA_SHA1"/>
@@ -2525,9 +2546,13 @@
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="encryptionAlgorithm" type="tns:encryptionAlgorithm"/>
           <xs:element name="generateTBSWithoutCertificate" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="imageParameters" type="tns:remoteSignatureImageParameters"/>
+          <xs:element minOccurs="0" name="jwsSerializationType" type="tns:jwsSerializationType"/>
           <xs:element minOccurs="0" name="maskGenerationFunction" type="tns:maskGenerationFunction"/>
           <xs:element minOccurs="0" name="referenceDigestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="sigDMechanism" type="tns:sigDMechanism"/>
           <xs:element name="signWithExpiredCertificate" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="signatureIdToCounterSign" type="xs:string"/>
           <xs:element minOccurs="0" name="signatureLevel" type="tns:signatureLevel"/>
           <xs:element minOccurs="0" name="signaturePackaging" type="tns:signaturePackaging"/>
           <xs:element minOccurs="0" name="signatureTimestampParameters" type="tns:remoteTimestampParameters"/>
@@ -2536,21 +2561,20 @@
       </xs:complexType>
       <xs:complexType name="remoteTimestampParameters">
         <xs:sequence>
-          <xs:element minOccurs="0" name="asicContainerType" type="tns:aSiCContainerType"/>
           <xs:element minOccurs="0" name="canonicalizationMethod" type="xs:string"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-          <xs:element minOccurs="0" name="signatureForm" type="tns:signatureForm"/>
+          <xs:element minOccurs="0" name="timestampContainerForm" type="tns:timestampContainerForm"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="remoteBLevelParameters">
         <xs:sequence>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="claimedSignerRoles" nillable="true" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndications" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndications" nillable="true" type="tns:commitmentTypeEnum"/>
           <xs:element minOccurs="0" name="policyDescription" type="xs:string"/>
           <xs:element minOccurs="0" name="policyDigestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="policyDigestValue" type="xs:base64Binary"/>
           <xs:element minOccurs="0" name="policyId" type="xs:string"/>
-          <xs:element minOccurs="0" name="policyQualifier" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyQualifier" type="tns:objectIdentifierQualifier"/>
           <xs:element minOccurs="0" name="policySpuri" type="xs:string"/>
           <xs:element minOccurs="0" name="signerLocationCountry" type="xs:string"/>
           <xs:element minOccurs="0" name="signerLocationLocality" type="xs:string"/>
@@ -2586,6 +2610,52 @@
           <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteSignatureImageParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="alignmentHorizontal" type="tns:visualSignatureAlignmentHorizontal"/>
+          <xs:element minOccurs="0" name="alignmentVertical" type="tns:visualSignatureAlignmentVertical"/>
+          <xs:element minOccurs="0" name="backgroundColor" type="tns:remoteColor"/>
+          <xs:element minOccurs="0" name="dpi" type="xs:int"/>
+          <xs:element minOccurs="0" name="fieldParameters" type="tns:remoteSignatureFieldParameters"/>
+          <xs:element minOccurs="0" name="image" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="imageScaling" type="tns:imageScaling"/>
+          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
+          <xs:element minOccurs="0" name="textParameters" type="tns:remoteSignatureImageTextParameters"/>
+          <xs:element minOccurs="0" name="zoom" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteColor">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="alpha" type="xs:int"/>
+          <xs:element minOccurs="0" name="blue" type="xs:int"/>
+          <xs:element minOccurs="0" name="green" type="xs:int"/>
+          <xs:element minOccurs="0" name="red" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteSignatureFieldParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="fieldId" type="xs:string"/>
+          <xs:element minOccurs="0" name="height" type="xs:float"/>
+          <xs:element minOccurs="0" name="originX" type="xs:float"/>
+          <xs:element minOccurs="0" name="originY" type="xs:float"/>
+          <xs:element minOccurs="0" name="page" type="xs:int"/>
+          <xs:element minOccurs="0" name="width" type="xs:float"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteSignatureImageTextParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="backgroundColor" type="tns:remoteColor"/>
+          <xs:element minOccurs="0" name="font" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="padding" type="xs:float"/>
+          <xs:element minOccurs="0" name="signerTextHorizontalAlignment" type="tns:signerTextHorizontalAlignment"/>
+          <xs:element minOccurs="0" name="signerTextPosition" type="tns:signerTextPosition"/>
+          <xs:element minOccurs="0" name="signerTextVerticalAlignment" type="tns:signerTextVerticalAlignment"/>
+          <xs:element minOccurs="0" name="size" type="xs:int"/>
+          <xs:element minOccurs="0" name="text" type="xs:string"/>
+          <xs:element minOccurs="0" name="textColor" type="tns:remoteColor"/>
+          <xs:element minOccurs="0" name="textWrapping" type="tns:textWrapping"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="extendDocumentResponse">
@@ -2677,12 +2747,6 @@
           <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:simpleType name="aSiCContainerType">
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="ASiC_S"/>
-          <xs:enumeration value="ASiC_E"/>
-        </xs:restriction>
-      </xs:simpleType>
       <xs:simpleType name="digestAlgorithm">
         <xs:restriction base="xs:string">
           <xs:enumeration value="SHA1"/>
@@ -2694,18 +2758,42 @@
           <xs:enumeration value="SHA3_256"/>
           <xs:enumeration value="SHA3_384"/>
           <xs:enumeration value="SHA3_512"/>
+          <xs:enumeration value="SHAKE128"/>
+          <xs:enumeration value="SHAKE256"/>
+          <xs:enumeration value="SHAKE256_512"/>
           <xs:enumeration value="RIPEMD160"/>
           <xs:enumeration value="MD2"/>
           <xs:enumeration value="MD5"/>
           <xs:enumeration value="WHIRLPOOL"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:simpleType name="signatureForm">
+      <xs:simpleType name="timestampContainerForm">
         <xs:restriction base="xs:string">
-          <xs:enumeration value="XAdES"/>
-          <xs:enumeration value="CAdES"/>
-          <xs:enumeration value="PAdES"/>
-          <xs:enumeration value="PKCS7"/>
+          <xs:enumeration value="PDF"/>
+          <xs:enumeration value="ASiC_E"/>
+          <xs:enumeration value="ASiC_S"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="aSiCContainerType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ASiC_S"/>
+          <xs:enumeration value="ASiC_E"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="commitmentTypeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ProofOfOrigin"/>
+          <xs:enumeration value="ProofOfReceipt"/>
+          <xs:enumeration value="ProofOfDelivery"/>
+          <xs:enumeration value="ProofOfSender"/>
+          <xs:enumeration value="ProofOfApproval"/>
+          <xs:enumeration value="ProofOfCreation"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="objectIdentifierQualifier">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OID_AS_URI"/>
+          <xs:enumeration value="OID_AS_URN"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="timestampType">
@@ -2716,6 +2804,7 @@
           <xs:enumeration value="SIGNATURE_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_TIMESTAMP"/>
+          <xs:enumeration value="DOCUMENT_TIMESTAMP"/>
           <xs:enumeration value="ARCHIVE_TIMESTAMP"/>
         </xs:restriction>
       </xs:simpleType>
@@ -2725,12 +2814,91 @@
           <xs:enumeration value="DSA"/>
           <xs:enumeration value="ECDSA"/>
           <xs:enumeration value="PLAIN_ECDSA"/>
+          <xs:enumeration value="X25519"/>
+          <xs:enumeration value="X448"/>
+          <xs:enumeration value="EDDSA"/>
           <xs:enumeration value="HMAC"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="visualSignatureAlignmentHorizontal">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="NONE"/>
+          <xs:enumeration value="LEFT"/>
+          <xs:enumeration value="CENTER"/>
+          <xs:enumeration value="RIGHT"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="visualSignatureAlignmentVertical">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="NONE"/>
+          <xs:enumeration value="TOP"/>
+          <xs:enumeration value="MIDDLE"/>
+          <xs:enumeration value="BOTTOM"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="imageScaling">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="STRETCH"/>
+          <xs:enumeration value="ZOOM_AND_CENTER"/>
+          <xs:enumeration value="CENTER"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="visualSignatureRotation">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="NONE"/>
+          <xs:enumeration value="AUTOMATIC"/>
+          <xs:enumeration value="ROTATE_90"/>
+          <xs:enumeration value="ROTATE_180"/>
+          <xs:enumeration value="ROTATE_270"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signerTextHorizontalAlignment">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="LEFT"/>
+          <xs:enumeration value="CENTER"/>
+          <xs:enumeration value="RIGHT"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signerTextPosition">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="TOP"/>
+          <xs:enumeration value="BOTTOM"/>
+          <xs:enumeration value="RIGHT"/>
+          <xs:enumeration value="LEFT"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signerTextVerticalAlignment">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="TOP"/>
+          <xs:enumeration value="MIDDLE"/>
+          <xs:enumeration value="BOTTOM"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="textWrapping">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="FILL_BOX"/>
+          <xs:enumeration value="FILL_BOX_AND_LINEBREAK"/>
+          <xs:enumeration value="FONT_BASED"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="jwsSerializationType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="COMPACT_SERIALIZATION"/>
+          <xs:enumeration value="JSON_SERIALIZATION"/>
+          <xs:enumeration value="FLATTENED_JSON_SERIALIZATION"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="maskGenerationFunction">
         <xs:restriction base="xs:string">
           <xs:enumeration value="MGF1"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="sigDMechanism">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="HTTP_HEADERS"/>
+          <xs:enumeration value="OBJECT_ID_BY_URI"/>
+          <xs:enumeration value="OBJECT_ID_BY_URI_HASH"/>
+          <xs:enumeration value="NO_SIG_D"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signatureLevel">
@@ -2745,13 +2913,14 @@
           <xs:enumeration value="XAdES_BASELINE_T"/>
           <xs:enumeration value="XAdES_BASELINE_B"/>
           <xs:enumeration value="CMS_NOT_ETSI"/>
+          <xs:enumeration value="CAdES_C"/>
+          <xs:enumeration value="CAdES_X"/>
+          <xs:enumeration value="CAdES_XL"/>
+          <xs:enumeration value="CAdES_A"/>
           <xs:enumeration value="CAdES_BASELINE_LTA"/>
           <xs:enumeration value="CAdES_BASELINE_LT"/>
           <xs:enumeration value="CAdES_BASELINE_T"/>
           <xs:enumeration value="CAdES_BASELINE_B"/>
-          <xs:enumeration value="CAdES_101733_C"/>
-          <xs:enumeration value="CAdES_101733_X"/>
-          <xs:enumeration value="CAdES_101733_A"/>
           <xs:enumeration value="PDF_NOT_ETSI"/>
           <xs:enumeration value="PAdES_BASELINE_LTA"/>
           <xs:enumeration value="PAdES_BASELINE_LT"/>
@@ -2761,6 +2930,11 @@
           <xs:enumeration value="PKCS7_T"/>
           <xs:enumeration value="PKCS7_LT"/>
           <xs:enumeration value="PKCS7_LTA"/>
+          <xs:enumeration value="JSON_NOT_ETSI"/>
+          <xs:enumeration value="JAdES_BASELINE_B"/>
+          <xs:enumeration value="JAdES_BASELINE_T"/>
+          <xs:enumeration value="JAdES_BASELINE_LT"/>
+          <xs:enumeration value="JAdES_BASELINE_LTA"/>
           <xs:enumeration value="UNKNOWN"/>
         </xs:restriction>
       </xs:simpleType>
@@ -2795,8 +2969,8 @@
           <xs:enumeration value="RSA_SSA_PSS_SHA3_384_MGF1"/>
           <xs:enumeration value="RSA_SSA_PSS_SHA3_512_MGF1"/>
           <xs:enumeration value="RSA_RIPEMD160"/>
-          <xs:enumeration value="RSA_MD5"/>
           <xs:enumeration value="RSA_MD2"/>
+          <xs:enumeration value="RSA_MD5"/>
           <xs:enumeration value="ECDSA_RAW"/>
           <xs:enumeration value="ECDSA_SHA1"/>
           <xs:enumeration value="ECDSA_SHA224"/>
@@ -2813,6 +2987,10 @@
           <xs:enumeration value="PLAIN_ECDSA_SHA256"/>
           <xs:enumeration value="PLAIN_ECDSA_SHA384"/>
           <xs:enumeration value="PLAIN_ECDSA_SHA512"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_512"/>
           <xs:enumeration value="PLAIN_ECDSA_RIPEMD160"/>
           <xs:enumeration value="DSA_RAW"/>
           <xs:enumeration value="DSA_SHA1"/>
@@ -2834,6 +3012,8 @@
           <xs:enumeration value="HMAC_SHA3_384"/>
           <xs:enumeration value="HMAC_SHA3_512"/>
           <xs:enumeration value="HMAC_RIPEMD160"/>
+          <xs:enumeration value="ED25519"/>
+          <xs:enumeration value="ED448"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:schema>
@@ -3074,21 +3254,67 @@
    </soapenv:Body>\r
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/timestampDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="91435f45-5807-48a6-b1f9-73f69cd7027d" wsaVersion="NONE" name="SoapSignatureTokenConnectionImplServiceSoapBinding" type="wsdl" bindingName="{http://token.dss.esig.europa.eu/}SoapSignatureTokenConnectionImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/server-signing?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/server-signing?wsdl"><con:part><con:url>http://localhost:8080/services/soap/server-signing?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapSignatureTokenConnectionImplService" targetNamespace="http://token.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://token.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
   <wsdl:types>
-    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://token.dss.esig.europa.eu/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://server-signing.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://server-signing.dss.esig.europa.eu/">
       <xs:element name="getKey" type="tns:getKey"/>
       <xs:element name="getKeyResponse" type="tns:getKeyResponse"/>
       <xs:element name="getKeys" type="tns:getKeys"/>
       <xs:element name="getKeysResponse" type="tns:getKeysResponse"/>
       <xs:element name="sign" type="tns:sign"/>
+      <xs:element name="signDigest" type="tns:signDigest"/>
+      <xs:element name="signDigestResponse" type="tns:signDigestResponse"/>
+      <xs:element name="signDigestWithMask" type="tns:signDigestWithMask"/>
+      <xs:element name="signDigestWithMaskResponse" type="tns:signDigestWithMaskResponse"/>
       <xs:element name="signResponse" type="tns:signResponse"/>
-      <xs:complexType name="getKey">
+      <xs:element name="signWithMask" type="tns:signWithMask"/>
+      <xs:element name="signWithMaskResponse" type="tns:signWithMaskResponse"/>
+      <xs:complexType name="signDigestWithMask">
         <xs:sequence>
+          <xs:element minOccurs="0" name="digest" type="tns:digestDTO"/>
+          <xs:element minOccurs="0" name="maskGenerationFunction" type="tns:maskGenerationFunction"/>
           <xs:element minOccurs="0" name="alias" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getKeyResponse">
+      <xs:complexType name="digestDTO">
         <xs:sequence>
-          <xs:element minOccurs="0" name="response" type="tns:remoteKeyEntry"/>
+          <xs:element minOccurs="0" name="algorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signDigestWithMaskResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:signatureValueDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signatureValueDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="algorithm" type="tns:signatureAlgorithm"/>
+          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signWithMask">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="toBeSigned" type="tns:toBeSignedDTO"/>
+          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="maskGenerationFunction" type="tns:maskGenerationFunction"/>
+          <xs:element minOccurs="0" name="alias" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="toBeSignedDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signWithMaskResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:signatureValueDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getKeys">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:complexType name="getKeysResponse">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="response" type="tns:remoteKeyEntry"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="remoteKeyEntry">
@@ -3106,43 +3332,37 @@
       </xs:complexType>
       <xs:complexType name="sign">
         <xs:sequence>
-          <xs:element minOccurs="0" name="toBeSigned" type="tns:toBeSigned"/>
+          <xs:element minOccurs="0" name="toBeSigned" type="tns:toBeSignedDTO"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="alias" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="toBeSigned">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="signResponse">
         <xs:sequence>
-          <xs:element minOccurs="0" name="response" type="tns:signatureValue"/>
+          <xs:element minOccurs="0" name="response" type="tns:signatureValueDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType final="extension restriction" name="signatureValue">
+      <xs:complexType name="signDigest">
         <xs:sequence>
-          <xs:element minOccurs="0" name="algorithm" type="tns:signatureAlgorithm"/>
-          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="digest" type="tns:digestDTO"/>
+          <xs:element minOccurs="0" name="alias" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getKeys">
-        <xs:sequence/>
-      </xs:complexType>
-      <xs:complexType name="getKeysResponse">
+      <xs:complexType name="signDigestResponse">
         <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="response" type="tns:remoteKeyEntry"/>
+          <xs:element minOccurs="0" name="response" type="tns:signatureValueDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:simpleType name="encryptionAlgorithm">
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="RSA"/>
-          <xs:enumeration value="DSA"/>
-          <xs:enumeration value="ECDSA"/>
-          <xs:enumeration value="HMAC"/>
-        </xs:restriction>
-      </xs:simpleType>
+      <xs:complexType name="getKey">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="alias" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getKeyResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:remoteKeyEntry"/>
+        </xs:sequence>
+      </xs:complexType>
       <xs:simpleType name="digestAlgorithm">
         <xs:restriction base="xs:string">
           <xs:enumeration value="SHA1"/>
@@ -3150,36 +3370,92 @@
           <xs:enumeration value="SHA256"/>
           <xs:enumeration value="SHA384"/>
           <xs:enumeration value="SHA512"/>
+          <xs:enumeration value="SHA3_224"/>
+          <xs:enumeration value="SHA3_256"/>
+          <xs:enumeration value="SHA3_384"/>
+          <xs:enumeration value="SHA3_512"/>
+          <xs:enumeration value="SHAKE128"/>
+          <xs:enumeration value="SHAKE256"/>
+          <xs:enumeration value="SHAKE256_512"/>
           <xs:enumeration value="RIPEMD160"/>
           <xs:enumeration value="MD2"/>
           <xs:enumeration value="MD5"/>
+          <xs:enumeration value="WHIRLPOOL"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="maskGenerationFunction">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="MGF1"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signatureAlgorithm">
         <xs:restriction base="xs:string">
+          <xs:enumeration value="RSA_RAW"/>
           <xs:enumeration value="RSA_SHA1"/>
           <xs:enumeration value="RSA_SHA224"/>
           <xs:enumeration value="RSA_SHA256"/>
           <xs:enumeration value="RSA_SHA384"/>
           <xs:enumeration value="RSA_SHA512"/>
+          <xs:enumeration value="RSA_SHA3_224"/>
+          <xs:enumeration value="RSA_SHA3_256"/>
+          <xs:enumeration value="RSA_SHA3_384"/>
+          <xs:enumeration value="RSA_SHA3_512"/>
+          <xs:enumeration value="RSA_SSA_PSS_RAW_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA1_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA512_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_512_MGF1"/>
           <xs:enumeration value="RSA_RIPEMD160"/>
-          <xs:enumeration value="RSA_MD5"/>
           <xs:enumeration value="RSA_MD2"/>
-          <xs:enumeration value="RSA_SSA_PSS"/>
+          <xs:enumeration value="RSA_MD5"/>
+          <xs:enumeration value="ECDSA_RAW"/>
           <xs:enumeration value="ECDSA_SHA1"/>
           <xs:enumeration value="ECDSA_SHA224"/>
           <xs:enumeration value="ECDSA_SHA256"/>
           <xs:enumeration value="ECDSA_SHA384"/>
           <xs:enumeration value="ECDSA_SHA512"/>
+          <xs:enumeration value="ECDSA_SHA3_224"/>
+          <xs:enumeration value="ECDSA_SHA3_256"/>
+          <xs:enumeration value="ECDSA_SHA3_384"/>
+          <xs:enumeration value="ECDSA_SHA3_512"/>
           <xs:enumeration value="ECDSA_RIPEMD160"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA1"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA512"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_512"/>
+          <xs:enumeration value="PLAIN_ECDSA_RIPEMD160"/>
+          <xs:enumeration value="DSA_RAW"/>
           <xs:enumeration value="DSA_SHA1"/>
+          <xs:enumeration value="DSA_SHA224"/>
           <xs:enumeration value="DSA_SHA256"/>
+          <xs:enumeration value="DSA_SHA384"/>
+          <xs:enumeration value="DSA_SHA512"/>
+          <xs:enumeration value="DSA_SHA3_224"/>
+          <xs:enumeration value="DSA_SHA3_256"/>
+          <xs:enumeration value="DSA_SHA3_384"/>
+          <xs:enumeration value="DSA_SHA3_512"/>
           <xs:enumeration value="HMAC_SHA1"/>
           <xs:enumeration value="HMAC_SHA224"/>
           <xs:enumeration value="HMAC_SHA256"/>
           <xs:enumeration value="HMAC_SHA384"/>
           <xs:enumeration value="HMAC_SHA512"/>
+          <xs:enumeration value="HMAC_SHA3_224"/>
+          <xs:enumeration value="HMAC_SHA3_256"/>
+          <xs:enumeration value="HMAC_SHA3_384"/>
+          <xs:enumeration value="HMAC_SHA3_512"/>
           <xs:enumeration value="HMAC_RIPEMD160"/>
+          <xs:enumeration value="ED25519"/>
+          <xs:enumeration value="ED448"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:element name="DSSException" type="tns:DSSException"/>
@@ -4567,6 +4843,9 @@
           <xs:enumeration value="SHA3_256"/>
           <xs:enumeration value="SHA3_384"/>
           <xs:enumeration value="SHA3_512"/>
+          <xs:enumeration value="SHAKE128"/>
+          <xs:enumeration value="SHAKE256"/>
+          <xs:enumeration value="SHAKE256_512"/>
           <xs:enumeration value="RIPEMD160"/>
           <xs:enumeration value="MD2"/>
           <xs:enumeration value="MD5"/>

@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.dss2095;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -42,6 +32,16 @@ import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS2095WithBrokenPolicyTransformsTest extends AbstractXAdESTestValidation {
 
@@ -74,7 +74,7 @@ public class DSS2095WithBrokenPolicyTransformsTest extends AbstractXAdESTestVali
 		assertNotNull(signature.getPolicyId());
 		assertNotNull(signature.getPolicyUrl());
 		assertTrue(signature.isPolicyPresent());
-		assertFalse(signature.isPolicyStatus());
+		assertFalse(signature.isPolicyDigestValid());
 		assertFalse(signature.isPolicyAsn1Processable());
 		assertFalse(signature.isPolicyZeroHash());
 		assertFalse(Utils.isStringEmpty(signature.getPolicyProcessingError()));
@@ -133,8 +133,8 @@ public class DSS2095WithBrokenPolicyTransformsTest extends AbstractXAdESTestVali
 	}
 	
 	@Override
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
-		assertEquals(0, signersDocuments.size());
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		assertNull(signersDocument);
 	}
 
 }

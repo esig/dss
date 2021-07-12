@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -50,6 +51,11 @@ public class ValidationTimeSlidingCheck extends ChainItem<XmlPCV> {
 									  LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, tokenId);
 		this.vts = vts;
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.VTS;
 	}
 
 	@Override

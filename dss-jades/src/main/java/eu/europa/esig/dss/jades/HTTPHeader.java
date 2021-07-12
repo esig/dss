@@ -22,7 +22,6 @@ package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 
 import java.io.IOException;
@@ -84,23 +83,17 @@ public class HTTPHeader implements DSSDocument {
 
 	@Override
 	public InputStream openStream() {
-		throw new DSSException("The openStream() method is not supported for HTTPHeaderDocument.");
+		throw new UnsupportedOperationException("The openStream() method is not supported for HTTPHeaderDocument.");
 	}
 
 	@Override
 	public void writeTo(OutputStream stream) throws IOException {
-		throw new DSSException("The writeTo(stream) method is not supported for HTTPHeaderDocument.");
+		throw new UnsupportedOperationException("The writeTo(stream) method is not supported for HTTPHeaderDocument.");
 	}
 
 	@Override
 	public void setName(String name) {
-		throw new DSSException("The setName(name) method is not supported for HTTPHeaderDocument.");
-	}
-
-	@Override
-	public String getAbsolutePath() {
-		// not applicable
-		return null;
+		throw new UnsupportedOperationException("The setName(name) method is not supported for HTTPHeaderDocument.");
 	}
 
 	@Override
@@ -111,17 +104,17 @@ public class HTTPHeader implements DSSDocument {
 
 	@Override
 	public void setMimeType(MimeType mimeType) {
-		throw new DSSException("The setMimeType(mimeType) method is not supported for HTTPHeaderDocument.");
+		throw new UnsupportedOperationException("The setMimeType(mimeType) method is not supported for HTTPHeaderDocument.");
 	}
 
 	@Override
 	public void save(String filePath) throws IOException {
-		throw new DSSException("The save(filePath) method is not supported for HTTPHeaderDocument.");
+		throw new UnsupportedOperationException("The save(filePath) method is not supported for HTTPHeaderDocument.");
 	}
 
 	@Override
 	public String getDigest(DigestAlgorithm digestAlgorithm) {
-		throw new DSSException("The getDigest(digestAlgorithm) method is not supported for HTTPHeaderDocument.");
+		throw new UnsupportedOperationException("The getDigest(digestAlgorithm) method is not supported for HTTPHeaderDocument.");
 	}
 
 }

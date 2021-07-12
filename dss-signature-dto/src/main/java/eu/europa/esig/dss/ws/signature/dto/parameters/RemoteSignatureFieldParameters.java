@@ -20,64 +20,140 @@
  */
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
-public class RemoteSignatureFieldParameters {
-	
+import java.io.Serializable;
+
+/**
+ * Defines signature field box for a visual PDF signature/timestamp creation
+ *
+ */
+public class RemoteSignatureFieldParameters implements Serializable {
+
+	private static final long serialVersionUID = 1048548792862251941L;
+
+	/** The Id of a field to sign, if present */
 	private String fieldId;
 
+	/** The upper left X coordinate */
 	private Float originX;
 	
+	/** The upper left Y coordinate */
 	private Float originY;
 	
+	/** The signature field width */
 	private Float width;
 	
+	/** The signature field height */
 	private Float height;
 
+	/** The page number to create the field on */
     private Integer page;
 	
+	/**
+	 * Returns the field Id to be signed
+	 *
+	 * @return {@link String}
+	 */
 	public String getFieldId() {
 		return fieldId;
 	}
 
+	/**
+	 * Sets the field Id to be signed
+	 *
+	 * NOTE: to be used only when the field is already exists within a PDF file
+	 *
+	 * @param fieldId {@link String}
+	 */
 	public void setFieldId(String fieldId) {
 		this.fieldId = fieldId;
 	}
 
+	/**
+	 * Gets the upper left X coordinate
+	 *
+	 * @return {@link Float}
+	 */
 	public Float getOriginX() {
 		return originX;
 	}
 
+	/**
+	 * Sets the upper left X coordinate
+	 *
+	 * @param originX {@link Float}
+	 */
 	public void setOriginX(Float originX) {
 		this.originX = originX;
 	}
 
+	/**
+	 * Gets the upper left Y coordinate
+	 *
+	 * @return {@link Float}
+	 */
 	public Float getOriginY() {
 		return originY;
 	}
 
+	/**
+	 * Sets the upper left Y coordinate
+	 *
+	 * @param originY {@link Float}
+	 */
 	public void setOriginY(Float originY) {
 		this.originY = originY;
 	}
 
+	/**
+	 * Gets the signature field box width
+	 *
+	 * @return {@link Float}
+	 */
 	public Float getWidth() {
 		return width;
 	}
 
+	/**
+	 * Sets the signature field box width
+	 *
+	 * @param width {@link Float}
+	 */
 	public void setWidth(Float width) {
 		this.width = width;
 	}
 
+	/**
+	 * Gets the signature field box height
+	 *
+	 * @return {@link Float}
+	 */
 	public Float getHeight() {
 		return height;
 	}
 
+	/**
+	 * Sets the signature field box height
+	 *
+	 * @param height {@link Float}
+	 */
 	public void setHeight(Float height) {
 		this.height = height;
 	}
 
+	/**
+	 * Gets the page number to create the signature on
+	 *
+	 * @return {@link Integer}
+	 */
 	public Integer getPage() {
 		return page;
 	}
 
+	/**
+	 * Sets the page number to create the signature on
+	 *
+	 * @param page {@link Integer}
+	 */
 	public void setPage(Integer page) {
 		this.page = page;
 	}

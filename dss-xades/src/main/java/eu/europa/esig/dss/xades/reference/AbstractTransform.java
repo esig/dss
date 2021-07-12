@@ -31,9 +31,11 @@ import org.w3c.dom.Element;
 import java.util.Objects;
 
 /**
- * The abstract implementation of a transfrom
+ * The abstract implementation of a transform
  */
 public abstract class AbstractTransform implements DSSTransform {
+
+	private static final long serialVersionUID = 7176619121506452500L;
 
 	/** The algorithm url string */
 	protected final String algorithm;

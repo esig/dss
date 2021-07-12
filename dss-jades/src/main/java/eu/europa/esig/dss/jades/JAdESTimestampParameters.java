@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampParameters;
 
 /**
@@ -65,7 +64,7 @@ public class JAdESTimestampParameters extends TimestampParameters {
 	 * @param canonicalizationMethod {@link String}
 	 */
 	public void setCanonicalizationMethod(String canonicalizationMethod) {
-		throw new DSSException("Canonicalization is not supported in the current version.");
+		throw new UnsupportedOperationException("Canonicalization is not supported in the current version.");
 		// TODO : this.canonicalizationMethod = canonicalizationMethod;
 	}
 

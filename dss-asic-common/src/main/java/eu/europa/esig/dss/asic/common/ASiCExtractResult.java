@@ -23,13 +23,19 @@ package eu.europa.esig.dss.asic.common;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Contains grouped documents representing an ASiC container extaction result
+ * Contains grouped documents representing an ASiC container extraction result
  */
-public class ASiCExtractResult {
+public class ASiCExtractResult implements Serializable {
+
+	private static final long serialVersionUID = -6871206656998856916L;
+
+	/** The original ASiC container */
+	private DSSDocument asicContainer;
 
 	/** The container type */
 	private ASiCContainerType containerType;
@@ -66,6 +72,24 @@ public class ASiCExtractResult {
 
 	/** The root container document (for OpenDocument) */
 	private DSSDocument rootContainer;
+
+	/**
+	 * Gets the original ASiC container
+	 *
+	 * @return {@link DSSDocument}
+	 */
+	public DSSDocument getAsicContainer() {
+		return asicContainer;
+	}
+
+	/**
+	 * Sets the original ASiC container
+	 *
+	 * @param asicContainer {@link DSSDocument}
+	 */
+	public void setAsicContainer(DSSDocument asicContainer) {
+		this.asicContainer = asicContainer;
+	}
 
 	/**
 	 * Gets the container type

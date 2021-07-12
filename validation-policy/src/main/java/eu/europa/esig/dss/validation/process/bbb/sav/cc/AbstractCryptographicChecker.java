@@ -21,13 +21,14 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
@@ -38,6 +39,12 @@ import java.util.Date;
  * Abstract class to perform cryptographic validation
  */
 public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
+
+	/** The name string for a unidentified (unsupported) algorithm */
+	private static final String ALGORITHM_UNIDENTIFIED = "UNIDENTIFIED";
+
+	/** The urn for a not identified (unsupported) algorithm */
+	private static final String ALGORITHM_UNIDENTIFIED_URN = "urn:etsi:019102:algorithm:unidentified";
 
 	/** The Encryption algorithm */
 	protected final EncryptionAlgorithm encryptionAlgorithm;
@@ -59,6 +66,9 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 
 	/** The validation constraint position */
 	protected final MessageTag position;
+
+	/** The verified cryptographic algorithm */
+	private XmlCryptographicAlgorithm cryptographicAlgorithm;
 
 	/**
 	 * Default constructor
@@ -110,12 +120,24 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	}
 
 	/**
-	 * Gets if the expiration dates are available in the policy
+	 * Gets if the expiration date if defined for the given {@code digestAlgorithm}
 	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to check expiration date for
 	 * @return TRUE if expiration constrains are defines, FALSE otherwise
 	 */
-	protected boolean isExpirationDateAvailable() {
-		return Utils.isMapNotEmpty(constraintWrapper.getExpirationTimes());
+	protected boolean isExpirationDateAvailable(DigestAlgorithm digestAlgorithm) {
+		return constraintWrapper.getExpirationDate(digestAlgorithm) != null;
+	}
+
+	/**
+	 * Gets if the expiration date if defined for the given {@code encryptionAlgorithm} and {@code keyLength}
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm} to check expiration date for
+	 * @param keyLength {@link String} used to sign the token
+	 * @return TRUE if expiration constrains are defines, FALSE otherwise
+	 */
+	protected boolean isExpirationDateAvailable(EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
+		return constraintWrapper.getExpirationDate(encryptionAlgorithm, keyLength) != null;
 	}
 
 	/**
@@ -172,10 +194,85 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	protected ChainItem<XmlCC> publicKeySizeAcceptable() {
 		return new PublicKeySizeAcceptableCheck(i18nProvider, encryptionAlgorithm, keyLengthUsedToSignThisToken, result, position, constraintWrapper);
 	}
-	
+
 	@Override
 	protected void addAdditionalInfo() {
-		collectErrorsWarnsInfos();
+		super.addAdditionalInfo();
+		result.setVerifiedAlgorithm(getAlgorithm());
+		result.setNotAfter(getNotAfter());
+	}
+
+	/**
+	 * Builds and returns the validated algorithm
+	 *
+	 * @return {@link XmlCryptographicAlgorithm}
+	 */
+	private XmlCryptographicAlgorithm getAlgorithm() {
+		if (cryptographicAlgorithm == null) {
+			cryptographicAlgorithm = new XmlCryptographicAlgorithm();
+			if (digestAlgorithm == null) {
+				// if DigestAlgorithm is not found (unable to build either SignatureAlgorithm nor DigestAlgorithm)
+				cryptographicAlgorithm.setName(ALGORITHM_UNIDENTIFIED);
+				cryptographicAlgorithm.setUri(ALGORITHM_UNIDENTIFIED_URN);
+
+			} else if (encryptionAlgorithm != null) {
+				// if EncryptionAlgorithm and DigestAlgorithm are defined
+				SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(
+						digestAlgorithm, encryptionAlgorithm, maskGenerationFunction);
+				cryptographicAlgorithm.setName(signatureAlgorithm.getName());
+				cryptographicAlgorithm.setUri(getSignatureAlgorithmUri(signatureAlgorithm));
+				cryptographicAlgorithm.setKeyLength(keyLengthUsedToSignThisToken);
+
+			} else {
+				// if only DigestAlgorithm is defined
+				cryptographicAlgorithm.setName(digestAlgorithm.getName());
+				cryptographicAlgorithm.setUri(getDigestAlgorithmUri(digestAlgorithm));
+			}
+		}
+		return cryptographicAlgorithm;
+	}
+
+	private SignatureAlgorithm getSignatureAlgorithm(DigestAlgorithm digestAlgorithm,
+											EncryptionAlgorithm encryptionAlgorithm, MaskGenerationFunction maskGenerationFunction) {
+		return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+	}
+
+	private String getSignatureAlgorithmUri(SignatureAlgorithm signatureAlgorithm) {
+		if (signatureAlgorithm != null) {
+			if (signatureAlgorithm.getUri() != null) {
+				return signatureAlgorithm.getUri();
+			}
+			if (signatureAlgorithm.getOid() != null) {
+				return signatureAlgorithm.getURIBasedOnOID();
+			}
+		}
+		return ALGORITHM_UNIDENTIFIED_URN;
+	}
+
+	private String getDigestAlgorithmUri(DigestAlgorithm digestAlgorithm) {
+		if (digestAlgorithm != null) {
+			if (digestAlgorithm.getUri() != null) {
+				return digestAlgorithm.getUri();
+			}
+			if (digestAlgorithm.getOid() != null) {
+				return digestAlgorithm.getOid();
+			}
+		}
+		return ALGORITHM_UNIDENTIFIED_URN;
+	}
+
+	private Date getNotAfter() {
+		if (constraintWrapper.isDigestAlgorithmReliable(digestAlgorithm) &&
+				constraintWrapper.isEncryptionAlgorithmReliable(encryptionAlgorithm) &&
+				constraintWrapper.isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, keyLengthUsedToSignThisToken)) {
+			Date notAfter = constraintWrapper.getExpirationDate(digestAlgorithm);
+			Date expirationEncryption = constraintWrapper.getExpirationDate(encryptionAlgorithm, keyLengthUsedToSignThisToken);
+			if (notAfter == null || (expirationEncryption != null && expirationEncryption.before(notAfter))) {
+				notAfter = expirationEncryption;
+			}
+			return notAfter;
+		}
+		return null;
 	}
 
 }

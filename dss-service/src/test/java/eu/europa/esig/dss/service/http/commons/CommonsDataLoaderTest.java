@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -41,6 +28,19 @@ import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.exception.DSSDataLoaderMultipleException;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommonsDataLoaderTest {
 
@@ -62,7 +62,7 @@ public class CommonsDataLoaderTest {
 		NativeHTTPDataLoader dataLoader2 = new NativeHTTPDataLoader();
 		byte[] bytesArrays2 = dataLoader2.get(URL_TO_LOAD);
 
-		assertTrue(Arrays.equals(bytesArray, bytesArrays2));
+		assertArrayEquals(bytesArray, bytesArrays2);
 
 		CertificateToken certificate = DSSUtils.loadCertificate(bytesArray);
 		assertNotNull(certificate);
@@ -137,7 +137,7 @@ public class CommonsDataLoaderTest {
 				() -> dataLoader.get(URL_TO_LOAD));
 		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
 
-		dataLoader.setTimeoutConnection(6000);
+		dataLoader.setTimeoutConnection(60000);
 		dataLoader.setTimeoutSocket(1);
 		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
 		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
@@ -157,7 +157,7 @@ public class CommonsDataLoaderTest {
 		DataAndUrl dataAndUrl = dataLoader.get(Arrays.asList(URL_TO_LOAD, "http://ncrl.ssc.lt/class3nqc/cacrl.crl",
 				"http://www.ssc.lt/cacert/ssc_class3nqc.crt"));
 		assertEquals(URL_TO_LOAD, dataAndUrl.getUrlString());
-		assertTrue(Arrays.equals(firstUrlData, dataAndUrl.getData()));
+		assertArrayEquals(firstUrlData, dataAndUrl.getData());
 
 		dataAndUrl = dataLoader.get(Arrays.asList("http://wrong.url", "does_not_exist", URL_TO_LOAD));
 		assertEquals(URL_TO_LOAD, dataAndUrl.getUrlString());

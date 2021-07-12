@@ -27,18 +27,37 @@ public class DSSRemoteServiceException extends RuntimeException {
 
 	private static final long serialVersionUID = 7836605176128624553L;
 
+    /**
+     * Empty constructor
+     */
 	public DSSRemoteServiceException() {
         super();
     }
 
+    /**
+     * Constructor with a message
+     *
+     * @param message {@link String}
+     */
     public DSSRemoteServiceException(String message) {
         super(message);
     }
 
+    /**
+     * Re-throwable constructor
+     *
+     * @param cause {@link Throwable}
+     */
     public DSSRemoteServiceException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Re-throwable constructor with a custom message
+     *
+     * @param message {@link String}
+     * @param cause {@link Throwable}
+     */
     public DSSRemoteServiceException(String message, Throwable cause) {
         super(message, cause);
     }

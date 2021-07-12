@@ -20,32 +20,34 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.signature.AbstractASiCWithCAdESMultipleDocumentsTestSignature;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ASiCECAdESLevelLTDoubleValidationTest extends AbstractASiCWithCAdESMultipleDocumentsTestSignature {
 
-	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
+	private ASiCWithCAdESService service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign;
 
@@ -68,10 +70,19 @@ public class ASiCECAdESLevelLTDoubleValidationTest extends AbstractASiCWithCAdES
 	}
 	
 	@Override
-	@Test
-	public void signAndVerify() {
-		super.signAndVerify();
-		super.signAndVerify();
+	protected DSSDocument sign() {
+		DSSDocument signedDocument = super.sign();
+
+		ToBeSigned dataToSign = service.getDataToSign(signedDocument, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
+		DSSDocument doubleSignedDoc = service.signDocument(signedDocument, signatureParameters, signatureValue);
+		assertNotNull(doubleSignedDoc);
+		return doubleSignedDoc;
+	}
+
+	@Override
+	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+		assertEquals(2, diagnosticData.getSignatures().size());
 	}
 	
 	@Override

@@ -20,29 +20,27 @@
  */
 package eu.europa.esig.dss.service.crl;
 
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import org.h2.jdbcx.JdbcDataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import org.h2.jdbcx.JdbcDataSource;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class JdbcCacheCrlSourceTest {
@@ -58,7 +56,8 @@ public class JdbcCacheCrlSourceTest {
 		// for testing purposes. DB view available on http://localhost:8082
 		// webServer = Server.createWebServer("-web","-webAllowOthers","-webPort","8082").start();
 		dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
-		crlSource.setDataSource(dataSource);
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		crlSource.setJdbcCacheConnector(jdbcCacheConnector);
 		assertFalse(crlSource.isTableExists());
 		crlSource.initTable();
 		assertTrue(crlSource.isTableExists());
@@ -66,7 +65,7 @@ public class JdbcCacheCrlSourceTest {
 
 	@Test
 	public void test() throws Exception {
-		CRLToken revocationToken = null;
+		CRLToken revocationToken;
 		
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.crt"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
@@ -77,7 +76,6 @@ public class JdbcCacheCrlSourceTest {
 		crlSource.setProxySource(onlineCRLSource);
 		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(revocationToken);
-		assertNotNull(revocationToken.getRevocationTokenKey());
 		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 		
 		CRLToken savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
@@ -113,7 +111,6 @@ public class JdbcCacheCrlSourceTest {
 	}
 	
 	private void compareTokens(CRLToken originalCRL, CRLToken cachedCRL) {
-		assertEquals(originalCRL.getRevocationTokenKey(), cachedCRL.getRevocationTokenKey());
 		assertEquals(originalCRL.getSignatureAlgorithm(), cachedCRL.getSignatureAlgorithm());
 		assertEquals(originalCRL.getThisUpdate(), cachedCRL.getThisUpdate());
 		assertEquals(originalCRL.getNextUpdate(), cachedCRL.getNextUpdate());
@@ -128,7 +125,7 @@ public class JdbcCacheCrlSourceTest {
 	
 	@Test
 	public void testExpired() throws SQLException {
-		CRLToken revocationToken = null;
+		CRLToken revocationToken;
 
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
@@ -139,19 +136,13 @@ public class JdbcCacheCrlSourceTest {
 		crlSource.setProxySource(onlineCRLSource);
 		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(revocationToken);
-		assertNotNull(revocationToken.getRevocationTokenKey());
 		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 
 		CRLToken savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(savedRevocationToken);
-		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 		assertEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());
 		assertEquals(RevocationOrigin.EXTERNAL, savedRevocationToken.getExternalOrigin()); // expired crl
 	}
-	
-//	@Test
-//	public void updateTest() throws SQLException {
-//	}
 
 	@AfterEach
 	public void cleanUp() throws SQLException {
@@ -163,11 +154,11 @@ public class JdbcCacheCrlSourceTest {
 	}
 	
 	@SuppressWarnings("serial")
-	private class MockJdbcCacheCRLSource extends JdbcCacheCRLSource {
+	private static class MockJdbcCacheCRLSource extends JdbcCacheCRLSource {
 		
 		@Override
-		protected void removeRevocation(RevocationToken<CRL> crlToken) {
-			super.removeRevocation(crlToken);
+		protected void removeRevocation(String revocationTokenKey) {
+			super.removeRevocation(revocationTokenKey);
 		}
 		
 	}

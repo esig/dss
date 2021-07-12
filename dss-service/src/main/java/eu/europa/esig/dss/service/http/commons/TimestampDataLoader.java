@@ -25,6 +25,8 @@ package eu.europa.esig.dss.service.http.commons;
  */
 public class TimestampDataLoader extends CommonsDataLoader {
 
+	private static final long serialVersionUID = 7215904514623575104L;
+
 	private static final String TIMESTAMP_QUERY_CONTENT_TYPE = "application/timestamp-query";
 
 	/**
@@ -41,7 +43,7 @@ public class TimestampDataLoader extends CommonsDataLoader {
 	 */
 	@Override
 	public void setContentType(final String contentType) {
-		// do nothing: in case of TimestampDataLoader the contentType is fixed.
+		throw new UnsupportedOperationException("Content type change is not supported by this implementation!");
 	}
 
 }

@@ -28,14 +28,15 @@ import eu.europa.esig.dss.validation.SignaturePolicy;
 public class EmptySignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
 	@Override
-	public boolean canValidate() {
-		SignaturePolicy signaturePolicy = getSignaturePolicy();
+	public boolean canValidate(SignaturePolicy signaturePolicy) {
 		return signaturePolicy.getPolicyContent() == null && !signaturePolicy.isZeroHash();
 	}
 
 	@Override
-	public void validate() {
-		setStatus(getSignaturePolicy().getIdentifier().isEmpty());
+	public SignaturePolicyValidationResult validate(SignaturePolicy signaturePolicy) {
+		SignaturePolicyValidationResult validationResult = new SignaturePolicyValidationResult();
+		validationResult.setDigestValid(signaturePolicy.getIdentifier().isEmpty());
+		return validationResult;
 	}
 
 }

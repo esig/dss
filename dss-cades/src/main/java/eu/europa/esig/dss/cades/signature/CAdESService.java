@@ -20,23 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.CMSTypedData;
-import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.operator.DigestCalculatorProvider;
-import org.bouncycastle.tsp.TSPException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -60,6 +43,22 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSSignedDataGenerator;
+import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.operator.DigestCalculatorProvider;
+import org.bouncycastle.tsp.TSPException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * CAdES implementation of DocumentSignatureService
@@ -67,6 +66,8 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 public class CAdESService extends
 		AbstractSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> 
 		implements CounterSignatureService<CAdESCounterSignatureParameters> {
+
+	private static final long serialVersionUID = -7744554779153433450L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESService.class);
 
@@ -85,9 +86,8 @@ public class CAdESService extends
 
 	@Override
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, CAdESSignatureParameters parameters) {
-		if (tspSource == null) {
-			throw new DSSException("A TSPSource is required !");
-		}
+		Objects.requireNonNull(tspSource, "A TSPSource is required !");
+
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
 		try {
@@ -134,8 +134,9 @@ public class CAdESService extends
 		assertSigningDateInCertificateValidityRange(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
 		assertSignaturePackaging(packaging);
-
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
+		signatureValue = ensureSignatureValue(signatureAlgorithm, signatureValue);
+
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
 
@@ -189,7 +190,7 @@ public class CAdESService extends
 	 *            set of the driving signing parameters
 	 * @param originalCmsSignedData
 	 *            the signed data extracted from an existing signature or null
-	 * @return
+	 * @return {@link DSSDocument} toSignData
 	 */
 	private DSSDocument getToSignData(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, final CMSSignedData originalCmsSignedData) {
 		final List<DSSDocument> detachedContents = parameters.getDetachedContents();
@@ -246,6 +247,8 @@ public class CAdESService extends
 	}
 
 	/**
+	 * This method returns the extension profile to be used for a CAdES signature augmentation
+	 *
 	 * @param parameters
 	 *            set of driving signing parameters
 	 * @return {@code CAdESSignatureExtension} related to the predefine profile
@@ -261,7 +264,7 @@ public class CAdESService extends
 			case CAdES_BASELINE_LTA:
 				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier);
 			default:
-				throw new DSSException("Unsupported signature format : " + signatureLevel);
+				throw new IllegalArgumentException("Unsupported signature format : " + signatureLevel);
 		}
 	}
 
@@ -297,7 +300,7 @@ public class CAdESService extends
 	 */
 	private void assertSignaturePackaging(final SignaturePackaging packaging) {
 		if ((packaging != SignaturePackaging.ENVELOPING) && (packaging != SignaturePackaging.DETACHED)) {
-			throw new DSSException("Unsupported signature packaging: " + packaging);
+			throw new IllegalArgumentException("Unsupported signature packaging: " + packaging);
 		}
 	}
 
@@ -371,6 +374,7 @@ public class CAdESService extends
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
 		assertSigningDateInCertificateValidityRange(parameters);
 		assertCounterSignaturePossible(parameters);
+		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
 		CMSSignedData originalCMSSignedData = DSSUtils.toCMSSignedData(signatureDocument);
 		
@@ -384,7 +388,7 @@ public class CAdESService extends
 
 	private void assertCounterSignaturePossible(CAdESCounterSignatureParameters parameters) {
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
-			throw new DSSException(String.format("A counter signature with a level '%s' is not supported! "
+			throw new UnsupportedOperationException(String.format("A counter signature with a level '%s' is not supported! "
 					+ "Please, use CAdES-BASELINE-B", parameters.getSignatureLevel()));
 		}
 	}

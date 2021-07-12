@@ -20,14 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -38,6 +34,13 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractXAdESCounterSignatureTest extends AbstractCounterSignatureTest<XAdESSignatureParameters, 
 				XAdESTimestampParameters, XAdESCounterSignatureParameters> {
@@ -72,6 +75,29 @@ public abstract class AbstractXAdESCounterSignatureTest extends AbstractCounterS
 	protected boolean isBaselineLTA() {
 		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
 		return SignatureLevel.XAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.XAdES_A.equals(signatureLevel);
+	}
+
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+
+		Set<SignatureWrapper> allCounterSignatures = diagnosticData.getAllCounterSignatures();
+		assertTrue(Utils.isCollectionNotEmpty(allCounterSignatures));
+		for (SignatureWrapper signatureWrapper : allCounterSignatures) {
+			boolean counterSignatureReferenceFound = false;
+			boolean counterSignedSignatureValueFound = false;
+			for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+				if (DigestMatcherType.COUNTER_SIGNATURE.equals(digestMatcher.getType())) {
+					counterSignatureReferenceFound = true;
+				} else if (DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(digestMatcher.getType())) {
+					counterSignedSignatureValueFound = true;
+				}
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+			}
+			assertTrue(counterSignatureReferenceFound);
+			assertTrue(counterSignedSignatureValueFound);
+		}
 	}
 
 	@Override

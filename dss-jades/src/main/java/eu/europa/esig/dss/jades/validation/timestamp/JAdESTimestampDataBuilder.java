@@ -207,7 +207,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			return new InMemoryDocument(messageImprint);
 			
 		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message-imprint!");
+			throw new DSSException(String.format("An error occurred while building a message-imprint for '%s'! Reason : %s",
+					JAdESHeaderParameterNames.SIG_R_TST, e.getMessage()), e);
 		}
 		
 	}
@@ -273,7 +274,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			return new InMemoryDocument(messageImprint);
 			
 		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message-imprint!");
+			throw new DSSException(String.format("An error occurred while building a message-imprint for '%s'! Reason : %s",
+					JAdESHeaderParameterNames.RFS_TST, e.getMessage()), e);
 		}
 		
 	}
@@ -401,7 +403,8 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			
 			
 		} catch (IOException e) {
-			throw new DSSException("An error occurred during building of a message-imprint!");
+			throw new DSSException(String.format("An error occurred while building a message-imprint for '%s'! Reason : %s",
+					JAdESHeaderParameterNames.ARC_TST, e.getMessage()), e);
 		}
 	}
 

@@ -20,20 +20,29 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRefIdentifier;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+/**
+ * An identifier used for an OCSP token reference
+ *
+ */
 public final class OCSPRefIdentifier extends RevocationRefIdentifier {
 
 	private static final long serialVersionUID = 3113937346660525679L;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param ocspRef {@link OCSPRef}
+	 */
 	protected OCSPRefIdentifier(OCSPRef ocspRef) {
 		super(getDigest(ocspRef));
 	}

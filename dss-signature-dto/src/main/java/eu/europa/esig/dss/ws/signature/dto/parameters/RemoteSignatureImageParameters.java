@@ -20,104 +20,229 @@
  */
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
-import java.io.Serializable;
-
+import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.ws.dto.RemoteColor;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
+import java.io.Serializable;
+
+/**
+ * The parameters to be used for a PDF visual signature creation
+ *
+ */
 @SuppressWarnings("serial")
 public class RemoteSignatureImageParameters implements Serializable {
 
+	/** Visual signature horizontal position on the pdf page */
 	private VisualSignatureAlignmentHorizontal alignmentHorizontal;
 
+	/** Visual signature vertical position on the pdf page */
 	private VisualSignatureAlignmentVertical alignmentVertical;
 
+	/** Defines the image scaling behavior within a signature field with a fixed size */
+	private ImageScaling imageScaling;
+
+	/** The signature field's background color */
 	private RemoteColor backgroundColor;
 
+	/** The signature image DPIs */
     private Integer dpi;
 
+    /** The visual signature image document */
     private RemoteDocument image;
 
+    /** The rotation of the signature field */
 	private VisualSignatureRotation rotation;
-	
+
+	/** The signature field parameters */
 	private RemoteSignatureFieldParameters fieldParameters;
 
+	/** The signature field text parameters */
     private RemoteSignatureImageTextParameters textParameters;
 
+    /** The visual signature zoom */
     private Integer zoom;
 
+	/**
+	 * Gets the signature field horizontal alignment on the page
+	 *
+	 * @return {@link VisualSignatureAlignmentHorizontal}
+	 */
 	public VisualSignatureAlignmentHorizontal getAlignmentHorizontal() {
         return this.alignmentHorizontal;
     }
 
+	/**
+	 * Sets the signature field horizontal alignment on the page
+	 *
+	 * @param alignmentHorizontal {@link VisualSignatureAlignmentHorizontal}
+	 */
 	public void setAlignmentHorizontal(final VisualSignatureAlignmentHorizontal alignmentHorizontal) {
         this.alignmentHorizontal = alignmentHorizontal;
     }
 
+	/**
+	 * Gets the signature field vertical alignment on the page
+	 *
+	 * @return {@link VisualSignatureAlignmentHorizontal}
+	 */
 	public VisualSignatureAlignmentVertical getAlignmentVertical() {
         return this.alignmentVertical;
     }
 
+	/**
+	 * Sets the signature field vertical alignment on the page
+	 *
+	 * @param alignmentVertical {@link VisualSignatureAlignmentVertical}
+	 */
 	public void setAlignmentVertical(final VisualSignatureAlignmentVertical alignmentVertical) {
         this.alignmentVertical = alignmentVertical;
     }
 
+	/**
+	 * Gets the image scaling
+	 *
+	 * @return {@link ImageScaling}
+	 */
+	public ImageScaling getImageScaling() {
+		return imageScaling;
+	}
+
+	/**
+	 * Sets the image scaling behavior for a signature field with a fixed size
+	 *
+	 * @param imageScaling {@link ImageScaling}
+	 */
+	public void setImageScaling(ImageScaling imageScaling) {
+		this.imageScaling = imageScaling;
+	}
+
+	/**
+	 * Gets the signature field background color
+	 *
+	 * @return {@link RemoteColor}
+	 */
 	public RemoteColor getBackgroundColor() {
         return this.backgroundColor;
     }
 
+	/**
+	 * Sets the signature field background color
+	 *
+	 * @param backgroundColor {@link RemoteColor}
+	 */
 	public void setBackgroundColor(final RemoteColor backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
-    public Integer getDpi() {
+	/**
+	 * Gets the image dpi
+	 *
+	 * @return {@link Integer}
+	 */
+	public Integer getDpi() {
         return this.dpi;
     }
 
-    public void setDpi(final Integer dpi) {
+	/**
+	 * Sets the image dpi
+	 *
+	 * @param dpi {@link Integer}
+	 */
+	public void setDpi(final Integer dpi) {
         this.dpi = dpi;
     }
 
-    public RemoteDocument getImage() {
+	/**
+	 * Gets the image document
+	 *
+	 * @return {@link RemoteDocument}
+	 */
+	public RemoteDocument getImage() {
         return this.image;
     }
 
-    public void setImage(final RemoteDocument image) {
+	/**
+	 * Sets the image document
+	 *
+	 * @param image {@link RemoteDocument}
+	 */
+	public void setImage(final RemoteDocument image) {
         this.image = image;
     }
 
+	/**
+	 * Gets the visual signature field parameters
+	 *
+	 * @return {@link RemoteSignatureFieldParameters}
+	 */
 	public RemoteSignatureFieldParameters getFieldParameters() {
 		return fieldParameters;
 	}
 
+	/**
+	 * Sets the visual signature field parameters
+	 *
+	 * @param fieldParameters {@link RemoteSignatureFieldParameters}
+	 */
 	public void setFieldParameters(RemoteSignatureFieldParameters fieldParameters) {
 		this.fieldParameters = fieldParameters;
 	}
 
+	/**
+	 * Gets the text parameters
+	 *
+	 * @return {@link RemoteSignatureImageTextParameters}
+	 */
     public RemoteSignatureImageTextParameters getTextParameters() {
         return this.textParameters;
     }
 
-    public void setTextParameters(final RemoteSignatureImageTextParameters textParameters) {
+	/**
+	 * Sets the text parameters
+	 *
+	 * @param textParameters {@link RemoteSignatureImageTextParameters}
+	 */
+	public void setTextParameters(final RemoteSignatureImageTextParameters textParameters) {
         this.textParameters = textParameters;
     }
 
+	/**
+	 * Gets the signature field rotation
+	 *
+	 * @return {@link VisualSignatureRotation}
+	 */
 	public VisualSignatureRotation getRotation() {
         return this.rotation;
     }
 
+	/**
+	 * Sets the signature field rotation
+	 *
+	 * @param rotation {@link VisualSignatureRotation}
+	 */
 	public void setRotation(final VisualSignatureRotation rotation) {
         this.rotation = rotation;
     }
 
-    public Integer getZoom() {
+	/**
+	 * Gets signature field zoom
+	 *
+	 * @return {@link Integer}
+	 */
+	public Integer getZoom() {
         return this.zoom;
     }
 
-    public void setZoom(final Integer zoom) {
+	/**
+	 * Sets the signature field zoom
+	 *
+	 * @param zoom {@link Integer}
+	 */
+	public void setZoom(final Integer zoom) {
         this.zoom = zoom;
     }
 

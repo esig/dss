@@ -30,6 +30,8 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
  */
 public final class XPathEnvelopedSignatureTransform extends XPathTransform {
 
+	private static final long serialVersionUID = 1425638155172234234L;
+
 	/**
 	 * This XPath filter allows to remove all ds:Signature elements from the XML
 	 */

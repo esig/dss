@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.enumerations;
 
 /**
- * Defines ETSI EN 319 412-5 types
+ * Defines QCStatements based on ETSI EN 319 412-5
  */
 public enum QCStatement implements OidDescription {
 
@@ -62,25 +62,12 @@ public enum QCStatement implements OidDescription {
 
 	/**
 	 * QCStatement claiming that the certificate is a EU qualified certificate of a particular type
-	 * esi4-qcStatement-6 QC-STATEMENT ::= { SYNTAX QcType IDENTIFIED
-	 * BY id-etsi-qcs-QcType }
+	 * esi4-qcStatement-6 QC-STATEMENT ::= { SYNTAX QcType IDENTIFIED BY id-etsi-qcs-QcType }
 	 * Id-etsi-qcs-QcType OBJECT IDENTIFIER ::= { id-etsi-qcs 6 }
 	 * QcType::= SEQUENCE {
-	 * qcType OBJECT IDENTIFIER {{id-etsi-qct-esign | id-etsi-qct-eseal |
-	 * id-etsi-qct-web, ...}}}
-	 * -- QC type identifiers
-	 * id-etsi-qct-esign OBJECT IDENTIFIER ::= { id-etsi-qcs-QcType 1 }
-	 * -- Certificate for electronic signatures as defined in Regulation (EU) No 910/2014
-	 * id-etsi-qct-eseal OBJECT IDENTIFIER ::= { id-etsi-qcs-QcType 2 }
-	 * -- Certificate for electronic seals as defined in Regulation (EU) No 910/2014
-	 * id-etsi-qct-web OBJECT IDENTIFIER ::= { id-etsi-qcs-QcType 3 }
-	 * -- Certificate for website authentication as defined in Regulation (EU) No 910/2014
+	 * qcType OBJECT IDENTIFIER {{id-etsi-qct-esign | id-etsi-qct-eseal | id-etsi-qct-web, ...}}}
 	 */
-	QCT_ESIGN("qc-type-esign", "0.4.0.1862.1.6.1"),
-
-	QCT_ESEAL("qc-type-eseal", "0.4.0.1862.1.6.2"),
-
-	QCT_WEB("qc-type-web", "0.4.0.1862.1.6.3");
+	QC_TYPE("qc-type", "0.4.0.1862.1.6");
 
 	private final String description;
 	private final String oid;

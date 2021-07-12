@@ -21,14 +21,13 @@
 package eu.europa.esig.dss.policy;
 
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.policy.jaxb.Algo;
-import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
+import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
@@ -42,9 +41,6 @@ import eu.europa.esig.dss.policy.jaxb.UnsignedAttributesConstraints;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. It
@@ -68,40 +64,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	 */
 	public EtsiValidationPolicy(ConstraintsParameters policy) {
 		this.policy = policy;
-	}
-
-	@Override
-	public Date getAlgorithmExpirationDate(final String algorithm, Context context, SubContext subContext) {
-		CryptographicConstraint signatureCryptographicConstraint = getCertificateCryptographicConstraint(context, subContext);
-		if (signatureCryptographicConstraint != null) {
-			return extractExpirationDate(algorithm, signatureCryptographicConstraint);
-		}
-		signatureCryptographicConstraint = getCertificateCryptographicConstraint(Context.SIGNATURE, SubContext.SIGNING_CERT);
-		if (signatureCryptographicConstraint != null) {
-			return extractExpirationDate(algorithm, signatureCryptographicConstraint);
-		}
-		return null;
-	}
-
-	private Date extractExpirationDate(final String algorithm, CryptographicConstraint signatureCryptographicConstraint) {
-		AlgoExpirationDate algoExpirationDate = signatureCryptographicConstraint.getAlgoExpirationDate();
-		String dateFormat = DateUtils.DEFAULT_DATE_FORMAT;
-		if (algoExpirationDate != null) {
-			if (algoExpirationDate.getFormat() != null) {
-				dateFormat = algoExpirationDate.getFormat();
-			}
-			List<Algo> algos = algoExpirationDate.getAlgo();
-			String foundExpirationDate = null;
-			for (Algo algo : algos) {
-				if (algo.getValue().equalsIgnoreCase(algorithm)) {
-					foundExpirationDate = algo.getDate();
-				}
-			}
-			if (foundExpirationDate != null) {
-				return DateUtils.parseDate(dateFormat, foundExpirationDate);
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -563,10 +525,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getRevocationDataNextUpdatePresentConstraint(Context context, SubContext subContext) {
+	public LevelConstraint getCRLNextUpdatePresentConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getRevocationDataNextUpdatePresent();
+			return certificateConstraints.getCRLNextUpdatePresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getOCSPNextUpdatePresentConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getOCSPNextUpdatePresent();
 		}
 		return null;
 	}
@@ -594,6 +565,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getNotOnHold();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationIssuerNotExpiredConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRevocationIssuerNotExpired();
 		}
 		return null;
 	}
@@ -644,10 +624,91 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext) {
+	public LevelConstraint getCertificatePolicyQualificationIdsConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getQCStatementIds();
+			return certificateConstraints.getPolicyQualificationIds();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificatePolicySupportedByQSCDIdsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPolicySupportedByQSCDIds();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateQCComplianceConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcCompliance();
+		}
+		return null;
+	}
+
+	@Override
+	public ValueConstraint getCertificateQcEuLimitValueCurrencyConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcEuLimitValueCurrency();
+		}
+		return null;
+	}
+
+	@Override
+	public IntValueConstraint getCertificateMinQcEuLimitValueConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getMinQcEuLimitValue();
+		}
+		return null;
+	}
+
+	@Override
+	public IntValueConstraint getCertificateMinQcEuRetentionPeriodConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getMinQcEuRetentionPeriod();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateQcSSCDConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcSSCD();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateQcEuPDSLocationConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcEuPDSLocation();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateQcTypeConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcType();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateQcCCLegislationConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQcLegislationCountryCodes();
 		}
 		return null;
 	}
@@ -662,28 +723,55 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateQualificationConstraint(Context context, SubContext subContext) {
-		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getQualification();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext) {
-		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getSupportedByQSCD();
-		}
-		return null;
-	}
-
-	@Override
 	public LevelConstraint getCertificateIssuedToLegalPersonConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getIssuedToLegalPerson();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateSemanticsIdentifierForNaturalPersonConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSemanticsIdentifierForNaturalPerson();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateSemanticsIdentifierForLegalPersonConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSemanticsIdentifierForLegalPerson();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificatePS2DQcTypeRolesOfPSPConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPSD2QcTypeRolesOfPSP();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificatePS2DQcCompetentAuthorityNameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPSD2QcCompetentAuthorityName();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificatePS2DQcCompetentAuthorityIdConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPSD2QcCompetentAuthorityId();
 		}
 		return null;
 	}
@@ -729,15 +817,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
 		if (signedAttributeConstraints != null) {
 			return signedAttributeConstraints.getCertDigestMatch();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getAllSigningCertificateDigestValuesMatchConstraint(Context context) {
-		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
-		if (signedAttributeConstraints != null) {
-			return signedAttributeConstraints.getAllCertDigestsMatch();
 		}
 		return null;
 	}
@@ -833,6 +912,33 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getTimestampTSAGeneralNamePresent() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTSAGeneralNamePresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTimestampTSAGeneralNameContentMatch() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTSAGeneralNameContentMatch();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTimestampTSAGeneralNameOrderMatch() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTSAGeneralNameOrderMatch();
+		}
+		return null;
+	}
+
+	@Override
 	public TimeConstraint getRevocationFreshnessConstraint() {
 		RevocationConstraints revocationConstraints = getRevocationConstraints();
 		if (revocationConstraints != null) {
@@ -855,6 +961,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
 		if (signedAttributeConstraints != null) {
 			return signedAttributeConstraints.getContentTimeStamp();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getContentTimestampMessageImprintConstraint(Context context) {
+		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
+		if (signedAttributeConstraints != null) {
+			return signedAttributeConstraints.getContentTimeStampMessageImprint();
 		}
 		return null;
 	}

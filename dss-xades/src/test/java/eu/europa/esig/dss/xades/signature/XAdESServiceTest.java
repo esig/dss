@@ -20,21 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -56,6 +42,18 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESServiceTest extends PKIFactoryAccess {
 	
@@ -79,17 +77,21 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, null));
         assertEquals("SignatureParameters cannot be null!", exception.getMessage());
 		
-        exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("Signing Certificate is not defined!", exception.getMessage());
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         
         signatureParameters.setGenerateTBSWithoutCertificate(true);
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("Cannot create a SignatureBuilder. SignaturePackaging is not defined!", exception.getMessage());
         signatureParameters.setGenerateTBSWithoutCertificate(false);
 
+		signatureParameters.setSignWithNotYetValidCertificate(true);
+		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+		assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
+
         signatureParameters.setSignWithExpiredCertificate(true);
-        exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("Signing Certificate is not defined!", exception.getMessage());
+		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+		assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         
         signatureParameters.setSigningCertificate(getSigningCert());
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
@@ -133,7 +135,8 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setReferences(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.setRootDocument(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
+        signatureParameters.setRootDocument(DomUtils.getSecureDocumentBuilderFactory()
+				.newDocumentBuilder().newDocument());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setSignatureTimestampParameters(new XAdESTimestampParameters());
@@ -193,19 +196,18 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 		assertEquals("SignaturePackaging shall be defined!", exception.getMessage());
 
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		exception = assertThrows(DSSException.class, () -> signAndValidate(documents, signatureParameters));
+		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documents, signatureParameters));
 		assertEquals("All documents in the list to be signed shall have names!", exception.getMessage());
 
 		documentToSign1.setName("doc");
 		documentToSign2.setName("doc");
 		final List<DSSDocument> docsWithName = Arrays.asList(documentToSign1, documentToSign2);
-		exception = assertThrows(DSSException.class, () -> signAndValidate(docsWithName, signatureParameters));
-		assertEquals("The documents to be signed shall have different names! "
-				+ "The name 'doc' appears multiple times.", exception.getMessage());
+		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(docsWithName, signatureParameters));
+		assertEquals("The documents to be signed shall have different names! The name 'doc' appears multiple times.", exception.getMessage());
 		
 		documentToSign2.setName("anotherDoc");
-		exception = assertThrows(DSSException.class, () -> signAndValidate(documentToSign, signatureParameters));
-		assertEquals("Signing Certificate is not defined!", exception.getMessage());
+		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+		assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
 		signatureParameters.setSigningCertificate(getSigningCert());
 		exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
@@ -289,7 +291,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 		contentTimestamp.setCanonicalizationMethod(null);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 
-		exception = assertThrows(DSSException.class, () -> service.getDataToSign(document, signatureParameters));
+		exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(document, signatureParameters));
 		assertEquals("Unable to create a timestamp with empty canonicalization method. "
 				+ "See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.", exception.getMessage());
 	}

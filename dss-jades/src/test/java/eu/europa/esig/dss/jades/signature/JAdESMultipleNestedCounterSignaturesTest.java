@@ -20,29 +20,28 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JWSConverter;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JAdESMultipleNestedCounterSignaturesTest extends AbstractJAdESTestValidation {
 
@@ -164,7 +163,7 @@ public class JAdESMultipleNestedCounterSignaturesTest extends AbstractJAdESTestV
 		newCounterSignatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		newCounterSignatureParameters.setJwsSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
 		
-		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(secondCounterSignedDocument, newCounterSignatureParameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(secondCounterSignedDocument, newCounterSignatureParameters));
 		assertEquals("Unable to extend a Compact JAdES Signature with id '" + secondCounterSignatureId + "'", exception.getMessage());
 
 		DSSDocument clearEtsiUIncorporation = JWSConverter.fromEtsiUWithBase64UrlToClearJsonIncorporation(thirdCounterSignedDocument);

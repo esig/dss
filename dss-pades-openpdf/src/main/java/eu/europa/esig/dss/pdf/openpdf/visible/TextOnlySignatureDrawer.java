@@ -20,74 +20,60 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.DefaultFontMapper;
+import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfTemplate;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * iText drawer used for visual signatures creation with text data only
+ *
+ */
 public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	
+	/**
+	 * Initialized font
+	 *
+	 */
 	private Font iTextFont;
 	
-	private ITextFontMetrics iTextFontMetrics;
-	
 	@Override
-	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException {
-		super.init(signatureFieldId, parameters, appearance);
+	public void init(SignatureImageParameters parameters, PdfReader reader, PdfSignatureAppearance appearance) {
+		super.init(parameters, reader, appearance);
 		this.iTextFont = initFont();
 	}
 
 	@Override
-	public ITextVisualSignatureAppearance buildSignatureFieldBox() {
-		ITextFontMetrics iTextFontMetrics = getITextFontMetrics();
-		return new TextOnlyAppearenceRectangleBuilder(parameters, iTextFontMetrics, getProperSize()).build();
-	}
-	
-	private ITextFontMetrics getITextFontMetrics() {
-		if (iTextFontMetrics == null) {
-			iTextFontMetrics = new ITextFontMetrics(iTextFont.getBaseFont());
-		}
-		return iTextFontMetrics;
-	}
-
-	@Override
 	public void draw() {
-
-		String text = parameters.getTextParameters().getText();
-		
 		appearance.setRender(PdfSignatureAppearance.SignatureRenderDescription);
-		
+		SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
+
+		String signatureFieldId = parameters.getFieldParameters().getFieldId();
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
-
-			appearance.setLayer2Font(iTextFont);
-			appearance.setLayer2Text(text);
-			
 		} else {
-			ITextVisualSignatureAppearance appearenceRectangle = buildSignatureFieldBox();
-			Rectangle iTextRectangle = toITextRectangle(appearenceRectangle);
-			
+			Rectangle iTextRectangle = toITextRectangle(dimensionAndPosition);
 			appearance.setVisibleSignature(iTextRectangle, parameters.getFieldParameters().getPage()); // defines signature field borders
-			showText(iTextFontMetrics, iTextRectangle);
 		}
 
+		drawText(dimensionAndPosition);
 	}
 
-	private Font initFont() throws IOException {
+	private Font initFont() {
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
 		DSSFont dssFont = textParameters.getFont();
 		BaseFont baseFont = getBaseFont(dssFont);
@@ -115,40 +101,39 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			return fontMapper.awtToPdf(dssFont.getJavaFont());
 		}
 	}
-	
-	private float getProperSize() {
-		float size = parameters.getTextParameters().getFont().getSize();
-		size *= ImageUtils.getScaleFactor(parameters.getZoom()); // scale text block
-		return size;
+
+	@Override
+	protected ITextDSSFontMetrics getDSSFontMetrics() {
+		return new ITextDSSFontMetrics(iTextFont.getBaseFont());
 	}
 	
-	private void showText(ITextFontMetrics iTextFontMetrics, Rectangle sigFieldRect) {
-		
-		SignatureImageTextParameters textParameters = parameters.getTextParameters();
-		String text = textParameters.getText();
+	private void drawText(SignatureFieldDimensionAndPosition dimensionAndPosition) {
 
-		float size = getProperSize();
+		ITextDSSFontMetrics iTextFontMetrics = getDSSFontMetrics();
+		SignatureImageTextParameters textParameters = parameters.getTextParameters();
+		String text = dimensionAndPosition.getText();
+
+		float size = dimensionAndPosition.getTextSize();
 		
 		PdfTemplate layer = appearance.getLayer(2);
 		layer.setFontAndSize(iTextFont.getBaseFont(), size);
-		
-		Rectangle boundingRectangle = new Rectangle(sigFieldRect.getWidth(), sigFieldRect.getHeight()); // defines text field borders
-		boundingRectangle.setBackgroundColor(textParameters.getBackgroundColor());
-		layer.rectangle(boundingRectangle);
-		
-		layer.setBoundingBox(boundingRectangle);
+
+		Rectangle textRectangle = new Rectangle(dimensionAndPosition.getTextBoxX(), dimensionAndPosition.getTextBoxY(),
+				dimensionAndPosition.getTextBoxWidth() + dimensionAndPosition.getTextBoxX(),
+				dimensionAndPosition.getTextBoxHeight() + dimensionAndPosition.getTextBoxY());
+		textRectangle.setBackgroundColor(textParameters.getBackgroundColor());
+		layer.rectangle(textRectangle);
+
 		layer.setColorFill(textParameters.getTextColor());
 		
 		String[] lines = iTextFontMetrics.getLines(text);
 		
 		layer.beginText();
 		
-		// required with iText in order to not cut the bottom part of characters
-		float descentPoint = iTextFontMetrics.getDescentPoint(lines[0], size);
-		
 		// compute initial position
-		float y = boundingRectangle.getHeight() - textParameters.getPadding() - descentPoint;
-		float x = textParameters.getPadding();
+		float x = dimensionAndPosition.getTextX();
+		float y = dimensionAndPosition.getTextY() + dimensionAndPosition.getTextHeight() -
+				iTextFontMetrics.getDescentPoint(lines[0], size);
 		
 		layer.moveText(x, y);
 		layer.newlineText();
@@ -162,10 +147,10 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			float lineWidth = iTextFontMetrics.getWidth(line, size);
 			switch (textParameters.getSignerTextHorizontalAlignment()) {
 				case RIGHT:
-					offsetX = boundingRectangle.getWidth() - lineWidth - textParameters.getPadding() * 2 - previousOffset;
+					offsetX = dimensionAndPosition.getTextBoxWidth() - lineWidth - textParameters.getPadding() * 2 - previousOffset;
 					break;
 				case CENTER:
-					offsetX = (boundingRectangle.getWidth() - lineWidth) / 2 - textParameters.getPadding() - previousOffset;
+					offsetX = (dimensionAndPosition.getTextBoxWidth() - lineWidth) / 2 - textParameters.getPadding() - previousOffset;
 					break;
 				default:
 					break;

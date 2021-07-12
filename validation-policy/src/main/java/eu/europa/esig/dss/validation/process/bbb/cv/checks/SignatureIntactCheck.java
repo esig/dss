@@ -38,7 +38,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 public class SignatureIntactCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** Token to check */
-	private final TokenProxy token;
+	protected final TokenProxy token;
 
 	/** The validation context */
 	private final Context context;
@@ -90,11 +90,6 @@ public class SignatureIntactCheck<T extends XmlConstraintsConclusion> extends Ch
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.SIG_CRYPTO_FAILURE;
-	}
-
-	@Override
-	protected String buildAdditionalInfo() {
-		return i18nProvider.getMessage(MessageTag.TOKEN_ID, token.getId());
 	}
 
 }

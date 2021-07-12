@@ -20,27 +20,23 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
-
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+
+import java.util.Objects;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
@@ -80,27 +76,17 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private RevocationSource<CRL> crlSource;
 
 	/**
-	 * The data loader used to access AIA certificate source.
+	 * Defines a revocation data loading strategy used to fetch OCSP or CRL for validating certificates.
+	 *
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategy} is used to extract OCSP token first and CRL after
 	 */
-	private DataLoader dataLoader;
+	private RevocationDataLoadingStrategy revocationDataLoadingStrategy = new OCSPFirstRevocationDataLoadingStrategy();
 
 	/**
-	 * This variable contains the {@code ListRevocationSource} extracted from the
-	 * signatures to validate.
+	 * The AIA source used to download a certificate's issuer by the AIA URI(s)
+	 * defining within a certificate.
 	 */
-	private ListRevocationSource<CRL> signatureCRLSource;
-
-	/**
-	 * This variable contains the {@code ListRevocationSource} extracted from the
-	 * signatures to validate.
-	 */
-	private ListRevocationSource<OCSP> signatureOCSPSource;
-	
-	/**
-	 * This variable contains the {@code ListCertificateSource} extracted from the
-	 * signatures to validate.
-	 */
-	private ListCertificateSource signatureCertificateSource;
+	private AIASource aiaSource;
 
 	/**
 	 * This variable set the default Digest Algorithm what will be used for calculation
@@ -150,6 +136,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private StatusAlert alertOnUncoveredPOE = new LogOnStatusAlert(Level.WARN);
 
 	/**
+	 * This variable set the behavior to follow in case of an expired signature.
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert alertOnExpiredSignature = new ExceptionOnStatusAlert();
+
+	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
 	 * untrusted certificate chains.
 	 * 
@@ -171,48 +164,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * only a profile -B signatures can be created.
 	 *
 	 * @param simpleCreationOnly
-	 *            if true the {@code CommonCertificateVerifier} will not contain {@code DataLoader}.
+	 *            if true the {@code CommonCertificateVerifier} will not contain {@code AIASource}.
 	 */
 	public CommonCertificateVerifier(final boolean simpleCreationOnly) {
 		LOG.info("+ New CommonCertificateVerifier created.");
 		if (!simpleCreationOnly) {
-			dataLoader = new NativeHTTPDataLoader();
+			this.aiaSource = new DefaultAIASource();
 		}
-	}
-
-	/**
-	 * The constructor with key parameters.
-	 *
-	 * @param trustedCertSources
-	 *            the reference to the trusted certificate sources.
-	 * @param crlSource
-	 *            contains the reference to the {@code OCSPSource}.
-	 * @param ocspSource
-	 *            contains the reference to the {@code CRLSource}.
-	 * @param dataLoader
-	 *            contains the reference to a data loader used to access AIA certificate source.
-	 */
-	public CommonCertificateVerifier(final List<CertificateSource> trustedCertSources, final CRLSource crlSource, final OCSPSource ocspSource,
-			final DataLoader dataLoader) {
-
-		LOG.info("+ New CommonCertificateVerifier created with parameters.");
-		this.trustedCertSources = new ListCertificateSource(trustedCertSources);
-		this.crlSource = crlSource;
-		this.ocspSource = ocspSource;
-		this.dataLoader = dataLoader;
-		if (dataLoader == null) {
-			LOG.warn("DataLoader is null. It's required to access AIA certificate source");
-		}
-	}
-
-	@Override
-	public ListCertificateSource getTrustedCertSources() {
-		return trustedCertSources;
-	}
-
-	@Override
-	public RevocationSource<OCSP> getOcspSource() {
-		return ocspSource;
 	}
 
 	@Override
@@ -226,8 +184,29 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	public RevocationSource<OCSP> getOcspSource() {
+		return ocspSource;
+	}
+
+	@Override
 	public void setOcspSource(final RevocationSource<OCSP> ocspSource) {
 		this.ocspSource = ocspSource;
+	}
+
+	@Override
+	public RevocationDataLoadingStrategy getRevocationDataLoadingStrategy() {
+		return revocationDataLoadingStrategy;
+	}
+
+	@Override
+	public void setRevocationDataLoadingStrategy(RevocationDataLoadingStrategy revocationDataLoadingStrategy) {
+		Objects.requireNonNull(revocationDataLoadingStrategy, "RevocationDataLoadingStrategy shall be defined!");
+		this.revocationDataLoadingStrategy = revocationDataLoadingStrategy;
+	}
+
+	@Override
+	public ListCertificateSource getTrustedCertSources() {
+		return trustedCertSources;
 	}
 
 	@Override
@@ -242,7 +221,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 			if (certificateSource.getCertificateSourceType().isTrusted()) {
 				this.trustedCertSources.add(certificateSource);
 			} else {
-	            throw new DSSException(String.format("The certificateSource with type [%s] is not allowed in the trustedCertSources. Please, "
+	            throw new UnsupportedOperationException(String.format("The certificateSource with type [%s] is not allowed in the trustedCertSources. Please, "
 	                    + "use CertificateSource with a type TRUSTED_STORE or TRUSTED_LIST.", certificateSource.getCertificateSourceType()));
 			}
 		}
@@ -255,8 +234,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 		} else if (trustedListCertificateSource.areAllCertSourcesTrusted()) {
 			this.trustedCertSources = trustedListCertificateSource;
 		} else {
-            throw new DSSException(String.format("The trusted ListCertificateSource must contain only trusted sources "
-                    + "with a type TRUSTED_STORE or TRUSTED_LIST."));
+            throw new UnsupportedOperationException("The trusted ListCertificateSource must contain only trusted sources "
+                    + "with a type TRUSTED_STORE or TRUSTED_LIST.");
 		}
 	}
 
@@ -297,43 +276,19 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public DataLoader getDataLoader() {
-		return dataLoader;
-	}
-
-	@Override
 	public void setDataLoader(final DataLoader dataLoader) {
-		this.dataLoader = dataLoader;
+		LOG.warn("Use of deprecated method setDataLoader(DataLoader)! This method will override the defined AIASource.");
+		aiaSource = new DefaultAIASource(dataLoader);
 	}
 
 	@Override
-	public ListRevocationSource<CRL> getSignatureCRLSource() {
-		return signatureCRLSource;
+	public AIASource getAIASource() {
+		return aiaSource;
 	}
 
 	@Override
-	public void setSignatureCRLSource(final ListRevocationSource<CRL> signatureCRLSource) {
-		this.signatureCRLSource = signatureCRLSource;
-	}
-
-	@Override
-	public ListRevocationSource<OCSP> getSignatureOCSPSource() {
-		return signatureOCSPSource;
-	}
-
-	@Override
-	public void setSignatureOCSPSource(final ListRevocationSource<OCSP> signatureOCSPSource) {
-		this.signatureOCSPSource = signatureOCSPSource;
-	}
-
-	@Override
-	public ListCertificateSource getSignatureCertificateSource() {
-		return signatureCertificateSource;
-	}
-
-	@Override
-	public void setSignatureCertificateSource(ListCertificateSource signatureCertificateSource) {
-		this.signatureCertificateSource = signatureCertificateSource;
+	public void setAIASource(final AIASource aiaSource) {
+		this.aiaSource = aiaSource;
 	}
 
 	@Override
@@ -392,6 +347,17 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	public void setAlertOnExpiredSignature(StatusAlert alertOnExpiredSignature) {
+		Objects.requireNonNull(alertOnExpiredSignature);
+		this.alertOnExpiredSignature = alertOnExpiredSignature;
+	}
+
+	@Override
+	public StatusAlert getAlertOnExpiredSignature() {
+		return alertOnExpiredSignature;
+	}
+
+	@Override
 	public boolean isCheckRevocationForUntrustedChains() {
 		return checkRevocationForUntrustedChains;
 	}
@@ -403,6 +369,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		Objects.requireNonNull(digestAlgorithm, "Default DigestAlgorithm cannot be nulL!");
 		this.defaultDigestAlgorithm = digestAlgorithm;
 	}
 	

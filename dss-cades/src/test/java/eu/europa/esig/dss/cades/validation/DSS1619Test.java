@@ -69,7 +69,7 @@ public class DSS1619Test extends AbstractCAdESTestValidation {
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.CAdES_101733_X, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_A, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 	
 	@Override

@@ -55,11 +55,6 @@ public abstract class CommonDocument implements DSSDocument {
 	 */
 	protected String name;
 
-	/**
-	 * The document's absolute path
-	 */
-	protected String absolutePath;
-
 	@Override
 	public void save(final String path) throws IOException {
 		try (FileOutputStream fos = new FileOutputStream(path)) {
@@ -99,15 +94,6 @@ public abstract class CommonDocument implements DSSDocument {
 	}
 
 	@Override
-	public String getAbsolutePath() {
-		return absolutePath;
-	}
-
-	public void setAbsolutePath(String absolutePath) {
-		this.absolutePath = absolutePath;
-	}
-
-	@Override
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
 		if (base64EncodeDigest == null) {
@@ -131,8 +117,8 @@ public abstract class CommonDocument implements DSSDocument {
 	@Override
 	public String toString() {
 		final StringWriter stringWriter = new StringWriter();
-		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : mimeType.getMimeTypeString()).append(" / ")
-				.append(getAbsolutePath());
+		stringWriter.append("Name: ").append(getName()).append(" / MimeType: ")
+				.append(mimeType == null ? "" : mimeType.getMimeTypeString());
 		return stringWriter.toString();
 	}
 

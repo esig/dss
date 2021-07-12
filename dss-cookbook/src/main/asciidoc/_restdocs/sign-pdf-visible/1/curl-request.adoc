@@ -41,6 +41,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
     "imageParameters" : {
       "alignmentHorizontal" : null,
       "alignmentVertical" : null,
+      "imageScaling" : null,
       "backgroundColor" : null,
       "dpi" : null,
       "image" : null,
@@ -61,10 +62,11 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
           "alpha" : 255
         },
         "font" : null,
+        "textWrapping" : null,
         "padding" : null,
         "signerTextHorizontalAlignment" : "CENTER",
-        "signerTextPosition" : "TOP",
         "signerTextVerticalAlignment" : null,
+        "signerTextPosition" : "TOP",
         "size" : null,
         "text" : "Signature",
         "textColor" : {
@@ -79,7 +81,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1607960337131,
+      "signingDate" : 1625849392257,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

@@ -21,11 +21,13 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -292,10 +294,21 @@ public final class ASiCUtils {
 				return false;
 			}
 		} catch (IOException e) {
-			throw new DSSException("Unable to read the 2 first bytes", e);
+			throw new IllegalInputException("Unable to read the 2 first bytes", e);
 		}
 
 		return (preamble[0] == 'P') && (preamble[1] == 'K');
+	}
+
+	/**
+	 * Checks if the extracted filenames represent an ASiC with XAdES content
+	 *
+	 * @param filenames a list of {@link String} file names to check
+	 * @return TRUE if the filenames represent an ASiC with XAdES content, FALSE
+	 *         otherwise
+	 */
+	public static boolean isASiCWithXAdES(List<String> filenames) {
+		return areFilesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION);
 	}
 	
 	/**
@@ -331,6 +344,27 @@ public final class ASiCUtils {
 	}
 
 	/**
+	 * Checks if the archive represents an OpenDocument
+	 *
+	 * @param archiveContainer {@link DSSDocument} an archive to verify
+	 * @return TRUE if the archive contains an OpenDocument mimetype, FALSE otherwise
+	 */
+	public static boolean isContainerOpenDocument(final DSSDocument archiveContainer) {
+		DSSDocument mimetype = getMimetypeDocument(archiveContainer);
+		return mimetype != null && ASiCUtils.isOpenDocument(mimetype);
+	}
+
+	private static DSSDocument getMimetypeDocument(DSSDocument dssDocument) {
+		List<DSSDocument> documents = ZipUtils.getInstance().extractContainerContent(dssDocument);
+		for (DSSDocument document : documents) {
+			if (ASiCUtils.isMimetype(document.getName())) {
+				return document;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Checks if the mimeType document defines an OpenDocument
 	 * 
 	 * @param mimeTypeDoc {@link DSSDocument} mimetype file extracted from an ASiC
@@ -341,6 +375,22 @@ public final class ASiCUtils {
 		MimeType mimeType = getMimeType(mimeTypeDoc);
 		if (mimeTypeDoc != null) {
 			return isOpenDocumentMimeType(mimeType);
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the list of filenames contains a mimetype file
+	 *
+	 * @param filenames a list of filenames to check
+	 * @return TRUE if the list of filenames contains a mimetype file,
+	 *         FALSE otherwise
+	 */
+	public static boolean areFilesContainMimetype(List<String> filenames) {
+		for (String filename : filenames) {
+			if (isMimetype(filename)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -370,7 +420,7 @@ public final class ASiCUtils {
 			final String mimeTypeString = new String(byteArray, StandardCharsets.UTF_8);
 			return MimeType.fromMimeTypeString(mimeTypeString);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new IllegalInputException(String.format("Unable to read mimetype file. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -399,7 +449,7 @@ public final class ASiCUtils {
 			} else if (Utils.collectionSize(signedDocuments) > 1) {
 				containerType = ASiCContainerType.ASiC_E;
 			} else {
-				throw new DSSException("The provided file does not contain signed documents. The signature validation is not possible");
+				throw new IllegalInputException("The provided file does not contain signed documents. The signature validation is not possible");
 			}
 		}
 
@@ -447,23 +497,35 @@ public final class ASiCUtils {
 	}
 
 	/**
+	 * Checks if the fileName matches to a Manifest name standard
+	 *
+	 * @param fileName {@link String} to check
+	 * @return TRUE if the given name matches Manifest filename, FALSE otherwise
+	 */
+	public static boolean isManifest(String fileName) {
+		return fileName.startsWith(ASiCUtils.META_INF_FOLDER) && fileName.contains(ASiCUtils.ASIC_MANIFEST_FILENAME)
+				&& fileName.endsWith(ASiCUtils.XML_EXTENSION);
+	}
+
+	/**
 	 * Checks if the fileName matches to an Archive Manifest name standard
 	 * 
 	 * @param fileName {@link String} to check
-	 * @return TRUE if the given name matches to and ASiC Archive Manifest filename,
-	 *         FALSE otherwise
+	 * @return TRUE if the given name matches ASiC Archive Manifest filename, FALSE otherwise
 	 */
 	public static boolean isArchiveManifest(String fileName) {
-		return fileName.contains(ASIC_ARCHIVE_MANIFEST_FILENAME) && fileName.endsWith(XML_EXTENSION);
+		return fileName.startsWith(ASiCUtils.META_INF_FOLDER) && fileName.contains(ASIC_ARCHIVE_MANIFEST_FILENAME)
+				&& fileName.endsWith(XML_EXTENSION);
 	}
 	
 	/**
-	 * Generates an unique name for a new ASiC-E Manifest file, avoiding any name collision
-	 * @param expectedManifestName {@link String} defines the expected name of the file without extension (e.g. "ASiCmanifest")
+	 * Generates an unique name for a new ASiC Manifest file, avoiding any name collision
+	 *
+	 * @param expectedManifestName {@link String} defines the expected name of the file without extension (e.g. "ASiCManifest")
 	 * @param existingManifests list of existing {@link DSSDocument} manifests of the type present in the container
 	 * @return {@link String} new manifest name
 	 */
-	public static String getNextASiCEManifestName(final String expectedManifestName, final List<DSSDocument> existingManifests) {
+	public static String getNextASiCManifestName(final String expectedManifestName, final List<DSSDocument> existingManifests) {
 		List<String> manifestNames = DSSUtils.getDocumentNames(existingManifests);
 		
 		String manifestName = null;
@@ -483,11 +545,27 @@ public final class ASiCUtils {
 	
 	/**
 	 * Checks if the current document an ASiC-E ZIP specific archive
+	 *
 	 * @param document {@link DSSDocument} to check
 	 * @return TRUE if the document if a "package.zip" archive, FALSE otherwise
 	 */
 	public static boolean isASiCSArchive(DSSDocument document) {
 		return Utils.areStringsEqual(PACKAGE_ZIP, document.getName());
+	}
+
+	/**
+	 * Checks if the manifestFile covers a signature
+	 *
+	 * @param manifestFile {@link ManifestFile}
+	 * @return TRUE if manifest entries contain a signature, FALSE otherwise
+	 */
+	public static boolean coversSignature(ManifestFile manifestFile) {
+		for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+			if (isSignature(manifestEntry.getFileName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

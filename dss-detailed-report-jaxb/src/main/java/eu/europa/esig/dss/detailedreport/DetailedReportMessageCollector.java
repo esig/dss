@@ -22,26 +22,22 @@ package eu.europa.esig.dss.detailedreport;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.jaxb.object.Message;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The class is used to collect all messages for a token validation by a defined type from a DetailedReport
@@ -49,6 +45,7 @@ import java.util.Set;
  */
 public class DetailedReportMessageCollector {
 	
+	/** The DetailedReport used to collect messages from */
 	private final DetailedReport detailedReport;
 	
 	/**
@@ -62,174 +59,185 @@ public class DetailedReportMessageCollector {
 	}
 	
 	/**
-	 * Returns a set of errors from the report for a signature with the given id
+	 * Returns a list of ETSI EN 319 102-1 AdES validation error messages for a token with the given id
 	 * 
-	 * @param signatureId {@link String} id of a signature to get validation errors for
-	 * @return a set of {@link String}s
+	 * @param tokenId {@link String} id of a token to get validation errors for
+	 * @return a list of {@link Message}s
 	 */
-	Set<String> getErrors(String signatureId) {
-		return collect(MessageType.ERROR, signatureId);
+	List<Message> getAdESValidationErrors(String tokenId) {
+		return collectAdESValidationMessages(MessageType.ERROR, tokenId);
 	}
 
 	/**
-	 * Returns a set of warnings from the report for a signature with the given id
+	 * Returns a list of ETSI EN 319 102-1 AdES validation warning messages for a token with the given id
 	 * 
-	 * @param signatureId {@link String} id of a signature to get validation warnings for
-	 * @return a set of {@link String}s
+	 * @param tokenId {@link String} id of a token to get validation warnings for
+	 * @return a list of {@link Message}s
 	 */
-	Set<String> getWarnings(String signatureId) {
-		return collect(MessageType.WARN, signatureId);
+
+	List<Message> getAdESValidationWarnings(String tokenId) {
+		return collectAdESValidationMessages(MessageType.WARN, tokenId);
 	}
 
 	/**
-	 * Returns a set of infos from the report for a signature with the given id
+	 * Returns a list of ETSI EN 319 102-1 AdES validation info messages for a token with the given id
 	 * 
-	 * @param signatureId {@link String} id of a signature to get validation infos for
-	 * @return a set of {@link String}s
+	 * @param tokenId {@link String} id of a token to get validation infos for
+	 * @return a list of {@link Message}s
 	 */
-	Set<String> getInfos(String signatureId) {
-		return collect(MessageType.INFO, signatureId);
+	List<Message> getAdESValidationInfos(String tokenId) {
+		return collectAdESValidationMessages(MessageType.INFO, tokenId);
 	}
 
-	private Set<String> collect(MessageType type, String signatureId) {
-		Set<String> result = new LinkedHashSet<>();
+	/**
+	 * Returns a list of qualification validation errors for a token with the given id
+	 *
+	 * @param tokenId {@link String} id of a token to get qualification errors for
+	 * @return a list of {@link Message}s
+	 */
 
-		XmlSignature signatureById = detailedReport.getXmlSignatureById(signatureId);
+	List<Message> getQualificationErrors(String tokenId) {
+		return collectQualificationMessages(MessageType.ERROR, tokenId);
+	}
 
-		XmlValidationSignatureQualification validationSignatureQualification = signatureById
-				.getValidationSignatureQualification();
-		if (validationSignatureQualification != null) {
-			List<XmlValidationCertificateQualification> validationCertificateQualifications = validationSignatureQualification
-					.getValidationCertificateQualification();
-			for (XmlValidationCertificateQualification validationCertificateQualification : validationCertificateQualifications) {
-				collect(type, result, validationCertificateQualification);
-			}
-			collect(type, result, validationSignatureQualification);
+	/**
+	 * Returns a list of qualification validation warnings for a token with the given id
+	 *
+	 * @param tokenId {@link String} id of a token to get qualification warnings for
+	 * @return a list of {@link Message}s
+	 */
+	List<Message> getQualificationWarnings(String tokenId) {
+		return collectQualificationMessages(MessageType.WARN, tokenId);
+	}
+
+	/**
+	 * Returns a list of qualification validation infos for a token with the given id
+	 *
+	 * @param tokenId {@link String} id of a token to get qualification infos for
+	 * @return a list of {@link Message}s
+	 */
+	List<Message> getQualificationInfos(String tokenId) {
+		return collectQualificationMessages(MessageType.INFO, tokenId);
+	}
+
+	private List<Message> collectAdESValidationMessages(MessageType type, String tokenId) {
+		XmlSignature signatureById = detailedReport.getXmlSignatureById(tokenId);
+		if (signatureById != null) {
+			return collectSignatureValidation(type, signatureById);
 		}
-
-		if (MessageType.ERROR == type) {
-			collect(type, result, detailedReport.getHighestConclusion(signatureId));
-			collectTimestamps(type, result, signatureById);
-		} else {
-			collect(type, result, signatureById.getValidationProcessBasicSignature());
-			collectTimestamps(type, result, signatureById);
-			collect(type, result, signatureById.getValidationProcessLongTermData());
-			collect(type, result, signatureById.getValidationProcessArchivalData());
+		XmlTimestamp timestampById = detailedReport.getXmlTimestampById(tokenId);
+		if (timestampById != null) {
+			return collectTimestampValidation(type, timestampById);
 		}
+		XmlTLAnalysis tlAnalysisById = detailedReport.getTLAnalysisById(tokenId);
+		if (tlAnalysisById != null) {
+			return getMessages(type, tlAnalysisById.getConclusion());
+		}
+		XmlBasicBuildingBlocks bbbById = detailedReport.getBasicBuildingBlockById(tokenId);
+		if (bbbById != null) {
+			return getMessages(type, bbbById.getConclusion());
+		}
+		return Collections.emptyList();
+	}
 
+	private List<Message> collectQualificationMessages(MessageType type, String tokenId) {
+		XmlSignature signatureById = detailedReport.getXmlSignatureById(tokenId);
+		if (signatureById != null) {
+			return collectSignatureQualification(type, signatureById);
+		}
+		XmlTimestamp timestampById = detailedReport.getXmlTimestampById(tokenId);
+		if (timestampById != null) {
+			return collectTimestampQualification(type, timestampById);
+		}
+		return Collections.emptyList();
+	}
+
+	private List<Message> collectSignatureValidation(MessageType type, XmlSignature xmlSignature) {
+		List<Message> result = new ArrayList<>();
+
+		XmlConstraintsConclusion highestConclusion = detailedReport.getHighestConclusion(xmlSignature.getId());
+		if (MessageType.ERROR != type || !Indication.PASSED.equals(highestConclusion.getConclusion().getIndication())) {
+			addMessages(result, getMessages(type, xmlSignature.getValidationProcessBasicSignature()));
+			addMessages(result, getMessages(type, xmlSignature.getValidationProcessLongTermData()));
+		}
+		addMessages(result, getMessages(type, highestConclusion));
 		return result;
 	}
 
-	private void collectTimestamps(MessageType type, Set<String> result, XmlSignature signatureById) {
-		List<XmlTimestamp> timestamps = signatureById.getTimestamp();
-		for (XmlTimestamp xmlTimestamp : timestamps) {
-			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			if (validationTimestampQualification != null) {
-				collect(type, result, validationTimestampQualification);
-			}
-			XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
-			if (!MessageType.ERROR.equals(type) || !Indication.PASSED.equals(
-					detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId()).getConclusion().getIndication())) {
-				collect(type, result, validationProcessTimestamps);
-			}
+	private List<Message> collectTimestampValidation(MessageType type, XmlTimestamp xmlTimestamp) {
+		XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
+
+		XmlConclusion conclusion = new XmlConclusion();
+		conclusion.getWarnings().addAll(validationProcessTimestamps.getConclusion().getWarnings());
+		conclusion.getInfos().addAll(validationProcessTimestamps.getConclusion().getInfos());
+
+		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+		XmlPSV psv = tstBBB.getPSV();
+		if (psv == null || psv.getConclusion() == null || !Indication.PASSED.equals(psv.getConclusion().getIndication())) {
+			conclusion.getErrors().addAll(validationProcessTimestamps.getConclusion().getErrors());
 		}
+		return getMessages(type, conclusion);
 	}
 
-	private void collect(MessageType type, Set<String> result, XmlConstraintsConclusion constraintConclusion) {
-		collect(type, result, constraintConclusion, null);
+	private List<Message> collectSignatureQualification(MessageType type, XmlSignature xmlSignature) {
+		List<Message> result = new ArrayList<>();
+		addMessages(result, getMessages(type, xmlSignature.getValidationSignatureQualification()));
+		return result;
 	}
 
-	private void collect(MessageType type, Set<String> result, XmlConstraintsConclusion constraintConclusion,
-			String bbbId) {
-		if (constraintConclusion != null && constraintConclusion.getConstraint() != null) {
-			for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
-				XmlName message = getMessage(type, constraint);
-				if (message != null) {
-					result.add(message.getValue());
-				}
-				
-				// do not extract subErrors if the highest conclusion is valid
-				if (!MessageType.ERROR.equals(type) || message != null) {
-					String constraintId = constraint.getId();
-					if (constraintId != null && !constraintId.isEmpty() && !constraintId.equals(bbbId)) {
-						collect(type, result, detailedReport.getBasicBuildingBlockById(constraintId));
-						collect(type, result, detailedReport.getTLAnalysisById(constraintId));
-					}
-				}
-
-			}
-			if (constraintConclusion.getConclusion() != null) {
-				result.addAll(getMessages(type, constraintConclusion.getConclusion()));
-			}
-		}
+	private List<Message> collectTimestampQualification(MessageType type, XmlTimestamp xmlTimestamp) {
+		return getMessages(type, xmlTimestamp.getValidationTimestampQualification());
 	}
 
-	private void collect(MessageType type, Set<String> result, XmlBasicBuildingBlocks bbb) {
-		if (bbb != null) {
-			collect(type, result, bbb.getFC());
-			collect(type, result, bbb.getISC());
-			collect(type, result, bbb.getCV());
-			collect(type, result, bbb.getSAV());
-			XmlXCV xcv = bbb.getXCV();
-			if (xcv != null) {
-				collect(type, result, xcv);
-				List<XmlSubXCV> subXCV = xcv.getSubXCV();
-				if (subXCV != null) {
-					for (XmlSubXCV xmlSubXCV : subXCV) {
-						collect(type, result, xmlSubXCV, bbb.getId());
-						collect(type, result, xmlSubXCV.getRFC());
-					}
-				}
-			}
-			collect(type, result, bbb.getVCI());
+	private List<Message> getMessages(MessageType type, XmlConstraintsConclusion constraintsConclusion) {
+		if (constraintsConclusion != null) {
+			return getMessages(type, constraintsConclusion.getConclusion());
 		}
+		return Collections.emptyList();
 	}
 	
-	private void collect(MessageType type, Set<String> result, XmlTLAnalysis xmlTLAnalysis) {
-		if (xmlTLAnalysis != null) {
-			collect(type, result, (XmlConstraintsConclusion) xmlTLAnalysis);
+	private List<Message> getMessages(MessageType type, XmlConclusion conclusion) {
+		if (conclusion != null) {
+			switch (type) {
+				case ERROR:
+					return convert(conclusion.getErrors());
+				case WARN:
+					return convert(conclusion.getWarnings());
+				case INFO:
+					return convert(conclusion.getInfos());
+				default:
+					break;
+			}
+		}
+		return Collections.emptyList();
+	}
+
+	private Message convert(XmlMessage m) {
+		if (m != null) {
+			return new Message(m.getKey(), m.getValue());
+		}
+		return null;
+	}
+
+	private List<Message> convert(Collection<XmlMessage> messages) {
+		if (messages != null) {
+			return messages.stream().map(m -> convert(m)).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
+	private void addMessage(List<Message> result, Message toAdd) {
+		if (toAdd != null && !result.contains(toAdd)) {
+			result.add(toAdd);
 		}
 	}
 
-	private XmlName getMessage(MessageType type, XmlConstraint constraint) {
-		XmlName message = null;
-		switch (type) {
-			case ERROR:
-				message = constraint.getError();
-				break;
-			case WARN:
-				message = constraint.getWarning();
-				break;
-			case INFO:
-				message = constraint.getInfo();
-				break;
-			default:
-				break;
-		}
-		return message;
-	}
-	
-	private Set<String> getMessages(MessageType type, XmlConclusion conclusion) {
-		switch (type) {
-			case ERROR:
-				return getMessages(conclusion.getErrors());
-			case WARN:
-				return getMessages(conclusion.getWarnings());
-			case INFO:
-				return getMessages(conclusion.getInfos());
-			default:
-				return Collections.emptySet();
-		}
-	}
-	
-	private Set<String> getMessages(List<XmlName> xmlNames) {
-		Set<String> messages = new HashSet<>();
-		if (xmlNames != null) {
-			for (XmlName xmlName : xmlNames) {
-				messages.add(xmlName.getValue());
+	private void addMessages(List<Message> result, Collection<Message> toAdd) {
+		if (toAdd != null) {
+			for (Message m : toAdd) {
+				addMessage(result, m);
 			}
 		}
-		return messages;
 	}
 
 	private enum MessageType {

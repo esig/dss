@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -37,8 +37,11 @@ import java.util.List;
  */
 public class PdfDocTimestampRevision extends PdfCMSRevision {
 
+	private static final long serialVersionUID = -1526261963945359026L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(PdfDocTimestampRevision.class);
 
+	/** The document timestamp token from the revision */
 	private final TimestampToken timestampToken;
 
 	/**
@@ -49,21 +52,21 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 	 * @param timestampFieldNames
 	 *            					   list of signature field names
 	 * @param signedContent
-	 *                                 the signed data
+	 *                                 {@link DSSDocument} the signed data
 	 * @param coverCompleteRevision
 	 *                                 true if the signature covers all bytes
 	 */
 	public PdfDocTimestampRevision(PdfSignatureDictionary signatureDictionary, List<String> timestampFieldNames,
-								   byte[] signedContent, boolean coverCompleteRevision) {
+								   DSSDocument signedContent, boolean coverCompleteRevision) {
 		super(signatureDictionary, timestampFieldNames, signedContent, coverCompleteRevision);
 		try {
 			timestampToken = new PdfTimestampToken(this);
-			timestampToken.matchData(new InMemoryDocument(getRevisionCoveredBytes()));
+			timestampToken.matchData(getSignedData());
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Created PdfDocTimestampInfo : {}", getByteRange());
 			}
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to create a PdfDocTimestampRevision : %s", e.getMessage()), e);
 		}
 	}
 
@@ -72,6 +75,11 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 		return timestampToken.getGenerationTime();
 	}
 
+	/**
+	 * Returns the corresponding {@code TimestampToken}
+	 *
+	 * @return {@link TimestampToken}
+	 */
 	public TimestampToken getTimestampToken() {
 		return timestampToken;
 	}

@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.io.Serializable;
-import java.security.PublicKey;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+
+import java.io.Serializable;
+import java.security.PublicKey;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The validation of a certificate requires to access some other certificates from multiple sources (Trusted List, Trust
@@ -89,10 +89,10 @@ public interface CertificateSource extends Serializable {
 	 * This method returns the Set of certificates with the
 	 * {@code CertificateIdentifier}
 	 *
-	 * @param certificateIdentifier the certificate identifier to match
+	 * @param signerIdentifier the certificate identifier to match
 	 * @return If no match is found then an empty set is returned.
 	 */
-	Set<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier);
+	Set<CertificateToken> getBySignerIdentifier(SignerIdentifier signerIdentifier);
 
 	/**
 	 * This method returns the Set of certificates with the {@code Digest}
@@ -128,6 +128,11 @@ public interface CertificateSource extends Serializable {
 	 */
 	Set<CertificateToken> findTokensFromCertRef(CertificateRef certificateRef);
 
+	/**
+	 * Returns a list of certificates grouped by their public keys
+	 *
+	 * @return a list of {@link CertificateSourceEntity}s
+	 */
 	List<CertificateSourceEntity> getEntities();
 
 	/**
@@ -136,5 +141,21 @@ public interface CertificateSource extends Serializable {
 	 * @return true if all certificates are self-signed
 	 */
 	boolean isAllSelfSigned();
+
+	/**
+	 * This method checks if the current and the given {@code CertificateSource}s contain the same certificate tokens
+	 *
+	 * @param certificateSource {@link CertificateSource} to compare
+	 * @return TRUE if both certificate sources contains the same certificate tokens, FALSE otherwise
+	 */
+	boolean isCertificateSourceEqual(CertificateSource certificateSource);
+
+	/**
+	 * This method checks if the current and the given {@code CertificateSource}s contain the same public keys
+	 *
+	 * @param certificateSource {@link CertificateSource} to compare
+	 * @return TRUE if both certificate sources contains the same public keys, FALSE otherwise
+	 */
+	boolean isCertificateSourceEquivalent(CertificateSource certificateSource);
 
 }

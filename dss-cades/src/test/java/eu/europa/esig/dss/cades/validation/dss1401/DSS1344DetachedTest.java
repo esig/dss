@@ -45,7 +45,7 @@ public class DSS1344DetachedTest extends AbstractCAdESTestValidation {
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		return Arrays.<DSSDocument>asList(new FileDocument("src/test/resources/validation/dss-1344/screenshot.png"));
+		return Arrays.asList(new FileDocument("src/test/resources/validation/dss-1344/screenshot.png"));
 	}
 	
 	@Override
@@ -65,7 +65,7 @@ public class DSS1344DetachedTest extends AbstractCAdESTestValidation {
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.CAdES_101733_C, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_C, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 	
 	@Override

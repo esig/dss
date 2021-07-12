@@ -27,6 +27,10 @@ import eu.europa.esig.trustedlist.jaxb.tsl.ServiceHistoryType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 
+/**
+ * Filters TrustServices by 'granted' property (supports pre- and post- eIDAS)
+ *
+ */
 public class GrantedTrustService implements TrustServicePredicate {
 
     @Override

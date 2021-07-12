@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>sample-signed-xades-baseline-b.xml</DocumentName>
-    <ValidationDate>2020-05-05T14:05:26</ValidationDate>
+    <ValidationDate>2020-05-05T14:05:26Z</ValidationDate>
     <Signatures>
         <Signature Id="S-C225430C50EE4B25659EC76D8AEEAE3AF28FC2758FFC1E754681B81F212093B1">
             <DAIdentifier>id-8fd79488a6f30846d2ed77f9bdaa3078</DAIdentifier>
             <SignatureFilename>sample-signed-xades-baseline-b.xml</SignatureFilename>
-            <ClaimedSigningTime>2020-05-05T14:05:29</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-05-05T14:05:29Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -124,8 +124,8 @@
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2021-03-30T13:54:08</NotAfter>
-            <NotBefore>2019-05-30T13:54:08</NotBefore>
+            <NotAfter>2021-03-30T13:54:08Z</NotAfter>
+            <NotBefore>2019-05-30T13:54:08Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-713B1C45CACB1B91329CBBF9AA433CDE3252DE3030BD657CD39C9500544EE9C4</EntityKey>
@@ -150,8 +150,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-8E42949CD529E0073D65C677CCA7D31FD85BFBABD46A77A273C14D6F163D3031">
@@ -179,8 +177,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-04-30T13:53:59</NotAfter>
-            <NotBefore>2019-04-30T13:53:59</NotBefore>
+            <NotAfter>2021-04-30T13:53:59Z</NotAfter>
+            <NotBefore>2019-04-30T13:53:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A27F976E646D30318D2C734CC87947EA165F6B064DFE5EB9485B56E70B81076F</EntityKey>
@@ -205,8 +203,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -233,8 +229,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-03-30T13:53:59</NotAfter>
-            <NotBefore>2019-05-30T13:53:59</NotBefore>
+            <NotAfter>2021-03-30T13:53:59Z</NotAfter>
+            <NotBefore>2019-05-30T13:53:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C5C8DEB2319136826690A66365499B90F721C171709DEA50D77E4234F3B17A17</EntityKey>
@@ -258,8 +254,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-8E42949CD529E0073D65C677CCA7D31FD85BFBABD46A77A273C14D6F163D3031">
@@ -291,8 +285,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-03-30T13:54:01</NotAfter>
-            <NotBefore>2019-05-30T13:54:01</NotBefore>
+            <NotAfter>2021-03-30T13:54:01Z</NotAfter>
+            <NotBefore>2019-05-30T13:54:01Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-CBDD6856166968339689BB43774CCA6D55A51DBD6838801EE1883219EAC83607</EntityKey>
@@ -316,8 +310,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-704B78B43A7A074663EAC3492EFFBAC8C11BC54CD69E453AF84A9A1B36DA10D5">
@@ -347,8 +339,8 @@
                 <Source>TRUSTED_STORE</Source>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2021-04-30T13:53:58</NotAfter>
-            <NotBefore>2019-04-30T13:53:58</NotBefore>
+            <NotAfter>2021-04-30T13:53:58Z</NotAfter>
+            <NotBefore>2019-04-30T13:53:58Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F4380C158895458073303D9C612EA12CBAEDFA79F3EC607DBAEDF8D3935A720A</EntityKey>
@@ -369,8 +361,6 @@
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -383,8 +373,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://dss.nowina.lu/pki-factory/ocsp/good-ca</SourceAddress>
-            <ProductionDate>2020-05-05T14:05:26</ProductionDate>
-            <ThisUpdate>2020-05-05T14:05:26</ThisUpdate>
+            <ProductionDate>2020-05-05T14:05:26Z</ProductionDate>
+            <ThisUpdate>2020-05-05T14:05:26Z</ThisUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -421,9 +411,9 @@
         <Revocation Id="R-8E42949CD529E0073D65C677CCA7D31FD85BFBABD46A77A273C14D6F163D3031">
             <Origin>CACHED</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2020-05-05T14:05:26</ProductionDate>
-            <ThisUpdate>2020-05-05T14:05:26</ThisUpdate>
-            <NextUpdate>2020-11-05T15:05:26</NextUpdate>
+            <ProductionDate>2020-05-05T14:05:26Z</ProductionDate>
+            <ThisUpdate>2020-05-05T14:05:26Z</ThisUpdate>
+            <NextUpdate>2020-11-05T15:05:26Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -445,7 +435,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="ALL_DATA_OBJECTS_TIMESTAMP" Id="T-920B3EB651C6AD0DAE03BE564C8AFA861BE4529C52EE29D75495A6F7692A0067">
-            <ProductionTime>2020-05-05T14:05:14</ProductionTime>
+            <ProductionTime>2020-05-05T14:05:14Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>8AzgcURkeZDp/DL2CgdfJVCpi8HUm73bbsUj79VEIhA=</DigestValue>
@@ -496,7 +486,7 @@
         </Timestamp>
     </UsedTimestamps>
     <OrphanTokens>
-    	<OrphanCertificate Id="C-9E4C16547587D7B09F551441BBA0D2AFDFA71CE15F734B671B033404A299876E">
+    	<OrphanCertificate EncapsulationType="REFERENCE" Id="C-9E4C16547587D7B09F551441BBA0D2AFDFA71CE15F734B671B033404A299876E">
 			<DigestAlgoAndValue match="false">
 				<DigestMethod>SHA256</DigestMethod>
 				<DigestValue>nkwWVHWH17CfVRRBu6DSr9+nHOFfc0tnGwM0BKKZh24=</DigestValue>

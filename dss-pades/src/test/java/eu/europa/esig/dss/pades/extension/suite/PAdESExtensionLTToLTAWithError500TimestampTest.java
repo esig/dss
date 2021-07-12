@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PAdESExtensionLTToLTAWithError500TimestampTest extends AbstractPAdESTestExtension {
 
@@ -48,9 +47,7 @@ public class PAdESExtensionLTToLTAWithError500TimestampTest extends AbstractPAdE
 	@Override
 	@Test
 	public void extendAndVerify() throws Exception {
-		assertThrows(DSSException.class, () -> {
-			super.extendAndVerify();
-		});
+		assertThrows(DSSException.class, () -> super.extendAndVerify());
 	}
 
 }

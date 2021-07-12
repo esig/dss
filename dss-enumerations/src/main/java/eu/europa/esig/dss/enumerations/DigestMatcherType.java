@@ -46,7 +46,7 @@ public enum DigestMatcherType {
 	/** XAdES XPointer reference */
 	XPOINTER,
 	
-	/** XAdES and ASiC CAdES*/
+	/** XAdES and ASiC CAdES */
 	MANIFEST_ENTRY,
 	
 	/** XAdES signed SignatureValue (counter signature) */
@@ -66,6 +66,9 @@ public enum DigestMatcherType {
 	
 	/** JAdES Detached entry */
 	SIG_D_ENTRY,
+
+	/** Defines the signature value of a master signature signed by a counter signature */
+	COUNTER_SIGNED_SIGNATURE_VALUE,
 
 	/** Timestamp */
 	MESSAGE_IMPRINT

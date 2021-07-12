@@ -70,7 +70,7 @@ public class ExtendedKeyUsageCondition implements Condition {
      */
     public final List<String> getKeyPurposeIds() {
         return extendedKeyUsageOids == null ?
-            Collections.<String> emptyList() :
+            Collections.emptyList() :
             unmodifiableList(extendedKeyUsageOids);
     }
     

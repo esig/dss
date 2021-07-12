@@ -64,7 +64,7 @@ public class POEExtraction {
 	private Map<String, List<POE>> poeMap = new HashMap<>();
 
 	/**
-	 * Instantiates a contolTime POE for all used tokens
+	 * Instantiates a controlTime POE for all used tokens
 	 * 
 	 * @param diagnosticData {@link DiagnosticData} containing all tokens to initialize the POE for
 	 * @param controlTime {@link Date} defining the time of POE
@@ -120,11 +120,19 @@ public class POEExtraction {
 	 * @param timestamp {@link TimestampWrapper} to extract POE from
 	 */
 	public void extractPOE(TimestampWrapper timestamp) {
-		List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
-		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
-			POE poe = new POE(timestamp);
-			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-				addPOE(xmlTimestampedObject.getToken().getId(), poe);
+		/**
+		 * 5.6.2.3.4 Processing (5.6.2.3 POE extraction)
+		 *
+		 * 1) The building block shall determine the set S of references to objects and
+		 * objects that are part of the signature and are protected by the time-stamp.
+		 */
+		if (timestamp.isMessageImprintDataFound() && timestamp.isMessageImprintDataIntact()) {
+			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+			if (Utils.isCollectionNotEmpty(timestampedObjects)) {
+				POE poe = new POE(timestamp);
+				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
+					addPOE(xmlTimestampedObject.getToken().getId(), poe);
+				}
 			}
 		}
 	}
@@ -161,6 +169,27 @@ public class POEExtraction {
 		if (poes != null) {
 			for (POE poe : poes) {
 				if (poe.getTime().compareTo(controlTime) <= 0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if a POE exists for the token with the given Id within the validity range
+	 * between {@code notBefore} and {@code notAfter} inclusively
+	 *
+	 * @param tokenId {@link String} the Id of a token to check POE for
+	 * @param notBefore {@link Date} the start of the validity range
+	 * @param notAfter {@link Date} the end of the validity range
+	 * @return TRUE if a POE exists in the range, FALSE otherwise
+	 */
+	public boolean isPOEExistInRange(final String tokenId, final Date notBefore, final Date notAfter) {
+		List<POE> poes = poeMap.get(tokenId);
+		if (poes != null) {
+			for (POE poe : poes) {
+				if (poe.getTime().compareTo(notBefore) >= 0 && poe.getTime().compareTo(notAfter) <= 0) {
 					return true;
 				}
 			}

@@ -29,7 +29,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -48,7 +48,7 @@ public class DSSDictionaryExtractionUtils {
 	 * @return a map of certificate objects
 	 */
 	public static Map<Long, CertificateToken> getCertsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, CertificateToken> certMap = new HashMap<>();
+		Map<Long, CertificateToken> certMap = new LinkedHashMap<>(); // use LinkedHashMap to preserve the order
 		final PdfArray certsArray = dict.getAsArray(arrayName);
 		if (certsArray != null) {
 			LOG.debug("There are {} certificates in the '{}' dictionary", certsArray.size(), dictionaryName);
@@ -77,7 +77,7 @@ public class DSSDictionaryExtractionUtils {
 	 * @return a map of CRL objects
 	 */
 	public static Map<Long, CRLBinary> getCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, CRLBinary> crlMap = new HashMap<>();
+		Map<Long, CRLBinary> crlMap = new LinkedHashMap<>();
 		final PdfArray crlArray = dict.getAsArray(arrayName);
 		if (crlArray != null) {
 			LOG.debug("There are {} CRLs in the '{}' dictionary", crlArray.size(), dictionaryName);
@@ -106,7 +106,7 @@ public class DSSDictionaryExtractionUtils {
 	 * @return a map of OCSP objects
 	 */
 	public static Map<Long, BasicOCSPResp> getOCSPsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, BasicOCSPResp> ocspMap = new HashMap<>();
+		Map<Long, BasicOCSPResp> ocspMap = new LinkedHashMap<>();
 		PdfArray ocspArray = dict.getAsArray(arrayName);
 		if (ocspArray != null) {
 			LOG.debug("There are {} OCSPs in the '{}' dictionary", ocspArray.size(), dictionaryName);

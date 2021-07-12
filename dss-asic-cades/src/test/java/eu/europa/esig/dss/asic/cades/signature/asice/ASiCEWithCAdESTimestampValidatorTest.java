@@ -20,27 +20,18 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestValidator;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESTimestampValidator;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESTimestampValidator;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -60,6 +51,17 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdESTestValidation {
 	
@@ -101,7 +103,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		assertEquals(1, archiveManifestDocuments.size());
 		DSSDocument archiveManifest = archiveManifestDocuments.get(0);
 		
-		ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifest);
+		ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
 		assertNotNull(manifestFile);
 		
 		ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, asicExtractResult.getAllDocuments());
@@ -109,12 +111,14 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 		
-		ASiCEWithCAdESTimestampValidator asiceWithCAdESTimestampValidator = new ASiCEWithCAdESTimestampValidator(
-				archiveTimestamp, TimestampType.ARCHIVE_TIMESTAMP, manifestFile, documentsToSign);
-		asiceWithCAdESTimestampValidator.setTimestampedData(archiveManifest);
-		asiceWithCAdESTimestampValidator.setCertificateVerifier(certificateVerifier);
+		ASiCWithCAdESTimestampValidator asicWithCAdESTimestampValidator = new ASiCWithCAdESTimestampValidator(
+				archiveTimestamp, TimestampType.ARCHIVE_TIMESTAMP);
+		asicWithCAdESTimestampValidator.setTimestampedData(archiveManifest);
+		asicWithCAdESTimestampValidator.setManifestFile(manifestFile);
+		asicWithCAdESTimestampValidator.setOriginalDocuments(documentsToSign);
+		asicWithCAdESTimestampValidator.setCertificateVerifier(certificateVerifier);
 		
-		return asiceWithCAdESTimestampValidator;
+		return asicWithCAdESTimestampValidator;
 	}
 	
 	@Override
@@ -129,9 +133,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		assertNotNull(simpleReport.getProducedBy(timestampId));
 		assertNotNull(simpleReport.getProductionTime(timestampId));
 		assertNotNull(simpleReport.getValidationTime());
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getErrors(timestampId)));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getWarnings(timestampId)));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getInfo(timestampId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(timestampId))); // qualification error message
 	}
 	
 	@Override
@@ -151,6 +153,11 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getErrors()));
 		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getWarnings()));
 		assertTrue(Utils.isCollectionEmpty(timestampBBB.getConclusion().getInfos()));
+
+		XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(timestampId);
+		XmlConclusion qualConslusion = xmlTimestamp.getValidationTimestampQualification().getConclusion();
+		assertEquals(Indication.FAILED, qualConslusion.getIndication());
+		assertFalse(Utils.isCollectionEmpty(qualConslusion.getErrors()));
 	}
 	
 	@Override

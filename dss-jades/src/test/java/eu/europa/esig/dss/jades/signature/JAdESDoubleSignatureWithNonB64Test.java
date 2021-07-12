@@ -20,34 +20,32 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.enumerations.JWSSerializationType;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
-import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.spi.DSSUtils;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidation {
 	
@@ -130,7 +128,7 @@ public class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidat
 		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		
-		Exception exception = assertThrows(DSSException.class, () -> sign(signedDocument, signatureParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> sign(signedDocument, signatureParameters));
 		assertEquals("'b64' value shall be the same for all signatures! "
 				+ "Change 'Base64UrlEncodedPayload' signature parameter or sign another file!", exception.getMessage());
 	}

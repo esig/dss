@@ -35,6 +35,9 @@ import java.util.List;
  */
 public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCEWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
+	/** The original ASiC container */
+	private final DSSDocument asicContainer;
+
 	/** The list of signed documents */
 	private final List<DSSDocument> signedDocuments;
 
@@ -64,11 +67,17 @@ public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCE
 											   final ASiCExtractResult extractionResult,
 											   final ASiCWithCAdESCommonParameters parameters) {
 		super(operation, parameters);
+		this.asicContainer = extractionResult.getAsicContainer();
 		this.signedDocuments = extractionResult.getSignedDocuments();
 		this.embeddedSignatures = extractionResult.getSignatureDocuments();
 		this.embeddedManifests = extractionResult.getManifestDocuments();
 		this.embeddedArchiveManifests = extractionResult.getArchiveManifestDocuments();
 		this.embeddedTimestamps = extractionResult.getTimestampDocuments();
+	}
+
+	@Override
+	public DSSDocument getAsicContainer() {
+		return asicContainer;
 	}
 
 	@Override

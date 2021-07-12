@@ -21,18 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -56,6 +44,17 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactoryAccess {
 			
@@ -202,8 +201,10 @@ public class XAdESLevelBWithMultipleTrustedCertificateSources extends PKIFactory
 		for (CertificateWrapper certificate : diagnosticData.getUsedCertificates()) {
 			List<CertificateSourceType> sources = certificate.getSources();
 			for(CertificateSourceType type: sources) {
-				if(type == CertificateSourceType.TRUSTED_STORE)
+				if (type == CertificateSourceType.TRUSTED_STORE) {
 					result = true;
+					break;
+				}
 			}
 		}
 		

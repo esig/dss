@@ -20,6 +20,15 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,15 +40,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.identifier.EntityIdentifier;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
-
 /**
  * This class is the common class for all {@code CertificateSource}. It stores
  * added certificates and allows to retrieve them with several methods
@@ -50,7 +50,10 @@ public class CommonCertificateSource implements CertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateSource.class);
 	
-	protected final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
+	/**
+	 * This object is used to match {@code CertificateToken}s and {@code CertificateRef}s
+	 */
+	protected transient final CertificateTokenRefMatcher certificateMatcher = new CertificateTokenRefMatcher();
 
 	/**
 	 * Map of entries, the key is a hash of the public key.
@@ -60,11 +63,11 @@ public class CommonCertificateSource implements CertificateSource {
 	private Map<EntityIdentifier, CertificateSourceEntity> entriesByPublicKeyHash = new HashMap<>();
 
 	/**
-	 * Map of tokens, the key is the canonicalized SubjectX500Principal
+	 * Map of tokens, the key is the properties map of SubjectX500Principal
 	 * 
-	 * For a same SubjectX500Principal, different key pairs are possible
+	 * For a same SubjectX500Principal, different key pairs (and certificates) are possible
 	 */
-	private Map<String, Set<CertificateToken>> tokensBySubject = new HashMap<>();
+	private Map<Map<String, String>, Set<CertificateToken>> tokensBySubject = new HashMap<>();
 
 	/**
 	 * The default constructor
@@ -102,13 +105,16 @@ public class CommonCertificateSource implements CertificateSource {
 		}
 
 		synchronized (tokensBySubject) {
-			String key = certificateToAdd.getSubject().getCanonical();
-			tokensBySubject.computeIfAbsent(key, k -> new HashSet<>()).add(certificateToAdd);
+			Map<String, String> propertiesMap = DSSASN1Utils.get(certificateToAdd.getSubject().getPrincipal());
+			tokensBySubject.computeIfAbsent(propertiesMap, k -> new HashSet<>()).add(certificateToAdd);
 		}
 
 		return certificateToAdd;
 	}
 
+	/**
+	 * This method removes all certificates from the source
+	 */
 	protected void reset() {
 		entriesByPublicKeyHash = new HashMap<>();
 		tokensBySubject = new HashMap<>();
@@ -181,7 +187,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	@Override
 	public Set<CertificateToken> getBySubject(X500PrincipalHelper subject) {
-		final Set<CertificateToken> tokensSet = tokensBySubject.get(subject.getCanonical());
+		final Set<CertificateToken> tokensSet = tokensBySubject.get(DSSASN1Utils.get(subject.getPrincipal()));
 		if (tokensSet != null) {
 			return tokensSet;
 		}
@@ -189,12 +195,12 @@ public class CommonCertificateSource implements CertificateSource {
 	}
 
 	@Override
-	public Set<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier) {
+	public Set<CertificateToken> getBySignerIdentifier(SignerIdentifier signerIdentifier) {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
 			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
 				// run over all entries to compare with the SN too
-				if (certificateIdentifier.isRelatedToCertificate(certificateToken)) {
+				if (signerIdentifier.isRelatedToCertificate(certificateToken)) {
 					result.add(certificateToken);
 				}
 			}
@@ -265,6 +271,16 @@ public class CommonCertificateSource implements CertificateSource {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public boolean isCertificateSourceEqual(CertificateSource certificateSource) {
+		return new HashSet<>(getCertificates()).equals(new HashSet<>(certificateSource.getCertificates()));
+	}
+
+	@Override
+	public boolean isCertificateSourceEquivalent(CertificateSource certificateSource) {
+		return new HashSet<>(getEntities()).equals(new HashSet<>(certificateSource.getEntities()));
 	}
 
 }

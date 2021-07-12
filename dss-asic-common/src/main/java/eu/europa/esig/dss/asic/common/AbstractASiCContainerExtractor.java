@@ -21,13 +21,12 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -57,32 +56,23 @@ public abstract class AbstractASiCContainerExtractor {
 	 * @return {@link ASiCExtractResult}
 	 */
 	public ASiCExtractResult extract() {
-		ASiCExtractResult result = new ASiCExtractResult();
-		
-		try {
-			result = zipParsing(asicContainer);
-			result.setRootContainer(asicContainer);
-			result.setContainerType(getContainerType(result));
-
-			if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
-				LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
-			}
-
-		} catch (IOException e) {
-			LOG.warn("Unable to parse the container. Reason : {}", e.getMessage(), e);
+		ASiCExtractResult result = zipParsing(asicContainer);
+		result.setRootContainer(asicContainer);
+		result.setContainerType(getContainerType(result));
+		if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
+			LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
 		}
-
 		result.setZipComment(getZipComment());
-		
 		return result;
 	}
 
-	private ASiCExtractResult zipParsing(DSSDocument asicContainer) throws IOException {
+	private ASiCExtractResult zipParsing(DSSDocument asicContainer) {
 		ASiCExtractResult result = new ASiCExtractResult();
+		result.setAsicContainer(asicContainer);
 
 		List<DSSDocument> documents = ZipUtils.getInstance().extractContainerContent(asicContainer);
 		if (Utils.isCollectionEmpty(documents)) {
-			throw new DSSException(String.format(
+			throw new IllegalInputException(String.format(
 					"The provided file with name '%s' does not contain documents inside. "
 							+ "Probably file has an unsupported format or has been corrupted. "
 							+ "The signature validation is not possible",

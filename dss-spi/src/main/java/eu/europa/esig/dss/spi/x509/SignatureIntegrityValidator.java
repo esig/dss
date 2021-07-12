@@ -139,7 +139,7 @@ public abstract class SignatureIntegrityValidator {
 	 */
 	public List<String> getErrorMessages() {
 		if (errorMessages == null) {
-			throw new DSSException("The validate(candiates) methods shall be proceeded before!");
+			throw new IllegalStateException("The validate(candiates) method shall be proceeded before!");
 		}
 		return errorMessages;
 	}

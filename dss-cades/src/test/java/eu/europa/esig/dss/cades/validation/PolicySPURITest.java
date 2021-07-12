@@ -20,23 +20,26 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PolicySPURITest extends AbstractCAdESTestValidation {
 
@@ -48,9 +51,17 @@ public class PolicySPURITest extends AbstractCAdESTestValidation {
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
+
+		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+		signaturePolicyProvider.setDataLoader(new MockDataLoader());
+		validator.setSignaturePolicyProvider(signaturePolicyProvider);
+
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
-		certificateVerifier.setDataLoader(new MockDataLoader());
+		CommonCertificateSource certificateSource = new CommonCertificateSource();
+		certificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString("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"));
+		certificateVerifier.addAdjunctCertSources(certificateSource);
 		validator.setCertificateVerifier(certificateVerifier);
+
 		return validator;
 	}
 	
@@ -71,7 +82,7 @@ public class PolicySPURITest extends AbstractCAdESTestValidation {
 		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
 		assertFalse(signatureWrapper.isPolicyAsn1Processable());
 		assertTrue(signatureWrapper.isPolicyIdentified());
-		assertTrue(signatureWrapper.isPolicyStatus());
+		assertTrue(signatureWrapper.isPolicyDigestValid());
 	}
 	
 	@Override
@@ -79,7 +90,7 @@ public class PolicySPURITest extends AbstractCAdESTestValidation {
 		assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 	
-	public class MockDataLoader extends CommonsDataLoader {
+	private static class MockDataLoader extends CommonsDataLoader {
 
 		private static final long serialVersionUID = -8743201861357700742L;
 		

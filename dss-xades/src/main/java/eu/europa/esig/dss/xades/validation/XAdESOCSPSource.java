@@ -68,7 +68,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 		appendContainedOCSPResponses();
 	}
 
-	public void appendContainedOCSPResponses() {
+	private void appendContainedOCSPResponses() {
 		// values
 		collectValues(xadesPaths.getRevocationValuesPath(), RevocationOrigin.REVOCATION_VALUES);
 		collectValues(xadesPaths.getAttributeRevocationValuesPath(), RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);

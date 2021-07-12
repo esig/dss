@@ -21,11 +21,12 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.SAMLAssertionNamespace;
@@ -34,6 +35,7 @@ import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
 import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,7 +43,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -86,15 +87,24 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 *                    The instance of {@code DSSDocument} to validate
 	 */
 	public XMLDocumentValidator(final DSSDocument dssDocument) {
-
 		super(new XAdESSignatureScopeFinder());
+		Objects.requireNonNull(dssDocument, "Document to be validated cannot be null!");
+
 		this.document = dssDocument;
-		this.rootElement = DomUtils.buildDOM(dssDocument);
+		this.rootElement = toDomDocument(dssDocument);
 
 		xadesPathsHolders = new ArrayList<>();
 		xadesPathsHolders.add(new XAdES111Paths());
 		xadesPathsHolders.add(new XAdES122Paths());
 		xadesPathsHolders.add(new XAdES132Paths());
+	}
+
+	private Document toDomDocument(DSSDocument document) {
+		try {
+			return DomUtils.buildDOM(document);
+		} catch (Exception e) {
+			throw new IllegalInputException(String.format("An XML file is expected : %s", e.getMessage()), e);
+		}
 	}
 
 	@Override
@@ -144,55 +154,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		}
 		return signatures;
 	}
-
-	/**
-	 * Retrieves a signature based on its Id
-	 *
-	 * @param signatureId
-	 *            the given Id
-	 * @return the corresponding {@code XAdESSignature}
-	 * @throws DSSException
-	 *             in case no Id is provided, or in case no signature was found for the given Id
-	 */
-	public AdvancedSignature getSignatureById(final String signatureId) throws DSSException {
-		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-		final List<AdvancedSignature> advancedSignatures = getSignatures();
-		for (final AdvancedSignature advancedSignature : advancedSignatures) {
-
-			final String advancedSignatureId = advancedSignature.getId();
-			if (signatureId.equals(advancedSignatureId)) {
-				return advancedSignature;
-			}
-		}
-		throw new DSSException("The signature with the given id was not found!");
-	}
-
-	@Override
-	public List<DSSDocument> getOriginalDocuments(final String signatureId) {
-		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-
-		List<AdvancedSignature> signatureList = getSignatures();
-		List<DSSDocument> result = getOriginalDocumentsFromListOfSignatures(signatureList, signatureId);
-		if (Utils.isCollectionEmpty(result)) {
-			for (AdvancedSignature advancedSignature : signatureList) {
-				result = getOriginalDocumentsFromListOfSignatures(advancedSignature.getCounterSignatures(), signatureId);
-				if (Utils.isCollectionNotEmpty(result)) {
-					break;
-				}
-			}
-		}
-		
-		return result;
-	}
-	
-	private List<DSSDocument> getOriginalDocumentsFromListOfSignatures(List<AdvancedSignature> signatureList, String signatureId) {
-		for (AdvancedSignature advancedSignature : signatureList) {
-			if (signatureId.equals(advancedSignature.getId())) {
-				return getOriginalDocuments(advancedSignature);
-			}
-		}
-		return Collections.emptyList();
-	}
 	
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
@@ -233,6 +194,13 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 */
 	public Document getRootElement() {
 		return rootElement;
+	}
+
+	@Override
+	public SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
+		DefaultSignaturePolicyValidatorLoader signaturePolicyValidatorLoader = new DefaultSignaturePolicyValidatorLoader();
+		signaturePolicyValidatorLoader.setDefaultSignaturePolicyValidator(new XMLSignaturePolicyValidator());
+		return signaturePolicyValidatorLoader;
 	}
 
 }

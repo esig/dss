@@ -50,6 +50,9 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 
 	/** The TokenExtractionStrategy */
 	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
+
+	/** The token identifier provider to use */
+	private TokenIdentifierProvider identifierProvider = new OriginalIdentifierProvider();
 	
 	/**
 	 * Locale to use for reports generation
@@ -100,6 +103,16 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	}
 
 	/**
+	 * Sets the TokenIdentifierProvider
+	 *
+	 * @param identifierProvider {@link TokenIdentifierProvider}
+	 */
+	public void setTokenIdentifierProvider(TokenIdentifierProvider identifierProvider) {
+		Objects.requireNonNull(identifierProvider);
+		this.identifierProvider = identifierProvider;
+	}
+
+	/**
 	 * Sets the validationTime
 	 *
 	 * @param validationTime {@link Date}
@@ -130,7 +143,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link CertificateReports}
 	 */
 	public CertificateReports validate() {
-		ValidationPolicy defaultPolicy = null;
+		ValidationPolicy defaultPolicy;
 		try {
 			defaultPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 		} catch (Exception e) {
@@ -155,16 +168,16 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		final XmlDiagnosticData diagnosticData = new CertificateDiagnosticDataBuilder()
 				.usedCertificates(svc.getProcessedCertificates())
 				.usedRevocations(svc.getProcessedRevocations())
+				.allCertificateSources(svc.getAllCertificateSources())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.tokenExtractionStrategy(tokenExtractionStrategy)
-				.certificateSourceTypes(svc.getCertificateSourceTypes())
-				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
+				.tokenIdentifierProvider(identifierProvider)
 				.validationDate(getValidationTime()).build();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setDiagnosticData(diagnosticData);
-		executor.setCertificateId(token.getDSSIdAsString());
+		executor.setCertificateId(identifierProvider.getIdAsString(token));
 		executor.setLocale(locale);
 		executor.setCurrentTime(getValidationTime());
 		return executor.execute();

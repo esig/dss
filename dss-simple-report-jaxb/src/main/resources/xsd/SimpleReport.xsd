@@ -46,11 +46,26 @@
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
-			<xs:element name="Errors" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Warnings" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Infos" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="AdESValidationDetails" type="Details" minOccurs="0" />
+			<xs:element name="QualificationDetails" type="Details" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" /> <!-- Must be a String type in order to avoid conflict with DetailedReport in REST/SOAP webServices -->
+	</xs:complexType>
+
+	<xs:complexType name="Details">
+		<xs:sequence>
+			<xs:element name="Error" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Warning" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Info" type="Message" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Message">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Key" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 	
 	<xs:complexType name="Signature">
@@ -71,6 +86,7 @@
 							</xs:simpleContent>
 						</xs:complexType>
 					</xs:element>
+					<xs:element name="Timestamps" type="Timestamps" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
 				<xs:attribute name="ParentId" type="xs:string" use="optional" />
@@ -80,6 +96,12 @@
 				<xs:attribute name="ExtensionPeriodMax" type="xs:dateTime" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Timestamps">
+		<xs:sequence>
+			<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="Timestamp">
@@ -112,6 +134,7 @@
 			<xs:enumeration value="POLICY_PROCESSING_ERROR" />
 			<xs:enumeration value="OUT_OF_BOUNDS_NO_POE" />
 			<xs:enumeration value="OUT_OF_BOUNDS_NOT_REVOKED" />
+			<xs:enumeration value="REVOCATION_OUT_OF_BOUNDS_NO_POE" />
 			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND" />
 			<xs:enumeration value="TRY_LATER" />
 			<xs:enumeration value="REVOKED_NO_POE" />
@@ -197,13 +220,14 @@
 			<xs:enumeration value="XAdES-BASELINE-T" />
 			<xs:enumeration value="XAdES-BASELINE-B" />
 			<xs:enumeration value="CMS-NOT-ETSI" />
+			<xs:enumeration value="CAdES-C" />
+			<xs:enumeration value="CAdES-X" />
+			<xs:enumeration value="CAdES-XL" />
+			<xs:enumeration value="CAdES-A" />
 			<xs:enumeration value="CAdES-BASELINE-LTA" />
 			<xs:enumeration value="CAdES-BASELINE-LT" />
 			<xs:enumeration value="CAdES-BASELINE-T" />
 			<xs:enumeration value="CAdES-BASELINE-B" />
-			<xs:enumeration value="CAdES-101733-C" />
-			<xs:enumeration value="CAdES-101733-X" />
-			<xs:enumeration value="CAdES-101733-A" />
 			<xs:enumeration value="PDF-NOT-ETSI" />
 			<xs:enumeration value="PAdES-BASELINE-LTA" />
 			<xs:enumeration value="PAdES-BASELINE-LT" />

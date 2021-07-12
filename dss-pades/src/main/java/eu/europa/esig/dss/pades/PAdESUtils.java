@@ -30,12 +30,13 @@ import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
 import eu.europa.esig.dss.pdf.PdfCMSRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,9 +87,9 @@ public final class PAdESUtils {
 	 * @return {@link InMemoryDocument}
 	 */
 	public static InMemoryDocument getOriginalPDF(final PdfCMSRevision pdfRevision) {
-		byte[] signedDocumentBytes = pdfRevision.getRevisionCoveredBytes();
+		DSSDocument signedDocument = pdfRevision.getSignedData();
 		ByteRange signatureByteRange = pdfRevision.getByteRange();
-		return retrievePreviousPDFRevision(new InMemoryDocument(signedDocumentBytes), signatureByteRange);
+		return retrievePreviousPDFRevision(signedDocument, signatureByteRange);
 	}
 
 	/**
@@ -170,15 +171,41 @@ public final class PAdESUtils {
 	}
 
 	/**
-	 * Returns a signed content according to the provided byteRange
-	 * 
+	 * Returns the revision content according to the provided byteRange ([0]-[3])
+	 *
 	 * @param dssDocument {@link DSSDocument} to extract the content from
-	 * @param byteRange   {@link ByteRange} indicating which content range should be
-	 *                    extracted
-	 * @return extracted content
+	 * @param byteRange {@link ByteRange} indicating the revision boundaries
+	 * @return revision binaries
 	 * @throws IOException in case if an exception occurs
 	 */
-	public static byte[] getSignedContent(DSSDocument dssDocument, ByteRange byteRange) throws IOException {
+	public static byte[] getRevisionContent(DSSDocument dssDocument, ByteRange byteRange) throws IOException {
+		int beginning = byteRange.getFirstPartStart();
+		int endSigValueContent = byteRange.getSecondPartStart();
+		int endValue = byteRange.getSecondPartEnd();
+
+		byte[] revisionByteArray = new byte[endSigValueContent + endValue - beginning];
+
+		try (InputStream is = dssDocument.openStream()) {
+
+			DSSUtils.skipAvailableBytes(is, beginning);
+			DSSUtils.readAvailableBytes(is, revisionByteArray, 0, endSigValueContent + endValue - beginning);
+
+		} catch (IllegalStateException e) {
+			LOG.error("Cannot extract revision binaries. Reason : {}", e.getMessage());
+		}
+
+		return revisionByteArray;
+	}
+
+	/**
+	 * Returns a signed content according to the provided byteRange ([0]-[1] and [2]-[3]) from the extracted revision
+	 *
+	 * @param revisionBinaries a byte array representing an extracted revision content
+	 * @param byteRange {@link ByteRange} indicating which content range should be extracted
+	 * @return extracted signed data
+	 * @throws IOException in case if an exception occurs
+	 */
+	public static byte[] getSignedContentFromRevision(byte[] revisionBinaries, ByteRange byteRange) throws IOException {
 		// Adobe Digital Signatures in a PDF (p5): In Figure 4, the hash is calculated
 		// for bytes 0 through 840, and 960 through 1200. [0, 840, 960, 1200]
 		int beginning = byteRange.getFirstPartStart();
@@ -186,20 +213,20 @@ public final class PAdESUtils {
 		int endSigValueContent = byteRange.getSecondPartStart();
 		int endValue = byteRange.getSecondPartEnd();
 
-		byte[] signedContentByteArray = new byte[startSigValueContent + endValue];
+		byte[] signedDataByteArray = new byte[startSigValueContent + endValue];
 
-		try (InputStream is = dssDocument.openStream()) {
+		try (InputStream is = new ByteArrayInputStream(revisionBinaries)) {
 
-			DSSUtils.skipAvailableBytes(is, beginning);
-			DSSUtils.readAvailableBytes(is, signedContentByteArray, 0, startSigValueContent);
-			DSSUtils.skipAvailableBytes(is, (long) endSigValueContent - startSigValueContent - beginning);
-			DSSUtils.readAvailableBytes(is, signedContentByteArray, startSigValueContent, endValue);
+			// do not skip the beginning, because the revision already has the binaries in the byte range
+			DSSUtils.readAvailableBytes(is, signedDataByteArray, 0, startSigValueContent - beginning);
+			DSSUtils.skipAvailableBytes(is, endSigValueContent - startSigValueContent - beginning);
+			DSSUtils.readAvailableBytes(is, signedDataByteArray, startSigValueContent - beginning, endValue);
 
 		} catch (IllegalStateException e) {
-			LOG.error("Cannot extract signed content. Reason : {}", e.getMessage());
+			LOG.error("Cannot extract revision binaries. Reason : {}", e.getMessage());
 		}
 
-		return signedContentByteArray;
+		return signedDataByteArray;
 	}
 
 	/**

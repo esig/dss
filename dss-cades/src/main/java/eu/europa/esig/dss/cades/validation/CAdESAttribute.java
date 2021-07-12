@@ -42,6 +42,8 @@ import java.util.List;
  */
 public class CAdESAttribute implements SignatureAttribute {
 
+	private static final long serialVersionUID = 7020534361457301562L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESAttribute.class);
 
 	/** The Attribute value */

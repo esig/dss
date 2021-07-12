@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.ws.timestamp.remote;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -116,7 +117,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 		TimestampWrapper timestamp = timestampList.get(0);
 		assertTrue(timestamp.getType().isContentTimestamp());
 		assertEquals(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, timestamp.getType());
-		assertTrue(Arrays.equals(timeStampResponse.getBinaries(), timestamp.getBinaries()));
+		assertArrayEquals(timeStampResponse.getBinaries(), timestamp.getBinaries());
 	}
 	
 	@Test

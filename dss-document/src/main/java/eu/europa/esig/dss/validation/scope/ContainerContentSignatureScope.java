@@ -23,8 +23,20 @@ package eu.europa.esig.dss.validation.scope;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
 
+/**
+ * This SignatureScope represents a content of a package.zip container file for an ASiC-S container
+ *
+ */
 public class ContainerContentSignatureScope extends ContainerSignatureScope {
 
+	private static final long serialVersionUID = 7807261511908211301L;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String} filename
+	 * @param digest {@link Digest}
+	 */
 	public ContainerContentSignatureScope(String name, Digest digest) {
 		super(name, digest);
 	}

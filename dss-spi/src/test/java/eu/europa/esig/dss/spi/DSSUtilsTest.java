@@ -20,13 +20,21 @@
  */
 package eu.europa.esig.dss.spi;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,42 +42,40 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.Security;
+import java.security.Signature;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.ECPrivateKey;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.KeyUsageBit;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
-import eu.europa.esig.dss.utils.Utils;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSSUtilsTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(DSSUtilsTest.class);
 
-	private static CertificateToken certificateWithAIA;
+	private static CertificateToken certificate;
 
 	@BeforeAll
 	public static void init() {
-		certificateWithAIA = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
-		assertNotNull(certificateWithAIA);
+		certificate = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
+		assertNotNull(certificate);
 	}
 
 	@Test
@@ -90,8 +96,9 @@ public class DSSUtilsTest {
 		assertEquals("95decc72f0a50ae4d9d5378e1b2252587cfc71977e43292c8f1b84648248509f1bc18bc6f0b0d0b8606a643eff61d611ae84e6fbd4a2683165706bd6fd48b334",
 				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_512, data)));
 
-		assertEquals("ee8ee3ada079996b80d926eef439a502", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE128, data)));
-		assertEquals("e80627c7a1dd02229936bb2822572025e17b91ef3a94f7ade9d810aee8d6a873",
+		assertEquals("ee8ee3ada079996b80d926eef439a5022faf7a8b9cf69154e6ee46020ea2eafd",
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE128, data)));
+		assertEquals("e80627c7a1dd02229936bb2822572025e17b91ef3a94f7ade9d810aee8d6a873f3d6795a6f7b042a3b65ba0faa872f32e513eb8f460dc60768ee86a05d22e7ac",
 				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE256, data)));
 
 		// BC JCAJCE
@@ -100,20 +107,6 @@ public class DSSUtilsTest {
 		assertEquals(512, Utils.fromHex(shake256_512).length * 8);
 		assertEquals(shake256_512,
 				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHAKE256_512, data)));
-	}
-
-	@Test
-	public void testLoadIssuer() {
-		Collection<CertificateToken> issuers = DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
-		assertNotNull(issuers);
-		assertFalse(issuers.isEmpty());
-		boolean foundIssuer = false;
-		for (CertificateToken issuer : issuers) {
-			if (certificateWithAIA.isSignedBy(issuer)) {
-				foundIssuer = true;
-			}
-		}
-		assertTrue(foundIssuer);
 	}
 
 	@Test
@@ -135,18 +128,6 @@ public class DSSUtilsTest {
 	public void testLoadP7cNotPEM() throws DSSException, IOException {
 		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/AdobeCA.p7c"));
 		assertTrue(Utils.isCollectionNotEmpty(certs));
-	}
-
-	@Test
-	public void testLoadIssuerEmptyDataLoader() {
-		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, null).isEmpty());
-	}
-
-	@Test
-	public void testLoadIssuerNoAIA() {
-		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
-		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificate, new NativeHTTPDataLoader()).isEmpty());
-		assertTrue(certificate.isCA());
 	}
 
 	@Test
@@ -189,18 +170,18 @@ public class DSSUtilsTest {
 
 	@Test
 	public void convertToPEM() {
-		String convertToPEM = DSSUtils.convertToPEM(certificateWithAIA);
+		String convertToPEM = DSSUtils.convertToPEM(certificate);
 
 		assertFalse(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(convertToPEM.getBytes())));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
-		assertEquals(certificate, certificateWithAIA);
+		assertEquals(certificate, DSSUtilsTest.certificate);
 
 		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
 		assertTrue(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(certDER)));
 
 		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
-		assertEquals(certificate2, certificateWithAIA);
+		assertEquals(certificate2, DSSUtilsTest.certificate);
 	}
 
 	@Test
@@ -271,16 +252,16 @@ public class DSSUtilsTest {
 
 		Date d1 = calendar.getTime();
 
-		String deterministicId = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		String deterministicId = DSSUtils.getDeterministicId(d1, certificate.getDSSId());
 		assertNotNull(deterministicId);
-		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificate.getDSSId());
 		assertEquals(deterministicId, deterministicId2);
-		assertNotNull(DSSUtils.getDeterministicId(null, certificateWithAIA.getDSSId()));
+		assertNotNull(DSSUtils.getDeterministicId(null, certificate.getDSSId()));
 
 		calendar.add(Calendar.MILLISECOND, 1);
 		Date d2 = calendar.getTime();
 
-		String deterministicId3 = DSSUtils.getDeterministicId(d2, certificateWithAIA.getDSSId());
+		String deterministicId3 = DSSUtils.getDeterministicId(d2, certificate.getDSSId());
 		
 		assertNotEquals(deterministicId2, deterministicId3);
 	}
@@ -311,12 +292,15 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void decodeUrl() {
+	public void decodeURI() {
 		assertEquals("012éù*34ä5µ£ 6789~#%&()+=`@{[]}'.txt",
-				DSSUtils.decodeUrl("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%40%7B%5B%5D%7D%27.txt"));
+				DSSUtils.decodeURI("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%40%7B%5B%5D%7D%27.txt"));
 
 		assertEquals("012éù*34ä5µ£ 6789~#%&()+=` @{[]}'.txt",
-				DSSUtils.decodeUrl("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%20%40%7B%5B%5D%7D%27.txt"));
+				DSSUtils.decodeURI("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%20%40%7B%5B%5D%7D%27.txt"));
+
+		assertEquals("012éù*34ä5µ£ 6789~#&()+=` @{[]}'.txt",
+				DSSUtils.decodeURI("012éù*34ä5µ£ 6789~#&()+=` @{[]}'.txt"));
 	}
 
 	@Test
@@ -352,6 +336,19 @@ public class DSSUtilsTest {
 		assertEquals("", DSSUtils.removeControlCharacters("\r\n"));
 		assertEquals("http://xadessrv.plugtests.net/capso/ocsp?ca=RotCAOK", DSSUtils.removeControlCharacters(
 				new String(Utils.fromBase64("aHR0cDovL3hhZGVzc3J2LnBsdWd0ZXN0cy5uZXQvY2Fwc28vb2NzcD9jYT1SAG90Q0FPSw=="))));
+	}
+
+	@Test
+	public void replaceAllNonAlphanumericCharactersTest() {
+		assertEquals("-", DSSUtils.replaceAllNonAlphanumericCharacters(" ", "-"));
+		assertEquals("Nowina-Solutions", DSSUtils.replaceAllNonAlphanumericCharacters("Nowina Solutions", "-"));
+		assertEquals("Новина", DSSUtils.replaceAllNonAlphanumericCharacters("Новина", "?"));
+		assertEquals("πτλς", DSSUtils.replaceAllNonAlphanumericCharacters("πτλς", "?"));
+		assertEquals("ხელმოწერა", DSSUtils.replaceAllNonAlphanumericCharacters("ხელმოწერა", "?"));
+		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\n", "?"));
+		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\r\n", "?"));
+		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("---____   ??? !!!!", "?"));
+		assertNull(DSSUtils.replaceAllNonAlphanumericCharacters(null, "-"));
 	}
 
 	@Test
@@ -415,7 +412,7 @@ public class DSSUtilsTest {
 	
 	@Test
 	public void getOidCodeTest() {
-		assertEquals(null, DSSUtils.getOidCode(null));
+		assertNull(DSSUtils.getOidCode(null));
 		assertEquals("", DSSUtils.getOidCode(""));
 		assertEquals("1.2.3.4", DSSUtils.getOidCode("aurn:oid:1.2.3.4"));
 		assertEquals("1.2.3.4", DSSUtils.getOidCode("urn:oid:1.2.3.4"));
@@ -424,16 +421,110 @@ public class DSSUtilsTest {
 	}
 	
 	@Test
-	public void stripFirstLeadingOccuranceTest() {
-		assertEquals(null, DSSUtils.stripFirstLeadingOccurance(null, null));
-		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", null));
-		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", ""));
-		assertEquals("aabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "a"));
-		assertEquals("bbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "aaa"));
-		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurance("aaabbcc", "aaaa"));
-		assertEquals("", DSSUtils.stripFirstLeadingOccurance("application/", "application/"));
-		assertEquals("json", DSSUtils.stripFirstLeadingOccurance("application/json", "application/"));
-		assertEquals("application/json", DSSUtils.stripFirstLeadingOccurance("application/application/json", "application/"));
+	public void stripFirstLeadingOccurrenceTest() {
+		assertNull(DSSUtils.stripFirstLeadingOccurrence(null, null));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", null));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", ""));
+		assertEquals("aabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", "a"));
+		assertEquals("bbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", "aaa"));
+		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", "aaaa"));
+		assertEquals("", DSSUtils.stripFirstLeadingOccurrence("application/", "application/"));
+		assertEquals("json", DSSUtils.stripFirstLeadingOccurrence("application/json", "application/"));
+		assertEquals("application/json", DSSUtils.stripFirstLeadingOccurrence("application/application/json", "application/"));
+	}
+
+	@Test
+	public void signAndConvertECSignatureValueTest() throws Exception {
+		Security.addProvider(new BouncyCastleProvider());
+		KeyPairGenerator gen = KeyPairGenerator.getInstance("ECDSA");
+		KeyPair pair = gen.generateKeyPair();
+
+		ECPrivateKey ecPrivateKey = (ECPrivateKey) pair.getPrivate();
+		signAndCheckSignatureValue("SHA1withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1), ecPrivateKey);
+		signAndCheckSignatureValue("SHA224withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224), ecPrivateKey);
+		signAndCheckSignatureValue("SHA256withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA256), ecPrivateKey);
+		signAndCheckSignatureValue("SHA384withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384), ecPrivateKey);
+		signAndCheckSignatureValue("SHA512withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA512), ecPrivateKey);
+		signAndCheckSignatureValue("RIPEMD160withECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160), ecPrivateKey);
+		signAndCheckSignatureValue("SHA1withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA1), ecPrivateKey);
+		signAndCheckSignatureValue("SHA224withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA224), ecPrivateKey);
+		signAndCheckSignatureValue("SHA256withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256), ecPrivateKey);
+		signAndCheckSignatureValue("SHA384withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA384), ecPrivateKey);
+		signAndCheckSignatureValue("SHA512withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA512), ecPrivateKey);
+		signAndCheckSignatureValue("RIPEMD160withPLAIN-ECDSA",
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.RIPEMD160), ecPrivateKey);
+	}
+
+	private void signAndCheckSignatureValue(String javaAlgorithm, SignatureAlgorithm currentAlgorithm,
+										ECPrivateKey ecPrivateKey) throws Exception {
+		Signature s = Signature.getInstance(javaAlgorithm);
+		s.initSign(ecPrivateKey);
+		s.update("Hello world!".getBytes());
+		byte[] originalBinaries = s.sign();
+		assertECSignatureValid(originalBinaries, currentAlgorithm);
+	}
+
+	@Test
+	public void convertECSignatureValueTest() throws Exception {
+		assertECSignatureValid(Utils.fromBase64("MEQCIEJNA0AElH/vEH9xLxvqrwCqh+yUh9ACL2vU/2eObRbTAiAxTLSWSioJrfSwPkKcypf+KCHvMGdwZbRWQHnZN2sDnQ=="),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA256));
+		assertECSignatureValid(Utils.fromHex("2B9099C9885DDB5BFDA2E9634905B9A63E7E3A6EC87BDC0A89014716B23F00B0AD787FC8D0DCF28F007E7DEC097F30DA892BE2AC61D90997DCDF05740E4D5B0C"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
+		assertECSignatureValid(Utils.fromHex("947b79069e6a1e3316ec15d696649a4b67c6c188df9bc05458f3b0b94907f3fb52522d4cae24a75735969cff556b1476a5ccbe37ca65a928782c14f299f3b2d3"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
+		assertECSignatureValid(Utils.fromHex("28a1583e58e93a661322f776618d83b023bdc52b2e909cf9d53030b9260ed667b588fd39eeee5b1b55523a7e71cb4187d8b1bbf56c1581fc845863157d279cf5"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
+		assertECSignatureValid(Utils.fromHex("dd8fc5414eda2920d347f3d3f9f604fcf09392a8ce3807f6f87d006cf8ed1959075af8abbb030e6990da52fe49c93486a4b98bb2e18e0f84095175eddabfbb96"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
+		assertECSignatureValid(Utils.fromHex("1daf408ead014bba9f243849ece308b31f898e1ce97b54a78b3c15eb103fa8a1c87bdd97fdfc4cb56a7e1e5650dee2ebfff0b56d5a2ca0338e6ed59689e27ae1323f32b0f93b41987a816c93c00462c68c609692084dbced7308a8a66f0365ee5b7b272273e8abd4ddd4a49d2fd67964bc8c757114791446b9716f3b7f551608"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA512));
+		assertECSignatureValid(Utils.fromHex("0d2fc9f18d816e9054af943c392dd46f09da71521de9bd98d765e170f12eb086d3d0f9754105001ed2e703d7290ac967642bc70bdd7a96b5c2b8e3d4b503b80e"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
+		assertECSignatureValid(Utils.fromHex("065a15bd4fec67a2a302d9d3ec679cb8f298f9d6a1d855d3dbf39b3f2fa7ea461e437d9542c4a9527afe5e78c1412937f0dbb05a78380cfb2e1bf6eff944581a"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
+		assertECSignatureValid(Utils.fromHex("f322898717aada9b027855848fa6ec5c4bf84d67a70f0ecbafea9dc90fc1d4f0901325766b199bdcfce1f99a54f0b72e71d740b355fff84a5873fd36c439236e"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
+		assertECSignatureValid(Utils.fromHex("B003267151210F7D8D1A747EEC73A0185CC0E848BF885A9DDE061AB5FB19FB3B6249F8B7B84432738EE80DDAB9654DEA5C4DAB2EC34A5EC8DB17E3DFBF577521"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
+		assertECSignatureValid(Utils.fromHex("C511529B789F64466FE1D524AF9279BEED2F12429798FE0B920F9784A6EBB6400081949A7EE84803E823263CD528F5CE503593F00010191D382B092338AF2E96"),
+				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
+	}
+
+	private void assertECSignatureValid(byte[] originalBinaries, SignatureAlgorithm currentAlgorithm) throws Exception {
+		SignatureValue signatureValue = new SignatureValue();
+		signatureValue.setAlgorithm(currentAlgorithm);
+		signatureValue.setValue(originalBinaries);
+
+		SignatureAlgorithm targetAlgorithm;
+		if (EncryptionAlgorithm.ECDSA.equals(currentAlgorithm.getEncryptionAlgorithm())) {
+			assertTrue(DSSASN1Utils.isAsn1Encoded(originalBinaries));
+			targetAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, currentAlgorithm.getDigestAlgorithm());
+		} else {
+			assertFalse(DSSASN1Utils.isAsn1Encoded(originalBinaries));
+			targetAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, currentAlgorithm.getDigestAlgorithm());
+		}
+
+		SignatureValue convertedSignatureValue = DSSUtils.convertECSignatureValue(targetAlgorithm, signatureValue);
+
+		if (EncryptionAlgorithm.ECDSA.equals(targetAlgorithm.getEncryptionAlgorithm())) {
+			assertTrue(DSSASN1Utils.isAsn1Encoded(convertedSignatureValue.getValue()));
+		} else {
+			assertFalse(DSSASN1Utils.isAsn1Encoded(convertedSignatureValue.getValue()));
+		}
+
+		convertedSignatureValue = DSSUtils.convertECSignatureValue(currentAlgorithm, convertedSignatureValue);
+		assertArrayEquals(originalBinaries, convertedSignatureValue.getValue());
 	}
 
 }

@@ -32,9 +32,9 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
@@ -46,6 +46,9 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -77,9 +80,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -97,7 +98,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	private SecureRandomProvider secureRandomProvider;
 
 	/**
-	 * Set the {@code SecureRandomProvider}. Allows to modify a custom behavior for signing of encrypted documents.
+	 * Set the {@code SecureRandomProvider}. Allows modifying a custom behavior for signing of encrypted documents.
 	 * 
 	 * @param secureRandomProvider {@link SecureRandomProvider}
 	 */
@@ -109,10 +110,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	/**
 	 * Constructor for the PdfBoxSignatureService
 	 * 
-	 * @param serviceMode current instance is used to generate DocumentTypestamp or
+	 * @param serviceMode current instance is used to generate DocumentTimestamp or
 	 *                    Signature signature layer
 	 * @param signatureDrawerFactory
-	 *                               drawer factory implementation to be used
+	 *                    drawer factory implementation to be used
 	 * 
 	 */
 	public PdfBoxSignatureService(PDFServiceMode serviceMode, PdfBoxSignatureDrawerFactory signatureDrawerFactory) {
@@ -226,6 +227,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				if (pdSignatureField == null) {
 					// check signature field position only for new annotations
 					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new PdfBoxDocumentReader(pdDocument), fieldParameters);
+				} else {
+					signatureDrawer.setSignatureField(pdSignatureField);
 				}
 				
 				signatureDrawer.draw();
@@ -241,8 +244,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			checkEncryptedAndSaveIncrementally(pdDocument, fileOutputStream, parameters);
 
 			return digest.digest();
+
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute digest for a PDF : %s", e.getMessage()), e);
 		}
 	}
 	
@@ -255,13 +259,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				if (signatureField != null) {
 					PDSignature signature = signatureField.getSignature();
 					if (signature != null) {
-						throw new DSSException(
-								"The signature field '" + targetFieldId + "' can not be signed since its already signed.");
+						throw new IllegalArgumentException(String.format(
+								"The signature field '%s' can not be signed since its already signed.", targetFieldId));
 					}
 					return signatureField;
 				}
 			}
-			throw new DSSException("The signature field '" + targetFieldId + "' does not exist.");
+			throw new IllegalArgumentException(String.format("The signature field '%s' does not exist.", targetFieldId));
 		}
 		return null;
 	}
@@ -319,8 +323,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			// the signing date, needed for valid signature
 			final Calendar cal = Calendar.getInstance();
-			final Date signingDate = parameters.getSigningDate();
-			cal.setTime(signingDate);
+			cal.setTime(signatureParameters.getSigningDate());
+			cal.setTimeZone(signatureParameters.getSigningTimeZone());
 			signature.setSignDate(cal);
 		}
 		
@@ -400,8 +404,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				pdDocument.getEncryption().getSecurityHandler().setCustomSecureRandom(secureRandom);
 			}
 			saveDocumentIncrementally(pdDocument, outputStream);
-		} catch (Exception e) {
-			throw new DSSException(e);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to save a document. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -427,14 +431,14 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, String pwd) {
+	public DSSDocument addDssDictionary(DSSDocument document, ValidationDataContainer validationDataForInclusion, String pwd) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
 				PDDocument pdDocument = PDDocument.load(is, pwd)) {
 
-			if (Utils.isCollectionNotEmpty(callbacks)) {
+			if (!validationDataForInclusion.isEmpty()) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
-				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME, buildDSSDictionary(pdDocument, callbacks));
+				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME, buildDSSDictionary(pdDocument, validationDataForInclusion));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 			
@@ -446,65 +450,71 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			return inMemoryDocument;
 
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to add a new dss dictionary revision : %s", e.getMessage()), e);
 		}
 	}
 
-	private COSDictionary buildDSSDictionary(PDDocument pdDocument, List<DSSDictionaryCallback> callbacks)
+	private COSDictionary buildDSSDictionary(PDDocument pdDocument, ValidationDataContainer validationDataForInclusion)
 			throws IOException {
 		COSDictionary dss = new COSDictionary();
 
-		Map<String, Long> knownObjects = buildKnownObjects(callbacks);
+		Collection<AdvancedSignature> signatures = validationDataForInclusion.getSignatures();
+		Map<String, Long> knownObjects = buildKnownObjects(signatures);
 
 		Map<String, COSStream> streams = new HashMap<>();
 
-		Set<CRLToken> allCrls = new HashSet<>();
-		Set<OCSPToken> allOcsps = new HashSet<>();
-		Set<CertificateToken> allCertificates = new HashSet<>();
+		ValidationData allValidationData = validationDataForInclusion.getAllValidationData();
 
 		COSDictionary vriDictionary = new COSDictionary();
-		for (DSSDictionaryCallback callback : callbacks) {
+		for (AdvancedSignature signature : signatures) {
 			COSDictionary sigVriDictionary = new COSDictionary();
 			sigVriDictionary.setDirect(true);
 
-			Set<CertificateToken> currentCerts = callback.getCertificates();
-			if (Utils.isCollectionNotEmpty(currentCerts)) {
-				allCertificates.addAll(currentCerts);
-				sigVriDictionary.setItem(PAdESConstants.CERT_ARRAY_NAME_VRI,
-						buildArray(pdDocument, streams, currentCerts, knownObjects));
-			}
+			ValidationData validationDataToAdd = new ValidationData();
 
-			List<OCSPToken> currentOcsps = callback.getOcsps();
-			if (Utils.isCollectionNotEmpty(currentOcsps)) {
-				allOcsps.addAll(currentOcsps);
-				sigVriDictionary.setItem(PAdESConstants.OCSP_ARRAY_NAME_VRI,
-						buildArray(pdDocument, streams, currentOcsps, knownObjects));
-			}
+			ValidationData signatureValidationData = validationDataForInclusion.getAllValidationDataForSignature(signature);
+			validationDataToAdd.addValidationData(signatureValidationData);
 
-			List<CRLToken> currentCrls = callback.getCrls();
-			if (Utils.isCollectionNotEmpty(currentCrls)) {
-				allCrls.addAll(currentCrls);
-				sigVriDictionary.setItem(PAdESConstants.CRL_ARRAY_NAME_VRI,
-						buildArray(pdDocument, streams, currentCrls, knownObjects));
-			}
+			if (!validationDataToAdd.isEmpty()) {
+				Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
+				if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
+					sigVriDictionary.setItem(PAdESConstants.CERT_ARRAY_NAME_VRI,
+							buildArray(pdDocument, streams, certificateTokensToAdd, knownObjects));
+				}
 
-			// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
-			String vriKey = callback.getSignature().getVRIKey();
-			vriDictionary.setItem(vriKey, sigVriDictionary);
+				Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
+				if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
+					sigVriDictionary.setItem(PAdESConstants.CRL_ARRAY_NAME_VRI,
+							buildArray(pdDocument, streams, crlTokensToAdd, knownObjects));
+				}
+
+				Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
+				if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
+					sigVriDictionary.setItem(PAdESConstants.OCSP_ARRAY_NAME_VRI,
+							buildArray(pdDocument, streams, ocspTokensToAdd, knownObjects));
+				}
+
+				// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
+				String vriKey = ((PAdESSignature) signature).getVRIKey();
+				vriDictionary.setItem(vriKey, sigVriDictionary);
+			}
 		}
 		dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
 
-		if (Utils.isCollectionNotEmpty(allCertificates)) {
+		Set<CertificateToken> allCertificateTokens = allValidationData.getCertificateTokens();
+		if (Utils.isCollectionNotEmpty(allCertificateTokens)) {
 			dss.setItem(PAdESConstants.CERT_ARRAY_NAME_DSS,
-					buildArray(pdDocument, streams, allCertificates, knownObjects));
+					buildArray(pdDocument, streams, allCertificateTokens, knownObjects));
 		}
 
-		if (Utils.isCollectionNotEmpty(allOcsps)) {
-			dss.setItem(PAdESConstants.OCSP_ARRAY_NAME_DSS, buildArray(pdDocument, streams, allOcsps, knownObjects));
+		Set<OCSPToken> allOCSPTokens = allValidationData.getOcspTokens();
+		if (Utils.isCollectionNotEmpty(allOCSPTokens)) {
+			dss.setItem(PAdESConstants.OCSP_ARRAY_NAME_DSS, buildArray(pdDocument, streams, allOCSPTokens, knownObjects));
 		}
 
-		if (Utils.isCollectionNotEmpty(allCrls)) {
-			dss.setItem(PAdESConstants.CRL_ARRAY_NAME_DSS, buildArray(pdDocument, streams, allCrls, knownObjects));
+		Set<CRLToken> allCRLTokens = allValidationData.getCrlTokens();
+		if (Utils.isCollectionNotEmpty(allCRLTokens)) {
+			dss.setItem(PAdESConstants.CRL_ARRAY_NAME_DSS, buildArray(pdDocument, streams, allCRLTokens, knownObjects));
 		}
 
 		return dss;
@@ -516,25 +526,25 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		// avoid duplicate CRLs
 		List<String> currentObjIds = new ArrayList<>();
 		for (Token token : tokens) {
-			String digest = getTokenDigest(token);
-			if (!currentObjIds.contains(digest)) {
-				Long objectNumber = knownObjects.get(digest);
+			String tokenKey = getTokenKey(token);
+			if (!currentObjIds.contains(tokenKey)) {
+				Long objectNumber = knownObjects.get(tokenKey);
 				if (objectNumber == null) {
-					COSStream stream = streams.get(digest);
+					COSStream stream = streams.get(tokenKey);
 					if (stream == null) {
 						stream = pdDocument.getDocument().createCOSStream();
 						try (OutputStream unfilteredStream = stream.createOutputStream()) {
 							unfilteredStream.write(token.getEncoded());
 							unfilteredStream.flush();
 						}
-						streams.put(digest, stream);
+						streams.put(tokenKey, stream);
 					}
 					array.add(stream);
 				} else {
 					COSObject foundCosObject = getByObjectNumber(pdDocument, objectNumber);
 					array.add(foundCosObject);
 				}
-				currentObjIds.add(digest);
+				currentObjIds.add(tokenKey);
 			}
 		}
 		return array;
@@ -564,7 +574,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		} catch (InvalidPasswordException e) {
 			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
 		} catch (Exception e) {
-			throw new DSSException(String.format("Unable to determine signature fields. Reason : %s", e.getMessage()), e);
+			throw new DSSException(String.format("Unable to retrieve signature fields. Reason : %s", e.getMessage()), e);
 		}
 		return result;
 	}
@@ -578,7 +588,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
 			if (pdfDoc.getPages().getCount() < parameters.getPage()) {
-				throw new DSSException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
+				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}
 			
 			PdfBoxDocumentReader pdfBoxDocumentReader = new PdfBoxDocumentReader(pdfDoc);

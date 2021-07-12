@@ -27,18 +27,37 @@ public class DSSException extends RuntimeException {
 
     private static final long serialVersionUID = 5375189169063686846L;
 
+    /**
+     * Empty constructor
+     */
     public DSSException() {
         super();
     }
 
+    /**
+     * Constructor with a message
+     *
+     * @param message {@link String}
+     */
     public DSSException(String message) {
         super(message);
     }
 
+    /**
+     * Re-throwable constructor
+     *
+     * @param cause {@link Throwable}
+     */
     public DSSException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Re-throwable constructor with a custom message
+     *
+     * @param message {@link String}
+     * @param cause {@link Throwable}
+     */
     public DSSException(String message, Throwable cause) {
         super(message, cause);
     }

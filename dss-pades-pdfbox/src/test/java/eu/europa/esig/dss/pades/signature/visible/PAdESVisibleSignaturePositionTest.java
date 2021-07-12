@@ -20,7 +20,27 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignerTextPosition;
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
+import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.DSSFileFont;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -30,30 +50,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignerTextPosition;
-import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
-import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
-import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.pades.DSSFileFont;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.SignatureFieldParameters;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("slow")
 public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
@@ -64,7 +61,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	/**
 	 * The degree of similarity between generated and original image
 	 */
-	private static final float SIMILARITY_LIMIT = 0.987f;
+	private static final float DEFAULT_SIMILARITY_LIMIT = 0.983f;
 	
 	/**
 	 * Comparison resolution: step in pixels in horizontal and vertical directions.
@@ -76,7 +73,9 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	
-	private DSSDocument signitureImage;
+	private DSSDocument signatureImage;
+
+	private float similarityLimit;
 	
 	/**
 	 * PDF-s rotated by pdftk on Ubuntu (<a href="https://packages.ubuntu.com/search?keywords=pdftk">pdftk Ubuntu
@@ -95,7 +94,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 
 		service = new PAdESService(getOfflineCertificateVerifier());
 
-		signitureImage = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png"));
+		signatureImage = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png"));
 
 		signablePdfs.put("normal", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test.pdf")));
 		signablePdfs.put("90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_90.pdf")));
@@ -109,6 +108,8 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 		signablePdfs.put("minoltaScan90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/sun_90.pdf"))); // scanner
 																																// type
 		signablePdfs.put("rotate90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/rotate90-rotated.pdf")));
+
+		similarityLimit = DEFAULT_SIMILARITY_LIMIT;
 	}
 
 	@Test
@@ -130,14 +131,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	}
 
 	@Test
-	public void doTest() throws Exception {
-		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-		execute();
-		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-		execute();
-	}
-	
-	private void execute() throws Exception {
+	public void rotationTest() throws Exception {
 		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
 
 		signatureImageParameters.setRotation(VisualSignatureRotation.NONE); // default
@@ -185,14 +179,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	}
 	
 	@Test
-	public void relativePositioningAndRotationtTest() throws Exception {
-		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
-		relativePositioningAndRotation();
-		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-		relativePositioningAndRotation();
-	}
-	
-	private void relativePositioningAndRotation() throws Exception {
+	public void relativePositioningTest() throws Exception {
 		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
 		signatureImageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png"), "signature-pen.png"));
 		signatureParameters.setImageParameters(signatureImageParameters);
@@ -219,20 +206,10 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	}
 
 	@Test
-	public void rotateTest() throws Exception {
-		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
-		signatureImageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
-		
-		documentToSign = signablePdfs.get("minoltaScan90");
-		testName = documentToSign.getName();
-		drawAndCompareVisually();
-	}
-
-	@Test
 	@Disabled("for generation and manual testing")
 	public void bigGeneratorTest() throws Exception {
 		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
-
+		similarityLimit = 0.981f;
 		for (VisualSignatureRotation rotation : VisualSignatureRotation.values()) {
 			for (VisualSignatureAlignmentHorizontal horizontal : VisualSignatureAlignmentHorizontal.values()) {
 				for (VisualSignatureAlignmentVertical vertical : VisualSignatureAlignmentVertical.values()) {
@@ -241,12 +218,8 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 					signatureImageParameters.setAlignmentVertical(vertical);
 					String[] pdfs = new String[] { "normal", "90", "180", "270" };
 					for (String pdf : pdfs) {
-						DSSDocument defaultSigned = sign(signablePdfs.get(pdf));
-						// defaultSigned.save("target/default_" + rotation + "_" + horizontal + "_" + vertical + "_" + pdf + ".pdf");
-						service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
-						DSSDocument nativeSigned = sign(signablePdfs.get(pdf));
-						// nativeSigned.save("target/native_" + rotation + "_" + horizontal + "_" + vertical + "_" + pdf + ".pdf");
-						compareVisualSimilarity(defaultSigned, nativeSigned, SIMILARITY_LIMIT - 0.004f);
+						documentToSign = signablePdfs.get(pdf);
+						drawAndCompareVisually();
 					}
 				}
 			}
@@ -334,12 +307,6 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 		
 	}
 
-	private DSSDocument sign(DSSDocument document) {
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		return service.signDocument(document, signatureParameters, signatureValue);
-	}
-
 	private void checkRotation(InputStream inputStream, int rotate) throws IOException {
 		try (PDDocument document = PDDocument.load(inputStream)) {
 			assertEquals(rotate, document.getPages().get(0).getRotation());
@@ -347,7 +314,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	}
 
 	private void checkImageSimilarityPdf(String samplePdf, String checkPdf) throws IOException {
-		checkImageSimilarityPdf(samplePdf, checkPdf, SIMILARITY_LIMIT);
+		checkImageSimilarityPdf(samplePdf, checkPdf, DEFAULT_SIMILARITY_LIMIT);
 	}
 
 	private void checkImageSimilarityPdf(String samplePdf, String checkPdf, float similaritylevel) throws IOException {
@@ -365,7 +332,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 
 	private SignatureImageParameters createSignatureImageParameters() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(signitureImage);
+		imageParameters.setImage(signatureImage);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
 		textParameters.setSignerTextPosition(SignerTextPosition.RIGHT);
@@ -421,4 +388,10 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	protected PAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
+
+	@Override
+	public float getSimilarityLimit() {
+		return similarityLimit;
+	}
+
 }

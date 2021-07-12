@@ -29,7 +29,6 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -78,7 +77,7 @@ public class JAdESSignDetachedCompactSignatureTest extends AbstractJAdESTestSign
         signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
         documentToSign = signedDocument;
 
-        Exception exception = assertThrows(DSSException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
         assertEquals("The payload or detached content must be provided!", exception.getMessage());
 
         signatureParameters.setDetachedContents(getDetachedContents());

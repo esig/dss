@@ -22,18 +22,29 @@ package eu.europa.esig.dss.validation.process;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -41,7 +52,7 @@ import java.util.TimeZone;
  */
 public class ValidationProcessUtils {
 
-	/** The Validaiton policy date format */
+	/** The Validation policy date format */
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	
 	/**
@@ -54,14 +65,10 @@ public class ValidationProcessUtils {
 	 * the extension id-pkix-ocsp-nocheck.
 	 *
 	 * @param certificate {@link CertificateWrapper} to check
-	 * @param controlTime {@link Date} validation time
 	 * @return TRUE if the revocation check is required for the OCSP Responder certificate, FALSE otherwise
 	 */
-	public static boolean isRevocationCheckRequired(CertificateWrapper certificate, Date controlTime) {
-		if (certificate.isIdPkixOcspNoCheck()) {
-			return !(controlTime.compareTo(certificate.getNotBefore()) >= 0 && controlTime.compareTo(certificate.getNotAfter()) <= 0);
-		}
-		return true;
+	public static boolean isRevocationCheckRequired(CertificateWrapper certificate) {
+		return !certificate.isTrusted() && !certificate.isSelfSigned() && !certificate.isIdPkixOcspNoCheck();
 	}
 	
 	/**
@@ -80,20 +87,176 @@ public class ValidationProcessUtils {
 						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())));
 	}
+
+	/**
+	 * Checks if the given conclusion is allowed as a basic revocation validation in order to continue
+	 * the validation process with Long-Term Validation Data
+	 *
+	 * @param conclusion {@link XmlConclusion} to validate
+	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
+	 */
+	public static boolean isAllowedBasicRevocationDataValidation(XmlConclusion conclusion) {
+		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
+				|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
+				|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+				|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
+				|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
+				|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
+	}
+
+	/**
+	 * Checks if the given conclusion is allowed as a basic timestamp validation in order to continue
+	 * the validation process with Archival Data
+	 *
+	 * @param conclusion {@link XmlConclusion} to validate
+	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
+	 */
+	public static boolean isAllowedBasicTimestampValidation(XmlConclusion conclusion) {
+		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
+						|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
+	}
+
+	/**
+	 * Checks if the given conclusion is allowed as a validation process with a long-term validation data
+	 * in order to continue the validation process with Archival Data
+	 *
+	 * @param conclusion {@link XmlConclusion} to validate
+	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
+	 */
+	public static boolean isAllowedValidationWithLongTermData(XmlConclusion conclusion) {
+		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
+					|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
+	}
 	
 	/**
 	 * Returns a revocation data used for basic signature validation
 	 * 
+	 * @param token {@link TokenProxy} used in the validation process
 	 * @param certificate {@link CertificateWrapper} to get a latest applicable revocation data for
-	 * @param bbb {@link XmlBasicBuildingBlocks} validation of a token
+	 * @param revocationData a collection of {@link CertificateRevocationWrapper} to return revocation from
+	 * @param controlTime {@link Date} validation time
+	 * @param bbbs a map of executed Basic Building Blocks
+	 * @param poe {@link POEExtraction} a set of POEs
 	 * @return {@link CertificateRevocationWrapper}
 	 */
-	public static CertificateRevocationWrapper getLatestAcceptableRevocationData(CertificateWrapper certificate, XmlBasicBuildingBlocks bbb) {
-		if (bbb != null && bbb.getXCV() != null) {
-			for (XmlSubXCV subXCV : bbb.getXCV().getSubXCV()) {
-				// rfc.getId can be null if no revocation data is available
-				if (certificate.getId().equals(subXCV.getId()) && (subXCV.getRFC() != null) && (subXCV.getRFC().getId() != null)) {
-					return certificate.getRevocationDataById(subXCV.getRFC().getId());
+	public static CertificateRevocationWrapper getLatestAcceptableRevocationData(TokenProxy token,
+					CertificateWrapper certificate, Collection<CertificateRevocationWrapper> revocationData,
+					Date controlTime, Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe) {
+		CertificateRevocationWrapper latestRevocationData = null;
+		if (poe.isPOEExists(certificate.getId(), controlTime)) {
+			for (CertificateRevocationWrapper revocationWrapper : revocationData) {
+				XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationWrapper.getId());
+				if (isAllowedBasicRevocationDataValidation(revocationBBB.getConclusion())
+						&& isRevocationDataAcceptable(bbbs.get(token.getId()), certificate, revocationWrapper)
+						&& revocationWrapper.getProductionDate() != null && revocationWrapper.getProductionDate().before(controlTime)
+						&& poe.isPOEExists(revocationWrapper.getId(), controlTime)
+						&& (latestRevocationData == null || revocationWrapper.getProductionDate().after(latestRevocationData.getProductionDate()))) {
+					latestRevocationData = revocationWrapper;
+				}
+			}
+		}
+		return latestRevocationData;
+	}
+
+	/**
+	 * This method verifies if there is an acceptable revocation data according to rules defined in 5.6.2.4 step 1)
+	 * and returns a list of the revocation data. If none of the revocation data found,
+	 * the method returns all the available revocation data
+	 *
+	 * @param token {@link TokenProxy} used in the validation process
+	 * @param certificate {@link CertificateWrapper} to get acceptable revocation data for
+	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
+	 * @param poe {@link POEExtraction}
+	 * @return a list of {@link CertificateRevocationWrapper}s
+	 */
+	public static List<CertificateRevocationWrapper> getAcceptableRevocationDataForPSVIfExistOrReturnAll(
+			TokenProxy token, CertificateWrapper certificate, Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe) {
+		List<CertificateRevocationWrapper> revocationWrappers =
+				filterRevocationDataForPastSignatureValidation(token, certificate, bbbs, poe);
+		if (Utils.isCollectionNotEmpty(revocationWrappers)) {
+			return revocationWrappers;
+		} else {
+			return certificate.getCertificateRevocationData();
+		}
+	}
+
+	/**
+	 * This method filters revocation data for a signing certificate token according to rules defined in 5.6.2.4 step 1)
+	 *
+	 * @param token {@link TokenProxy} used in the validation process
+	 * @param certificate {@link CertificateWrapper} to get acceptable revocation data for
+	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
+	 * @param poe {@link POEExtraction}
+	 * @return a list of {@link CertificateRevocationWrapper}s
+	 */
+	private static List<CertificateRevocationWrapper> filterRevocationDataForPastSignatureValidation(
+			TokenProxy token, CertificateWrapper certificate, Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe) {
+		final List<CertificateRevocationWrapper> certificateRevocations = new ArrayList<>();
+
+		for (CertificateRevocationWrapper certificateRevocation : certificate.getCertificateRevocationData()) {
+			XmlBasicBuildingBlocks revocationBBB = bbbs.get(certificateRevocation.getId());
+			CertificateWrapper revocationIssuer = certificateRevocation.getSigningCertificate();
+
+			if (ValidationProcessUtils.isAllowedBasicRevocationDataValidation(revocationBBB.getConclusion())
+					&& ValidationProcessUtils.isRevocationDataAcceptable(bbbs.get(token.getId()), certificate, certificateRevocation)
+					&& revocationIssuer != null && (revocationIssuer.isTrusted() || poe.isPOEExistInRange(revocationIssuer.getId(),
+					revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter()))) {
+				certificateRevocations.add(certificateRevocation);
+			}
+		}
+		return certificateRevocations;
+	}
+
+	/**
+	 * This method verifies if a revocation data is acceptable for the given {@code certificate} according
+	 * to the validation performed within {@code bbb}
+	 *
+	 * @param bbb {@link XmlBasicBuildingBlocks} of the validating token
+	 * @param certificate {@link CertificateWrapper} concerned certificate
+	 * @param revocationData {@link RevocationWrapper} to check
+	 * @return TRUE if the revocation data is acceptable, FALSE otherwise
+	 */
+	public static boolean isRevocationDataAcceptable(XmlBasicBuildingBlocks bbb, CertificateWrapper certificate,
+													 RevocationWrapper revocationData) {
+		XmlRAC xmlRAC = getRevocationAcceptanceCheckerResult(bbb, certificate, revocationData);
+		return xmlRAC != null && xmlRAC.getConclusion() != null && Indication.PASSED.equals(xmlRAC.getConclusion().getIndication());
+	}
+
+	/**
+	 * Return a corresponding {@code XmlRAC} result for the given {@code certificate} and {@code revocationData}
+	 *
+	 * @param bbb {@link XmlBasicBuildingBlocks} of the validating token
+	 * @param certificate {@link CertificateWrapper} concerned certificate
+	 * @param revocationData {@link RevocationWrapper} to check
+	 * @return {@link XmlRAC}
+	 */
+	public static XmlRAC getRevocationAcceptanceCheckerResult(XmlBasicBuildingBlocks bbb, CertificateWrapper certificate,
+													 RevocationWrapper revocationData) {
+		if (bbb != null) {
+			XmlXCV xcv = bbb.getXCV();
+			if (xcv != null) {
+				for (XmlSubXCV subXCV : xcv.getSubXCV()) {
+					if (certificate.getId().equals(subXCV.getId())) {
+						List<XmlRAC> racs = subXCV.getRAC();
+						if (Utils.isCollectionNotEmpty(racs)) {
+							for (XmlRAC rac : racs) {
+								if (revocationData.getId().equals(rac.getId())) {
+									return rac;
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -172,7 +335,7 @@ public class ValidationProcessUtils {
 	}
 	
 	/**
-	 * Returns crypto possition MessageTag for the given XmlDigestMatcher
+	 * Returns crypto position MessageTag for the given XmlDigestMatcher
 	 * 
 	 * @param digestMatcher {@link XmlDigestMatcher} to get crypto position for
 	 * @return {@link MessageTag} position
@@ -194,6 +357,7 @@ public class ValidationProcessUtils {
 		case SIGNATURE_PROPERTIES:
 			return MessageTag.ACCM_POS_SIGNTR_PRT;
 		case COUNTER_SIGNATURE:
+		case COUNTER_SIGNED_SIGNATURE_VALUE:
 			return MessageTag.ACCM_POS_CNTR_SIG;
 		case MESSAGE_DIGEST:
 			return MessageTag.ACCM_POS_MES_DIG;
@@ -206,8 +370,48 @@ public class ValidationProcessUtils {
 		case MESSAGE_IMPRINT:
 			return MessageTag.ACCM_POS_MESS_IMP;
 		default:
-			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!", digestMatcher.getType()));
+			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!",
+					digestMatcher.getType()));
 		}
+	}
+
+	/**
+	 * Returns MessageTag associated with the given timestamp type
+	 *
+	 * @param timestampType {@link TimestampType} to get related MessageTag for
+	 * @return {@link MessageTag}
+	 */
+	public static MessageTag getTimestampTypeMessageTag(TimestampType timestampType) {
+		if (timestampType.isContentTimestamp()) {
+			return MessageTag.TST_TYPE_CONTENT_TST;
+		} else if (timestampType.isSignatureTimestamp()) {
+			return MessageTag.TST_TYPE_SIGNATURE_TST;
+		} else if (timestampType.isValidationDataTimestamp()) {
+			return MessageTag.TST_TYPE_VD_TST;
+		} else if (timestampType.isDocumentTimestamp()) {
+			return MessageTag.TST_TYPE_DOC_TST;
+		} else if (timestampType.isArchivalTimestamp()) {
+			return MessageTag.TST_TYPE_ARCHIVE_TST;
+		} else {
+			throw new IllegalArgumentException(
+					String.format("The TimestampType '%s' is not supported!", timestampType));
+		}
+	}
+
+	/**
+	 * Checks if a valid revocation (RAC) has been found
+	 *
+	 * @param subXCV {@link XmlSubXCV} result to be checked
+	 * @return TRUE if at least one valid RAC found, FALSE otherwise
+	 */
+	public static boolean isValidRACFound(XmlSubXCV subXCV) {
+		for (XmlRAC rac : subXCV.getRAC()) {
+			if (rac != null && rac.getConclusion() != null &&
+					Indication.PASSED.equals(rac.getConclusion().getIndication())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

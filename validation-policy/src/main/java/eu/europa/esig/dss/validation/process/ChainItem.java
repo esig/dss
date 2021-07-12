@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -172,9 +173,9 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	/**
 	 * Return a list of previous errors occurred in the chain
 	 *
-	 * @return a list of {@link XmlName}s
+	 * @return a list of {@link XmlMessage}s
 	 */
-	protected List<XmlName> getPreviousErrors() {
+	protected List<XmlMessage> getPreviousErrors() {
 		return Collections.emptyList();
 	}
 
@@ -216,7 +217,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		conclusion.setIndication(getFailedIndicationForConclusion());
 		conclusion.setSubIndication(getFailedSubIndicationForConclusion());
 
-		List<XmlName> previousErrors = getPreviousErrors();
+		List<XmlMessage> previousErrors = getPreviousErrors();
 		if (Utils.isCollectionNotEmpty(previousErrors)) {
 			conclusion.getErrors().addAll(previousErrors);
 		} else {
@@ -239,6 +240,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		xmlConstraint.setName(buildConstraintMessage());
 		xmlConstraint.setStatus(status);
 		xmlConstraint.setId(bbbId);
+		xmlConstraint.setBlockType(getBlockType());
 
 		if (XmlStatus.NOT_OK.equals(status)) {
 			xmlConstraint.setError(buildErrorMessage());
@@ -257,19 +259,29 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	/**
 	 * Builds an error message
 	 *
-	 * @return {@link XmlName}
+	 * @return {@link XmlMessage}
 	 */
-	protected XmlName buildErrorMessage() {
-		return buildXmlName(getErrorMessageTag());
+	protected XmlMessage buildErrorMessage() {
+		return buildXmlMessage(getErrorMessageTag());
 	}
 
 	/**
 	 * Builds a constraint message
 	 *
-	 * @return {@link XmlName}
+	 * @return {@link XmlMessage}
 	 */
-	protected XmlName buildConstraintMessage() {
-		return buildXmlName(getMessageTag());
+	protected XmlMessage buildConstraintMessage() {
+		return buildXmlMessage(getMessageTag());
+	}
+
+	/**
+	 * Returns the validating block type (used for validation result of RAC, RFC, etc.)
+	 *
+	 * @return {@link XmlBlockType}
+	 */
+	protected XmlBlockType getBlockType() {
+		// by default
+		return null;
 	}
 
 	/**
@@ -295,22 +307,22 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	}
 
 	/**
-	 * Builds the {@code XmlName}
+	 * Builds the {@code XmlMessage}
 	 *
 	 * @param messageTag {@link MessageTag}
 	 * @param args arguments
-	 * @return {@link XmlName}
+	 * @return {@link XmlMessage}
 	 */
-	protected XmlName buildXmlName(MessageTag messageTag, Object... args) {
-		XmlName xmlName = new XmlName();
+	protected XmlMessage buildXmlMessage(MessageTag messageTag, Object... args) {
+		XmlMessage xmlMessage = new XmlMessage();
 		String message = i18nProvider.getMessage(messageTag, args);
 		if (message != null) {
-			xmlName.setNameId(messageTag.getId());
-			xmlName.setValue(message);
+			xmlMessage.setKey(messageTag.getId());
+			xmlMessage.setValue(message);
 		} else {
 			LOG.error("MessageTag [{}] is not defined in dss-messages.properties!", messageTag);
 		}
-		return xmlName;
+		return xmlMessage;
 	}
 
 	/**

@@ -29,12 +29,12 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +62,7 @@ public class JAdESLevelLTANotTrustedTSPTest extends AbstractJAdESTestSignature {
         signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
         CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-        certificateVerifier.setDataLoader(new CommonsDataLoader());
+        certificateVerifier.setAIASource(new DefaultAIASource());
         certificateVerifier.setCrlSource(new OnlineCRLSource());
         certificateVerifier.setOcspSource(new OnlineOCSPSource());
 

@@ -28,7 +28,6 @@ import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -101,14 +100,14 @@ public class JAdESFlattenedParallelSignatureTest extends AbstractJAdESTestValida
 	@Test
 	public void parallelSignFlattenedTest() {
 		DSSDocument serializationSignature = getCompleteSerializationSignature(toBeSigned);
-		Exception exception = assertThrows(DSSException.class, () -> getFlattenedSignature(serializationSignature));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> getFlattenedSignature(serializationSignature));
 		assertEquals("The 'FLATTENED_JSON_SERIALIZATION' type is not supported for a parallel signing!", exception.getMessage());
 	}
 	
 	@Test
 	public void twiceSignFlattenedTest() {
 		DSSDocument flattenedSignature = getFlattenedSignature(toBeSigned);
-		Exception exception = assertThrows(DSSException.class, () -> getFlattenedSignature(flattenedSignature));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> getFlattenedSignature(flattenedSignature));
 		assertEquals("The 'FLATTENED_JSON_SERIALIZATION' type is not supported for a parallel signing!", exception.getMessage());
 	}
 	

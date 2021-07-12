@@ -47,15 +47,6 @@ public class SimpleReportXmlDefinerTest {
 	}
 
 	@Test
-	public void getHtmlBootstrap3Templates() throws IOException, TransformerConfigurationException {
-		Templates htmlTemplates = SimpleReportXmlDefiner.getHtmlBootstrap3Templates();
-		assertNotNull(htmlTemplates);
-		assertNotNull(htmlTemplates.newTransformer());
-
-		assertNotNull(SimpleReportXmlDefiner.getHtmlBootstrap3Templates());
-	}
-
-	@Test
 	public void getHtmlBootstrap4Templates() throws IOException, TransformerConfigurationException {
 		Templates htmlTemplates = SimpleReportXmlDefiner.getHtmlBootstrap4Templates();
 		assertNotNull(htmlTemplates);

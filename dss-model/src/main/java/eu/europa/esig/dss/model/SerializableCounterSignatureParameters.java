@@ -34,6 +34,9 @@ public interface SerializableCounterSignatureParameters extends SerializableSign
 	
 	/**
 	 * Sets the Id of a signature to be counter signed
+	 *
+	 * NOTE: The id shall represent the DSS (hash-based) id of a signature or
+	 * a provided id in the signature document, when available (i.e. XML Id for a XAdES signature)
 	 * 
 	 * @param signatureId {@link String} id of a signature to be counter signed
 	 */

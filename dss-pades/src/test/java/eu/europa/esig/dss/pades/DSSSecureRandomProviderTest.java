@@ -20,9 +20,13 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
+import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -32,15 +36,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
-import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DSSSecureRandomProviderTest {
 
@@ -52,8 +50,8 @@ public class DSSSecureRandomProviderTest {
 
 	static Stream<Arguments> random(Object[] arr) {
 		List<Arguments> args = new ArrayList<>();
-		for (int i = 0; i < arr.length; i++) {
-			args.add(Arguments.of(arr[i], getRandomLength()));
+		for (Object o : arr) {
+			args.add(Arguments.of(o, getRandomLength()));
 		}
 		return args.stream();
 	}
@@ -113,10 +111,10 @@ public class DSSSecureRandomProviderTest {
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 		DSSSecureRandomProvider fixedSecureRandomProvider = new DSSSecureRandomProvider(parameters);
 		assertThrows(NullPointerException.class, () -> fixedSecureRandomProvider.setDigestAlgorithm(null));
-		assertThrows(DSSException.class, () -> fixedSecureRandomProvider.setBinaryLength(-1));
-		assertThrows(DSSException.class, () -> fixedSecureRandomProvider.setBinaryLength(0));
-		assertThrows(DSSException.class, () -> fixedSecureRandomProvider.setBinaryLength(1));
-		assertThrows(DSSException.class, () -> fixedSecureRandomProvider.setBinaryLength(15));
+		assertThrows(IllegalArgumentException.class, () -> fixedSecureRandomProvider.setBinaryLength(-1));
+		assertThrows(IllegalArgumentException.class, () -> fixedSecureRandomProvider.setBinaryLength(0));
+		assertThrows(IllegalArgumentException.class, () -> fixedSecureRandomProvider.setBinaryLength(1));
+		assertThrows(IllegalArgumentException.class, () -> fixedSecureRandomProvider.setBinaryLength(15));
 		fixedSecureRandomProvider.setBinaryLength(16);
 		fixedSecureRandomProvider.setBinaryLength(1024);
 		fixedSecureRandomProvider.setBinaryLength(50000);

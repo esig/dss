@@ -117,31 +117,11 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 		}
 		return descriptions;
 	}
-
-	@Override
-	public List<DSSDocument> getOriginalDocuments(String signatureId) {
-		List<DSSDocument> potentials;
-		if (ASiCUtils.isOpenDocument(getMimeTypeDocument())) {
-			potentials = OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult);
-		} else {
-			potentials = getAllDocuments();
-		}
-		for (final DSSDocument signature : getSignatureDocuments()) {
-			XMLDocumentValidator xadesValidator = new XMLDocumentValidator(signature);
-			xadesValidator.setCertificateVerifier(certificateVerifier);
-			xadesValidator.setDetachedContents(potentials);
-			List<DSSDocument> retrievedDocs = xadesValidator.getOriginalDocuments(signatureId);
-			if (Utils.isCollectionNotEmpty(retrievedDocs)) {
-				return extractArchiveDocuments(retrievedDocs);
-			}
-		}
-		return Collections.emptyList();
-	}
 	
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
-		XAdESSignature xadesignature = (XAdESSignature) advancedSignature;
-		List<DSSDocument> retrievedDocs = XAdESSignatureUtils.getSignerDocuments(xadesignature);
+		XAdESSignature xadesSignature = (XAdESSignature) advancedSignature;
+		List<DSSDocument> retrievedDocs = XAdESSignatureUtils.getSignerDocuments(xadesSignature);
 		if (Utils.isCollectionNotEmpty(retrievedDocs)) {
 			return extractArchiveDocuments(retrievedDocs);
 		}

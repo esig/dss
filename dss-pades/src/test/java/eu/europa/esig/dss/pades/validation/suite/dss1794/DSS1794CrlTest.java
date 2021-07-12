@@ -20,17 +20,11 @@
  */
 package eu.europa.esig.dss.pades.validation.suite.dss1794;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -41,6 +35,13 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1794CrlTest extends AbstractPAdESTestValidation {
 
@@ -81,6 +82,11 @@ public class DSS1794CrlTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<RelatedRevocationWrapper> adbeRevocationInfoArchivalRevocationData = signature.foundRevocations()
+				.getRelatedRevocationsByTypeAndOrigin(RevocationType.CRL, RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+		assertEquals(1, adbeRevocationInfoArchivalRevocationData.size());
+
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
 			assertTrue(timestampWrapper.isSigningCertificateIdentified());
 			assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
@@ -92,6 +98,15 @@ public class DSS1794CrlTest extends AbstractPAdESTestValidation {
 			assertTrue(signingCertificateReference.isDigestValueMatch());
 			assertTrue(signingCertificateReference.isIssuerSerialPresent());
 			assertTrue(signingCertificateReference.isIssuerSerialMatch());
+
+			boolean containsAdbeRevocation = false;
+			List<RevocationWrapper> timestampedRevocations = timestampWrapper.getTimestampedRevocations();
+			for (RevocationWrapper revocationWrapper : timestampedRevocations) {
+				if (adbeRevocationInfoArchivalRevocationData.get(0).getId().equals(revocationWrapper.getId())) {
+					containsAdbeRevocation = true;
+				}
+			}
+			assertTrue(containsAdbeRevocation);
 		}
 	}
 

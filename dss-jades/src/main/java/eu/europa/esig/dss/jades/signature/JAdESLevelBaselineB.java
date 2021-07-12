@@ -22,9 +22,9 @@ package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
@@ -55,7 +55,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * The class builds a JOSE header according to EN 119-182
@@ -86,7 +85,7 @@ public class JAdESLevelBaselineB {
 		Objects.requireNonNull(certificateVerifier, "certificateVerifier must not be null!");
 		Objects.requireNonNull(certificateVerifier, "signatureParameters must be defined!");
 		if (Utils.isCollectionEmpty(documentsToSign)) {
-			throw new DSSException("Documents to sign must be provided!");
+			throw new IllegalArgumentException("Documents to sign must be provided!");
 		}
 		this.certificateVerifier = certificateVerifier;
 		this.parameters = parameters;
@@ -135,7 +134,8 @@ public class JAdESLevelBaselineB {
 		if (Utils.isStringNotEmpty(id)) {
 			addHeader(HeaderParameterNames.ALGORITHM, id);
 		} else {
-			throw new DSSException(String.format("The defined signature algorithm '%s' is not supported!", parameters.getSignatureAlgorithm()));
+			throw new UnsupportedOperationException(String.format("The defined signature algorithm '%s' is not supported!",
+					parameters.getSignatureAlgorithm()));
 		}
 	}
 
@@ -163,7 +163,7 @@ public class JAdESLevelBaselineB {
 		 * value.
 		 */
 		String mimeTypeString = mimeType.getMimeTypeString();
-		String shortMimeTypeString = DSSUtils.stripFirstLeadingOccurance(mimeTypeString, DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX);
+		String shortMimeTypeString = DSSUtils.stripFirstLeadingOccurrence(mimeTypeString, DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX);
 		if (!shortMimeTypeString.contains("/")) {
 			return shortMimeTypeString;
 		} else {
@@ -247,11 +247,10 @@ public class JAdESLevelBaselineB {
 		 * occur as Header Parameter names within the JOSE Header in the "crit"
 		 * list. Producers MUST NOT use the empty list "[]" as the "crit" value.
 		 */
-		Set<String> criticalHeaderExceptions = DSSJsonUtils.getCriticalHeaderExceptions();
 		
 		List<String> criticalHeaderNames = new ArrayList<>();
 		for (String header : signedProperties.keySet()) {
-			if (!criticalHeaderExceptions.contains(header)) {
+			if (!DSSJsonUtils.isCriticalHeaderException(header)) {
 				criticalHeaderNames.add(header);
 			}
 		}
@@ -301,15 +300,40 @@ public class JAdESLevelBaselineB {
 	protected void incorporateB64() {
 		// incorporate only with FALSE value
 		if (!parameters.isBase64UrlEncodedPayload()) {
-			byte[] payloadBytes = getPayloadBytes();
-			// see RFC 7797 (only for compact format not detached payload shall be uri-safe)
-			if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) &&
-					JWSSerializationType.COMPACT_SERIALIZATION.equals(parameters.getJwsSerializationType()) &&
-					Utils.isArrayNotEmpty(payloadBytes) && !DSSJsonUtils.isUrlSafePayload(new String(payloadBytes))) {
-				throw new DSSException("The payload contains not URL-safe characters! "
-						+ "With Unencoded Payload ('b64' = false) only ASCII characters in ranges %x20-2D and %x2F-7E are allowed!");
-			}
+			assertPayloadEncodingValid();
 			addHeader(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, false);
+		}
+	}
+
+	private void assertPayloadEncodingValid() {
+		byte[] payloadBytes = getPayloadBytes();
+		// see RFC 7797 (only for compact format not detached payload shall be uri-safe)
+		if (!parameters.isBase64UrlEncodedPayload() && !SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())
+				&& Utils.isArrayNotEmpty(payloadBytes)) {
+
+			switch (parameters.getJwsSerializationType()) {
+				/*
+				 * RFC 7797 ch. "5. Unencoded Payload Content Restrictions"
+				 */
+				case COMPACT_SERIALIZATION:
+					if (!DSSJsonUtils.isUrlSafePayload(new String(payloadBytes))) {
+						throw new IllegalInputException("The payload contains not URL-safe characters! " +
+								"With Unencoded Payload ('b64' = false) only ASCII characters in ranges " +
+								"%x20-2D and %x2F-7E are allowed for a COMPACT_SERIALIZATION!");
+					}
+					break;
+				case FLATTENED_JSON_SERIALIZATION:
+				case JSON_SERIALIZATION:
+					if (!DSSJsonUtils.isUtf8(payloadBytes)) {
+						throw new IllegalInputException("The payload contains not valid content! " +
+								"With Unencoded Payload ('b64' = false) only UTF-8 characters are allowed!");
+					}
+					break;
+				default:
+					throw new DSSException(String.format("The JWSSerializationType '%s' is not supported!",
+							parameters.getJwsSerializationType()));
+			}
+
 		}
 	}
 	
@@ -530,7 +554,7 @@ public class JAdESLevelBaselineB {
 			String signaturePolicyId = signaturePolicy.getId();
 			if (Utils.isStringEmpty(signaturePolicyId)) {
 				// see EN 119-182 ch. 5.2.7.1 Semantics and syntax ('id' is required)
-				throw new DSSException("Implicit policy is not allowed in JAdES! The signaturePolicyId attribute is required!");
+				throw new IllegalArgumentException("Implicit policy is not allowed in JAdES! The signaturePolicyId attribute is required!");
 			}
 			
 			Map<String, Object> sigPIdParams = new LinkedHashMap<>();
@@ -620,13 +644,13 @@ public class JAdESLevelBaselineB {
 
 	private void assertDetachedContentValid() {
 		if (parameters.getSigDMechanism() == null) {
-			throw new DSSException("The SigDMechanism is not defined for a detached signature! "
+			throw new IllegalArgumentException("The SigDMechanism is not defined for a detached signature! "
 					+ "Please use JAdESSignatureParameters.setSigDMechanism(sigDMechanism) method.");
 		}
 		if (!SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
 			for (DSSDocument document : documentsToSign) {
 				if (Utils.isStringEmpty(document.getName())) {
-					throw new DSSException("The signed document must have names for a detached signature!");
+					throw new IllegalArgumentException("The signed document must have names for a detached signature!");
 				}
 			}
 		}
@@ -641,7 +665,7 @@ public class JAdESLevelBaselineB {
 		 * be present and set to "false".
 		 */
 		if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism()) && parameters.isBase64UrlEncodedPayload()) {
-			throw new DSSException(String.format("'%s' SigD Mechanism can be used only with non-base64url encoded payload! "
+			throw new IllegalArgumentException(String.format("'%s' SigD Mechanism can be used only with non-base64url encoded payload! "
 					+ "Set JAdESSignatureParameters.setBase64UrlEncodedPayload(true).", SigDMechanism.HTTP_HEADERS.getUri()));
 		}
 	}
@@ -807,7 +831,7 @@ public class JAdESLevelBaselineB {
 			 */
 			return DSSUtils.EMPTY_BYTE_ARRAY;
 		}
-		throw new DSSException("The configured signature format is not supported!");
+		throw new IllegalArgumentException("The configured signature format is not supported!");
 	}
 	
 	private byte[] getPayloadForHttpHeadersMechanism() {

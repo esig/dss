@@ -20,24 +20,23 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static java.time.Duration.ofMillis;
-
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.crypto.Cipher;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.reports.Reports;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -62,22 +61,22 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
-import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.reports.Reports;
+import javax.crypto.Cipher;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.time.Duration.ofMillis;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InfiniteLoopDSS621Test {
 
@@ -90,10 +89,14 @@ public class InfiniteLoopDSS621Test {
         assertTimeout(ofMillis(5000), () -> {
         	DSSDocument signDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE_PATH));
     		final CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-    		certificateVerifier.setDataLoader(new IgnoreDataLoader()); // Error 404 on DER policy
+			certificateVerifier.setAIASource(null); // Error 404 on DER policy
 
     		final PDFDocumentValidator signedDocumentValidator = new PDFDocumentValidator(signDocument);
     		signedDocumentValidator.setCertificateVerifier(certificateVerifier);
+
+			SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+			signaturePolicyProvider.setDataLoader(new IgnoreDataLoader());
+			signedDocumentValidator.setSignaturePolicyProvider(signaturePolicyProvider);
     		
     		List<PdfDssDict> dssDictionaries = signedDocumentValidator.getDssDictionaries();
     		assertEquals(1, dssDictionaries.size());

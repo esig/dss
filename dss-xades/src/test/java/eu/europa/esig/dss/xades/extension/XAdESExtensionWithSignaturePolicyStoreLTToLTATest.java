@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -40,6 +34,12 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESExtensionWithSignaturePolicyStoreLTToLTATest extends AbstractXAdESTestExtension {
 
@@ -111,7 +111,7 @@ public class XAdESExtensionWithSignaturePolicyStoreLTToLTATest extends AbstractX
 
 		assertFalse(signature.isPolicyAsn1Processable());
 		assertTrue(signature.isPolicyIdentified());
-		assertTrue(signature.isPolicyStatus());
+		assertTrue(signature.isPolicyDigestValid());
 		assertTrue(signature.isPolicyDigestAlgorithmsEqual());
 	}
 

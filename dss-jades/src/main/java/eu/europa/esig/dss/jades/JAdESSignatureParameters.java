@@ -32,6 +32,8 @@ import java.util.Objects;
  */
 public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdESTimestampParameters> {
 	
+	private static final long serialVersionUID = -5937995983705731252L;
+
 	/**
 	 * Defines if certificate chain binaries must be included into the signed header ('x5c' attribute)
 	 */

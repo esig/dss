@@ -33,8 +33,12 @@ import eu.europa.esig.dss.pades.validation.suite.DSS1983Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2023Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2025Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2116WithPAdESTest;
+import eu.europa.esig.dss.pades.validation.suite.DSS2155Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2199Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2258Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS2451Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS2471Test;
+import eu.europa.esig.dss.pades.validation.suite.PAdESEnvelopingOtherPdfTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESExtendedToTLevelTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInvalidDigestAlgorithmTest;
@@ -42,11 +46,13 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureRefe
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultiplePagesAnnotationsOverlapTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOCSPSigningCertificateTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOutOfByteRangeTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESOverwrittenDSSDictTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSameBorderAnnotationsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleCorruptedTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESTimestampWithOrphanRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithAddedPageTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithCrossCertificateOCSPsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithDssVriAndCertRefTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
@@ -93,7 +99,9 @@ import org.junit.runner.RunWith;
 		DSS1469Test.class, DSS1469LTTest.class, DSS1523Test.class, PAdESOCSPSigningCertificateTest.class, PAdESWithDssVriAndCertRefTest.class,
 		PAdESWithOcspFromDssRevisionTest.class, PAdESInvalidDigestAlgorithmTest.class, DSS2023Test.class, DSS2025Test.class, DSS2116WithPAdESTest.class,
 		PAdESExtendedToTLevelTest.class, DSS2199Test.class, PAdESSameBorderAnnotationsTest.class, PAdESMultiplePagesAnnotationsOverlapTest.class,
-		PAdESWithAddedPageTest.class, PAdESWithRemovedPagesTest.class, DSS2258Test.class, TimestampedAndSignedTest.class })
+		PAdESWithAddedPageTest.class, PAdESWithRemovedPagesTest.class, DSS2258Test.class, TimestampedAndSignedTest.class, DSS2155Test.class,
+		DSS2451Test.class, PAdESOverwrittenDSSDictTest.class, DSS2471Test.class, PAdESWithCrossCertificateOCSPsTest.class,
+		PAdESEnvelopingOtherPdfTest.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

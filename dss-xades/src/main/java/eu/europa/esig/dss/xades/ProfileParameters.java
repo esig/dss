@@ -28,8 +28,20 @@ import java.io.Serializable;
  */
 public class ProfileParameters implements Serializable {
 
+	private static final long serialVersionUID = 2655781283234085565L;
+
 	/** The XAdES creation profile */
 	private SignatureProfile profile;
+
+	/**
+	 * The builder used to create the signature structure. Currently used only for XAdES.
+	 */
+	private SignatureBuilder builder;
+
+	/**
+	 * Indicates the type of the operation to be done
+	 */
+	private Operation operationKind;
 
 	/**
 	 * Returns the current Profile used to generate the signature or its extension
@@ -51,11 +63,6 @@ public class ProfileParameters implements Serializable {
 	}
 
 	/**
-	 * The builder used to create the signature structure. Currently used only for XAdES.
-	 */
-	private SignatureBuilder builder;
-
-	/**
 	 * Gets the signature builder
 	 *
 	 * @return {@link SignatureBuilder}
@@ -74,18 +81,6 @@ public class ProfileParameters implements Serializable {
 	}
 
 	/**
-	 * The type of operation to perform.
-	 */
-	public enum Operation {
-		SIGNING, EXTENDING
-	}
-
-	/**
-	 * Indicates the type of the operation to be done
-	 */
-	private Operation operationKind;
-
-	/**
 	 * Gets the current operation type
 	 *
 	 * @return {@link Operation}
@@ -101,6 +96,16 @@ public class ProfileParameters implements Serializable {
 	 */
 	public void setOperationKind(Operation operationKind) {
 		this.operationKind = operationKind;
+	}
+
+	/**
+	 * The type of operation to perform.
+	 */
+	public enum Operation {
+		/** The signing operation */
+		SIGNING,
+		/** The extension operation */
+		EXTENDING
 	}
 
 }

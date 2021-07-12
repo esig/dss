@@ -37,6 +37,8 @@ import java.util.List;
  */
 public class SingleDssDict extends AbstractPdfDssDict {
 
+	private static final long serialVersionUID = -6209573303629371895L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(SingleDssDict.class);
 
 	/** Represents a list of VRI dictionaries incorporated into the DSS dictionary */

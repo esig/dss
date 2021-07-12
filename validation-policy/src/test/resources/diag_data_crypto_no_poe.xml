@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>EUTrustedListsofCertificationServiceProvidersXML.signed_Certipost_detached.extended-lta.xml</DocumentName>
-    <ValidationDate>2019-06-28T11:51:35</ValidationDate>
+    <ValidationDate>2019-06-28T11:51:35Z</ValidationDate>
     <Signatures>
         <Signature Id="S-C6E5DF3BF6160BD2BAD82563A6D66773CC9C181813D3E3CA1C81407B53934692">
             <DAIdentifier>Signature_1377525082391</DAIdentifier>
             <SignatureFilename>EUTrustedListsofCertificationServiceProvidersXML.signed_Certipost_detached.extended-lta.xml</SignatureFilename>
-            <ClaimedSigningTime>2013-08-26T13:51:22</ClaimedSigningTime>
+            <ClaimedSigningTime>2013-08-26T13:51:22Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -150,8 +150,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2017-03-07T14:00:00</NotAfter>
-            <NotBefore>2005-07-26T10:00:00</NotBefore>
+            <NotAfter>2017-03-07T14:00:00Z</NotAfter>
+            <NotBefore>2005-07-26T10:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0</EntityKey>
@@ -177,8 +177,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.e-trust.be/CPS/QNcerts ">0.3.2062.7.1.0.1.2.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -188,7 +186,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
-                            <StartDate>2016-12-14T22:00:00</StartDate>
+                            <StartDate>2016-12-14T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -198,8 +196,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2016-12-14T22:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-12-14T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -209,8 +207,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2005-07-26T10:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2005-07-26T10:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -250,8 +248,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2015-07-15T14:50:56</NotAfter>
-            <NotBefore>2010-07-15T14:50:56</NotBefore>
+            <NotAfter>2015-07-15T14:50:56Z</NotAfter>
+            <NotBefore>2010-07-15T14:50:56Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-107F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0</EntityKey>
@@ -279,10 +277,9 @@
                 <certificatePolicy cpsUrl="http://www.e-trust.be/CPS/QNCerts">0.3.2062.7.1.1.101.1</certificatePolicy>
                 <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -292,7 +289,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
-                            <StartDate>2016-12-14T22:00:00</StartDate>
+                            <StartDate>2016-12-14T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
@@ -303,8 +300,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2016-12-14T22:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-12-14T22:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
@@ -315,8 +312,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2005-07-26T10:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2005-07-26T10:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
@@ -351,8 +348,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2018-08-13T23:59:00</NotAfter>
-            <NotBefore>1998-08-13T00:29:00</NotBefore>
+            <NotAfter>2018-08-13T23:59:00Z</NotAfter>
+            <NotBefore>1998-08-13T00:29:00Z</NotBefore>
             <PublicKeySize>1024</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36</EntityKey>
@@ -369,8 +366,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -396,8 +391,8 @@
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2025-01-09T23:00:00</NotAfter>
-            <NotBefore>2019-01-09T23:00:00</NotBefore>
+            <NotAfter>2025-01-09T23:00:00Z</NotAfter>
+            <NotBefore>2019-01-09T23:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3A528F2E01089B11A013258F58F9E6B7BC3C405A14831916212DA9208B5C9DAE</EntityKey>
@@ -424,8 +419,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -435,14 +428,14 @@
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-04-03T00:00:00</StartDate>
+                            <StartDate>2019-04-03T00:00:00Z</StartDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-12-01T01:00:00</StartDate>
-                            <EndDate>2019-04-03T00:00:00</EndDate>
+                            <StartDate>2016-12-01T01:00:00Z</StartDate>
+                            <EndDate>2019-04-03T00:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -473,8 +466,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2020-07-26T10:00:00</NotAfter>
-            <NotBefore>2005-07-26T10:00:00</NotBefore>
+            <NotAfter>2020-07-26T10:00:00Z</NotAfter>
+            <NotBefore>2005-07-26T10:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</EntityKey>
@@ -497,8 +490,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.e-trust.be/CPS/QNcerts ">0.3.2062.7.1.0.1.2.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -508,7 +499,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
-                            <StartDate>2016-12-14T22:00:00</StartDate>
+                            <StartDate>2016-12-14T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -518,8 +509,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2016-12-14T22:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-12-14T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -529,8 +520,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2005-07-26T10:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2005-07-26T10:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -562,8 +553,8 @@
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2019-04-24T12:50:04</NotAfter>
-            <NotBefore>2013-04-24T12:50:04</NotBefore>
+            <NotAfter>2019-04-24T12:50:04Z</NotAfter>
+            <NotBefore>2013-04-24T12:50:04Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755</EntityKey>
@@ -590,8 +581,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -601,28 +590,28 @@
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-04-03T00:00:00</StartDate>
+                            <StartDate>2019-04-03T00:00:00Z</StartDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-12-01T01:00:00</StartDate>
-                            <EndDate>2019-04-03T00:00:00</EndDate>
+                            <StartDate>2016-12-01T01:00:00Z</StartDate>
+                            <EndDate>2019-04-03T00:00:00Z</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2016-12-01T01:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-12-01T01:00:00Z</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2010-05-05T22:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2010-05-05T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -654,8 +643,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2020-05-06T09:30:59</NotAfter>
-            <NotBefore>2010-05-06T09:30:59</NotBefore>
+            <NotAfter>2020-05-06T09:30:59Z</NotAfter>
+            <NotBefore>2010-05-06T09:30:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</EntityKey>
@@ -678,8 +667,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -689,28 +676,28 @@
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-04-03T00:00:00</StartDate>
+                            <StartDate>2019-04-03T00:00:00Z</StartDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-12-01T01:00:00</StartDate>
-                            <EndDate>2019-04-03T00:00:00</EndDate>
+                            <StartDate>2016-12-01T01:00:00Z</StartDate>
+                            <EndDate>2019-04-03T00:00:00Z</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2016-12-01T01:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-12-01T01:00:00Z</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2010-05-05T22:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2010-05-05T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -737,8 +724,8 @@
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2025-01-29T14:03:15</NotAfter>
-            <NotBefore>2015-01-29T14:03:15</NotBefore>
+            <NotAfter>2025-01-29T14:03:15Z</NotAfter>
+            <NotBefore>2015-01-29T14:03:15Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</EntityKey>
@@ -761,8 +748,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -772,28 +757,28 @@
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-04-03T00:00:00</StartDate>
+                            <StartDate>2019-04-03T00:00:00Z</StartDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-12-01T01:00:00</StartDate>
-                            <EndDate>2019-04-03T00:00:00</EndDate>
+                            <StartDate>2016-12-01T01:00:00Z</StartDate>
+                            <EndDate>2019-04-03T00:00:00Z</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2016-12-01T01:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-12-01T01:00:00Z</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceNames><ServiceName lang="en">Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2015-04-13T22:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2015-04-13T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -822,8 +807,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2017-03-07T14:19:43</NotAfter>
-            <NotBefore>2007-03-21T14:20:17</NotBefore>
+            <NotAfter>2017-03-07T14:19:43Z</NotAfter>
+            <NotBefore>2007-03-21T14:20:17Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A</EntityKey>
@@ -849,8 +834,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.public-trust.com/CPS/OmniRoot.html">1.3.6.1.4.1.6334.1.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -860,7 +843,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
-                            <StartDate>2016-12-14T22:00:00</StartDate>
+                            <StartDate>2016-12-14T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -870,8 +853,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2016-12-14T22:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-12-14T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -881,8 +864,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2005-07-26T10:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2005-07-26T10:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -901,9 +884,9 @@
         <Revocation Id="R-ADD0A9B25B1DB305A80FB69659A26675D0A7F3DFDEE0B75CAD7C1C8381B2E4FF">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2013-07-01T06:00:00</ProductionDate>
-            <ThisUpdate>2013-07-01T06:00:00</ThisUpdate>
-            <NextUpdate>2014-01-15T06:00:00</NextUpdate>
+            <ProductionDate>2013-07-01T06:00:00Z</ProductionDate>
+            <ThisUpdate>2013-07-01T06:00:00Z</ThisUpdate>
+            <NextUpdate>2014-01-15T06:00:00Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -926,9 +909,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl</SourceAddress>
-            <ProductionDate>2019-06-28T11:30:30</ProductionDate>
-            <ThisUpdate>2019-06-28T11:30:30</ThisUpdate>
-            <NextUpdate>2019-07-05T10:30:30</NextUpdate>
+            <ProductionDate>2019-06-28T11:30:30Z</ProductionDate>
+            <ThisUpdate>2019-06-28T11:30:30Z</ThisUpdate>
+            <NextUpdate>2019-07-05T10:30:30Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -950,9 +933,9 @@
         <Revocation Id="R-1A713C30D1DB0501FD5E43BDB2A78C347E4646D16FF730CD7B76BF622650D689">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2013-08-25T18:12:55</ProductionDate>
-            <ThisUpdate>2013-08-25T18:12:55</ThisUpdate>
-            <NextUpdate>2013-08-26T19:12:55</NextUpdate>
+            <ProductionDate>2013-08-25T18:12:55Z</ProductionDate>
+            <ThisUpdate>2013-08-25T18:12:55Z</ThisUpdate>
+            <NextUpdate>2013-08-26T19:12:55Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -976,9 +959,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.universign.eu/tsa_root.crl</SourceAddress>
-            <ProductionDate>2019-06-27T16:00:30</ProductionDate>
-            <ThisUpdate>2019-06-27T16:00:30</ThisUpdate>
-            <NextUpdate>2019-07-04T16:00:30</NextUpdate>
+            <ProductionDate>2019-06-27T16:00:30Z</ProductionDate>
+            <ThisUpdate>2019-06-27T16:00:30Z</ThisUpdate>
+            <NextUpdate>2019-07-04T16:00:30Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -1000,7 +983,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-D49005368F0E03B30B20329431CF0F62674DEF6647AFA23079209B34145A1934">
-            <ProductionTime>2013-08-26T13:51:27</ProductionTime>
+            <ProductionTime>2013-08-26T13:51:27Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA512</DigestMethod>
                 <DigestValue>nJkhKyQmsO7f/fcw83lk4NgH3Y2JvdxJ/UxhK+DSWUxN39BGULK2yDTtQxQnlkzjPPud2xU2mjFgsyGqqCKV5Q==</DigestValue>
@@ -1035,7 +1018,7 @@
             </DigestAlgoAndValue>
         </Timestamp>
         <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-DF9B47509FBD8823ACEFA1AA50DF58A89304EB9FB0E6FDBC50D434621C54756F">
-            <ProductionTime>2013-08-26T13:51:29</ProductionTime>
+            <ProductionTime>2013-08-26T13:51:29Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA512</DigestMethod>
                 <DigestValue>lLXCIxT86O7esj4ck4o2ohAEn5nNYaoOgfdfveOD7hkCbPyw8StJwwNQDtYEgTVNomm0mpclrzPWQJWcqvV4ew==</DigestValue>
@@ -1074,7 +1057,7 @@
             </DigestAlgoAndValue>
         </Timestamp>
         <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-462F3FB430EF66DBB018F7E7438114BF6C0F1178081D15EB9B700F94DD8F29B9">
-            <ProductionTime>2019-05-10T11:24:04</ProductionTime>
+            <ProductionTime>2019-05-10T11:24:04Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>ZQQXvE4GvkV30NWf4n32LI8lh33S5SZLPDZMvNPauAw=</DigestValue>
@@ -1118,12 +1101,12 @@
         </Timestamp>
     </UsedTimestamps>
     <OrphanTokens>
-        <OrphanRevocation Id="R-CBA257E70FFACAB18685EAA1E4F4F2B4F7B5846CBE7A48DB4AEEEBAAFD14B8BE">
+        <OrphanRevocation EncapsulationType="BINARIES" Id="R-CBA257E70FFACAB18685EAA1E4F4F2B4F7B5846CBE7A48DB4AEEEBAAFD14B8BE">
+            <RevocationType>CRL</RevocationType>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>y6JX5w/6yrGGheqh5PTytPe1hGy+ekjbSu7rqv0UuL4=</DigestValue>
             </DigestAlgoAndValue>
-            <Type>CRL</Type>
         </OrphanRevocation>
     </OrphanTokens>
     <OriginalDocuments>
@@ -1141,9 +1124,9 @@
             <Url>https://tsl.belgium.be/tsl-be.xml</Url>
             <SequenceNumber>43</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2019-06-28T11:51:08</LastLoading>
-            <IssueDate>2019-06-13T00:00:00</IssueDate>
-            <NextUpdate>2019-12-13T00:00:00</NextUpdate>
+            <LastLoading>2019-06-28T11:51:08Z</LastLoading>
+            <IssueDate>2019-06-13T00:00:00Z</IssueDate>
+            <NextUpdate>2019-12-13T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F">
@@ -1151,9 +1134,9 @@
             <Url>http://www.ssi.gouv.fr/eidas/TL-FR.xml</Url>
             <SequenceNumber>52</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2019-06-28T11:51:11</LastLoading>
-            <IssueDate>2019-06-25T00:00:00</IssueDate>
-            <NextUpdate>2019-12-25T00:00:00</NextUpdate>
+            <LastLoading>2019-06-28T11:51:11Z</LastLoading>
+            <IssueDate>2019-06-25T00:00:00Z</IssueDate>
+            <NextUpdate>2019-12-25T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -1161,9 +1144,9 @@
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>242</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2019-06-28T11:51:07</LastLoading>
-	        <IssueDate>2019-06-27T06:00:00</IssueDate>
-	        <NextUpdate>2019-12-27T00:00:00</NextUpdate>
+	        <LastLoading>2019-06-28T11:51:07Z</LastLoading>
+	        <IssueDate>2019-06-27T06:00:00Z</IssueDate>
+	        <NextUpdate>2019-12-27T00:00:00Z</NextUpdate>
 	        <WellSigned>false</WellSigned>
 	    </TrustedList>
     </TrustedLists>

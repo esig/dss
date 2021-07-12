@@ -48,7 +48,7 @@
 			</xsd:element>
 			<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Global constraints about cryptograhic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
+					<xsd:documentation>Global constraints about cryptographic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Model" type="ModelConstraint" minOccurs="0">
@@ -187,17 +187,17 @@
 			</xsd:element>
 			<xsd:element name="UnicitySigningCertificate" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks the unicity of the signingCertificate (V1/V2) attribute</xsd:documentation>
+					<xsd:documentation>Checks the unicity of the signingCertificate (V1/V2) attribute (if the signingCertificate reference unique)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SigningCertificateRefersCertificateChain" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks is the signingCertificate (V1/V2) attribute covers only those certificates present in the certificate chain</xsd:documentation>
+					<xsd:documentation>Checks is the signingCertificate (V1/V2) attribute covers only those which are present in the certificate chain</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="ReferencesToAllCertificateChainPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>If the signingCertificate (V1/V2) attribute contains more than one reference, checks if the whole certificate chain is covered</xsd:documentation>
+					<xsd:documentation>Checks if all certificates in the chain are referenced by the signingCertificate (V1/V2) attribute, when present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="CertDigestPresent" type="LevelConstraint" minOccurs="0">
@@ -208,11 +208,6 @@
 			<xsd:element name="CertDigestMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if any signing certificate digest match with the found signer</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="AllCertDigestsMatch" type="LevelConstraint" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Checks if all signing certificate digests match with the found signer (v1/v2)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="IssuerSerialMatch" type="LevelConstraint" minOccurs="0">
@@ -270,6 +265,11 @@
 					<xsd:documentation>Checks the presence of a content-timestamp attribute</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ContentTimeStampMessageImprint" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the message imprint validity for present content-timestamps</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -319,6 +319,21 @@
 			<xsd:element name="SignedAttributes" type="SignedAttributesConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of checks on the signed attributes/properties</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TSAGeneralNamePresent" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if a TSTInfo.tsa field is present for a timestamp</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TSAGeneralNameContentMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if a TSTInfo.tsa field's value matches the timestamp's issuer distinguishing name when present</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TSAGeneralNameOrderMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if a TSTInfo.tsa field's value and order matches the timestamp's issuer distinguishing name when present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -471,7 +486,7 @@
 			</xsd:element>
 			<xsd:element name="NotExpired" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate is not expired</xsd:documentation>
+					<xsd:documentation>Checks if the validation time is in the validity range of the certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="AuthorityInfoAccessPresent" type="LevelConstraint" minOccurs="0">
@@ -489,14 +504,19 @@
 					<xsd:documentation>Checks if a revocation data is found in the signature or externally for this certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="RevocationDataNextUpdatePresent" type="LevelConstraint" minOccurs="0" >
+			<xsd:element name="CRLNextUpdatePresent" type="LevelConstraint" minOccurs="0" >
 				<xsd:annotation>
-					<xsd:documentation>Checks the presence of the NextUpdate value in the revocation data</xsd:documentation>
+					<xsd:documentation>Checks the presence of the NextUpdate value for a CRL</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OCSPNextUpdatePresent" type="LevelConstraint" minOccurs="0" >
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of the NextUpdate value for an OCSP response</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="RevocationDataFreshness" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks the revocation data freshness is concluant</xsd:documentation>
+					<xsd:documentation>Checks if the revocation data is fresh</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="KeyUsage" type="MultiValuesConstraint" minOccurs="0">
@@ -559,6 +579,11 @@
 					<xsd:documentation>Checks if the certificate is not with a status certificateHold</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="RevocationIssuerNotExpired" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the validation time is in the validity range of the certificate of the issuer of the revocation information</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="SelfSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is a self-signed certificate</xsd:documentation>
@@ -574,19 +599,54 @@
 					<xsd:documentation>Checks if the certificate policy id is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="QCStatementIds" type="MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="PolicyQualificationIds" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate qc statement is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate policy identifiers declare the certificate as qualified (no TL overrule)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="Qualification" type="LevelConstraint" minOccurs="0">
+			<xsd:element name="PolicySupportedByQSCDIds" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate is declared as qualified (no TL overrule)</xsd:documentation>
+					<xsd:documentation>Checks if the certificate policy identifiers declare the certificate as a supported by QSCD (no TL overrule)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SupportedByQSCD" type="LevelConstraint" minOccurs="0">
+			<xsd:element name="QcCompliance" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate is declared as QSCD (no TL overrule)</xsd:documentation>
+					<xsd:documentation>Checks if the QCStatement id-etsi-qcs-QcCompliance is present (no TL overrule).</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="QcEuLimitValueCurrency" type="ValueConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Defines the allowed QCLimitValue currency.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MinQcEuLimitValue" type="IntValueConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Defines the minimal allowed QcEuLimitValue transaction limit for which the certificate can be used.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MinQcEuRetentionPeriod" type="IntValueConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Defines the minimal allowed QcEuRetentionPeriod value.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="QcSSCD" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the QcStatement id-etsi-qcs-QcSSCD is present (no TL overrule)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="QcEuPDSLocation" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the location or set of locations of PKI Disclosure Statements. The language is not taken into account.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="QcType" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's QCType(s) is in the acceptable values list (no TL overrule).</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="QcLegislationCountryCodes" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the country or set of countries under the legislation of which the certificate is issued as qualified. Shall be empty for EU qualified certificates.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="IssuedToNaturalPerson" type="LevelConstraint" minOccurs="0">
@@ -597,6 +657,31 @@
 			<xsd:element name="IssuedToLegalPerson" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate is issued for a legal person (no TL overrule)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SemanticsIdentifierForNaturalPerson" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's QCStatement contains a semantics identifier for natural person (no TL overrule).</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SemanticsIdentifierForLegalPerson" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's QCStatement contains a semantics identifier for legal person (no TL overrule).</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PSD2QcTypeRolesOfPSP" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's PSD2QcType roles of PSP contains a value from the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PSD2QcCompetentAuthorityName" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's PSD2QcType name of competent authority is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PSD2QcCompetentAuthorityId" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's PSD2QcType Id of competent authority is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="UsePseudonym" type="LevelConstraint" minOccurs="0">
@@ -746,6 +831,17 @@
 				<xsd:attribute type="xsd:string" name="value" />
 			</xsd:extension>
   		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="IntValueConstraint" mixed="true">
+		<xsd:annotation>
+			<xsd:documentation>Integer value check : follows the specified level behavior when the checked element is compliant with the defined constraint value</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="LevelConstraint">
+				<xsd:attribute type="xsd:int" name="value" />
+			</xsd:extension>
+		</xsd:complexContent>
 	</xsd:complexType>
 	
 	<xsd:complexType name="TimeConstraint">

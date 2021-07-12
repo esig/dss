@@ -29,6 +29,11 @@ public class ProtectedDocumentException extends DSSException {
 
 	private static final long serialVersionUID = 7616019266734940111L;
 
+	/**
+	 * Default constructor with a message
+	 *
+	 * @param message {@link String}
+	 */
 	public ProtectedDocumentException(String message) {
 		super(message);
 	}

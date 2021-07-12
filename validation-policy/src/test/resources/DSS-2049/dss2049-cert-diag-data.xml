@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
-    <ValidationDate>2020-04-24T00:00:00</ValidationDate>
+    <ValidationDate>2020-04-24T00:00:00Z</ValidationDate>
     <UsedCertificates>
         <Certificate Id="C-2D76F183E66195269AD2490C08631B1BAA26D22867F34547751F01A008D59CFF">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.12=#20506572736f6e130e50726976617465,1.2.840.113549.1.9.1=#e62726f75636b65406e6f77696e612e6c751620706965727269636b2e76616e64656,2.5.4.5=#39333030303834323538313434131431303130323330,2.5.4.42=#27269636b205061636f2050130f5069657,2.5.4.4=#4656e62726f75636b65130d56616e6,cn=raf van der vaart,c=be</SubjectDistinguishedName>
@@ -25,8 +25,8 @@
             <Sources>
                 <Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2020-03-27T08:56:36</NotAfter>
-            <NotBefore>2017-03-27T08:56:36</NotBefore>
+            <NotAfter>2020-03-27T08:56:36Z</NotAfter>
+            <NotBefore>2017-03-27T08:56:36Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2D76F183E66195269AD2490C08631B1BAA26D22867F34547751F01A008D59CFF</EntityKey>
@@ -53,11 +53,10 @@
                 <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.10.3.1</certificatePolicy>
                 <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A4705EE88C1CDAA3C8A1EB944A9F87A15232063ED2B76E53E31AF4C5EC3E406F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -73,7 +72,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-04-06T13:00:00</StartDate>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -86,8 +85,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2018-04-06T13:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-04-06T13:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -99,7 +98,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-02-17T00:00:00</StartDate>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                         </TrustedService>
@@ -131,8 +130,8 @@
             <Sources>
                 <Source>AIA</Source>
             </Sources>
-            <NotAfter>2035-03-05T13:21:57</NotAfter>
-            <NotBefore>2015-03-05T13:21:57</NotBefore>
+            <NotAfter>2035-03-05T13:21:57Z</NotAfter>
+            <NotBefore>2015-03-05T13:21:57Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5</EntityKey>
@@ -155,8 +154,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -185,8 +182,8 @@
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2035-03-05T13:21:57</NotAfter>
-            <NotBefore>2015-03-06T14:12:15</NotBefore>
+            <NotAfter>2035-03-05T13:21:57Z</NotAfter>
+            <NotBefore>2015-03-06T14:12:15Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF</EntityKey>
@@ -212,8 +209,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10.3</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A4705EE88C1CDAA3C8A1EB944A9F87A15232063ED2B76E53E31AF4C5EC3E406F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -229,7 +224,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-04-06T13:00:00</StartDate>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -241,8 +236,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2018-04-06T13:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-04-06T13:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -253,8 +248,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2015-08-12T00:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2015-08-12T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
                             <ServiceNames>
@@ -262,7 +257,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-02-17T00:00:00</StartDate>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -291,8 +286,8 @@
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2021-03-13T07:58:51</NotAfter>
-            <NotBefore>2020-03-13T07:58:51</NotBefore>
+            <NotAfter>2021-03-13T07:58:51Z</NotAfter>
+            <NotBefore>2020-03-13T07:58:51Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C793268358DD92D6AFFA8AA8D1BC9A1BEA8D5309C405CB21F4A43AE41100D677</EntityKey>
@@ -318,8 +313,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A4705EE88C1CDAA3C8A1EB944A9F87A15232063ED2B76E53E31AF4C5EC3E406F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -335,7 +328,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-04-06T13:00:00</StartDate>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -347,7 +340,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-02-17T00:00:00</StartDate>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -367,9 +360,9 @@
         <Revocation Id="R-645C771FAFB3613364D688A10BA95B8BE63018BAA09C835E813AA2CAB64489C1">
             <Origin>CACHED</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2020-04-24T07:49:19</ProductionDate>
-            <ThisUpdate>2020-04-24T07:49:19</ThisUpdate>
-            <NextUpdate>2020-04-24T12:19:19</NextUpdate>
+            <ProductionDate>2020-04-24T07:49:19Z</ProductionDate>
+            <ThisUpdate>2020-04-24T07:49:19Z</ThisUpdate>
+            <NextUpdate>2020-04-24T12:19:19Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -393,8 +386,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://qca.ocsp.luxtrust.lu</SourceAddress>
-            <ProductionDate>2020-04-24T08:24:07</ProductionDate>
-            <ThisUpdate>2020-04-24T08:22:12</ThisUpdate>
+            <ProductionDate>2020-04-24T08:24:07Z</ProductionDate>
+            <ThisUpdate>2020-04-24T08:22:12Z</ThisUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -434,9 +427,9 @@
             <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
             <SequenceNumber>263</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-04-24T07:50:35</LastLoading>
-            <IssueDate>2020-04-15T08:00:00</IssueDate>
-            <NextUpdate>2020-10-15T00:00:00</NextUpdate>
+            <LastLoading>2020-04-24T07:50:35Z</LastLoading>
+            <IssueDate>2020-04-15T08:00:00Z</IssueDate>
+            <NextUpdate>2020-10-15T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="TL-A4705EE88C1CDAA3C8A1EB944A9F87A15232063ED2B76E53E31AF4C5EC3E406F">
@@ -444,9 +437,9 @@
             <Url>https://portail-qualite.public.lu/content/dam/qualite/fr/publications/confiance-numerique/liste-confiance-nationale/tsl-xml/tsl.xml</Url>
             <SequenceNumber>38</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-04-24T07:50:35</LastLoading>
-            <IssueDate>2019-12-30T01:00:00</IssueDate>
-            <NextUpdate>2020-06-30T00:00:00</NextUpdate>
+            <LastLoading>2020-04-24T07:50:35Z</LastLoading>
+            <IssueDate>2019-12-30T01:00:00Z</IssueDate>
+            <NextUpdate>2020-06-30T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

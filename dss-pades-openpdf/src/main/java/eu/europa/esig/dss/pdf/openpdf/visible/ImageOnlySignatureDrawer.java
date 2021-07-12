@@ -20,82 +20,73 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.io.IOException;
-
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTemplate;
-
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.IOException;
+
+/**
+ * iText drawer used for image only visible signature creation
+ *
+ */
 public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
-	
-	private Image image;
-	private ITextVisualSignatureAppearance appearenceRectangle;
 
 	@Override
-	public ITextVisualSignatureAppearance buildSignatureFieldBox() throws IOException {
-		if (appearenceRectangle == null) {
-			Image image = getImage();
-			appearenceRectangle = new ImageOnlyAppearanceRectangleBuilder(parameters, image).build();
-		}
-		return appearenceRectangle;
-	}
-	
-	private Image getImage() throws IOException {
-		if (image == null) {
-			image = Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
-		}
-		return image;
-	}
-
-	@Override
-	public void draw() throws IOException {
-
+	public void draw() {
 		Image image = getImage();
 
 		SignatureFieldParameters fieldParameters = parameters.getFieldParameters();
-		float width = fieldParameters.getWidth();
-		float height = fieldParameters.getHeight();
+		String signatureFieldId = fieldParameters.getFieldId();
+
+		SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
 
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
-			Rectangle rect = appearance.getRect();
-			if (rect != null) {
-				width = (int) rect.getWidth();
-				height = (int) rect.getHeight();
-			}
 		} else {
-			ITextVisualSignatureAppearance appearenceRectangle = buildSignatureFieldBox();
-			
-			Rectangle iTextRectangle = toITextRectangle(appearenceRectangle);
-			iTextRectangle.setBackgroundColor(parameters.getBackgroundColor());
-			
-			width = iTextRectangle.getWidth();
-			height = iTextRectangle.getHeight();
-			
+			Rectangle iTextRectangle = toITextRectangle(dimensionAndPosition);
 			appearance.setVisibleSignature(iTextRectangle, fieldParameters.getPage());
 		}
 		
+		float x = dimensionAndPosition.getImageX();
+		float y = dimensionAndPosition.getImageY();
+		float width = dimensionAndPosition.getImageWidth();
+		float height = dimensionAndPosition.getImageHeight();
+
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
+			x = dimensionAndPosition.getImageY();
+			y = dimensionAndPosition.getImageX();
+		}
+		image.setAbsolutePosition(x, y);
 		image.scaleAbsolute(width, height);
+		image.setRotationDegrees((float) (ImageRotationUtils.ANGLE_360 - dimensionAndPosition.getGlobalRotation())); // opposite rotation
 
 		PdfTemplate layer = appearance.getLayer(2);
-		ColumnText ct = new ColumnText(layer);
-		ct.setSimpleColumn(0, 0, width, height);
-		
-		PdfPTable table = new PdfPTable(1);
-		table.setWidthPercentage(100);
-		PdfPCell pdfPCell = new PdfPCell(image);
-		pdfPCell.setBorder(Rectangle.NO_BORDER);
-		table.addCell(pdfPCell);
-		
-		ct.addElement(table);
-		ct.go();
+		Rectangle boundingBox = layer.getBoundingBox();
+		boundingBox.setBackgroundColor(parameters.getBackgroundColor());
+		layer.rectangle(boundingBox);
+		layer.addImage(image);
+	}
+
+	private Image getImage() {
+		try {
+			return Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format("Unable to read the provided image file. Reason : %s", e.getMessage()), e);
+		}
+	}
+
+	@Override
+	protected DSSFontMetrics getDSSFontMetrics() {
+		// not applicable
+		return null;
 	}
 
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>more_then_one_signature.xml</DocumentName>
-    <ValidationDate>2017-08-04T05:39:29</ValidationDate>
+    <ValidationDate>2017-08-04T05:39:29Z</ValidationDate>
     <Signatures>
         <Signature Id="Signature-86c36a4a-5882-4984-848a-5febacfed192">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
-            <ClaimedSigningTime>2017-04-27T10:25:52</ClaimedSigningTime>
+            <ClaimedSigningTime>2017-04-27T10:25:52Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
@@ -40,11 +40,10 @@
             </SignerRole>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
+                <Asn1Processable>false</Asn1Processable>
                 <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D">
@@ -76,7 +75,7 @@
         </Signature>
         <Signature Id="Signature-52abf6c0-67ec-40d4-b73d-08ab4f6691d0">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
-            <ClaimedSigningTime>2016-10-10T12:13:46</ClaimedSigningTime>
+            <ClaimedSigningTime>2016-10-10T12:13:46Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
@@ -111,11 +110,10 @@
             </SignerRole>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
+                <Asn1Processable>false</Asn1Processable>
                 <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D">
@@ -147,7 +145,7 @@
         </Signature>
         <Signature Id="ID-8b009720-f82c-11e6-ae9c-0050569a5ac0">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
-            <ClaimedSigningTime>2017-02-21T12:11:37</ClaimedSigningTime>
+            <ClaimedSigningTime>2017-02-21T12:11:37Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
@@ -180,11 +178,10 @@
             <CommitmentTypeIndications/>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
+                <Asn1Processable>false</Asn1Processable>
                 <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8">
@@ -216,7 +213,7 @@
         </Signature>
         <Signature Id="ID-e5b77ba0-1b6a-11e7-a15a-0050569a0676">
             <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
-            <ClaimedSigningTime>2017-04-07T08:19:49</ClaimedSigningTime>
+            <ClaimedSigningTime>2017-04-07T08:19:49Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
@@ -249,11 +246,10 @@
             <CommitmentTypeIndications/>
             <Policy>
                 <Id>IMPLICIT_POLICY</Id>
-                <Asn1Processable>false</Asn1Processable>
                 <Identified>false</Identified>
-                <Status>false</Status>
+                <Asn1Processable>false</Asn1Processable>
                 <ProcessingError></ProcessingError>
-                <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
             </Policy>
             <FoundCertificates>
             	<RelatedCertificate Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8">
@@ -300,8 +296,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2020-05-08T23:59:59</NotAfter>
-            <NotBefore>2015-05-08T07:01:06</NotBefore>
+            <NotAfter>2020-05-08T23:59:59Z</NotAfter>
+            <NotBefore>2015-05-08T07:01:06Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</EntityKey>
@@ -323,8 +319,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
@@ -334,7 +328,7 @@
                     		<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <StartDate>2016-07-01T00:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -346,8 +340,8 @@
                             <ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2015-05-08T07:01:06</StartDate>
-                            <EndDate>2016-07-01T00:00:00</EndDate>
+                            <StartDate>2015-05-08T07:01:06Z</StartDate>
+                            <EndDate>2016-07-01T00:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -372,8 +366,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2018-08-24T14:47:04</NotAfter>
-            <NotBefore>2016-08-24T14:47:04</NotBefore>
+            <NotAfter>2018-08-24T14:47:04Z</NotAfter>
+            <NotBefore>2016-08-24T14:47:04Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D</EntityKey>
@@ -392,8 +386,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <Base64Encoded>MIIDujCCAqKgAwIBAgIIBRchbrVWi6EwDQYJKoZIhvcNAQELBQAwXzELMAkGA1UEBhMCUEwxHjAcBgNVBAoMFUVOSUdNQSBTT0kgU3AuIHogby5vLjEwMC4GA1UEAwwnQ2VuQ2VydCBDZW50cnVtIENlcnR5ZmlrYXTDs3cgRmlybW93eWNoMB4XDTE2MDgyNDE0NDcwNFoXDTE4MDgyNDE0NDcwNFowPTELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF01pbmlzdGVyc3R3byBDeWZyeXphY2ppMQwwCgYDVQQDDANQWjMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDV2Mt1nzPu8W2eN6eT2GVWh3HPXCqopQJVag+3nN0H8TOQCg8s6sVlHnqA117e/xUiOd1c8jgKOsDYixKb7eO3S2Bm+UyBX5jh1K5pGw362VVEfDs0kpQ5DRTm/eBGsT+98CGS9sIrvZujg9iRLVmyOWbx7Mj3iPAsfDqwnJAUQe3SURkN2uVq/OFCCem5SQEkl5sXLunPLmsZAlQmIvjo1e2sArw3XOL07TzEGD9Wgmg+uh+CXLwLPAbdIPuoEGx9pmVFeoMmDhSN1QwwiV3kZM57BvufmntWhXEbbUXX8DN6JzVTk7SC1+lR9be8opa2JwzyugrgZDu8qPmsj/QFAgMBAAGjgZswgZgwDgYDVR0PAQH/BAQDAgZAMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUbXBJHtX51FFd7dGblde1mdERGjswHQYDVR0OBBYEFMG6bAQisupd5Zp8LubkPlZ4he9qMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly93d3cuY2VuY2VydC5wbC9jcmwvQ0NmaXJtb3d5LmNybDANBgkqhkiG9w0BAQsFAAOCAQEAbUq6RgY3//2ozVKQ6J1yE05z6E2gvw7QSvwI002Ee6Np7pGvwkR4kSd4yJzSFuFv5zUYq9zaFGCYpCvIpTwHGJpoa9oxvYe8KNxaDiGkqiVU2SVEXX2GrVF/qqJmqMre4NxBr04fhWCKro135fESmv0kvjDYNWzDqUgy9AbIC4VQ46KOwuxBDlnj1KbYn4EJoQG+2ZhQMcuUbM1qY3/FlY+M/60c2FQvgIo6u9J5/Ew7YFPpczWjLetK9PKLvfQfPQBU/sszQ6rXRKxyoaEwbzQjhQ8W5SlyUwePay1lAtlzJIo5x7NN/NB1+S/vr71HLq3/mFoOgCNdFDVdGD8XUw==</Base64Encoded>
@@ -416,8 +408,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2017-11-02T23:00:00</NotAfter>
-            <NotBefore>2015-11-03T23:00:00</NotBefore>
+            <NotAfter>2017-11-02T23:00:00Z</NotAfter>
+            <NotBefore>2015-11-03T23:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8</EntityKey>
@@ -441,11 +433,6 @@
             <CertificatePolicies>
                 <certificatePolicy>1.2.616.1.113560.10.1.1.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid>0.4.0.1862.1.2</qcStatementOid>
-                <qcStatementOid>1.2.616.1.101.3.1.1.2</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
@@ -455,7 +442,7 @@
                         	<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <StartDate>2016-07-01T00:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig</Qualifier>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
@@ -472,8 +459,8 @@
                         	<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2015-05-08T07:01:06</StartDate>
-                            <EndDate>2016-07-01T00:00:00</EndDate>
+                            <StartDate>2015-05-08T07:01:06Z</StartDate>
+                            <EndDate>2016-07-01T00:00:00Z</EndDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
@@ -496,9 +483,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://193.178.164.4/repozytorium/ca1_2015.crl</SourceAddress>
-            <ProductionDate>2017-08-03T19:39:30</ProductionDate>
-            <ThisUpdate>2017-08-03T19:39:30</ThisUpdate>
-            <NextUpdate>2017-08-04T07:39:30</NextUpdate>
+            <ProductionDate>2017-08-03T19:39:30Z</ProductionDate>
+            <ThisUpdate>2017-08-03T19:39:30Z</ThisUpdate>
+            <NextUpdate>2017-08-04T07:39:30Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -552,9 +539,9 @@
             <Url>https://www.nccert.pl/tsl/PL_TSL.xml</Url>
             <SequenceNumber>87</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2017-08-04T05:39:18</LastLoading>
-            <IssueDate>2017-07-27T01:00:00</IssueDate>
-            <NextUpdate>2018-01-27T00:00:00</NextUpdate>
+            <LastLoading>2017-08-04T05:39:18Z</LastLoading>
+            <IssueDate>2017-07-27T01:00:00Z</IssueDate>
+            <NextUpdate>2018-01-27T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -562,9 +549,9 @@
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>172</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2017-08-04T05:39:13</LastLoading>
-	        <IssueDate>2017-05-16T04:00:00</IssueDate>
-	        <NextUpdate>2017-11-15T00:00:00</NextUpdate>
+	        <LastLoading>2017-08-04T05:39:13Z</LastLoading>
+	        <IssueDate>2017-05-16T04:00:00Z</IssueDate>
+	        <NextUpdate>2017-11-15T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

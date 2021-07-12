@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Defined a "signed-signature-element" or "unsigned-signature-element" of a signature
  */
-public interface SignatureProperties<UnsignedAttribute extends SignatureAttribute> {
+public interface SignatureProperties<SA extends SignatureAttribute> extends Serializable {
 	
 	/**
 	 * Checks if "unsigned-signature-properties" exists and can be processed
@@ -37,6 +38,6 @@ public interface SignatureProperties<UnsignedAttribute extends SignatureAttribut
 	 * Returns a list of children contained in the element
 	 * @return list of {@link SignatureAttribute}s
 	 */
-	List<UnsignedAttribute> getAttributes();
+	List<SA> getAttributes();
 
 }

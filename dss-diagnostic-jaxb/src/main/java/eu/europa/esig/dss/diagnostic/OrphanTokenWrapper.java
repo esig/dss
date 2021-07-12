@@ -25,11 +25,21 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanToken;
 
 import java.util.Objects;
 
-public class OrphanTokenWrapper {
+/**
+ * Represents a wrapper class for an XML orphan token
+ *
+ */
+public abstract class OrphanTokenWrapper<T extends XmlOrphanToken> {
 
-	private final XmlOrphanToken orphanToken;
-	
-	public OrphanTokenWrapper(final XmlOrphanToken orphanToken) {
+	/** Xml orphan token */
+	protected final T orphanToken;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param orphanToken {@link T}
+	 */
+	protected OrphanTokenWrapper(final T orphanToken) {
 		Objects.requireNonNull(orphanToken, "XmlOrphanToken cannot be null!");
 		this.orphanToken = orphanToken;
 	}
@@ -48,18 +58,14 @@ public class OrphanTokenWrapper {
 	 * 
 	 * @return byte array
 	 */
-	public byte[] getBinaries() {
-		return orphanToken.getBase64Encoded();
-	}
+	public abstract byte[] getBinaries();
 
 	/**
 	 * Returns digest of the token
 	 * 
 	 * @return {@link XmlDigestAlgoAndValue}
 	 */
-	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
-		return orphanToken.getDigestAlgoAndValue();
-	}
+	public abstract XmlDigestAlgoAndValue getDigestAlgoAndValue();
 	
 	@Override
 	public int hashCode() {
@@ -90,7 +96,7 @@ public class OrphanTokenWrapper {
 	
 	@Override
 	public String toString() {
-		return "OrphanTokenWrappper Class='" + getClass() + "', Id='" + getId() + "'";
+		return "OrphanTokenWrapper Class='" + getClass() + "', Id='" + getId() + "'";
 	}
 
 }

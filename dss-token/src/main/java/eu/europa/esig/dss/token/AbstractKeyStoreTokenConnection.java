@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.model.DSSException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -36,19 +38,21 @@ import java.util.List;
  */
 public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureTokenConnection {
 
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractKeyStoreTokenConnection.class);
+
 	/**
 	 * Gets the key store
 	 *
 	 * @return {@link KeyStore}
 	 */
-	abstract KeyStore getKeyStore() throws DSSException;
+	protected abstract KeyStore getKeyStore() throws DSSException;
 
 	/**
 	 * Gets the password protection
 	 *
 	 * @return {@link PasswordProtection}
 	 */
-	abstract PasswordProtection getKeyProtectionParameter();
+	protected abstract PasswordProtection getKeyProtectionParameter();
 
 	@Override
 	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {

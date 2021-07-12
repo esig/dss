@@ -75,6 +75,7 @@ public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	private Integer count(Collection<SignerInformation> signerInformationStore, SignerInformation currentSignerInformation) {
 		int counter = 0;
 		for (SignerInformation signerInformation : signerInformationStore) {
+			// compare by memory to avoid matching signers with identical content
 			if (currentSignerInformation == signerInformation) {
 				break;
 			}

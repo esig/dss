@@ -29,6 +29,8 @@ import java.util.List;
  */
 public final class XmlFullSignatureScope extends XmlRootSignatureScope {
 
+	private static final long serialVersionUID = 1723939599853179050L;
+
 	/**
 	 * Constructor with document name
 	 *

@@ -47,15 +47,6 @@ public class SimpleCertificateReportXmlDefinerTest {
 	}
 
 	@Test
-	public void getHtmlBootstrap3Templates() throws IOException, TransformerConfigurationException {
-		Templates htmlTemplates = SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates();
-		assertNotNull(htmlTemplates);
-		assertNotNull(htmlTemplates.newTransformer());
-
-		assertNotNull(SimpleCertificateReportXmlDefiner.getHtmlBootstrap3Templates());
-	}
-
-	@Test
 	public void getHtmlBootstrap4Templates() throws IOException, TransformerConfigurationException {
 		Templates htmlTemplates = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates();
 		assertNotNull(htmlTemplates);

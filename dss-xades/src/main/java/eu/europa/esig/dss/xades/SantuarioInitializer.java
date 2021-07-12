@@ -138,8 +138,8 @@ public class SantuarioInitializer {
 	 * Enforce ResolverFragment against XPath injections
 	 */
 	public static void registerDefaultResolvers() {
-		ResourceResolver.register(EnforcedResolverFragment.class, false);
-		ResourceResolver.register(ResolverXPointer.class, false);
+		ResourceResolver.register(new EnforcedResolverFragment(), false);
+		ResourceResolver.register(new ResolverXPointer(), false);
 	}
 
 }

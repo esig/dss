@@ -42,38 +42,65 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum RevocationReason implements UriBasedEnum {
 
+	/** unspecified */
 	UNSPECIFIED("unspecified", "urn:etsi:019102:revocationReason:unspecified", 0),
 
+	/** keyCompromise */
 	KEY_COMPROMISE("keyCompromise", "urn:etsi:019102:revocationReason:keyCompromise", 1),
 
+	/** cACompromise */
 	CA_COMPROMISE("cACompromise", "urn:etsi:019102:revocationReason:cACompromise", 2),
 
+	/** affiliationChanged */
 	AFFILIATION_CHANGED("affiliationChanged", "urn:etsi:019102:revocationReason:affiliationChanged", 3),
 
+	/** superseded */
 	SUPERSEDED("superseded", "urn:etsi:019102:revocationReason:superseded", 4),
 
+	/** cessationOfOperation */
 	CESSATION_OF_OPERATION("cessationOfOperation", "urn:etsi:019102:revocationReason:cessationOfOperation", 5),
 
+	/** certificateHold */
 	CERTIFICATE_HOLD("certificateHold", "urn:etsi:019102:revocationReason:certificateHold", 6),
 
 	// Missing in ETSI VR standard
+	/** removeFromCRL */
 	REMOVE_FROM_CRL("removeFromCRL", "urn:etsi:019102:revocationReason:removeFromCRL", 8),
 
+	/** privilegeWithdrawn */
 	PRIVILEGE_WITHDRAWN("privilegeWithdrawn", "urn:etsi:019102:revocationReason:privilegeWithdrawn", 9),
 
 	// Missing in ETSI VI standard
+	/** aACompromise */
 	AA_COMPROMISE("aACompromise", "urn:etsi:019102:revocationReason:aACompromise", 10);
 
+	/** A name of the revocation reason */
 	private final String shortName;
+
+	/** URI in VR standard */
 	private final String uri;
+
+	/** Value of the reason */
 	private final int value;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param shortName {@link String} name
+	 * @param uri {@link String} within VR
+	 * @param value value of the reason
+	 */
 	RevocationReason(String shortName, String uri, int value) {
 		this.shortName = shortName;
 		this.uri = uri;
 		this.value = value;
 	}
 
+	/**
+	 * Returns the name of the RevocationReason
+	 *
+	 * @return {@link String}
+	 */
 	public String getShortName() {
 		return shortName;
 	}
@@ -83,10 +110,21 @@ public enum RevocationReason implements UriBasedEnum {
 		return uri;
 	}
 
+	/**
+	 * Returns the value of the RevocationReason
+	 *
+	 * @return int value
+	 */
 	public int getValue() {
 		return value;
 	}
 
+	/**
+	 * Returns a {@code RevocationReason} based on the given value
+	 *
+	 * @param value to check
+	 * @return {@link RevocationReason}
+	 */
 	public static RevocationReason fromInt(final int value) {
 		for (RevocationReason reason : RevocationReason.values()) {
 			if (reason.value == value) {

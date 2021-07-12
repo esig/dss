@@ -20,28 +20,28 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
 import eu.europa.esig.dss.jades.JWSConverter;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESLevelBB64UnencodedTest extends AbstractJAdESTestSignature {
 
@@ -91,10 +91,19 @@ public class JAdESLevelBB64UnencodedTest extends AbstractJAdESTestSignature {
 	
 	@Test
 	public void unsupportedCharactersTest() {
-		DSSDocument document = new InMemoryDocument("Bye\nWorld!".getBytes());
-		Exception exception = assertThrows(DSSException.class, () -> service.getDataToSign(document, signatureParameters));
-		assertEquals("The payload contains not URL-safe characters! "
-				+ "With Unencoded Payload ('b64' = false) only ASCII characters in ranges %x20-2D and %x2F-7E are allowed!", exception.getMessage());
+		final DSSDocument nonAsciiDoc = new InMemoryDocument("Bye\nWorld!".getBytes());
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToSign(nonAsciiDoc, signatureParameters));
+		assertEquals("The payload contains not URL-safe characters! With Unencoded Payload ('b64' = false) " +
+				"only ASCII characters in ranges %x20-2D and %x2F-7E are allowed for a COMPACT_SERIALIZATION!",
+				exception.getMessage());
+
+		signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
+		assertNotNull(service.getDataToSign(nonAsciiDoc, signatureParameters));
+
+		final DSSDocument nonUtf8Doc = new InMemoryDocument(new byte[]{ (byte) 0b10001111, (byte) 0b10111111} );
+		exception = assertThrows(IllegalInputException.class, () -> service.getDataToSign(nonUtf8Doc, signatureParameters));
+		assertEquals("The payload contains not valid content! With Unencoded Payload ('b64' = false) " +
+				"only UTF-8 characters are allowed!", exception.getMessage());
 	}
 
 	@Override

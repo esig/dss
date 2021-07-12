@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -44,11 +44,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
@@ -70,9 +70,9 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
-		XmlBasicBuildingBlocks revocationBasicBuildingBlock = null;
+		Indication result;
+		DetailedReport detailedReport;
+		XmlBasicBuildingBlocks revocationBasicBuildingBlock;
 		
 		result = defaultConstraintValidationDateIsBeforeExpirationDateTest(ALGORITHM_SHA256, 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -96,7 +96,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		
 		result = defaultConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSA, 4096); // some other algorithm is expired
 		assertEquals(Indication.TOTAL_PASSED, result);
-		checkErrorMessageAbsence(MessageTag.ASCCM_AR_ANS_AEDND);
+		checkErrorMessageAbsence(MessageTag.ASCCM_AR_ANS_AKSNR);
 		
 		result = defaultConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA256, 0);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -150,8 +150,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		// tests change only default constraints
 		result = defaultConstraintValidationDateIsBeforeExpirationDateTest(ALGORITHM_SHA256, 0);
@@ -183,15 +183,15 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		assertEquals(Indication.TOTAL_PASSED, result);
 		
 		result = signatureConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_SHA256, 0);
-		assertEquals(Indication.INDETERMINATE, result);
+		assertEquals(Indication.TOTAL_PASSED, result);
 		
-		result = signatureConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_SHA1, 0); // some other algorithm is changed
+		result = signatureConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_SHA1, 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		
 		result = signatureConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSA, 2048);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		
-		result = signatureConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSA, 4096); // some other algorithm is changed
+		result = signatureConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSA, 4096);
 		assertEquals(Indication.TOTAL_PASSED, result);
 		
 		result = signatureConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA256, 0);
@@ -276,8 +276,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2020-01-01", 0);
 		assertEquals(Indication.TOTAL_PASSED, result);
@@ -333,8 +333,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/diag_data_intermediate_algo_valid.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 2048);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -351,8 +351,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/diag_data_intermediate_algo_invalid.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		result = signatureConstraintAlgorithmExpired("RSA", "2018-01-01", 1536);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -369,8 +369,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/diag_data_inexisting_algo_date.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_RSA, "2018-01-01", 4096);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -387,8 +387,8 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		XmlDiagnosticData diagnosticData = initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
 		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
 		
-		Indication result = null;
-		DetailedReport detailedReport = null;
+		Indication result;
+		DetailedReport detailedReport;
 		
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2018-01-01", 0);
 		assertEquals(Indication.INDETERMINATE, result);
@@ -413,51 +413,107 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
 		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA1);
 
-		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
-
-		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
-		CryptographicConstraint cryptographic = constraintsParameters.getCryptographic();
-		AlgoExpirationDate algoExpirationDate = cryptographic.getAlgoExpirationDate();
-		Iterator<Algo> iterator = algoExpirationDate.getAlgo().iterator();
-		while (iterator.hasNext()) {
-			Algo algo = iterator.next();
-			if ("SHA1".equals(algo.getValue())) {
-				iterator.remove();
-				break;
-			}
-		}
-
-		setValidationPolicy(constraintsParameters);
-		SimpleReport simpleReport = createSimpleReport();
-
-		// TODO: to be changed, see DSS-2345
-		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
+		assertEquals(Indication.TOTAL_PASSED, signatureConstraintAlgorithmExpirationDateIsNotDefined("SHA1", 0));
 	}
 
 	@Test
 	public void noAlgoExpirationDateTest() throws Exception {
 		initializeExecutor("src/test/resources/universign.xml");
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
+		assertEquals(Indication.TOTAL_PASSED, signatureConstraintAlgorithmExpirationDateIsNotDefined("SHA256", 0));
+	}
+
+	@Test
+	public void noEncryptionAlgoExpirationDateTest() throws Exception {
+		initializeExecutor("src/test/resources/universign.xml");
+		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
+		assertEquals(Indication.TOTAL_PASSED, signatureConstraintAlgorithmExpirationDateIsNotDefined("RSA", 0));
+	}
+
+	@Test
+	public void encryptionAlgoExpirationDateTest() throws Exception {
+		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
 
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
-		CryptographicConstraint cryptographic = constraintsParameters.getCryptographic();
-		AlgoExpirationDate algoExpirationDate = cryptographic.getAlgoExpirationDate();
-		Iterator<Algo> iterator = algoExpirationDate.getAlgo().iterator();
-		while (iterator.hasNext()) {
-			Algo algo = iterator.next();
-			if ("SHA256".equals(algo.getValue())) {
-				iterator.remove();
-				break;
-			}
-		}
-
 		setValidationPolicy(constraintsParameters);
-		SimpleReport simpleReport = createSimpleReport();
+		CryptographicConstraint cryptographic = constraintsParameters.getCryptographic();
 
-		// TODO: to be changed, see DSS-2345
+		setAlgoExpDate(cryptographic, "RSA", 1024, "2007-1-1");
+		setAlgoExpDate(cryptographic, "RSA", 1536, "2007-1-1");
+		SimpleReport simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		setAlgoExpDate(cryptographic, "RSA", 1536, "2020-1-1");
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		setAlgoExpDate(cryptographic, "RSA", 2048, "2007-1-1");
+		simpleReport = createSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		removeAlgo(cryptographic.getAlgoExpirationDate().getAlgos(), "RSA", 2048);
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		setAlgoExpDate(cryptographic, "RSA", 1536, "2007-1-1");
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		setAlgoExpDate(cryptographic, "RSA", 2048, null);
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void largeKeySizeTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = initializeExecutor("src/test/resources/universign.xml");
+		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("8192");
+
+		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
+		setValidationPolicy(constraintsParameters);
+		CryptographicConstraint cryptographic = constraintsParameters.getSignatureConstraints()
+				.getBasicSignatureConstraints().getCryptographic();
+		cryptographic.setLevel(Level.FAIL);
+
+		ListAlgo acceptableDigestAlgos = new ListAlgo();
+		acceptableDigestAlgos.getAlgos().add(createAlgo("SHA256"));
+		cryptographic.setAcceptableDigestAlgo(acceptableDigestAlgos);
+
+		ListAlgo acceptableEncryptionAlgos = new ListAlgo();
+		acceptableEncryptionAlgos.getAlgos().add(createAlgo("RSA"));
+		cryptographic.setAcceptableEncryptionAlgo(acceptableEncryptionAlgos);
+
+		ListAlgo miniPublicKeySize = new ListAlgo();
+		miniPublicKeySize.getAlgos().add(createAlgo("RSA", 1000));
+		cryptographic.setMiniPublicKeySize(miniPublicKeySize);
+
+		SimpleReport simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		AlgoExpirationDate algoExpirationDate = new AlgoExpirationDate();
+		algoExpirationDate.setFormat("yyyy-MM-dd");
+		algoExpirationDate.getAlgos().add(createAlgo("RSA", 1000, "2017-1-1"));
+		cryptographic.setAlgoExpirationDate(algoExpirationDate);
+
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		algoExpirationDate.getAlgos().clear();
+		algoExpirationDate.getAlgos().add(createAlgo("RSA", 1000, "2015-1-1"));
+
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		algoExpirationDate.getAlgos().clear();
+		algoExpirationDate.getAlgos().add(createAlgo("RSA", 8000, null));
+
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
 	
 	private Indication defaultConstraintValidationDateIsBeforeExpirationDateTest(String algorithm, Integer keySize) throws Exception {
@@ -484,7 +540,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint defaultCryptographicConstraint = constraintsParameters.getCryptographic();
 		AlgoExpirationDate algoExpirationDate = defaultCryptographicConstraint.getAlgoExpirationDate();
-		List<Algo> algorithms = algoExpirationDate.getAlgo();
+		List<Algo> algorithms = algoExpirationDate.getAlgos();
 		removeAlgo(algorithms, algorithm, keySize);
 		constraintsParameters.setCryptographic(defaultCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
@@ -496,7 +552,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint defaultCryptographicConstraint = constraintsParameters.getCryptographic();
 		ListAlgo listAlgo = defaultCryptographicConstraint.getAcceptableDigestAlgo();
-		List<Algo> algorithms = listAlgo.getAlgo();
+		List<Algo> algorithms = listAlgo.getAlgos();
 		removeAlgo(algorithms, algorithm, keySize);
 		constraintsParameters.setCryptographic(defaultCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
@@ -508,7 +564,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint defaultCryptographicConstraint = constraintsParameters.getCryptographic();
 		ListAlgo listAlgo = defaultCryptographicConstraint.getAcceptableEncryptionAlgo();
-		List<Algo> algorithms = listAlgo.getAlgo();
+		List<Algo> algorithms = listAlgo.getAlgos();
 		removeAlgo(algorithms, algorithm, keySize);
 		constraintsParameters.setCryptographic(defaultCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
@@ -520,7 +576,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint defaultCryptographicConstraint = constraintsParameters.getCryptographic();
 		ListAlgo listAlgo = defaultCryptographicConstraint.getMiniPublicKeySize();
-		List<Algo> algorithms = listAlgo.getAlgo();
+		List<Algo> algorithms = listAlgo.getAlgos();
 		setAlgorithmSize(algorithms, algorithm, 4096);
 		constraintsParameters.setCryptographic(defaultCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
@@ -569,7 +625,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint sigCryptographicConstraint = getSignatureCryptographicConstraint(constraintsParameters);
 		AlgoExpirationDate algoExpirationDate = sigCryptographicConstraint.getAlgoExpirationDate();
-		List<Algo> algorithms = algoExpirationDate.getAlgo();
+		List<Algo> algorithms = algoExpirationDate.getAlgos();
 		removeAlgo(algorithms, algorithm,keySize);
 		setSignatureCryptographicConstraint(constraintsParameters, sigCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
@@ -581,7 +637,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint sigCryptographicConstraint = getSignatureCryptographicConstraint(constraintsParameters);
 		ListAlgo listAlgo = sigCryptographicConstraint.getAcceptableDigestAlgo();
-		List<Algo> algorithms = listAlgo.getAlgo();
+		List<Algo> algorithms = listAlgo.getAlgos();
 		removeAlgo(algorithms, algorithm, keySize);
 		setSignatureCryptographicConstraint(constraintsParameters, sigCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
@@ -593,7 +649,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint sigCryptographicConstraint = getSignatureCryptographicConstraint(constraintsParameters);
 		ListAlgo listAlgo = sigCryptographicConstraint.getAcceptableEncryptionAlgo();
-		List<Algo> algorithms = listAlgo.getAlgo();
+		List<Algo> algorithms = listAlgo.getAlgos();
 		removeAlgo(algorithms, algorithm, keySize);
 		setSignatureCryptographicConstraint(constraintsParameters, sigCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
@@ -605,7 +661,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint sigCryptographicConstraint = getSignatureCryptographicConstraint(constraintsParameters);
 		ListAlgo listAlgo = sigCryptographicConstraint.getMiniPublicKeySize();
-		List<Algo> algorithms = listAlgo.getAlgo();
+		List<Algo> algorithms = listAlgo.getAlgos();
 		setAlgorithmSize(algorithms, algorithm, 4096);
 		setSignatureCryptographicConstraint(constraintsParameters, sigCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
@@ -617,7 +673,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint revocationCryptographicConstraint = getRevocationCryptographicConstraint(constraintsParameters);
 		ListAlgo listAlgo = revocationCryptographicConstraint.getAcceptableEncryptionAlgo();
-		List<Algo> algorithms = listAlgo.getAlgo();
+		List<Algo> algorithms = listAlgo.getAlgos();
 		removeAlgo(algorithms, algorithm, keySize);
 		revocationCryptographicConstraint.setAcceptableEncryptionAlgo(listAlgo);
 		setRevocationCryptographicConstraint(constraintsParameters, revocationCryptographicConstraint);
@@ -630,7 +686,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint revocationCryptographicConstraint = getRevocationCryptographicConstraint(constraintsParameters);
 		ListAlgo listAlgo = revocationCryptographicConstraint.getAcceptableDigestAlgo();
-		List<Algo> algorithms = listAlgo.getAlgo();
+		List<Algo> algorithms = listAlgo.getAlgos();
 		removeAlgo(algorithms, algorithm, keySize);
 		revocationCryptographicConstraint.setAcceptableDigestAlgo(listAlgo);
 		setRevocationCryptographicConstraint(constraintsParameters, revocationCryptographicConstraint);
@@ -643,7 +699,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		CryptographicConstraint timestampCryptographicConstraint = getTimestampCryptographicConstraint(constraintsParameters);
 		ListAlgo listAlgo = timestampCryptographicConstraint.getAcceptableDigestAlgo();
-		List<Algo> algorithms = listAlgo.getAlgo();
+		List<Algo> algorithms = listAlgo.getAlgos();
 		removeAlgo(algorithms, algorithm, keySize);
 		timestampCryptographicConstraint.setAcceptableDigestAlgo(listAlgo);
 		setTimestampCryptographicConstraints(constraintsParameters, timestampCryptographicConstraint);
@@ -659,38 +715,40 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 	
 	private void checkErrorMessageAbsence(SimpleReport simpleReport, MessageTag messageKey) {
-		assertTrue(!simpleReport.getWarnings(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
-		assertTrue(!simpleReport.getErrors(simpleReport.getFirstSignatureId()).contains(i18nProvider.getMessage(messageKey)));
+		assertFalse(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId())
+				.contains(messageKey));
+		assertFalse(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId())
+				.contains(messageKey));
 	}
 	
 	private void checkErrorMessagePresence(String message) {
 		Reports reports = createReports();
 		SimpleReport simpleReport = reports.getSimpleReport();
-		checkErrorMessagePresence(simpleReport, message);
+		checkWarningMessagePresence(simpleReport, message);
 	}
 
-	private void checkErrorMessagePresence(SimpleReport simpleReport, String message) {
-		assertTrue(simpleReport.getWarnings(simpleReport.getFirstSignatureId()).contains(message));
+	private void checkWarningMessagePresence(SimpleReport simpleReport, String message) {
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()), message));
 	}
 	
 	private void checkBasicSignatureErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
-		List<XmlName> errors = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId()).getConclusion().getErrors();
+		List<XmlMessage> errors = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId()).getConclusion().getErrors();
 		assertTrue(!present ^ xmlListContainsMessage(errors, messageKey));
 	}
 	
 	private void checkRevocationErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
-		List<XmlName> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0)).getSAV().getConclusion().getErrors();
+		List<XmlMessage> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0)).getSAV().getConclusion().getErrors();
 		assertTrue(!present ^ xmlListContainsMessage(listErrors, messageKey));
 	}
 	
 	private void checkTimestampErrorPresence(DetailedReport detailedReport, MessageTag messageKey, boolean present) {
-		List<XmlName> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getTimestampIds().get(0)).getSAV().getConclusion().getErrors();
+		List<XmlMessage> listErrors = detailedReport.getBasicBuildingBlockById(detailedReport.getTimestampIds().get(0)).getSAV().getConclusion().getErrors();
 		assertTrue(!present ^ xmlListContainsMessage(listErrors, messageKey));
 	}
 	
-	private boolean xmlListContainsMessage(List<XmlName> list, MessageTag messageKey) {
-		for (XmlName name : list) {
-			if (messageKey.name().equals(name.getNameId())) {
+	private boolean xmlListContainsMessage(List<XmlMessage> list, MessageTag messageKey) {
+		for (XmlMessage name : list) {
+			if (messageKey.name().equals(name.getKey())) {
 				return true;
 			}
 		}

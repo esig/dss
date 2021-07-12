@@ -24,7 +24,6 @@ import eu.europa.esig.dss.model.CommonDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -41,6 +40,8 @@ import java.util.Objects;
  * A document composed by a CMSSignedData
  */
 public class CMSSignedDocument extends CommonDocument {
+
+	private static final long serialVersionUID = 1413370170096318058L;
 
 	/**
 	 * The CMSSignedData representing the document
@@ -73,35 +74,26 @@ public class CMSSignedDocument extends CommonDocument {
 		return signedData;
 	}
 
+	/**
+	 * Returns the encoded binaries of the CMSSignedData
+	 *
+	 * @return binaries
+	 */
 	public byte[] getBytes() {
 		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 			writeTo(output);
 			return output.toByteArray();
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("An error occurred while reading CMSSignedData binaries : %s", e.getMessage()), e);
 		}
 	}
 
-	/**
-	 * Returns base64 encoded representation of the CMSSignedData
-	 *
-	 * @return {@link String} base64 encoded
-	 */
-	public String getBase64Encoded() {
-		return Utils.toBase64(getBytes());
-	}
-	
 	@Override
 	public void writeTo(OutputStream stream) throws IOException {
 		final byte[] encoded = signedData.getEncoded();
 		final ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(encoded);
 		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ASN1Encoding.DER);
 		asn1OutputStream.writeObject(asn1Primitive);
-	}
-
-	@Override
-	public String getAbsolutePath() {
-		return super.getName();
 	}
 
 }

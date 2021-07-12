@@ -26,10 +26,12 @@ import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.definition.DSSNamespace;
 
+import java.io.Serializable;
+
 /**
  * Defines a transform used for a reference transformations
  */
-public interface DSSTransform {
+public interface DSSTransform extends Serializable {
 	
 	/**
 	 * Returns a particular transformation algorithm name

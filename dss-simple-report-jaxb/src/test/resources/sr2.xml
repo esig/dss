@@ -1,4 +1,4 @@
-<SimpleReport ValidationTime="2016-05-04T15:15:00" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+<SimpleReport ValidationTime="2016-05-04T15:15:00Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
     <ValidationPolicy>
         <PolicyName>QES AdESQC TL based</PolicyName>
         <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
@@ -21,15 +21,19 @@
             </Certificate>
         </CertificateChain>
         <Indication>TOTAL_PASSED</Indication>
-        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
-        <Warnings>The structure of the signature is not valid!</Warnings>
-        <Warnings>The authority info access is not present!</Warnings>
-        <Warnings>The revocation info access is not present!</Warnings>
-        <Warnings>The revocation acceptance check is not conclusive!</Warnings>
-        <Warnings>The signers certificate does not have an expected extended key-usage!</Warnings>
-        <Warnings>The revocation data is not consistent!</Warnings>
-        <SigningTime>2014-10-14T14:49:49</SigningTime>
-        <BestSignatureTime>2014-10-14T14:53:02</BestSignatureTime>
+        <AdESValidationDetails>
+            <Warning>The structure of the signature is not valid!</Warning>
+            <Warning>The authority info access is not present!</Warning>
+            <Warning>The revocation info access is not present!</Warning>
+            <Warning>The revocation acceptance check is not conclusive!</Warning>
+            <Warning>The signers certificate does not have an expected extended key-usage!</Warning>
+            <Warning>The revocation data is not consistent!</Warning>
+        </AdESValidationDetails>
+        <QualificationDetails>
+            <Error>Unable to build a certificate chain until a trusted list!</Error>
+        </QualificationDetails>
+        <SigningTime>2014-10-14T14:49:49Z</SigningTime>
+        <BestSignatureTime>2014-10-14T14:53:02Z</BestSignatureTime>
         <SignedBy>L R</SignedBy>
         <SignatureLevel description="Not applicable">N/A</SignatureLevel>
         <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations.</SignatureScope>

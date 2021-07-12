@@ -36,7 +36,7 @@ public class SilentOnAlert<T> extends AbstractAlert<T> {
 	 * @param detector {@link AlertDetector} to detect an event to trugger the handler
 	 */
 	public SilentOnAlert(AlertDetector<T> detector) {
-		super(detector, new SilentHandler<T>());
+		super(detector, new SilentHandler<>());
 	}
 
 }

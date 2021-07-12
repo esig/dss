@@ -20,25 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.extension.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestValidator;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -58,6 +44,19 @@ import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 
@@ -139,9 +138,9 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		List<DSSDocument> signedDocuments = result.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
-		DSSDocument linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(manifestDocuments, signatureDocument.getName());
+		DSSDocument linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(manifestDocuments, signatureDocument.getName());
 		assertNotNull(linkedManifest);
-		ManifestFile linkedManifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
+		ManifestFile linkedManifestFile = ASiCWithCAdESManifestParser.getManifestFile(linkedManifest);
 		assertNotNull(linkedManifestFile);
 		assertFalse(linkedManifestFile.isArchiveManifest());
 		
@@ -154,9 +153,9 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 
 		ManifestFile lastCreatedArchiveManifestFile = null;
 		for (DSSDocument timestamp : timestamps) {
-			linkedManifest = ASiCEWithCAdESManifestParser.getLinkedManifest(archiveManifestDocuments, timestamp.getName());
+			linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(archiveManifestDocuments, timestamp.getName());
 			assertNotNull(linkedManifest);
-			lastCreatedArchiveManifestFile = ASiCEWithCAdESManifestParser.getManifestFile(linkedManifest);
+			lastCreatedArchiveManifestFile = ASiCWithCAdESManifestParser.getManifestFile(linkedManifest);
 			assertNotNull(lastCreatedArchiveManifestFile);
 			assertTrue(lastCreatedArchiveManifestFile.isArchiveManifest());
 			ASiCEWithCAdESManifestValidator archiveManifestValidator = 

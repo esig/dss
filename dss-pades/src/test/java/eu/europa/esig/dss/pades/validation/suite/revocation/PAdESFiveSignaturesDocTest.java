@@ -211,12 +211,11 @@ public class PAdESFiveSignaturesDocTest extends AbstractPAdESTestValidation {
 	}
 	
 	@Override
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
-		super.validateETSISignerDocuments(signersDocuments);
-		
-		SignersDocumentType signersDocument = signersDocuments.get(0);
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		super.validateETSISignersDocument(signersDocument);
+
 		assertNotNull(signersDocument);
-		DigestAlgAndValueType digestAlgAndValue = signersDocument.getDigestAlgAndValue();
+		DigestAlgAndValueType digestAlgAndValue = getDigestAlgoAndValue(signersDocument);
 		assertNotNull(digestAlgAndValue);
 		byte[] digestValue = digestAlgAndValue.getDigestValue();
 		assertTrue(Utils.isArrayNotEmpty(digestValue));

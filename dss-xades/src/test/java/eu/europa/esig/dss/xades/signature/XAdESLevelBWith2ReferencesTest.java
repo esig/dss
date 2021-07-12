@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.xml.security.signature.Reference;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -47,6 +37,15 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import org.apache.xml.security.signature.Reference;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
@@ -95,12 +94,10 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		ToBeSigned toSign1 = service.getDataToSign(new FileDocument("src/test/resources/empty.xml"), signatureParameters);
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument result = service.signDocument(doc1, signatureParameters, value);
-		result.save("target/test.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));
@@ -136,7 +133,6 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));
@@ -173,7 +169,6 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setDetachedContents(docs);
 		Reports reports = validator.validateDocument();
-		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));
@@ -226,4 +221,5 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 	protected String getSigningAlias() {
 		return GOOD_USER;
 	}
+
 }

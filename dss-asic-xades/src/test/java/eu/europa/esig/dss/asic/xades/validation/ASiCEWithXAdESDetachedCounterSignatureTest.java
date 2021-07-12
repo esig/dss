@@ -20,21 +20,43 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEWithXAdESDetachedCounterSignatureTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
 		return new FileDocument("src/test/resources/validation/detached-counter-signature.asice");
+	}
+
+	@Override
+	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
+		super.checkMessageDigestAlgorithm(diagnosticData);
+
+		boolean detachedCounterSignatureFound = false;
+		boolean counterSignedSignatureValueFound = false;
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+				if (DigestMatcherType.COUNTER_SIGNATURE.equals(digestMatcher.getType())) {
+					detachedCounterSignatureFound = true;
+				} else if (DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(digestMatcher.getType())) {
+					counterSignedSignatureValueFound = true;
+				}
+			}
+		}
+		assertTrue(detachedCounterSignatureFound);
+		assertFalse(counterSignedSignatureValueFound);
 	}
 
 	@Override
@@ -47,6 +69,7 @@ public class ASiCEWithXAdESDetachedCounterSignatureTest extends AbstractASiCWith
 			for (String error : signatureWrapper.getStructuralValidationMessages()) {
 				if (error.contains("NCName")) {
 					notValidNameErrorFound = true;
+					break;
 				}
 			}
 			assertTrue(notValidNameErrorFound);
@@ -56,6 +79,12 @@ public class ASiCEWithXAdESDetachedCounterSignatureTest extends AbstractASiCWith
 	@Override
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		// skip check (custom type)
+	}
+
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
+		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
 	}
 
 }

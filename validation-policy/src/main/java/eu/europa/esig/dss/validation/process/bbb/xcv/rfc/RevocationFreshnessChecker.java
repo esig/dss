@@ -126,9 +126,18 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 */
 			TimeConstraint revocationFreshnessConstraint = policy.getRevocationFreshnessConstraint();
 			if (revocationFreshnessConstraint == null || Level.IGNORE.equals(revocationFreshnessConstraint.getLevel())) {
-				item = item.setNextItem(nextUpdateCheck(revocationData));
+				switch (revocationData.getRevocationType()) {
+					case CRL:
+						item = item.setNextItem(crlNextUpdateCheck(revocationData));
+						break;
+					case OCSP:
+						item = item.setNextItem(ocspNextUpdateCheck(revocationData));
+						break;
+					default:
+						throw new IllegalArgumentException(String.format("The RevocationType '%s' is not supported!",
+								revocationData.getRevocationType()));
+				}
 			}
-
 			/*
 			 * 2) If the issuance time of the revocation information status is
 			 * after the validation time minus the considered maximum freshness,
@@ -146,8 +155,13 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, revocationData, constraint);
 	}
 
-	private ChainItem<XmlRFC> nextUpdateCheck(RevocationWrapper revocationData) {
-		LevelConstraint constraint = policy.getRevocationDataNextUpdatePresentConstraint(context, subContext);
+	private ChainItem<XmlRFC> crlNextUpdateCheck(RevocationWrapper revocationData) {
+		LevelConstraint constraint = policy.getCRLNextUpdatePresentConstraint(context, subContext);
+		return new NextUpdateCheck(i18nProvider, result, revocationData, constraint);
+	}
+
+	private ChainItem<XmlRFC> ocspNextUpdateCheck(RevocationWrapper revocationData) {
+		LevelConstraint constraint = policy.getOCSPNextUpdatePresentConstraint(context, subContext);
 		return new NextUpdateCheck(i18nProvider, result, revocationData, constraint);
 	}
 

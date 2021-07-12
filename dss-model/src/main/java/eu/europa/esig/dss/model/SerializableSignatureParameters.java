@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
 import java.io.Serializable;
@@ -52,6 +54,13 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * @return true if signature with an expired certificate is allowed
 	 */
 	boolean isSignWithExpiredCertificate();
+
+	/**
+	 * Indicates if it is possible to sign with a not yet valid certificate. The default value is false.
+	 *
+	 * @return true if signature with a not yet valid certificate is allowed
+	 */
+	boolean isSignWithNotYetValidCertificate();
 	
 	/**
 	 * Get Baseline B parameters (signed properties)
@@ -73,5 +82,19 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * @return {@link MaskGenerationFunction}
 	 */
 	MaskGenerationFunction getMaskGenerationFunction();
+
+	/**
+	 * Get the encryption algorithm
+	 *
+	 * @return the encryption algorithm.
+	 */
+	EncryptionAlgorithm getEncryptionAlgorithm();
+
+	/**
+	 * Gets the signature algorithm.
+	 *
+	 * @return the signature algorithm
+	 */
+	SignatureAlgorithm getSignatureAlgorithm();
 
 }

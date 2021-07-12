@@ -36,6 +36,8 @@ import java.util.Objects;
  */
 public class XPath2FilterTransform extends XPathTransform {
 
+	private static final long serialVersionUID = -7152990450159701613L;
+
 	/** The filter attribute name */
 	private static final String FILTER_ATTRIBUTE = "Filter";
 

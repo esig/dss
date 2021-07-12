@@ -20,17 +20,27 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 
-public class OrphanCertificateWrapper extends OrphanTokenWrapper {
-	
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Wrapper for orphan certificate token extracted from a document (signature/timestamp)
+ *
+ */
+public class OrphanCertificateWrapper extends OrphanCertificateTokenWrapper {
+
+	/** The orphan certificate */
 	private final XmlOrphanCertificate orphanCertificate;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param orphanCertificate {@link XmlOrphanCertificate}
+	 */
 	public OrphanCertificateWrapper(final XmlOrphanCertificate orphanCertificate) {
 		super(orphanCertificate.getToken());
 		this.orphanCertificate = orphanCertificate;

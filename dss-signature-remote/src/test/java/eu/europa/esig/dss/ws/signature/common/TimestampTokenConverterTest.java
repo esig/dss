@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
@@ -40,6 +27,18 @@ import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.ws.dto.TimestampDTO;
 import eu.europa.esig.dss.ws.dto.TimestampIncludeDTO;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimestampTokenConverterTest {
 
@@ -81,7 +80,7 @@ public class TimestampTokenConverterTest {
 		assertEquals(1, timestampToken.getTimestampIncludes().size());
 		assertEquals("reference-id-1", timestampToken.getTimestampIncludes().get(0).getURI());
 		assertTrue(timestampToken.getTimestampIncludes().get(0).isReferencedData());
-		assertTrue(Arrays.equals(Utils.fromBase64(timestampBinaries), timestampToken.getEncoded()));
+		assertArrayEquals(Utils.fromBase64(timestampBinaries), timestampToken.getEncoded());
 	}
 
 	@Test
@@ -97,7 +96,7 @@ public class TimestampTokenConverterTest {
 		TimestampToken timestampToken = timestampTokens.get(0);
 		assertNotNull(timestampToken);
 		assertEquals(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP, timestampToken.getTimeStampType());
-		assertTrue(Arrays.equals(Utils.fromBase64(timestampBinaries), timestampToken.getEncoded()));
+		assertArrayEquals(Utils.fromBase64(timestampBinaries), timestampToken.getEncoded());
 	}
 
 	@Test
@@ -140,7 +139,7 @@ public class TimestampTokenConverterTest {
 		assertEquals("reference-id-1", timestampDTO.getIncludes().get(0).getURI());
 		assertTrue(timestampDTO.getIncludes().get(0).isReferencedData());
 
-		assertTrue(Arrays.equals(timestampToken.getEncoded(), timestampDTO.getBinaries()));
+		assertArrayEquals(timestampToken.getEncoded(), timestampDTO.getBinaries());
 	}
 
 }

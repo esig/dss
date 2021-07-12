@@ -37,13 +37,14 @@ import java.security.Signature;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.PSSParameterSpec;
+import java.util.Objects;
 
 /**
  * The abstract implementation of a remote token connection
  */
 public abstract class AbstractSignatureTokenConnection implements SignatureTokenConnection {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
 
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
@@ -54,13 +55,20 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf,
 			DSSPrivateKeyEntry keyEntry) throws DSSException {
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm,
-				digestAlgorithm, mgf);
+		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
+		return sign(toBeSigned, signatureAlgorithm, keyEntry);
+	}
+
+	@Override
+	public SignatureValue sign(ToBeSigned toBeSigned, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry)
+			throws DSSException {
+		assertEncryptionAlgorithmValid(signatureAlgorithm, keyEntry);
+
 		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
 		final byte[] bytes = toBeSigned.getBytes();
 		AlgorithmParameterSpec param = null;
-		if (mgf != null) {
-			param = createPSSParam(digestAlgorithm);
+		if (signatureAlgorithm.getMaskGenerationFunction() != null) {
+			param = createPSSParam(signatureAlgorithm.getDigestAlgorithm());
 		}
 
 		try {
@@ -70,41 +78,50 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 			value.setValue(signatureValue);
 			return value;
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to sign : %s", e.getMessage()), e);
 		}
 	}
 
 	@Override
 	public SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException {
-		return signDigest(digest, null, keyEntry);
+		return signDigest(digest, (MaskGenerationFunction) null, keyEntry);
 	}
 
 	@Override
 	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
 			throws DSSException {
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithmNONE = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, null,
-				mgf);
-		final String javaSignatureAlgorithm = signatureAlgorithmNONE.getJCEId();
+		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm, mgf);
+		return signDigest(digest, signatureAlgorithm, keyEntry);
+	}
+
+	@Override
+	public SignatureValue signDigest(Digest digest, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry)
+			throws DSSException {
+		assertConfigurationValid(digest, signatureAlgorithm, keyEntry);
+
+		final String javaSignatureAlgorithm = getRawSignatureAlgorithm(
+				signatureAlgorithm.getEncryptionAlgorithm(), signatureAlgorithm.getMaskGenerationFunction()).getJCEId();
 		final byte[] digestedBytes = digest.getValue();
 		AlgorithmParameterSpec param = null;
-		if (mgf != null) {
+		if (signatureAlgorithm.getMaskGenerationFunction() != null) {
 			param = createPSSParam(digest.getAlgorithm());
 		}
 
 		try {
 			final byte[] signatureValue = sign(digestedBytes, javaSignatureAlgorithm, param, keyEntry);
 			SignatureValue value = new SignatureValue();
-			value.setAlgorithm(SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digest.getAlgorithm(), mgf));
+			value.setAlgorithm(getSignatureAlgorithm(signatureAlgorithm.getEncryptionAlgorithm(), digest.getAlgorithm(),
+					signatureAlgorithm.getMaskGenerationFunction()));
 			value.setValue(signatureValue);
 			return value;
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to sign digest : %s", e.getMessage()), e);
 		}
 	}
 
 	private byte[] sign(final byte[] bytes, final String javaSignatureAlgorithm, final AlgorithmParameterSpec param,
-			final DSSPrivateKeyEntry keyEntry) throws GeneralSecurityException {
+						final DSSPrivateKeyEntry keyEntry) throws GeneralSecurityException {
 		if (!(keyEntry instanceof KSPrivateKeyEntry)) {
 			throw new IllegalArgumentException("Only KSPrivateKeyEntry are supported");
 		}
@@ -116,6 +133,47 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
 		signature.update(bytes);
 		return signature.sign();
+	}
+
+	/**
+	 * This method returns a SignatureAlgorithm for the given configuration.
+	 * Throws an exception if no algorithm is found.
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 * @return {@link SignatureAlgorithm}
+	 */
+	private SignatureAlgorithm getSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm, DigestAlgorithm digestAlgorithm,
+													 MaskGenerationFunction maskGenerationFunction) {
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(
+				encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+		if (signatureAlgorithm == null) {
+			throw new UnsupportedOperationException(String.format("The SignatureAlgorithm is not found for the given configuration " +
+					"[EncryptionAlgorithm: %s; DigestAlgorithm: %s; MaskGenerationFunction: %s]",
+					encryptionAlgorithm, digestAlgorithm, maskGenerationFunction));
+		}
+		return signatureAlgorithm;
+	}
+
+	/**
+	 * This method returns a RAW SignatureAlgorithm with null DigestAlgorithm value,
+	 * because the data to be signed is already digested
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 * @return {@link SignatureAlgorithm}
+	 */
+	private SignatureAlgorithm getRawSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm,
+														MaskGenerationFunction maskGenerationFunction) {
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(
+				encryptionAlgorithm, null, maskGenerationFunction);
+		if (signatureAlgorithm == null) {
+			throw new UnsupportedOperationException(String.format("The SignatureAlgorithm for digest signing is not found " +
+							"for the given configuration [EncryptionAlgorithm: %s; MaskGenerationFunction: %s]",
+					encryptionAlgorithm, maskGenerationFunction));
+		}
+		return signatureAlgorithm;
 	}
 
 	/**
@@ -138,6 +196,29 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	protected AlgorithmParameterSpec createPSSParam(DigestAlgorithm digestAlgo) {
 		String digestJavaName = digestAlgo.getJavaName();
 		return new PSSParameterSpec(digestJavaName, "MGF1", new MGF1ParameterSpec(digestJavaName), digestAlgo.getSaltLength(), 1);
+	}
+
+	private void assertConfigurationValid(Digest digest, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry) {
+		assertEncryptionAlgorithmValid(signatureAlgorithm, keyEntry);
+		assertDigestAlgorithmValid(digest, signatureAlgorithm);
+	}
+
+	private void assertEncryptionAlgorithmValid(SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry) {
+		Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm shall be provided.");
+		Objects.requireNonNull(signatureAlgorithm.getEncryptionAlgorithm(), "EncryptionAlgorithm shall be provided within the SignatureAlgorithm.");
+		Objects.requireNonNull(keyEntry, "keyEntry shall be provided.");
+		if (!signatureAlgorithm.getEncryptionAlgorithm().isEquivalent(keyEntry.getEncryptionAlgorithm())) {
+			throw new IllegalArgumentException(String.format("The provided SignatureAlgorithm '%s' cannot be used to sign with " +
+					"the token's implied EncryptionAlgorithm '%s'", signatureAlgorithm.getName(), keyEntry.getEncryptionAlgorithm().getName()));
+		}
+	}
+
+	private void assertDigestAlgorithmValid(Digest digest, SignatureAlgorithm signatureAlgorithm) {
+		if (signatureAlgorithm.getDigestAlgorithm() != null && signatureAlgorithm.getDigestAlgorithm() != digest.getAlgorithm()) {
+			throw new IllegalArgumentException(String.format("The DigestAlgorithm '%s' provided withing a SignatureAlgorithm " +
+							"does not match the one used to compute the Digest : '%s'!",
+					signatureAlgorithm.getDigestAlgorithm().getName(), digest.getAlgorithm().getName()));
+		}
 	}
 
 }

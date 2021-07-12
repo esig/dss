@@ -20,20 +20,23 @@
  */
 package eu.europa.esig.dss.cades.validation.revocation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CAdESRevocationSourceLevelLTTest extends AbstractCAdESTestValidation {
 
@@ -51,17 +54,28 @@ public class CAdESRevocationSourceLevelLTTest extends AbstractCAdESTestValidatio
 		
 		List<RelatedRevocationWrapper> foundRevocations = signature.foundRevocations().getRelatedRevocationData();
 		assertNotNull(foundRevocations);
-		List<RevocationRefWrappper> foundRevocationRefs = signature.foundRevocations().getRelatedRevocationRefs();
+		List<RevocationRefWrapper> foundRevocationRefs = signature.foundRevocations().getRelatedRevocationRefs();
 		assertEquals(3, foundRevocationRefs.size());
 		assertEquals(3, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
 		assertEquals(0, signature.foundRevocations().getOrphanRevocationData().size());
-		for (RevocationRefWrappper revocationRef : foundRevocationRefs) {
+		for (RevocationRefWrapper revocationRef : foundRevocationRefs) {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
 			assertNotNull(revocationRef.getOrigins());
 		}
+	}
+
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertEquals(SignatureLevel.CAdES_A, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Override
+	protected void checkTimestampedProperties(Collection<TimestampWrapper> allTimestamps, TimestampWrapper timestampWrapper,
+											  Collection<SignatureWrapper> allSignatures, SignatureWrapper signatureWrapper) {
+		// skip (wrong hash of ats-hash-index-v3)
 	}
 
 }

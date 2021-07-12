@@ -100,7 +100,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 	private CertificateSource getCurrentCertificateSource() {
 		final CertificateSource initialCertificateSource = lotlSource.getCertificateSource();
 
-		CertificateSource currentCertificateSource = null;
+		CertificateSource currentCertificateSource;
 
 		ParsingCacheDTO currentLOTLParsing = getCacheAccessByKey().getParsingReadOnlyResult();
 		if (currentLOTLParsing != null) {

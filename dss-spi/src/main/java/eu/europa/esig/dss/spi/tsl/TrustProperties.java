@@ -23,10 +23,14 @@ package eu.europa.esig.dss.spi.tsl;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 
+import java.io.Serializable;
+
 /**
  * Contains the Trust properties for certificates
  */
-public class TrustProperties {
+public class TrustProperties implements Serializable {
+
+	private static final long serialVersionUID = -7460897343036542905L;
 
 	/** The LOTL id */
 	private final Identifier lotlId;

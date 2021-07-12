@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
@@ -46,6 +46,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
@@ -122,13 +123,12 @@ public class XAdESLevelBEnvelopingWithRefsTest extends AbstractXAdESTestSignatur
 		DSSDocument orig2 = originals.get(1);
 
 		try {
-			Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-			String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc1)));
-			String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(orig1)));
+			String firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(doc1)));
+			String secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(orig1)));
 			assertEquals(firstDocument, secondDocument);
 	
-			firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc2)));
-			secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(orig2)));
+			firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(doc2)));
+			secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(orig2)));
 			assertEquals(firstDocument, secondDocument);
 		} catch (Exception e) {
 			fail(e);
@@ -150,10 +150,10 @@ public class XAdESLevelBEnvelopingWithRefsTest extends AbstractXAdESTestSignatur
 		assertNotNull(digestAlgoAndValueSignatureOne);
 		
 		DigestAlgorithm digestAlgorithm = digestAlgoAndValueSignatureOne.getDigestMethod();
-		assertTrue(Arrays.equals(digestAlgoAndValueSignatureOne.getDigestValue(), DSSUtils.digest(digestAlgorithm, doc1)));
+		assertArrayEquals(digestAlgoAndValueSignatureOne.getDigestValue(), DSSUtils.digest(digestAlgorithm, doc1));
 		XmlDigestAlgoAndValue digestAlgoAndValueSignatureTwo = signerData.get(1).getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValueSignatureTwo);
-		assertTrue(Arrays.equals(digestAlgoAndValueSignatureTwo.getDigestValue(), DSSUtils.digest(digestAlgorithm, doc2)));
+        assertArrayEquals(digestAlgoAndValueSignatureTwo.getDigestValue(), DSSUtils.digest(digestAlgorithm, doc2));
 	}
 
 	@Override

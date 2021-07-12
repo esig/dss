@@ -21,10 +21,10 @@
 package eu.europa.esig.xmldsig;
 
 import eu.europa.esig.dss.alert.Alert;
-import eu.europa.esig.dss.jaxb.DSSErrorHandler;
-import eu.europa.esig.dss.jaxb.ValidatorConfigurator;
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
-import eu.europa.esig.dss.jaxb.exception.XSDValidationException;
+import eu.europa.esig.dss.jaxb.common.DSSErrorHandler;
+import eu.europa.esig.dss.jaxb.common.ValidatorConfigurator;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.common.exception.XSDValidationException;
 import eu.europa.esig.xmldsig.jaxb.SignatureType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

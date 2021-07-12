@@ -20,20 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -50,7 +36,6 @@ import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -71,6 +56,20 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageParame
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageTextParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 	
@@ -142,7 +141,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		RemoteSignatureParameters extensionParameters = new RemoteSignatureParameters();
 		extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		extensionParameters.setDetachedContents(Arrays.asList(digestDocument));
-		DSSException exception = assertThrows(DSSException.class,
+		Exception exception = assertThrows(IllegalArgumentException.class,
 				() -> signatureService.extendDocument(signedDocument, extensionParameters));
 		assertEquals("XAdES-LTA requires complete binaries of signed documents! Extension with a DigestDocument is not possible.", exception.getMessage());
 	}
@@ -313,7 +312,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		fieldParameters.setFieldId("signature-test");
 
-		Exception exception = assertThrows(DSSException.class,() -> signatureService.getDataToSign(signedTwiceDocument, parameters));
+		Exception exception = assertThrows(IllegalArgumentException.class,() -> signatureService.getDataToSign(signedTwiceDocument, parameters));
 		assertEquals("The signature field 'signature-test' can not be signed since its already signed.", exception.getMessage());
 	}
 
@@ -455,7 +454,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		ToBeSignedDTO dataToBeCounterSigned = signatureService.getDataToBeCounterSigned(signedDocument, parameters);
 		assertNotNull(dataToBeCounterSigned);
 
-		signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToBeCounterSigned), DigestAlgorithm.SHA256,
+		signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToBeCounterSigned), DigestAlgorithm.SHA512,
 				getPrivateKeyEntry());
 		RemoteDocument counterSignedDocument = signatureService.counterSignSignature(signedDocument, parameters,
 				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
@@ -464,7 +463,9 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		diagnosticData = validate(new InMemoryDocument(counterSignedDocument.getBytes()), Arrays.asList(fileToSign));
 		assertEquals(1, diagnosticData.getAllSignatures().size());
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getAllSignatures().iterator().next().getId()));
 		assertEquals(1, diagnosticData.getAllCounterSignatures().size());
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getAllCounterSignatures().iterator().next().getId()));
 	}
 
 	@Test
@@ -478,9 +479,9 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-		Exception exception = assertThrows(DSSException.class,
+		Exception exception = assertThrows(UnsupportedOperationException.class,
 				() -> signatureService.getDataToBeCounterSigned(toCounterSignDocument, parameters));
-		assertEquals("Unsupported signature form for counter singature : PAdES", exception.getMessage());
+		assertEquals("Unsupported signature form for counter signature : PAdES", exception.getMessage());
 	}
 
 }

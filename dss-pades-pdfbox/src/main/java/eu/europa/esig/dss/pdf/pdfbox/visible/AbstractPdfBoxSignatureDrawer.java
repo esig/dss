@@ -21,15 +21,23 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
+import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPositionBuilder;
 import eu.europa.esig.dss.utils.Utils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +46,7 @@ import java.util.List;
 
 /**
  * The abstract implementation of PDFBox signature drawer
+ *
  */
 public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDrawer, SignatureFieldBoxBuilder {
 
@@ -58,21 +67,50 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	/** Contains options of the visual signature */
 	protected SignatureOptions signatureOptions;
 
+	/** The existing signature field */
+	private PDSignatureField pdSignatureField;
+
+	@Override
+	public void setSignatureField(final PDSignatureField pdSignatureField) {
+		this.pdSignatureField = pdSignatureField;
+	}
+
 	@Override
 	public void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException {
-		assertSignatureParamatersAreValid(parameters);
+		assertSignatureParametersAreValid(parameters);
 		this.parameters = parameters;
 		this.document = document;
 		this.signatureOptions = signatureOptions;
 		checkColorSpace(document, parameters.getImage());
 	}
 	
-	private void assertSignatureParamatersAreValid(SignatureImageParameters parameters) {
+	private void assertSignatureParametersAreValid(SignatureImageParameters parameters) {
 		if (parameters == null || parameters.getImage() == null && parameters.getTextParameters().isEmpty()) {
-			throw new DSSException("Neither image nor text parameters are defined!");
+			throw new IllegalArgumentException("Neither image nor text parameters are defined!");
 		}
 	}
 	
+	/**
+	 * Builds a signature field dimension and position object
+	 *
+	 * @return {@link SignatureFieldDimensionAndPosition}
+	 */
+	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() {
+		PDPage originalPage = document.getPage(parameters.getFieldParameters().getPage() - ImageUtils.DEFAULT_FIRST_PAGE);
+		PDRectangle mediaBox = originalPage.getMediaBox();
+		AnnotationBox pageBox = new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(),
+				mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
+		return new SignatureFieldDimensionAndPositionBuilder(parameters, getDSSFontMetrics(), pageBox,
+				originalPage.getRotation()).setSignatureFieldAnnotationBox(getSignatureFieldAnnotationBox()).build();
+	}
+
+	/**
+	 * Gets the corresponding {@code eu.europa.esig.dss.pdf.visible.DSSFontMetrics}
+	 *
+	 * @return {@link eu.europa.esig.dss.pdf.visible.DSSFontMetrics}
+	 */
+	protected abstract DSSFontMetrics getDSSFontMetrics();
+
 	/**
 	 * Method to check if the target image's color space is present in the document's catalog
 	 * 
@@ -119,6 +157,22 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
             }
         }
         return false;
+	}
+
+	private AnnotationBox getSignatureFieldAnnotationBox() {
+		if (pdSignatureField != null) {
+			List<PDAnnotationWidget> widgets = pdSignatureField.getWidgets();
+			if (Utils.isCollectionNotEmpty(widgets)) {
+				PDAnnotationWidget pdAnnotationWidget = widgets.get(0);
+				if (pdAnnotationWidget != null) {
+					PDRectangle rectangle = pdAnnotationWidget.getRectangle();
+					return new AnnotationBox(rectangle.getLowerLeftX(), rectangle.getLowerLeftY(),
+							rectangle.getUpperRightX(), rectangle.getUpperRightY());
+				}
+			}
+
+		}
+		return null;
 	}
 
 }

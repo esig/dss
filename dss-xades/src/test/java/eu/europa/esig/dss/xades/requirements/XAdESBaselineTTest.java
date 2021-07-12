@@ -20,64 +20,37 @@
  */
 package eu.europa.esig.dss.xades.requirements;
 
-import java.io.File;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Node;
 
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.signature.XAdESService;
-
-public class XAdESBaselineTTest extends AbstractXAdESRequirementChecks {
-
-	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
-	private XAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+public class XAdESBaselineTTest extends XAdESBaselineBTest {
 
 	@BeforeEach
+	@Override
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-
-		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		super.init();
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-
-		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 
-	@Override
-	public void checkArchiveTimeStampPresent() throws XPathExpressionException {
-		// No ArchiveTimestamp in Baseline Profile T
-	}
+	/**
+	 * Checks UnsignedSignatureProperties present for T/LT/LTA levels
+	 */
+	public void checkUnsignedProperties() throws XPathExpressionException {
+		super.checkUnsignedProperties();
 
-	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
-		return service;
-	}
+		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties");
+		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+		assertNotNull(node);
 
-	@Override
-	protected XAdESSignatureParameters getSignatureParameters() {
-		return signatureParameters;
-	}
-
-	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
+		checkSignatureTimeStampPresent();
 	}
 
 }

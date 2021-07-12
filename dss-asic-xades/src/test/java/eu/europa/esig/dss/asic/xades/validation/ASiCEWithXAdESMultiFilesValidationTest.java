@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -38,9 +31,16 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class ASiCEWithXAdESMultiFilesValidationTest extends AbstractASiCWithXAdESTestValidation {
 
-	private final List<DSSDocument> EXPECTED_MULTIFILES = Arrays.<DSSDocument> asList(
+	private final List<DSSDocument> EXPECTED_MULTIFILES = Arrays.asList(
 			new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT),
 			new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 

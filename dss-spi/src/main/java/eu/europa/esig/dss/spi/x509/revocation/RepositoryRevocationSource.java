@@ -30,8 +30,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Allows storing and retrieving of revocation data to/from a repository (e.g.
- * database)
+ * Allows storing and retrieving of revocation data to/from a repository
+ * (e.g. database)
  *
  * @param <R> {@code CRL} or {@code OCSP}
  */
@@ -41,6 +41,9 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 
 	private static final long serialVersionUID = 8116937707098957391L;
 
+	/**
+	 * Data source used to access a revocation token that is not present in the repository
+	 */
 	protected OnlineRevocationSource<R> proxiedSource;
 
 	/**
@@ -60,10 +63,11 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	
 	/**
 	 * Initialize a list of revocation token keys {@link String} from the given {@link CertificateToken}
+	 *
 	 * @param certificateToken {@link CertificateToken}
 	 * @return list of {@link String} revocation keys
 	 */
-	public abstract List<String> initRevocationTokenKey(CertificateToken certificateToken);
+	protected abstract List<String> initRevocationTokenKeys(CertificateToken certificateToken);
 	
 	/**
 	 * Finds a RevocationToken in the cache
@@ -77,31 +81,36 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	 * @return
 	 * 		  {@link RevocationToken} object
 	 */
-	protected abstract RevocationToken<R> findRevocation(String key, CertificateToken certificateToken, CertificateToken issuerCertToken);
+	protected abstract RevocationToken<R> findRevocation(final String key, CertificateToken certificateToken,
+														 CertificateToken issuerCertToken);
 	
 	/**
 	 * Inserts a new RevocationToken into the cache
 	 *
+	 * @param revocationKey
+	 *            {@link String}
 	 * @param token
 	 *            {@link RevocationToken}
 	 */
-	protected abstract void insertRevocation(RevocationToken<R> token);
+	protected abstract void insertRevocation(final String revocationKey, final RevocationToken<R> token);
 	
 	/**
 	 * Updates the RevocationToken into cache
 	 *
+	 * @param revocationKey
+	 *            {@link String}
 	 * @param token
 	 *            {@link RevocationToken}
 	 */
-	protected abstract void updateRevocation(RevocationToken<R> token);
+	protected abstract void updateRevocation(final String revocationKey, final RevocationToken<R> token);
 
 	/**
-	 * Removes the RevocationToken from cache
+	 * Removes the RevocationToken from cache with the given key
 	 *
-	 * @param token
-	 *            {@link RevocationToken}
+	 * @param revocationKey
+	 *            {@link String}
 	 */
-	protected abstract void removeRevocation(RevocationToken<R> token);
+	protected abstract void removeRevocation(final String revocationKey);
 	
 	/**
 	 * Sets the default next update delay for the cached files in seconds. If
@@ -178,9 +187,10 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 			return null;
 		}
 
-		final List<String> keys = initRevocationTokenKey(certificateToken);
+		final List<String> keys = initRevocationTokenKeys(certificateToken);
 		if (forceRefresh) {
-			LOG.info("Cache is skipped to retrieve the revocation token for certificate '{}'", certificateToken.getDSSIdAsString());
+			LOG.info("Cache is skipped to retrieve the revocation token for certificate with Id '{}'",
+					certificateToken.getDSSIdAsString());
 		} else {
 			RevocationToken<R> cachedRevocationToken = extractRevocationFromCacheSource(certificateToken, issuerCertificateToken, keys);
 			if (cachedRevocationToken != null) {
@@ -207,12 +217,13 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 			final RevocationToken<R> revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
 			if (revocationToken != null) {
 				if (isNotExpired(revocationToken, issuerCertificateToken)) {
-					LOG.info("Revocation token for certificate '{}' is loaded from the cache", certificateToken.getDSSIdAsString());
+					LOG.info("Revocation token for certificate with Id '{}' has been loaded from the cache",
+							certificateToken.getDSSIdAsString());
 					return revocationToken;
 				} else {
 					LOG.debug("Revocation token is expired");
 					if (removeExpired) {
-						removeRevocation(revocationToken);
+						removeRevocation(key);
 						keyIterator.remove();
 					}
 				}
@@ -224,10 +235,12 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	}
 	
 	/**
-	 * Extracts a {@link RevocationToken} from the defined proxiedSource and inserts/updates its in the cache Source if needed
+	 * Extracts a {@link RevocationToken} from the defined proxiedSource and inserts/updates its
+	 * in the cache source if required.
+	 *
 	 * @param certificateToken {@link CertificateToken} to extract the revocation token for
 	 * @param issuerCertificateToken {@link CertificateToken} of the issuer
-	 * @param keys - list of keys, that can be used as unique identifications of the revocation entry
+	 * @param keys - list of keys that can be used as unique identifications of the revocation entry
 	 * @return {@link RevocationToken}
 	 */
 	private RevocationToken<R> extractAndInsertRevocationTokenFromProxiedSource(final CertificateToken certificateToken,
@@ -237,18 +250,36 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 			LOG.warn("Proxied revocation source is not initialized for the called RevocationSource!");
 			return null;
 		}
-		final RevocationToken<R> newToken = proxiedSource.getRevocationToken(certificateToken, issuerCertificateToken);
-		if (newToken != null && newToken.isValid()) {
-			if (!keys.contains(newToken.getRevocationTokenKey())) {
-				LOG.info("Revocation token for certificate '{}' is added into the cache", certificateToken.getDSSIdAsString());
-				insertRevocation(newToken);
-			} else {
-				LOG.info("Revocation token for certificate '{}' is updated in the cache", certificateToken.getDSSIdAsString());
-				updateRevocation(newToken);
+
+		RevocationToken<R> newToken = null;
+
+		OnlineRevocationSource.RevocationTokenAndUrl<R> revocationTokenAndUrl =
+				proxiedSource.getRevocationTokenAndUrl(certificateToken, issuerCertificateToken);
+		if (revocationTokenAndUrl != null) {
+			newToken = revocationTokenAndUrl.getRevocationToken();
+			if (newToken.isValid()) {
+				String revocationTokenKey = getRevocationTokenKey(certificateToken, revocationTokenAndUrl.getUrlString());
+				if (!keys.contains(revocationTokenKey)) {
+					insertRevocation(revocationTokenKey, newToken);
+					LOG.info("Revocation token for certificate '{}' is added into the cache", certificateToken.getDSSIdAsString());
+				} else {
+					updateRevocation(revocationTokenKey, newToken);
+					LOG.info("Revocation token for certificate '{}' is updated in the cache", certificateToken.getDSSIdAsString());
+				}
 			}
 		}
 		return newToken;
 	}
+
+	/**
+	 * Gets a unique revocation token identifier used to store the revocation token
+	 * for this {@code certificateToken} within a repository
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @param urlString {@link String} representing a URL used to download the revocation token from
+	 * @return {@link String} revocation token key
+	 */
+	protected abstract String getRevocationTokenKey(CertificateToken certificateToken, String urlString);
 
 	/**
 	 * Checks if the nextUpdate date is currently valid with respect of

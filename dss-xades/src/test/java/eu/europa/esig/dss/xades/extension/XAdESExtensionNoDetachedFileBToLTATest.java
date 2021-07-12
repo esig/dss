@@ -60,9 +60,7 @@ public class XAdESExtensionNoDetachedFileBToLTATest extends PKIFactoryAccess {
 		XAdESSignatureParameters extensionParameters = new XAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		
-		Exception exception = assertThrows(DSSException.class, () -> {
-			service.extendDocument(signedDocument, extensionParameters);
-		});
+		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, extensionParameters));
 		assertTrue(exception.getMessage().contains("Cryptographic signature verification has failed"));
 		
 	}

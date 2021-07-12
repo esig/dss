@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
-import eu.europa.esig.dss.model.DSSException;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-import java.awt.*;
+import java.awt.Font;
 
 /**
  * Maps Java Fonts and PDFBox fonts
@@ -78,7 +77,8 @@ public class PdfBoxFontMapper {
 			case Font.DIALOG_INPUT:
 				return PDType1Font.SYMBOL;
 			default:
-				throw new DSSException("The font is not supported! Please use DSSFileFont implementation for custom fonts.");
+				throw new UnsupportedOperationException("The font is not supported! " +
+						"Please use DSSFileFont implementation for custom fonts.");
 			}
 	}
 

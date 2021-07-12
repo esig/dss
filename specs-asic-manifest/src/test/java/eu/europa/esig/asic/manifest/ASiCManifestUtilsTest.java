@@ -20,27 +20,24 @@
  */
 package eu.europa.esig.asic.manifest;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.io.StringReader;
-import java.io.StringWriter;
+import eu.europa.esig.xmldsig.jaxb.SignatureType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
+import java.io.File;
+import java.io.StringReader;
+import java.io.StringWriter;
 
-import javax.xml.bind.UnmarshalException;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.xmldsig.jaxb.SignatureType;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ASiCManifestUtilsTest {
 	
@@ -95,9 +92,7 @@ public class ASiCManifestUtilsTest {
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 		unmarshaller.setSchema(schema);
 
-		assertThrows(UnmarshalException.class, () -> {
-			unmarshaller.unmarshal(xmldsigFile);
-		});
+		assertThrows(UnmarshalException.class, () -> unmarshaller.unmarshal(xmldsigFile));
 	}
 
 	@Test

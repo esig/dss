@@ -27,24 +27,38 @@ import eu.europa.esig.dss.enumerations.UriBasedEnum;
  */
 public enum ObjectType implements UriBasedEnum {
 
+	/** Certificate */
 	CERTIFICATE("urn:etsi:019102:validationObject:certificate"),
 
+	/** CRL */
 	CRL("urn:etsi:019102:validationObject:CRL"),
 
+	/** OCSP response */
 	OCSP_RESPONSE("urn:etsi:019102:validationObject:OCSPResponse"),
 
+	/** TimeStamp */
 	TIMESTAMP("urn:etsi:019102:validationObject:timestamp"),
 
+	/** Evidence record */
 	EVIDENCE_RECORD("urn:etsi:019102:validationObject:evidencerecord"),
 
+	/** Public Key */
 	PUBLIC_KEY("urn:etsi:019102:validationObject:publicKey"),
 
+	/** Signed data */
 	SIGNED_DATA("urn:etsi:019102:validationObject:signedData"),
 
+	/** Other */
 	OTHER("urn:etsi:019102:validationObject:other");
 
+	/** VR URI of the object type */
 	private final String uri;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param uri {@link String}
+	 */
 	ObjectType(String uri) {
 		this.uri = uri;
 	}

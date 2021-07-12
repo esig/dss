@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.math.BigInteger;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -51,6 +42,14 @@ import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.math.BigInteger;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSignature {
 
@@ -162,7 +161,7 @@ public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSign
 		return GOOD_USER;
 	}
 	
-	private class MockLogAlertPdfObjectFactory implements IPdfObjFactory {
+	private static class MockLogAlertPdfObjectFactory implements IPdfObjFactory {
 		
 		private final IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
 		

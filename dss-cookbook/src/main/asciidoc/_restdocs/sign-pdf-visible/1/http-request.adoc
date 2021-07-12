@@ -4,7 +4,7 @@ POST /services/rest/signature/one-document/getDataToSign HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 186560
+Content-Length: 186622
 
 {
   "parameters" : {
@@ -44,6 +44,7 @@ Content-Length: 186560
     "imageParameters" : {
       "alignmentHorizontal" : null,
       "alignmentVertical" : null,
+      "imageScaling" : null,
       "backgroundColor" : null,
       "dpi" : null,
       "image" : null,
@@ -64,10 +65,11 @@ Content-Length: 186560
           "alpha" : 255
         },
         "font" : null,
+        "textWrapping" : null,
         "padding" : null,
         "signerTextHorizontalAlignment" : "CENTER",
-        "signerTextPosition" : "TOP",
         "signerTextVerticalAlignment" : null,
+        "signerTextPosition" : "TOP",
         "size" : null,
         "text" : "Signature",
         "textColor" : {
@@ -82,7 +84,7 @@ Content-Length: 186560
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1607960337131,
+      "signingDate" : 1625849392257,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

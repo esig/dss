@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.8</version>
+		<version>5.9.RC1</version>
 	</parent>
 
 	<name>CookBook</name>
@@ -93,7 +93,7 @@
 		                    <dependency>
 		                        <groupId>org.asciidoctor</groupId>
 		                        <artifactId>asciidoctorj-pdf</artifactId>
-    							<version>1.5.3</version>
+    							<version>1.6.0</version>
 		                    </dependency>
 						</dependencies>
 						<executions>

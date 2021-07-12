@@ -20,14 +20,17 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -59,13 +62,21 @@ public interface ValidationContext {
 	Date getCurrentTime();
 
 	/**
+	 * Adds a new signature to collect the information to verify.
+	 *
+	 * @param signature {@link AdvancedSignature} to extract data to be verified
+	 */
+	void addSignatureForVerification(final AdvancedSignature signature);
+
+	/**
 	 * Adds a new revocation token to the list of tokens to verify. If the
 	 * revocation token has already been added then it is ignored.
 	 *
 	 * @param revocationToken an instance of {@code RevocationToken} revocation
 	 *                        tokens to verify
+	 * @param <R> {@link RevocationToken}
 	 */
-	void addRevocationTokenForVerification(final RevocationToken<Revocation> revocationToken);
+	<R extends Revocation> void addRevocationTokenForVerification(final RevocationToken<R> revocationToken);
 
 	/**
 	 * Adds a new certificate token to the list of tokens to verify. If the certificate token has already been added
@@ -84,6 +95,50 @@ public interface ValidationContext {
 	 *            {@code TimestampToken} timestamp token to verify
 	 */
 	void addTimestampTokenForVerification(final TimestampToken timestampToken);
+
+
+	/**
+	 * Adds an extracted certificate source to the used list of sources
+	 *
+	 * @param certificateSource {@link CertificateSource}
+	 */
+	void addDocumentCertificateSource(CertificateSource certificateSource);
+
+
+	/**
+	 * Adds a list certificate source to the used list of sources
+	 *
+	 * @param listCertificateSource {@link ListCertificateSource}
+	 */
+	void addDocumentCertificateSource(ListCertificateSource listCertificateSource);
+
+	/**
+	 * Adds an extracted CRL source to the used list of sources
+	 *
+	 * @param crlSource {@link OfflineRevocationSource} for CRL
+	 */
+	void addDocumentCRLSource(OfflineRevocationSource<CRL> crlSource);
+
+	/**
+	 * Adds a list CRL source to the used list of sources
+	 *
+	 * @param crlSource {@link ListRevocationSource} for CRL
+	 */
+	void addDocumentCRLSource(ListRevocationSource<CRL> crlSource);
+
+	/**
+	 * Adds an extracted OCSP source to the used list of sources
+	 *
+	 * @param ocspSource {@link OfflineRevocationSource} for OCSP
+	 */
+	void addDocumentOCSPSource(OfflineRevocationSource<OCSP> ocspSource);
+
+	/**
+	 * Adds a listd OCSP source to the used list of sources
+	 *
+	 * @param ocspSource {@link ListRevocationSource} for OCSP
+	 */
+	void addDocumentOCSPSource(ListRevocationSource<OCSP> ocspSource);
 
 	/**
 	 * Carries out the validation process in recursive manner for not yet checked
@@ -141,13 +196,24 @@ public interface ValidationContext {
 	 * Additionally, an alert can be handled
 	 * {@link CertificateVerifier#setAlertOnNoRevocationAfterBestSignatureTime(eu.europa.esig.dss.alert.StatusAlert)}
 	 * 
-	 * @param signingCertificate {@code CertificateToken} signing certificate of the
-	 *                           signature to be checked
+	 * @param signature {@code AdvancedSignature} signature to be checked
 	 * @return true if the signing certificate is covered with a updated revocation
 	 *         data (after signature-timestamp production time)
 	 * 
 	 */
-	boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(CertificateToken signingCertificate);
+	boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(AdvancedSignature signature);
+
+	/**
+	 * This method verifies if the signing certificate has not been expired yet or has a still valid timestamp
+	 *
+	 * Additionally, an alert can be handled
+	 * {@link CertificateVerifier#setAlertOnExpiredSignature(eu.europa.esig.dss.alert.StatusAlert)}
+	 *
+	 * @param signature {@code AdvancedSignature} signature to be verified
+	 * @return true if the signing certificate or its POE(s) not yet expired, false otherwise
+	 *
+	 */
+	boolean checkSignatureNotExpired(AdvancedSignature signature);
 
 	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
@@ -159,20 +225,12 @@ public interface ValidationContext {
 	Set<CertificateToken> getProcessedCertificates();
 
 	/**
-	 * Returns a map of {@code CertificateSourceType} by {@code CertificateToken}
-	 * which contains the sources where the certificate was found.
-	 * 
-	 * @return a map of CertificateSourceType by CertificateToken
-	 */
-	Map<CertificateToken, Set<CertificateSourceType>> getCertificateSourceTypes();
-
-	/**
 	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the
 	 * given document.
 	 *
 	 * @return The list of CertificateToken(s)
 	 */
-	Set<RevocationToken<Revocation>> getProcessedRevocations();
+	Set<RevocationToken> getProcessedRevocations();
 
 	/**
 	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given
@@ -181,5 +239,51 @@ public interface ValidationContext {
 	 * @return The list of CertificateToken(s)
 	 */
 	Set<TimestampToken> getProcessedTimestamps();
+
+	/**
+	 * Returns a list of all {@code CertificateSource}s used during the validation process.
+	 * It is represented by sources extracted from the provided document (e.g. signatures, timestamps)
+	 * as well as the sources obtained during the validation process (e.g. AIA, OCSP).
+	 *
+	 * @return {@link ListCertificateSource}
+	 */
+	ListCertificateSource getAllCertificateSources();
+
+	/**
+	 * Returns a list of all {@code CertificateSource}s extracted from a validating document (signature(s), timestamp(s))
+	 *
+	 * @return {@link ListCertificateSource}
+	 */
+	ListCertificateSource getDocumentCertificateSource();
+
+	/**
+	 * Returns a list of all CRL {@code OfflineRevocationSource}s extracted from a validating document
+	 *
+	 * @return {@link ListRevocationSource}
+	 */
+	ListRevocationSource<CRL> getDocumentCRLSource();
+
+	/**
+	 * Returns a list of all OCSP {@code OfflineRevocationSource}s extracted from a validating document
+	 *
+	 * @return {@link ListRevocationSource}
+	 */
+	ListRevocationSource<OCSP> getDocumentOCSPSource();
+
+	/**
+	 * Returns a validation data for the given signature's certificate chain
+	 *
+	 * @param signature {@link AdvancedSignature} to extract validation data for
+	 * @return {@link ValidationData}
+	 */
+	ValidationData getValidationData(final AdvancedSignature signature);
+
+	/**
+	 * Returns a validation data for the given timestampToken's certificate chain
+	 *
+	 * @param timestampToken {@link TimestampToken} to extract validation data for
+	 * @return {@link ValidationData}
+	 */
+	ValidationData getValidationData(final TimestampToken timestampToken);
 
 }

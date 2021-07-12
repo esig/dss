@@ -22,15 +22,16 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -68,6 +69,11 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	protected Element unsignedSignaturePropertiesDom;
 
 	/**
+	 * The used document validator
+	 */
+	protected XMLDocumentValidator documentValidator;
+
+	/**
 	 * Default constructor
 	 *
 	 * @param certificateVerifier {@code CertificateVerifier}
@@ -77,13 +83,34 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	}
 
 	/**
+	 * Initializes all variables to be used for signature extension
+	 *
+	 * @param signature {@link XAdESSignature}
+	 * @return {@link XAdESSignature}
+	 */
+	protected XAdESSignature initializeSignatureBuilder(XAdESSignature signature) {
+		xadesSignature = signature;
+		currentSignatureDom = xadesSignature.getSignatureElement();
+
+		xadesPaths = xadesSignature.getXAdESPaths();
+
+		// We ensure that all XML segments needed for the construction of the extension -T are present.
+		// If a segment does not exist then it is created.
+		ensureUnsignedProperties();
+		ensureUnsignedSignatureProperties();
+		ensureSignedDataObjectProperties();
+
+		return xadesSignature;
+	}
+
+	/**
 	 * Returns or creates (if it does not exist) the UnsignedPropertiesType DOM object.
 	 */
 	protected void ensureUnsignedProperties() {
 
 		final NodeList qualifyingPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getQualifyingPropertiesPath());
 		if (qualifyingPropertiesNodeList.getLength() != 1) {
-			throw new DSSException("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.");
+			throw new IllegalInputException("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.");
 		}
 
 		qualifyingPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
@@ -99,7 +126,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPaths.getUnsignedPropertiesPath());
 			}
 		} else {
-			throw new DSSException("The signature contains more then one UnsignedProperties element! Extension is not possible.");
+			throw new IllegalInputException("The signature contains more then one UnsignedProperties element! Extension is not possible.");
 		}
 	}
 
@@ -118,7 +145,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPaths.getUnsignedSignaturePropertiesPath());
 			}
 		} else {
-			throw new DSSException("The signature contains more then one UnsignedSignatureProperties element! Extension is not possible.");
+			throw new IllegalInputException("The signature contains more than one UnsignedSignatureProperties element! Extension is not possible.");
 		}
 	}
 
@@ -129,7 +156,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getSignedDataObjectPropertiesPath());
 		final int length = signedDataObjectPropertiesNodeList.getLength();
 		if (length > 1) {
-			throw new DSSException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");
+			throw new IllegalInputException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");
 		}
 	}
 
@@ -169,14 +196,34 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
 		}
 	}
+
+	/**
+	 * Removes the given {@code nodeListToRemove} from its parent
+	 *
+	 * @param nodeListToRemove {@link NodeList} to remove
+	 * @return String of the next TEXT sibling of the first removed node with indent
+	 */
+	protected String removeNodes(NodeList nodeListToRemove) {
+		String text = null;
+		if (nodeListToRemove != null) {
+			for (int index = 0; index < nodeListToRemove.getLength(); index++) {
+				final Node item = nodeListToRemove.item(index);
+				String indent = removeNode(item);
+				if (text == null) {
+					text = indent;
+				}
+			}
+		}
+		return text;
+	}
 	
 	/**
-	 * Removes the given nodeToRemove from its parentNode
-	 * @param parentNode owner {@link Node} of the nodeToRemove
+	 * Removes the given {@code nodeToRemove} from its parent
+	 *
 	 * @param nodeToRemove {@link Node} to remove
 	 * @return String of the next TEXT sibling of the removed node (can be NULL if the TEXT sibling does not exist)
 	 */
-	protected String removeChild(Node parentNode, Node nodeToRemove) {
+	protected String removeNode(Node nodeToRemove) {
 		String text = null;
 		if (nodeToRemove != null) {
 			Node nextSibling = nodeToRemove.getNextSibling();
@@ -223,20 +270,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			}
 		}
 		return xadesNamespace;
-	}
-
-	/**
-	 * Returns a {@code NodeList} of signatures to be extended. Throws an extension if no valid signatures found
-	 *
-	 * @param documentDom {@link Document} with signatures to be extended
-	 * @return {@link NodeList} of signatures
-	 */
-	protected NodeList getSignaturesNodeListToExtend(Document documentDom) {
-		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDom);
-		if (signatureNodeList.getLength() == 0) {
-			throw new DSSException("There is no signature to extend!");
-		}
-		return signatureNodeList;
 	}
 	
 }

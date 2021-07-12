@@ -39,7 +39,7 @@ public class CAdESSignatureIntegrityValidator extends SignatureIntegrityValidato
 	private final SignerInformation signerInformation;
 
 	/** The instance of the verifier builder */
-	private final JcaSimpleSignerInfoVerifierBuilder verifier;
+	private final JcaSimpleSignerInfoVerifierBuilder verifierBuilder;
 
 	/**
 	 * The default constructor
@@ -48,19 +48,19 @@ public class CAdESSignatureIntegrityValidator extends SignatureIntegrityValidato
 	 */
 	public CAdESSignatureIntegrityValidator(final SignerInformation signerInformation) {
 		this.signerInformation = signerInformation;
-		this.verifier = instantiateVerifier();
+		this.verifierBuilder = instantiateVerifier();
 	}
 	
 	private JcaSimpleSignerInfoVerifierBuilder instantiateVerifier() {
-		final JcaSimpleSignerInfoVerifierBuilder verifier = new JcaSimpleSignerInfoVerifierBuilder();
-		verifier.setProvider(DSSSecurityProvider.getSecurityProviderName());
-		return verifier;
+		final JcaSimpleSignerInfoVerifierBuilder jcaVerifierBuilder = new JcaSimpleSignerInfoVerifierBuilder();
+		jcaVerifierBuilder.setProvider(DSSSecurityProvider.getSecurityProviderName());
+		return jcaVerifierBuilder;
 	}
 
 	@Override
 	protected boolean verify(PublicKey publicKey) throws DSSException {
 		try {
-			final SignerInformationVerifier signerInformationVerifier = verifier.build(publicKey);
+			final SignerInformationVerifier signerInformationVerifier = verifierBuilder.build(publicKey);
 			return signerInformation.verify(signerInformationVerifier);
 		} catch (CMSSignerDigestMismatchException e) {
 			throw new DSSException(String.format("Unable to validate CMS Signature : %s", e.getMessage()));

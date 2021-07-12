@@ -28,6 +28,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
@@ -50,10 +51,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Contains user-friendly methods to extract information from an {@code XmlSignature}
+ *
+ */
 public class SignatureWrapper extends AbstractTokenProxy {
 
+	/** Wrapped {@code XmlSignature} */
 	private final XmlSignature signature;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param signature {@link XmlSignature}
+	 */
 	public SignatureWrapper(XmlSignature signature) {
 		Objects.requireNonNull(signature, "XmlSignature cannot be null!");
 		this.signature = signature;
@@ -64,6 +75,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getId();
 	}
 
+	/**
+	 * Returns the signature document identifier of the signature
+	 *
+	 * @return {@link String}
+	 */
 	public String getDAIdentifier() {
 		return signature.getDAIdentifier();
 	}
@@ -73,6 +89,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getDigestMatchers();
 	}
 
+	/**
+	 * Returns the message-digest for a CMS signature
+	 *
+	 * @return {@link XmlDigestMatcher}
+	 */
 	public XmlDigestMatcher getMessageDigest() {
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
@@ -118,14 +139,29 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return new FoundRevocationsProxy(signature.getFoundRevocations());
 	}
 
+	/**
+	 * Returns a signature filename
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignatureFilename() {
 		return signature.getSignatureFilename();
 	}
 
+	/**
+	 * Gets if a structural validation of the signature is valid
+	 *
+	 * @return TRUE if the structure of the signature is valid, FALSE otherwise
+	 */
 	public boolean isStructuralValidationValid() {
 		return signature.getStructuralValidation() != null && signature.getStructuralValidation().isValid();
 	}
 
+	/**
+	 * Returns structural validation error messages, when applicable
+	 *
+	 * @return a list of {@link String} error messages
+	 */
 	public List<String> getStructuralValidationMessages() {
 		XmlStructuralValidation structuralValidation = signature.getStructuralValidation();
 		if (structuralValidation != null) {
@@ -134,42 +170,92 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns the claimed signing time extracted from the signature
+	 *
+	 * @return {@link Date}
+	 */
 	public Date getClaimedSigningTime() {
 		return signature.getClaimedSigningTime();
 	}
 
+	/**
+	 * Returns the content type
+	 *
+	 * @return {@link String}
+	 */
 	public String getContentType() {
 		return signature.getContentType();
 	}
 
+	/**
+	 * Returns the MimeType
+	 *
+	 * @return {@link String}
+	 */
 	public String getMimeType() {
 		return signature.getMimeType();
 	}
 
+	/**
+	 * Returns the content hints string
+	 *
+	 * @return {@link String}
+	 */
 	public String getContentHints() {
 		return signature.getContentHints();
 	}
 
+	/**
+	 * Returns the content identifier
+	 *
+	 * @return {@link String}
+	 */
 	public String getContentIdentifier() {
 		return signature.getContentIdentifier();
 	}
 
+	/**
+	 * Gets if the current signature counter-signs another signature within the document
+	 *
+	 * @return TRUE if the signature is counter-signature, FALSE otherwise
+	 */
 	public boolean isCounterSignature() {
 		return signature.isCounterSignature() != null && signature.isCounterSignature();
 	}
-	
+
+	/**
+	 * Checks if the signature's Id is duplicated within the validating document
+	 *
+	 * @return TRUE if there is a duplicated signature Id, FALSE otherwise
+	 */
 	public boolean isSignatureDuplicated() {
 		return signature.isDuplicated() != null && signature.isDuplicated();
 	}
-	
+
+	/**
+	 * Returns Signature Digest Reference
+	 *
+	 * @return {@link XmlSignatureDigestReference}
+	 */
 	public XmlSignatureDigestReference getSignatureDigestReference() {
 		return signature.getSignatureDigestReference();
 	}
-	
+
+	/**
+	 * Returns a DataToBeSigned digest
+	 *
+	 * @return {@link XmlDigestAlgoAndValue}
+	 */
 	public XmlDigestAlgoAndValue getDataToBeSignedRepresentation() {
 		return signature.getDataToBeSignedRepresentation();
 	}
 
+	/**
+	 * Returns a list of associated timestamps
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getTimestampList() {
 		List<TimestampWrapper> tsps = new ArrayList<>();
 		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
@@ -179,6 +265,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return tsps;
 	}
 
+	/**
+	 * Returns a list of associated timestamps by type
+	 *
+	 * @param timestampType {@link TimestampType} to get timestamps
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getTimestampListByType(final TimestampType timestampType) {
 		List<TimestampWrapper> result = new ArrayList<>();
 		List<TimestampWrapper> all = getTimestampList();
@@ -190,10 +282,20 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return result;
 	}
 
+	/**
+	 * Gets if the signature production place is claimed within the signature
+	 *
+	 * @return TRUE if the signature production place is present, FALSE otherwise
+	 */
 	public boolean isSignatureProductionPlacePresent() {
 		return signature.getSignatureProductionPlace() != null;
 	}
 
+	/**
+	 * Returns the signature production place's street address, when present
+	 *
+	 * @return {@link String}
+	 */
 	public String getStreetAddress() {
 		if (isSignatureProductionPlacePresent()) {
 			return signature.getSignatureProductionPlace().getStreetAddress();
@@ -201,6 +303,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the signature production place's city, when present
+	 *
+	 * @return {@link String}
+	 */
 	public String getCity() {
 		if (isSignatureProductionPlacePresent()) {
 			return signature.getSignatureProductionPlace().getCity();
@@ -208,6 +315,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the signature production place's country name, when present
+	 *
+	 * @return {@link String}
+	 */
 	public String getCountryName() {
 		if (isSignatureProductionPlacePresent()) {
 			return signature.getSignatureProductionPlace().getCountryName();
@@ -215,6 +327,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the signature production place's post office box number, when present
+	 *
+	 * @return {@link String}
+	 */
 	public String getPostOfficeBoxNumber() {
 		if (isSignatureProductionPlacePresent()) {
 			return signature.getSignatureProductionPlace().getPostOfficeBoxNumber();
@@ -222,6 +339,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the signature production place's postal code, when present
+	 *
+	 * @return {@link String}
+	 */
 	public String getPostalCode() {
 		if (isSignatureProductionPlacePresent()) {
 			return signature.getSignatureProductionPlace().getPostalCode();
@@ -229,6 +351,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the signature production place's state or province, when present
+	 *
+	 * @return {@link String}
+	 */
 	public String getStateOrProvince() {
 		if (isSignatureProductionPlacePresent()) {
 			return signature.getSignatureProductionPlace().getStateOrProvince();
@@ -236,6 +363,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the signature production place's postal address, when present
+	 *
+	 * @return {@link String}
+	 */
 	public List<String> getPostalAddress() {
 		if (isSignatureProductionPlacePresent()) {
 			return signature.getSignatureProductionPlace().getPostalAddress();
@@ -243,14 +375,29 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns the signature level (format)
+	 *
+	 * @return {@link SignatureLevel}
+	 */
 	public SignatureLevel getSignatureFormat() {
 		return signature.getSignatureFormat();
 	}
 
+	/**
+	 * Returns an error message
+	 *
+	 * @return {@link String}
+	 */
 	public String getErrorMessage() {
 		return signature.getErrorMessage();
 	}
 
+	/**
+	 * Gets if a signing certificate has been unambiguously identified
+	 *
+	 * @return TRUE if the signing certificate has been identifier, FALSE otherwise
+	 */
 	public boolean isSigningCertificateIdentified() {
 		CertificateWrapper signingCertificate = getSigningCertificate();
 		CertificateRefWrapper signingCertificateReference = getSigningCertificateReference();
@@ -261,6 +408,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return false;
 	}
 
+	/**
+	 * Returns the signature policy Id, when present
+	 *
+	 * @return {@link String}
+	 */
 	public String getPolicyId() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
@@ -269,15 +421,25 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return "";
 	}
 
+	/**
+	 * Returns if the signature policy's hash should not be compared (zero hash is used)
+	 *
+	 * @return TRUE if zero hash has been used, FALSE otherwise
+	 */
 	public boolean isPolicyZeroHash() {
 		XmlPolicy policy = signature.getPolicy();
-		if (policy != null) {
-			return policy.isZeroHash() != null && policy.isZeroHash();
+		if (policy != null && policy.getDigestAlgoAndValue() != null) {
+			return policy.getDigestAlgoAndValue().isZeroHash() != null && policy.getDigestAlgoAndValue().isZeroHash();
 		}
 		return false;
 	}
 
-	public XmlDigestAlgoAndValue getPolicyDigestAlgoAndValue() {
+	/**
+	 * Returns the signature policy digest
+	 *
+	 * @return {@link XmlPolicyDigestAlgoAndValue}
+	 */
+	public XmlPolicyDigestAlgoAndValue getPolicyDigestAlgoAndValue() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
 			return policy.getDigestAlgoAndValue();
@@ -293,7 +455,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public boolean isPolicyStorePresent() {
 		return signature.getSignaturePolicyStore() != null;
 	}
-	
+
+	/**
+	 * Gets the signature policy store id
+	 *
+	 * @return {@link String}
+	 */
 	public String getPolicyStoreId() {
 		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
 		if (policyStore != null) {
@@ -301,7 +468,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Gets the signature policy store description
+	 *
+	 * @return {@link String}
+	 */
 	public String getPolicyStoreDescription() {
 		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
 		if (policyStore != null) {
@@ -309,7 +481,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Gets the digest of a signature policy containing within the signature policy store
+	 *
+	 * @return {@link XmlDigestAlgoAndValue}
+	 */
 	public XmlDigestAlgoAndValue getPolicyStoreDigestAlgoAndValue() {
 		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
 		if (policyStore != null) {
@@ -317,71 +494,136 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Returns a signature policy store documentation references
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getPolicyStoreDocumentationReferences() {
 		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
 		if (policyStore != null) {
 			return policyStore.getDocumentationReferences();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
+	/**
+	 * Gets if the B-level of the signature is valid
+	 *
+	 * @return TRUE if the B-level of the signature is valid, FALSE otherwise
+	 */
 	public boolean isBLevelTechnicallyValid() {
 		return isSignatureValid();
 	}
 
+	/**
+	 * Returns if there is the X-Level within the signature
+	 *
+	 * @return TRUE if there is the X-Level, FALSE otherwise
+	 */
 	public boolean isThereXLevel() {
 		List<TimestampWrapper> timestampLevelX = getTimestampLevelX();
 		return timestampLevelX != null && timestampLevelX.size() > 0;
 	}
 
+	/**
+	 * Gets if the X-level of the signature is valid
+	 *
+	 * @return TRUE if the X-level of the signature is valid, FALSE otherwise
+	 */
 	public boolean isXLevelTechnicallyValid() {
 		List<TimestampWrapper> timestamps = getTimestampLevelX();
 		return isAtLeastOneTimestampValid(timestamps);
 	}
 
+	/**
+	 * Returns a list of validation-data-refs-only- and validation-data- time-stamps for the signature
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getTimestampLevelX() {
 		List<TimestampWrapper> timestamps = getTimestampListByType(TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
 		timestamps.addAll(getTimestampListByType(TimestampType.VALIDATION_DATA_TIMESTAMP));
 		return timestamps;
 	}
 
+	/**
+	 * Returns if there is the A-Level within the signature
+	 *
+	 * @return TRUE if there is the A-Level, FALSE otherwise
+	 */
 	public boolean isThereALevel() {
 		List<TimestampWrapper> timestamps = getALevelTimestamps();
 		return timestamps != null && timestamps.size() > 0;
 	}
 
+	/**
+	 * Gets if the A-level of the signature is valid
+	 *
+	 * @return TRUE if the A-level of the signature is valid, FALSE otherwise
+	 */
 	public boolean isALevelTechnicallyValid() {
 		List<TimestampWrapper> timestamps = getALevelTimestamps();
 		return isAtLeastOneTimestampValid(timestamps);
 	}
 
+	/**
+	 * Returns a list of archive timestamps for the signature
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getALevelTimestamps() {
 		List<TimestampWrapper> timestamps = new ArrayList<>(getArchiveTimestamps());
 		timestamps.addAll(getDocumentTimestamps(true));
 		return timestamps;
 	}
 
+	/**
+	 * Returns a list of archive timestamps for the signature
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getArchiveTimestamps() {
 		return getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP);
 	}
 
+	/**
+	 * Returns if there is the T-Level within the signature
+	 *
+	 * @return TRUE if there is the T-Level, FALSE otherwise
+	 */
 	public boolean isThereTLevel() {
 		List<TimestampWrapper> timestamps = getTLevelTimestamps();
 		return timestamps != null && timestamps.size() > 0;
 	}
 
+	/**
+	 * Gets if the T-level of the signature is valid
+	 *
+	 * @return TRUE if the T-level of the signature is valid, FALSE otherwise
+	 */
 	public boolean isTLevelTechnicallyValid() {
 		List<TimestampWrapper> timestamps = getTLevelTimestamps();
 		return isAtLeastOneTimestampValid(timestamps);
 	}
 
+	/**
+	 * Returns a list of signature timestamps for the signature
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getTLevelTimestamps() {
 		List<TimestampWrapper> timestamps = new ArrayList<>(getSignatureTimestamps());
 		timestamps.addAll(getDocumentTimestamps());
 		return timestamps;
 	}
 
+	/**
+	 * Returns a list of content timestamps of the signature
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getContentTimestamps() {
 		List<TimestampWrapper> timestamps = getTimestampListByType(TimestampType.CONTENT_TIMESTAMP);
 		timestamps.addAll(getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
@@ -389,6 +631,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return timestamps;
 	}
 
+	/**
+	 * Returns all non-content timestamps
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getAllTimestampsProducedAfterSignatureCreation() {
 		List<TimestampWrapper> timestamps = new ArrayList<>();
 		for (TimestampType timestampType : TimestampType.values()) {
@@ -399,10 +646,20 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return timestamps;
 	}
 
+	/**
+	 * Returns all signature timestamps
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getSignatureTimestamps() {
 		return getTimestampListByType(TimestampType.SIGNATURE_TIMESTAMP);
 	}
 
+	/**
+	 * Returns all PDF document timestamps
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
 	public List<TimestampWrapper> getDocumentTimestamps() {
 		return getTimestampListByType(TimestampType.DOCUMENT_TIMESTAMP);
 	}
@@ -435,6 +692,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return false;
 	}
 
+	/**
+	 * Returns a list of timestamp IDs
+	 *
+	 * @return a list of {@link String} IDs
+	 */
 	public List<String> getTimestampIdsList() {
 		List<String> result = new ArrayList<>();
 		List<TimestampWrapper> timestamps = getTimestampList();
@@ -446,6 +708,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return result;
 	}
 
+	/**
+	 * Returns a master-signature in case of a counter-signature
+	 *
+	 * @return {@link SignatureWrapper}
+	 */
 	public SignatureWrapper getParent() {
 		XmlSignature parent = signature.getParent();
 		if (parent != null) {
@@ -454,12 +721,18 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns Signature Scopes
+	 *
+	 * @return a list of {@link XmlSignatureScope}s
+	 */
 	public List<XmlSignatureScope> getSignatureScopes() {
 		return signature.getSignatureScopes();
 	}
 
 	/**
 	 * Returns list of all found SignerRoles
+	 *
 	 * @return list of {@link XmlSignerRole}s
 	 */
 	public List<XmlSignerRole> getSignerRoles() {
@@ -468,6 +741,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	/**
 	 * Returns list of found ClaimedRoles
+	 *
 	 * @return list of {@link XmlSignerRole}s
 	 */
 	public List<XmlSignerRole> getClaimedRoles() {
@@ -476,6 +750,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	/**
 	 * Returns list of found CertifiedRoles
+	 *
 	 * @return list of {@link XmlSignerRole}s
 	 */
 	public List<XmlSignerRole> getCertifiedRoles() {
@@ -517,6 +792,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return roles;
 	}
 
+	/**
+	 * Returns a list of commitment type indications
+	 *
+	 * @return a lust of {@link XmlCommitmentTypeIndication}s
+	 */
 	public List<XmlCommitmentTypeIndication> getCommitmentTypeIndications() {
 		List<XmlCommitmentTypeIndication> commitmentTypeIndications = signature.getCommitmentTypeIndications();
 		if (commitmentTypeIndications != null) {
@@ -549,6 +829,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	
 	/**
 	 * Returns XMLPolicy description if it is not empty
+	 *
 	 * @return {@link String}
 	 */
 	public String getPolicyDescription() {
@@ -561,6 +842,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	
 	/**
 	 * Returns DocumentationReferences defined for the signature policy
+	 *
 	 * @return a list of {@link String}s
 	 */
 	public List<String> getPolicyDocumentationReferences() {
@@ -585,6 +867,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns the policy notice
+	 *
+	 * @return {@link String}
+	 */
 	public String getPolicyNotice() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
@@ -593,6 +880,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return "";
 	}
 
+	/**
+	 * Returns the signature policy url
+	 *
+	 * @return {@link String}
+	 */
 	public String getPolicyUrl() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
@@ -601,6 +893,24 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return "";
 	}
 
+	/**
+	 * Returns the signature policy document specification
+	 *
+	 * @return {@link String}
+	 */
+	public String getPolicyDocSpecification() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.getDocSpecification();
+		}
+		return "";
+	}
+
+	/**
+	 * Gets if the signature policy is ASN.1 processable
+	 *
+	 * @return TRUE if the signature policy is ASN.1, FALSE otherwise
+	 */
 	public boolean isPolicyAsn1Processable() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
@@ -609,6 +919,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return false;
 	}
 
+	/**
+	 * Gets if the signature policy has been found
+	 *
+	 * @return TRUE if the signature policy has been found, FALSE otherwise
+	 */
 	public boolean isPolicyIdentified() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
@@ -617,18 +932,29 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return false;
 	}
 
-	public boolean isPolicyStatus() {
+	/**
+	 * Gets if the signature policy digest validation succeeds
+	 *
+	 * @return TRUE if the signature policy digest are valid, FALSE otherwise
+	 */
+	public boolean isPolicyDigestValid() {
 		XmlPolicy policy = signature.getPolicy();
-		if (policy != null) {
-			return policy.isStatus() != null && policy.isStatus();
+		if (policy != null && policy.getDigestAlgoAndValue() != null) {
+			return policy.getDigestAlgoAndValue().isMatch() != null && policy.getDigestAlgoAndValue().isMatch();
 		}
 		return false;
 	}
 
+	/**
+	 * Gets if the validated signature policy algorithm match
+	 *
+	 * @return TRUE if the signature policy digest algorithms match, FALSE otherwise
+	 */
 	public boolean isPolicyDigestAlgorithmsEqual() {
 		XmlPolicy policy = signature.getPolicy();
-		if (policy != null) {
-			return policy.isDigestAlgorithmsEqual() != null && policy.isDigestAlgorithmsEqual();
+		if (policy != null && policy.getDigestAlgoAndValue() != null) {
+			return policy.getDigestAlgoAndValue().isDigestAlgorithmsEqual() != null
+					&& policy.getDigestAlgoAndValue().isDigestAlgorithmsEqual();
 		}
 		return false;
 	}
@@ -718,6 +1044,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getSignerInformationStore();
 	}
 
+	/**
+	 * Returns the signer's name
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignerName() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
@@ -726,6 +1057,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the PDF signature dictionary /Type value
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignatureDictionaryType() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
@@ -734,6 +1070,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the PDF signature dictionary /Filter value
+	 *
+	 * @return {@link String}
+	 */
 	public String getFilter() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
@@ -742,6 +1083,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the PDF signature dictionary /SubFilter value
+	 *
+	 * @return {@link String}
+	 */
 	public String getSubFilter() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
@@ -750,6 +1096,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the PDF signature dictionary /ContactInfo value
+	 *
+	 * @return {@link String}
+	 */
 	public String getContactInfo() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
@@ -758,6 +1109,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the PDF signature dictionary /Location value
+	 *
+	 * @return {@link String}
+	 */
 	public String getLocation() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
@@ -766,6 +1122,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the PDF signature dictionary /Reason value
+	 *
+	 * @return {@link String}
+	 */
 	public String getReason() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
@@ -773,7 +1134,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Returns the PDF signature dictionary /ByteRange value
+	 *
+	 * @return byte range
+	 */
 	public List<BigInteger> getSignatureByteRange() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
@@ -781,11 +1147,21 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return Collections.emptyList();
 	}
-	
+
+	/**
+	 * Gets the SignatureValue
+	 *
+	 * @return binaries
+	 */
 	public byte[] getSignatureValue() {
 		return signature.getSignatureValue();
 	}
-	
+
+	/**
+	 * Gets if the signature is a document hash only
+	 *
+	 * @return TRUE if the signature is a document hash only, FALSE otherwise
+	 */
 	public boolean isDocHashOnly() {
 		XmlSignerDocumentRepresentations signerDocumentRepresentation = signature.getSignerDocumentRepresentations();
 		if (signerDocumentRepresentation != null) {
@@ -793,7 +1169,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Gets if the signature is a hash only
+	 *
+	 * @return TRUE if the signature is a hash only, FALSE otherwise
+	 */
 	public boolean isHashOnly() {
 		XmlSignerDocumentRepresentations signerDocumentRepresentation = signature.getSignerDocumentRepresentations();
 		if (signerDocumentRepresentation != null) {

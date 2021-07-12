@@ -38,6 +38,7 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +48,7 @@ import java.util.Objects;
  * Detached CMS TimestampToken Validator
  *
  */
-public class DetachedTimestampValidator extends SignedDocumentValidator {
+public class DetachedTimestampValidator extends SignedDocumentValidator implements TimestampValidator {
 
 	/** The type of the timestamp */
 	protected TimestampType timestampType;
@@ -100,16 +101,11 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 		return Collections.singletonList(getTimestamp());
 	}
 
-	/**
-	 * Returns a single TimestampToken to be validated
-	 * 
-	 * @return {@link TimestampToken}
-	 */
+	@Override
 	public TimestampToken getTimestamp() {
 		if (timestampToken == null) {
 			timestampToken = createTimestampToken();
 		}
-
 		return timestampToken;
 	}
 
@@ -121,13 +117,8 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 			timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
 			timestampToken.setFileName(document.getName());
 			timestampToken.matchData(getTimestampedData());
-
-			List<SignatureScope> signatureScopes = getTimestampSignatureScopes();
-			timestampToken.setTimestampScopes(signatureScopes);
-			for (SignatureScope signatureScope : signatureScopes) {
-				timestampToken.getTimestampedReferences().add(
-						new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
-			}
+			timestampToken.setTimestampScopes(getTimestampSignatureScopes());
+			timestampToken.getTimestampedReferences().addAll(getTimestampedReferences());
 			return timestampToken;
 
 		} catch (CMSException | TSPException | IOException e) {
@@ -154,17 +145,13 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 		setDetachedContents(Arrays.asList(document));
 	}
 
-	/**
-	 * Returns the timestamped data
-	 *
-	 * @return {@link DSSDocument} timestamped data
-	 */
+	@Override
 	public DSSDocument getTimestampedData() {
 		int size = Utils.collectionSize(detachedContents);
 		if (size == 0) {
 			return null;
 		} else if (size > 1) {
-			throw new DSSException("Too many files");
+			throw new IllegalArgumentException("Only one detached document shall be provided for a timestamp validation!");
 		}
 		return detachedContents.iterator().next();
 	}
@@ -177,13 +164,56 @@ public class DetachedTimestampValidator extends SignedDocumentValidator {
 	protected List<SignatureScope> getTimestampSignatureScopes() {
 		DSSDocument timestampedData = getTimestampedData();
 		if (timestampedData != null) {
-			if (timestampedData instanceof DigestDocument) {
-				return Arrays.asList(new DigestSignatureScope("Digest document", ((DigestDocument) timestampedData).getExistingDigest()));
-			} else {
-				return Arrays.asList(new FullSignatureScope("Full document", DSSUtils.getDigest(getDefaultDigestAlgorithm(), timestampedData)));
-			}
+			return getTimestampSignatureScopeForDocument(timestampedData);
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a timestamped {@code SignatureScope} for the given document
+	 *
+	 * @param document {@link DSSDocument}
+	 * @return a list of {@link SignatureScope}s
+	 */
+	protected List<SignatureScope> getTimestampSignatureScopeForDocument(DSSDocument document) {
+		String documentName = document.getName();
+		if (document instanceof DigestDocument) {
+			return Arrays.asList(new DigestSignatureScope(Utils.isStringNotEmpty(documentName) ? documentName : "Digest document",
+					((DigestDocument) document).getExistingDigest()));
+		} else {
+			return Arrays.asList(new FullSignatureScope(Utils.isStringNotEmpty(documentName) ? documentName : "Full document",
+					getDigest(document)));
+		}
+	}
+
+	/**
+	 * Returns a list of timestamped references
+	 *
+	 * @return a list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getTimestampedReferences() {
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
+		List<SignatureScope> signatureScopes = getTimestampSignatureScopes();
+		for (SignatureScope signatureScope : signatureScopes) {
+			if (addReference(signatureScope)) {
+				timestampedReferences.add(new TimestampedReference(
+						signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+			}
+		}
+		return timestampedReferences;
+	}
+
+	/**
+	 * Checks if the signature scope shall be added as a timestamped reference
+	 *
+	 * NOTE: used to avoid duplicates in ASiC with CAdES validator, due to covered signature/timestamp files
+	 *
+	 * @param signatureScope {@link SignatureScope} to check
+	 * @return TRUE if the timestamped reference shall be created for the given {@link SignatureScope}, FALSE otherwise
+	 */
+	protected boolean addReference(SignatureScope signatureScope) {
+		// accept all for a simple detached timestamp
+		return true;
 	}
 
 	@Override

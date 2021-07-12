@@ -31,6 +31,8 @@ import java.util.List;
  */
 public class XmlElementSignatureScope extends SignatureScopeWithTransformations {
 
+	private static final long serialVersionUID = 4812001557745419012L;
+
 	/**
 	 * Default constructor
 	 *
@@ -45,10 +47,7 @@ public class XmlElementSignatureScope extends SignatureScopeWithTransformations 
 	@Override
 	public String getDescription() {
 		String description = "The XML element with ID '" + getName() + "'";
-		if (isTransformationsNotEmpty()) {
-			description = addTransformationDescription(description);
-		}
-		return description;
+		return addTransformationIfNeeded(description);
 	}
 
 	@Override

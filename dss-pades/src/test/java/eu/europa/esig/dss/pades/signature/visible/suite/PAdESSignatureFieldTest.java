@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -54,6 +39,20 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
@@ -121,8 +120,8 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
-		assertEquals(2, countStringOccurance(documentToSign, "startxref"));
-		assertEquals(2, countStringOccurance(documentToSign, "%%EOF"));
+		assertEquals(2, countStringOccurrence(documentToSign, "startxref"));
+		assertEquals(2, countStringOccurrence(documentToSign, "%%EOF"));
 
 		// add first field
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
@@ -134,8 +133,8 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
 		assertNotNull(withFirstField);
 
-		assertEquals(3, countStringOccurance(withFirstField, "startxref"));
-		assertEquals(3, countStringOccurance(withFirstField, "%%EOF"));
+		assertEquals(3, countStringOccurrence(withFirstField, "startxref"));
+		assertEquals(3, countStringOccurrence(withFirstField, "%%EOF"));
 
 		// add second field
 		parameters = new SignatureFieldParameters();
@@ -147,24 +146,24 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument secondField = service.addNewSignatureField(withFirstField, parameters);
 		assertNotNull(secondField);
 
-		assertEquals(4, countStringOccurance(secondField, "startxref"));
-		assertEquals(4, countStringOccurance(secondField, "%%EOF"));
+		assertEquals(4, countStringOccurrence(secondField, "startxref"));
+		assertEquals(4, countStringOccurrence(secondField, "%%EOF"));
 
 		// sign first field
 		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
 		DSSDocument firstSigned = signAndValidate(secondField);
 		assertNotNull(firstSigned);
 
-		assertEquals(5, countStringOccurance(firstSigned, "startxref"));
-		assertEquals(5, countStringOccurance(firstSigned, "%%EOF"));
+		assertEquals(5, countStringOccurrence(firstSigned, "startxref"));
+		assertEquals(5, countStringOccurrence(firstSigned, "%%EOF"));
 
 		// sign second field
 		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature2");
 		DSSDocument secondSigned = signAndValidate(firstSigned);
 		assertNotNull(secondSigned);
 
-		assertEquals(6, countStringOccurance(secondSigned, "startxref"));
-		assertEquals(6, countStringOccurance(secondSigned, "%%EOF"));
+		assertEquals(6, countStringOccurrence(secondSigned, "startxref"));
+		assertEquals(6, countStringOccurrence(secondSigned, "%%EOF"));
 
 	}
 
@@ -173,8 +172,8 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
-		assertEquals(2, countStringOccurance(documentToSign, "startxref"));
-		assertEquals(2, countStringOccurance(documentToSign, "%%EOF"));
+		assertEquals(2, countStringOccurrence(documentToSign, "startxref"));
+		assertEquals(2, countStringOccurrence(documentToSign, "%%EOF"));
 
 		// add field and sign
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
@@ -186,15 +185,15 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
 		assertNotNull(withFirstField);
 
-		assertEquals(3, countStringOccurance(withFirstField, "startxref"));
-		assertEquals(3, countStringOccurance(withFirstField, "%%EOF"));
+		assertEquals(3, countStringOccurrence(withFirstField, "startxref"));
+		assertEquals(3, countStringOccurrence(withFirstField, "%%EOF"));
 
 		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
 		DSSDocument firstSigned = signAndValidate(withFirstField);
 		assertNotNull(firstSigned);
 
-		assertEquals(4, countStringOccurance(firstSigned, "startxref"));
-		assertEquals(4, countStringOccurance(firstSigned, "%%EOF"));
+		assertEquals(4, countStringOccurrence(firstSigned, "startxref"));
+		assertEquals(4, countStringOccurrence(firstSigned, "%%EOF"));
 
 		// add a new field and second sign
 		parameters = new SignatureFieldParameters();
@@ -206,15 +205,15 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument secondField = service.addNewSignatureField(firstSigned, parameters);
 		assertNotNull(secondField);
 
-		assertEquals(5, countStringOccurance(secondField, "startxref"));
-		assertEquals(5, countStringOccurance(secondField, "%%EOF"));
+		assertEquals(5, countStringOccurrence(secondField, "startxref"));
+		assertEquals(5, countStringOccurrence(secondField, "%%EOF"));
 
 		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature2");
 		DSSDocument secondSigned = signAndValidate(secondField);
 		assertNotNull(secondSigned);
 
-		assertEquals(6, countStringOccurance(secondSigned, "startxref"));
-		assertEquals(6, countStringOccurance(secondSigned, "%%EOF"));
+		assertEquals(6, countStringOccurrence(secondSigned, "startxref"));
+		assertEquals(6, countStringOccurrence(secondSigned, "%%EOF"));
 
 	}
 
@@ -223,8 +222,8 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 
-		assertEquals(2, countStringOccurance(documentToSign, "startxref"));
-		assertEquals(2, countStringOccurance(documentToSign, "%%EOF"));
+		assertEquals(2, countStringOccurrence(documentToSign, "startxref"));
+		assertEquals(2, countStringOccurrence(documentToSign, "%%EOF"));
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
 		parameters.setFieldId("signature1");
@@ -235,15 +234,15 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parameters);
 		assertNotNull(withFirstField);
 
-		assertEquals(3, countStringOccurance(withFirstField, "startxref"));
-		assertEquals(3, countStringOccurance(withFirstField, "%%EOF"));
+		assertEquals(3, countStringOccurrence(withFirstField, "startxref"));
+		assertEquals(3, countStringOccurrence(withFirstField, "%%EOF"));
 
 		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
 		DSSDocument firstSigned = signAndValidate(withFirstField);
 		assertNotNull(firstSigned);
 
-		assertEquals(4, countStringOccurance(firstSigned, "startxref"));
-		assertEquals(4, countStringOccurance(firstSigned, "%%EOF"));
+		assertEquals(4, countStringOccurrence(firstSigned, "startxref"));
+		assertEquals(4, countStringOccurrence(firstSigned, "%%EOF"));
 
 	}
 
@@ -255,7 +254,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument doc = signAndValidate(documentToSign);
 		assertNotNull(doc);
 
-		assertThrows(DSSException.class, () -> signAndValidate(doc));
+		assertThrows(IllegalArgumentException.class, () -> signAndValidate(doc));
 	}
 
 	@Test
@@ -263,7 +262,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		signatureParameters.getImageParameters().getFieldParameters().setFieldId("not-found");
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
-		assertThrows(DSSException.class, () -> signAndValidate(documentToSign));
+		assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign));
 	}
 
 	@Test
@@ -523,7 +522,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		return signedDocument;
 	}
 
-	private int countStringOccurance(DSSDocument document, String textToCheck) {
+	private int countStringOccurrence(DSSDocument document, String textToCheck) {
 		int counter = 0;
 		String line;
 		try (InputStream is = document.openStream();

@@ -21,19 +21,6 @@
 package eu.europa.esig.dss.tsl.alerts;
 
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
@@ -64,6 +51,18 @@ import eu.europa.esig.dss.tsl.job.MockDataLoader;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class TLValidationJobAlertTest {
@@ -266,7 +265,7 @@ public class TLValidationJobAlertTest {
 		return onlineFileLoader;
 	}
 	
-	class CallbackAlertHandler<T> implements AlertHandler<T> {
+	private static class CallbackAlertHandler<T> implements AlertHandler<T> {
 		
 		private boolean called = false;
 

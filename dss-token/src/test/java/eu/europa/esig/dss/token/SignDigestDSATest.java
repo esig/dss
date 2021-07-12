@@ -20,8 +20,18 @@
  */
 package eu.europa.esig.dss.token;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -32,32 +42,21 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.spi.DSSUtils;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SignDigestDSATest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignDigestDSATest.class);
 
 	private static Collection<DigestAlgorithm> data() {
-		Collection<DigestAlgorithm> ecdsaCombinations = new ArrayList<>();
+		Collection<DigestAlgorithm> dsaCombinations = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			if (isSupportedByJDK(digestAlgorithm) && SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.DSA, digestAlgorithm) != null) {
-				ecdsaCombinations.add(digestAlgorithm);
+				dsaCombinations.add(digestAlgorithm);
 			}
 		}
-		return ecdsaCombinations;
+		return dsaCombinations;
 	}
 
 	/**
@@ -111,4 +110,5 @@ public class SignDigestDSATest {
 			// signature creation)
 		}
 	}
+
 }

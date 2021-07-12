@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.token;
 
-import java.security.KeyStore.PasswordProtection;
-import java.util.Base64;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+
+import java.security.KeyStore.PasswordProtection;
+import java.util.Base64;
+import java.util.List;
 
 public class PKCS11SignatureTokenApp {
 
@@ -46,7 +46,7 @@ public class PKCS11SignatureTokenApp {
 
 		// Pkcs11SignatureToken token = new Pkcs11SignatureToken("C:\\Windows\\System32\\onepin-opensc-pkcs11.dll",
 		// new PasswordProtection(PIN.toCharArray()), 1)
-		String alias = null;
+		String alias;
 		try (Pkcs11SignatureToken token = new Pkcs11SignatureToken("C:\\Program Files\\Gemalto\\Classic Client\\BIN\\gclib.dll",
 				new PasswordProtection(PIN.toCharArray()), 2)) {
 

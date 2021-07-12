@@ -135,7 +135,7 @@ public class XAdESLevelBWithPolicyWithTransformsAndPolicyStoreTest extends Abstr
 
 		assertTrue(signature.isPolicyPresent());
 		assertTrue(signature.isPolicyIdentified());
-		assertTrue(signature.isPolicyStatus());
+		assertTrue(signature.isPolicyDigestValid());
 		assertTrue(signature.isPolicyDigestAlgorithmsEqual());
 
 		assertEquals(SIGNATURE_POLICY_ID, signature.getPolicyId());

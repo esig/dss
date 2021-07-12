@@ -69,7 +69,7 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 			return baos.toByteArray();
 			
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("An error occurred while building an Identifier : %s", e.getMessage()), e);
 		}
 	}
 	

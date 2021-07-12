@@ -51,12 +51,9 @@ public class DigestCryptographicChecker extends AbstractCryptographicChecker {
 	@Override
 	protected void initChain() {
 		
-		// Check if there are any expiration dates
-		boolean expirationCheckRequired = isExpirationDateAvailable();
-		
 		ChainItem<XmlCC> item = firstItem = digestAlgorithmReliable();
 		
-		if (expirationCheckRequired) {
+		if (isExpirationDateAvailable(digestAlgorithm)) {
 			item = item.setNextItem(digestAlgorithmOnValidationTime());
 		}
 		

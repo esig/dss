@@ -25,25 +25,45 @@ package eu.europa.esig.dss.pdf;
  */
 public final class PAdESConstants {
 
+	/** Signature type 'Sig' */
 	public static final String SIGNATURE_TYPE = "Sig";
+	/** Filter 'Adobe.PPKLite' */
 	public static final String SIGNATURE_DEFAULT_FILTER = "Adobe.PPKLite";
+	/** SubFilter 'ETSI.CAdES.detached' */
 	public static final String SIGNATURE_DEFAULT_SUBFILTER = "ETSI.CAdES.detached";
+	/** SubFilter 'adbe.pkcs7.detached' */
 	public static final String SIGNATURE_PKCS7_SUBFILTER = "adbe.pkcs7.detached";
+	/** SubFilter 'adbe.pkcs7.sha1' */
+	public static final String SIGNATURE_PKCS7_SHA1_SUBFILTER = "adbe.pkcs7.sha1";
 
+	/** Signature typ 'DocTimeStamp' */
 	public static final String TIMESTAMP_TYPE = "DocTimeStamp";
+	/** Filter 'Adobe.PPKLite' */
 	public static final String TIMESTAMP_DEFAULT_FILTER = "Adobe.PPKLite";
+	/** SubFilter 'ETSI.RFC3161' */
 	public static final String TIMESTAMP_DEFAULT_SUBFILTER = "ETSI.RFC3161";
 
+	/** 'DSS' */
 	public static final String DSS_DICTIONARY_NAME = "DSS";
+	/** 'Certs' */
 	public static final String CERT_ARRAY_NAME_DSS = "Certs";
+	/** 'OCSPs' */
 	public static final String OCSP_ARRAY_NAME_DSS = "OCSPs";
+	/** 'CRLs' */
 	public static final String CRL_ARRAY_NAME_DSS = "CRLs";
 
+	/** 'VRI' */
 	public static final String VRI_DICTIONARY_NAME = "VRI";
+	/** 'Cert' */
 	public static final String CERT_ARRAY_NAME_VRI = "Cert";
+	/** 'OCSP' */
 	public static final String OCSP_ARRAY_NAME_VRI = "OCSP";
+	/** 'CRL' */
 	public static final String CRL_ARRAY_NAME_VRI = "CRL";
 
+	/**
+	 * Utils class
+	 */
 	private PAdESConstants() {
 	}
 

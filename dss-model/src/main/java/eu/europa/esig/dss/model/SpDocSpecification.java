@@ -30,6 +30,8 @@ import java.io.Serializable;
  */
 public class SpDocSpecification implements Serializable {
 
+	private static final long serialVersionUID = -6362851298965394823L;
+
 	/** The OID, e.g. OID : 2.2.25.1 */
 	private String id;
 	

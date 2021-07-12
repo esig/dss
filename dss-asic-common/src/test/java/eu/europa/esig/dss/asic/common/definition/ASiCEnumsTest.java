@@ -20,29 +20,28 @@
  */
 package eu.europa.esig.dss.asic.common.definition;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.InputStream;
-
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.asic.manifest.ASiCManifestUtils;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSAttribute;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.xades.XAdESUtils;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.InputStream;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEnumsTest {
 
 	public static final DSSNamespace XSD_NS = new DSSNamespace("http://www.w3.org/2001/XMLSchema", "xsd");
 
 	@Test
-	public void getAllEments() throws Exception {
+	public void getAllElements() throws Exception {
 		DomUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(ASiCManifestUtils.ASIC_MANIFEST)) {

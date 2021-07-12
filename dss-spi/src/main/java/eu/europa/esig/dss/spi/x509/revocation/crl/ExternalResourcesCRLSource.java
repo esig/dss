@@ -20,23 +20,24 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import java.io.InputStream;
-
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.InputStream;
+
 /**
- * This class allows to provide a CRL source based on the list of external CRL(s);
+ * This class allows to provide a CRL source based on the list of external CRL(s).
+ *
  */
 public class ExternalResourcesCRLSource extends OfflineCRLSource {
 
 	private static final long serialVersionUID = -985602836642741439L;
 
 	/**
-	 * This constructor allows to build a CRL source from a list of
-	 * resource paths.
+	 * This constructor allows building of a CRL source from an array of resource paths.
 	 *
 	 * @param paths
 	 *            paths to be loaded as CRL
@@ -48,15 +49,26 @@ public class ExternalResourcesCRLSource extends OfflineCRLSource {
 	}
 
 	/**
-	 * This constructor allows to build a CRL source from a list of
-	 * <code>InputStream</code>.
+	 * This constructor allows building of a CRL source from an array of <code>InputStream</code>s.
 	 *
 	 * @param inputStreams
-	 *            the list of <code>InputStream</code> to be loaded as CRL
+	 *            an array of <code>InputStream</code>s to be loaded as CRL
 	 */
 	public ExternalResourcesCRLSource(final InputStream... inputStreams) {
 		for (final InputStream inputStream : inputStreams) {
 			addCRLToken(inputStream);
+		}
+	}
+
+	/**
+	 * This constructor allows building of a CRL source from an array of <code>DSSDocument</code>s.
+	 *
+	 * @param dssDocuments
+	 *            an array of <code>DSSDocument</code>s to be loaded as CRL
+	 */
+	public ExternalResourcesCRLSource(final DSSDocument... dssDocuments) {
+		for (final DSSDocument document : dssDocuments) {
+			addCRLToken(document.openStream());
 		}
 	}
 

@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -120,7 +120,7 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
         
         for (DSSDocument archiveManifest : result.getArchiveManifestDocuments()) {
         	if ("META-INF/ASiCArchiveManifest.xml".equals(archiveManifest.getName())) {
-        		ManifestFile manifestFile = ASiCEWithCAdESManifestParser.getManifestFile(archiveManifest);
+        		ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
         		assertEquals(7, manifestFile.getEntries().size());
         		ManifestEntry rootFile = manifestFile.getRootFile();
         		assertNotNull(rootFile);
@@ -164,7 +164,7 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
 	private ManifestFile getManifestFileByName(String manifestName, List<DSSDocument> manifestList) {
 		for (DSSDocument manifest : manifestList) {
 			if (manifestName.equals(manifest.getName())) {
-				return ASiCEWithCAdESManifestParser.getManifestFile(manifest);
+				return ASiCWithCAdESManifestParser.getManifestFile(manifest);
 			}
 		}
 		return null;

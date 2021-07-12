@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.model.x509.revocation;
 
+/**
+ * This interface represents a revocation data
+ *
+ */
 public interface Revocation {
 
 }

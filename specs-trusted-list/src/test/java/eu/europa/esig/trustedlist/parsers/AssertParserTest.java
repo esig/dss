@@ -20,29 +20,34 @@
  */
 package eu.europa.esig.trustedlist.parsers;
 
+import eu.europa.esig.trustedlist.enums.Assert;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.trustedlist.enums.Assert;
-
 public class AssertParserTest {
 
-	@Test
-	public void testEnum() {
-		for (Assert a : Assert.values()) {
-			String string = AssertParser.print(a);
-			assertNotNull(string);
-			Assert parse = AssertParser.parse(string);
-			assertEquals(a, parse);
-		}
-	}
+    @Test
+    void testEnum() {
+        for (Assert a : Assert.values()) {
+            String string = AssertParser.print(a);
+            assertNotNull(string);
+            Assert parse = AssertParser.parse(string);
+            assertEquals(a, parse);
+        }
+    }
 
-	@Test
-	public void parseUnknown() {
-		assertNull(AssertParser.parse("bla"));
-	}
+    @Test
+    void parseUnknown() {
+        assertNull(AssertParser.parse("bla"));
+    }
+
+    @Test
+    void nullValues() {
+        assertNull(AssertParser.parse(null));
+        assertNull(AssertParser.print(null));
+    }
 
 }

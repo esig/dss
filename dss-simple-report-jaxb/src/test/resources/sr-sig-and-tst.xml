@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<SimpleReport ValidationTime="2019-12-17T10:12:32" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+<SimpleReport ValidationTime="2019-12-17T10:12:32Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
     <ValidationPolicy>
         <PolicyName>QES AdESQC TL based</PolicyName>
         <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
@@ -29,12 +29,16 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>TRY_LATER</SubIndication>
-        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
-        <Errors>The result of the LTV validation process is not acceptable to continue the process!</Errors>
-        <Errors>No acceptable revocation data for the certificate!</Errors>
-        <Warnings>The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
-        <SigningTime>2019-12-17T10:12:31</SigningTime>
-        <BestSignatureTime>2019-12-17T10:12:32</BestSignatureTime>
+        <AdESValidationDetails>
+            <Error>The result of the LTV validation process is not acceptable to continue the process!</Error>
+            <Error>No acceptable revocation data for the certificate!</Error>
+        </AdESValidationDetails>
+        <QualificationDetails>
+            <Error>Unable to build a certificate chain until a trusted list!</Error>
+            <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
+        </QualificationDetails>
+        <SigningTime>2019-12-17T10:12:31Z</SigningTime>
+        <BestSignatureTime>2019-12-17T10:12:32Z</BestSignatureTime>
         <SignedBy>good-user</SignedBy>
         <SignatureLevel description="Not applicable">N/A</SignatureLevel>
         <SignatureScope name="META-INF/ASiCManifest1.xml" scope="FULL">Manifest document</SignatureScope>
@@ -58,12 +62,16 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>TRY_LATER</SubIndication>
-        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
-        <Errors>The result of the LTV validation process is not acceptable to continue the process!</Errors>
-        <Errors>No acceptable revocation data for the certificate!</Errors>
-        <Warnings>The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
-        <SigningTime>2019-12-17T10:12:31</SigningTime>
-        <BestSignatureTime>2019-12-17T10:12:32</BestSignatureTime>
+        <AdESValidationDetails>
+            <Error>The result of the LTV validation process is not acceptable to continue the process!</Error>
+            <Error>No acceptable revocation data for the certificate!</Error>
+        </AdESValidationDetails>
+        <QualificationDetails>
+            <Error>Unable to build a certificate chain until a trusted list!</Error>
+            <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
+        </QualificationDetails>
+        <SigningTime>2019-12-17T10:12:31Z</SigningTime>
+        <BestSignatureTime>2019-12-17T10:12:32Z</BestSignatureTime>
         <SignedBy>good-user</SignedBy>
         <SignatureLevel description="Not applicable">N/A</SignatureLevel>
         <SignatureScope name="META-INF/ASiCManifest3.xml" scope="FULL">Manifest document</SignatureScope>
@@ -82,7 +90,7 @@
             </Certificate>
         </CertificateChain>
         <Indication>PASSED</Indication>
-        <ProductionTime>2019-12-17T10:12:31</ProductionTime>
+        <ProductionTime>2019-12-17T10:12:31Z</ProductionTime>
         <ProducedBy>ee-good-tsa</ProducedBy>
         <TimestampLevel description="Not applicable">N/A</TimestampLevel>
     </Timestamp>
@@ -99,7 +107,7 @@
             </Certificate>
         </CertificateChain>
         <Indication>PASSED</Indication>
-        <ProductionTime>2019-12-17T10:12:30</ProductionTime>
+        <ProductionTime>2019-12-17T10:12:30Z</ProductionTime>
         <ProducedBy>ee-good-tsa</ProducedBy>
         <TimestampLevel description="Not applicable">N/A</TimestampLevel>
     </Timestamp>

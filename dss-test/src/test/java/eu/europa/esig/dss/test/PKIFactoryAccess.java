@@ -32,12 +32,15 @@ import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
+import eu.europa.esig.dss.service.x509.aia.JdbcCacheAIASource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
@@ -121,6 +124,7 @@ public abstract class PKIFactoryAccess {
 	protected static final String GOOD_USER_WITH_PEM_CRL = "good-user-pem-crl";
 	protected static final String REVOKED_USER = "revoked-user";
 	protected static final String EXPIRED_USER = "expired-user";
+	protected static final String NOT_YET_VALID_USER = "not-yet-valid-user";
 	protected static final String DSA_USER = "good-dsa-user";
 	protected static final String ECDSA_USER = "good-ecdsa-user";
 	protected static final String RSA_SHA3_USER = "sha3-good-user";
@@ -144,7 +148,7 @@ public abstract class PKIFactoryAccess {
 
 	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier cv = new CommonCertificateVerifier();
-		cv.setDataLoader(getFileCacheDataLoader());
+		cv.setAIASource(cacheAIASource());
 		cv.setCrlSource(cacheCRLSource());
 		cv.setOcspSource(cacheOCSPSource());
 		cv.setTrustedCertSources(getTrustedCertificateSource());
@@ -153,7 +157,7 @@ public abstract class PKIFactoryAccess {
 	
 	protected CertificateVerifier getCertificateVerifierWithoutTrustSources() {
 		CertificateVerifier cv = new CommonCertificateVerifier();
-		cv.setDataLoader(getFileCacheDataLoader());
+		cv.setAIASource(cacheAIASource());
 		cv.setCrlSource(cacheCRLSource());
 		cv.setOcspSource(cacheOCSPSource());
 		return cv;
@@ -161,16 +165,36 @@ public abstract class PKIFactoryAccess {
 
 	protected CertificateVerifier getOfflineCertificateVerifier() {
 		CertificateVerifier cv = new CommonCertificateVerifier();
-		cv.setDataLoader(new IgnoreDataLoader());
+		cv.setAIASource(null);
 		cv.setTrustedCertSources(getTrustedCertificateSource());
 		return cv;
+	}
+
+	private AIASource cacheAIASource() {
+		JdbcCacheAIASource cacheAIASource = new JdbcCacheAIASource();
+		cacheAIASource.setProxySource(onlineAIASource());
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		cacheAIASource.setJdbcCacheConnector(jdbcCacheConnector);
+		try {
+			cacheAIASource.initTable();
+		} catch (SQLException e) {
+			throw new DSSException("Cannot initialize table for AIA certificate source.", e);
+		}
+		return cacheAIASource;
+	}
+
+	private DefaultAIASource onlineAIASource() {
+		DefaultAIASource aiaSource = new DefaultAIASource();
+		aiaSource.setDataLoader(getFileCacheDataLoader());
+		return aiaSource;
 	}
 	
 	private JdbcCacheCRLSource cacheCRLSource() {
 		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
 		cacheCRLSource.setProxySource(onlineCrlSource());
-		cacheCRLSource.setDataSource(dataSource);
-		cacheCRLSource.setDefaultNextUpdateDelay(3 * 24 * 60 * 60l); // 3 days
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		cacheCRLSource.setJdbcCacheConnector(jdbcCacheConnector);
+		cacheCRLSource.setDefaultNextUpdateDelay(3 * 24 * 60 * 60L); // 3 days
 		try {
 			cacheCRLSource.initTable();
 		} catch (SQLException e) {
@@ -188,8 +212,9 @@ public abstract class PKIFactoryAccess {
 	private JdbcCacheOCSPSource cacheOCSPSource() {
 		JdbcCacheOCSPSource cacheOCSPSource = new JdbcCacheOCSPSource();
 		cacheOCSPSource.setProxySource(onlineOcspSource());
-		cacheOCSPSource.setDataSource(dataSource);
-		cacheOCSPSource.setDefaultNextUpdateDelay(3 * 60l); // 3 minutes
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		cacheOCSPSource.setJdbcCacheConnector(jdbcCacheConnector);
+		cacheOCSPSource.setDefaultNextUpdateDelay(3 * 60L); // 3 minutes
 		try {
 			cacheOCSPSource.initTable();
 		} catch (SQLException e) {
@@ -249,7 +274,7 @@ public abstract class PKIFactoryAccess {
 		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent("belgium.jks")), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
 	}
 	
-	private DataLoader getFileCacheDataLoader() {
+	protected DataLoader getFileCacheDataLoader() {
 		FileCacheDataLoader cacheDataLoader = new FileCacheDataLoader();
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setProxyConfig(getProxyConfig());

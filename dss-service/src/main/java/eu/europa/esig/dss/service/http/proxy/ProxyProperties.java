@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.service.http.proxy;
 
+import java.io.Serializable;
+
 /**
  * This class is a DTO which contains proxy properties for HTTP or HTTPS
  * 
  */
-public class ProxyProperties {
+public class ProxyProperties implements Serializable {
+
+	private static final long serialVersionUID = 1570253159682776873L;
 
 	/** The host to use */
 	private String host;
@@ -114,7 +118,7 @@ public class ProxyProperties {
 	}
 
 	/**
-	 * Returns the excluded hosts (can be seperated by ',', ';' or ' ')
+	 * Returns the excluded hosts (can be separated by ',', ';' or ' ')
 	 * 
 	 * @return the excluded hosts
 	 */
@@ -123,10 +127,10 @@ public class ProxyProperties {
 	}
 
 	/**
-	 * Set the excluded hosts (can be seperated by ',', ';' or ' ')
+	 * Set the excluded hosts (can be separated by ',', ';' or ' ')
 	 * 
 	 * @param excludedHosts
-	 *            the excluded hosts (can be seperated by ',', ';' or ' ')
+	 *            the excluded hosts (can be separated by ',', ';' or ' ')
 	 */
 	public void setExcludedHosts(String excludedHosts) {
 		this.excludedHosts = excludedHosts;

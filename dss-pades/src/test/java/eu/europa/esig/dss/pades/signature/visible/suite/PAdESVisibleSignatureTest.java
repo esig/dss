@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.awt.Color;
-import java.io.IOException;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
@@ -53,6 +44,14 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.awt.Color;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 
@@ -133,7 +132,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedImageOnlyPngUnZoom() throws IOException {
+	public void testGeneratedImageOnlyPngAndZoom() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
 
@@ -208,6 +207,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
 		textParameters.setText(signature);
+		textParameters.setBackgroundColor(Color.PINK);
 		imageParams.setTextParameters(textParameters);
 
 		signatureParameters.setImageParameters(imageParams);
@@ -215,7 +215,31 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		signAndValidate();
 	}
 
-	private void signAndValidate() throws IOException {
+	@Test
+	public void textOnBottomTest() throws IOException {
+		String signature = "Signature 1\nSignature 12345";
+
+		SignatureImageParameters imageParams = new SignatureImageParameters();
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		fieldParameters.setHeight(100);
+		imageParams.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
+		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.RIGHT);
+		textParameters.setBackgroundColor(Color.PINK);
+		textParameters.setPadding(10);
+		textParameters.setText(signature);
+		imageParams.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParams);
+
+		signAndValidate();
+	}
+
+	private void signAndValidate() {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
 				getPrivateKeyEntry());

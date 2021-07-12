@@ -20,10 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.BeforeEach;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -33,6 +30,11 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PAdESLevelBWithDSATest extends AbstractPAdESTestSignature {
 
@@ -56,6 +58,12 @@ public class PAdESLevelBWithDSATest extends AbstractPAdESTestSignature {
 		signatureParameters.setContactInfo("Jira");
 
 		service = new PAdESService(getOfflineCertificateVerifier());
+	}
+
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		// commitment-type-indication and Reason cannot be present together
+		assertEquals(SignatureLevel.PDF_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override

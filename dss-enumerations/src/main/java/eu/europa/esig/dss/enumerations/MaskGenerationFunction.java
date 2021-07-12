@@ -25,6 +25,28 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum MaskGenerationFunction {
 
-	MGF1;
+	/** Mask Generation Function 1 */
+	MGF1("MGF1");
+
+	/** Name of the Mask Generation Function */
+	private final String name;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String}
+	 */
+	MaskGenerationFunction(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Returns name of the MaskGenerationFunction
+	 *
+	 * @return {@link String} name
+	 */
+	public String getName() {
+		return name;
+	}
 
 }

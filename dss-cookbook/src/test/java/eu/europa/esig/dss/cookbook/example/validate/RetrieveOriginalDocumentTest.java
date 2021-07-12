@@ -20,26 +20,33 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.IOException;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RetrieveOriginalDocumentTest {
+
+	@TempDir
+	static Path targetFolder;
 
 	@Test
 	public void getOriginalDocument() throws IOException {
 
-		// tag::demo[]
+		Path path = targetFolder.resolve("original.xml");
+		String targetPath = path.toString();
 
+		// tag::demo[]
 		// We have our signed document, we want to retrieve the original/signed data
 		DSSDocument signedDocument = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 
@@ -62,10 +69,12 @@ public class RetrieveOriginalDocumentTest {
 		// We can have one or more original documents depending of the signature (ASiC, PDF,...)
 		DSSDocument original = originalDocuments.get(0);
 
-		original.save("target/original.xml");
+		// Save the extracted original document if needed
+		original.save(targetPath);
 		// end::demo[]
 		
 		assertNotNull(original);
+		assertTrue(path.toFile().exists());
 
 	}
 

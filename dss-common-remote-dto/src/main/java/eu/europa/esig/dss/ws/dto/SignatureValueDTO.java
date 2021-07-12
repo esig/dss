@@ -51,7 +51,7 @@ public class SignatureValueDTO implements Serializable {
 	/**
 	 * The default constructor
 	 *
-	 * @param algorithm {@link SignatureAlgorithm} used to compute the SingatureValue
+	 * @param algorithm {@link SignatureAlgorithm} used to compute the SignatureValue
 	 * @param value the SignatureValue binaries
 	 */
 	public SignatureValueDTO(SignatureAlgorithm algorithm, byte[] value) {

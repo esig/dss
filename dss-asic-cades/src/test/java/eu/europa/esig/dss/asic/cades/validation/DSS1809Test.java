@@ -20,25 +20,31 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 	
@@ -129,6 +135,33 @@ public class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 		}
 		
 		return counter;
+	}
+
+	@Override
+	protected void checkCertificateChain(DiagnosticData diagnosticData) {
+		super.checkCertificateChain(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertCertificateChainWithinFoundCertificates(signatureWrapper.getCertificateChain(), signatureWrapper.foundCertificates());
+		}
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			assertCertificateChainWithinFoundCertificates(timestampWrapper.getCertificateChain(), timestampWrapper.foundCertificates());
+		}
+		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
+			if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
+				assertCertificateChainWithinFoundCertificates(revocationWrapper.getCertificateChain(), revocationWrapper.foundCertificates());
+			}
+		}
+	}
+
+	private void assertCertificateChainWithinFoundCertificates(List<CertificateWrapper> certChain, FoundCertificatesProxy foundCertificates) {
+		Set<String> certIds = foundCertificates.getRelatedCertificates().stream().map(c -> c.getId()).collect(Collectors.toSet());
+		for (CertificateWrapper certificateWrapper : certChain) {
+			if (certificateWrapper.isTrusted()) {
+				break;
+			}
+			assertTrue(certIds.contains(certificateWrapper.getId()));
+		}
 	}
 
 }

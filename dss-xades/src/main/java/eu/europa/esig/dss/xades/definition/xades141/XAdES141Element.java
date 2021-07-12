@@ -55,9 +55,17 @@ public enum XAdES141Element implements DSSElement {
 
 	TIMESTAMP_VALIDATION_DATA("TimeStampValidationData");
 
+	/** Namespace */
 	private final DSSNamespace namespace;
+
+	/** The tag name */
 	private final String tagName;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param tagName {@link String}
+	 */
 	XAdES141Element(String tagName) {
 		this.tagName = tagName;
 		this.namespace = XAdESNamespaces.XADES_141;

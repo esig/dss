@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pades.validation.timestamp;
 import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampDataBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
@@ -33,18 +32,35 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Builds a message-imprint for a PAdES timestamps
+ */
 public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
-	
+
+	/** A list of PDF revisions */
 	private final List<PdfRevision> documentRevisions;
-	
+
+	/** A list of signature timestamps */
 	private List<TimestampToken> signatureTimestamps = new ArrayList<>();
 
+	/**
+	 * Default constructor
+	 *
+	 * @param documentRevisions a list of {@link PdfRevision}s
+	 * @param signature {@link PAdESSignature}
+	 * @param certificateSource {@link ListCertificateSource}
+	 */
 	public PAdESTimestampDataBuilder(final List<PdfRevision> documentRevisions, final PAdESSignature signature,
 									 final ListCertificateSource certificateSource) {
 		super(signature, certificateSource);
 		this.documentRevisions = documentRevisions;
 	}
-	
+
+	/**
+	 * Sets the extracted list of signature timestamps
+	 *
+	 * @param signatureTimestamps a list of {@link TimestampToken}s
+	 */
 	public void setSignatureTimestamps(List<TimestampToken> signatureTimestamps) {
 		this.signatureTimestamps = signatureTimestamps;
 	}
@@ -82,13 +98,12 @@ public class PAdESTimestampDataBuilder extends CAdESTimestampDataBuilder {
 		throw new DSSException("Timestamp Data not found");
 	}
 
-	private DSSDocument getSignedDataInPDFRevisions(final TimestampToken timestampToken) {
+	private final DSSDocument getSignedDataInPDFRevisions(final TimestampToken timestampToken) {
 		for (final PdfRevision signatureInfo : documentRevisions) {
 			if (signatureInfo instanceof PdfDocTimestampRevision) {
 				PdfDocTimestampRevision pdfTimestampInfo = (PdfDocTimestampRevision) signatureInfo;
 				if (pdfTimestampInfo.getTimestampToken().equals(timestampToken)) {
-					final byte[] signedDocumentBytes = pdfTimestampInfo.getRevisionCoveredBytes();
-					return new InMemoryDocument(signedDocumentBytes);
+					return pdfTimestampInfo.getSignedData();
 				}
 			}
 		}

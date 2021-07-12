@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.TrustProperties;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This class represents the simple list of trusted certificates.
@@ -34,6 +34,9 @@ import eu.europa.esig.dss.spi.tsl.TrustProperties;
 @SuppressWarnings("serial")
 public class CommonTrustedCertificateSource extends CommonCertificateSource {
 
+	/**
+	 * Default constructor
+	 */
 	public CommonTrustedCertificateSource() {
 	}
 
@@ -56,14 +59,32 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 		}
 	}
 
+	/**
+	 * Returns TrustProperties for the given certificate
+	 *
+	 * @param token {@link CertificateToken}
+	 * @return a list of {@link TrustProperties}
+	 */
 	public List<TrustProperties> getTrustServices(CertificateToken token) {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns a list of alternative OCSP access point Urls for the certificate token
+	 *
+	 * @param trustAnchor {@link CertificateToken}
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns a list of alternative CRL access point Urls for the certificate token
+	 *
+	 * @param trustAnchor {@link CertificateToken}
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getAlternativeCRLUrls(CertificateToken trustAnchor) {
 		return Collections.emptyList();
 	}

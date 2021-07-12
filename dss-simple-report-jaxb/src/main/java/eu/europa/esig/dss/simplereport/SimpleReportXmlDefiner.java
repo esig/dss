@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.simplereport;
 
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
 import eu.europa.esig.dss.simplereport.jaxb.ObjectFactory;
 import org.xml.sax.SAXException;
 
@@ -43,9 +43,6 @@ public final class SimpleReportXmlDefiner {
 
 	/** The XSD Simple Report schema */
 	private static final String SIMPLE_REPORT_SCHEMA_LOCATION = "/xsd/SimpleReport.xsd";
-
-	/** The XSLT for Bootstrap 3 HTML generation path */
-	private static final String SIMPLE_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION = "/xslt/html/simple-report.xslt";
 
 	/** The XSLT for Bootstrap 4 HTML generation path */
 	private static final String SIMPLE_REPORT_XSLT_HTML_BOOTSTRAP4_LOCATION = "/xslt/html/simple-report-bootstrap4.xslt";
@@ -72,13 +69,6 @@ public final class SimpleReportXmlDefiner {
 	 * NOTE: Thread-safe
 	 */
 	private static Schema schema;
-
-	/**
-	 * Cached Bootstrap 3 Template
-	 *
-	 * NOTE: Thread-safe
-	 */
-	private static Templates htmlBootstrap3Templates;
 
 	/**
 	 * Cached Bootstrap 4 Template
@@ -122,20 +112,6 @@ public final class SimpleReportXmlDefiner {
 			}
 		}
 		return schema;
-	}
-
-	/**
-	 * Gets the HTML Bootstrap 3 template
-	 *
-	 * @return {@link Templates}
-	 * @throws TransformerConfigurationException if TransformerConfigurationException occurs
-	 * @throws IOException if IOException occurs
-	 */
-	public static Templates getHtmlBootstrap3Templates() throws TransformerConfigurationException, IOException {
-		if (htmlBootstrap3Templates == null) {
-			htmlBootstrap3Templates = loadTemplates(SIMPLE_REPORT_XSLT_HTML_BOOTSTRAP3_LOCATION);
-		}
-		return htmlBootstrap3Templates;
 	}
 
 	/**

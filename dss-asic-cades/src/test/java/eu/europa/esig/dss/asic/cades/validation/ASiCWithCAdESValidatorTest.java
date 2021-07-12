@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ASiCWithCAdESValidatorTest extends AbstractTestValidator {
 
@@ -47,6 +47,7 @@ public class ASiCWithCAdESValidatorTest extends AbstractTestValidator {
 		documents.add(new FileDocument("src/test/resources/validation/onefile-ok.asics"));
 		documents.add(new FileDocument("src/test/resources/validation/multifiles-ok.asice"));
 		documents.add(new FileDocument("src/test/resources/validation/multifiles-ok.asics"));
+		documents.add(new FileDocument("src/test/resources/signable/asic_cades.zip"));
 		return documents;
 	}
 

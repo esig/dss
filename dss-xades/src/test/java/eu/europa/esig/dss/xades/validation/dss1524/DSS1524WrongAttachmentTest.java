@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.dss1524;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -39,6 +32,14 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class DSS1524WrongAttachmentTest extends AbstractXAdESTestValidation {
 
 	@Override
@@ -48,7 +49,7 @@ public class DSS1524WrongAttachmentTest extends AbstractXAdESTestValidation {
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		return Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 }));
+		return Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }));
 	}
 	
 	@Override
@@ -94,8 +95,8 @@ public class DSS1524WrongAttachmentTest extends AbstractXAdESTestValidation {
 	}
 	
 	@Override
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
-		assertTrue(Utils.isCollectionEmpty(signersDocuments));
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		assertNull(signersDocument);
 	}
 
 }

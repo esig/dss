@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>test.txt.p7m</DocumentName>
-    <ValidationDate>2020-01-20T09:15:09</ValidationDate>
+    <ValidationDate>2020-01-20T09:15:09Z</ValidationDate>
     <Signatures>
         <Signature Id="S-04689D2C3F4072A37EAE543BEEFCEF5FF69601FDA5E09C2F94C0151C7FD174D6">
             <SignatureFilename>test.txt.p7m</SignatureFilename>
-            <ClaimedSigningTime>2020-01-15T08:30:31</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-01-15T08:30:31Z</ClaimedSigningTime>
             <SignatureFormat>CAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -89,8 +89,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-04-13T08:19:19</NotAfter>
-            <NotBefore>2018-04-13T08:19:19</NotBefore>
+            <NotAfter>2021-04-13T08:19:19Z</NotAfter>
+            <NotBefore>2018-04-13T08:19:19Z</NotBefore>
             <PublicKeySize>2047</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-60F66EA5C47E1702AFB04D725B93EC06875CAC7A35E86A6A934F7429B408061A</EntityKey>
@@ -123,17 +123,15 @@
                 <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
                 <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid>1.3.6.1.5.5.7.11.2</qcStatementOid>
-                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-                <qcStatementOid Description="qc-retention-period">0.4.0.1862.1.3</qcStatementOid>
-                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes>
-                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
-            </QCTypes>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
+                <QcSSCD present="true"/>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+            </QcStatements>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-4E731CCB0E0120CD6B81A52EF384C00C1BF2B3EBC8B7BC614A3DE974C27A4CE0">
@@ -162,8 +160,8 @@
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2023-01-18T17:31:30</NotAfter>
-            <NotBefore>2018-01-18T17:31:30</NotBefore>
+            <NotAfter>2023-01-18T17:31:30Z</NotAfter>
+            <NotBefore>2018-01-18T17:31:30Z</NotBefore>
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-20DC19C0672DC61CA86B8FD5A5609A4F05BA035459F8B583769FD81313C9D8BF</EntityKey>
@@ -191,8 +189,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="https://repository.infonotary.com/cps/qualified-tsp.html">1.3.6.1.4.1.22144.3.4.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-6DBDFC408C2B2F432F5C5AEA99D5CB1754A9F701B5ECDF3EA56E76F22E0D42B5">
@@ -226,8 +222,8 @@
                 <Source>TRUSTED_LIST</Source>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2036-06-29T15:24:06</NotAfter>
-            <NotBefore>2017-06-29T15:24:06</NotBefore>
+            <NotAfter>2036-06-29T15:24:06Z</NotAfter>
+            <NotBefore>2017-06-29T15:24:06Z</NotBefore>
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A4527BA3CDB627494FAC2F58069B37969A3219CF9154B324314A5C97701BDFBF</EntityKey>
@@ -250,8 +246,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://repository.infonotary.com/cps/qualified-tsp.html">1.3.6.1.4.1.22144.3.4</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -281,8 +275,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2036-06-29T15:14:32</NotAfter>
-            <NotBefore>2017-06-29T15:14:32</NotBefore>
+            <NotAfter>2036-06-29T15:14:32Z</NotAfter>
+            <NotBefore>2017-06-29T15:14:32Z</NotBefore>
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E553ABEF3B850A05B03483810421CEF77EF4CD3CADE3D10C23FAC36ADC0B4A6E</EntityKey>
@@ -305,8 +299,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://repository.infonotary.com/cps/qualified-tsp.html">1.3.6.1.4.1.22144.3.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -319,9 +311,9 @@
         <Revocation Id="R-4E731CCB0E0120CD6B81A52EF384C00C1BF2B3EBC8B7BC614A3DE974C27A4CE0">
             <Origin>CACHED</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2020-01-20T08:00:05</ProductionDate>
-            <ThisUpdate>2020-01-20T08:00:05</ThisUpdate>
-            <NextUpdate>2020-01-21T08:00:05</NextUpdate>
+            <ProductionDate>2020-01-20T08:00:05Z</ProductionDate>
+            <ThisUpdate>2020-01-20T08:00:05Z</ThisUpdate>
+            <NextUpdate>2020-01-21T08:00:05Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -343,9 +335,9 @@
         <Revocation Id="R-6DBDFC408C2B2F432F5C5AEA99D5CB1754A9F701B5ECDF3EA56E76F22E0D42B5">
             <Origin>CACHED</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2019-07-18T09:00:52</ProductionDate>
-            <ThisUpdate>2019-07-18T09:00:52</ThisUpdate>
-            <NextUpdate>2020-07-17T09:00:53</NextUpdate>
+            <ProductionDate>2019-07-18T09:00:52Z</ProductionDate>
+            <ThisUpdate>2019-07-18T09:00:52Z</ThisUpdate>
+            <NextUpdate>2020-07-17T09:00:53Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -367,7 +359,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-19D95052DDD8A5580C379E90DFACEEE232354BC6EF5828510EFE3D66DB2E8200">
-            <ProductionTime>2020-01-15T08:30:38</ProductionTime>
+            <ProductionTime>2020-01-15T08:30:38Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>ddtSs/eM14YjdcbDVoNrYZIYCjxdq7mtslFaJ8CruGY=</DigestValue>
@@ -399,7 +391,7 @@
             </DigestAlgoAndValue>
         </Timestamp>
         <Timestamp Type="CONTENT_TIMESTAMP" Id="T-ED94C69E8053A9193C00BE54501B33468FDB7B0AD59AC03E6E92247B4214973C">
-            <ProductionTime>2020-01-15T08:30:31</ProductionTime>
+            <ProductionTime>2020-01-15T08:30:31Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>g3zLYH4xKxcPrHOD18z9YfpQcnk/GaJedfustWU5uGs=</DigestValue>

@@ -20,34 +20,71 @@
  */
 package eu.europa.esig.dss.model.x509;
 
-import javax.security.auth.x500.X500Principal;
-
 import eu.europa.esig.dss.enumerations.X520Attributes;
 
+import javax.security.auth.x500.X500Principal;
+
+/**
+ * This class contain utility methods to extract String representation of a {@code X500Principal} distinguishing name
+ *
+ */
 public class X500PrincipalHelper {
 
+	/**
+	 * X500Principal to be processed
+	 */
 	private final X500Principal principal;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param principal {@link X500Principal}
+	 */
 	public X500PrincipalHelper(X500Principal principal) {
 		this.principal = principal;
 	}
 
+	/**
+	 * Returns the current {@code X500Principal}
+	 *
+	 * @return {@link X500Principal}
+	 */
 	public X500Principal getPrincipal() {
 		return principal;
 	}
 
+	/**
+	 * Gets canonical name
+	 *
+	 * @return {@link String}
+	 */
 	public String getCanonical() {
 		return principal.getName(X500Principal.CANONICAL);
 	}
 
+	/**
+	 * Gets RFC2253 standard name
+	 *
+	 * @return {@link String}
+	 */
 	public String getRFC2253() {
 		return principal.getName(X500Principal.RFC2253);
 	}
 
+	/**
+	 * Gets pretty-printed RFC2253 standard name
+	 *
+	 * @return {@link String}
+	 */
 	public String getPrettyPrintRFC2253() {
 		return principal.getName(X500Principal.RFC2253, X520Attributes.getOidDescriptions());
 	}
 
+	/**
+	 * Gets encoded {@code X500Principal} object binaries
+	 *
+	 * @return byte array
+	 */
 	public byte[] getEncoded() {
 		return principal.getEncoded();
 	}

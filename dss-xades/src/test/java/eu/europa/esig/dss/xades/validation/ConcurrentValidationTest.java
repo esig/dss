@@ -20,7 +20,14 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +36,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test DSS with multi threads
@@ -54,8 +52,7 @@ public class ConcurrentValidationTest {
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		DataLoader dataLoader = new NativeHTTPDataLoader();
-		certificateVerifier.setDataLoader(dataLoader);
+		certificateVerifier.setAIASource(new DefaultAIASource());
 
 		List<Future<Boolean>> futures = new ArrayList<>();
 
@@ -74,7 +71,7 @@ public class ConcurrentValidationTest {
 		executor.shutdown();
 	}
 
-	class TestConcurrent implements Callable<Boolean> {
+	private static class TestConcurrent implements Callable<Boolean> {
 
 		private final CommonCertificateVerifier certificateVerifier;
 

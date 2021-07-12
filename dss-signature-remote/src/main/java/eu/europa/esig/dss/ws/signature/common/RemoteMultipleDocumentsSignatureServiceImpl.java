@@ -29,7 +29,6 @@ import eu.europa.esig.dss.enumerations.TimestampContainerForm;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -49,6 +48,10 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * WebService for multiple document signing
+ *
+ */
 @SuppressWarnings("serial")
 public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl
 		implements RemoteMultipleDocumentsSignatureService {
@@ -112,7 +115,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 				case CAdES:
 					return asicWithCAdESService;
 				default:
-					throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
+					throw new UnsupportedOperationException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 				}
 		} else {
 			switch (signatureForm) {
@@ -121,24 +124,23 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 				case JAdES:
 					return jadesService;
 				default:
-					throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC or XAdES) : " + signatureForm);
+					throw new UnsupportedOperationException("Unrecognized format " +
+							"(only XAdES and JAdES are allowed for multiple documents signing) : " + signatureForm);
 			}
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
 	private MultipleDocumentsSignatureService getServiceForTimestamp(TimestampContainerForm timestampContainerForm) {
-		if (timestampContainerForm != null) {
-			switch(timestampContainerForm) {
-				case ASiC_E:
-				case ASiC_S:
-					return asicWithCAdESService;
-				default:
-					throw new DSSException(String.format("The format is not recognized or not allowed "
-							+ "(only ASiC-E and ASiC-S are allowed for a multiple document timestamping)", timestampContainerForm.getReadable()));
-			}
-		} else {
-			throw new DSSException("The timestampContainerForm must be defined!");
+		Objects.requireNonNull(timestampContainerForm, "The timestampContainerForm must be defined!");
+		switch(timestampContainerForm) {
+			case ASiC_E:
+			case ASiC_S:
+				return asicWithCAdESService;
+			default:
+				throw new UnsupportedOperationException(String.format("The format '%s' is not recognized or not allowed "
+						+ "(only ASiC-E and ASiC-S are allowed for a multiple document timestamping)!",
+						timestampContainerForm.getReadable()));
 		}
 	}
 

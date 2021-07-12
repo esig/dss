@@ -29,6 +29,8 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
  */
 public class HTTPHeaderSignatureScope extends SignatureScope {
 
+	private static final long serialVersionUID = -8682422499573648984L;
+
 	/**
 	 * The default constructor
 	 *

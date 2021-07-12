@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -39,6 +33,11 @@ import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a Source of certificates embedded into an OCSP Token
@@ -57,7 +56,12 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 	 * certificate.
 	 */
 	private CandidatesForSigningCertificate candidatesForSigningCertificate;
-	
+
+	/**
+	 * Default constructor
+	 *
+	 * @param basicOCSPResp {@link BasicOCSPResp}
+	 */
 	public OCSPCertificateSource(final BasicOCSPResp basicOCSPResp) {
 		Objects.requireNonNull(basicOCSPResp, "BasicOCSPResp must be provided!");
 		this.basicOCSPResp = basicOCSPResp;

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -51,7 +51,7 @@ public class XAdESRevocationSourceUKTest extends AbstractXAdESTestValidation {
 		assertEquals(0, signature.foundRevocations().getOrphanRevocationData().size());
 		assertEquals(1, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS).size());
-		RevocationRefWrappper revocationRef = signature.foundRevocations().getRelatedRevocationData().get(0).getReferences().get(0);
+		RevocationRefWrapper revocationRef = signature.foundRevocations().getRelatedRevocationData().get(0).getReferences().get(0);
 		assertNotNull(revocationRef.getOrigins());
 		assertNotNull(revocationRef.getDigestAlgoAndValue());
 		assertNotNull(revocationRef.getProductionTime());

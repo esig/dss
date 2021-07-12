@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import org.junit.jupiter.api.RepeatedTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,9 +32,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.jupiter.api.RepeatedTest;
-
-import eu.europa.esig.dss.model.x509.CertificateToken;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CertificateSourceMultiThreadTest {
 
@@ -73,7 +72,7 @@ public class CertificateSourceMultiThreadTest {
 
 	}
 
-	class TestConcurrent implements Callable<Integer> {
+	private static class TestConcurrent implements Callable<Integer> {
 
 		private final CommonCertificateSource sharedCertSource;
 		private final List<CertificateToken> certificates;

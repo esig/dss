@@ -35,6 +35,8 @@ import java.io.InputStream;
  */
 public class DSSFileFont extends AbstractDSSFont {
 
+	private static final long serialVersionUID = -2631152291035404442L;
+
 	/** The default font name */
 	private static final String DEFAULT_FONT_NAME = "PTSerifRegular.ttf";
 

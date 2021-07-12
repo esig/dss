@@ -20,20 +20,23 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
+import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESInvalidDigestAlgorithmTest extends AbstractPAdESTestValidation {
 
@@ -93,4 +96,18 @@ public class PAdESInvalidDigestAlgorithmTest extends AbstractPAdESTestValidation
 		assertNotNull(signatureIdentifier.getSignatureValue());
 	}
 
+	@Override
+	protected void validateAssociatedValidationReportData(ValidationTimeInfoType validationTimeInfo,
+														  List<ValidationReportDataType> associatedValidationReportData) {
+		super.validateAssociatedValidationReportData(validationTimeInfo, associatedValidationReportData);
+
+		assertEquals(1, associatedValidationReportData.size());
+		ValidationReportDataType validationReport = associatedValidationReportData.get(0);
+		CryptoInformationType cryptoInformation = validationReport.getCryptoInformation();
+		assertNotNull(cryptoInformation);
+		assertNotNull(cryptoInformation.getValidationObjectId());
+		assertEquals("urn:etsi:019102:algorithm:unidentified", cryptoInformation.getAlgorithm());
+		assertNull(cryptoInformation.getNotAfter());
+		assertFalse(cryptoInformation.isSecureAlgorithm());
+	}
 }

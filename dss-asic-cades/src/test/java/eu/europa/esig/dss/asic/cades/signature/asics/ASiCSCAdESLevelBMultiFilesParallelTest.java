@@ -20,20 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -57,6 +43,19 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 
@@ -159,7 +158,7 @@ public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		XmlDigestAlgoAndValue digestAlgoAndValue = xmlSignatureScopeFirstDocument.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
 		DigestAlgorithm digestAlgorithm = digestAlgoAndValue.getDigestMethod();
-		assertTrue(Arrays.equals(Utils.fromBase64(firstDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue()));
+        assertArrayEquals(Utils.fromBase64(firstDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue());
 		
 		XmlSignatureScope xmlSignatureScopeSecondDocument = signatureScopes.get(2);
 		assertNotNull(xmlSignatureScopeSecondDocument.getName());
@@ -167,7 +166,7 @@ public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		digestAlgoAndValue = xmlSignatureScopeSecondDocument.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
 		digestAlgorithm = digestAlgoAndValue.getDigestMethod();
-		assertTrue(Arrays.equals(Utils.fromBase64(secondDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue()));
+		assertArrayEquals(Utils.fromBase64(secondDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue());
 		
 	}
 

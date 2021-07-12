@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -49,7 +50,7 @@ import java.util.List;
  * Provides an abstraction for an Advanced Electronic Signature. This ease the validation process. Every signature
  * format : XAdES, CAdES and PAdES are treated the same.
  */
-public interface AdvancedSignature extends Serializable {
+public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * This method returns the signature filename (useful for ASiC and multiple signature files)
@@ -397,10 +398,21 @@ public interface AdvancedSignature extends Serializable {
 	
 	/**
 	 * Returns a list of timestamps defined with the 'DocTimeStamp' type
+	 *
 	 * NOTE: applicable only for PAdES
+	 *
 	 * @return {@code List} of {@code TimestampToken}s
 	 */
 	List<TimestampToken> getDocumentTimestamps();
+
+	/**
+	 * Returns a list of detached timestamps
+	 *
+	 * NOTE: used for ASiC with CAdES only
+	 *
+	 * @return a list of {@link TimestampToken}s
+	 */
+	List<TimestampToken> getDetachedTimestamps();
 
 	/**
 	 * Returns a list of all timestamps found in the signature
@@ -411,6 +423,8 @@ public interface AdvancedSignature extends Serializable {
 
 	/**
 	 * This method allows to add an external timestamp. The given timestamp must be processed before.
+	 *
+	 * NOTE: The method is supported only for CAdES signatures
 	 * 
 	 * @param timestamp
 	 *            the timestamp token
@@ -458,22 +472,6 @@ public interface AdvancedSignature extends Serializable {
 	 * @return TRUE if all certificates are self-signed, false otherwise
 	 */
 	boolean areAllSelfSignedCertificates();
-
-	/**
-	 * This method adds to the {@code ValidationContext} all timestamps to be validated.
-	 *
-	 * @param validationContext
-	 *            {@code ValidationContext} to which the timestamps must be added
-	 */
-	void prepareTimestamps(ValidationContext validationContext);
-
-	/**
-	 * This method adds to the {@code ValidationContext} all counter signatures embedded into the current signature.
-	 *
-	 * @param validationContext
-	 *            {@code ValidationContext} to which the counter signature content must be added
-	 */
-	void prepareCounterSignatures(ValidationContext validationContext);
 
 	/**
 	 * Returns a message if the structure validation fails
@@ -528,8 +526,7 @@ public interface AdvancedSignature extends Serializable {
 	byte[] getSignatureValue();
 
 	/**
-	 * Returns individual validation foreach reference (XAdES) or for the
-	 * message-imprint (CAdES)
+	 * Returns individual validation foreach reference (XAdES, JAdES) or for the message-imprint (CAdES)
 	 * 
 	 * @return a list with one or more {@code ReferenceValidation}
 	 */

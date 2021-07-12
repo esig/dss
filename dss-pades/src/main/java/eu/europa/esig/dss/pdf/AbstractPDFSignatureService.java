@@ -24,7 +24,6 @@ import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.alert.status.Status;
 import eu.europa.esig.dss.crl.CRLBinary;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -34,6 +33,11 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
+import eu.europa.esig.dss.pades.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
+import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
+import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfModification;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
@@ -42,12 +46,12 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
-import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,12 +59,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -148,7 +152,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected SignatureDrawer loadSignatureDrawer(SignatureImageParameters imageParameters) {
 		SignatureDrawer signatureDrawer = signatureDrawerFactory.getSignatureDrawer(imageParameters);
 		if (signatureDrawer == null) {
-			throw new DSSException("SignatureDrawer shall be defined for the used SignatureDrawerFactory!");
+			throw new IllegalArgumentException("SignatureDrawer shall be defined for the used SignatureDrawerFactory!");
 		}
 		return signatureDrawer;
 	}
@@ -207,21 +211,22 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					byteRange.validate();
 
 					final byte[] cms = signatureDictionary.getContents();
-					byte[] signedContent = DSSUtils.EMPTY_BYTE_ARRAY;
+					byte[] revisionContent = DSSUtils.EMPTY_BYTE_ARRAY;
 					if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, fieldNames)) {
-						LOG.warn("Signature {} is skipped. SIWA detected !", fieldNames);
+						LOG.warn("Signature {} is invalid. SIWA detected !", fieldNames);
 					} else {
-						signedContent = PAdESUtils.getSignedContent(document, byteRange);
+						revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
 					}
 
 					boolean signatureCoversWholeDocument = reader.isSignatureCoversWholeDocument(signatureDictionary);
+					byte[] signedData = PAdESUtils.getSignedContentFromRevision(revisionContent, byteRange);
+					DSSDocument signedContent = new InMemoryDocument(signedData);
 
 					// create a DSS revision if updated
 					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, lastDSSDictionary,
-							signedContent, pwd);
+							revisionContent, pwd);
 
 					PdfCMSRevision newRevision = null;
-
 					if (isDocTimestamp(signatureDictionary)) {
 						newRevision = new PdfDocTimestampRevision(signatureDictionary, fieldNames, signedContent,
 								signatureCoversWholeDocument);
@@ -240,13 +245,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 					// add signature/timestamp revision
 					if (newRevision != null) {
-						newRevision.setModificationDetection(getPdfModificationDetection(reader, signedContent, pwd));
 						revisions.add(newRevision);
 					}
 
 					// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
 					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, lastDSSDictionary,
-							extractBeforeSignatureValue(byteRange, signedContent), pwd);
+							extractBeforeSignatureValue(byteRange, revisionContent), pwd);
 
 
 				} catch (Exception e) {
@@ -273,8 +277,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
-		return addDssDictionary(document, callbacks, null);
+	public DSSDocument addDssDictionary(DSSDocument document,
+										ValidationDataContainer validationDataForInclusion) {
+		return addDssDictionary(document, validationDataForInclusion, null);
 	}
 
 	@Override
@@ -458,55 +463,60 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	/**
-	 * This method builds a Map of known Objects (extracted from previous DSS
-	 * Dictionaries). This map will be used to avoid duplicate the same objects
-	 * between layers.
-	 * 
-	 * @param callbacks a list of {@link DSSDictionaryCallback}s
-	 * @return a map of built objects and their ids
+	 * Builds a map of token identifiers and their corresponding PDF object indexes
+	 *
+	 * @param signatures a collection of {@link AdvancedSignature}s
+	 * @return a map
 	 */
-	protected Map<String, Long> buildKnownObjects(List<DSSDictionaryCallback> callbacks) {
+	protected Map<String, Long> buildKnownObjects(Collection<AdvancedSignature> signatures) {
 		Map<String, Long> result = new HashMap<>();
-		for (DSSDictionaryCallback callback : callbacks) {
 
-			Map<Long, CertificateToken> storedCertificates = callback.getStoredCertificates();
-			for (Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
-				String tokenKey = getTokenDigest(certEntry.getValue());
-				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
-					result.put(tokenKey, certEntry.getKey());
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			for (AdvancedSignature signature : signatures) {
+				PAdESCertificateSource certSource = (PAdESCertificateSource) signature.getCertificateSource();
+				Map<Long, CertificateToken> storedCertificates = certSource.getCertificateMap();
+				for (Map.Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
+					String tokenKey = getTokenKey(certEntry.getValue());
+					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+						result.put(tokenKey, certEntry.getKey());
+					}
 				}
-			}
 
-			Map<Long, BasicOCSPResp> storedOcspResps = callback.getStoredOcspResps();
-			for (Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
-				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(ocspEntry.getValue());
-				String tokenKey = Utils
-						.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp)));
-				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
-					result.put(tokenKey, ocspEntry.getKey());
+				PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
+				Map<Long, BasicOCSPResp> storedOcspResps = ocspSource.getOcspMap();
+				for (Map.Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
+					final OCSPResponseBinary ocspResponseBinary = OCSPResponseBinary.build(ocspEntry.getValue());
+					String tokenKey = ocspResponseBinary.getDSSId().asXmlId();
+					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+						result.put(tokenKey, ocspEntry.getKey());
+					}
 				}
-			}
 
-			Map<Long, CRLBinary> storedCrls = callback.getStoredCrls();
-			for (Entry<Long, CRLBinary> crlEntry : storedCrls.entrySet()) {
-				String tokenKey = Utils
-						.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, crlEntry.getValue().getBinaries()));
-				if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
-					result.put(tokenKey, crlEntry.getKey());
+				PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
+				Map<Long, CRLBinary> storedCrls = crlSource.getCrlMap();
+				for (Map.Entry<Long, CRLBinary> crlEntry : storedCrls.entrySet()) {
+					String tokenKey = crlEntry.getValue().asXmlId();
+					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
+						result.put(tokenKey, crlEntry.getKey());
+					}
 				}
 			}
 		}
+
 		return result;
 	}
 
 	/**
-	 * Gets SHA-256 digest of the token
+	 * Gets a token key (DSS Id or EntityKey Id for a CertificateToken)
 	 *
 	 * @param token {@link Token}
 	 * @return {@link String} base64 encoded SHA-256 digest
 	 */
-	protected String getTokenDigest(Token token) {
-		return Utils.toBase64(token.getDigest(DigestAlgorithm.SHA256));
+	protected String getTokenKey(Token token) {
+		if (token instanceof CertificateToken) {
+			return ((CertificateToken) token).getEntityKey().asXmlId();
+		}
+		return token.getDSSIdAsString();
 	}
 
 	/**
@@ -586,19 +596,27 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		alertOnSignatureFieldOverlap.alert(new Status(alertMessage));
 	}
 
-	/**
-	 * Proceeds PDF modification detection
-	 * 
-	 * @param finalRevisionReader {@link PdfDocumentReader} the reader for the final
-	 *                            PDF content
-	 * @param signedContent       a byte array representing a signed revision
-	 *                            content
-	 * @param pwd                 {@link String} password protection
-	 * @return {@link PdfModificationDetection}
-	 */
-	protected PdfModificationDetection getPdfModificationDetection(final PdfDocumentReader finalRevisionReader,
-			byte[] signedContent, String pwd) {
-		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(new InMemoryDocument(signedContent), pwd)) {
+	@Override
+	public void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd) {
+		try (PdfDocumentReader finalRevisionReader = loadPdfDocumentReader(document, pwd)) {
+			for (AdvancedSignature signature : signatures) {
+				PAdESSignature padesSignature = (PAdESSignature) signature;
+				PdfSignatureRevision pdfRevision = padesSignature.getPdfRevision();
+				byte[] revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
+				pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, new InMemoryDocument(revisionContent), pdfRevision, pwd));
+			}
+		} catch (IOException e) {
+			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.error(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.error(errorMessage, e.getMessage());
+			}
+		}
+	}
+
+	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader, DSSDocument originalDocument, PdfSignatureRevision revision, String pwd) throws IOException {
+		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(originalDocument , pwd)) {
 			PdfModificationDetectionImpl pdfModificationDetection = new PdfModificationDetectionImpl();
 
 			pdfModificationDetection
@@ -607,19 +625,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					PdfModificationDetectionUtils.getPagesDifferences(signedRevisionReader, finalRevisionReader));
 			pdfModificationDetection
 					.setVisualDifferences(getVisualDifferences(signedRevisionReader, finalRevisionReader));
-
 			return pdfModificationDetection;
-
-		} catch (Exception e) {
-			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
-			if (LOG.isDebugEnabled()) {
-				LOG.error(errorMessage, e.getMessage(), e);
-			} else {
-				LOG.error(errorMessage, e.getMessage());
-			}
 		}
-
-		return null;
 	}
 
 	/**

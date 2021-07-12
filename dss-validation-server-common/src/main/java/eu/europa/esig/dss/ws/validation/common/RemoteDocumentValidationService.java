@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.ws.validation.common;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.utils.Utils;
@@ -68,7 +68,7 @@ public class RemoteDocumentValidationService {
 		LOG.info("ValidateDocument in process...");
 		SignedDocumentValidator validator = initValidator(dataToValidate);
 
-		Reports reports = null;
+		Reports reports;
 		RemoteDocument policy = dataToValidate.getPolicy();
 		if (policy == null) {
 			reports = validator.validateDocument();
@@ -111,7 +111,7 @@ public class RemoteDocumentValidationService {
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(policy.getBytes())) {
 			return ValidationPolicyFacade.newFacade().getValidationPolicy(bais);
 		} catch (Exception e) {
-			throw new DSSException("Unable to load the validation policy", e);
+			throw new IllegalInputException(String.format("Unable to load the validation policy : %s", e.getMessage()), e);
 		}
 	}
 

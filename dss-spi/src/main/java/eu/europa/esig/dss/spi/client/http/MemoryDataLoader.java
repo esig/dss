@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi.client.http;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,10 +56,10 @@ public class MemoryDataLoader implements DataLoader {
 		for (String url : urlStrings) {
 			byte[] data = get(url);
 			if (data != null) {
-				return new DataAndUrl(data, url);
+				return new DataAndUrl(url, data);
 			}
 		}
-		throw new DSSException(String.format("A content for URLs [%s] does not exist!", urlStrings));
+		throw new DSSExternalResourceException(String.format("A content for URLs [%s] does not exist!", urlStrings));
 	}
 
 	@Override
@@ -73,6 +74,7 @@ public class MemoryDataLoader implements DataLoader {
 
 	@Override
 	public void setContentType(String contentType) {
+		throw new UnsupportedOperationException("Content type change is not supported by this implementation!");
 	}
 
 }

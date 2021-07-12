@@ -23,7 +23,6 @@ package eu.europa.esig.dss.jades.extension;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.model.DSSException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,7 +57,7 @@ public class JAdESExtensionCompactBToTTest extends AbstractJAdESTestExtension {
     @Test
     @Override
     public void extendAndVerify() throws Exception {
-        Exception exception = assertThrows(DSSException.class, () -> super.extendAndVerify());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.extendAndVerify());
         assertEquals("The type 'COMPACT_SERIALIZATION' does not support signature extension!",
                 exception.getMessage());
     }

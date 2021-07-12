@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>simple-test.signed-enveloped-transform-ar-LuxTrust3-lta(dss5.3).xml</DocumentName>
-    <ValidationDate>2018-07-02T05:50:57</ValidationDate>
+    <ValidationDate>2018-07-02T05:50:57Z</ValidationDate>
     <Signatures>
         <Signature Id="id-91a71e2c25ac8f6d492d578b67d8a818">
             <SignatureFilename>simple-test.signed-enveloped-transform-ar-LuxTrust3-lta(dss5.3).xml</SignatureFilename>
-            <ClaimedSigningTime>2018-06-12T11:28:54</ClaimedSigningTime>
+            <ClaimedSigningTime>2018-06-12T11:28:54Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -91,8 +91,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2035-03-05T13:21:57</NotAfter>
-            <NotBefore>2015-03-06T14:12:15</NotBefore>
+            <NotAfter>2035-03-05T13:21:57Z</NotAfter>
+            <NotBefore>2015-03-06T14:12:15Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF</EntityKey>
@@ -114,8 +114,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10.3</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-LU" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">LuxTrust S.A.</TSPName></TSPNames>
@@ -125,7 +123,7 @@
                             <ServiceNames><ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-04-06T13:00:00</StartDate>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -135,8 +133,8 @@
                             <ServiceNames><ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2018-04-06T13:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-04-06T13:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -145,8 +143,8 @@
                             <ServiceNames><ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2015-08-12T00:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2015-08-12T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -175,8 +173,8 @@
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2024-04-26T16:19:26</NotAfter>
-            <NotBefore>2018-04-26T16:19:26</NotBefore>
+            <NotAfter>2024-04-26T16:19:26Z</NotAfter>
+            <NotBefore>2018-04-26T16:19:26Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-81DD4CAD9AA0D9DC473CD1AFCB14DB23D637EBF2FF4559AA277924D0250621F2</EntityKey>
@@ -203,8 +201,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-FR" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -214,7 +210,7 @@
                             <ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -245,8 +241,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2025-01-29T14:03:15</NotAfter>
-            <NotBefore>2015-01-29T14:03:15</NotBefore>
+            <NotAfter>2025-01-29T14:03:15Z</NotAfter>
+            <NotBefore>2015-01-29T14:03:15Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</EntityKey>
@@ -269,8 +265,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-FR" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -280,14 +274,14 @@
                             <ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                         </TrustedService>
                         <TrustedService ServiceDigitalIdentifier="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2015-04-13T22:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2015-04-13T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -316,8 +310,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2018-06-27T09:05:59</NotAfter>
-            <NotBefore>2017-06-27T09:05:59</NotBefore>
+            <NotAfter>2018-06-27T09:05:59Z</NotAfter>
+            <NotBefore>2017-06-27T09:05:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-05EB1A1653BC225BE23A3428AE4C90487C9A109703E81828DC1C6FD78274CFBD</EntityKey>
@@ -342,8 +336,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-LU" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">LuxTrust S.A.</TSPName></TSPNames>
@@ -353,7 +345,7 @@
                             <ServiceNames><ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-04-06T13:00:00</StartDate>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -363,8 +355,8 @@
                             <ServiceNames><ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2018-04-06T13:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-04-06T13:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -408,8 +400,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-02-15T12:36:28</NotAfter>
-            <NotBefore>2018-02-15T12:36:28</NotBefore>
+            <NotAfter>2021-02-15T12:36:28Z</NotAfter>
+            <NotBefore>2018-02-15T12:36:28Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-0EC53B285E62AA6C9B3C1BF5346042BF4A53C35DF073E3034700420A5D3E30BA</EntityKey>
@@ -435,15 +427,13 @@
                 <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.10.3.26</certificatePolicy>
                 <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-                <qcStatementOid Description="qc-pds">0.4.0.1862.1.5</qcStatementOid>
-                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes>
-                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
-            </QCTypes>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+                                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-LU" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">LuxTrust S.A.</TSPName></TSPNames>
@@ -453,7 +443,7 @@
                             <ServiceNames><ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-04-06T13:00:00</StartDate>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -464,8 +454,8 @@
                             <ServiceNames><ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2018-04-06T13:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-04-06T13:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -505,8 +495,8 @@
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2024-04-26T16:10:21</NotAfter>
-            <NotBefore>2018-04-26T16:10:21</NotBefore>
+            <NotAfter>2024-04-26T16:10:21Z</NotAfter>
+            <NotBefore>2018-04-26T16:10:21Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-64EE60788051EF086692103DC87CC088354A836C207B91D14E2F0878E5F28FEC</EntityKey>
@@ -533,8 +523,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-FR" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -544,7 +532,7 @@
                             <ServiceNames><ServiceName lang="en">Certification Authority for Universign Time Stamping 2015</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -564,8 +552,8 @@
         <Revocation Id="R-0ec53b285e62aa6c9b3c1bf5346042bf4a53c35df073e3034700420a5d3e30ba63489294d3107dd3890fb0c328e2bd7146687d695409cd9d3e67a21c9125a6ff">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2018-06-12T11:29:01</ProductionDate>
-            <ThisUpdate>2018-06-12T11:23:21</ThisUpdate>
+            <ProductionDate>2018-06-12T11:29:01Z</ProductionDate>
+            <ThisUpdate>2018-06-12T11:23:21Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -586,9 +574,9 @@
         <Revocation Id="R-fcc9f56e6a1856a12dcf4b18fef166e2586bc58dfe4a2a5d528d3ab547fb512e">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2018-06-12T11:00:13</ProductionDate>
-            <ThisUpdate>2018-06-12T11:00:13</ThisUpdate>
-            <NextUpdate>2018-06-12T15:30:13</NextUpdate>
+            <ProductionDate>2018-06-12T11:00:13Z</ProductionDate>
+            <ThisUpdate>2018-06-12T11:00:13Z</ThisUpdate>
+            <NextUpdate>2018-06-12T15:30:13Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -608,9 +596,9 @@
         <Revocation Id="R-4f3a882a796996d4bc50d31c76a4894521642907f7bc8babbf7da52e8dd519">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2018-06-12T10:30:30</ProductionDate>
-            <ThisUpdate>2018-06-12T10:30:30</ThisUpdate>
-            <NextUpdate>2018-06-19T09:30:30</NextUpdate>
+            <ProductionDate>2018-06-12T10:30:30Z</ProductionDate>
+            <ThisUpdate>2018-06-12T10:30:30Z</ThisUpdate>
+            <NextUpdate>2018-06-19T09:30:30Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -630,7 +618,7 @@
     </UsedRevocations>
     <UsedTimestamps>
                 <Timestamp Id="T-6BC95837F1C1104A00F59028389FCAB9C2D3560C3E9D9354AAFB2426DFDED7FF" Type="SIGNATURE_TIMESTAMP">
-                    <ProductionTime>2018-06-12T11:29:00</ProductionTime>
+                    <ProductionTime>2018-06-12T11:29:00Z</ProductionTime>
                     <DigestMatcher type="MESSAGE_IMPRINT">
 		              <DigestMethod>SHA256</DigestMethod>
 		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
@@ -660,7 +648,7 @@
 		            </DigestAlgoAndValue>
                 </Timestamp>
                 <Timestamp Id="T-CC3CB51F6CA52D84138B6E53536CC2423D45E0BE583637D62A0186B421B3BC39" Type="ARCHIVE_TIMESTAMP">
-                    <ProductionTime>2018-06-12T11:29:03</ProductionTime>
+                    <ProductionTime>2018-06-12T11:29:03Z</ProductionTime>
                     <DigestMatcher type="MESSAGE_IMPRINT">
 		              <DigestMethod>SHA256</DigestMethod>
 		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
@@ -683,7 +671,6 @@
 		            <FoundRevocations/>
                      <TimestampedObjects>
 					   	<TimestampedObject Category="SIGNATURE" Token="id-91a71e2c25ac8f6d492d578b67d8a818" />
-
 		   				<TimestampedObject Category="TIMESTAMP" Token="T-6BC95837F1C1104A00F59028389FCAB9C2D3560C3E9D9354AAFB2426DFDED7FF" />
 		   				
 					   	<TimestampedObject Category="CERTIFICATE" Token="C-05EB1A1653BC225BE23A3428AE4C90487C9A109703E81828DC1C6FD78274CFBD" />
@@ -716,9 +703,9 @@
             <Url>https://portail-qualite.public.lu/content/dam/qualite/fr/publications/confiance-numerique/liste-confiance-nationale/tsl-xml/tsl.xml</Url>
             <SequenceNumber>33</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2018-07-02T05:36:54</LastLoading>
-            <IssueDate>2018-04-06T13:00:00</IssueDate>
-            <NextUpdate>2018-10-06T12:00:00</NextUpdate>
+            <LastLoading>2018-07-02T05:36:54Z</LastLoading>
+            <IssueDate>2018-04-06T13:00:00Z</IssueDate>
+            <NextUpdate>2018-10-06T12:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="TL-FR">
@@ -726,9 +713,9 @@
             <Url>http://www.ssi.gouv.fr/eidas/TL-FR.xml</Url>
             <SequenceNumber>41</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2018-07-02T05:36:54</LastLoading>
-            <IssueDate>2018-06-01T01:00:00</IssueDate>
-            <NextUpdate>2018-12-01T00:00:00</NextUpdate>
+            <LastLoading>2018-07-02T05:36:54Z</LastLoading>
+            <IssueDate>2018-06-01T01:00:00Z</IssueDate>
+            <NextUpdate>2018-12-01T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="LOTL-EU" LOTL="true">
@@ -736,9 +723,9 @@
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>213</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2018-07-02T05:36:52</LastLoading>
-	        <IssueDate>2018-06-28T07:00:00</IssueDate>
-	        <NextUpdate>2018-12-28T00:00:00</NextUpdate>
+	        <LastLoading>2018-07-02T05:36:52Z</LastLoading>
+	        <IssueDate>2018-06-28T07:00:00Z</IssueDate>
+	        <NextUpdate>2018-12-28T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEWithXAdESModifiedCertValuesTest extends AbstractASiCWithXAdESTestValidation {
 
@@ -56,6 +56,7 @@ public class ASiCEWithXAdESModifiedCertValuesTest extends AbstractASiCWithXAdEST
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {
 			if (error.contains("xades132:OCSPValues")) {
 				ocspValueEmptyErrorFound = true;
+				break;
 			}
 		}
 		assertTrue(ocspValueEmptyErrorFound);

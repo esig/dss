@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
@@ -30,12 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -62,81 +59,93 @@ public class CryptographicConstraintWrapper {
 	}
 
 	/**
-	 * Returns a list of supported Encryption algorithm names
+	 * Checks if the given {@link EncryptionAlgorithm} is reliable (acceptable)
 	 *
-	 * @return a list of {@link String}s
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm} to check
+	 * @return TRUE if the algorithm is reliable, FALSE otherwise
 	 */
-	public List<String> getSupportedEncryptionAlgorithms() {
-		if (constraint != null) {
-			return extract(constraint.getAcceptableEncryptionAlgo());
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * Returns a list of supported Digest algorithm names
-	 *
-	 * @return a list of {@link String}s
-	 */
-	public List<String> getSupportedDigestAlgorithms() {
-		if (constraint != null) {
-			return extract(constraint.getAcceptableDigestAlgo());
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * Returns a map of minimum accepted key sizes for different Encryption algorithms
-	 *
-	 * @return a map of minimum accepted key sizes
-	 */
-	public Map<String, Integer> getMinimumKeySizes() {
-		Map<String, Integer> result = new HashMap<>();
-		if (constraint != null) {
-			ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
-			if (miniPublicKeySize != null && Utils.isCollectionNotEmpty(miniPublicKeySize.getAlgo())) {
-				for (Algo algo : miniPublicKeySize.getAlgo()) {
-					Integer size = algo.getSize();
-					if (size != null) {
-						result.put(algo.getValue(), size);
-					} else {
-						result.put(algo.getValue(), 0);
+	public boolean isEncryptionAlgorithmReliable(EncryptionAlgorithm encryptionAlgorithm) {
+		if (encryptionAlgorithm != null && constraint != null) {
+			ListAlgo acceptableEncryptionAlgos = constraint.getAcceptableEncryptionAlgo();
+			if (acceptableEncryptionAlgos != null) {
+				for (Algo algo : acceptableEncryptionAlgos.getAlgos()) {
+					if (algo.getValue().equals(encryptionAlgorithm.getName())) {
+						return true;
 					}
 				}
 			}
 		}
-		return result;
+		return false;
 	}
 
 	/**
-	 * Gets an expiration date for the encryption algorithm with name {@code algoToSearch} and {@code keyLength}
+	 * Checks if the given {@link DigestAlgorithm} is reliable (acceptable)
 	 *
-	 * @param algoToSearch {@link String} name of the encryption algorithm
-	 * @param keyLength {@link Integer} key length used to sign the token
+	 * @param digestAlgorithm {@link DigestAlgorithm} to check
+	 * @return TRUE if the algorithm is reliable, FALSE otherwise
+	 */
+	public boolean isDigestAlgorithmReliable(DigestAlgorithm digestAlgorithm) {
+		if (digestAlgorithm != null && constraint != null) {
+			ListAlgo acceptableEncryptionAlgos = constraint.getAcceptableDigestAlgo();
+			if (acceptableEncryptionAlgos != null) {
+				for (Algo algo : acceptableEncryptionAlgos.getAlgos()) {
+					if (algo.getValue().equals(digestAlgorithm.getName())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the {code keyLength} for {@link EncryptionAlgorithm} is reliable (acceptable)
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm} to check key length for
+	 * @param keyLength {@link String} the key length to be checked
+	 * @return TRUE if the key length for the algorithm is reliable, FALSE otherwise
+	 */
+	public boolean isEncryptionAlgorithmWithKeySizeReliable(EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
+		int keySize = parseKeySize(keyLength);
+		if (encryptionAlgorithm != null && keySize != 0 && constraint != null) {
+			ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
+			if (miniPublicKeySize != null) {
+				for (Algo algo : miniPublicKeySize.getAlgos()) {
+					if (algo.getValue().equals(encryptionAlgorithm.getName())) {
+						Integer size = algo.getSize();
+						if (size != null && size <= keySize) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Gets an expiration date for the encryption algorithm with name {@code algoToSearch} and {@code keyLength}.
+	 * Returns null if the expiration date is not defined for the algorithm.
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm} to get expiration date for
+	 * @param keyLength {@link String} key length used to sign the token
 	 * @return {@link Date}
 	 */
-	public Date getExpirationDate(String algoToSearch, Integer keyLength) {
+	public Date getExpirationDate(EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
 		TreeMap<Integer, Date> dates = new TreeMap<>();
-		if (constraint != null) {
-			AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
-			if (expirations == null) {
-				return null;
-			}
-			SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
-	
-			for (Algo algo : expirations.getAlgo()) {
+		AlgoExpirationDate algoExpirationDates = getAlgoExpirationDates();
+		if (algoExpirationDates != null && encryptionAlgorithm != null) {
+			SimpleDateFormat dateFormat = getUsedDateFormat(algoExpirationDates);
+			String algoToSearch = encryptionAlgorithm.getName();
+			for (Algo algo : algoExpirationDates.getAlgos()) {
 				if (algo.getValue().equals(algoToSearch)) {
-					String expirationDate = algo.getDate();
-					try {
-						dates.put(algo.getSize(), dateFormat.parse(expirationDate));
-					} catch (ParseException e) {
-						LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
-					}
+					dates.put(algo.getSize(), getDate(algo, dateFormat));
 				}
 			}
 		}
 
-		Entry<Integer, Date> floorEntry = dates.floorEntry(keyLength);
+		int keySize = parseKeySize(keyLength);
+		Entry<Integer, Date> floorEntry = dates.floorEntry(keySize);
 		if (floorEntry == null) {
 			return null;
 		} else {
@@ -145,72 +154,52 @@ public class CryptographicConstraintWrapper {
 	}
 
 	/**
-	 * Gets an expiration date for the digest algorithm with name {@code digestAlgoToSearch}
+	 * Gets an expiration date for the digest algorithm with name {@code digestAlgoToSearch}.
+	 * Returns null if the expiration date is not defined for the algorithm.
 	 *
-	 * @param digestAlgoToSearch {@link String} name of the digest algorithm
+	 * @param digestAlgorithm {@link DigestAlgorithm} the algorithm to get expiration date for
 	 * @return {@link Date}
 	 */
-	public Date getDigestAlgorithmExpirationDate(String digestAlgoToSearch) {
-		if (constraint != null) {
-			AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
-			if(expirations == null)
-				return null;
-			SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
-	
-			for (Algo algo : expirations.getAlgo()) {
-				if (algo.getValue().equals(digestAlgoToSearch)) {
-					String expirationDate = algo.getDate();
-					try {
-						return dateFormat.parse(expirationDate);
-					} catch (ParseException e) {
-						LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
-					}
+	public Date getExpirationDate(DigestAlgorithm digestAlgorithm) {
+		AlgoExpirationDate algoExpirationDates = getAlgoExpirationDates();
+		if (algoExpirationDates != null && digestAlgorithm != null) {
+			SimpleDateFormat dateFormat = getUsedDateFormat(algoExpirationDates);
+			String algoToFind = digestAlgorithm.getName();
+			for (Algo algo : algoExpirationDates.getAlgos()) {
+				if (algo.getValue().equals(algoToFind)) {
+					return getDate(algo, dateFormat);
 				}
 			}
 		}
-		
 		return null;
 	}
 
-	/**
-	 * Returns a map of all defined algorithm expiration times
-	 *
-	 * @return a map of algorithm names and the corresponding expiration times
-	 */
-	public Map<String, Date> getExpirationTimes() {
-		Map<String, Date> result = new HashMap<>();
-		if (constraint != null) {
-			AlgoExpirationDate expirations = constraint.getAlgoExpirationDate();
-			if (expirations != null && Utils.isCollectionNotEmpty(expirations.getAlgo())) {
-				SimpleDateFormat dateFormat = new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ? DEFAULT_DATE_FORMAT : expirations.getFormat());
-				for (Algo algo : expirations.getAlgo()) {
-					String currentAlgo = algo.getValue();
-					String expirationDate = algo.getDate();
-					try {
-						result.put(currentAlgo, dateFormat.parse(expirationDate));
-					} catch (ParseException e) {
-						LOG.warn("Unable to parse '{}' with format '{}'", expirationDate, dateFormat);
-					}
-				}
-			}
-		}
-		return result;
+	private int parseKeySize(String keyLength) {
+		return Utils.isStringDigits(keyLength) ? Integer.parseInt(keyLength) : 0;
 	}
 
-	/**
-	 * Extracts a list of algorithm names from {@code ListAlgo}
-	 *
-	 * @param listAlgo {@link ListAlgo}
-	 * @return a list of {@link String}
-	 */
-	private List<String> extract(ListAlgo listAlgo) {
-		List<String> result = new ArrayList<>();
-		if (listAlgo != null && Utils.isCollectionNotEmpty(listAlgo.getAlgo())) {
-			for (Algo algo : listAlgo.getAlgo()) {
-				result.add(algo.getValue());
+	private AlgoExpirationDate getAlgoExpirationDates() {
+		if (constraint != null) {
+			return constraint.getAlgoExpirationDate();
+		}
+		return null;
+	}
+
+	private SimpleDateFormat getUsedDateFormat(AlgoExpirationDate expirations) {
+		return new SimpleDateFormat(Utils.isStringEmpty(expirations.getFormat()) ?
+				DEFAULT_DATE_FORMAT : expirations.getFormat());
+	}
+
+	private Date getDate(Algo algo, SimpleDateFormat format) {
+		String date = algo.getDate();
+		if (date != null) {
+			try {
+				return format.parse(date);
+			} catch (ParseException e) {
+				LOG.warn("Unable to parse '{}' with format '{}'", date, format);
 			}
 		}
-		return result;
+		return null;
 	}
 
 	/**

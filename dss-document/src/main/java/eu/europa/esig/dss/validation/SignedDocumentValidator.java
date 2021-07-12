@@ -24,25 +24,26 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
-import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
+import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -127,6 +128,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * The used token extraction strategy to define tokens representation in DiagnosticData
 	 */
 	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
+
+	/**
+	 * The implementation to be used for identifiers generation
+	 */
+	private TokenIdentifierProvider identifierProvider = new OriginalIdentifierProvider();
 
 	/**
 	 * This variable allows to include the semantics for Indication / SubIndication
@@ -216,7 +222,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				return factory.create(dssDocument);
 			}
 		}
-		throw new DSSException("Document format not recognized/handled");
+		throw new UnsupportedOperationException("Document format not recognized/handled");
 	}
 
 	/**
@@ -252,6 +258,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
+		Objects.requireNonNull(certificateVerifier);
 		this.certificateVerifier = certificateVerifier;
 	}
 
@@ -259,6 +266,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
 		Objects.requireNonNull(tokenExtractionStrategy);
 		this.tokenExtractionStrategy = tokenExtractionStrategy;
+	}
+
+	@Override
+	public void setTokenIdentifierProvider(TokenIdentifierProvider identifierProvider) {
+		Objects.requireNonNull(identifierProvider);
+		this.identifierProvider = identifierProvider;
 	}
 
 	@Override
@@ -333,10 +346,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (validationPolicyURL == null) {
 			return validateDocument((InputStream) null);
 		}
-		try {
-			return validateDocument(validationPolicyURL.openStream());
+		try (InputStream is = validationPolicyURL.openStream()) {
+			return validateDocument(is);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new IllegalInputException(String.format("Unable to load policy with URL '%s'. Reason : %s",
+					validationPolicyURL, e.getMessage()), e);
 		}
 	}
 
@@ -345,7 +359,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (policyResourcePath == null) {
 			return validateDocument((InputStream) null);
 		}
-		return validateDocument(getClass().getResourceAsStream(policyResourcePath));
+		try (InputStream is = getClass().getResourceAsStream(policyResourcePath)) {
+			return validateDocument(is);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format("Unable to load policy from path '%s'. Reason : %s",
+					policyResourcePath, e.getMessage()), e);
+		}
 	}
 
 	@Override
@@ -353,8 +372,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if ((policyFile == null) || !policyFile.exists()) {
 			return validateDocument((InputStream) null);
 		}
-		final InputStream inputStream = DSSUtils.toByteArrayInputStream(policyFile);
-		return validateDocument(inputStream);
+		try (InputStream is = DSSUtils.toByteArrayInputStream(policyFile)) {
+			return validateDocument(is);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format("Unable to load policy from file '%s'. Reason : %s",
+					policyFile, e.getMessage()), e);
+		}
 	}
 
 	/**
@@ -366,7 +389,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
-		ValidationPolicy validationPolicy = null;
+		ValidationPolicy validationPolicy;
 		try {
 			if (policyDataStream == null) {
 				LOG.debug("No provided validation policy : use the default policy");
@@ -375,7 +398,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
 			}
 		} catch (Exception e) {
-			throw new DSSException("Unable to load the policy", e);
+			throw new IllegalInputException("Unable to load the policy", e);
 		}
 		return validateDocument(validationPolicy);
 	}
@@ -409,9 +432,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		LOG.info("Document validation...");
 		assertConfigurationValid();
 
-		final ValidationContext validationContext = new SignatureValidationContext();
-
-		final XmlDiagnosticData diagnosticData = prepareDiagnosticDataBuilder(validationContext).build();
+		final XmlDiagnosticData diagnosticData = prepareDiagnosticDataBuilder().build();
 
 		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
@@ -427,28 +448,36 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * Creates a {@code DiagnosticDataBuilder}
 	 * 
-	 * @param validationContext {@link ValidationContext}
 	 * @return {@link DiagnosticDataBuilder}
 	 */
-	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder(final ValidationContext validationContext) {
+	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder() {
 		
 		List<AdvancedSignature> allSignatures = getAllSignatures();
         List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
 
-		ListRevocationSource<CRL> listCRLSource = mergeCRLSources(allSignatures, detachedTimestamps);
-		ListRevocationSource<OCSP> listOCSPSource = mergeOCSPSources(allSignatures, detachedTimestamps);
-		ListCertificateSource listCertificateSource = mergeCertificateSource(allSignatures, detachedTimestamps);
-        
-		prepareCertificateVerifier(listCRLSource, listOCSPSource, listCertificateSource);
-		
-		prepareSignatureValidationContext(validationContext, allSignatures);
-        prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
-		
+		ValidationContext validationContext = prepareValidationContext(allSignatures, detachedTimestamps);
+
 		if (!skipValidationContextExecution) {
 			validateContext(validationContext);
 		}
-		
-		return createDiagnosticDataBuilder(validationContext, allSignatures, listCRLSource, listOCSPSource);
+		return createDiagnosticDataBuilder(validationContext, allSignatures);
+	}
+
+	/**
+	 * Initializes and fills {@code ValidationContext} with necessary data sources
+	 * 
+	 * @param <T> {@link AdvancedSignature} implementation
+	 * @param signatures a collection of {@link AdvancedSignature}s
+	 * @param detachedTimestamps a collection of detached {@link TimestampToken}s
+	 * @return {@link ValidationContext}
+	 */
+	protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
+			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps) {
+		ValidationContext validationContext = new SignatureValidationContext();
+		validationContext.initialize(certificateVerifier);
+		prepareSignatureValidationContext(validationContext, signatures);
+		prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
+		return validationContext;
 	}
 	
 	/**
@@ -458,7 +487,58 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return {@link SignedDocumentDiagnosticDataBuilder}
 	 */
 	protected SignedDocumentDiagnosticDataBuilder initializeDiagnosticDataBuilder() {
-		return new SignedDocumentDiagnosticDataBuilder(); // be default
+		return new SignedDocumentDiagnosticDataBuilder(); // by default
+	}
+
+	@Override
+	public <T extends AdvancedSignature> ValidationDataContainer getValidationData(Collection<T> signatures) {
+		return getValidationData(signatures, Collections.emptyList());
+	}
+
+	@Override
+	public <T extends AdvancedSignature> ValidationDataContainer getValidationData(Collection<T> signatures,
+																				   Collection<TimestampToken> detachedTimestamps) {
+		if (Utils.isCollectionEmpty(signatures) && Utils.isCollectionEmpty(detachedTimestamps)) {
+			throw new DSSException("At least one signature or a timestamp shall be provided to extract the validation data!");
+		}
+
+		ValidationContext validationContext = prepareValidationContext(signatures, detachedTimestamps);
+		validateContext(validationContext);
+
+		assertSignaturesValid(signatures, validationContext);
+
+		ValidationDataContainer validationDataContainer = new ValidationDataContainer();
+		for (AdvancedSignature signature : signatures) {
+			ValidationData signatureValidationData = validationContext.getValidationData(signature);
+			validationDataContainer.addValidationData(signature, signatureValidationData);
+			for (TimestampToken timestampToken : signature.getAllTimestamps()) {
+				ValidationData timestampValidationData = validationContext.getValidationData(timestampToken);
+				validationDataContainer.addValidationData(timestampToken, timestampValidationData);
+			}
+			for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
+				ValidationData counterSignatureValidationData = validationContext.getValidationData(counterSignature);
+				validationDataContainer.addValidationData(counterSignature, counterSignatureValidationData);
+			}
+		}
+		for (TimestampToken detachedTimestamp : detachedTimestamps) {
+			ValidationData timestampValidationData = validationContext.getValidationData(detachedTimestamp);
+			validationDataContainer.addValidationData(detachedTimestamp, timestampValidationData);
+		}
+
+		return validationDataContainer;
+	}
+
+	private <T extends AdvancedSignature> void assertSignaturesValid(Collection<T> signatures,
+																	 ValidationContext validationContext) {
+		validationContext.checkAllTimestampsValid();
+		validationContext.checkAllRequiredRevocationDataPresent();
+		validationContext.checkAllPOECoveredByRevocationData();
+		validationContext.checkAllCertificatesValid();
+
+		for (final AdvancedSignature signature : signatures) {
+			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature);
+			validationContext.checkSignatureNotExpired(signature);
+		}
 	}
 
 	/**
@@ -466,160 +546,72 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * 
 	 * @param validationContext {@link ValidationContext} used for the validation
 	 * @param signatures        a list of {@link AdvancedSignature}s to be validated
-	 * @param listCRLSource     {@link ListRevocationSource} used for CRL collection
-	 * @param listOCSPSource    {@link ListRevocationSource} used for OCSP
 	 *                          collection
 	 * @return filled {@link DiagnosticDataBuilder}
 	 */
-	protected DiagnosticDataBuilder createDiagnosticDataBuilder(
-			final ValidationContext validationContext, List<AdvancedSignature> signatures,
-			final ListRevocationSource<CRL> listCRLSource, final ListRevocationSource<OCSP> listOCSPSource) {
+	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
+																final List<AdvancedSignature> signatures) {
 		return initializeDiagnosticDataBuilder().document(document)
 				.foundSignatures(signatures)
 				.usedTimestamps(validationContext.getProcessedTimestamps())
-				.completeCRLSource(listCRLSource).completeOCSPSource(listOCSPSource)
+				.allCertificateSources(validationContext.getAllCertificateSources())
+				.documentCertificateSource(validationContext.getDocumentCertificateSource())
+				.documentCRLSource(validationContext.getDocumentCRLSource())
+				.documentOCSPSource(validationContext.getDocumentOCSPSource())
 				.signaturePolicyProvider(getSignaturePolicyProvider())
+				.signaturePolicyValidatorLoader(getSignaturePolicyValidatorLoader())
 				.usedCertificates(validationContext.getProcessedCertificates())
 				.usedRevocations(validationContext.getProcessedRevocations())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.tokenExtractionStrategy(tokenExtractionStrategy)
-				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
-				.trustedCertificateSources(certificateVerifier.getTrustedCertSources())
+				.tokenIdentifierProvider(identifierProvider)
 				.validationDate(getValidationTime());
 	}
-	
-	/**
-	 * Sets revocation sources for a following certificate validation
-	 * 
-	 * @param listCRLSource         {@link ListRevocationSource}
-	 * @param listOCSPSource        {@link ListRevocationSource}
-	 * @param listCertificateSource {@link ListCertificateSource}
-	 */
-	protected void prepareCertificateVerifier(ListRevocationSource<CRL> listCRLSource, ListRevocationSource<OCSP> listOCSPSource,
-			ListCertificateSource listCertificateSource) {
-		certificateVerifier.setSignatureCRLSource(listCRLSource);
-		certificateVerifier.setSignatureOCSPSource(listOCSPSource);
-		certificateVerifier.setSignatureCertificateSource(listCertificateSource);
-	}
 
 	/**
-	 * For all signatures to be validated this method merges the CRL sources.
+	 * Prepares the {@code validationContext} for signature validation process
 	 *
-	 * @param allSignatureList   {@code Collection} of {@code AdvancedSignature}s to
-	 *                           validate including the counter-signatures
-	 * @param detachedTimestamps   {@code Collection} of {@code TimestampToken}s
-	 *                           detached to a validating file
-	 * @return merged CRL Source
+	 * @param <T>
+	 *                          {@link AdvancedSignature} implementation
+	 * @param validationContext
+	 *                          {@link ValidationContext}
+	 * @param allSignatures
+	 *                          a collection of all {@link AdvancedSignature}s to be
+	 *                          validated
 	 */
-	protected ListRevocationSource<CRL> mergeCRLSources(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps) {
-		ListRevocationSource<CRL> allCrlSource = new ListRevocationSource<>();
-		if (Utils.isCollectionNotEmpty(allSignatureList)) {
-			for (final AdvancedSignature signature : allSignatureList) {
-				allCrlSource.add(signature.getCRLSource());
-				allCrlSource.addAll(signature.getTimestampSource().getTimestampCRLSources());
-			}
-		}
-		if (Utils.isCollectionNotEmpty(detachedTimestamps)) {
-			for (TimestampToken timestampToken : detachedTimestamps) {
-				allCrlSource.add(timestampToken.getCRLSource());
-			}
-		}
-		return allCrlSource;
+	protected <T extends AdvancedSignature> void prepareSignatureValidationContext(
+			final ValidationContext validationContext, final Collection<T> allSignatures) {
+		prepareSignatureForVerification(validationContext, allSignatures);
+		processSignaturesValidation(allSignatures);
 	}
 
 	/**
-	 * For all signatures to be validated this method merges the OCSP sources.
+	 * This method prepares a {@code SignatureValidationContext} for signatures validation
 	 *
-	 * @param allSignatureList   {@code Collection} of {@code AdvancedSignature}s to
-	 *                           validate including the counter-signatures
-	 * @param detachedTimestamps   {@code Collection} of {@code TimestampToken}s
-	 *                           detached to a validating file
-	 * @return merged OCSP Source
-	 */
-	protected ListRevocationSource<OCSP> mergeOCSPSources(final Collection<AdvancedSignature> allSignatureList, Collection<TimestampToken> detachedTimestamps) {
-		ListRevocationSource<OCSP> allOcspSource = new ListRevocationSource<>();
-		if (Utils.isCollectionNotEmpty(allSignatureList)) {
-			for (final AdvancedSignature signature : allSignatureList) {
-				allOcspSource.add(signature.getOCSPSource());
-				allOcspSource.addAll(signature.getTimestampSource().getTimestampOCSPSources());
-			}
-		}
-		if (Utils.isCollectionNotEmpty(detachedTimestamps)) {
-			for (TimestampToken timestampToken : detachedTimestamps) {
-				allOcspSource.add(timestampToken.getOCSPSource());
-			}
-		}
-		return allOcspSource;
-	}
-	
-	/**
-	 * For all signatures to be validated this method merges the Certificate
-	 * sources.
-	 *
-	 * @param allSignatureList   {@code Collection} of {@code AdvancedSignature}s to
-	 *                           validate including the counter-signatures
-	 * @param detachedTimestamps {@code Collection} of {@code TimestampToken}s
-	 *                           detached to a validating file
-	 * @return merged Certificate Source
-	 */
-	protected ListCertificateSource mergeCertificateSource(
-			final Collection<AdvancedSignature> allSignatureList,
-			Collection<TimestampToken> detachedTimestamps) {
-		ListCertificateSource allCertificatesSource = new ListCertificateSource();
-		if (Utils.isCollectionNotEmpty(allSignatureList)) {
-			for (AdvancedSignature advancedSignature : allSignatureList) {
-				allCertificatesSource.addAll(advancedSignature.getCompleteCertificateSource());
-			}
-		}
-		if (Utils.isCollectionNotEmpty(detachedTimestamps)) {
-			for (TimestampToken timestampToken : detachedTimestamps) {
-				allCertificatesSource.add(timestampToken.getCertificateSource());
-			}
-		}
-		return allCertificatesSource;
-	}
-
-	@Override
-	public void prepareSignatureValidationContext(final ValidationContext validationContext, final List<AdvancedSignature> allSignatureList) {
-		prepareCertificatesAndTimestamps(validationContext, allSignatureList);
-		processSignaturesValidation(allSignatureList);
-	}
-
-	/**
-	 * @param allSignatureList  {@code List} of {@code AdvancedSignature}s to
+	 * @param <T>
+	 *                          {@link AdvancedSignature} implementation
+	 * @param allSignatureList  {@code Collection} of {@code AdvancedSignature}s to
 	 *                          validate including the countersignatures
 	 * @param validationContext {@code ValidationContext} is the implementation of
 	 *                          the validators for: certificates, timestamps and
 	 *                          revocation data.
 	 */
-	protected void prepareCertificatesAndTimestamps(final ValidationContext validationContext, final List<AdvancedSignature> allSignatureList) {
+	protected <T extends AdvancedSignature> void prepareSignatureForVerification(
+			final ValidationContext validationContext, final Collection<T> allSignatureList) {
 		for (final AdvancedSignature signature : allSignatureList) {
-
-			// Add resolved certificates
-			List<CertificateValidity> certificateValidities = signature.getCandidatesForSigningCertificate().getCertificateValidityList();
-			if (Utils.isCollectionNotEmpty(certificateValidities)) {
-				for (CertificateValidity certificateValidity : certificateValidities) {
-					if (certificateValidity.isValid() && certificateValidity.getCertificateToken() != null) {
-						validationContext.addCertificateTokenForVerification(certificateValidity.getCertificateToken());
-					}
-				}
-			}
-
-			for (CertificateToken certificateToken : signature.getCertificates()) {
-				validationContext.addCertificateTokenForVerification(certificateToken);
-			}
-			signature.prepareTimestamps(validationContext);
+			validationContext.addSignatureForVerification(signature);
 		}
 	}
 
 	/**
 	 * Prepares the {@code validationContext} for a timestamp validation process
-	 * 
-	 * @param validationContext {@link ValidationContext}
-	 * @param timestamps        a list of timestamps
+	 *
+	 * @param validationContext
+	 *                          {@link ValidationContext}
+	 * @param timestamps
+	 *                          a collection of detached timestamps
 	 */
-	@Override
-	public void prepareDetachedTimestampValidationContext(final ValidationContext validationContext, List<TimestampToken> timestamps) {
+	protected void prepareDetachedTimestampValidationContext(final ValidationContext validationContext, Collection<TimestampToken> timestamps) {
 		for (TimestampToken timestampToken : timestamps) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
 		}
@@ -631,7 +623,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param validationContext {@link ValidationContext} to process
 	 */
 	protected void validateContext(final ValidationContext validationContext) {
-		validationContext.initialize(certificateVerifier);
 		validationContext.validate();
 	}
 	
@@ -647,10 +638,20 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
 		if (signaturePolicyProvider == null) {
+			LOG.info("Default SignaturePolicyProvider instantiated with NativeHTTPDataLoader.");
 			signaturePolicyProvider = new SignaturePolicyProvider();
-			signaturePolicyProvider.setDataLoader(certificateVerifier.getDataLoader());
+			signaturePolicyProvider.setDataLoader(new NativeHTTPDataLoader());
 		}
 		return signaturePolicyProvider;
+	}
+
+	/**
+	 * Returns an instance of a corresponding to the format {@code SignaturePolicyValidatorLoader}
+	 *
+	 * @return {@link SignaturePolicyValidatorLoader}
+	 */
+	public SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
+		return new DefaultSignaturePolicyValidatorLoader();
 	}
 	
 	@Override
@@ -697,7 +698,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Returns a list of all signatures from the valdiating document
+	 * Returns a list of all signatures from the validating document
 	 *
 	 * @return a list of {@link AdvancedSignature}s
 	 */
@@ -748,7 +749,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	@Override
-	public void processSignaturesValidation(List<AdvancedSignature> allSignatureList) {
+	public <T extends AdvancedSignature>  void processSignaturesValidation(Collection<T> allSignatureList) {
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSignatureIntegrity();
 		}
@@ -762,7 +763,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *                      SignatureScope list
 	 */
 	@Override
-	public void findSignatureScopes(List<AdvancedSignature> allSignatures) {
+	public <T extends AdvancedSignature> void findSignatureScopes(Collection<T> allSignatures) {
 		for (final AdvancedSignature signature : allSignatures) {
 			signature.findSignatureScope(signatureScopeFinder);
 		}
@@ -785,6 +786,60 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	@Override
+	public List<DSSDocument> getOriginalDocuments(String signatureId) {
+		AdvancedSignature advancedSignature = getSignatureById(signatureId);
+		if (advancedSignature != null) {
+			return getOriginalDocuments(advancedSignature);
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns the signature with the given id. Processes custom {@code TokenIdentifierProvider} and counter signatures
+	 *
+	 * @param signatureId {@link String} id of a signature to be extracted
+	 * @return {@link AdvancedSignature} with the given id if found, NULL otherwise
+	 */
+	public AdvancedSignature getSignatureById(String signatureId) {
+		Objects.requireNonNull(signatureId, "Signature Id cannot be null!");
+		for (AdvancedSignature advancedSignature : getSignatures()) {
+			AdvancedSignature signature = findSignatureRecursively(advancedSignature, signatureId);
+			if (signature != null) {
+				return signature;
+			}
+		}
+		return null;
+	}
+
+	private AdvancedSignature findSignatureRecursively(AdvancedSignature signature, String signatureId) {
+		if (doesIdMatch(signature, signatureId)) {
+			return signature;
+		}
+		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
+			AdvancedSignature advancedSignature = findSignatureRecursively(counterSignature, signatureId);
+			if (advancedSignature != null) {
+				return advancedSignature;
+			}
+		}
+		return null;
+	}
+
+	private boolean doesIdMatch(AdvancedSignature signature, String signatureId) {
+		return signatureId.equals(signature.getId()) || signatureId.equals(signature.getDAIdentifier()) ||
+				signatureId.equals(identifierProvider.getIdAsString(signature));
+	}
+
+	/**
+	 * Gets digest of a document
+	 *
+	 * @param document {@link DSSDocument}
+	 * @return {@link Digest}
+	 */
+	protected Digest getDigest(DSSDocument document) {
+		return new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(document.getDigest(getDefaultDigestAlgorithm())));
 	}
 
 }

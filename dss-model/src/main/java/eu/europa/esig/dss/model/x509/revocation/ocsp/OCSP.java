@@ -22,6 +22,10 @@ package eu.europa.esig.dss.model.x509.revocation.ocsp;
 
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
+/**
+ * This interface represents an OCSP token
+ *
+ */
 public interface OCSP extends Revocation {
 
 }

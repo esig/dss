@@ -22,14 +22,18 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Represents a parsed Manifest File object
  */
-public class ManifestFile {
+public class ManifestFile implements Serializable {
+
+	private static final long serialVersionUID = -5971045309587760817L;
 
 	/** The DSSDocument represented by the ManifestFile */
 	private DSSDocument document;
@@ -45,6 +49,15 @@ public class ManifestFile {
 
 	/** TRUE if it is an ASiCArchiveManifest file, FALSE otherwise */
 	private boolean archiveManifest;
+
+	/**
+	 * Gets the {@code DSSDocument} representing the manifest
+	 *
+	 * @return {@link DSSDocument}
+	 */
+	public DSSDocument getDocument() {
+		return document;
+	}
 
 	/**
 	 * Sets the manifest document
@@ -151,6 +164,7 @@ public class ManifestFile {
 	
 	/**
 	 * Returns a {@link ManifestEntry} with argument Rootfile="true"
+	 *
 	 * @return {@link ManifestEntry} if the rootfile is found, FALSE otherwise
 	 */
 	public ManifestEntry getRootFile() {
@@ -160,6 +174,23 @@ public class ManifestFile {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if the document with {@code documentName} is covered by the Manifest
+	 *
+	 * @param documentName {@link String} to check
+	 * @return TRUE if the document with the given name is covered, FALSE otherwise
+	 */
+	public boolean isDocumentCovered(String documentName) {
+		if (Utils.isStringNotBlank(documentName)) {
+			for (ManifestEntry entry : getEntries()) {
+				if (documentName.equals(entry.getFileName())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

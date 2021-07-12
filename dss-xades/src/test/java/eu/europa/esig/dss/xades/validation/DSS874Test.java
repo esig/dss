@@ -20,23 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -51,6 +35,18 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS874Test extends AbstractXAdESTestValidation {
 	
@@ -78,7 +74,7 @@ public class DSS874Test extends AbstractXAdESTestValidation {
 		super.checkTokens(diagnosticData);
 
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatures().get(0);
-		assertTrue(signatureWrapper.isPolicyStatus());
+		assertTrue(signatureWrapper.isPolicyDigestValid());
 		assertTrue(signatureWrapper.isPolicyIdentified());
 		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
 		
@@ -94,14 +90,6 @@ public class DSS874Test extends AbstractXAdESTestValidation {
 		
 		assertEquals(5, signatureWrapper.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
 		assertEquals(0, signatureWrapper.foundRevocations().getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
-		
-		List<String> revocationIds = new ArrayList<>();
-		for (RelatedRevocationWrapper revocation : signatureWrapper.foundRevocations().getRelatedRevocationData()) {
-			revocationIds.add(revocation.getId());
-		}
-		for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations().getOrphanRevocationData()) {
-			revocationIds.add(revocation.getId());
-		}
 	}
 	
 	@Override

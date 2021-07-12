@@ -119,7 +119,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 				assertFalse(timestamp.isMessageImprintDataFound());
 				assertFalse(timestamp.isMessageImprintDataIntact());
 				assertTrue(timestamp.isSignatureIntact());
-				assertTrue(timestamp.isSignatureValid());
+				assertFalse(timestamp.isSignatureValid());
 				
 				archiveTstId = timestamp.getId();
 			}
@@ -174,7 +174,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 		assertFalse(timestamp.isMessageImprintDataFound());
 		assertFalse(timestamp.isMessageImprintDataIntact());
 		assertTrue(timestamp.isSignatureIntact());
-		assertTrue(timestamp.isSignatureValid());
+		assertFalse(timestamp.isSignatureValid());
 		
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -233,7 +233,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 			assertFalse(timestamp.isMessageImprintDataFound());
 			assertFalse(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureIntact());
-			assertTrue(timestamp.isSignatureValid());
+			assertFalse(timestamp.isSignatureValid());
 			
 			XmlBasicBuildingBlocks contentTstBBB = detailedReport.getBasicBuildingBlockById(timestamp.getId());
 			assertNotNull(contentTstBBB);

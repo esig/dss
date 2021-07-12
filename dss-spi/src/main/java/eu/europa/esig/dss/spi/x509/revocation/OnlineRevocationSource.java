@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 
@@ -36,5 +37,66 @@ public interface OnlineRevocationSource<R extends Revocation> extends Revocation
 	 *            HTTP.
 	 */
 	void setDataLoader(final DataLoader dataLoader);
+
+	/**
+	 * This method retrieves a {@code RevocationTokenAndUrl} for the certificateToken
+	 *
+	 * @param certificateToken
+	 *                               The {@code CertificateToken} for which the
+	 *                               request is made
+	 * @param issuerToken
+	 *                               The {@code CertificateToken} which is the
+	 *                               issuer of the certificateToken
+	 * @return an instance of {@code RevocationTokenAndUrl}
+	 */
+	RevocationTokenAndUrl<R> getRevocationTokenAndUrl(CertificateToken certificateToken, CertificateToken issuerToken);
+
+	/**
+	 * This class represents an online revocation source reply, containing the extracted {@code RevocationToken}
+	 * and the URL {@code String} used to download the token from
+	 *
+	 */
+	class RevocationTokenAndUrl<R extends Revocation> {
+
+		/**
+		 * Url used to obtain data.
+		 */
+		private final String urlString;
+
+		/**
+		 * The revocation token.
+		 */
+		private final RevocationToken<R> revocationToken;
+
+		/**
+		 * Default constructor
+		 *
+		 * @param urlString {@link String} URL used to download the revocation token
+		 * @param revocationToken {@link RevocationToken} downloaded from the URL
+		 */
+		public RevocationTokenAndUrl(final String urlString, final RevocationToken<R> revocationToken) {
+			this.urlString = urlString;
+			this.revocationToken = revocationToken;
+		}
+
+		/**
+		 * Gets the URL used to download the data
+		 *
+		 * @return {@link String}
+		 */
+		public String getUrlString() {
+			return urlString;
+		}
+
+		/**
+		 * Gets the downloaded {@code RevocationToken}
+		 *
+		 * @return {@link RevocationToken}
+		 */
+		public RevocationToken<R> getRevocationToken() {
+			return revocationToken;
+		}
+
+	}
 
 }

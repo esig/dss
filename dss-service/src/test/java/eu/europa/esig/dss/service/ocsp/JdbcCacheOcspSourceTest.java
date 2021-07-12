@@ -20,20 +20,13 @@
  */
 package eu.europa.esig.dss.service.ocsp;
 
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import org.apache.commons.codec.binary.Hex;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterEach;
@@ -42,12 +35,19 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import java.io.File;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JdbcCacheOcspSourceTest {
 
@@ -63,7 +63,8 @@ public class JdbcCacheOcspSourceTest {
 	@BeforeEach
 	public void setUp() throws SQLException {
 		dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
-		ocspSource.setDataSource(dataSource);
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+		ocspSource.setJdbcCacheConnector(jdbcCacheConnector);
 		assertFalse(ocspSource.isTableExists());
 		ocspSource.initTable();
 		assertTrue(ocspSource.isTableExists());
@@ -71,7 +72,7 @@ public class JdbcCacheOcspSourceTest {
 	
 	@Test
 	public void test() throws Exception {
-		OCSPToken revocationToken = null;
+		OCSPToken revocationToken;
 		
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		CertificateToken rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
@@ -83,14 +84,12 @@ public class JdbcCacheOcspSourceTest {
 		ocspSource.setDefaultNextUpdateDelay(180L); // cache expiration in 180 seconds
 		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(revocationToken);
-		assertNotNull(revocationToken.getRevocationTokenKey());
 		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 		requestTime = new Date();
 
 		// check real {@code findRevocation()} method behavior
 		OCSPToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
-		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 		assertEquals(revocationToken.getAbbreviation(), savedRevocationToken.getAbbreviation());
 		assertEquals(revocationToken.getCreationDate(), savedRevocationToken.getCreationDate());
 		assertEquals(revocationToken.getDSSIdAsString(), savedRevocationToken.getDSSIdAsString());
@@ -102,7 +101,7 @@ public class JdbcCacheOcspSourceTest {
 		assertEquals(revocationToken.getProductionDate(), savedRevocationToken.getProductionDate());
 		assertEquals(Hex.encodeHexString(revocationToken.getPublicKeyOfTheSigner().getEncoded()), Hex.encodeHexString(savedRevocationToken.getPublicKeyOfTheSigner().getEncoded()));
 		assertEquals(revocationToken.getReason(), savedRevocationToken.getReason());
-		assertEquals(revocationToken.getRelatedCertificateID(), savedRevocationToken.getRelatedCertificateID());
+		assertEquals(revocationToken.getRelatedCertificateId(), savedRevocationToken.getRelatedCertificateId());
 		assertEquals(revocationToken.getRevocationDate(), savedRevocationToken.getRevocationDate());
 		assertEquals(revocationToken.getSignatureAlgorithm().getEncryptionAlgorithm().name(), savedRevocationToken.getSignatureAlgorithm().getEncryptionAlgorithm().name());
 		assertEquals(revocationToken.getSourceURL(), savedRevocationToken.getSourceURL());
@@ -147,7 +146,7 @@ public class JdbcCacheOcspSourceTest {
 			if (storedRevocationToken == null) {
 				return super.findRevocation(key, certificateToken, issuerCertificateToken);
 			} else {
-				LOG.info("ThisUpdate was overriden from {} to {}", storedRevocationToken.getThisUpdate(), requestTime);
+				LOG.info("ThisUpdate was overridden from {} to {}", storedRevocationToken.getThisUpdate(), requestTime);
 				storedRevocationToken.getThisUpdate().setTime(requestTime.getTime());
 				return storedRevocationToken;
 			}

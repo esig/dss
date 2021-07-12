@@ -20,33 +20,32 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
+import java.awt.Color;
+import java.util.Date;
+
+public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
+
+	private final DSSDocument RED_CROSS_IMAGE = new InMemoryDocument(
+			getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG);
+
+	private final DSSDocument PNG_IMAGE = new InMemoryDocument(
+			getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG);
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -68,7 +67,7 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 	@Test
 	public void testNoTransformations() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(getRedBox());
+		imageParameters.setImage(RED_CROSS_IMAGE);
 		
 	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 	    fieldParameters.setOriginX(20);
@@ -78,14 +77,14 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 	    imageParameters.setFieldParameters(fieldParameters);
 	    
 		signatureParameters.setImageParameters(imageParameters);
-		
-		signAndValidate();
+
+		super.signAndVerify();
 	}
 	
 	@Test
 	public void testZoomOnly() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(getRedBox());
+		imageParameters.setImage(RED_CROSS_IMAGE);
 		
 	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 	    fieldParameters.setOriginX(20);
@@ -96,14 +95,14 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 		
 		imageParameters.setZoom(200);
 		signatureParameters.setImageParameters(imageParameters);
-		
-		signAndValidate();
+
+		super.signAndVerify();
 	}
 	
 	@Test
 	public void testRotationOnly() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(getRedBox());
+		imageParameters.setImage(PNG_IMAGE);
 
 	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 	    fieldParameters.setOriginX(20);
@@ -111,17 +110,18 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 	    fieldParameters.setWidth(100);
 	    fieldParameters.setHeight(300);
 	    imageParameters.setFieldParameters(fieldParameters);
+	    imageParameters.setBackgroundColor(Color.PINK);
 		
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
-		
-		signAndValidate();
+
+		super.signAndVerify();
 	}
 	
 	@Test
 	public void testZoomAndRotation() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(getRedBox());
+		imageParameters.setImage(PNG_IMAGE);
 
 	    SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 	    fieldParameters.setOriginX(20);
@@ -129,31 +129,34 @@ public class PAdESVisibleZoomRotationTest extends PKIFactoryAccess {
 	    fieldParameters.setWidth(100);
 	    fieldParameters.setHeight(300);
 	    imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setBackgroundColor(Color.PINK);
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
 		
 		imageParameters.setZoom(200);
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
-		
-		signAndValidate();
+
+		super.signAndVerify();
 	}
 
-	private void signAndValidate() throws IOException {
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-
-		// signedDocument.save("target/test.pdf");
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	@Override
+	public void signAndVerify() {
+		// do nothing
 	}
 
-	private DSSDocument getRedBox() {
-		return new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG);
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
+
+	@Override
+	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
+		return service;
+	}
+
+	@Override
+	protected PAdESSignatureParameters getSignatureParameters() {
+		return signatureParameters;
 	}
 
 	@Override

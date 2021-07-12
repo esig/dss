@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.jades;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-
-import org.jose4j.json.JsonUtil;
-import org.jose4j.lang.JoseException;
-
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jades.JAdESUtils;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.lang.JoseException;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Parser used to create a {@code JWSJsonSerializationObject} from a document
@@ -86,13 +85,13 @@ public class JWSJsonSerializationParser {
 			} else {
 				// otherwise extract flattened JWS JSON Serialization signature
 				jwsJsonSerializationObject.setJWSSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);				
-				extractSignature(jwsJsonSerializationObject, rootStructure);
+				extractAndAddJWSSignature(jwsJsonSerializationObject, rootStructure);
 			}
 			
 			return jwsJsonSerializationObject;
 			
 		} catch (JoseException e) {
-			throw new DSSException(String.format("Unable to parse document with name '%s'. "
+			throw new IllegalInputException(String.format("Unable to parse document with name '%s'. "
 					+ "Reason : %s", document.getName(), e.getMessage()), e);
 		}
 	}
@@ -114,7 +113,7 @@ public class JWSJsonSerializationParser {
 				for (Object signatureObject : signaturesObjectList) {
 					if (signatureObject instanceof Map<?, ?>) {
 						Map<String, Object> signatureMap = (Map<String, Object>) signatureObject;						
-						extractSignature(jwsJsonSerializationObject, signatureMap);
+						extractAndAddJWSSignature(jwsJsonSerializationObject, signatureMap);
 					}
 				}
 			}
@@ -122,7 +121,7 @@ public class JWSJsonSerializationParser {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void extractSignature(JWSJsonSerializationObject jwsJsonSerializationObject, Map<String, Object> signatureMap) {
+	private void extractAndAddJWSSignature(JWSJsonSerializationObject jwsJsonSerializationObject, Map<String, Object> signatureMap) {
 		try {
 			JWS signature = new JWS();
 			
@@ -159,7 +158,7 @@ public class JWSJsonSerializationParser {
 			signature.setJwsJsonSerializationObject(jwsJsonSerializationObject);
 			jwsJsonSerializationObject.getSignatures().add(signature);
 		} catch (Exception e) {
-			throw new DSSException(String.format("Unable to build a signature. Reason : [%s]", e.getMessage()), e);
+			throw new IllegalInputException(String.format("Unable to parse a JWS signature. Reason : [%s]", e.getMessage()), e);
 		}
 	}
 	

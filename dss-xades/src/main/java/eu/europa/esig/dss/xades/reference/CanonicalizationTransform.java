@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 
@@ -29,6 +28,8 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
  * Performs a canonicalization transform on XML NodeSet
  */
 public class CanonicalizationTransform extends ComplexTransform {
+
+	private static final long serialVersionUID = 4876071474579456586L;
 
 	/**
 	 * Default constructor
@@ -48,7 +49,8 @@ public class CanonicalizationTransform extends ComplexTransform {
 	public CanonicalizationTransform(DSSNamespace xmlDSigNamespace, String canonicalizationAlgorithm) {
 		super(xmlDSigNamespace, canonicalizationAlgorithm);
 		if (!DSSXMLUtils.canCanonicalize(canonicalizationAlgorithm)) {
-			throw new DSSException(String.format("The provided canonicalization method [%s] is not supported!", canonicalizationAlgorithm));
+			throw new UnsupportedOperationException(String.format("The provided canonicalization method [%s] is not supported!",
+					canonicalizationAlgorithm));
 		}
 	}
 

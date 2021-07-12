@@ -37,9 +37,6 @@ public class ContentIdentifierCheck extends AbstractValueCheckItem<XmlSAV> {
 	/** The signature to check */
 	private final SignatureWrapper signature;
 
-	/** The constraint */
-	private final ValueConstraint constraint;
-
 	/**
 	 * Default constructor
 	 *
@@ -52,14 +49,12 @@ public class ContentIdentifierCheck extends AbstractValueCheckItem<XmlSAV> {
 								  ValueConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
-		this.constraint = constraint;
 	}
 
 	@Override
 	protected boolean process() {
 		String contentIdentifier = signature.getContentIdentifier();
-		String expected = constraint.getValue();
-		return processValueCheck(contentIdentifier, expected);
+		return processValueCheck(contentIdentifier);
 	}
 
 	@Override

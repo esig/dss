@@ -20,23 +20,26 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelXLTest extends AbstractXAdESTestSignature {
 
@@ -60,13 +63,47 @@ public class XAdESLevelXLTest extends AbstractXAdESTestSignature {
 	}
 
 	@Override
-	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> signatures, DiagnosticData diagnosticData) {
-		super.verifySourcesAndDiagnosticDataWithOrphans(signatures, diagnosticData);
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		Document document = DomUtils.buildDOM(byteArray);
+		NodeList signaturesList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
+		assertEquals(1, signaturesList.getLength());
+
+		XAdES132Paths paths = new XAdES132Paths();
+
+		Node signature = signaturesList.item(0);
+		NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificateChildren());
+		assertEquals(1, signingCertificateList.getLength());
+
+		NodeList signingCertificateV2List = DomUtils.getNodeList(signature, paths.getSigningCertificateV2Children());
+		assertEquals(0, signingCertificateV2List.getLength());
+
+		NodeList completeCertificateRefsList = DomUtils.getNodeList(signature, paths.getCompleteCertificateRefsPath());
+		assertEquals(1, completeCertificateRefsList.getLength());
+
+		NodeList completeCertificateRefsV2List = DomUtils.getNodeList(signature, paths.getCompleteCertificateRefsV2Path());
+		assertEquals(0, completeCertificateRefsV2List.getLength());
+
+		NodeList completeRevocationRefsList = DomUtils.getNodeList(signature, paths.getCompleteRevocationRefsPath());
+		assertEquals(1, completeRevocationRefsList.getLength());
+
+		NodeList sigAndRefsTimeStampList = DomUtils.getNodeList(signature, paths.getSigAndRefsTimestampPath());
+		assertEquals(1, sigAndRefsTimeStampList.getLength());
+
+		NodeList sigAndRefsTimeStampV2List = DomUtils.getNodeList(signature, paths.getSigAndRefsTimestampV2Path());
+		assertEquals(0, sigAndRefsTimeStampV2List.getLength());
+
+		NodeList certificateValuesList = DomUtils.getNodeList(signature, paths.getCertificateValuesPath());
+		assertEquals(1, certificateValuesList.getLength());
+
+		NodeList revocationValuesList = DomUtils.getNodeList(signature, paths.getRevocationValuesPath());
+		assertEquals(1, revocationValuesList.getLength());
 	}
 
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.XAdES_BASELINE_LT, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.XAdES_XL, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 

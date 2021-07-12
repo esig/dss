@@ -9,4 +9,16 @@
 		<xjc:serializable uid="1" />
     </jaxb:globalBindings>
 
+	<jaxb:bindings schemaLocation="policy.xsd" node="/xs:schema">
+
+		<jaxb:bindings node="//xs:complexType[@name='ListAlgo']//xs:element[@name='Algo']">
+			<jaxb:property name="Algos" />
+		</jaxb:bindings>
+
+		<jaxb:bindings node="//xs:complexType[@name='AlgoExpirationDate']//xs:element[@name='Algo']">
+			<jaxb:property name="Algos" />
+		</jaxb:bindings>
+
+	</jaxb:bindings>
+
 </jaxb:bindings>

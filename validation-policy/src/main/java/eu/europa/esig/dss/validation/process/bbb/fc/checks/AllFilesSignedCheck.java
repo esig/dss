@@ -68,60 +68,55 @@ public class AllFilesSignedCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected boolean process() {
-
 		/* ASiC-S -> nb files = 1 */
 		if (ASiCContainerType.ASiC_S.equals(containerInfo.getContainerType())) {
 			return 1 == Utils.collectionSize(containerInfo.getContentFiles());
+
 		} else if (ASiCContainerType.ASiC_E.equals(containerInfo.getContainerType())) {
 			String signatureFilename = signature.getSignatureFilename();
-			List<String> coveredFiles = getCoveredFilesBySignatureFilename(signatureFilename);
 			List<String> contentFiles = containerInfo.getContentFiles();
 
-			// check manifest <> content
-			if (!sameContent(coveredFiles, contentFiles)) {
+			XmlManifestFile manifestFile = getRelatedManifestFile(signatureFilename);
+			if (manifestFile != null) {
+				List<String> coveredFiles = manifestFile.getEntries();
+				// check manifest <> content
+				if (!coversAllOriginalFiles(coveredFiles, contentFiles)) {
+					return false;
+				}
+			} else if (SignatureForm.CAdES.equals(signature.getSignatureFormat().getSignatureForm())) {
+				// CAdES -> manifest file shall be present and signed
 				return false;
 			}
 
 			// XAdES -> check signature scope
 			if (SignatureForm.XAdES.equals(signature.getSignatureFormat().getSignatureForm())) {
 				List<String> coveredFilesFromScope = getCoveredFilesFromScope();
-				return sameContent(coveredFilesFromScope, contentFiles);
+				return coversAllOriginalFiles(coveredFilesFromScope, contentFiles);
 			}
 
-			// CAdES -> manifest file is signed
 			return true;
 		}
 
 		return false;
 	}
 
-	private boolean sameContent(List<String> coveredFiles, List<String> contentFiles) {
-		if (Utils.collectionSize(coveredFiles) == Utils.collectionSize(contentFiles)) {
-			boolean findAll = true;
-
-			for (String content : contentFiles) {
-				findAll &= coveredFiles.contains(content);
+	private boolean coversAllOriginalFiles(List<String> coveredFiles, List<String> originalFiles) {
+		for (String file : originalFiles) {
+			if (!coveredFiles.contains(file)) {
+				return false;
 			}
-
-			if (findAll) {
-				for (String covered : coveredFiles) {
-					findAll &= contentFiles.contains(covered);
-				}
-			}
-
-			return findAll;
 		}
-		return false;
+		return true;
 	}
 
-	private List<String> getCoveredFilesBySignatureFilename(String signatureFilename) {
+	private XmlManifestFile getRelatedManifestFile(String signatureFilename) {
 		List<XmlManifestFile> manifestFiles = containerInfo.getManifestFiles();
 		for (XmlManifestFile xmlManifestFile : manifestFiles) {
 			if (Utils.areStringsEqual(signatureFilename, xmlManifestFile.getSignatureFilename())) {
-				return xmlManifestFile.getEntries();
+				return xmlManifestFile;
 			}
 		}
-		return new ArrayList<>();
+		return null;
 	}
 
 	private List<String> getCoveredFilesFromScope() {

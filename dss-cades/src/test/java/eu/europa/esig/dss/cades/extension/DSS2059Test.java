@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.event.Level;
-
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -46,8 +33,8 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -58,6 +45,18 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2060/DSS-2061
 public class DSS2059Test extends AbstractCAdESTestExtension {
@@ -74,6 +73,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
 		certificateVerifier.setAlertOnInvalidTimestamp(new LogOnStatusAlert(Level.WARN));
 		certificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.WARN));
+		// certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
 		
 		CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
 		CertificateToken tstV2CA = DSSUtils.loadCertificateFromBase64EncodedString("MIID/zCCAuegAwIBAgIQP8umE0YUpE/yhLiMgaeopDANBgkqhkiG9w0BAQsFADB3MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxKDAmBgNVBAMTH1VuaXZlcnNpZ24gVGltZXN0YW1waW5nIENBIDIwMTUwHhcNMTUwMTI5MTQwMzE1WhcNMjUwMTI5MTQwMzE1WjB3MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxKDAmBgNVBAMTH1VuaXZlcnNpZ24gVGltZXN0YW1waW5nIENBIDIwMTUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYc1VJ69W70ojewtKbCLZ+P8bDAVJ1qujzgIZEvm15GYX7Jp+Hl9rwxBdswSZ8S5A/x+0j6YMOHH0Z+iGl649+0GGX1gdAuovQKShsvLSzD/waINxkXXTVXpAW3V4dnCgcb3qaV/pO9NTk/sdRJxM8lUtWuD7TEAfLzz7Ucl6gBjDTA0Gz+AtUkNWPcofCWuDfiSDOOpyKwSxovde6SRwHdTXXIiC2Dphffjrr74MvLb0La5JAUwmJLIH42j/frgZeWk148wLMwBW+lvrIJtPz7eHNtTlNfQLrmmJHW4l+yvTsdJJDs7QYtfzBTNg1zqV8eo/hHxFTFJ8/T9wTmENJAgMBAAGjgYYwgYMwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwQQYDVR0gBDowODA2BgorBgEEAftLBQEBMCgwJgYIKwYBBQUHAgEWGmh0dHA6Ly9kb2NzLnVuaXZlcnNpZ24uZXUvMB0GA1UdDgQWBBT6Te1XO70/85Ezmgs5pH9dEt0HRjANBgkqhkiG9w0BAQsFAAOCAQEAc7ud6793wgdjR8Xc1L47ufdVTamI5SHfOThtROfn8JL0HuNHKdRgv6COpdjtt6RwQEUUX/km7Q+Pn+A2gA/XoPfqD0iMfP63kMMyqgalEPRv+lXbFw3GSC9BQ9s2FL7ScvSuPm7VDZhpYN5xN6H72y4z7BgsDVNhkMu5AiWwbaWF+BHzZeiuvYHX0z/OgY2oH0hluovuRAanQd4dOa73bbZhTJPFUzkgeIzOiuYS421IiAqsjkFwu3+k4dMDqYfDKUSITbMymkRDszR0WGNzIIy2NsTBcKYCHmbIV9S+165i8YjekraBjTTSbpfbty87A1S53CzA2EN1qnmQPwqFfg==");
@@ -106,7 +106,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		counterSignatureParameters.setSignatureIdToCounterSign(signatures.get(0).getId());
 		
-		Exception exception = assertThrows(DSSException.class, () -> service.getDataToBeCounterSigned(document, counterSignatureParameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(document, counterSignatureParameters));
 		assertEquals("Cannot add a counter signature to a CAdES containing an archiveTimestampV2", exception.getMessage());
 	}
 	
@@ -120,7 +120,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		spDocSpec.setId("1.2.3.4.5.6");
 		signaturePolicyStore.setSpDocSpecification(spDocSpec);
 		
-		Exception exception = assertThrows(DSSException.class, () -> service.addSignaturePolicyStore(document, signaturePolicyStore));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.addSignaturePolicyStore(document, signaturePolicyStore));
 		assertEquals("Cannot add signature policy store to a CAdES containing an archiveTimestampV2", exception.getMessage());
 	}
 	
@@ -194,7 +194,8 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(getFinalSignatureLevel(), diagnosticData.getFirstSignatureFormat()); 
+		// certificate-values shall not be present
+		assertEquals(SignatureLevel.CAdES_A, diagnosticData.getFirstSignatureFormat());
 	}
 
 	@Override

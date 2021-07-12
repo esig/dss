@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.diagnostic;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.jaxb.AbstractJaxbFacade;
+import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
@@ -31,11 +31,24 @@ import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 
+/**
+ * This class is used to marshall/unmarshal DiagnosticData report
+ *
+ */
 public class DiagnosticDataFacade extends AbstractJaxbFacade<XmlDiagnosticData> {
 
+	/**
+	 * Creates a new instance of {@link DiagnosticDataFacade}
+	 *
+	 * @return {@link DiagnosticDataFacade}
+	 */
 	public static DiagnosticDataFacade newFacade() {
 		return new DiagnosticDataFacade();
 	}
@@ -54,6 +67,22 @@ public class DiagnosticDataFacade extends AbstractJaxbFacade<XmlDiagnosticData> 
 	protected JAXBElement<XmlDiagnosticData> wrap(XmlDiagnosticData diagnosticDataJaxb) {
 		return DiagnosticDataXmlDefiner.OBJECT_FACTORY.createDiagnosticData(diagnosticDataJaxb);
 	}
+
+	/**
+	 * Generates a SVG representation of the diagnostic data
+	 *
+	 * @param diagnosticDataJaxb {@link XmlDiagnosticData}
+	 * @return {@link String}
+	 * @throws IOException if an IOException occurs
+	 * @throws TransformerException if an TransformerException occurs
+	 * @throws JAXBException if an JAXBException occurs
+	 */
+	public String generateSVG(XmlDiagnosticData diagnosticDataJaxb) throws IOException, TransformerException, JAXBException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateSVG(diagnosticDataJaxb, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
 	
 	/**
      * Generates a SVG representation of the diagnostic data
@@ -68,4 +97,33 @@ public class DiagnosticDataFacade extends AbstractJaxbFacade<XmlDiagnosticData> 
 		Transformer transformer = DiagnosticDataXmlDefiner.getSvgTemplates().newTransformer();
 		transformer.transform(new JAXBSource(getJAXBContext(), wrap(diagnosticDataJaxb)), result);
 	}
+
+	/**
+	 * Generates a SVG representation of the diagnostic data
+	 *
+	 * @param marshalledDiagnosticData {@link String} marshalled diagnostic data
+	 * @return {@link String}
+	 * @throws IOException if IOException occurs
+	 * @throws TransformerException if TransformerException occurs
+	 */
+	public String generateSVG(String marshalledDiagnosticData) throws IOException, TransformerException {
+		try (StringWriter stringWriter = new StringWriter()) {
+			generateSVG(marshalledDiagnosticData, new StreamResult(stringWriter));
+			return stringWriter.toString();
+		}
+	}
+
+	/**
+	 * Generates a SVG representation of the diagnostic data
+	 *
+	 * @param marshalledDiagnosticData {@link String} marshalled diagnostic data
+	 * @param result {@link Result} to write the SVG into
+	 * @throws IOException if an IOException occurs
+	 * @throws TransformerException if an TransformerException occurs
+	 */
+	public void generateSVG(String marshalledDiagnosticData, Result result) throws IOException, TransformerException {
+		Transformer transformer = DiagnosticDataXmlDefiner.getSvgTemplates().newTransformer();
+		transformer.transform(new StreamSource(new StringReader(marshalledDiagnosticData)), result);
+	}
+
 }

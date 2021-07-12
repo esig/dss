@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
@@ -44,6 +38,12 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public abstract class AbstractCryptographicConstraintsTest extends AbstractTestValidationExecutor {
 
 	protected ConstraintsParameters constraintsParameters = null;
@@ -55,12 +55,9 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 	protected static final String ALGORITHM_SHA1 = "SHA1";
 	protected static final String ALGORITHM_SHA256 = "SHA256";
 	
-	protected static final String BIT_SIZE_4096 = "4096";
-	
 	protected File validationPolicyFile = null;
 	
 	protected XmlDiagnosticData initializeExecutor(String diagnosticDataFile) throws Exception {
-
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File(diagnosticDataFile));
 		assertNotNull(diagnosticData);
 
@@ -165,17 +162,14 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 	protected void setAlgoExpDate(CryptographicConstraint defaultCryptographicConstraint, String algorithm, Integer keySize, String date) {
 		if (keySize == 0) {
 			setDigestAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date);
-
 		} else {
 			setAlgoExpirationDate(defaultCryptographicConstraint, algorithm, date, keySize);
-
 		}
 	}
 	
 	private void setAlgoExpirationDate(CryptographicConstraint cryptographicConstraint, String algorithmName, String expirationDate, Integer keySize) {
-		
 		AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
-		List<Algo> algorithms = algoExpirationDate.getAlgo();
+		List<Algo> algorithms = algoExpirationDate.getAlgos();
 		boolean listContainsAlgorithms = false;
 		for (Algo algorithm : algorithms) {
 			if (algorithm.getValue().equals(algorithmName) && algorithm.getSize().equals(keySize)) {
@@ -184,19 +178,13 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 			}
 		}
 		if (!listContainsAlgorithms) {
-			Algo algo = new Algo();
-			algo.setValue(algorithmName);
-			algo.setDate(expirationDate);
-			algo.setSize(keySize);
-			algorithms.add(algo);
+			algorithms.add(createAlgo(algorithmName, keySize, expirationDate));
 		}
-		
 	}
 	
 	private void setDigestAlgoExpirationDate(CryptographicConstraint cryptographicConstraint, String algorithmName, String expirationDate) {
-		
 		AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
-		List<Algo> algorithms = algoExpirationDate.getAlgo();
+		List<Algo> algorithms = algoExpirationDate.getAlgos();
 		boolean listContainsAlgorithms = false;
 		for (Algo algorithm : algorithms) {
 			if (algorithm.getValue().equals(algorithmName)) {
@@ -205,27 +193,21 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 			}
 		}
 		if (!listContainsAlgorithms) {
-			Algo algo = new Algo();
-			algo.setValue(algorithmName);
-			algo.setDate(expirationDate);
-			algorithms.add(algo);
+			algorithms.add(createAlgo(algorithmName, 0, expirationDate));
 		}
-		
 	}
 	
 	protected void removeAlgo(List<Algo> algorithms, String algorithm, Integer keySize) {
-		if(keySize == 0) {
+		if (keySize == 0) {
 			removeDigestAlgorithm(algorithms, algorithm);
-
-		}else {
+		} else {
 			removeEncryptionAlgorithm(algorithms, algorithm, keySize);
-
 		}
 	}
 	
 	private void removeDigestAlgorithm(List<Algo> algorithms, String algorithmName) {
 		Iterator<Algo> iterator = algorithms.iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			Algo algo = iterator.next();
 			if (algo.getValue().equals(algorithmName)) {
 				iterator.remove();
@@ -235,7 +217,7 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 	
 	private void removeEncryptionAlgorithm(List<Algo> algorithms, String algorithmName, Integer keySize) {
 		Iterator<Algo> iterator = algorithms.iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			Algo algo = iterator.next();
 			if (algo.getValue().equals(algorithmName) && algo.getSize().equals(keySize)) {
 				iterator.remove();
@@ -250,6 +232,26 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 				return;
 			}
 		}
+	}
+
+	protected Algo createAlgo(String algoName) {
+		return createAlgo(algoName, 0, null);
+	}
+
+	protected Algo createAlgo(String algoName, int keySize) {
+		return createAlgo(algoName, keySize, null);
+	}
+
+	protected Algo createAlgo(String algoName, int keySize, String expirationDate) {
+		Algo algo = new Algo();
+		algo.setValue(algoName);
+		if (keySize != 0) {
+			algo.setSize(keySize);
+		}
+		if (expirationDate != null) {
+			algo.setDate(expirationDate);
+		}
+		return algo;
 	}
 
 }

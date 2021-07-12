@@ -27,6 +27,8 @@ package eu.europa.esig.dss.service.http.commons;
  */
 public class OCSPDataLoader extends CommonsDataLoader {
 
+	private static final long serialVersionUID = 2472180566621053378L;
+
 	private static final String OCSP_CONTENT_TYPE = "application/ocsp-request";
 
 	/**
@@ -43,7 +45,7 @@ public class OCSPDataLoader extends CommonsDataLoader {
 	 */
 	@Override
 	public void setContentType(final String contentType) {
-		// do nothing: in case of OCSPDataLoader the contentType is fixed.
+		throw new UnsupportedOperationException("Content type change is not supported by this implementation!");
 	}
 
 }

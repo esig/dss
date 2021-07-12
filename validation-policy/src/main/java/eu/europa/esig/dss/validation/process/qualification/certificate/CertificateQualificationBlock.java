@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
@@ -44,6 +37,13 @@ import eu.europa.esig.dss.validation.process.qualification.signature.checks.Acce
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 
@@ -150,7 +150,6 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 
 	@Override
 	protected void addAdditionalInfo() {
-		collectErrorsWarnsInfos();
 		setIndication();
 	}
 

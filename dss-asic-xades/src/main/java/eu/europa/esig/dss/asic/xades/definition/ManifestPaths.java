@@ -27,6 +27,8 @@ import eu.europa.esig.dss.definition.AbstractPaths;
  */
 public class ManifestPaths extends AbstractPaths {
 
+	private static final long serialVersionUID = 1661986382868079585L;
+
 	/** {@code "//manifest/file-entry"} */
 	public static final String FILE_ENTRY_PATH = fromCurrentPosition(ManifestElement.MANIFEST, ManifestElement.FILE_ENTRY);
 

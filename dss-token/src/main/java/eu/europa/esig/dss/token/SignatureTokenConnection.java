@@ -20,14 +20,15 @@
  */
 package eu.europa.esig.dss.token;
 
-import java.util.List;
-
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+
+import java.util.List;
 
 /**
  * Connection through available API to the QSCD (SmartCard, MSCAPI, PKCS#12)
@@ -83,6 +84,22 @@ public interface SignatureTokenConnection extends AutoCloseable {
 	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 	/**
+	 * This method signs the {@code toBeSigned} data with the pre-defined signature algorithm {@code signatureAlgorithm},
+	 * and the given {@code keyEntry}.
+	 *
+	 * @param toBeSigned
+	 *            The data that need to be signed
+	 * @param signatureAlgorithm
+	 *            The signature algorithm to be used before signing
+	 * @param keyEntry
+	 *            The private key to be used
+	 * @return the signature value representation with the used algorithm and the binary value
+	 * @throws DSSException
+	 *            If there is any problem during the signature process
+	 */
+	SignatureValue sign(ToBeSigned toBeSigned, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException;
+
+	/**
 	 * 
 	 * This method signs the {@code digest} data with the given {@code keyEntry}.
 	 * 
@@ -113,5 +130,22 @@ public interface SignatureTokenConnection extends AutoCloseable {
 	 *                      If there is any problem during the signature process
 	 */
 	SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry) throws DSSException;
+
+	/**
+	 *
+	 * This method signs the {@code digest} data with the pre-defined {@code signatureAlgorithm} and the given {@code keyEntry}.
+	 *
+	 * @param digest
+	 *                 The digested data that need to be signed
+	 * @param signatureAlgorithm
+	 *                 The signature algorithm
+	 * @param keyEntry
+	 *                 The private key to be used
+	 * @return the signature value representation with the used algorithm and the
+	 *         binary value
+	 * @throws DSSException
+	 *                      If there is any problem during the signature process
+	 */
+	SignatureValue signDigest(Digest digest, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 }

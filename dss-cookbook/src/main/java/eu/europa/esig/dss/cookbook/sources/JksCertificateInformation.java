@@ -20,21 +20,30 @@
  */
 package eu.europa.esig.dss.cookbook.sources;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.JKSSignatureToken;
+
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore.PasswordProtection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
-import eu.europa.esig.dss.token.JKSSignatureToken;
-
+/**
+ * This application prints information about each entry of a given certificate keyStore
+ *
+ */
 public class JksCertificateInformation {
 
-	public static void main(final String[] args) throws IOException {
+	/**
+	 * Main method
+	 *
+	 * @param args not applicable
+	 * @throws Exception if an exception occurs
+	 */
+	public static void main(final String[] args) throws Exception {
 
 		try (InputStream is = new FileInputStream("src/main/resources/keystore.jks");
 				JKSSignatureToken jksSignatureToken = new JKSSignatureToken(is, new PasswordProtection("dss-password".toCharArray()))) {

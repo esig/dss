@@ -33,15 +33,13 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="WARN" />
+				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-				<Qualification Level="WARN" />
-				<SupportedByQSCD Level="WARN" />
 				<IssuedToLegalPerson Level="INFORM" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
@@ -68,7 +66,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="WARN" />
+				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -115,7 +113,7 @@
 			</Cryptographic>
 		</BasicSignatureConstraints>
 		<SignedAttributes>
-			<SigningCertificatePresent Level="FAIL" />
+			<SigningCertificatePresent Level="WARN" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
@@ -164,7 +162,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="WARN" />
+				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -193,7 +191,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="WARN" />
-				<RevocationDataNextUpdatePresent Level="WARN" />
+				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -266,7 +264,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
-				<RevocationDataNextUpdatePresent Level="WARN" />
+				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -295,7 +293,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="WARN" />
-				<RevocationDataNextUpdatePresent Level="WARN" />
+				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />

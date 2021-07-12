@@ -35,40 +35,56 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	// see DEPRECATED http://www.w3.org/TR/2012/WD-xmlsec-algorithms-20120105/
 	// see http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
 	// @formatter:off
+	/** SHA-1 */
 	SHA1("SHA1", "SHA-1", "1.3.14.3.2.26", "http://www.w3.org/2000/09/xmldsig#sha1", null, "SHA", 20),
 
+	/** SHA-224 */
 	SHA224("SHA224", "SHA-224", "2.16.840.1.101.3.4.2.4", "http://www.w3.org/2001/04/xmldsig-more#sha224", "S224", 28),
 
+	/** SHA-256 */
 	SHA256("SHA256", "SHA-256", "2.16.840.1.101.3.4.2.1", "http://www.w3.org/2001/04/xmlenc#sha256", "S256", "SHA-256", 32),
 
+	/** SHA-384 */
 	SHA384("SHA384", "SHA-384", "2.16.840.1.101.3.4.2.2", "http://www.w3.org/2001/04/xmldsig-more#sha384", "S384", 48),
 
+	/** SHA-512 */
 	SHA512("SHA512", "SHA-512", "2.16.840.1.101.3.4.2.3", "http://www.w3.org/2001/04/xmlenc#sha512", "S512", "SHA-512", 64),
 
 	// see https://tools.ietf.org/html/rfc6931
+	/** SHA3-224 */
 	SHA3_224("SHA3-224", "SHA3-224", "2.16.840.1.101.3.4.2.7", "http://www.w3.org/2007/05/xmldsig-more#sha3-224", 28),
 
+	/** SHA3-256 */
 	SHA3_256("SHA3-256", "SHA3-256", "2.16.840.1.101.3.4.2.8", "http://www.w3.org/2007/05/xmldsig-more#sha3-256", "S3-256", 32),
 
+	/** SHA3-384 */
 	SHA3_384("SHA3-384", "SHA3-384", "2.16.840.1.101.3.4.2.9", "http://www.w3.org/2007/05/xmldsig-more#sha3-384", "S3-384", 48),
 
+	/** SHA3-512 */
 	SHA3_512("SHA3-512", "SHA3-512", "2.16.840.1.101.3.4.2.10", "http://www.w3.org/2007/05/xmldsig-more#sha3-512", "S3-512", 64),
 
+	/** SHAKE-128 */
 	SHAKE128("SHAKE-128", "SHAKE-128", "2.16.840.1.101.3.4.2.11", null),
-	
+
+	/** SHAKE-256 */
 	SHAKE256("SHAKE-256", "SHAKE-256", "2.16.840.1.101.3.4.2.12", null),
 
-	// SHAKE-256 + output 512bits
+	/** SHAKE-256 + output 512bits */
 	SHAKE256_512("SHAKE256-512", "SHAKE256-512", "2.16.840.1.101.3.4.2.18", null),
 
+	/** RIPEMD160 */
 	RIPEMD160("RIPEMD160", "RIPEMD160", "1.3.36.3.2.1", "http://www.w3.org/2001/04/xmlenc#ripemd160"),
 
+	/** MD2 */
 	MD2("MD2", "MD2", "1.2.840.113549.2.2", "http://www.w3.org/2001/04/xmldsig-more#md2"),
 
+	/** MD5 */
 	MD5("MD5", "MD5", "1.2.840.113549.2.5", "http://www.w3.org/2001/04/xmldsig-more#md5", null, "MD5"),
 
+	/** WHIRLPOOL */
 	WHIRLPOOL("WHIRLPOOL", "WHIRLPOOL", "1.0.10118.3.0.55", "http://www.w3.org/2007/05/xmldsig-more#whirlpool");
-	/**
+
+	/*
 	 * RFC 2313
 	 * "MD2", "1.2.840.113549.2.2"
 	 * "MD4", "1.2.840.113549.2.4"
@@ -76,23 +92,40 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	 */
 	// @formatter:on
 
+	/** Name of the algorithm */
 	private final String name;
+
+	/** Java name of the algorithm */
 	private final String javaName;
+
+	/** OID of the algorithm */
 	private final String oid;
+
+	/** URI of the algorithm for XMLDSIG */
 	private final String xmlId;
+
+	/** URI of the algorithm for a JAdES (JWS) signatures */
 	private final String jadesId;
-	/* See RFC 5843, used in JAdES sigD HTTP_HEADER */
+
+	/** URI of the algorithm for JAdES HTTPHeaders (see RFC 5843, sigD HTTP_HEADER)  */
 	private final String httpHeaderId;
-	/* In case of MGF usage */
+
+	/** Salt length for MGF usage */
 	private final int saltLength;
 
 	private static class Registry {
 
-		private static final Map<String, DigestAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
-		private static final Map<String, DigestAlgorithm> XML_ALGORITHMS = registerXMLAlgorithms();
+		/** A map between algorithm names */
 		private static final Map<String, DigestAlgorithm> ALGORITHMS = registerAlgorithms();
+		/** A map between JAVA algorithm names */
 		private static final Map<String, DigestAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
+		/** A map between OIDs and algorithms */
+		private static final Map<String, DigestAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
+		/** A map between XML URLs and algorithms */
+		private static final Map<String, DigestAlgorithm> XML_ALGORITHMS = registerXMLAlgorithms();
+		/** A map between JAdES URLs and algorithms */
 		private static final Map<String, DigestAlgorithm> JADES_ALGORITHMS = registerJAdESAlgorithms();
+		/** A map between JAdES HTTPHeader URLs and algorithms */
 		private static final Map<String, DigestAlgorithm> HTTP_HEADER_ALGORITHMS = registerJwsHttpHeaderAlgorithms();
 
 		private static Map<String, DigestAlgorithm> registerOIDAlgorithms() {
@@ -278,32 +311,80 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 		return algorithm;
 	}
 
+	/**
+	 * Constructor with OID and XML URI
+	 *
+	 * @param name {@link String} algorithm name
+	 * @param javaName {@link String} algorithm Java name
+	 * @param oid {@link String} algorithm OID
+	 * @param xmlId {@link String} algorithm XML URI
+	 */
 	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId) {
 		this(name, javaName, oid, xmlId, null, 0);
 	}
 
+	/**
+	 * Constructor with OID, XML URI and JAdES ids
+	 *
+	 * @param name {@link String} algorithm name
+	 * @param javaName {@link String} algorithm Java name
+	 * @param oid {@link String} algorithm OID
+	 * @param xmlId {@link String} algorithm XML URI
+	 * @param jadesId {@link String} algorithm JAdES URI
+	 * @param httpHeaderId {@link String} algorithm JAdES HTTPHeader URI
+	 */
 	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId,
 			final String jadesId, final String httpHeaderId) {
 		this(name, javaName, oid, xmlId, jadesId, httpHeaderId, 0);
 	}
 
+	/**
+	 * Constructor with OID and XML URI with MGF support
+	 *
+	 * @param name {@link String} algorithm name
+	 * @param javaName {@link String} algorithm Java name
+	 * @param oid {@link String} algorithm OID
+	 * @param xmlId {@link String} algorithm XML URI
+	 * @param saltLength {@link String} salt length for MGF
+	 */
 	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId, final int saltLength) {
 		this(name, javaName, oid, xmlId, null, saltLength);
 	}
 
+	/**
+	 * Constructor with OID, XML URI and JAdES URI with MGF support
+	 *
+	 * @param name {@link String} algorithm name
+	 * @param javaName {@link String} algorithm Java name
+	 * @param oid {@link String} algorithm OID
+	 * @param xmlId {@link String} algorithm XML URI
+	 * @param jadesId {@link String} algorithm JAdES URI
+	 * @param saltLength {@link String} salt length for MGF
+	 */
 	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId,
 			final String jadesId, final int saltLength) {
 		this(name, javaName, oid, xmlId, jadesId, null, saltLength);
 	}
 
+	/**
+	 * Constructor with OID, XML URI and JAdES URIs with MGF support
+	 *
+	 * @param name {@link String} algorithm name
+	 * @param javaName {@link String} algorithm Java name
+	 * @param oid {@link String} algorithm OID
+	 * @param xmlId {@link String} algorithm XML URI
+	 * @param jadesId {@link String} algorithm JAdES URI
+	 * @param httpHeaderId {@link String} algorithm JAdES HTTPHeader URI
+	 * @param saltLength {@link String} salt length for MGF
+	 */
 	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId,
-			final String jadesId, final String jwsHttpHeader, final int saltLength) {
+			final String jadesId, final String httpHeaderId, final int saltLength) {
 		this.name = name;
 		this.javaName = javaName;
 		this.oid = oid;
 		this.xmlId = xmlId;
 		this.jadesId = jadesId;
-		this.httpHeaderId = jwsHttpHeader;
+		this.httpHeaderId = httpHeaderId;
 		this.saltLength = saltLength;
 	}
 

@@ -25,10 +25,19 @@ import eu.europa.esig.dss.model.Digest;
 
 /**
  * Marker class meaning that the signature covers the whole document.
+ *
  */
 public final class FullSignatureScope extends SignatureScope {
 
-	public FullSignatureScope(final String name, Digest digest) {
+    private static final long serialVersionUID = 7242031052591124750L;
+
+    /**
+     * Default constructor
+     *
+     * @param name {@link String} filename
+     * @param digest {@link Digest}
+     */
+    public FullSignatureScope(final String name, Digest digest) {
         super(name, digest);
     }
 

@@ -20,96 +20,23 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.spi.DSSUtils;
 
+/**
+ * The abstract implementation of {@code SignaturePolicyValidator}
+ *
+ */
 public abstract class AbstractSignaturePolicyValidator implements SignaturePolicyValidator {
 
-	private SignaturePolicy signaturePolicy;
-	private boolean identified = false;
-	private boolean status = false;
-	private boolean asn1Processable = false;
-	private boolean digestAlgorithmsEqual = false;
-	private Map<String, String> errors = new HashMap<>();
+    /** The error key to be used for general errors */
+    protected static final String GENERAL_ERROR_KEY = "general";
 
-	protected SignaturePolicy getSignaturePolicy() {
-		return signaturePolicy;
-	}
-
-	@Override
-	@Deprecated
-	public void setSignature(AdvancedSignature signature) {
-		this.signaturePolicy = signature.getSignaturePolicy();
-	}
-	
-	@Override
-	public void setSignaturePolicy(SignaturePolicy signaturePolicy) {
-		this.signaturePolicy = signaturePolicy;
-	}
-
-	protected void setIdentified(boolean identified) {
-		this.identified = identified;
-	}
-
-	protected void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	protected void setAsn1Processable(boolean asn1Processable) {
-		this.asn1Processable = asn1Processable;
-	}
-
-	protected void setDigestAlgorithmsEqual(boolean digestAlgorithmsEqual) {
-		this.digestAlgorithmsEqual = digestAlgorithmsEqual;
-	}
-
-	@Override
-	public boolean isIdentified() {
-		return identified;
-	}
-
-	@Override
-	public boolean isStatus() {
-		return status;
-	}
-
-	@Override
-	public boolean isAsn1Processable() {
-		return asn1Processable;
-	}
-
-	@Override
-	public boolean isDigestAlgorithmsEqual() {
-		return digestAlgorithmsEqual;
-	}
-
-	protected void addError(String key, String description) {
-		this.errors.put(key, description);
-	}
-
-	@Override
-	public String getProcessingErrors() {
-		StringBuilder stringBuilder = new StringBuilder();
-		if (!errors.isEmpty()) {
-			stringBuilder.append("The errors found on signature policy validation are:");
-			for (Entry<String, String> entry : errors.entrySet()) {
-				stringBuilder.append(" at ").append(entry.getKey()).append(": ").append(entry.getValue()).append(",");
-			}
-			stringBuilder.setLength(stringBuilder.length() - 1);
-		}
-		return stringBuilder.toString();
-	}
-	
-	@Override
-	public Digest getComputedDigest(DigestAlgorithm digestAlgorithm) {
-		// not implemented by default
-		return null;
-	}
+    @Override
+    public Digest getComputedDigest(DSSDocument policyDocument, DigestAlgorithm digestAlgorithm) {
+        return DSSUtils.getDigest(digestAlgorithm, policyDocument);
+    }
 
 }

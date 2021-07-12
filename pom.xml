@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.8</version>
+	<version>5.9.RC1</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -38,54 +38,55 @@
 		<project.encoding>UTF-8</project.encoding>
 		<module-name />
 
-		<slf4j.version>1.7.30</slf4j.version>
+		<slf4j.version>1.7.31</slf4j.version>
 		<logback-classic.version>1.2.3</logback-classic.version>
 
-		<bouncycastle.version>1.68</bouncycastle.version>
-		<xmlsec.version>2.1.6</xmlsec.version>
-		<jose4j.version>0.7.2</jose4j.version>
-		<pdfbox.version>2.0.22</pdfbox.version>
-		<openpdf.version>1.3.23</openpdf.version>
+		<bouncycastle.version>1.69</bouncycastle.version>
+		<xmlsec.version>2.2.2</xmlsec.version>
+		<jose4j.version>0.7.8</jose4j.version>
+		<pdfbox.version>2.0.24</pdfbox.version>
+		<openpdf.version>1.3.26</openpdf.version>
 		<httpclient.version>4.5.13</httpclient.version>
 		<commons-codec.version>1.15</commons-codec.version> <!-- Synchronized with santuario -->
-		
+
 		<jakarta.bind-api.version>2.3.2</jakarta.bind-api.version> <!-- Synchronized with santuario -->
 		<jaxb-runtime.version>2.3.2</jaxb-runtime.version>
-		
+
 		<!-- REST/SOAP API -->
 		<jakarta.rs-api.version>2.1.6</jakarta.rs-api.version>
 		<jakarta.ws-api.version>2.3.2</jakarta.ws-api.version>
 
-		<junit.platform.version>1.7.0</junit.platform.version>
-		<junit.jupiter.version>5.7.0</junit.jupiter.version>
-		
-		<awaitility.version>4.0.3</awaitility.version>
-		<mockito.version>3.3.3</mockito.version>
+		<junit.version>5.7.2</junit.version>
+
+		<awaitility.version>4.1.0</awaitility.version>
+		<mockito.version>3.10.0</mockito.version>
 		<h2database.version>1.4.200</h2database.version>
-		<jackson.version>2.11.3</jackson.version>
-		
+		<jackson.version>2.12.3</jackson.version>
+		<fop-core.version>2.6</fop-core.version>
+
 		<sonar.java.source>1.8</sonar.java.source>
-	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>	   
-		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../dss-jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-		
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.basedir}/../dss-jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml
+		</sonar.coverage.jacoco.xmlReportPaths>
+
 		<!-- By default, skip slow tests (use slow-tests profile to enable them) -->
 		<exclude.tag.tests>slow</exclude.tag.tests>
 	</properties>
-	
+
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License</name>
 			<url>https://www.gnu.org/licenses/lgpl-2.1.html</url>
 		</license>
 	</licenses>
-	
+
 	<modules>
-	
 		<module>dss-enumerations</module>
 		<module>dss-alert</module>
+		<module>dss-jaxb-common</module>
 		<module>dss-jaxb-parsers</module>
-	
 		<module>specs-xmldsig</module>
 		<module>specs-xades</module>
 		<module>specs-trusted-list</module>
@@ -94,19 +95,15 @@
 		<module>specs-saml-assertion</module>
 		<module>specs-jws</module>
 		<module>specs-jades</module>
-		
 		<module>dss-policy-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
 		<module>dss-detailed-report-jaxb</module>
 		<module>dss-simple-report-jaxb</module>
 		<module>dss-simple-certificate-report-jaxb</module>
-	
 		<module>dss-utils</module>
 		<module>dss-utils-apache-commons</module>
 		<module>dss-utils-google-guava</module>
-		
-    	<module>dss-i18n</module>
-		
+		<module>dss-i18n</module>
 		<module>dss-model</module>
 		<module>dss-crl-parser</module>
 		<module>dss-crl-parser-x509crl</module>
@@ -119,7 +116,7 @@
 		<module>validation-policy</module>
 		<module>dss-xades</module>
 		<module>dss-cades</module>
-        <module>dss-jades</module>
+		<module>dss-jades</module>
 		<module>dss-pades</module>
 		<module>dss-pades-pdfbox</module>
 		<module>dss-pades-openpdf</module>
@@ -127,9 +124,8 @@
 		<module>dss-asic-xades</module>
 		<module>dss-asic-cades</module>
 		<module>dss-tsl-validation</module>
-		
-    	<module>dss-common-remote-dto</module>
-    	<module>dss-common-remote-converter</module>
+		<module>dss-common-remote-dto</module>
+		<module>dss-common-remote-converter</module>
 		<module>dss-signature-dto</module>
 		<module>dss-signature-remote</module>
 		<module>dss-signature-rest-client</module>
@@ -150,21 +146,21 @@
 		<module>dss-validation-soap</module>
 		<module>dss-certificate-validation-dto</module>
 		<module>dss-certificate-validation-common</module>
-    	<module>dss-certificate-validation-rest-client</module>
-    	<module>dss-certificate-validation-soap-client</module>
-    	<module>dss-certificate-validation-rest</module>
-    	<module>dss-certificate-validation-soap</module>
-    	<module>dss-timestamp-dto</module>
-    	<module>dss-timestamp-remote</module>
-    	<module>dss-timestamp-remote-rest-client</module>
-    	<module>dss-timestamp-remote-soap-client</module>
-    	<module>dss-timestamp-remote-rest</module>
-    	<module>dss-timestamp-remote-soap</module>
-		
+		<module>dss-certificate-validation-rest-client</module>
+		<module>dss-certificate-validation-soap-client</module>
+		<module>dss-certificate-validation-rest</module>
+		<module>dss-certificate-validation-soap</module>
+		<module>dss-timestamp-dto</module>
+		<module>dss-timestamp-remote</module>
+		<module>dss-timestamp-remote-rest-client</module>
+		<module>dss-timestamp-remote-soap-client</module>
+		<module>dss-timestamp-remote-rest</module>
+		<module>dss-timestamp-remote-soap</module>
 		<module>dss-cookbook</module>
-		
+
 		<module>dss-jacoco-coverage</module>
-  </modules>
+		<module>dss-bom</module>
+	</modules>
 
 	<build>
 		<plugins>
@@ -183,15 +179,15 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <encoding>${project.encoding}</encoding>
-                    
-                    <!-- Default + Test -->
+				<configuration>
+					<encoding>${project.encoding}</encoding>
+
+					<!-- Default + Test -->
 					<release>8</release> <!-- XML Security requires 8+ -->
-					
-                    <showWarnings>true</showWarnings>
-                    <showDeprecation>true</showDeprecation>
-                </configuration>
+
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+				</configuration>
 
 				<executions>
 					<execution>
@@ -203,7 +199,7 @@
 							<release>8</release> <!-- XML Security requires 8+ -->
 						</configuration>
 					</execution>
-			
+
 					<execution>
 						<id>module-compile</id>
 						<phase>compile</phase>
@@ -218,7 +214,7 @@
 							<outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
 						</configuration>
 					</execution>
-				</executions>          
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -233,11 +229,11 @@
 				</executions>
 				<configuration>
 					<archive>
-			            <manifestEntries>
+						<manifestEntries>
 							<Multi-Release>true</Multi-Release>
 							<Automatic-Module-Name>${module-name}</Automatic-Module-Name>
 						</manifestEntries>
-			        </archive>
+					</archive>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -247,9 +243,9 @@
 					<!-- Default test configuration -->
 					<skipTests>true</skipTests>
 					<classpathDependencyExcludes>
-			            <classpathDependencyExclude>commons-logging:commons-logging</classpathDependencyExclude>
-			        </classpathDependencyExcludes>
-			        <threadCount>1</threadCount>
+						<classpathDependencyExclude>commons-logging:commons-logging</classpathDependencyExclude>
+					</classpathDependencyExcludes>
+					<threadCount>1</threadCount>
 				</configuration>
 				<executions>
 					<execution>
@@ -301,8 +297,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
-                	<encoding>UTF-8</encoding>
-                </configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -319,46 +315,46 @@
 					</execution>
 				</executions>
 			</plugin>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<version>3.0.0-M3</version>
-<!-- 			    <dependencies> -->
-<!-- 			        <dependency> -->
-<!-- 			            <groupId>de.skuzzle.enforcer</groupId> -->
-<!-- 			            <artifactId>restrict-imports-enforcer-rule</artifactId> -->
-<!-- 			            <version>1.1.0</version> -->
-<!-- 			        </dependency> -->
-<!-- 			    </dependencies> -->
+				<!-- 			    <dependencies> -->
+				<!-- 			        <dependency> -->
+				<!-- 			            <groupId>de.skuzzle.enforcer</groupId> -->
+				<!-- 			            <artifactId>restrict-imports-enforcer-rule</artifactId> -->
+				<!-- 			            <version>1.1.0</version> -->
+				<!-- 			        </dependency> -->
+				<!-- 			    </dependencies> -->
 				<executions>
 					<execution>
 						<id>enforce</id>
-				        <goals>
+						<goals>
 							<goal>enforce</goal>
 						</goals>
 						<configuration>
 							<rules>
 								<requireMavenVersion>
-                  					<version>[3.5,)</version>
+									<version>[3.5,)</version>
 								</requireMavenVersion>
 								<requireJavaVersion>
-                  					<version>[1.9,)</version>
+									<version>[1.11,)</version>
 								</requireJavaVersion>
-                				<banDuplicatePomDependencyVersions />
+								<banDuplicatePomDependencyVersions />
 								<dependencyConvergence />
 								<bannedDependencies>
 									<excludes>
 										<exclude>xalan:xalan</exclude>
 									</excludes>
 								</bannedDependencies>
-<!-- 						        <restrictImports implementation="de.skuzzle.enforcer.restrictimports.rule.RestrictImports"> -->
-<!-- 									<includeTestCode>true</includeTestCode> -->
-<!-- 									<reason>Use JUnit5 for assertions</reason> -->
-<!-- 		                            <bannedImports> -->
-<!-- 		                                <bannedImport>static org.junit.Assert.*</bannedImport> -->
-<!-- 		                            </bannedImports> -->
-<!-- 								</restrictImports> -->
+								<!-- 						        <restrictImports implementation="de.skuzzle.enforcer.restrictimports.rule.RestrictImports"> -->
+								<!-- 									<includeTestCode>true</includeTestCode> -->
+								<!-- 									<reason>Use JUnit5 for assertions</reason> -->
+								<!-- 		                            <bannedImports> -->
+								<!-- 		                                <bannedImport>static org.junit.Assert.*</bannedImport> -->
+								<!-- 		                            </bannedImports> -->
+								<!-- 								</restrictImports> -->
 							</rules>
 						</configuration>
 					</execution>
@@ -367,7 +363,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.6</version>
+				<version>0.8.7</version>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -399,13 +395,13 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.2.0</version>
+					<version>3.3.0</version>
 				</plugin>
 				<plugin>
-		            <groupId>org.apache.maven.plugins</groupId>
-		            <artifactId>maven-site-plugin</artifactId>
-		            <version>3.6</version>
-	            </plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.9.1</version>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
@@ -414,7 +410,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.2.0</version>
 					<configuration>
 						<encoding>${project.encoding}</encoding>
 						<nonFilteredFileExtensions><!-- Avoid to modify keystore -->
@@ -424,14 +420,14 @@
 					</configuration>
 				</plugin>
 				<plugin>
-	                <groupId>org.apache.maven.plugins</groupId>
-	                <artifactId>maven-release-plugin</artifactId>
-	                <version>2.5.3</version>
-	                <configuration>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
+					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<tagNameFormat>@{project.version}</tagNameFormat>
 					</configuration>
-	            </plugin>
+				</plugin>
 				<plugin>
 					<groupId>org.jvnet.jaxb2.maven2</groupId>
 					<artifactId>maven-jaxb2-plugin</artifactId>
@@ -453,9 +449,9 @@
 					<version>1.8</version>
 				</plugin>
 				<plugin>
-				    <groupId>org.codehaus.mojo</groupId>
-				    <artifactId>build-helper-maven-plugin</artifactId>
-				    <version>3.1.0</version>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.2.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -465,7 +461,7 @@
 		<url>https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</developerConnection>
-		<tag>5.8</tag>
+		<tag>5.9.RC1</tag>
 	</scm>
 
 	<dependencyManagement>
@@ -574,10 +570,10 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-                <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-                <artifactId>dss-jades</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-jades</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-pades</artifactId>
@@ -714,7 +710,7 @@
 				<artifactId>dss-token</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-server-signing-dto</artifactId>
@@ -792,6 +788,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-jaxb-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-jaxb-parsers</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -863,9 +864,9 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
-			
+
 			<!-- Public Dependencies -->
-			
+
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
@@ -877,8 +878,8 @@
 				<version>${pdfbox.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.apache.pdfbox</groupId>
-			    <artifactId>preflight</artifactId>
+				<groupId>org.apache.pdfbox</groupId>
+				<artifactId>preflight</artifactId>
 				<version>${pdfbox.version}</version>
 			</dependency>
 			<dependency>
@@ -886,7 +887,7 @@
 				<artifactId>openpdf</artifactId>
 				<version>${openpdf.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
@@ -907,7 +908,7 @@
 				<artifactId>jose4j</artifactId>
 				<version>${jose4j.version}</version>
 			</dependency>
-			
+
 			<!-- Logger -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -925,52 +926,44 @@
 				<version>${logback-classic.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>fop-core</artifactId>
+				<version>${fop-core.version}</version>
+			</dependency>
+
 			<!-- JAXB -->
 			<dependency>
-			    <groupId>jakarta.xml.bind</groupId>
-			    <artifactId>jakarta.xml.bind-api</artifactId>
-			    <version>${jakarta.bind-api.version}</version>
+				<groupId>jakarta.xml.bind</groupId>
+				<artifactId>jakarta.xml.bind-api</artifactId>
+				<version>${jakarta.bind-api.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.glassfish.jaxb</groupId>
-			    <artifactId>jaxb-runtime</artifactId>
-			    <version>${jaxb-runtime.version}</version>
-			    <scope>runtime</scope>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>${jaxb-runtime.version}</version>
+				<scope>runtime</scope>
 			</dependency>
-			
+
 			<!-- REST/SOAP API -->
 			<dependency>
-			    <groupId>jakarta.ws.rs</groupId>
-			    <artifactId>jakarta.ws.rs-api</artifactId>
-			    <version>${jakarta.rs-api.version}</version>
+				<groupId>jakarta.ws.rs</groupId>
+				<artifactId>jakarta.ws.rs-api</artifactId>
+				<version>${jakarta.rs-api.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>jakarta.xml.ws</groupId>
-			    <artifactId>jakarta.xml.ws-api</artifactId>
-			    <version>${jakarta.ws-api.version}</version>
+				<groupId>jakarta.xml.ws</groupId>
+				<artifactId>jakarta.xml.ws-api</artifactId>
+				<version>${jakarta.ws-api.version}</version>
 			</dependency>
 
 			<!-- Testing -->
 			<dependency>
-			    <groupId>org.junit.platform</groupId>
-			    <artifactId>junit-platform-launcher</artifactId>
-			    <version>${junit.platform.version}</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.junit.jupiter</groupId>
-			    <artifactId>junit-jupiter-engine</artifactId>
-			    <version>${junit.jupiter.version}</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.junit.jupiter</groupId>
-			    <artifactId>junit-jupiter-params</artifactId>
-			    <version>${junit.jupiter.version}</version>
-			</dependency>
-			<!-- JUnit Test Suite compatibility -->
-			<dependency>
-			    <groupId>org.junit.platform</groupId>
-			    <artifactId>junit-platform-runner</artifactId>
-			    <version>${junit.platform.version}</version>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 
 			<dependency>
@@ -984,9 +977,9 @@
 				<version>${mockito.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>com.h2database</groupId>
-			    <artifactId>h2</artifactId>
-			    <version>${h2database.version}</version>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>${h2database.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.module</groupId>
@@ -1006,7 +999,7 @@
 			<url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://ec.europa.eu/cefdigital/tracker/projects/DSS</url>
@@ -1036,7 +1029,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>6.0.3</version>
+						<version>6.1.6</version>
 						<configuration>
 							<failBuildOnCVSS>8</failBuildOnCVSS>
 						</configuration>
@@ -1052,27 +1045,27 @@
 			</build>
 		</profile>
 		<profile>
-            <id>jdk19-plus</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-<!--             <properties> -->
-<!-- 				<maven.compiler.release>9</maven.compiler.release> -->
-<!--             </properties> -->
-            <build>
-            	<plugins>
-            		<plugin>
-			            <groupId>org.apache.maven.plugins</groupId>
+			<id>jdk19-plus</id>
+			<activation>
+				<jdk>[9,)</jdk>
+			</activation>
+			<!--             <properties> -->
+			<!-- 				<maven.compiler.release>9</maven.compiler.release> -->
+			<!--             </properties> -->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<configuration>
 							<release>8</release>
 							<additionalJOptions>
 								<additionalJOption>-html5</additionalJOption>
 							</additionalJOptions>
-		                </configuration>
-            		</plugin>
-            	</plugins>
-            </build>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 		<profile>
 			<id>spotless</id>
@@ -1087,9 +1080,9 @@
 								<licenseHeader>
 									<file>${user.dir}/spotless/license-header.java</file>
 								</licenseHeader>
-<!-- 								<eclipse> -->
-<!-- 									<file>${user.dir}/spotless/eclipse-fmt.xml</file> -->
-<!-- 								</eclipse> -->
+								<!-- 								<eclipse> -->
+								<!-- 									<file>${user.dir}/spotless/eclipse-fmt.xml</file> -->
+								<!-- 								</eclipse> -->
 								<removeUnusedImports />
 							</java>
 						</configuration>

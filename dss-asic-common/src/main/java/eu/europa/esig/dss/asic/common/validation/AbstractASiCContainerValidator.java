@@ -24,19 +24,17 @@ import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
-import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
 import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected List<DocumentValidator> signatureValidators;
 
 	/** List of timestamp document validators */
-	protected List<DocumentValidator> timestampValidators;
+	protected List<DetachedTimestampValidator> timestampValidators;
 
 	/** The container extraction result */
 	protected ASiCExtractResult extractResult;
@@ -97,10 +95,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected abstract AbstractASiCContainerExtractor getContainerExtractor();
 	
 	@Override
-	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext, List<AdvancedSignature> signatures,
-			final ListRevocationSource<CRL> listCRLSource, final ListRevocationSource<OCSP> listOCSPSource) {
+	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
+																final List<AdvancedSignature> signatures) {
 		ASiCContainerDiagnosticDataBuilder builder = (ASiCContainerDiagnosticDataBuilder) super.createDiagnosticDataBuilder(
-				validationContext, signatures, listCRLSource, listOCSPSource);
+				validationContext, signatures);
 		builder.containerInfo(getContainerInfo());
 		return builder;
 	}
@@ -142,6 +140,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	/**
 	 * Attaches existing external timestamps to the list of {@code AdvancedSignature}s
+	 *
 	 * @param allSignatures list of {@link AdvancedSignature}s
 	 * @return list of attached {@link TimestampToken}s
 	 */
@@ -158,7 +157,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected abstract List<ManifestFile> getManifestFilesDescriptions();
 
 	@Override
-	protected List<AdvancedSignature> getAllSignatures() {
+	public List<AdvancedSignature> getAllSignatures() {
 
 		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 
@@ -185,9 +184,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	public List<AdvancedSignature> getSignatures() {
 		final List<AdvancedSignature> signatureList = new ArrayList<>();
 		for (DocumentValidator validator : getSignatureValidators()) {
-			for (final AdvancedSignature advancedSignature : validator.getSignatures()) {
-				signatureList.add(advancedSignature);
-			}
+			signatureList.addAll(validator.getSignatures());
 		}
 		
 		return signatureList;

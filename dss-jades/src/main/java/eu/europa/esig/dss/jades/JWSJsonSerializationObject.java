@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,8 +32,10 @@ import java.util.List;
 /**
  * A container with JWS signature attributes
  */
-public class JWSJsonSerializationObject {
-	
+public class JWSJsonSerializationObject implements Serializable {
+
+	private static final long serialVersionUID = -372703330907087721L;
+
 	/** The JWS payload */
 	private String payload;
 	
@@ -66,6 +69,11 @@ public class JWSJsonSerializationObject {
 		this.payload = encodedPayload;
 	}
 
+	/**
+	 * Returns JWS signatures
+	 *
+	 * @return a list of {@link JWS}s
+	 */
 	public List<JWS> getSignatures() {
 		if (signatures == null) {
 			signatures = new ArrayList<>();

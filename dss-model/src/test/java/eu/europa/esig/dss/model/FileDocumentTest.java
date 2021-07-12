@@ -20,32 +20,32 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-
 public class FileDocumentTest {
+
+	@TempDir
+	static Path temporaryFolder;
 
 	@Test
 	public void testNull() {
-		assertThrows(NullPointerException.class, () -> {
-			new FileDocument((String) null);
-		});
+		assertThrows(NullPointerException.class, () -> new FileDocument((String) null));
 	}
 
 	@Test
 	public void testNull2() {
-		Exception exception = assertThrows(NullPointerException.class, () -> {
-			new FileDocument((File) null);
-		});
+		Exception exception = assertThrows(NullPointerException.class, () -> new FileDocument((File) null));
 		assertEquals("File cannot be null", exception.getMessage());
 	}
 
@@ -58,10 +58,12 @@ public class FileDocumentTest {
 		assertEquals(MimeType.BINARY, doc.getMimeType());
 		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest(DigestAlgorithm.SHA256));
 		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest(DigestAlgorithm.SHA256)); // uses map
-		String path = "target/testFileDocument";
-		doc.save(path);
 
-		File file = new File(path);
+		Path containerTemporaryPath = temporaryFolder.resolve("testFileDocument");
+		doc.save(containerTemporaryPath.toString());
+
+		File file = containerTemporaryPath.toFile();
 		assertTrue(file.exists());
 	}
+
 }

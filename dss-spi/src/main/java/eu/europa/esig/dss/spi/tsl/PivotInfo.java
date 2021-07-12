@@ -24,7 +24,6 @@ import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.identifier.PivotIdentifier;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,7 +34,7 @@ public class PivotInfo extends LOTLInfo {
 	private static final long serialVersionUID = 1724138551018429654L;
 	
 	/** Map between certificates and their change statuses in the current Pivot */
-	private Map<CertificateToken, CertificatePivotStatus> certificateStatusMap = new HashMap<>();
+	private Map<CertificateToken, CertificatePivotStatus> certificateStatusMap;
 	
 	/** Associated XML LOTL Location */
 	private String lotlLocation;
@@ -83,7 +82,7 @@ public class PivotInfo extends LOTLInfo {
 	}
 	
 	@Override
-	public Identifier getIdentifier() {
+	protected Identifier buildIdentifier() {
 		return new PivotIdentifier(this);
 	}
 

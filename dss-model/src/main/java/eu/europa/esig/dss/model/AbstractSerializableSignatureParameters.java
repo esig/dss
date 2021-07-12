@@ -37,12 +37,23 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 
 	/**
 	 * This variable indicates if it is possible to sign with an expired certificate.
+	 *
+	 * Default : false
 	 */
 	private boolean signWithExpiredCertificate = false;
 
 	/**
+	 * This variable indicates if it is possible to sign with a not yet valid certificate.
+	 *
+	 * Default : false
+	 */
+	private boolean signWithNotYetValidCertificate = false;
+
+	/**
 	 * This variable indicates if it is possible to generate ToBeSigned data without
 	 * the signing certificate.
+	 *
+	 * Default : false
 	 */
 	private boolean generateTBSWithoutCertificate = false;
 
@@ -101,11 +112,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 */
 	protected TP archiveTimestampParameters;
 
-	/**
-	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
-	 *
-	 * @return true if signature with an expired certificate is allowed
-	 */
 	@Override
 	public boolean isSignWithExpiredCertificate() {
 		return signWithExpiredCertificate;
@@ -114,11 +120,30 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	/**
 	 * Allows to change the default behavior regarding the use of an expired certificate.
 	 *
+	 * Default : false (forbid signing with an expired signing certificate)
+	 *
 	 * @param signWithExpiredCertificate
 	 *            true if signature with an expired certificate is allowed
 	 */
-	public void setSignWithExpiredCertificate(final boolean signWithExpiredCertificate) {
+	public void setSignWithExpiredCertificate(boolean signWithExpiredCertificate) {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
+	}
+
+	@Override
+	public boolean isSignWithNotYetValidCertificate() {
+		return signWithNotYetValidCertificate;
+	}
+
+	/**
+	 * Allows to change the default behavior regarding the use of a not yet valid certificate.
+	 *
+	 * Default : false (forbid signing with a not yet valid signing certificate)
+	 *
+	 * @param signWithNotYetValidCertificate
+	 *            true if signature with a not yet valid certificate is allowed
+	 */
+	public void setSignWithNotYetValidCertificate(boolean signWithNotYetValidCertificate) {
+		this.signWithNotYetValidCertificate = signWithNotYetValidCertificate;
 	}
 
 	/**
@@ -182,11 +207,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		this.signaturePackaging = signaturePackaging;
 	}
 
-	/**
-	 * Get the digest algorithm
-	 * 
-	 * @return the digest algorithm
-	 */
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
@@ -207,6 +227,28 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	/**
+	 * Sets the mask generation function if used with the given SignatureAlgorithm
+	 *
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 */
+	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+		this.maskGenerationFunction = maskGenerationFunction;
+		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
+		}
+	}
+
+	@Override
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		return maskGenerationFunction;
+	}
+
+	@Override
+	public EncryptionAlgorithm getEncryptionAlgorithm() {
+		return encryptionAlgorithm;
+	}
+
+	/**
 	 * This setter should be used only when dealing with web services (or when signing in three steps). Usually the
 	 * encryption algorithm is automatically extrapolated from the private key.
 	 *
@@ -220,39 +262,9 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		}
 	}
 
-	/**
-	 * Sets the mask generation function if used with the given SignatureAlgorithm
-	 *
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
-	 */
-	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		this.maskGenerationFunction = maskGenerationFunction;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
-		}
-	}
-
-	/**
-	 * Get the encryption algorithm
-	 * 
-	 * @return the encryption algorithm.
-	 */
-	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		return encryptionAlgorithm;
-	}
-
-	/**
-	 * Gets the signature algorithm.
-	 *
-	 * @return the signature algorithm
-	 */
+	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		return signatureAlgorithm;
-	}
-
-	@Override
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		return maskGenerationFunction;
 	}
 
 	/**
@@ -300,7 +312,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * @return the parameters to produce a content timestamp
 	 */
 	public TP getContentTimestampParameters() {
-		throw new DSSException("Cannot extract ContentTimestampParameters! Not implemented by default.");
+		throw new UnsupportedOperationException("Cannot extract ContentTimestampParameters! Not implemented by default.");
 	}
 
 	/**
@@ -319,7 +331,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * @return the parameters to produce a signature timestamp
 	 */
 	public TP getSignatureTimestampParameters() {
-		throw new DSSException("Cannot extract SignatureTimestampParameters! Not implemented by default.");
+		throw new UnsupportedOperationException("Cannot extract SignatureTimestampParameters! Not implemented by default.");
 	}
 
 	/**
@@ -333,12 +345,12 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	/**
-	 * Get the parameters for achive timestamp (Baseline-LTA)
+	 * Get the parameters for archive timestamp (Baseline-LTA)
 	 * 
 	 * @return the parameters to produce an archive timestamp
 	 */
 	public TP getArchiveTimestampParameters() {
-		throw new DSSException("Cannot extract ArchiveTimestampParameters! Not implemented by default.");
+		throw new UnsupportedOperationException("Cannot extract ArchiveTimestampParameters! Not implemented by default.");
 	}
 
 	/**

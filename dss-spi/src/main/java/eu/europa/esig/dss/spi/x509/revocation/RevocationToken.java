@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
-import java.util.Date;
-import java.util.Objects;
-
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationReason;
@@ -32,6 +29,14 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
+import java.util.Date;
+import java.util.Objects;
+
+/**
+ * Represents a revocation data token
+ *
+ * @param <R> {@code Revocation}
+ */
 @SuppressWarnings("serial")
 public abstract class RevocationToken<R extends Revocation> extends Token {
 
@@ -76,8 +81,14 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	 */
 	protected Date revocationDate;
 
+	/**
+	 * expired-certs-on-crl time extension
+	 */
 	protected Date expiredCertsOnCRL;
 
+	/**
+	 * archive-cut-off time extension
+	 */
 	protected Date archiveCutOff;
 
 	/**
@@ -96,26 +107,22 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	protected RevocationReason reason;
 	
 	/**
-	 * Revocation Token Key, used for {@link RevocationToken} identification (i.e. id in DB)
-	 */
-	protected String revocationTokenKey;
-	
-	/**
 	 * Returns the Revocation Token type (CRL or OCSP)
 	 * 
 	 * @return {@link RevocationType} of the token
 	 */
 	public abstract RevocationType getRevocationType();
 
-	public String getRelatedCertificateID() {
+	/**
+	 * Gets DSS String Id of the related certificate
+	 *
+	 * @return {@link String}
+	 */
+	public String getRelatedCertificateId() {
 		if (relatedCertificate != null) {
 			return relatedCertificate.getDSSIdAsString();
 		}
 		return null;
-	}
-
-	public void setRelatedCertificate(CertificateToken relatedCertificate) {
-		this.relatedCertificate = relatedCertificate;
 	}
 	
 	/**
@@ -168,6 +175,11 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 		return productionDate;
 	}
 
+	/**
+	 * Returns the date of the this update
+	 *
+	 * @return the this update date
+	 */
 	public Date getThisUpdate() {
 		return thisUpdate;
 	}
@@ -233,29 +245,18 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 		return reason;
 	}
 	
-	/**
-	 * Returns compiled revocation token key
-	 * @return {@link String} key
-	 */
-	public String getRevocationTokenKey() {
-		return revocationTokenKey;
-	}
-	
-	/**
-	 * Sets the value for revocationTokenKey
-	 * @param key {@link String}
-	 */
-	public void setRevocationTokenKey(String key) {
-		this.revocationTokenKey = key;
-	}
-	
 	/**	
 	 * Returns a source of embedded into a revocation token certificates
 	 * 
 	 * @return {@link RevocationCertificateSource}
 	 */
 	public abstract RevocationCertificateSource getCertificateSource();
-	
+
+	/**
+	 * Sets the external origin
+	 *
+	 * @param origin {@link RevocationOrigin}
+	 */
 	public void setExternalOrigin(RevocationOrigin origin) {
 		Objects.requireNonNull(origin, "The origin is null");
 		if (origin.isInternalOrigin()) {
@@ -264,6 +265,11 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 		this.externalOrigin = origin;
 	}
 
+	/**
+	 * Gets the external origin
+	 *
+	 * @return {@link RevocationOrigin}
+	 */
 	public RevocationOrigin getExternalOrigin() {
 		return externalOrigin;
 	}

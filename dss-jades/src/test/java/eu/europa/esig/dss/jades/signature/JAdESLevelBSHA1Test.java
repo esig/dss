@@ -20,24 +20,22 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JAdESLevelBSHA1Test extends AbstractJAdESTestSignature {
 
@@ -61,7 +59,7 @@ public class JAdESLevelBSHA1Test extends AbstractJAdESTestSignature {
 	@Override
 	@Test
 	public void signAndVerify() {
-		Exception exception = assertThrows(DSSException.class, () -> sign());
+		Exception exception = assertThrows(UnsupportedOperationException.class, () -> sign());
 		assertEquals("The defined signature algorithm 'RSA_SHA1' is not supported!", exception.getMessage());
 	}
 

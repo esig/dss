@@ -20,22 +20,22 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.SingleResp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.SingleResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Abstract class that helps to implement an OCSPSource with an already loaded list of BasicOCSPResp
@@ -46,6 +46,9 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
+	/**
+	 * Default constructor
+	 */
 	protected OfflineOCSPSource() {
 		super(new OCSPTokenRefMatcher());
 	}
@@ -56,18 +59,29 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> {
 		Objects.requireNonNull(issuer, "The issuer of the certificate to be verified cannot be null");
 
 		List<RevocationToken<OCSP>> result = new ArrayList<>();
-		final Set<EncapsulatedRevocationTokenIdentifier<OCSP>> collectedBinaries = getAllRevocationBinaries();
-		LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", certificate.getDSSIdAsString(), collectedBinaries.size());
-		for (EncapsulatedRevocationTokenIdentifier<OCSP> binary : collectedBinaries) {
-			OCSPResponseBinary ocspBinary = (OCSPResponseBinary) binary;
-			BasicOCSPResp basicOCSPResp = ocspBinary.getBasicOCSPResp();
-			SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicOCSPResp, certificate, issuer);
-			if (latestSingleResponse != null) {
-				OCSPToken ocspToken = new OCSPToken(basicOCSPResp, latestSingleResponse, certificate, issuer);
-				addRevocation(ocspToken, ocspBinary);
-				result.add(ocspToken);
+
+		Set<RevocationToken<OCSP>> allRevocationTokens = getAllRevocationTokens();
+		for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
+			if (certificate.getDSSIdAsString().equals(revocationToken.getRelatedCertificateId()) && issuer.equals(revocationToken.getIssuerCertificateToken())) {
+				result.add(revocationToken);
 			}
 		}
+
+		if (Utils.isCollectionEmpty(result)) {
+			final Set<EncapsulatedRevocationTokenIdentifier<OCSP>> collectedBinaries = getAllRevocationBinaries();
+			LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", certificate.getDSSIdAsString(), collectedBinaries.size());
+			for (EncapsulatedRevocationTokenIdentifier<OCSP> binary : collectedBinaries) {
+				OCSPResponseBinary ocspBinary = (OCSPResponseBinary) binary;
+				BasicOCSPResp basicOCSPResp = ocspBinary.getBasicOCSPResp();
+				SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicOCSPResp, certificate, issuer);
+				if (latestSingleResponse != null) {
+					OCSPToken ocspToken = new OCSPToken(basicOCSPResp, latestSingleResponse, certificate, issuer);
+					addRevocation(ocspToken, ocspBinary);
+					result.add(ocspToken);
+				}
+			}
+		}
+
 		LOG.trace("--> OfflineOCSPSource found result(s) : {}", result.size());
 		return result;
 	}

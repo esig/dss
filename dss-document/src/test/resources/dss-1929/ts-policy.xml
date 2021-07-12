@@ -41,7 +41,7 @@
 				<AuthorityInfoAccessPresent Level="WARN"/>
 				<RevocationInfoAccessPresent Level="WARN"/>
 				<RevocationDataAvailable Level="FAIL"/>
-				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationDataFreshness Level="FAIL"/>
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
@@ -57,7 +57,7 @@
 				<Signature Level="FAIL"/>
 				<NotExpired Level="FAIL"/>
 				<RevocationDataAvailable Level="FAIL"/>
-				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationDataFreshness Level="FAIL"/>
 				<NotRevoked Level="FAIL"/>
 				<NotOnHold Level="FAIL"/>
@@ -89,7 +89,7 @@
 				<AuthorityInfoAccessPresent Level="WARN"/>
 				<RevocationInfoAccessPresent Level="WARN"/>
 				<RevocationDataAvailable Level="FAIL"/>
-				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationDataFreshness Level="FAIL"/>
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
@@ -105,7 +105,7 @@
 				<Signature Level="FAIL"/>
 				<NotExpired Level="FAIL"/>
 				<RevocationDataAvailable Level="FAIL"/>
-				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationDataFreshness Level="FAIL"/>
 				<NotRevoked Level="FAIL"/>
 				<NotOnHold Level="FAIL"/>
@@ -137,7 +137,7 @@
 				<Signature Level="FAIL"/>
 				<NotExpired Level="FAIL"/>
 				<RevocationDataAvailable Level="FAIL"/>
-				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationDataFreshness Level="FAIL"/>
 				<ExtendedKeyUsage Level="WARN">
 					<Id>timeStamping</Id>
@@ -151,7 +151,7 @@
 				<Signature Level="FAIL"/>
 				<NotExpired Level="FAIL"/>
 				<RevocationDataAvailable Level="WARN"/>
-				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationDataFreshness Level="FAIL"/>
 				<NotRevoked Level="FAIL"/>
 				<NotOnHold Level="FAIL"/>
@@ -222,7 +222,7 @@
 				<Signature Level="FAIL"/>
 				<NotExpired Level="FAIL"/>
 				<RevocationDataAvailable Level="FAIL"/>
-				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationDataFreshness Level="FAIL"/>
 				<NotRevoked Level="FAIL"/>
 				<NotOnHold Level="FAIL"/>
@@ -232,7 +232,7 @@
 				<Signature Level="FAIL"/>
 				<NotExpired Level="FAIL"/>
 				<RevocationDataAvailable Level="WARN"/>
-				<RevocationDataNextUpdatePresent Level="WARN"/>
+				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationDataFreshness Level="FAIL"/>
 				<NotRevoked Level="FAIL"/>
 				<NotOnHold Level="FAIL"/>

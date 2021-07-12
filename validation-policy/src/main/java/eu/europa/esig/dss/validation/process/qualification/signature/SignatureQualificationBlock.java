@@ -53,24 +53,56 @@ import eu.europa.esig.dss.validation.process.qualification.signature.checks.Trus
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Performs the qualification verification for a signature
+ */
 public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQualification> {
 
+	/** The conclusion of signature validation as in EN 319 102-1 */
 	private final XmlConclusion etsi319102Conclusion;
+
+	/** The best-signature-time */
 	private final Date bestSignatureTime;
+
+	/** The signing certificate */
 	private final CertificateWrapper signingCertificate;
+
+	/** The analyses of all available LOTL/TLs */
 	private final List<XmlTLAnalysis> tlAnalysis;
 
+	/** The list of related LOTL/TL analyses */
+	private final List<XmlTLAnalysis> relatedTLAnalyses = new ArrayList<>();
+
+	/** The determined signing certificate qualification at its issuance time */
 	private CertificateQualification qualificationAtIssuanceTime;
+
+	/** The determined signing certificate qualification at best-signature-time */
 	private CertificateQualification qualificationAtSigningTime;
 
-	public SignatureQualificationBlock(I18nProvider i18nProvider, String signatureId, XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
-			CertificateWrapper signingCertificate, List<XmlTLAnalysis> tlAnalysis) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider
+	 *  				{@link I18nProvider}
+	 * @param signatureId
+	 *  				{@link String} representing the if of a signature to be validated
+	 * @param etsi319102validation {@link XmlConstraintsConclusionWithProofOfExistence}
+	 *  				result of signature validation process as in EN 319 102-1
+	 * @param signingCertificate
+	 *  				{@link CertificateWrapper} signing certificate used to create the signature
+	 * @param tlAnalysis
+	 *  				a list of performed {@link XmlTLAnalysis}
+	 */
+	public SignatureQualificationBlock(I18nProvider i18nProvider, String signatureId,
+									   XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
+									   CertificateWrapper signingCertificate, List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlValidationSignatureQualification());
 
 		this.etsi319102Conclusion = etsi319102validation.getConclusion();
@@ -102,6 +134,8 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			for (String lotlURL : listOfTrustedListUrls) {
 				XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlURL);
 				if (lotlAnalysis != null) {
+					relatedTLAnalyses.add(lotlAnalysis);
+
 					AcceptableListOfTrustedListsCheck<XmlValidationSignatureQualification> acceptableLOTL = isAcceptableLOTL(lotlAnalysis);
 					item = item.setNextItem(acceptableLOTL);
 					if (acceptableLOTL.process()) {
@@ -120,6 +154,8 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 				for (String tlURL : trustedListUrls) {
 					XmlTLAnalysis currentTL = getTlAnalysis(tlURL);
 					if (currentTL != null) {
+						relatedTLAnalyses.add(currentTL);
+
 						AcceptableTrustedListCheck<XmlValidationSignatureQualification> acceptableTL = isAcceptableTL(currentTL);
 						item = item.setNextItem(acceptableTL);
 						if (acceptableTL.process()) {
@@ -201,10 +237,18 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 	@Override
 	protected void addAdditionalInfo() {
-		collectErrorsWarnsInfos();
 		setIndication();
-
 		determineFinalQualification();
+	}
+
+	@Override
+	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		for (XmlValidationCertificateQualification certQualAtTime : result.getValidationCertificateQualification()) {
+			collectAllMessages(conclusion, certQualAtTime.getConclusion());
+		}
+		for (XmlTLAnalysis tlAnalysis : relatedTLAnalyses) {
+			collectAllMessages(conclusion, tlAnalysis.getConclusion());
+		}
 	}
 
 	private void determineFinalQualification() {

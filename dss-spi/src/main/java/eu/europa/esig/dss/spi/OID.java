@@ -48,6 +48,11 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_etsi_signer_attributes = new ASN1ObjectIdentifier("0.4.0.19122.1");
 
 	/**
+	 * Signer attributes {itu-t(0) identified-organization(4) etsi(0) cades(19122) id-spq (2)} (see ETSI EN 319 122-1)
+	 */
+	public static final ASN1ObjectIdentifier id_etsi_spq = new ASN1ObjectIdentifier("0.4.0.19122.2");
+
+	/**
 	 * id-aa-ets-mimeType OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) etsi(0)
 	 * electronic-signature-standard(1733) attributes(2) 1 }
 	 */
@@ -90,6 +95,12 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_aa_ATSHashIndexV3 = id_etsi_signer_attributes.branch("5");
 
 	/**
+	 * id-spq-ets-docspec OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4)
+	 * etsi(0) cades(19122) id-spq (2) 1 }
+	 */
+	public static final ASN1ObjectIdentifier id_sp_doc_specification = id_etsi_spq.branch("1");
+
+	/**
 	 * id-aa-ets-attrCertificateRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
 	 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 44 }
 	 */
@@ -125,5 +136,11 @@ public class OID {
 	 * identified-organization(4) etsi(0) psd2(19495) qcstatement(2) }
 	 */
 	public static final ASN1ObjectIdentifier psd2_qcStatement = new ASN1ObjectIdentifier("0.4.0.19495.2");
+
+	/**
+	 * esi4-qcStatement-7 QC-STATEMENT ::= { SYNTAX QcCClegislation IDENTIFIED BY id-etsi-qcsQcCClegislation }
+	 * id-etsi-qcs-QcCClegislation OBJECT IDENTIFIER ::= { id-etsi-qcs 7 }
+	 */
+	public static final ASN1ObjectIdentifier id_etsi_qcs_QcCClegislation = new ASN1ObjectIdentifier("0.4.0.1862.1.7");
 
 }

@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -36,9 +28,16 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
+import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
-import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+import javax.xml.bind.JAXBElement;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CounterSignatureValidationTest extends AbstractXAdESTestValidation {
 	
@@ -98,7 +97,7 @@ public class CounterSignatureValidationTest extends AbstractXAdESTestValidation 
 						assertEquals(1, counterSignatureType.getAttributeObject().size());
 						assertTrue(Utils.isCollectionNotEmpty(counterSignatureType.getAttributeObject()));
 						assertNotNull(counterSignatureType.getCounterSignature());
-						ValidationObjectType counterSignatureReference = (ValidationObjectType) counterSignatureType.getAttributeObject().get(0).getVOReference().get(0);
+						SignatureIdentifierType counterSignatureReference = (SignatureIdentifierType) counterSignatureType.getAttributeObject().get(0).getVOReference().get(0);
 						etsiCounterSignatureId = counterSignatureReference.getId();
 						countCounterSignatures++;
 						containsCounterSignatures = true;

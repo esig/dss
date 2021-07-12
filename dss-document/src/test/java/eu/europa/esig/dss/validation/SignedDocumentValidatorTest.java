@@ -20,21 +20,19 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SignedDocumentValidatorTest {
 
 	@Test
-	public void testNoDepencency() {
+	public void testNoDependency() {
 		FileDocument fileDocument = new FileDocument("src/test/resources/sample.xml");
-		Exception exception = assertThrows(DSSException.class,
+		Exception exception = assertThrows(UnsupportedOperationException.class,
 				() -> SignedDocumentValidator.fromDocument(fileDocument));
 		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
@@ -45,7 +43,7 @@ public class SignedDocumentValidatorTest {
 	}
 
 	@Test
-	public void testEmtpyDoc() {
+	public void testEmptyDoc() {
 		InMemoryDocument emptyDoc = new InMemoryDocument();
 		assertThrows(NullPointerException.class, () -> SignedDocumentValidator.fromDocument(emptyDoc));
 	}

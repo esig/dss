@@ -26,7 +26,6 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -69,7 +68,7 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 			incorporatePayload(jws);
 		}
 		String payload = parameters.isBase64UrlEncodedPayload() ? jws.getEncodedPayload() : jws.getUnverifiedPayload();
-		byte[] signatureValueBytes = DSSASN1Utils.fromAsn1toSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
+		byte[] signatureValueBytes = DSSASN1Utils.ensurePlainSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
 		
 		String signatureString = DSSJsonUtils.concatenate(jws.getEncodedHeader(), payload, DSSJsonUtils.toBase64Url(signatureValueBytes));
 		return new InMemoryDocument(signatureString.getBytes());
@@ -84,11 +83,11 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 	protected void assertConfigurationValidity(JAdESSignatureParameters signatureParameters) {
 		SignaturePackaging packaging = signatureParameters.getSignaturePackaging();
 		if (!(SignaturePackaging.ENVELOPING.equals(packaging)) && !(SignaturePackaging.DETACHED.equals(packaging))) {
-			throw new DSSException("Unsupported signature packaging for JAdES Compact Signature: " + packaging);
+			throw new IllegalArgumentException("Unsupported signature packaging for JAdES Compact Signature: " + packaging);
 		}
 		SignatureLevel signatureLevel = signatureParameters.getSignatureLevel();
 		if (!SignatureLevel.JAdES_BASELINE_B.equals(signatureLevel)) {
-			throw new DSSException("Only JAdES_BASELINE_B level is allowed for JAdES Compact Signature! "
+			throw new IllegalArgumentException("Only JAdES_BASELINE_B level is allowed for JAdES Compact Signature! "
 					+ "Change JwsSerializationType in JAdESSignatureParameters in order to support extension!");
 		}
 	}

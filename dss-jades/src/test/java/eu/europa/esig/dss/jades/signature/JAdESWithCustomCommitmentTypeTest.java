@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
@@ -41,6 +32,14 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JAdESWithCustomCommitmentTypeTest extends AbstractJAdESTestSignature {
 
@@ -101,8 +100,10 @@ public class JAdESWithCustomCommitmentTypeTest extends AbstractJAdESTestSignatur
 		return GOOD_USER;
 	}
 	
-	private class MockCommitmentType implements CommitmentType {
-		
+	private static class MockCommitmentType implements CommitmentType {
+
+		private static final long serialVersionUID = -9091840631960045608L;
+
 		private final String uri;
 		private String description;
 		private String[] documentReferences;

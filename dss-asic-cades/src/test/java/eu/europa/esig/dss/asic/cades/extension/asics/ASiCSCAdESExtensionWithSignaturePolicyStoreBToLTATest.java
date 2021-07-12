@@ -99,7 +99,7 @@ public class ASiCSCAdESExtensionWithSignaturePolicyStoreBToLTATest extends Abstr
 
 		assertTrue(signature.isPolicyAsn1Processable());
 		assertTrue(signature.isPolicyIdentified());
-		assertTrue(signature.isPolicyStatus());
+		assertTrue(signature.isPolicyDigestValid());
 		assertTrue(signature.isPolicyDigestAlgorithmsEqual());
 	}
 

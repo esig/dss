@@ -35,8 +35,9 @@ import java.util.List;
  * This class allows to handle a list {@code OfflineRevocationSource}
  *
  */
-@SuppressWarnings("serial")
 public class ListRevocationSource<R extends Revocation> implements MultipleRevocationSource<R> {
+
+	private static final long serialVersionUID = -6284731668494875108L;
 
 	private List<OfflineRevocationSource<R>> sources = new ArrayList<>();
 

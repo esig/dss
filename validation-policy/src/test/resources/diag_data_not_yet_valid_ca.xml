@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>sample-signed-xades-baseline-lt.xml</DocumentName>
-    <ValidationDate>2021-02-04T12:29:16</ValidationDate>
+    <ValidationDate>2021-02-04T12:29:16Z</ValidationDate>
     <Signatures>
         <Signature Id="S-4D5FFB001A6F7D51FC269CEAD816AEC492EE09DBCE7A315BEFEF5E65A6BF62CF">
             <DAIdentifier>id-f51e0bc6e2d9d8ab37510a8b302ee5cd</DAIdentifier>
             <SignatureFilename>sample-signed-xades-baseline-lt.xml</SignatureFilename>
-            <ClaimedSigningTime>2021-02-04T12:29:13</ClaimedSigningTime>
+            <ClaimedSigningTime>2021-02-04T12:29:13Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
@@ -113,8 +113,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2022-01-04T08:40:42</NotAfter>
-            <NotBefore>2020-03-04T08:40:42</NotBefore>
+            <NotAfter>2022-01-04T08:40:42Z</NotAfter>
+            <NotBefore>2020-03-04T08:40:42Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E30352CAD4053ECBF5036E0F0517982AC020B3515C14ED7B80D2CC6B3151C6</EntityKey>
@@ -160,8 +160,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2022-01-04T08:40:45</NotAfter>
-            <NotBefore>2020-03-04T08:40:45</NotBefore>
+            <NotAfter>2022-01-04T08:40:45Z</NotAfter>
+            <NotBefore>2020-03-04T08:40:45Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-11E70B6A217D5C0D69B8C5D25FDE3E5F313AF7FA80BD4EB045D8FFFB033E8F52</EntityKey>
@@ -213,8 +213,8 @@
                 <Source>TRUSTED_STORE</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2022-02-04T08:40:43</NotAfter>
-            <NotBefore>2020-02-04T08:40:43</NotBefore>
+            <NotAfter>2022-02-04T08:40:43Z</NotAfter>
+            <NotBefore>2020-02-04T08:40:43Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-482BCA9A7D4E2A0DAA0CB5D564DE2D047DCA66FFBA9F90B1EED85FF34BF5C915</EntityKey>
@@ -260,8 +260,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2024-02-04T08:40:44</NotAfter>
-            <NotBefore>2022-02-04T08:40:44</NotBefore>
+            <NotAfter>2024-02-04T08:40:44Z</NotAfter>
+            <NotBefore>2022-02-04T08:40:44Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EAAAF0F8A191C35B3E2A272E163451D4A6B93E74DBD472DC15C59EF7460D731A</EntityKey>
@@ -300,9 +300,9 @@
         <Revocation Id="R-5CA71AC2ACB5D144AE1C70400A5143A734C34D566D602D6A48FD235C9A081051">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2021-02-04T12:29:15</ProductionDate>
-            <ThisUpdate>2021-02-04T12:29:15</ThisUpdate>
-            <NextUpdate>2021-08-04T11:29:15</NextUpdate>
+            <ProductionDate>2021-02-04T12:29:15Z</ProductionDate>
+            <ThisUpdate>2021-02-04T12:29:15Z</ThisUpdate>
+            <NextUpdate>2021-08-04T11:29:15Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -325,9 +325,9 @@
         <Revocation Id="R-BF4723FF4FBE1FD64509AC90A9C23FA13CFDAA615C6F95FE50866E6B0DD1B8F5">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2021-02-04T12:29:15</ProductionDate>
-            <ThisUpdate>2021-02-04T12:29:15</ThisUpdate>
-            <NextUpdate>2021-08-04T11:29:15</NextUpdate>
+            <ProductionDate>2021-02-04T12:29:15Z</ProductionDate>
+            <ThisUpdate>2021-02-04T12:29:15Z</ThisUpdate>
+            <NextUpdate>2021-08-04T11:29:15Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -349,7 +349,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-59EDB6B1D04370F29799C3B1D8E43D51E354715098A1EC422FC1C708A53E3D96">
-            <ProductionTime>2021-02-04T12:29:15</ProductionTime>
+            <ProductionTime>2021-02-04T12:29:15Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>6MGfqFfW+3IqDm8IUqS/EQ2fS/xmJCWlEFI2/Esl7GM=</DigestValue>

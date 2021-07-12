@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
-import eu.europa.esig.dss.model.DSSException;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -34,27 +32,56 @@ public interface DataLoader extends Serializable {
 	/**
 	 * This is an internal class used to model the couple data and url used to obtain this data.
 	 */
-	public static class DataAndUrl {
+	class DataAndUrl {
 
 		/**
 		 * Url used to obtain data.
 		 */
-		private String urlString;
+		private final String urlString;
 
 		/**
 		 * Obtained data.
 		 */
-		private byte[] data;
+		private final byte[] data;
 
+		/**
+		 * Default constructor
+		 *
+		 * @param urlString {@link String} url
+		 * @param data a byte array
+		 *
+		 * @deprecated since DSS 5.9. Use {@code DataAndUrl(urlString, data)} instead.
+		 */
+		@Deprecated
 		public DataAndUrl(final byte[] data, final String urlString) {
-			this.data = data;
+			this(urlString, data);
+		}
+
+		/**
+		 * Default constructor
+		 *
+		 * @param urlString {@link String} url
+		 * @param data a byte array
+		 */
+		public DataAndUrl(final String urlString, final byte[] data) {
 			this.urlString = urlString;
+			this.data = data;
 		}
 		
+		/**
+		 * Gets the URL string used to download the data
+		 *
+		 * @return {@link String}
+		 */
 		public String getUrlString() {
 			return urlString;
 		}
 		
+		/**
+		 * Gets the downloaded data
+		 *
+		 * @return a byte array
+		 */
 		public byte[] getData() {
 			return data;
 		}
@@ -67,9 +94,8 @@ public interface DataLoader extends Serializable {
 	 * @param url
 	 *            the url to access
 	 * @return {@code byte} array of obtained data or null
-	 * @throws DSSException in case of DataLoader error
 	 */
-	byte[] get(final String url) throws DSSException;
+	byte[] get(final String url);
 
 	/**
 	 * Execute a HTTP GET operation. This method is used when many URls are available to access the same resource. The
@@ -78,9 +104,8 @@ public interface DataLoader extends Serializable {
 	 * @param urlStrings
 	 *            {@code List} of {@code String}s representing the URLs to be used in sequential way to obtain the data.
 	 * @return {@code DataAndUrl} representing the array of obtained data and used url, or null
-	 * @throws DSSException in case of DataLoader error
 	 */
-	DataAndUrl get(final List<String> urlStrings) throws DSSException;
+	DataAndUrl get(final List<String> urlStrings);
 
 	/**
 	 * Execute a HTTP GET operation with indication concerning the mandatory nature of the operation.
@@ -90,9 +115,8 @@ public interface DataLoader extends Serializable {
 	 * @param refresh
 	 *            if true indicates that the cached data should be refreshed
 	 * @return {@code byte} array of obtained data or null
-	 * @throws DSSException in case of DataLoader error
 	 */
-	byte[] get(String url, boolean refresh) throws DSSException;
+	byte[] get(String url, boolean refresh);
 
 	/**
 	 * Executes a HTTP POST operation
@@ -102,9 +126,8 @@ public interface DataLoader extends Serializable {
 	 * @param content
 	 *            the content to post
 	 * @return {@code byte} array of obtained data
-	 * @throws DSSException in case of DataLoader error
 	 */
-	byte[] post(final String url, final byte[] content) throws DSSException;
+	byte[] post(final String url, final byte[] content);
 
 	/**
 	 * This allows to set the content type. Example: Content-Type "application/ocsp-request"

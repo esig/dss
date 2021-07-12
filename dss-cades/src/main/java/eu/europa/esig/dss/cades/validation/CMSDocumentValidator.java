@@ -21,11 +21,11 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
@@ -86,8 +86,18 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 */
 	public CMSDocumentValidator(final DSSDocument document) {
 		this();
+		Objects.requireNonNull(document, "Document to be validated cannot be null!");
+
 		this.document = document;
-		this.cmsSignedData = DSSUtils.toCMSSignedData(document);
+		this.cmsSignedData = toCMSSignedData(document);
+	}
+
+	private CMSSignedData toCMSSignedData(DSSDocument document) {
+		try {
+			return DSSUtils.toCMSSignedData(document);
+		} catch (Exception e) {
+			throw new IllegalInputException(String.format("A CMS file is expected : %s", e.getMessage()), e);
+		}
 	}
 
 	/**
@@ -129,35 +139,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			}
 		}
 		return signatures;
-	}
-
-	@Override
-	public List<DSSDocument> getOriginalDocuments(final String signatureId) {
-		Objects.requireNonNull(signatureId, "Signature Id cannot be null");
-
-		List<DSSDocument> results = new ArrayList<>();
-
-		for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
-			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-			cadesSignature.setSignatureFilename(document.getName());
-			cadesSignature.setDetachedContents(detachedContents);
-			cadesSignature.setSigningCertificateSource(signingCertificateSource);
-			if (Utils.areStringsEqual(cadesSignature.getId(), signatureId) || isCounterSignature(cadesSignature, signatureId)) {
-				results.add(cadesSignature.getOriginalDocument());
-			}
-		}
-		return results;
-	}
-	
-	private boolean isCounterSignature(final CAdESSignature masterSignature, final String signatureId) {
-		for (final SignerInformation counterSignerInformation : masterSignature.getCounterSignatureStore()) {
-			final CAdESSignature countersignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
-			countersignature.setMasterSignature(masterSignature);
-			if (Utils.areStringsEqual(countersignature.getId(), signatureId) || isCounterSignature(countersignature, signatureId)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Override

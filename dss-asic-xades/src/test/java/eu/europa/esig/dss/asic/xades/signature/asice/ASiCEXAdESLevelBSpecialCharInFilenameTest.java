@@ -47,7 +47,7 @@ public class ASiCEXAdESLevelBSpecialCharInFilenameTest extends AbstractASiCEXAdE
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 	}
 
 	@Override

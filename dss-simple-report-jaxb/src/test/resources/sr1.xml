@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<SimpleReport ValidationTime="2019-07-01T06:50:17" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+<SimpleReport ValidationTime="2019-07-01T06:50:17Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
     <ValidationPolicy>
         <PolicyName>QES AdESQC TL based</PolicyName>
         <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
@@ -27,15 +27,19 @@
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
         <SubIndication>CRYPTO_CONSTRAINTS_FAILURE_NO_POE</SubIndication>
-        <Errors>The past signature validation is not conclusive!</Errors>
-        <Errors>The algorithm is no longer considered reliable!</Errors>
-        <Errors>The certificate validation is not conclusive!</Errors>
-        <Errors>The revocation freshness check is not conclusive!</Errors>
-        <Warnings>The signature/seal is an INDETERMINATE AdES digital signature!</Warnings>
-        <Warnings>The validation of manifest entries is not performed!</Warnings>
-        <Warnings>The result of the revocation data validation process is not acceptable!</Warnings>
-        <SigningTime>2013-07-02T06:03:10</SigningTime>
-        <BestSignatureTime>2013-07-02T06:03:10</BestSignatureTime>
+        <AdESValidationDetails>
+            <Error>The past signature validation is not conclusive!</Error>
+            <Error>The algorithm is no longer considered reliable!</Error>
+            <Error>The certificate validation is not conclusive!</Error>
+            <Error>The revocation freshness check is not conclusive!</Error>
+            <Warning>The validation of manifest entries is not performed!</Warning>
+            <Warning>The result of the revocation data validation process is not acceptable!</Warning>
+        </AdESValidationDetails>
+        <QualificationDetails>
+            <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
+        </QualificationDetails>
+        <SigningTime>2013-07-02T06:03:10Z</SigningTime>
+        <BestSignatureTime>2013-07-02T06:03:10Z</BestSignatureTime>
         <SignedBy>Joaquin Romera Ramirez</SignedBy>
         <SignatureLevel description="Indeterminate Qualified Electronic Signature">Indeterminate QESig</SignatureLevel>
         <SignatureScope name="L_18320130702EN.pdf" scope="FULL">Full document</SignatureScope>

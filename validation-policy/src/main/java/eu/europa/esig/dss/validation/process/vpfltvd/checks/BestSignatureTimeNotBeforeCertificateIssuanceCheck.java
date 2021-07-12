@@ -98,7 +98,8 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlCon
 	@Override
 	protected String buildAdditionalInfo() {
 		String bestSignatureTimeStr = bestSignatureTime == null ? " ? " : ValidationProcessUtils.getFormattedDate(bestSignatureTime);
-		return i18nProvider.getMessage(MessageTag.BEST_SIGNATURE_TIME, bestSignatureTimeStr);
+		String certNotBefore = signingCertificate.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(signingCertificate.getNotBefore());
+		return i18nProvider.getMessage(MessageTag.BEST_SIGNATURE_TIME_CERT_NOT_BEFORE, bestSignatureTimeStr, certNotBefore);
 	}
 
 	@Override

@@ -20,36 +20,70 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.util.Arrays;
-
-import javax.security.auth.x500.X500Principal;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 
-public class ResponderId {
-	
+import javax.security.auth.x500.X500Principal;
+import java.io.Serializable;
+import java.util.Arrays;
+
+/**
+ * This class represents a ResponderId extracted from an OCSP response
+ */
+public class ResponderId implements Serializable {
+
+	private static final long serialVersionUID = 651463368797656154L;
+
+	/** The {@code X500Principal} of the OCSP issuer */
 	private X500Principal subjectX500Principal;
+
+	/** SKI if the OCSP issuer */
 	private byte[] ski;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param subjectX500Principal {@link X500Principal}
+	 * @param ski byte array
+	 */
 	public ResponderId(X500Principal subjectX500Principal, byte[] ski) {
 		super();
 		this.subjectX500Principal = subjectX500Principal;
 		this.ski = ski;
 	}
 
+	/**
+	 * Gets {@code X500Principal} of the OCSP issuer
+	 *
+	 * @return {@link X500Principal}
+	 */
 	public X500Principal getX500Principal() {
 		return subjectX500Principal;
 	}
 	
+	/**
+	 * Sets {@code X500Principal} of the OCSP issuer
+	 *
+	 * @param subjectX500Principal {@link X500Principal}
+	 */
 	public void setX500Principal(X500Principal subjectX500Principal) {
 		this.subjectX500Principal = subjectX500Principal;
 	}
 	
+	/**
+	 * Gets the SKI of the issuer
+	 *
+	 * @return byte array
+	 */
 	public byte[] getSki() {
 		return ski;
 	}
 	
+	/**
+	 * Sets the SKI of the issuer
+	 *
+	 * @param ski byte array
+	 */
 	public void setSki(byte[] ski) {
 		this.ski = ski;
 	}

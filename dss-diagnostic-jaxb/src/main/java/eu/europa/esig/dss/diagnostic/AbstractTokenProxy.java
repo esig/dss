@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -38,12 +33,36 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * An abstract representation of a validation object
+ *
+ */
 public abstract class AbstractTokenProxy implements TokenProxy {
 
+	/**
+	 * Returns a basic signature validation
+	 *
+	 * @return {@link XmlBasicSignature}
+	 */
 	protected abstract XmlBasicSignature getCurrentBasicSignature();
 
+	/**
+	 * Returns the token's certificate chain
+	 *
+	 * @return a list of {@link XmlChainItem}s
+	 */
 	protected abstract List<XmlChainItem> getCurrentCertificateChain();
 
+	/**
+	 * Returns the signing certificate of the token
+	 *
+	 * @return {@link XmlSigningCertificate}
+	 */
 	protected abstract XmlSigningCertificate getCurrentSigningCertificate();
 
 	@Override
@@ -202,6 +221,13 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		return false;
 	}
 	
+	/**
+	 * Checks if the certificate chain is trusted from a Trusted Store
+	 *
+	 * NOTE: Not from Trusted List!
+	 *
+	 * @return TRUE if a certificate chain is trusted from a trusted store, FALSE otherwise
+	 */
 	public boolean isCertificateChainFromTrustedStore() {
 		for (CertificateWrapper certificate : getCertificateChain()) {
 			if (certificate.getSources().contains(CertificateSourceType.TRUSTED_STORE)) {
@@ -211,18 +237,36 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		return false;
 	}
 
+	/**
+	 * Returns binaries of the token, when present
+	 *
+	 * @return a byte array
+	 */
 	public abstract byte[] getBinaries();
 	
+	/**
+	 * Checks if PDF modification detection process has found any modifications
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return TRUE if the modification has been detected, FALSE otherwise
+	 */
 	protected boolean arePdfModificationsDetected(XmlPDFRevision pdfRevision) {
 		if (pdfRevision != null) {
 			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
 			if (modificationDetection != null) {
-				return modificationDetection.getAnnotationOverlap().size() != 0 || modificationDetection.getVisualDifference().size() != 0;
+				return modificationDetection.getAnnotationOverlap().size() != 0 ||
+						modificationDetection.getVisualDifference().size() != 0;
 			}
 		}
 		return false;
 	}
 	
+	/**
+	 * Returns a list of page numbers concerned by an annotation overlap
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision} to check
+	 * @return a list of page numbers
+	 */
 	protected List<BigInteger> getPdfAnnotationsOverlapConcernedPages(XmlPDFRevision pdfRevision) {
 		if (pdfRevision != null) {
 			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
@@ -234,6 +278,12 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		return Collections.emptyList();
 	}
 	
+	/**
+	 * Returns a list of page numbers concerned by positive visual difference check result
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision} to check
+	 * @return a list of page numbers
+	 */
 	protected List<BigInteger> getPdfVisualDifferenceConcernedPages(XmlPDFRevision pdfRevision) {
 		if (pdfRevision != null) {
 			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
@@ -245,6 +295,12 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		return Collections.emptyList();
 	}
 	
+	/**
+	 * Returns a list of page numbers removed/added within the revision
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision} to check
+	 * @return a list of page numbers
+	 */
 	protected List<BigInteger> getPdfPageDifferenceConcernedPages(XmlPDFRevision pdfRevision) {
 		if (pdfRevision != null) {
 			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();

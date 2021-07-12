@@ -34,6 +34,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -72,6 +73,13 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * @param tokenExtractionStrategy the {@link TokenExtractionStrategy}
 	 */
 	void setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy);
+
+	/**
+	 * Sets the TokenIdentifierProvider
+	 *
+	 * @param identifierProvider {@link TokenIdentifierProvider}
+	 */
+	void setTokenIdentifierProvider(TokenIdentifierProvider identifierProvider);
 	
 	/**
 	 * This method allows to enable/disable the semantics inclusion in the reports
@@ -242,39 +250,38 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature);
 	
 	/**
-	 * Prepares the {@code validationContext} for signature validation process and
-	 * returns a list of signatures to validate
-	 * 
-	 * @param validationContext
-	 *                          {@link ValidationContext}
-	 * @param allSignatures
-	 *                          a list of all {@link AdvancedSignature}s to be
-	 *                          validated
-	 */
-	void prepareSignatureValidationContext(final ValidationContext validationContext, final List<AdvancedSignature> allSignatures);
-
-	/**
-	 * Prepares the {@code validationContext} for a timestamp validation process
-	 * 
-	 * @param validationContext
-	 *                          {@link ValidationContext}
-	 * @param timestamps
-	 *                          a list of detached timestamps
-	 */
-	void prepareDetachedTimestampValidationContext(final ValidationContext validationContext, List<TimestampToken> timestamps);
-
-	/**
 	 * This method process the signature validation on the given {@code allSignatureList}
 	 * 
-	 * @param allSignatureList list of {@link AdvancedSignature}s to be validated
+	 * @param <T> {@link AdvancedSignature} implementation
+	 * @param allSignatureList a collection of {@link AdvancedSignature}s to be validated
 	 */
-	void processSignaturesValidation(List<AdvancedSignature> allSignatureList);
+	<T extends AdvancedSignature> void processSignaturesValidation(Collection<T> allSignatureList);
 
 	/**
 	 * Finds SignatureScopes for a list of signatures
 	 *
-	 * @param currentValidatorSignatures a list of {@link AdvancedSignature}s
+	 * @param <T> {@link AdvancedSignature} implementation
+	 * @param currentValidatorSignatures a collection of {@link AdvancedSignature}s
 	 */
-	void findSignatureScopes(List<AdvancedSignature> currentValidatorSignatures);
+	<T extends AdvancedSignature> void findSignatureScopes(Collection<T> currentValidatorSignatures);
+
+	/**
+	 * Extracts a validation data for provided collection of signatures
+	 *
+	 * @param <T> {@link AdvancedSignature} implementation
+	 * @param signatures a collection of {@link AdvancedSignature}s
+	 * @return {@link ValidationDataContainer}
+	 */
+	<T extends AdvancedSignature> ValidationDataContainer getValidationData(Collection<T> signatures);
+
+	/**
+	 * Extracts a validation data for provided collection of signatures and/or timestamps
+	 *
+	 * @param <T> {@link AdvancedSignature} implementation
+	 * @param signatures a collection of {@link AdvancedSignature}s
+	 * @param detachedTimestamps a collection of detached {@link TimestampToken}s
+	 * @return {@link ValidationDataContainer}
+	 */
+	<T extends AdvancedSignature> ValidationDataContainer getValidationData(Collection<T> signatures, Collection<TimestampToken> detachedTimestamps);
 
 }

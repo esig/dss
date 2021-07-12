@@ -91,39 +91,93 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		if (!timeStampType.isContentTimestamp()) {
 			return null;
 		}
-
-		if (!checkTimestampTokenIncludes(timestampToken)) {
-			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
-		}
 		if (references.isEmpty()) {
-			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
+			throw new IllegalStateException("The method 'checkSignatureIntegrity' must be invoked first!");
 		}
 
+		switch (timeStampType) {
+			case ALL_DATA_OBJECTS_TIMESTAMP:
+				return getAllDataObjectsTimestampData(timestampToken);
+			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
+				return getIndividualDataObjectsTimestampData(timestampToken);
+			default:
+				throw new UnsupportedOperationException(String.format("The content timestamp of type '%s' is not supported!",
+						timeStampType));
+		}
+	}
+
+	/**
+	 * Returns the computed message-imprint for xades132:AllDataObjectsTimestamp token
+	 * 
+	 * @param timestampToken {@link TimestampToken}
+	 * @return {@link DSSDocument} message-imprint
+	 */
+	protected DSSDocument getAllDataObjectsTimestampData(final TimestampToken timestampToken) {
 		final String canonicalizationMethod = timestampToken.getCanonicalizationMethod();
-		final List<TimestampInclude> includes = timestampToken.getTimestampIncludes();
 
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 			for (final Reference reference : references) {
-				if (isContentTimestampedReference(reference, timeStampType, includes)) {
+				if (!DSSXMLUtils.isSignedProperties(reference, xadesPaths)) {
 					byte[] referenceBytes = getReferenceBytes(reference, canonicalizationMethod);
 					outputStream.write(referenceBytes);
 				}
 			}
 			byte[] byteArray = outputStream.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("IndividualDataObjectsTimestampData/AllDataObjectsTimestampData bytes:");
+				LOG.trace("AllDataObjectsTimestampData bytes:");
 				LOG.trace(new String(byteArray));
 			}
 			return new InMemoryDocument(byteArray);
 		} catch (IOException | XMLSecurityException e) {
 			if (LOG.isDebugEnabled()) {
-				LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. Reason : {}", e.getMessage(), e);
+				LOG.warn("Unable to extract AllDataObjectsTimestampData. Reason : {}", e.getMessage(), e);
 			} else {
-				LOG.warn("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. Reason : {}", e.getMessage());
+				LOG.warn("Unable to extract AllDataObjectsTimestampData. Reason : {}", e.getMessage());
 			}
 		}
 		return null;
+	}
 
+	/**
+	 * Returns the computed message-imprint for xades132:IndividualDataObjectsTimestamp token
+	 *
+	 * @param timestampToken {@link TimestampToken}
+	 * @return {@link DSSDocument} message-imprint
+	 */
+	protected DSSDocument getIndividualDataObjectsTimestampData(final TimestampToken timestampToken) {
+		if (!checkTimestampTokenIncludes(timestampToken)) {
+			throw new IllegalArgumentException("The Included referencedData attribute is either not present or set to false!");
+		}
+
+		final String canonicalizationMethod = timestampToken.getCanonicalizationMethod();
+		final List<TimestampInclude> includes = timestampToken.getTimestampIncludes();
+
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			for (final TimestampInclude include : includes) {
+				Reference reference = getCorrespondingReference(include, references);
+				if (reference != null) {
+					byte[] referenceBytes = getReferenceBytes(reference, canonicalizationMethod);
+					outputStream.write(referenceBytes);
+				} else {
+
+					LOG.warn("No ds:Reference found corresponding to an IndividualDataObjectsTimestamp include with URI '{}'!",
+							include.getURI());
+				}
+			}
+			byte[] byteArray = outputStream.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("IndividualDataObjectsTimestampData bytes:");
+				LOG.trace(new String(byteArray));
+			}
+			return new InMemoryDocument(byteArray);
+		} catch (IOException | XMLSecurityException e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to extract IndividualDataObjectsTimestampData. Reason : {}", e.getMessage(), e);
+			} else {
+				LOG.warn("Unable to extract IndividualDataObjectsTimestampData. Reason : {}", e.getMessage());
+			}
+		}
+		return null;
 	}
 	
 	private byte[] getReferenceBytes(final Reference reference, final String canonicalizationMethod) throws XMLSecurityException {
@@ -150,7 +204,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	 * these Include elements has its referenceData set to false, the method returns false
 	 *
 	 * @param timestampToken {@link TimestampToken}
-	 * @return TRUE all timestamp includes hasve referencedData attribute set to true, FALSE otherwise
+	 * @return TRUE all timestamp includes have referencedData attribute set to true, FALSE otherwise
 	 */
 	private boolean checkTimestampTokenIncludes(final TimestampToken timestampToken) {
 		final List<TimestampInclude> timestampIncludes = timestampToken.getTimestampIncludes();
@@ -164,19 +218,14 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		return true;
 	}
 
-	private boolean isContentTimestampedReference(Reference reference, TimestampType timeStampType, List<TimestampInclude> includes) {
-		if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
-			// All references are covered except the one referencing the SignedProperties
-			return !DSSXMLUtils.isSignedProperties(reference, xadesPaths);
-		} else {
-			for (TimestampInclude timestampInclude : includes) {
-				String id = timestampInclude.getURI();
-				if (reference.getId().equals(id)) {
-					return true;
-				}
+	private Reference getCorrespondingReference(TimestampInclude timestampInclude, List<Reference> references) {
+		String uri = timestampInclude.getURI();
+		for (Reference reference : references) {
+			if (uri.equals(reference.getId())) {
+				return reference;
 			}
-			return false;
 		}
+		return null;
 	}
 
 	@Override
@@ -195,6 +244,13 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		return getSignatureTimestampData(null, canonicalizationMethod);
 	}
 
+	/**
+	 * Returns a message-imprint for a signature timestamp
+	 *
+	 * @param timestampToken {@link TimestampToken}
+	 * @param canonicalizationMethod {@link String}
+	 * @return message-imprint
+	 */
 	protected byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
@@ -211,30 +267,41 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getTimestampX1Data(final TimestampToken timestampToken) {
-		byte[] timestampX1Data = getTimestampX1Data(timestampToken, null);
+		byte[] timestampX1Data = getTimestampX1Data(timestampToken, null, null);
 		return new InMemoryDocument(timestampX1Data);
 	}
 	
 	/**
 	 * Returns SigAndRefsTimestamp/SigAndRefsTimestampV2 message-imprint data for a new timestamp
 	 *
-	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (SigAndRefsTimestampV2)
 	 * @return message-imprint octets
 	 */
-	public byte[] getTimestampX1Data(final String canonicalizationMethod) {
-		return getTimestampX1Data(null, canonicalizationMethod);
+	public byte[] getTimestampX1Data(final String canonicalizationMethod, boolean en319132) {
+		return getTimestampX1Data(null, canonicalizationMethod, en319132);
 	}
 
 	/**
 	 * Computes the message-imprint for SigAndRefsTimestamp/SigAndRefsTimestampV2
 	 *
-	 * @param timestampToken {@link TimestampToken} on signature validation
-	 * @param canonicalizationMethod {@link String} the canonicalization method
+	 * @param timestampToken
+	 *              {@link TimestampToken} on signature validation
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (SigAndRefsTimestampV2)
 	 * @return message-imprint octets
 	 */
-	protected byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+	protected byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod, Boolean en319132) {
 		XAdESAttribute timestampAttribute = timestampToken != null ? (XAdESAttribute) timestampToken.getTimestampAttribute() : null;
+
+		canonicalizationMethod = timestampToken != null ?
+				timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+		en319132 = timestampToken != null ?
+				checkAttributeNameMatches(timestampAttribute, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2) : en319132;
 
 		/**
 		 * A.1.5.1 The SigAndRefsTimeStampV2 qualifying property (A.1.5.1.2 Not distributed case)
@@ -254,13 +321,20 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * 2) Those among the following unsigned qualifying properties that appear before SigAndRefsTimeStampV2,
 			 * in their order of appearance within the UnsignedSignatureProperties element:
 			 */
-			XAdESUnsignedSigProperties xadesUnsignedSigProperties = getXAdESUnsignedSignatureProperties(timestampToken);
+
+			// Canonicalization copy is used in order to allow XL/A levels creation
+			Element unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy();
+			if (unsignedProperties == null) {
+				throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
+			}
+
+			XAdESUnsignedSigProperties xadesUnsignedSigProperties = new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
 			for (XAdESAttribute xadesAttribute : xadesUnsignedSigProperties.getAttributes()) {
 				if (timestampAttribute != null && timestampAttribute.equals(xadesAttribute)) {
 					break;
 				}
 
-				if (checkAttributeNameMatches(timestampAttribute, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2)) {
+				if (en319132) {
 					/**
 					 * - The SignatureTimeStamp qualifying properties.
 					 * - The CompleteCertificateRefsV2 qualifying property.
@@ -274,10 +348,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 						writeCanonicalizedValue(xadesAttribute, canonicalizationMethod, buffer);
 					}
 
-				// Use SigAndRefsTimeStamp on signature creation/extension by default
-				// TODO : allow the new SigAndRefsTimeStampV2 creation
-				} else if (timestampToken == null ||
-						checkAttributeNameMatches(timestampAttribute, XAdES132Element.SIG_AND_REFS_TIMESTAMP)) {
+				} else {
 					/**
 					 * TS 101 903 v1.4.2 : 7.5.1 The SigAndRefsTimeStamp element (7.5.1.1 Not distributed case)
 					 *
@@ -309,30 +380,40 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getTimestampX2Data(final TimestampToken timestampToken) {
-		byte[] timestampX2Data = getTimestampX2Data(timestampToken, null);
+		byte[] timestampX2Data = getTimestampX2Data(timestampToken, null, null);
 		return new InMemoryDocument(timestampX2Data);
 	}
 	
 	/**
 	 * Returns RefsOnlyTimestamp/RefsOnlyTimestampV2 message-imprint data for a new timestamp
 	 *
-	 * @param canonicalizationMethod {@link String} canonicalization method to use
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (RefsOnlyTimestampV2)
 	 * @return message-imprint octets
 	 */
-	public byte[] getTimestampX2Data(final String canonicalizationMethod) {
-		return getTimestampX2Data(null, canonicalizationMethod);
+	public byte[] getTimestampX2Data(final String canonicalizationMethod, boolean en319132) {
+		return getTimestampX2Data(null, canonicalizationMethod, en319132);
 	}
 
 	/**
 	 * Computes the message-imprint for RefsOnlyTimestamp/RefsOnlyTimestampV2
 	 *
-	 * @param timestampToken {@link TimestampToken} on signature validation
-	 * @param canonicalizationMethod {@link String} the canonicalization method
+	 * @param timestampToken
+	 *              {@link TimestampToken} on signature validation
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @param en319132
+	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (RefsOnlyTimestampV2)
 	 * @return message-imprint octets
 	 */
-	protected byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+	protected byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod, Boolean en319132) {
 		XAdESAttribute timestampAttribute = timestampToken != null ? (XAdESAttribute) timestampToken.getTimestampAttribute() : null;
+
+		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+		en319132 = timestampToken != null ?
+				checkAttributeNameMatches(timestampAttribute, XAdES141Element.REFS_ONLY_TIMESTAMP_V2) : en319132;
 
 		/**
 		 * A.1.5.2 The RefsOnlyTimeStampV2 qualifying property (A.1.5.2.2 Not distributed case)
@@ -345,14 +426,21 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		 */
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 
-			XAdESUnsignedSigProperties xadesUnsignedSigProperties = getXAdESUnsignedSignatureProperties(timestampToken);
+
+			// Canonicalization copy is used in order to allow XL/A levels creation
+			Element unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy();
+			if (unsignedProperties == null) {
+				throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
+			}
+
+			XAdESUnsignedSigProperties xadesUnsignedSigProperties = new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
 			for (XAdESAttribute xadesAttribute : xadesUnsignedSigProperties.getAttributes()) {
 				if (timestampAttribute != null && timestampAttribute.equals(xadesAttribute)) {
 					break;
 				}
 
 				// Use RefsOnlyTimeStampV2 on signature creation/extension
-				if (checkAttributeNameMatches(timestampAttribute, XAdES141Element.REFS_ONLY_TIMESTAMP_V2)) {
+				if (en319132) {
 					/**
 					 * - The CompleteCertificateRefsV2 qualifying property.
 					 * - The CompleteRevocationRefs qualifying property.
@@ -365,10 +453,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 						writeCanonicalizedValue(xadesAttribute, canonicalizationMethod, buffer);
 					}
 
-				// Use RefsOnlyTimeStamp on signature creation/extension by default
-				// TODO : allow the new RefsOnlyTimeStampV2 creation
-				} else if (timestampToken == null ||
-						checkAttributeNameMatches(timestampAttribute, XAdES132Element.REFS_ONLY_TIMESTAMP)) {
+				} else {
 					/**
 					 * TS 101 903 v1.4.2 : 7.5.1 The SigAndRefsTimeStamp element (7.5.1.1 Not distributed case)
 					 *
@@ -539,7 +624,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
          */
         final byte[] canonicalizedDoc = DSSXMLUtils.serializeNode(signature.getOwnerDocument());
         Document recreatedDocument = DomUtils.buildDOM(canonicalizedDoc);
-        Element recreatedSignature = DomUtils.getElement(recreatedDocument, ".//*" + DomUtils.getXPathByIdAttribute(DSSXMLUtils.getIDIdentifier(signature)));
+        Element recreatedSignature = DomUtils.getElementById(recreatedDocument, DSSXMLUtils.getIDIdentifier(signature));
         return DomUtils.getElement(recreatedSignature, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 	

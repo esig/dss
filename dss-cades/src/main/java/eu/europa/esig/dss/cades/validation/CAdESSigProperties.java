@@ -33,6 +33,8 @@ import java.util.List;
  */
 public abstract class CAdESSigProperties implements SignatureProperties<CAdESAttribute> {
 
+	private static final long serialVersionUID = -1730805576179343914L;
+
 	/** The CMS AttributeTable */
 	private final AttributeTable attributeTable;
 

@@ -36,16 +36,17 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -108,7 +109,7 @@ public class TimestampToken extends Token {
 	 */
 	private List<SignatureScope> timestampScopes;
 
-	/* In case of ASiC-E */
+	/* In case of ASiC with CAdES */
 	private ManifestFile manifestFile;
 
 	/**
@@ -122,11 +123,18 @@ public class TimestampToken extends Token {
 	private ArchiveTimestampType archiveTimestampType;
 
 	/**
-	 * This attribute is used for XAdES timestamps. It indicates the canonicalization method used before creating the
-	 * digest.
+	 * This attribute is used for XAdES timestamps. It indicates the canonicalization method
+	 * used for message-imprint computation.
+	 *
+	 * NOTE: Used for XAdES/JAdES only
 	 */
 	private String canonicalizationMethod;
 
+	/**
+	 * Identifies a TSA issued the timestamp token
+	 *
+	 * NOTE: Takes a value only for a successfully validated token
+	 */
 	private X500Principal tsaX500Principal;
 
 	/**
@@ -239,17 +247,30 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Indicates if the token's signature is intact. 
-	 * The method isSignedBy(CertificateToken) must be called to set this flag.
-	 * Note: return false if the check isSignedBy() was not performed or
-	 * the signer's public key does not much.
-	 * In order to check if the validation has been performed, use 
-	 * the method getSignatureValidity() that returns a three-state value.
+	 * Indicates if the token's signature is intact.
 	 *
-	 * @return true if the signature is valid (== SignatureValidity.VALID)
+	 * NOTE: The method isSignedBy(CertificateToken) must be called to set this flag.
+	 *       Return false if the check isSignedBy() was not performed or
+	 *       the signer's public key does not much.
+	 *       In order to check if the validation has been performed, use
+	 *       the method getSignatureValidity() that returns a three-state value.
+	 *
+	 * @return TRUE if the signature is intact (== SignatureValidity.VALID), FALSE otherwise
+	 */
+	public boolean isSignatureIntact() {
+		return SignatureValidity.VALID == signatureValidity;
+	}
+
+	/**
+	 * Indicated if the signature is intact and the message-imprint matches the computed message-imprint.
+	 *
+	 * NOTE: The method isSignedBy(CertificateToken) must be called before calling the method.
+	 *       See {@code TimestampToken.isSignatureIntact()} for more details
+	 *
+	 * @return TRUE if the signature is cryptographically intact and message-imprint matches, FALSE otherwise
 	 */
 	public boolean isSignatureValid() {
-		return SignatureValidity.VALID == signatureValidity;
+		return isSignatureIntact() && isMessageImprintDataFound() && isMessageImprintDataIntact();
 	}
 
 	/**
@@ -506,7 +527,7 @@ public class TimestampToken extends Token {
 	 */
 	public Boolean isMessageImprintDataIntact() {
 		if (!processed) {
-			throw new DSSException("Invoke matchData(byte[] data) method before!");
+			throw new IllegalStateException("Invoke matchData(byte[] data) method before!");
 		}
 		return messageImprintIntact;
 	}
@@ -663,6 +684,24 @@ public class TimestampToken extends Token {
 	}
 
 	/**
+	 * Returns a TSTInfo.tsa attribute identifying the timestamp issuer, when attribute is present
+	 *
+	 * @return {@link GeneralName}
+	 */
+	public X500Principal getTSTInfoTsa() {
+		GeneralName tsaGeneralName = timeStamp.getTimeStampInfo().getTsa();
+		if (tsaGeneralName != null) {
+			try {
+				X500Name x500Name = X500Name.getInstance(tsaGeneralName.getName());
+				return new X500Principal(x500Name.getEncoded());
+			} catch (IOException e) {
+				LOG.warn("Unable to decode TSTInfo.tsa attribute value to X500Principal. Reason : {}", e.getMessage(), e);
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Gets BouncyCastle implementation of a TimestampToken
 	 *
 	 * @return {@link TimeStampToken}
@@ -696,7 +735,7 @@ public class TimestampToken extends Token {
 			out.append(indentStr).append("TimestampToken[signedBy=").append(getIssuerX500Principal());
 			out.append(", generated: ").append(DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime()));
 			out.append(" / ").append(timeStampType).append('\n');
-			if (isSignatureValid()) {
+			if (isSignatureIntact()) {
 
 				indentStr += "\t";
 				out.append(indentStr).append("Timestamp's signature validity: VALID").append('\n');
@@ -728,9 +767,9 @@ public class TimestampToken extends Token {
 	/**
 	 * Returns a list of found CertificateIdentifier in the SignerInformationStore
 	 * 
-	 * @return a list of {@link CertificateIdentifier}s
+	 * @return a list of {@link SignerIdentifier}s
 	 */
-	public Set<CertificateIdentifier> getSignerInformationStoreInfos() {
+	public Set<SignerIdentifier> getSignerInformationStoreInfos() {
 		return getCertificateSource().getAllCertificateIdentifiers();
 	}
 
@@ -741,7 +780,7 @@ public class TimestampToken extends Token {
 	 */
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
 		if (candidatesForSigningCertificate == null) {
-			candidatesForSigningCertificate = ((CMSCertificateSource) getCertificateSource())
+			candidatesForSigningCertificate = getCertificateSource()
 					.getCandidatesForSigningCertificate(null);
 		}
 		return candidatesForSigningCertificate;

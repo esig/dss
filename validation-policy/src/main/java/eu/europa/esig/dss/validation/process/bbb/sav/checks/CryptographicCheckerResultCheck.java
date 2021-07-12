@@ -22,10 +22,12 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicAlgorithm;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 import java.util.Date;
@@ -65,9 +67,16 @@ public class CryptographicCheckerResultCheck<T extends XmlConstraintsConclusion>
 	protected String buildAdditionalInfo() {
 		String dateTime = ValidationProcessUtils.getFormattedDate(validationDate);
 		if (isValid(ccResult)) {
-			return i18nProvider.getMessage(MessageTag.VALIDATION_TIME, dateTime);
+			XmlCryptographicAlgorithm algorithm = ccResult.getVerifiedAlgorithm();
+			if (Utils.isStringNotEmpty(algorithm.getKeyLength())) {
+				return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_SUCCESS_KEY_SIZE,
+						algorithm.getName(), algorithm.getKeyLength(), dateTime);
+			} else {
+				return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_SUCCESS,
+						algorithm.getName(), dateTime);
+			}
 		} else {
-			return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE, getErrorMessage(), token.getId(), dateTime);
+			return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE, getErrorMessage(), dateTime);
 		}
 	}
 

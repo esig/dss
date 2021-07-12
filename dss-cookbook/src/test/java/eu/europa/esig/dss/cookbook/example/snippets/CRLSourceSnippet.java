@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
+import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
 
 public class CRLSourceSnippet {
 
@@ -57,7 +57,7 @@ public class CRLSourceSnippet {
 		// `CommonsDataLoader` instance is used by default.
 		onlineCRLSource.setDataLoader(new CommonsDataLoader());
 		
-		// Aets a preferred protocol that will be used for obtaining a CRL. 
+		// Sets a preferred protocol that will be used for obtaining a CRL.
 		// E.g. for a list of urls with protocols HTTP, LDAP and FTP, with a defined preferred protocol as FTP, 
 		// the FTP url will be called first, and in case of an unsuccessful result other url calls will follow. 
 		// Default : null (urls will be called in a provided order).
@@ -68,9 +68,12 @@ public class CRLSourceSnippet {
 		// tag::demo-cached[]
 		// Creates an instance of JdbcCacheCRLSource
 		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
-		
-		// Set dataSource for the repository
-		cacheCRLSource.setDataSource(dataSource);
+
+		// Initialize the JdbcCacheConnector
+		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+
+		// Set the JdbcCacheConnector
+		cacheCRLSource.setJdbcCacheConnector(jdbcCacheConnector);
 		
 		// Allows definition of an alternative dataLoadet to be used to access a revocation 
 		// from online sources if a requested revocation is not present in the repository or has been expired (see below).

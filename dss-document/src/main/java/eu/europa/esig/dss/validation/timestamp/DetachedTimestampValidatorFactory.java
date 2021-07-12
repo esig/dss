@@ -24,6 +24,10 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.DocumentValidatorFactory;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+/**
+ * Returns a validator for a detached timestamp document
+ *
+ */
 public class DetachedTimestampValidatorFactory implements DocumentValidatorFactory {
 
 	@Override

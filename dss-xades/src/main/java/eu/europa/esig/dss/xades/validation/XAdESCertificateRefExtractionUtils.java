@@ -24,7 +24,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CertificateIdentifier;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -82,24 +82,24 @@ public final class XAdESCertificateRefExtractionUtils {
 		return null;
 	}
 
-	private static CertificateIdentifier getCertificateIdentifierV1(Element certRefElement, XAdESPaths xadesPaths) {
-		CertificateIdentifier certificateIdentifier = new CertificateIdentifier();
+	private static SignerIdentifier getCertificateIdentifierV1(Element certRefElement, XAdESPaths xadesPaths) {
+		SignerIdentifier signerIdentifier = new SignerIdentifier();
 
 		final Element issuerNameEl = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialIssuerNamePath());
 		if (issuerNameEl != null) {
-			certificateIdentifier.setIssuerName(DSSUtils.getX500PrincipalOrNull(issuerNameEl.getTextContent()));
+			signerIdentifier.setIssuerName(DSSUtils.getX500PrincipalOrNull(issuerNameEl.getTextContent()));
 		}
 
 		final Element serialNumberEl = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialSerialNumberPath());
 		if (serialNumberEl != null) {
 			final String serialNumberText = serialNumberEl.getTextContent();
-			certificateIdentifier.setSerialNumber(new BigInteger(Utils.trim(serialNumberText)));
+			signerIdentifier.setSerialNumber(new BigInteger(Utils.trim(serialNumberText)));
 		}
 
-		return certificateIdentifier;
+		return signerIdentifier;
 	}
 
-	private static CertificateIdentifier getCertificateIdentifierV2(Element certRefElement, XAdESPaths xadesPaths) {
+	private static SignerIdentifier getCertificateIdentifierV2(Element certRefElement, XAdESPaths xadesPaths) {
 		final Element issuerSerialV2Element = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialV2Path());
 		if (issuerSerialV2Element == null) {
 			// Tag issuerSerialV2 is optional
@@ -108,7 +108,7 @@ public final class XAdESCertificateRefExtractionUtils {
 
 		final String textContent = issuerSerialV2Element.getTextContent();
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent));
-		return DSSASN1Utils.toCertificateIdentifier(issuerSerial);
+		return DSSASN1Utils.toSignerIdentifier(issuerSerial);
 	}
 
 }

@@ -22,29 +22,27 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XAdESSignaturePolicy;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -78,28 +76,35 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 
 		params = new XAdESSignatureParameters();
 
-		documentDom = DomUtils.buildDOM(signatureDocument);
-		final NodeList signatureNodeList = getSignaturesNodeListToExtend(documentDom);
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
-			currentSignatureDom = (Element) signatureNodeList.item(ii);
-
-			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XAdES111Paths(), new XAdES122Paths(), new XAdES132Paths()));
-
-			xadesPaths = xadesSignature.getXAdESPaths();
-			
+		documentValidator = new XMLDocumentValidator(signatureDocument);
+		documentDom = documentValidator.getRootElement();
+		for (AdvancedSignature signature : documentValidator.getSignatures()) {
+			XAdESSignature xadesSignature = initializeSignatureBuilder((XAdESSignature) signature);
 			final String currentSignatureId = xadesSignature.getDAIdentifier();
 
 			ensureUnsignedProperties();
 			ensureUnsignedSignatureProperties();
 
-			SignaturePolicy signaturePolicy = xadesSignature.getSignaturePolicy();
+			XAdESSignaturePolicy signaturePolicy = xadesSignature.getSignaturePolicy();
 			if (signaturePolicy != null) {
+				signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
 				final Digest digest = signaturePolicy.getDigest();
 				if (digest != null) {
-					signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
-					
-					SignaturePolicyValidator validator = new SignaturePolicyValidatorLoader(signaturePolicy).loadValidator();
-					Digest computedDigest = validator.getComputedDigest(digest.getAlgorithm());
+					Digest computedDigest;
+					try {
+						SignaturePolicyValidator validator = documentValidator.getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
+						if (validator instanceof XMLSignaturePolicyValidator) {
+							XMLSignaturePolicyValidator xmlSignaturePolicyValidator = (XMLSignaturePolicyValidator) validator;
+								computedDigest = xmlSignaturePolicyValidator.getDigestAfterTransforms(
+										signaturePolicyStore.getSignaturePolicyContent(), digest.getAlgorithm(),
+										signaturePolicy.getTransforms());
+						} else {
+							computedDigest = validator.getComputedDigest(signaturePolicyStore.getSignaturePolicyContent(), digest.getAlgorithm());
+						}
+					} catch (Exception e) {
+						throw new DSSException(String.format("Unable to compute digest for a SignaturePolicyStore. " +
+								"Reason : %s", e.getMessage()), e);
+					}
 					if (digest.equals(computedDigest)) {
 
 						Element signaturePolicyStoreElement = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, getXades141Namespace(),

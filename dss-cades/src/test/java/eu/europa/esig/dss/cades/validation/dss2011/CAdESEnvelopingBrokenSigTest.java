@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.cades.validation.dss2011;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
@@ -58,7 +58,7 @@ public class CAdESEnvelopingBrokenSigTest extends AbstractCAdESTestValidation {
 				assertTrue(digestMatcher.isDataFound());
 				assertFalse(digestMatcher.isDataIntact());
 				assertEquals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestMethod(), digestMatcher.getDigestMethod());
-				assertTrue(Arrays.equals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestValue(), digestMatcher.getDigestValue()));
+                assertArrayEquals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestValue(), digestMatcher.getDigestValue());
 				referenceDigestMatcherFound = true;
 			}
 		}

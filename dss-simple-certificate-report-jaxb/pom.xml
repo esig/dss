@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.8</version>
+		<version>5.9.RC1</version>
 	</parent>
 	<artifactId>dss-simple-certificate-report-jaxb</artifactId>
 
@@ -71,6 +71,13 @@
 						</configuration>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.glassfish.jaxb</groupId>
+						<artifactId>jaxb-runtime</artifactId>
+						<version>2.3.4</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 			    <groupId>org.codehaus.mojo</groupId>

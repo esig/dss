@@ -20,27 +20,27 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.signature.XAdESService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFactoryAccess {
 
@@ -48,20 +48,24 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFac
 	public void test() throws Exception {
 		DSSDocument toSignDocument = new FileDocument("src/test/resources/XAdESBWithoutSignedDataObjectProperties.xml");
 
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(toSignDocument);
+		CertificateToken signingCertificateToken = validator.getSignatures().get(0).getSigningCertificateToken();
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(signingCertificateToken.getNotAfter());
+		calendar.add(Calendar.MONTH, -1);
+		Date tstTime = calendar.getTime();
+
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		service.setTspSource(getGoodTsaByTime(tstTime));
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		parameters.setSigningCertificate(getSigningCert());
-		parameters.setCertificateChain(getCertificateChain());
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		DSSDocument extendDocument = service.extendDocument(toSignDocument, parameters);
 		// extendDocument.save("target/result.xml");
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
+		validator = SignedDocumentValidator.fromDocument(extendDocument);
 
 		// certificateVerifier.setDataLoader(new CommonsDataLoader());
 		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();

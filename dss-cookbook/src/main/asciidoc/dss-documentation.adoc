@@ -142,7 +142,7 @@ Please note that the DSS framework is still under maintenance and new features w
 |[[R02]]	R02	|ESI - CAdES digital signatures													|ETSI EN 319 122 part 1-2	|1.1.1
 |[[R03]]	R03	|ESI - PAdES digital signatures													|ETSI EN 319 142 part 1-2	|1.1.1
 |[[R04]]	R04	|ESI - Associated Signature Containers (ASiC)									|ETSI EN 319 162 part 1-2	|1.1.1
-|[[R05]]	R05	|ESI - JAdES digital signatures													|ETSI TS 119 182 part 1 	|draft 0.0.6
+|[[R05]]	R05	|ESI - JAdES digital signatures													|ETSI TS 119 182 part 1 	|1.1.1
 |[[R06]]	R06	|Document management - Portable document format - Part 1: PDF 1.7				|ISO 32000-1				|1
 |[[R07]]	R07	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
 |[[R08]]	R08	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
@@ -159,8 +159,8 @@ Please note that the DSS framework is still under maintenance and new features w
 
  * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature[CEF Digital]
  * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature+FAQ[eSignature FAQ]
- * https://webgate.ec.europa.eu/tl-browser/#/[TL Browser]
- * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature+validation+tests[eSignature validation tests]
+ * https://esignature.ec.europa.eu/efda/home/[Trust Services Dashboard]
+ * https://esignature.ec.europa.eu/efda/validation-tests/[eSignature validation tests]
  * https://ec.europa.eu/cefdigital/wiki/display/TLSO/Trusted+List+Manager+non-EU[Trusted List Manager non-EU]
  * https://github.com/esig/dss[Source code (GitHub)]
  * https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss/browse[Source code (EC Bitbucket)]
@@ -180,7 +180,7 @@ This section explains the build and usage requirements for https://github.com/es
 
 The latest version of DSS framework has the following minimal requirements:
 
- * Java 9 and higher (tested up to Java 15) for the build is required. For usage Java 8 is a mimimum requirement;
+ * Java 11 and higher (tested up to Java 16) for the build is required. For usage Java 8 is a minimum requirement;
  * Maven 3.6 and higher;
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
  * Operating system: no specific requirements (tested on Windows and Linux).
@@ -296,7 +296,7 @@ This section explains the build and usage requirements for https://github.com/es
 
 The minimal requirements to build/run DSS Demonstrations:
 
- * Java 8 and higher (tested up to Java 15) is required;
+ * Java 8 and higher (tested up to Java 16) is required;
  * Maven 3.6 and higher (if build required);
  * Tomcat 8.5+ for Java 8 and Tomcat 9+ for Java 9 and higher (for Web-application);
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
@@ -341,10 +341,10 @@ The documentation and javadoc will be copied automatically from built DSS Core a
  * PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
  * Javadoc : `http://localhost:8080/apidocs/index.html`.
 
-In order to build a bundle for JDK 15, the following profile can be used from `dss-demo-bundle` module:
+In order to build a bundle for JDK 16, the following profile can be used from `dss-demo-bundle` module:
 
 ----
-mvn clean install -P java15
+mvn clean install -P java16
 ----
 
 This will create a bundle with Tomcat 9.
@@ -471,6 +471,7 @@ dss-timestamp-remote-soap:: SOAP webservice to create a timestamp.
 
 dss-test:: Mocks and util classes for unit tests.
 dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
+dss-bom:: Module which helps the integration with all DSS modules and the version.
 
 [[dssUtils]]
 === DSS Utils
@@ -924,7 +925,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/XAdES132On
 
 === Sign a Trusted List
 
-The standard ETSI TS 119 612 specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization,...). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
+The standard ETSI TS 119 612 specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization, etc.). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
 
 [source,java,indent=0]
 .Sign a Trusted List with the TrustedListSignatureParametersBuilder
@@ -1030,8 +1031,12 @@ You will find below a detailed description of each of these elements.
 
 This is a sample of the simple validation report:
 
-.Simple Report 
-include::_samples/simple-report-example.adoc[]
+.Simple Report
+
+[source,xml]
+----
+include::_samples/simple-report-example.xml[]
+----
 
 The result of the validation process is based on very complex rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
 
@@ -1039,8 +1044,12 @@ The result of the validation process is based on very complex rules. The purpose
 
 This is a sample of the detailed validation report. Its structure is based on the ETSI standard <<R09>> and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data. Some segments were deleted to make reading easier. They are marked by three dots:
 
-.Detailed Report 
-include::_samples/detailed-report-example.adoc[]
+.Detailed Report
+
+[source,xml]
+----
+include::_samples/detailed-report-example.xml[]
+----
 
 For example the Basic Building Blocks are divided into seven elements:
 
@@ -1072,7 +1081,11 @@ This is a data set constructed from the information contained in the signature i
 This is an example of the diagnostic data for a XAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
 
 .Diagnostic Data
-include::_samples/diagnostic-data-example.adoc[]
+
+[source,xml]
+----
+include::_samples/diagnostic-data-example.xml[]
+----
 
 ==== ETSI Validation Report
 
@@ -1081,15 +1094,85 @@ The ETSI Validation Report represents an implementation of TS 119 102-2 (cf. <<R
 This is an example of the ETSI validation report:
 
 .ETSI Validation Report (TS 119 102-2)
-include::_samples/etsi-validation-report-example.adoc[]
+
+[source,xml]
+----
+include::_samples/etsi-validation-report-example.xml[]
+----
 
 [[validationPolicy]]
-=== Customised Validation Policy
+=== Validation Policy
 
-The validation process may be driven by a set of constraints that are contained in the XML file constraint.xml.
+The validation process may be driven by a set of constraints that are contained in the XML policy file.
+
+In order to run a validation process with a custom validation policy, an XML file shall be created in compliance with the https://github.com/esig/dss/blob/master/dss-policy-jaxb/src/main/resources/xsd/policy.xsd[policy.xsd] schema and passed to the relevant `DocumentValidator` as shown below.
+
+[source,java,indent=0]
+.Custom validation policy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicy]
+----
+
+==== XML policy structure
+
+The validation policy allows to define different behavior for various validating token types or signature formats. The following groups are considered:
+
+ * `ContainerConstraints` - defines rules for processing of ASiC containers validation;
+ * `SignatureConstraints` - defines rules for signature basic building blocks processing and the related certificate chain;
+ * `CounterSignatureConstraints` - allows to define custom rules for counter signature processing;
+ * `Timestamp` - defines rules for timestamp validation;
+ * `Revocation` - defines rules for revocation data validation;
+ * `Cryptographic` - defines common rules for cryptographic validation of used algorithms. The general constraints are used when no cryptographic constraints are defined for a particular token type;
+ * `Model` - defines the way of a certificate chain processing;
+ * `eIDAS` - defines rules for validation of Trusted Lists.
+
+==== Constraints
+
+Each constraint defined in the policy forces an execution of a relevant check in the validation process.
+
+NOTE: If a constraint is missing in the policy - the check is not processed.
+
+The following constraint types are supported:
+
+ * `LevelConstraint` - a simple constraint type with a defined processing `Level`;
+ * `MultiValuesConstraint` - allows to define a set of accepted values relatively to the using constraint.
+
+==== Level
+
+The `Level` attribute of a constraint defines a validation process behavior in case of a check failure. While used, the following behaviors apply in case of a check failure:
+
+ * `FAIL` - brakes the validation process and returns the relevant indication;
+ * `WARN` - continues the validation process and returns a warning message to the validation process output;
+ * `INFORM` - continues the validation process and returns an information message to the validation process output;
+ * `IGNORE` - processes the check in a silent mode (equivalent to a not defined constraint).
+
+==== Multi Values Constraint
+
+When using the `MultiValuesConstraint`, a list of acceptable values shall be defined in the list of `<Id>...</Id>` elements, one for each accepted value. While doing, the following rules apply:
+
+ * Empty list of values  -> accept only empty values for the item in question, fails otherwise;
+ * `"*"` constraint value -> accepts all values, reject empty list of values;
+ * Custom values -> accepts only item values matching the constraint.
+
+==== Cryptographic constraints
+
+Cryptographic constraints define a list of acceptable cryptographic algorithms and their expiration dates when needed. The following settings are possible:
+
+ * `AcceptableEncryptionAlgo` - defines a list of acceptable encryption algorithms. All tokens and signatures using other algorithms will be rejected.
+ * `MiniPublicKeySize` - defines the minimal allowed public key size to be used with the defined encryption algorithms. An algorithm with a key size less than the defined one will be rejected. The minimal key size if required to be defined for an encryption algorithm, otherwise all used key sizes will be rejected.
+ * `AcceptableDigestAlgo` - defines a list of acceptable digest algorithms. All tokens and signatures using other algorithms will be rejected.
+ * `AlgoExpirationDate` - defines expiration dates for the algorithms. The algorithm is rejected when it is used after the defined date. If the algorithm expiration date is not defined, or set to null, the algorithm is treated as reliable for an unlimited time.
+
+==== The default XML policy
+
+The default XML validation policy is present below.
 
 .constraint.xml (default policy is provided in dss-policy-jaxb module)
-include::_samples/constraint.adoc[]
+
+[source,xml]
+----
+include::_samples/constraint.xml[]
+----
 
 == CAdES signature (CMS)
 
@@ -1533,7 +1616,7 @@ As well as a single timestamp creation, DSS provides a validation service for ti
 
  * Detached CMS timestamp (`DetachedTimestampValidator`) - a detached signed content must be provided (or its digest);
  * PDF document (`PDFDocumentValidator`);
- * ASiC CAdES container with a timestamp (`ASiCEWithCAdESTimestampValidator`).
+ * ASiC CAdES container with a timestamp (`ASiCWithCAdESTimestampValidator`).
 
 The validation process can be run with the following inputs :
 
@@ -1558,7 +1641,11 @@ Three qualification levels are supported by DSS and can be obtained :
 An example of a produced Detailed Report you can see below:
 
 .Timestamp Detailed Report
-include::_samples/timestamp-detailed-report-example.adoc[]
+
+[source,xml]
+----
+include::_samples/timestamp-detailed-report-example.xml[]
+----
 
 == Available implementations of DSSDocument
 
@@ -1683,7 +1770,7 @@ The interface OCSPSource defines the method which returns OCSPToken for the give
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo]
 ----
 
-We use these classes during the certificate validation process through "validationContext" object (based on ValidationContext class) which is a "cache" for one validation request that contains every object retrieved so far. This object in turn instantiates a "verifier" based on `OCSPAndCRLRevocationSource` class whose role is to fetch revocation data by querying an OCSP server first and then a CRL server if no OCSP response could be retrieved.
+We use these classes during the certificate validation process through "validationContext" object (based on ValidationContext class) which is a "cache" for one validation request that contains every object retrieved so far. This object in turn instantiates a "verifier" based on `RevocationDataLoadingStrategy` class whose role is to fetch revocation data by querying an OCSP or CRL source in the defined order and return the succeeded result.
 In general, we can distinguish three main sources:
 
  * Offline sources (`OfflineRevocationSource`);
@@ -1903,6 +1990,25 @@ DSS allows running of custom alerts in some situations (eg : invalid TL signatur
 .Examples of Alerting
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=alerting]
+----
+
+=== LOTL/TL filter predicates
+
+TSL predicates provide an option to filter the extracted TSL Pointers from LOTL or TL sources, allowing a customization of a trusted certificates and trusted services loading.
+
+The following predicates are provided within the framework:
+
+ * `EULOTLOtherTSLPointer` - filters the EU LOTL pointer;
+ * `EUTLOtherTSLPointer` - filters the EU TL pointers;
+ * `MimetypeOtherTSLPointer` - filters TL pointers by a MimeType (e.g. XML only);
+ * `XMLOtherTSLPointer` - filters XML TL pointers;
+ * `PDFOtherTSLPointer` - filters PDF TL pointers;
+ * `SchemeTerritoryOtherTSLPointer` - filters TL pointers with a specific scheme territory (i.e. filter by country).
+
+[source,java,indent=0]
+.Examples of TSL Loading Predicates configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicates]
 ----
 
 === Executor Service
@@ -2148,6 +2254,7 @@ WARNING: We strongly do not recommend disabling of security features and usage o
 
 The configuration is available for the following classes:
 
+ * `javax.xml.parsers.DocumentBuilderFactory` with a `DocumentBuilderFactoryBuilder` - builds a DOM document object from the obtained XML file and creates a new Document;
  * `javax.xml.transform.TransformerFactory` with a `TransformerFactoryBuilder` - loads XML templates and builds DOM objects;
  * `javax.xml.validation.SchemaFactory` with a `SchemaFactoryBuilder` - loads XML Schema;
  * `javax.xml.validation.Validator` with a `ValidatorConfigurator` - configures a validator to validate an XML document against an XML Schema. 
@@ -2160,15 +2267,17 @@ All the classes can be configured with the following methods (example for `Trans
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecuritiesConfigTest.java[tags=demo]
 ----
 
-The `javax.xml.parsers.DocumentBuilderFactory` in `DomUtils`, which allows you to parse and create XML `Document` object, also can be configured with the methods:
- 
+The `javax.xml.parsers.DocumentBuilderFactory`, that allows XML files parsing and creation of DOM `Document` object, can be configured with the following methods:
+
+NOTE: Since DSS 5.9 the configuration of `javax.xml.parsers.DocumentBuilderFactory` has been moved from `DomUtils` to a new singleton class `DocumentBuilderFactoryBuilder`.
+
 [source,java,indent=0]
 .DocumentBuilderFactory configuration
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecuritiesConfigTest.java[tags=dbf]
 ----
 
-The classes `XmlDefinerUtils` and `DomUtils` are singletons, therefore all changes performed on the instances will applied on all calls of the related methods.
+The class `XmlDefinerUtils` is a singleton, therefore all changes performed on the instance will have an impact to all calls of the related methods.
 
 == JAXB modules
 
@@ -2220,15 +2329,17 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 
 === Report stylesheets
 
-The report modules (namely: `dss-simple-report-jaxb`, `dss-simple-certificate-report-jaxb` and `dss-detailed-report-jaxb`) contain two XSLT style sheets for final reports generation:
+The report modules (namely: `dss-simple-report-jaxb`, `dss-simple-certificate-report-jaxb` and `dss-detailed-report-jaxb`) contain two XSLT style sheets each for final reports generation:
 
- * Bootstrap 3 XSLT;
- * Bootstrap 4 XSLT.
+ * Bootstrap 4 XSLT for HTML report;
+ * PDF XSLT for PDF report.
+
+NOTE: Since DSS 5.9 only Bootstrap 4 XSLT is provided within the framework for HTML report generation.
  
-By default, in DSS since version 5.6 the style sheet for Bootstrap 4 is used. In order to generate a report with a selected style sheet you need to call a relevant method in a Facade class (see classes definition above):
+In order to generate a report with a selected style sheet you need to call a relevant method in a Facade class (see classes definition above):
 
 [source,java,indent=0]
-.Bootstrap 3 generation
+.HTML report generation
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/StylesheetSnippet.java[tags=demo]
 ----
@@ -2236,7 +2347,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Stylesheet
 Otherwise, in case if you need to customize the transformer, you can create a report by using an XmlDefiner:
 
 [source,java,indent=0]
-.Bootstrap 3 custom generation
+.Custom report generation
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/StylesheetSnippet.java[tags=custom]
 ----
@@ -2262,6 +2373,21 @@ The usage of alerts is available in the following classes:
  * <<xmlSecurities>> configurators from `dss-jaxb-parsers` module : `TransformerFactoryBuilder`, `SchemaFactoryBuilder`, `ValidatorConfigurator`;
  * <<certificateVerifier>> - to handle the unexpected situation(s) in a custom way (introduced `AlertException` to re-throw exceptions);
  * <<tlValidationJob>> - to process custom actions on change/state on loading of LOTL/TLs (see `LOTLAlert` and `TLAlert`).
+
+== Exceptions
+
+This section provides an overview of runtime Exceptions which are being thrown by various modules of DSS framework.
+
+The following Exceptions can be obtained by the upper level:
+
+* `NullPointerException` is thrown when a mandatory parameter has not been provided by the end-user to the method/process, requiring the property;
+* `IllegalArgumentException` is thrown when a parameters configuration is not valid for the called method or some parameters cannot be used together (e.g. on a signature creation);
+* `IllegalInputException` is thrown when a provided input document is not valid for the requested process and/or the configuration of parameters is not applicable for the given document;
+* `UnsupportedOperationException` is thrown when a method is not implemented or its usage with the requested parameters is not (yet) supported;
+* `IllegalStateException` is thrown when the requested method cannot be performed at the current method (e.g. another method shall be executed before);
+* `DSSException` is thrown in case of an error obtained during the internal DSS process (e.g. data conversion, CRL/OCSP parsing, etc.);
+* `DSSExternalResourceException` is thrown if an error occurs during a remote source request (AIA, CRL, OCPS requests, etc.);
+* `DSSRemoteServiceException` is thrown in case of a request/response error within <<RestSoap>>.
 
 == I18N (Internationalization)
 
@@ -2325,6 +2451,7 @@ DSS is able to retrieve the original data from a valid signature.
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/RetrieveOriginalDocumentTest.java[tags=demo]
 ----
 
+[[RestSoap]]
 == REST and SOAP Services
 
 DSS offers REST and SOAP web services. Additionally, we also provide a SOAP-UI project and Postman samples in the `dss-cookbook` module.

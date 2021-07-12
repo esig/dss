@@ -63,6 +63,8 @@ import java.util.Objects;
  */
 public class PAdESService extends AbstractSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> {
 
+	private static final long serialVersionUID = -6518552348520127617L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESService.class);
 
 	/** Builds the CMSSignedData */
@@ -163,12 +165,13 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final SignatureValue signatureValue)
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, SignatureValue signatureValue)
 			throws DSSException {
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
 		assertSigningDateInCertificateValidityRange(parameters);
+		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		final byte[] encodedData = generateCMSSignedData(toSignDocument, parameters, signatureValue);

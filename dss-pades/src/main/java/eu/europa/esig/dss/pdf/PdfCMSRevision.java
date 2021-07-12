@@ -24,7 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import org.bouncycastle.cms.CMSSignedData;
 
 import java.util.Date;
@@ -36,15 +36,17 @@ import java.util.Objects;
  */
 public abstract class PdfCMSRevision implements PdfRevision {
 
+	private static final long serialVersionUID = 7392943800496129517L;
+
 	/**
 	 *  The PDF Signature Dictionary
 	 */
 	private final PdfSignatureDictionary signatureDictionary;
 
 	/**
-	 * The original signed pdf document
+	 * The signed data binaries
 	 */
-	private final byte[] signedContent;
+	private final DSSDocument signedContent;
 
 	/**
 	 * Defines if the revision covers all document bytes
@@ -62,7 +64,7 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	private PdfModificationDetection modificationDetection;
 
 	/**
-	 * Default contructor
+	 * Default constructor
 	 *
 	 * @param signatureDictionary
 	 *                              The signature dictionary
@@ -73,8 +75,8 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	 * @param coverAllOriginalBytes
 	 *                              true if the signature covers all original bytes
 	 */
-	protected PdfCMSRevision(PdfSignatureDictionary signatureDictionary, List<String> signatureFieldNames, byte[] signedContent, 
-			boolean coverAllOriginalBytes) {
+	protected PdfCMSRevision(PdfSignatureDictionary signatureDictionary, List<String> signatureFieldNames,
+							 DSSDocument signedContent, boolean coverAllOriginalBytes) {
 		Objects.requireNonNull(signatureDictionary, "The signature dictionary cannot be null!");
 		Objects.requireNonNull(signatureFieldNames, "The signature field names must be defined!");
 		Objects.requireNonNull(signedContent, "The signed content cannot be null!");
@@ -85,11 +87,11 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	}
 
 	/**
-	 * Gets the bytes of the originally signed document
+	 * Gets the bytes of the signature revision
 	 *
 	 * @return byte array
 	 */
-	public byte[] getRevisionCoveredBytes() {
+	public DSSDocument getSignedData() {
 		return signedContent;
 	}
 	

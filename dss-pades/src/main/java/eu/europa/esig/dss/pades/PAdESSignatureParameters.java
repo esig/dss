@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Parameters to create/extend a PAdES signature
@@ -86,6 +87,13 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	 * Password used to encrypt a PDF
 	 */
 	private String passwordProtection;
+
+	/**
+	 * The time-zone used for signature creation
+	 *
+	 * Default: TimeZone.getDefault()
+	 */
+	private TimeZone signingTimeZone = TimeZone.getDefault();
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -161,6 +169,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		this.signatureSubFilter = signatureSubFilter;
 	}
 
+	/**
+	 * Returns the Signer Name
+	 *
+	 * @return {@link String}
+	 */
 	public String getSignerName() {
 		return signerName;
 	}
@@ -212,7 +225,7 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	/**
 	 * The id/name of the signature field which should be signed
 	 * 
-	 * Deprecated. Use {@code getImageParameters().getFieldParameters().setSignatureFieldId(signatureFieldId)}
+	 * Deprecated. Use {@code getImageParameters().getFieldParameters().setFieldId(signatureFieldId)}
 	 * 
 	 * @param signatureFieldId {@link String} id of a signature field to be used
 	 */
@@ -270,6 +283,27 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	@Override
 	public Date getSigningDate() {
 		return bLevel().getSigningDate();
+	}
+
+	/**
+	 * Sets a TimeZone to use for signature creation.
+	 * Will be used to define a signingTime within a PDF entry with key /M.
+	 *
+	 * Default: TimeZone.getDefault()
+	 *
+	 * @param signingTimeZone {@link TimeZone}
+	 */
+	public void setSigningTimeZone(TimeZone signingTimeZone) {
+		this.signingTimeZone = signingTimeZone;
+	}
+
+	/**
+	 * Returns a time-zone used to define the signing time
+	 *
+	 * @return {@link TimeZone}
+	 */
+	public TimeZone getSigningTimeZone() {
+		return signingTimeZone;
 	}
 
 	@Override

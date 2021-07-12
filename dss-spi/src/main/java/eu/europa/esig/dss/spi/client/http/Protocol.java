@@ -26,11 +26,25 @@ package eu.europa.esig.dss.spi.client.http;
  */
 public enum Protocol {
 
-	FILE("file"), HTTP("http"), HTTPS("https"), LDAP("ldap"), FTP("ftp");
+	/** file */
+	FILE("file"),
+	/** http */
+	HTTP("http"),
+	/** https */
+	HTTPS("https"),
+	/** ldap */
+	LDAP("ldap"),
+	/** ftp */
+	FTP("ftp");
 
 	/** Protocol name */
 	private final String name;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param name {@link String} of the protocol
+	 */
 	Protocol(final String name) {
 		this.name = name;
 	}

@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
-import java.util.List;
-
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -37,12 +33,20 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
+import java.util.List;
+
 /**
  * How to sign using MS-CAPI.
  */
 public class SignXmlXadesBWithMSCAPI {
 
-	public static void main(String[] args) throws DSSException, IOException {
+	/**
+	 * Main method
+	 *
+	 * @param args not applicable
+	 * @throws Exception if an exception occurs
+	 */
+	public static void main(String[] args) throws Exception {
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
 		DSSDocument toSignDocument = new FileDocument("src/main/resources/xml_example.xml");

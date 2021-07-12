@@ -53,8 +53,6 @@ public class WSReportsDTO implements Serializable {
 	@XmlElement(name = "DetailedReport", namespace = "http://dss.esig.europa.eu/validation/detailed-report")
 	private XmlDetailedReport detailedReport;
 
-	// Use MTOM to avoid XML ID conflict (between diagnostic data and etsi
-	// validation report)
 	/** Uses MTOM to avoid XML ID conflict (between diagnostic data and etsi validation report) */
 	@XmlMimeType("application/octet-stream")
 	private DataHandler validationReportDataHandler;

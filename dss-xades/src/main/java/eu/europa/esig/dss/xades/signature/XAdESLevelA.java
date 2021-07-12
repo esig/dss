@@ -20,14 +20,15 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import java.util.List;
 
 /**
  * Holds level A aspects of XAdES
@@ -50,24 +51,52 @@ public class XAdESLevelA extends XAdESLevelXL {
 	 *
 	 * A XAdES-A form MAY contain several ArchiveTimeStamp elements.
 	 *
-	 * @see XAdESLevelXL#extendSignatureTag()
+	 * @see XAdESLevelXL#extendSignatures(List)
 	 */
 	@Override
-	protected void extendSignatureTag() throws DSSException {
+	protected void extendSignatures(List<AdvancedSignature> signatures) {
+		super.extendSignatures(signatures);
 
-		/* Up to -XL */
-		super.extendSignatureTag();
-		Element levelXLUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+		boolean addTimestampValidationData = false;
 
-		xadesSignature.checkSignatureIntegrity();
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			assertExtendSignatureToAPossible();
+			checkSignatureIntegrity();
 
-		final XAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
-		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
-		final byte[] data = xadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
-		final DigestAlgorithm timestampDigestAlgorithm = archiveTimestampParameters.getDigestAlgorithm();
-		final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, data);
-		createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, canonicalizationMethod, digestBytes);
-		
-		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXLUnsignedProperties);
+			if (xadesSignature.hasLTAProfile()) {
+				addTimestampValidationData = true;
+			}
+		}
+
+		// Perform signature validation
+		ValidationDataContainer validationDataContainer = null;
+		if (addTimestampValidationData) {
+			validationDataContainer = documentValidator.getValidationData(signatures);
+		}
+
+		// Append LTA-level (+ ValidationData)
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			Element levelXLUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+
+			if (xadesSignature.hasLTAProfile() && addTimestampValidationData) {
+				// must be executed before data removing
+				String indent = removeLastTimestampValidationData();
+
+				final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
+				incorporateTimestampValidationData(validationDataForInclusion, indent);
+			}
+			incorporateArchiveTimestamp();
+
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXLUnsignedProperties);
+		}
 	}
+
+	private void assertExtendSignatureToAPossible() {
+		if (SignatureLevel.XAdES_A.equals(params.getSignatureLevel())) {
+			assertDetachedDocumentsContainBinaries();
+		}
+	}
+
 }

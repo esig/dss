@@ -1,0 +1,877 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>prueba-odt-firmado.odt</DocumentName>
+    <ValidationDate>2021-05-04T15:17:38Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-E</ContainerType>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.oasis.opendocument.text</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/manifest.xml</Filename>
+                <SignatureFilename>META-INF/documentsignatures.xml</SignatureFilename>
+                <Entries>
+                    <Entry>Thumbnails/thumbnail.png</Entry>
+                    <Entry>content.xml</Entry>
+                    <Entry>meta.xml</Entry>
+                    <Entry>manifest.rdf</Entry>
+                    <Entry>settings.xml</Entry>
+                    <Entry>styles.xml</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>Thumbnails/thumbnail.png</ContentFile>
+            <ContentFile>content.xml</ContentFile>
+            <ContentFile>meta.xml</ContentFile>
+            <ContentFile>manifest.rdf</ContentFile>
+            <ContentFile>settings.xml</ContentFile>
+            <ContentFile>styles.xml</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures>
+        <Signature Id="S-FB60CED0DEE50987E8805758DB322A2ED41B444D0A80E7188975BF82DE7D7663">
+            <DAIdentifier>id-e6c343c6cfa65ee80586e9187acdf475</DAIdentifier>
+            <SignatureFilename>META-INF/documentsignatures.xml</SignatureFilename>
+            <ClaimedSigningTime>2020-06-18T06:24:32Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>4k25KYDelNg5nKMBnVvOt2s1BgZneY3rfwoMo//RBYw=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-2">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>4sdIMrakqwsnT4P5KJwZ0OfxiEogNr6kIa1as8RQ6sU=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-3">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>4IhWLpU2OXWhawv2ZIaxJsMCRMxR76/cY18APmulBv8=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-4">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>rrKXmEsmowvZom8wSzm8fZGiZFdJs1578/RMS5UR3HU=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-5">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>83PKsNWQBgEUzYkqiGBbjzgBGqejnaziucI1AUFlvcg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-6">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>EcADixQh1WYTxatIQpAxObyYdhCbKFyxUW8JGRdUd6I=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-7">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>vT3c+QuzukAhRXYKA7TEfT7hx/Xw2eT82jxymWVNzDQ=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-8">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cU2+NwsKcGNmkhfZGyh1Zv6Lq7yFmbYpskR2/4G4NZM=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" name="#xades-id-e6c343c6cfa65ee80586e9187acdf475">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cDxc0l03i0LbxSVqNahKBN5x6HR11JkYuxOqdfZ3IDo=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-17ABDFD9CA2841B2C8C00B487E07FA030C7638115B4C4BC7B4F551F174E8B6C0"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-17ABDFD9CA2841B2C8C00B487E07FA030C7638115B4C4BC7B4F551F174E8B6C0"/>
+                <ChainItem Certificate="C-F4C3A6079428EFA4DE5E0BEBD8770E05826F99BAF303D5130D1C49737051F809"/>
+                <ChainItem Certificate="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD"/>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <MimeType>image/png</MimeType>
+            <CommitmentTypeIndications/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-17ABDFD9CA2841B2C8C00B487E07FA030C7638115B4C4BC7B4F551F174E8B6C0">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIG3MIGfpIGcMIGZMRkwFwYDVQQFExBDUEotNC0wMDAtMDA0MDE3MQswCQYDVQQGEwJDUjEkMCIGA1UEChMbQkFOQ08gQ0VOVFJBTCBERSBDT1NUQSBSSUNBMSIwIAYDVQQLExlESVZJU0lPTiBTSVNURU1BUyBERSBQQUdPMSUwIwYDVQQDExxDQSBTSU5QRSAtIFBFUlNPTkEgRklTSUNBIHYyAhMUAAB5bUlG8CA/jBJtAAAAAHlt</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA512</DigestMethod>
+                            <DigestValue>ZYGpPEWrgsH0nnxKEsGsvPbGAYF+YySFoxoKP53GU3BzI/scBniVGHqKzbE4QWwpMYW63qcHUHA8nwlWZx2UKA==</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-8253C2DBDD244AA2CB013C54100C7E747C3F96993F4B6A93D07495A589BE8D6C">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-F4C3A6079428EFA4DE5E0BEBD8770E05826F99BAF303D5130D1C49737051F809">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-372B937898E6266EF8DEFF885A5528361E4D9F6EEDE95A6D541C2F977DB6E9A9">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-FDCFE11315FC9F4B059934346243549486DB9DF06772B09562CA666C9B8B8EA0">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-E68A20C997866C3846D0BCF24B60EDE3DC832C65AC8123EB24C69F6C7DD969C4">
+                    <Type>CRL</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-E24E4D9A635DDD44A4070669E11C0BF6A77CEBAE54FCBBBC9E03DCC4D20908F5">
+                    <Type>CRL</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-B63353136519CC56A8D37FFB0742B56BA2FF31DCBC2EFE37FE5FF918275205AF">
+                    <Type>CRL</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-703A8E4F71886016871680FB6455D83A8E920EF349BE0A669D85D31F0B4232A8">
+                    <Type>OCSP</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-E9018E0D77D50412DD56D305D2772A5B2CE367075641D62B8A45D38A948C2747"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-C86B4ED2629ED035DE81CE83444830A3D5E95FAD033E7948C65059A71A4CFBBD">
+                    <Scope>FULL</Scope>
+                    <Name>Thumbnails/thumbnail.png</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-7CA69324BBD5A5EFBE2C3ECE2C55390627CC89EAF01367B396695C719FF33740">
+                    <Scope>FULL</Scope>
+                    <Name>content.xml</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-93D59232C0C74193F0653B2D6FEC933984A32BBE2EB0A5D64AFEBE159133F8CF">
+                    <Scope>FULL</Scope>
+                    <Name>meta.xml</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-E7A55A40698ABB55FC8DC76879F43257F969B5998FB31B038BA91D5FCD0BF4A7">
+                    <Scope>FULL</Scope>
+                    <Name>manifest.rdf</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-23F2BB765E9FE3FA2846F69E976E989559321ED261A67B2CB018B43219382DCF">
+                    <Scope>FULL</Scope>
+                    <Name>settings.xml</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-BB87CF60199ABB9EAB96BA557B7A78EC8FEB5B94F8A838B6A195ED0730A55ABD">
+                    <Scope>FULL</Scope>
+                    <Name>styles.xml</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-48E7257F27C74CFCDCB4DA98F552B09E244763CEBD7764AF94B19E3B24E19FF2">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/manifest.xml</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-05DA946B6BE607D9274D292D9B5FA94A6624736F4BAF1B4294DB87A18E4CE3BB">
+                    <Scope>FULL</Scope>
+                    <Name>mimetype</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>iu9sSvJMP6D8LMZSKra0n/1FGlzQhceDlkFYigM+ysA=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>jEuZkeRiWT7HtahvtZW0G8c0j79pDsi7IEkD3XVDeSU=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>KYw67h3kpc1Hc1BuHvqmmeXfabKJZ4cjBKTaHadrvZ2CTDwI6V6+wuuugte8KIJPYKVuF9RRB31gLd0IoV8ICZ4NG4gn76f8Mddi0jAxZnvZrztW1tklOdhUm4YLELpq7J5ZijSrgFO0zaNsRBY/Ra3HkJWtMcn/G4U6sOlyGLnG+FK5mNHxHj/NYgz0AQks4Rb0YKEeem6znrSoLlfSEemmjWhrdD2pr7kucBf8/QyBU1N1JHUNF2rUSW+AYWAEo3t+n70sdazuvVvxZVNbDEXf+3dAT18R5cngZZtmnbQp7JC7ypHOpYzA7mCEmbT+2+w4OrYuPJKJNxPIbnqV7Q==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-17ABDFD9CA2841B2C8C00B487E07FA030C7638115B4C4BC7B4F551F174E8B6C0">
+            <SubjectDistinguishedName Format="CANONICAL">cn=test (firma),ou=test,o=persona test,c=cr,2.5.4.42=#249535130943485449414e,2.5.4.4=#55a2042413104d415254494e4152424f5a41,2.5.4.5=#0312d313131372d3030313104350462d3939</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=test,OU=test,C=CR,2.5.4.42=#55a2042413104d415254494e4152424f5a41,2.5.4.4=#13104d415254494e455a20424152424f5a41,2.5.4.5=#0312d313131372d3030313104350462d3939</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca sinpe - persona fisica v2,ou=division sistemas de pago,o=banco central de costa rica,c=cr,2.5.4.5=#0312d313131372d3030313104350462d3939</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA SINPE - PERSONA FISICA v2,OU=DIVISION SISTEMAS DE PAGO,O=BANCO CENTRAL DE COSTA RICA,C=CR,2.5.4.5=#0312d313131372d3030313104350462d3939</IssuerDistinguishedName>
+            <SerialNumber>446015065374646546573661845078818521014630765</SerialNumber>
+            <SubjectSerialNumber>CPF-01-1117-0099</SubjectSerialNumber>
+            <CommonName>TEST (FIRMA)</CommonName>
+            <CountryName>CR</CountryName>
+            <OrganizationName>PERSONA FISICA</OrganizationName>
+            <OrganizationalUnit>TEST UNIT</OrganizationalUnit>
+            <GivenName>GOMES</GivenName>
+            <Surname>FRANSICSO BARBOSA</Surname>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://fdi.sinpe.fi.cr/repositorio/CA.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://fdi.sinpe.fi.cr/repositorio/CA.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.sinpe.fi.cr/ocsp</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2020-09-28T22:43:47Z</NotAfter>
+            <NotBefore>2016-09-29T22:43:47Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-DA1476A9F1392E747DBD64FBE36AC4EDF7E216F5CCAEE7155067B2B1A0EEFBB3</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F4C3A6079428EFA4DE5E0BEBD8770E05826F99BAF303D5130D1C49737051F809"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F4C3A6079428EFA4DE5E0BEBD8770E05826F99BAF303D5130D1C49737051F809"/>
+                <ChainItem Certificate="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD"/>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>2.16.188.1.1.1.1.2</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-703A8E4F71886016871680FB6455D83A8E920EF349BE0A669D85D31F0B4232A8">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>F6vf2cooQbLIwAtIfgf6Awx2OBFbTEvHtPVR8XTotsA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ca politica persona fisica - costa rica v2,ou=dcfd,o=micitt,c=cr,2.5.4.5=#131043504a2d322d3130302d303938333131</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=CA POLITICA PERSONA FISICA - COSTA RICA v2,OU=DCFD,O=MICITT,C=CR,2.5.4.5=#131043504a2d322d3130302d303938333131</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca raiz nacional - costa rica v2,c=cr,o=micitt,ou=dcfd,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA RAIZ NACIONAL - COSTA RICA v2,C=CR,O=MICITT,OU=DCFD,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
+            <SerialNumber>1739458125498116918358806673373806027304075266</SerialNumber>
+            <SubjectSerialNumber>CPJ-2-100-098311</SubjectSerialNumber>
+            <CommonName>CA POLITICA PERSONA FISICA - COSTA RICA v2</CommonName>
+            <CountryName>CR</CountryName>
+            <OrganizationName>MICITT</OrganizationName>
+            <OrganizationalUnit>DCFD</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
+                <aiaUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+                <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2031-02-25T18:18:38Z</NotAfter>
+            <NotBefore>2015-02-25T18:08:38Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-919530E99CFCDCA84AA273A4165D77D28926F07F054D5B3E0EC15FCF0773FCAC</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.1</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.2</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.3</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-E68A20C997866C3846D0BCF24B60EDE3DC832C65AC8123EB24C69F6C7DD969C4">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>MsKOaEooPfFdp2G4uOeantctgd21V4JKgjo/Bpp+d90=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-372B937898E6266EF8DEFF885A5528361E4D9F6EEDE95A6D541C2F977DB6E9A9">
+            <SubjectDistinguishedName Format="CANONICAL">cn=tsa sinpe v2,ou=0001,o=banco central de costa rica,c=cr,2.5.4.5=#131043504a2d342d3030302d303034303137</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=TSA SINPE v2,OU=0001,O=BANCO CENTRAL DE COSTA RICA,C=CR,2.5.4.5=#131043504a2d342d3030302d303034303137</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca politica sellado de tiempo - costa rica v2,ou=dcfd,o=micitt,c=cr,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA POLITICA SELLADO DE TIEMPO - COSTA RICA v2,OU=DCFD,O=MICITT,C=CR,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
+            <SerialNumber>2341578245872361933238634249444439777156792325</SerialNumber>
+            <SubjectSerialNumber>CPJ-4-000-004017</SubjectSerialNumber>
+            <CommonName>TSA SINPE v2</CommonName>
+            <CountryName>CR</CountryName>
+            <OrganizationName>BANCO CENTRAL DE COSTA RICA</OrganizationName>
+            <OrganizationalUnit>0001</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
+                <aiaUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+                <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2027-08-23T17:02:47Z</NotAfter>
+            <NotBefore>2019-08-23T16:52:47Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-4FEB2D474B5B505E4521A1D7D6A6A7BFE3DD6A0B9A11983E8CE5AA821E89EF2F</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-FDCFE11315FC9F4B059934346243549486DB9DF06772B09562CA666C9B8B8EA0"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-FDCFE11315FC9F4B059934346243549486DB9DF06772B09562CA666C9B8B8EA0"/>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://tsa.sinpe.fi.cr/tsahttp/">2.16.188.1.1.1.1.5</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-B63353136519CC56A8D37FFB0742B56BA2FF31DCBC2EFE37FE5FF918275205AF">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>NyuTeJjmJm743v+IWlUoNh5Nn27t6VptVBwvl3226ak=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-8253C2DBDD244AA2CB013C54100C7E747C3F96993F4B6A93D07495A589BE8D6C">
+            <SubjectDistinguishedName Format="CANONICAL">cn=porvenir.fdi.cr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PORVENIR.fdi.cr</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca sinpe - persona fisica v2,ou=division sistemas de pago,o=banco central de costa rica,c=cr,2.5.4.5=#131043504a2d342d3030302d303034303137</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA SINPE - PERSONA FISICA v2,OU=DIVISION SISTEMAS DE PAGO,O=BANCO CENTRAL DE COSTA RICA,C=CR,2.5.4.5=#131043504a2d342d3030302d303034303137</IssuerDistinguishedName>
+            <SerialNumber>446017723375857826877495391996177220779919637</SerialNumber>
+            <CommonName>PORVENIR.fdi.cr</CommonName>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>PORVENIR.fdi.cr</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2021-06-23T21:04:36Z</NotAfter>
+            <NotBefore>2020-06-09T21:04:36Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-952E049E16F0862714594313E0E775F289AFB1A447F0DC7288F6C056D329AC81</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F4C3A6079428EFA4DE5E0BEBD8770E05826F99BAF303D5130D1C49737051F809"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F4C3A6079428EFA4DE5E0BEBD8770E05826F99BAF303D5130D1C49737051F809"/>
+                <ChainItem Certificate="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD"/>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>glPC290kSqLLATxUEAx+dHw/lpk/S2qT0HSVpYm+jWw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F4C3A6079428EFA4DE5E0BEBD8770E05826F99BAF303D5130D1C49737051F809">
+            <SubjectDistinguishedName Format="CANONICAL">cn=persona fisica v2,ou=division sistemaso,o=costa rica,c=cr,2.5.4.5=#04a2d342d30301310435302d303034303137</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PERSONA FISICA v2,OU=DIVISION SISTEMAS,O=COSTA RICA,C=CR,2.5.4.5=#04a2d342d30301310435302d303034303137</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca politica persona fisica - costa rica v2,ou=dcfd,o=micitt,c=cr,2.5.4.5=#04a2d342d30301310435302d303034303137</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA POLITICA PERSONA FISICA - COSTA RICA v2,OU=DCFD,O=MICITT,C=CR,2.5.4.5=#04a2d342d30301310435302d303034303137</IssuerDistinguishedName>
+            <SerialNumber>1672555889905774989374701447987177132319047683</SerialNumber>
+            <SubjectSerialNumber>CPJ-4-000-004017</SubjectSerialNumber>
+            <CommonName>PERSONA FISICA v2</CommonName>
+            <CountryName>CR</CountryName>
+            <OrganizationName>COSTA RICA</OrganizationName>
+            <OrganizationalUnit>DIVISION SISTEMAS</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA.crt</aiaUrl>
+                <aiaUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA.crl</crlUrl>
+                <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2024-01-21T18:26:08Z</NotAfter>
+            <NotBefore>2016-01-21T18:16:08Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-4E034103F8233FC1CE11A580D2B3CBACBF7A9B11E08F6B8A2BD6C36C0F98AE99</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD"/>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.1</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.2</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.3</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-E24E4D9A635DDD44A4070669E11C0BF6A77CEBAE54FCBBBC9E03DCC4D20908F5">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>9MOmB5Qo76TeXgvr2HcOBYJvmbrzA9UTDRxJc3BR+Ak=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ca raiz nacional - costa rica v2,c=cr,o=micitt,ou=dcfd,2.5.4.5=#131043504a2d322d3130302d303938333131</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=CA RAIZ NACIONAL - COSTA RICA v2,C=CR,O=MICITT,OU=DCFD,2.5.4.5=#131043504a2d322d3130302d303938333131</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca raiz nacional - costa rica v2,c=cr,o=micitt,ou=dcfd,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA RAIZ NACIONAL - COSTA RICA v2,C=CR,O=MICITT,OU=DCFD,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
+            <SerialNumber>155150036479860318890910376525337462028</SerialNumber>
+            <SubjectSerialNumber>CPJ-2-100-098311</SubjectSerialNumber>
+            <CommonName>CA RAIZ NACIONAL - COSTA RICA v2</CommonName>
+            <CountryName>CR</CountryName>
+            <OrganizationName>MICITT</OrganizationName>
+            <OrganizationalUnit>DCFD</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2039-02-24T22:28:44Z</NotAfter>
+            <NotBefore>2015-02-24T22:19:55Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-8B0BF667167C21C78269D86E0990102F8D4296345925C0616C8660F103ED3FE1</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/Z6nMJSOwlh1/TxKd4gV9X8iYfc5vomN1yD6LgfvfEI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-FDCFE11315FC9F4B059934346243549486DB9DF06772B09562CA666C9B8B8EA0">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ca politica sellado de tiempo - costa rica v2,ou=dcfd,o=micitt,c=cr,2.5.4.5=#131043504a2d322d3130302d303938333131</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=CA POLITICA SELLADO DE TIEMPO - COSTA RICA v2,OU=DCFD,O=MICITT,C=CR,2.5.4.5=#131043504a2d322d3130302d303938333131</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca raiz nacional - costa rica v2,c=cr,o=micitt,ou=dcfd,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA RAIZ NACIONAL - COSTA RICA v2,C=CR,O=MICITT,OU=DCFD,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
+            <SerialNumber>1739458125509245244632810178398025886600265732</SerialNumber>
+            <SubjectSerialNumber>CPJ-2-100-098311</SubjectSerialNumber>
+            <CommonName>CA POLITICA SELLADO DE TIEMPO - COSTA RICA v2</CommonName>
+            <CountryName>CR</CountryName>
+            <OrganizationName>MICITT</OrganizationName>
+            <OrganizationalUnit>DCFD</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
+                <aiaUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+                <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2031-02-25T21:57:43Z</NotAfter>
+            <NotBefore>2015-02-25T21:47:43Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-8F92FA3FA791B7A69DB21BCB8FE11DC6FF9B0B2354ED3D0F6E00AAC31CEC8CCB</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.1</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.5</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-E68A20C997866C3846D0BCF24B60EDE3DC832C65AC8123EB24C69F6C7DD969C4">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/c/hExX8n0sFmTQ0YkNUlIbbnfBncrCVYspmbJuLjqA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-703A8E4F71886016871680FB6455D83A8E920EF349BE0A669D85D31F0B4232A8">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2020-06-17T23:24:37Z</ProductionDate>
+            <ThisUpdate>2020-06-17T21:11:37Z</ThisUpdate>
+            <NextUpdate>2020-06-19T09:31:37Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-8253C2DBDD244AA2CB013C54100C7E747C3F96993F4B6A93D07495A589BE8D6C"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-8253C2DBDD244AA2CB013C54100C7E747C3F96993F4B6A93D07495A589BE8D6C"/>
+                <ChainItem Certificate="C-F4C3A6079428EFA4DE5E0BEBD8770E05826F99BAF303D5130D1C49737051F809"/>
+                <ChainItem Certificate="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD"/>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-8253C2DBDD244AA2CB013C54100C7E747C3F96993F4B6A93D07495A589BE8D6C">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>X4rRKvtMOC4TDMxPZ9J3s2v8U08=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cDqOT3GIYBaHFoD7ZFXYOo6SDvNJvgpmnYXTHwtCMqg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-B63353136519CC56A8D37FFB0742B56BA2FF31DCBC2EFE37FE5FF918275205AF">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2020-05-15T17:26:21Z</ProductionDate>
+            <ThisUpdate>2020-05-15T17:26:21Z</ThisUpdate>
+            <NextUpdate>2020-07-16T05:46:21Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-FDCFE11315FC9F4B059934346243549486DB9DF06772B09562CA666C9B8B8EA0"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-FDCFE11315FC9F4B059934346243549486DB9DF06772B09562CA666C9B8B8EA0"/>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>tjNTE2UZzFao03/7B0K1a6L/Mdy8Lv43/l/5GCdSBa8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-E24E4D9A635DDD44A4070669E11C0BF6A77CEBAE54FCBBBC9E03DCC4D20908F5">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2020-05-15T17:39:22Z</ProductionDate>
+            <ThisUpdate>2020-05-15T17:39:22Z</ThisUpdate>
+            <NextUpdate>2020-07-16T05:59:22Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-32C28E684A283DF15DA761B8B8E79A9ED72D81DDB557824A823A3F069A7E77DD"/>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>4k5NmmNd3USkBwZp4RwL9qd8665U/Lu8ngPcxNIJCPU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-E68A20C997866C3846D0BCF24B60EDE3DC832C65AC8123EB24C69F6C7DD969C4">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2020-05-15T17:00:18Z</ProductionDate>
+            <ThisUpdate>2020-05-15T17:00:18Z</ThisUpdate>
+            <NextUpdate>2020-09-16T05:20:18Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>5oogyZeGbDhG0LzyS2Dt49yDLGWsgSPrJMafbH3ZacQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-E9018E0D77D50412DD56D305D2772A5B2CE367075641D62B8A45D38A948C2747">
+            <ProductionTime>2020-06-17T23:24:36Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>8/vzIfZh/sl+dyUtvqOXK2a+SMK6OAfhifJEIeLhTtM=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-372B937898E6266EF8DEFF885A5528361E4D9F6EEDE95A6D541C2F977DB6E9A9"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-372B937898E6266EF8DEFF885A5528361E4D9F6EEDE95A6D541C2F977DB6E9A9"/>
+                <ChainItem Certificate="C-FDCFE11315FC9F4B059934346243549486DB9DF06772B09562CA666C9B8B8EA0"/>
+                <ChainItem Certificate="C-FD9EA730948EC25875FD3C4A778815F57F2261F739BE898DD720FA2E07EF7C42"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=CA POLITICA SELLADO DE TIEMPO - COSTA RICA v2, OU=DCFD, O=MICITT, C=CR, SERIALNUMBER=CPJ-2-100-098311</IssuerName>
+                    <SerialNumber>2341578245872361933238634249444439777156792325</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-372B937898E6266EF8DEFF885A5528361E4D9F6EEDE95A6D541C2F977DB6E9A9">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>NyuTeJjmJm743v+IWlUoNh5Nn27t6VptVBwvl3226ak=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-C86B4ED2629ED035DE81CE83444830A3D5E95FAD033E7948C65059A71A4CFBBD" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-7CA69324BBD5A5EFBE2C3ECE2C55390627CC89EAF01367B396695C719FF33740" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-93D59232C0C74193F0653B2D6FEC933984A32BBE2EB0A5D64AFEBE159133F8CF" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-E7A55A40698ABB55FC8DC76879F43257F969B5998FB31B038BA91D5FCD0BF4A7" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-23F2BB765E9FE3FA2846F69E976E989559321ED261A67B2CB018B43219382DCF" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-BB87CF60199ABB9EAB96BA557B7A78EC8FEB5B94F8A838B6A195ED0730A55ABD" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-48E7257F27C74CFCDCB4DA98F552B09E244763CEBD7764AF94B19E3B24E19FF2" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-05DA946B6BE607D9274D292D9B5FA94A6624736F4BAF1B4294DB87A18E4CE3BB" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-FB60CED0DEE50987E8805758DB322A2ED41B444D0A80E7188975BF82DE7D7663" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-17ABDFD9CA2841B2C8C00B487E07FA030C7638115B4C4BC7B4F551F174E8B6C0" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>6QGODXfVBBLdVtMF0ncqWyzjZwdWQdYrikXTipSMJ0c=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-C86B4ED2629ED035DE81CE83444830A3D5E95FAD033E7948C65059A71A4CFBBD">
+            <ReferencedName>Thumbnails/thumbnail.png</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>4k25KYDelNg5nKMBnVvOt2s1BgZneY3rfwoMo//RBYw=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-7CA69324BBD5A5EFBE2C3ECE2C55390627CC89EAF01367B396695C719FF33740">
+            <ReferencedName>content.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>4sdIMrakqwsnT4P5KJwZ0OfxiEogNr6kIa1as8RQ6sU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-93D59232C0C74193F0653B2D6FEC933984A32BBE2EB0A5D64AFEBE159133F8CF">
+            <ReferencedName>meta.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>4IhWLpU2OXWhawv2ZIaxJsMCRMxR76/cY18APmulBv8=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-E7A55A40698ABB55FC8DC76879F43257F969B5998FB31B038BA91D5FCD0BF4A7">
+            <ReferencedName>manifest.rdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>rrKXmEsmowvZom8wSzm8fZGiZFdJs1578/RMS5UR3HU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-23F2BB765E9FE3FA2846F69E976E989559321ED261A67B2CB018B43219382DCF">
+            <ReferencedName>settings.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>83PKsNWQBgEUzYkqiGBbjzgBGqejnaziucI1AUFlvcg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-BB87CF60199ABB9EAB96BA557B7A78EC8FEB5B94F8A838B6A195ED0730A55ABD">
+            <ReferencedName>styles.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>EcADixQh1WYTxatIQpAxObyYdhCbKFyxUW8JGRdUd6I=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-48E7257F27C74CFCDCB4DA98F552B09E244763CEBD7764AF94B19E3B24E19FF2">
+            <ReferencedName>META-INF/manifest.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vT3c+QuzukAhRXYKA7TEfT7hx/Xw2eT82jxymWVNzDQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-05DA946B6BE607D9274D292D9B5FA94A6624736F4BAF1B4294DB87A18E4CE3BB">
+            <ReferencedName>mimetype</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cU2+NwsKcGNmkhfZGyh1Zv6Lq7yFmbYpskR2/4G4NZM=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

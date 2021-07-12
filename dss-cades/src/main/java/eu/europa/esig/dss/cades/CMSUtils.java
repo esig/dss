@@ -153,7 +153,7 @@ public final class CMSUtils {
 			final ASN1Set asn1Set = DSSASN1Utils.toASN1Primitive(encodedSignedAttributes);
 			return new DERTaggedObject(false, 0, asn1Set);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to extract SignedAttributes. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -239,13 +239,13 @@ public final class CMSUtils {
 			LOG.debug("Adding Certificate Hash {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm.getName());
 		}
 
-		Attribute attribute = null;
+		Attribute attribute;
 		if (digestAlgorithm == DigestAlgorithm.SHA1) {
 			final ESSCertID essCertID = new ESSCertID(certHash, issuerSerial);
 			SigningCertificate signingCertificate = new SigningCertificate(essCertID);
 			attribute = new Attribute(id_aa_signingCertificate, new DERSet(signingCertificate));
 		} else {
-			ESSCertIDv2 essCertIdv2 = null;
+			ESSCertIDv2 essCertIdv2;
 			if (DigestAlgorithm.SHA256 == digestAlgorithm) {
 				// SHA-256 is default
 				essCertIdv2 = new ESSCertIDv2(null, certHash, issuerSerial);
@@ -268,6 +268,21 @@ public final class CMSUtils {
 	 */
 	public static boolean isCMSSignedDataEqual(CMSSignedData signedData, CMSSignedData signedDataToCompare) throws IOException {
 		return Arrays.equals(signedData.getEncoded(), signedDataToCompare.getEncoded());
+	}
+
+	/**
+	 * Returns a signed attribute with the given {@code oid} from {@code signerInformation} if present
+	 *
+	 * @param signerInformation {@link SignerInformation} containing signed attributes
+	 * @param oid {@link ASN1ObjectIdentifier} oid of the element to extract
+	 * @return {@link Attribute} with the given OID
+	 */
+	public static Attribute getSignedAttribute(final SignerInformation signerInformation, ASN1ObjectIdentifier oid) {
+		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
+		if (signedAttributes == null) {
+			return null;
+		}
+		return signedAttributes.get(oid);
 	}
 
 	/**
@@ -322,7 +337,7 @@ public final class CMSUtils {
 	 */
 	public static CMSTypedData getContentToBeSigned(final DSSDocument toSignData) {
 		Objects.requireNonNull(toSignData, "Document to be signed is missing");
-		CMSTypedData content = null;
+		CMSTypedData content;
 		if (toSignData instanceof DigestDocument) {
 			content = new CMSAbsentContent();
 		} else if (toSignData instanceof FileDocument) {
@@ -380,16 +395,16 @@ public final class CMSUtils {
 			if (signingDate != null) {
 				/*
 				 * RFC 3852 [4] states that "dates between January 1, 1950 and
-				 * December 31, 2049 (inclusive) must be encoded as UTCTime. Any
-				 * dates with year values before 1950 or after 2049 must be encoded
+				 * December 31, 2049 (inclusive) MUST be encoded as UTCTime. Any
+				 * dates with year values before 1950 or after 2049 MUST be encoded
 				 * as GeneralizedTime".
 				 */
 				if (signingDate.compareTo(JANUARY_1950) >= 0 && signingDate.before(JANUARY_2050)) {
 					// must be ASN1UTCTime
-					if (!(attrValue instanceof ASN1UTCTime)) {
+					if (!(attrValue.toASN1Primitive() instanceof ASN1UTCTime)) {
 						LOG.error("RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) " +
-										"must be encoded as UTCTime. Any dates with year values before 1950 or after 2049 " +
-										"must be encoded as GeneralizedTime. Date found is {} encoded as {}",
+								"MUST be encoded as UTCTime. Any dates with year values before 1950 or after 2049 " +
+								"MUST be encoded as GeneralizedTime. Date found is {} encoded as {}",
 								signingDate, attrValue.getClass());
 						return null;
 					}

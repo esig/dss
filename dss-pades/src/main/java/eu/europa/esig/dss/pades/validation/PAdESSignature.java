@@ -21,22 +21,25 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
+import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
@@ -57,8 +60,17 @@ public class PAdESSignature extends CAdESSignature {
 	/** Represents the corresponding PDF revision */
 	private final PdfSignatureRevision pdfSignatureRevision;
 
-	/** contains a complete list of validating document revisions */
+	/** Contains a complete list of validating document revisions */
 	private final List<PdfRevision> documentRevisions;
+
+	/** Represents a certificate source obtained from DSS/VRI revisions */
+	private ListCertificateSource dssCertificateSource;
+
+	/** Represents a CRL source obtained from DSS/VRI revisions */
+	private ListRevocationSource<CRL> dssCRLSource;
+
+	/** Represents an OCSP source obtained from DSS/VRI revisions */
+	private ListRevocationSource<OCSP> dssOCSPSource;
 
 	/**
 	 * The default constructor for PAdESSignature.
@@ -72,7 +84,34 @@ public class PAdESSignature extends CAdESSignature {
 		super(pdfSignatureRevision.getCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(pdfSignatureRevision.getCMSSignedData()));
 		this.pdfSignatureRevision = pdfSignatureRevision;
 		this.documentRevisions = documentRevisions;
-		this.detachedContents = Arrays.asList(new InMemoryDocument(pdfSignatureRevision.getRevisionCoveredBytes()));
+		this.detachedContents = Arrays.asList(pdfSignatureRevision.getSignedData());
+	}
+
+	/**
+	 * Sets a joint DSS/VRI Certificate Source
+	 *
+	 * @param dssCertificateSource {@link ListCertificateSource}
+	 */
+	public void setDssCertificateSource(ListCertificateSource dssCertificateSource) {
+		this.dssCertificateSource = dssCertificateSource;
+	}
+
+	/**
+	 * Sets a joint DSS/VRI CRL Source
+	 *
+	 * @param dssCRLSource {@link ListRevocationSource}
+	 */
+	public void setDssCRLSource(ListRevocationSource<CRL> dssCRLSource) {
+		this.dssCRLSource = dssCRLSource;
+	}
+
+	/**
+	 * Sets a joint DSS/VRI OCSP Source
+	 *
+	 * @param dssOCSPSource {@link ListRevocationSource}
+	 */
+	public void setDssOCSPSource(ListRevocationSource<OCSP> dssOCSPSource) {
+		this.dssOCSPSource = dssOCSPSource;
 	}
 
 	@Override
@@ -105,6 +144,33 @@ public class PAdESSignature extends CAdESSignature {
 			signatureOCSPSource = new PAdESOCSPSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureOCSPSource;
+	}
+
+	@Override
+	public ListCertificateSource getCompleteCertificateSource() {
+		ListCertificateSource completeCertificateSource = super.getCompleteCertificateSource();
+		if (dssCertificateSource != null) {
+			completeCertificateSource.addAll(dssCertificateSource);
+		}
+		return completeCertificateSource;
+	}
+
+	@Override
+	public ListRevocationSource<CRL> getCompleteCRLSource() {
+		ListRevocationSource<CRL> completeCRLSource = super.getCompleteCRLSource();
+		if (dssCRLSource != null) {
+			completeCRLSource.addAll(dssCRLSource);
+		}
+		return completeCRLSource;
+	}
+
+	@Override
+	public ListRevocationSource<OCSP> getCompleteOCSPSource() {
+		ListRevocationSource<OCSP> completeOCSPSource = super.getCompleteOCSPSource();
+		if (dssOCSPSource != null) {
+			completeOCSPSource.addAll(dssOCSPSource);
+		}
+		return completeOCSPSource;
 	}
 
 	@Override
@@ -157,64 +223,90 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
-		if (hasCAdESDetachedSubFilter()) {
-			if (hasLTProfile() && hasDSSDictionary()) {
-				if (hasLTAProfile()) {
-					return SignatureLevel.PAdES_BASELINE_LTA;
-				}
-				if (hasTProfile()) {
-					return SignatureLevel.PAdES_BASELINE_LT;
-				}
+		SignatureForm signatureForm = getSignatureForm();
+		if (SignatureForm.PAdES.equals(signatureForm) && hasBProfile()) {
+			if (!hasTProfile()) {
+				return SignatureLevel.PAdES_BASELINE_B;
 			}
-			if (hasTProfile()) {
+			if (!hasLTProfile()) {
 				return SignatureLevel.PAdES_BASELINE_T;
 			}
-			return SignatureLevel.PAdES_BASELINE_B;
-		} else if (hasPKCS7SubFilter()) {
-			if (hasLTProfile()) {
-				if (hasLTAProfile()) {
-					return SignatureLevel.PKCS7_LTA;
-				}
-				if (hasTProfile()) {
-					return SignatureLevel.PKCS7_LT;
-				}
+			if (hasLTAProfile()) {
+				return SignatureLevel.PAdES_BASELINE_LTA;
 			}
-			if (hasTProfile()) {
+			return SignatureLevel.PAdES_BASELINE_LT;
+
+		} else if (SignatureForm.PKCS7.equals(signatureForm) && hasPKCS7Profile()) {
+			if (!hasPKCS7TProfile()) {
+				return SignatureLevel.PKCS7_B;
+			}
+			if (!hasPKCS7LTProfile()) {
 				return SignatureLevel.PKCS7_T;
 			}
-			return SignatureLevel.PKCS7_B;
+			if (hasPKCS7LTAProfile()) {
+				return SignatureLevel.PKCS7_LTA;
+			}
+			return SignatureLevel.PKCS7_LT;
+
 		} else {
 			return SignatureLevel.PDF_NOT_ETSI;
 		}
 	}
 
 	@Override
-	public boolean hasTProfile() {
-		if (super.hasTProfile()) {
-			return true;
-		}
-		return Utils.isCollectionNotEmpty(getDocumentTimestamps());
+	protected PAdESBaselineRequirementsChecker getBaselineRequirementsChecker() {
+		return (PAdESBaselineRequirementsChecker) super.getBaselineRequirementsChecker();
 	}
 
 	@Override
-	public boolean hasLTAProfile() {
-		List<TimestampToken> documentTimestamps = getDocumentTimestamps();
-		if (Utils.isCollectionNotEmpty(documentTimestamps)) {
-			for (TimestampToken timestampToken : documentTimestamps) {
-				if (coversLTLevelData(timestampToken)) {
-					return true;
-				}
-			}
-		}
-		return false;
+	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
+		return new PAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 
-	private boolean coversLTLevelData(TimestampToken timestampToken) {
-		return ArchiveTimestampType.PAdES.equals(timestampToken.getArchiveTimestampType());
+	/**
+	 * Checks the presence of PKCS#7 corresponding SubFilter
+	 *
+	 * @return true if PKCS#7 Profile is detected
+	 */
+	public boolean hasPKCS7Profile() {
+		return getBaselineRequirementsChecker().hasPKCS7Profile();
 	}
 
-	private boolean hasDSSDictionary() {
-		return getDssDictionary() != null;
+	/**
+	 * Checks the presence of a signature-time-stamp
+	 *
+	 * @return true if PKCS#7-T Profile is detected
+	 */
+	public boolean hasPKCS7TProfile() {
+		return getBaselineRequirementsChecker().hasPKCS7TProfile();
+	}
+
+	/**
+	 * Checks the presence of a validation data
+	 *
+	 * @return true if PKCS#7-LT Profile is detected
+	 */
+	public boolean hasPKCS7LTProfile() {
+		return getBaselineRequirementsChecker().hasPKCS7LTProfile();
+	}
+
+	/**
+	 * Checks the presence of an archive-time-stamp
+	 *
+	 * @return true if PKCS#7-LTA Profile is detected
+	 */
+	public boolean hasPKCS7LTAProfile() {
+		return getBaselineRequirementsChecker().hasPKCS7LTAProfile();
+	}
+
+	/**
+	 * Checks the presence of ArchiveTimeStamp element in the signature, what is the proof -A profile existence
+	 *
+	 * @return true if the -A extension is present
+	 */
+	@Override
+	public boolean hasAProfile() {
+		return getBaselineRequirementsChecker().hasExtendedAProfile();
 	}
 
 	/**
@@ -224,10 +316,6 @@ public class PAdESSignature extends CAdESSignature {
 	 */
 	public PdfDssDict getDssDictionary() {
 		return pdfSignatureRevision.getDssDictionary();
-	}
-
-	private boolean hasCAdESDetachedSubFilter() {
-		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
 	}
 
 	private boolean hasPKCS7SubFilter() {
@@ -263,6 +351,11 @@ public class PAdESSignature extends CAdESSignature {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, getPdfSignatureDictionary().getContents());
 		String vriId = Utils.toHex(digest);
 		return vriId.toUpperCase();
+	}
+
+	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		throw new UnsupportedOperationException("The action is not supported for PAdES!");
 	}
 
 }

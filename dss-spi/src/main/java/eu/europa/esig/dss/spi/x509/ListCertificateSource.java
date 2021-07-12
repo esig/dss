@@ -20,6 +20,12 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
+
+import java.io.Serializable;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,17 +33,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
-
 /**
  * This class operates on several {@link CertificateSource} with the composite
  * design pattern.
  */
-public class ListCertificateSource {
-	
+public class ListCertificateSource implements Serializable {
+
+	private static final long serialVersionUID = -7790810642120721289L;
+
 	/**
 	 * A list of certificate sources
 	 */
@@ -163,6 +166,20 @@ public class ListCertificateSource {
 	}
 
 	/**
+	 * This method verifies if the current list of certificate sources contains a trusted certificate source
+	 *
+	 * @return TRUE if the list certificate source contains a trusted certificate source, FALSE otherwise
+	 */
+	public boolean containsTrustedCertSources() {
+		for (CertificateSource certificateSource : sources) {
+			if (certificateSource.getCertificateSourceType().isTrusted()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * This method checks in all sources in the given certificate is trusted
 	 * 
 	 * @param certificateToken the {@link CertificateToken} to be checked
@@ -256,16 +273,16 @@ public class ListCertificateSource {
 
 	/**
 	 * This method returns the found {@link CertificateToken} from all
-	 * {@link CertificateSource} for the given {@link CertificateIdentifier}.
+	 * {@link CertificateSource} for the given {@link SignerIdentifier}.
 	 * 
-	 * @param certificateIdentifier the {@link CertificateIdentifier} to find in the
+	 * @param signerIdentifier the {@link SignerIdentifier} to find in the
 	 *                              sources
 	 * @return a Set of found {@link CertificateToken}
 	 */
-	public Set<CertificateToken> getByCertificateIdentifier(CertificateIdentifier certificateIdentifier) {
+	public Set<CertificateToken> getByCertificateIdentifier(SignerIdentifier signerIdentifier) {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSource source : sources) {
-			result.addAll(source.getByCertificateIdentifier(certificateIdentifier));
+			result.addAll(source.getBySignerIdentifier(signerIdentifier));
 		}
 		return result;
 	}

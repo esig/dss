@@ -26,7 +26,6 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -52,12 +51,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Builds a XAdES signature
@@ -106,61 +103,16 @@ public abstract class XAdESBuilder {
 	protected XAdESBuilder(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
 	}
-	
+
 	/**
-	 * This method creates the ds:DigestMethod DOM object
+	 * This method creates the xades:CertDigest DOM object.
 	 * 
 	 * <pre>
 	 * {@code
-	 * 		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-	 * }
-	 * </pre>
-	 *
-	 * @param parentDom
-	 *            the parent element
-	 * @param digestAlgorithm
-	 *            the digest algorithm xml identifier
-	 */
-	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
-		final Element digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
-		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName() , digestAlgorithm.getUri());
-	}
-
-	/**
-	 * This method creates the ds:DigestValue DOM object.
-	 * 
-	 * <pre>
-	 * {@code
-	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
-	 * }
-	 * </pre>
-	 *
-	 * @param parentDom
-	 *            the parent element
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used
-	 * @param originalDocument
-	 *            the document to be digested
-	 */
-	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm,
-			final DSSDocument originalDocument) {
-
-		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
-
-		String base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
-		
-		LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
-		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
-		digestValueDom.appendChild(textNode);
-		parentDom.appendChild(digestValueDom);
-	}
-
-	/**
-	 * This method creates the ds:DigestValue DOM object.
-	 * 
-	 * <pre>
-	 * {@code
-	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * 		<CertDigest>
+	 * 	       <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+	 * 	       <ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * 	    </CertDigest>
 	 * }
 	 * </pre>
 	 *
@@ -171,38 +123,62 @@ public abstract class XAdESBuilder {
 	 * @param token
 	 *            the token to be digested
 	 */
-	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final Token token) {
-		Element digestValueDom = null;
-		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
-			digestValueDom = DomUtils.createElementNS(documentDom, getXadesNamespace(), XAdES111Element.DIGEST_VALUE);
-		} else {
-			digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_VALUE);
-		}
-		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
-		}
-		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
-		digestValueDom.appendChild(textNode);
-
-		parentDom.appendChild(digestValueDom);
+	protected void incorporateCertDigest(final Element parentDom, final DigestAlgorithm digestAlgorithm,
+										 final Token token) {
+		final Element certDigestDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(),
+				getCurrentXAdESElements().getElementCertDigest());
+		incorporateDigestMethod(certDigestDom, digestAlgorithm);
+		incorporateDigestValue(certDigestDom, digestAlgorithm, token);
 	}
 
 	/**
-	 * Incorporates the certificate's references as a child of the given parent node. The first element of the
-	 * {@code X509Certificate} {@code List} MUST be the
-	 * signing certificate.
+	 * This method creates the ds:DigestMethod DOM object.
 	 *
-	 * @param signingCertificateDom
-	 *            DOM parent element
-	 * @param certificates
-	 *            {@code List} of the certificates to be incorporated
+	 * <pre>
+	 * {@code
+	 * 	   <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            the parent element
+	 * @param digestAlgorithm
+	 *            the digest algorithm to use
 	 */
-	protected void incorporateCertificateRef(final Element signingCertificateDom, final Set<CertificateToken> certificates) {
-		for (final CertificateToken certificate : certificates) {
-			final Element certDom = incorporateCert(signingCertificateDom, certificate);
-			incorporateIssuerV1(certDom, certificate);
+	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
+		Element digestMethodDom;
+		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+			digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), XAdES111Element.DIGEST_METHOD);
+		} else {
+			digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
 		}
+		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
+	}
+
+	/**
+	 * This method creates the ds:DigestValue DOM object.
+	 *
+	 * <pre>
+	 * {@code
+	 * 	   <ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            the parent element
+	 * @param digestAlgorithm
+	 *            the digest algorithm to use
+	 * @param token
+	 *            {@link Token} to compute Digest from
+	 */
+	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, Token token) {
+		DSSNamespace namespace = XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri()) ?
+				getXadesNamespace() : getXmldsigNamespace();
+		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Digest value for the token with Id [{}] --> {}", token.getDSSIdAsString(), base64EncodedDigestBytes);
+		}
+		DSSXMLUtils.incorporateDigestValue(parentDom, base64EncodedDigestBytes, namespace);
 	}
 
 	/**
@@ -227,24 +203,23 @@ public abstract class XAdESBuilder {
 	 *            the parent element
 	 * @param certificate
 	 *            the certificate to be added
+	 * @param digestAlgorithm
+	 *            {@link DigestAlgorithm} to use
 	 * @return {@link Element}
 	 */
-	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
+	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate,
+									  DigestAlgorithm digestAlgorithm) {
+
 		final Element certDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCert());
 
-		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, getXadesNamespace(), getCurrentXAdESElements().getElementCertDigest());
+		incorporateCertDigest(certDom, digestAlgorithm, certificate);
 
-		final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
-	
-		Element digestMethodDom = null;
-		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
-			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, getXadesNamespace(), XAdES111Element.DIGEST_METHOD);
+		if (params.isEn319132()) {
+			incorporateIssuerV2(certDom, certificate);
 		} else {
-			digestMethodDom = DomUtils.addElement(documentDom, certDigestDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
+			incorporateIssuerV1(certDom, certificate);
 		}
-		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signingCertificateDigestMethod.getUri());
-		
-		incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, certificate);
+
 		return certDom;
 	}
 
@@ -256,7 +231,6 @@ public abstract class XAdESBuilder {
 	 */
 	protected void incorporateIssuerV1(final Element parentDom, final CertificateToken certificate) {
 		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerial());
-
 		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, getXmldsigNamespace(), XMLDSigElement.X509_ISSUER_NAME);
 				
 		final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
@@ -328,7 +302,10 @@ public abstract class XAdESBuilder {
 		inMemoryDocument.setMimeType(MimeType.XML);
 		return inMemoryDocument;
 	}
-	
+
+	/**
+	 * This method is used to align children indents
+	 */
 	protected abstract void alignNodes();
 	
 	/**
@@ -372,7 +349,7 @@ public abstract class XAdESBuilder {
 		} else if (XAdESNamespaces.XADES_111.getUri().equals(xadesURI)) {
 			return XAdES111Element.values()[0];
 		}
-		throw new DSSException("Unsupported URI : " + xadesURI);
+		throw new IllegalArgumentException("Unsupported URI : " + xadesURI);
 	}
 
 	/**
@@ -389,7 +366,7 @@ public abstract class XAdESBuilder {
 		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_111.getUri(), xadesURI)) {
 			return new XAdES111Paths();
 		} else {
-			throw new DSSException("Unsupported URI : " + xadesURI);
+			throw new IllegalArgumentException("Unsupported URI : " + xadesURI);
 		}
 	}
 	

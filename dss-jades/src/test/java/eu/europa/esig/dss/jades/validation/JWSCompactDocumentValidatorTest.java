@@ -21,22 +21,29 @@
 package eu.europa.esig.dss.jades.validation;
 
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.test.validation.AbstractTestValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
+public class JWSCompactDocumentValidatorTest extends AbstractTestValidator {
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-
-public class JWSCompactDocumentValidatorTest {
+	private static final DSSDocument JWS_SIGNATURE = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA.2yUt5UtfsRK1pnN0KTTv7gzHTxwDqDz2OkFSqlbQ40A".getBytes());
 
 	@Test
 	public void test() {
 		
 		JWSCompactDocumentValidator validator = new JWSCompactDocumentValidator();
 
-		DSSDocument jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA.2yUt5UtfsRK1pnN0KTTv7gzHTxwDqDz2OkFSqlbQ40A".getBytes());
+		DSSDocument jws = JWS_SIGNATURE;
 		assertTrue(validator.isSupported(jws));
 		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA".getBytes());
 		assertTrue(validator.isSupported(jws));
@@ -51,4 +58,40 @@ public class JWSCompactDocumentValidatorTest {
 		assertFalse(validator.isSupported(wrong));
 	}
 	
+	@Override
+	protected SignedDocumentValidator initEmptyValidator() {
+		return new JWSCompactDocumentValidator();
+	}
+
+	@Override
+	protected SignedDocumentValidator initValidator(DSSDocument document) {
+		return new JWSCompactDocumentValidator(document);
+	}
+
+	@Override
+	protected List<DSSDocument> getValidDocuments() {
+		List<DSSDocument> documents = new ArrayList<>();
+		documents.add(JWS_SIGNATURE);
+		documents.add(new FileDocument("src/test/resources/validation/jades-level-b-full-type.json"));
+		documents.add(new FileDocument("src/test/resources/validation/jades-with-asn1policy.json"));
+		documents.add(new FileDocument("src/test/resources/validation/jades-with-certified.json"));
+		return documents;
+	}
+
+	@Override
+	protected DSSDocument getMalformedDocument() {
+		return new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA..2yUt5UtfsRK1pnN0KTTv7gzHTxwDqDz2OkFSqlbQ40A".getBytes());
+	}
+
+	@Override
+	protected DSSDocument getOtherTypeDocument() {
+		return new FileDocument("src/test/resources/validation/jades-with-counter-signature.json");
+	}
+
+	@Override
+	protected DSSDocument getNoSignatureDocument() {
+		// not applicable
+		return null;
+	}
+
 }

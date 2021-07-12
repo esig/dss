@@ -25,7 +25,12 @@ package eu.europa.esig.dss.tsl.cache;
  *
  */
 public enum CacheType {
-	
-	DOWNLOAD, PARSING, VALIDATION;
+
+	/** The download task cache */
+	DOWNLOAD,
+	/** The parsing task cache */
+	PARSING,
+	/** The validation task cache */
+	VALIDATION;
 
 }

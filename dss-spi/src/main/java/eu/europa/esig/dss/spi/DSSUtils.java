@@ -21,15 +21,16 @@
 package eu.europa.esig.dss.spi;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.X520Attributes;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -80,6 +81,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -100,11 +102,11 @@ public final class DSSUtils {
 	/** Empty byte array */
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
+	/** The UTF-8 encoding name string */
+	public static final String UTF8_ENCODING = "UTF-8";
+
 	/** Default DateTime format */
 	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-	
-	/** The URN OID prefix (RFC 3061) */
-	public static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -264,9 +266,9 @@ public final class DSSUtils {
 	 * Loads a collection of certificates from a p7c source
 	 *
 	 * @param is {@link InputStream} p7c
-	 * @return a collection of {@link CertificateToken}s
+	 * @return a list of {@link CertificateToken}s
 	 */
-	public static Collection<CertificateToken> loadCertificateFromP7c(InputStream is) {
+	public static List<CertificateToken> loadCertificateFromP7c(InputStream is) {
 		return loadCertificates(is);
 	}
 
@@ -310,7 +312,7 @@ public final class DSSUtils {
 		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(input)) {
 			return loadCertificate(inputStream);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to create a CertificateToken from binaries : %s", e.getMessage()), e);
 		}
 	}
 
@@ -324,53 +326,6 @@ public final class DSSUtils {
 	public static CertificateToken loadCertificateFromBase64EncodedString(final String base64Encoded) {
 		final byte[] bytes = Utils.fromBase64(base64Encoded);
 		return loadCertificate(bytes);
-	}
-
-	/**
-	 * This method loads the potential issuer certificate(s) from the given locations (AIA).
-	 * 
-	 * @param cert
-	 *            certificate for which the issuer(s) should be loaded
-	 * @param loader
-	 *            the data loader to use
-	 * @return a list of potential issuers
-	 */
-	public static Collection<CertificateToken> loadPotentialIssuerCertificates(final CertificateToken cert, final DataLoader loader) {
-		List<String> urls = DSSASN1Utils.getCAAccessLocations(cert);
-
-		if (Utils.isCollectionEmpty(urls)) {
-			LOG.info("There is no AIA extension for certificate download.");
-			return Collections.emptyList();
-		}
-		if (loader == null) {
-			LOG.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : {})", urls);
-			return Collections.emptyList();
-		}
-
-		for (String url : urls) {
-			LOG.debug("Loading certificate(s) from {}", url);
-			byte[] bytes = null;
-			try {
-				bytes = loader.get(url);
-			} catch (Exception e) {
-				LOG.warn("Unable to download certificate from '{}': {}", url, e.getMessage());
-				continue;
-			}
-			if (Utils.isArrayNotEmpty(bytes)) {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
-				}
-				try (InputStream is = new ByteArrayInputStream(bytes)) {
-					return loadCertificates(is);
-				} catch (Exception e) {
-					LOG.warn("Unable to parse certificate(s) from AIA (url: {}) : {}", url, e.getMessage());
-				}
-			} else {
-				LOG.warn("Empty content from {}.", url);
-			}
-		}
-
-		return Collections.emptyList();
 	}
 
 	/**
@@ -421,7 +376,7 @@ public final class DSSUtils {
 			dos.write(data);
 			return dos.getDigest();
 		} catch (IOException e) {
-			throw new DSSException("Unable to compute digest : " + e.getMessage(), e);
+			throw new DSSException(String.format("Unable to compute digest : %s", e.getMessage()), e);
 		}
 	}
 
@@ -436,7 +391,7 @@ public final class DSSUtils {
 		try {
 			return digestAlgorithm.getMessageDigest();
 		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException("Unable to create a MessageDigest for algorithm " + digestAlgorithm, e);
+			throw new DSSException(String.format("Unable to create a MessageDigest for algorithm '%s'", digestAlgorithm), e);
 		}
 	}
 
@@ -480,7 +435,7 @@ public final class DSSUtils {
 			}
 			return messageDigest.digest();
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute digest : %s", e.getMessage()), e);
 		}
 	}
 
@@ -495,7 +450,7 @@ public final class DSSUtils {
 		try (InputStream is = document.openStream()) {
 			return digest(digestAlgorithm, is);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute digest : %s", e.getMessage()), e);
 		}
 	}
 
@@ -528,7 +483,7 @@ public final class DSSUtils {
 		try {
 			return openInputStream(file);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to read InputStream : %s", e.getMessage()), e);
 		}
 	}
 
@@ -554,10 +509,12 @@ public final class DSSUtils {
 	 * @return the file contents, never {@code null}
 	 */
 	public static byte[] toByteArray(final File file) {
+		Objects.requireNonNull(file, "The file cannot be null");
 		try (InputStream is = openInputStream(file)) {
 			return toByteArray(is);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to read content of file '%s'. Reason : %s",
+					file.toString(), e.getMessage()), e);
 		}
 	}
 
@@ -635,7 +592,8 @@ public final class DSSUtils {
 		try (InputStream is = document.openStream()) {
 			return toByteArray(is);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to read content of document with name '%s'. Reason : %s",
+					document.getName(), e.getMessage()), e);
 		}
 	}
 
@@ -651,7 +609,7 @@ public final class DSSUtils {
 		try {
 			return Utils.toByteArray(inputStream);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to read InputStream : %s", e.getMessage()), e);
 		}
 	}
 	
@@ -713,7 +671,7 @@ public final class DSSUtils {
 		try (InputStream is = new ByteArrayInputStream(bytes); OutputStream os = new FileOutputStream(file)) {
 			Utils.copy(is, os);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to save a file : %s", e.getMessage()), e);
 		}
 	}
 
@@ -727,7 +685,7 @@ public final class DSSUtils {
 	public static String getNormalizedString(final String str) {
 		String normalizedStr = str;
 		try {
-			normalizedStr = URLDecoder.decode(str, "UTF-8");
+			normalizedStr = URLDecoder.decode(str, UTF8_ENCODING);
 		} catch (UnsupportedEncodingException e) {
 			LOG.debug("Cannot decode fileName [{}]. Reason : {}", str, e.getMessage());
 		}
@@ -755,7 +713,7 @@ public final class DSSUtils {
 			dos.flush();
 			return "id-" + getMD5Digest(baos.toByteArray());
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute a deterministic Id : %s", e.getMessage()), e);
 		}
 	}
 
@@ -784,7 +742,7 @@ public final class DSSUtils {
 			dos.flush();
 			return "id-" + getMD5Digest(baos.toByteArray());
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to compute a deterministic Id for a counter-signature : %s", e.getMessage()), e);
 		}
 	}
 
@@ -921,14 +879,15 @@ public final class DSSUtils {
 
 
 	/**
-	 * Decodes URI to UTF-8
+	 * This method decodes an URI to be compliant with the RFC 3986 (see DSS-2411 for details)
 	 *
 	 * @param uri {@link String}
 	 * @return {@link String} UTF-8
 	 */
-	public static String decodeUrl(String uri) {
+	public static String decodeURI(String uri) {
 		try {
-			return URLDecoder.decode(uri, "UTF-8");
+			uri = uri.replace("+", "%2B"); // preserve '+' characters
+			return URLDecoder.decode(uri, UTF8_ENCODING);
 		} catch (UnsupportedEncodingException e) {
 			LOG.error("Unable to decode '{}' : {}", uri, e.getMessage(), e);
 		}
@@ -939,11 +898,11 @@ public final class DSSUtils {
 	 * Skip the defined {@code n} number of bytes from the {@code InputStream}
 	 * and validates success of the operation
 	 * @param is {@link InputStream} to skip bytes from
-	 * @param n {@code long} number bytes to skip
+	 * @param n {@code int} number bytes to skip
 	 * @return actual number of bytes have been skipped
      * @exception IllegalStateException in case of {@code InputStream} reading error 
 	 */
-	public static long skipAvailableBytes(InputStream is, long n) throws IllegalStateException {
+	public static long skipAvailableBytes(InputStream is, int n) throws IllegalStateException {
 		try {
 			long skipped = is.skip(n);
 			if (skipped != n) {
@@ -1014,6 +973,7 @@ public final class DSSUtils {
 	
 	/**
 	 * This method encodes an URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 *
 	 * @param fileURI the uri to be encoded
 	 * @return the encoded result
 	 */
@@ -1036,7 +996,7 @@ public final class DSSUtils {
 	 */
 	private static String encodePartURI(String uriPart) {
 		try {
-			return URLEncoder.encode(uriPart, "UTF-8").replace("+", "%20");
+			return URLEncoder.encode(uriPart, UTF8_ENCODING).replace("+", "%20");
 		} catch (Exception e) {
 			LOG.warn("Unable to encode uri '{}' : {}", uriPart, e.getMessage());
 			return uriPart;
@@ -1087,11 +1047,25 @@ public final class DSSUtils {
 	 */
 	public static String removeControlCharacters(String str) {
 		if (str != null) {
-			String cleanedString = str.replaceAll("[^\\P{Cntrl}]", "");
+			String cleanedString = str.replaceAll("[^\\P{Cntrl}]+", "");
 			if (!str.equals(cleanedString)) {
 				LOG.warn("The string [{}] contains illegal characters and was replaced to [{}]", str, cleanedString);
 			}
 			return cleanedString;
+		}
+		return null;
+	}
+
+	/**
+	 * Replaces all non-alphanumeric characters in the {@code str} by the {@code replacement}
+	 *
+	 * @param str {@link String} to replace non-alphanumeric characters in
+	 * @param replacement {@link String} to be used as a replacement
+	 * @return {@link String}
+	 */
+	public static String replaceAllNonAlphanumericCharacters(String str, String replacement) {
+		if (str != null) {
+			return str.replaceAll("[^\\p{L}\\p{Nd}]+", replacement);
 		}
 		return null;
 	}
@@ -1106,19 +1080,6 @@ public final class DSSUtils {
 		return id != null && id.matches("^(?i)urn:oid:.*$");
 	}
 
-	/**
-	 * Returns a URN URI generated from the given OID:
-	 * 
-	 * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
-	 * 
-	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
-	 *
-	 * @param oid {@link String} to be converted to URN URI
-	 * @return URI based on the algorithm's OID
-	 */
-	public static String toUrnOid(String oid) {
-		return OID_NAMESPACE_PREFIX + oid;
-	}
 	
 	/**
 	 * Checks if the given {@code oid} is a valid OID
@@ -1146,25 +1107,6 @@ public final class DSSUtils {
 			return null;
 		}
 		return urnOid.substring(urnOid.lastIndexOf(':') + 1);
-	}
-	
-	/**
-	 * Returns URI if present, otherwise URN encoded OID (see RFC 3061)
-	 * Returns NULL if non of them is present
-	 * 
-	 * @param objectIdentifier {@link ObjectIdentifier} used to build an object of 'oid' type
-	 * @return {@link String} URI
-	 */
-	public static String getUriOrUrnOid(ObjectIdentifier objectIdentifier) {
-		/*
-		 * TS 119 182-1 : 5.4.1 The oId data type
-		 * If both an OID and a URI exist identifying one object, the URI value should be used in the id member.
-		 */
-		String uri = objectIdentifier.getUri();
-		if (uri == null && objectIdentifier.getOid() != null) {
-			uri = DSSUtils.toUrnOid(objectIdentifier.getOid());
-		}
-		return uri;
 	}
 	
 	/**
@@ -1197,7 +1139,7 @@ public final class DSSUtils {
 	 * @param leading {@link String} to remove
 	 * @return trimmed text {@link String}
 	 */
-	public static String stripFirstLeadingOccurance(String text, String leading) {
+	public static String stripFirstLeadingOccurrence(String text, String leading) {
 		if (text == null) {
 			return null;
 		}
@@ -1221,6 +1163,37 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Returns a document with the given {@code fileName} from the list of {@code documents}, when present
+	 *
+	 * @param documents a list of {@link DSSDocument}s
+	 * @param fileName {@link String} name of the document to extract
+	 * @return {@link DSSDocument} when found, NULL otherwise
+	 */
+	public static DSSDocument getDocumentWithName(List<DSSDocument> documents, String fileName) {
+		for (DSSDocument document : documents) {
+			if (fileName.equals(document.getName())) {
+				return document;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the last document in the alphabetical ascendant order
+	 *
+	 * @param documents a list of {@link DSSDocument}s
+	 * @return {@link DSSDocument}
+	 */
+	public static DSSDocument getDocumentWithLastName(List<DSSDocument> documents) {
+		if (Utils.isCollectionNotEmpty(documents)) {
+			List<String> documentNames = DSSUtils.getDocumentNames(documents);
+			Collections.sort(documentNames);
+			return DSSUtils.getDocumentWithName(documents, documentNames.get(documentNames.size() - 1));
+		}
+		return null;
+	}
+
+	/**
 	 * Adds all objects from {@code toAddCollection} into {@code currentCollection} without duplicates
 	 *
 	 * @param currentCollection a collection to enrich
@@ -1233,6 +1206,73 @@ public final class DSSUtils {
 				currentCollection.add(object);
 			}
 		}
+	}
+
+	/**
+	 * This method ensures the {@code SignatureValue} has an expected format and converts it when required
+	 *
+	 * @param expectedAlgorithm {@link SignatureAlgorithm} the target SignatureAlgorithm
+	 * @param signatureValue {@link SignatureValue} the obtained SignatureValue
+	 * @return {@link SignatureValue} with the target {@link SignatureAlgorithm}
+	 */
+	public static SignatureValue convertECSignatureValue(SignatureAlgorithm expectedAlgorithm,
+														 SignatureValue signatureValue)   {
+		SignatureValue newSignatureValue = new SignatureValue();
+		newSignatureValue.setAlgorithm(expectedAlgorithm);
+
+		byte[] signatureValueBinaries;
+		final EncryptionAlgorithm expectedEncryptionAlgorithm = expectedAlgorithm.getEncryptionAlgorithm();
+		final EncryptionAlgorithm signatureEncryptionAlgorithm = signatureValue.getAlgorithm().getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.ECDSA.equals(expectedEncryptionAlgorithm) &&
+				EncryptionAlgorithm.PLAIN_ECDSA.equals(signatureEncryptionAlgorithm)) {
+			signatureValueBinaries = DSSASN1Utils.toStandardDSASignatureValue(signatureValue.getValue());
+
+		} else if (EncryptionAlgorithm.PLAIN_ECDSA.equals(expectedEncryptionAlgorithm) &&
+				EncryptionAlgorithm.ECDSA.equals(signatureEncryptionAlgorithm)) {
+			signatureValueBinaries = DSSASN1Utils.toPlainDSASignatureValue(signatureValue.getValue());
+
+		} else {
+			throw new DSSException(String.format("Not supported conversion from SignatureAlgorithm '%s' defined within SignatureValue " +
+					"to the target algorithm '%s'", signatureValue.getAlgorithm(), expectedAlgorithm));
+		}
+		newSignatureValue.setValue(signatureValueBinaries);
+		return newSignatureValue;
+	}
+
+	/**
+	 * This method creates a user-friendly representation of SPUserNotice signature policy qualifier
+	 *
+	 * @param organization {@link String}
+	 * @param noticeNumbers a list of {@link Number}s
+	 * @param explicitText {@link String}
+	 * @param <N> {@link Number}
+	 * @return {@link String}
+	 */
+	public static <N extends Number> String getSPUserNoticeString(String organization, List<N> noticeNumbers, String explicitText) {
+		StringBuilder spUserNoticeStringBuilder = new StringBuilder();
+		if (Utils.isStringNotEmpty(organization)) {
+			spUserNoticeStringBuilder.append(organization);
+		}
+		if (Utils.isCollectionNotEmpty(noticeNumbers)) {
+			if (spUserNoticeStringBuilder.length() != 0) {
+				spUserNoticeStringBuilder.append("; ");
+			}
+			Iterator<N> iterator = noticeNumbers.iterator();
+			while (iterator.hasNext()) {
+				N number = iterator.next();
+				spUserNoticeStringBuilder.append(number);
+				if (iterator.hasNext()) {
+					spUserNoticeStringBuilder.append(", ");
+				}
+			}
+		}
+		if (Utils.isStringNotEmpty(explicitText)) {
+			if (spUserNoticeStringBuilder.length() != 0) {
+				spUserNoticeStringBuilder.append("; ");
+			}
+			spUserNoticeStringBuilder.append(explicitText);
+		}
+		return spUserNoticeStringBuilder.toString();
 	}
 
 }

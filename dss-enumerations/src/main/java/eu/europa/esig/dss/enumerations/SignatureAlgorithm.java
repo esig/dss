@@ -36,145 +36,224 @@ import java.util.Objects;
  */
 public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 
+	/** RSA without digest algorithm */
 	RSA_RAW(EncryptionAlgorithm.RSA, null),
-	
+
+	/** RSA with SHA-1 */
 	RSA_SHA1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
 
+	/** RSA with SHA-224 */
 	RSA_SHA224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224),
 
+	/** RSA with SHA-256 */
 	RSA_SHA256(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256),
 
+	/** RSA with SHA-384 */
 	RSA_SHA384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384),
 
+	/** RSA with SHA-512 */
 	RSA_SHA512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512),
 
+	/** RSA with SHA3-224 */
 	RSA_SHA3_224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_224),
 
+	/** RSA with SHA3-256 */
 	RSA_SHA3_256(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_256),
 
+	/** RSA with SHA3-384 */
 	RSA_SHA3_384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_384),
 
+	/** RSA with SHA3-512 */
 	RSA_SHA3_512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_512),
-	
+
+	/** RSA with MGF1 without digest algorithm */
 	RSA_SSA_PSS_RAW_MGF1(EncryptionAlgorithm.RSA, null, MaskGenerationFunction.MGF1),
 
+	/** RSA with MGF1 with SHA-1 */
 	RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1),
 
+	/** RSA with MGF1 with SHA-224 */
 	RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1),
 
+	/** RSA with MGF1 with SHA-256 */
 	RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1),
 
+	/** RSA with MGF1 with SHA-384 */
 	RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1),
 
+	/** RSA with MGF1 with SHA-512 */
 	RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1),
 
+	/** RSA with MGF1 with SHA3-224 */
 	RSA_SSA_PSS_SHA3_224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_224, MaskGenerationFunction.MGF1),
 
+	/** RSA with MGF1 with SHA3-256 */
 	RSA_SSA_PSS_SHA3_256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_256, MaskGenerationFunction.MGF1),
 
+	/** RSA with MGF1 with SHA3-384 */
 	RSA_SSA_PSS_SHA3_384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_384, MaskGenerationFunction.MGF1),
 
+	/** RSA with MGF1 with SHA3-512 */
 	RSA_SSA_PSS_SHA3_512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_512, MaskGenerationFunction.MGF1),
 
+	/** RSA with RIPEMD160 */
 	RSA_RIPEMD160(EncryptionAlgorithm.RSA, DigestAlgorithm.RIPEMD160),
 
-	RSA_MD5(EncryptionAlgorithm.RSA, DigestAlgorithm.MD5),
-
+	/** RSA with MD2 */
 	RSA_MD2(EncryptionAlgorithm.RSA, DigestAlgorithm.MD2),
 
+	/** RSA with MD5 */
+	RSA_MD5(EncryptionAlgorithm.RSA, DigestAlgorithm.MD5),
+
+	/** ECDSA without digest algorithm */
 	ECDSA_RAW(EncryptionAlgorithm.ECDSA, null),
-	
+
+	/** ECDSA with SHA-1 */
 	ECDSA_SHA1(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1),
 
+	/** ECDSA with SHA-224 */
 	ECDSA_SHA224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224),
 
+	/** ECDSA with SHA-256 */
 	ECDSA_SHA256(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA256),
 
+	/** ECDSA with SHA-384 */
 	ECDSA_SHA384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384),
 
+	/** ECDSA with SHA-512 */
 	ECDSA_SHA512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA512),
 
+	/** ECDSA with SHA3-224 */
 	ECDSA_SHA3_224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_224),
 
+	/** ECDSA with SHA3-256 */
 	ECDSA_SHA3_256(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_256),
 
+	/** ECDSA with SHA3-384 */
 	ECDSA_SHA3_384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_384),
 
+	/** ECDSA with SHA3-512 */
 	ECDSA_SHA3_512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_512),
 
+	/** ECDSA with RIPEMD160 */
 	ECDSA_RIPEMD160(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160),
 
+	/** PLAIN-ECDSA with SHA-1 */
 	PLAIN_ECDSA_SHA1(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA1),
 
+	/** PLAIN-ECDSA with SHA-224 */
 	PLAIN_ECDSA_SHA224(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA224),
 
+	/** PLAIN-ECDSA with SHA-256 */
 	PLAIN_ECDSA_SHA256(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256),
 
+	/** PLAIN-ECDSA with SHA-384 */
 	PLAIN_ECDSA_SHA384(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA384),
 
+	/** PLAIN-ECDSA with SHA-512 */
 	PLAIN_ECDSA_SHA512(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA512),
 
+	/** PLAIN-ECDSA with SHA3-224 */
+	PLAIN_ECDSA_SHA3_224(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA3_224),
+
+	/** PLAIN-ECDSA with SHA3-256 */
+	PLAIN_ECDSA_SHA3_256(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA3_256),
+
+	/** PLAIN-ECDSA with SHA3-384 */
+	PLAIN_ECDSA_SHA3_384(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA3_384),
+
+	/** PLAIN-ECDSA with SHA3-512 */
+	PLAIN_ECDSA_SHA3_512(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA3_512),
+
+	/** PLAIN-ECDSA with RIPEMD160 */
 	PLAIN_ECDSA_RIPEMD160(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.RIPEMD160),
 
+	/** DSA without digest algorithm */
 	DSA_RAW(EncryptionAlgorithm.DSA, null),
-	
+
+	/** DSA with SHA-1 */
 	DSA_SHA1(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA1),
 
+	/** DSA with SHA-224 */
 	DSA_SHA224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA224),
 
+	/** DSA with SHA-256 */
 	DSA_SHA256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA256),
 
+	/** DSA with SHA-384 */
 	DSA_SHA384(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA384),
 
+	/** DSA with SHA-512 */
 	DSA_SHA512(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA512),
 
+	/** DSA with SHA3-224 */
 	DSA_SHA3_224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_224),
 
+	/** DSA with SHA3-256 */
 	DSA_SHA3_256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_256),
 
+	/** DSA with SHA3-384 */
 	DSA_SHA3_384(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_384),
 
+	/** DSA with SHA3-512 */
 	DSA_SHA3_512(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_512),
 
+	/** HMAC with SHA-1 */
 	HMAC_SHA1(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA1),
 
+	/** HMAC with SHA-224 */
 	HMAC_SHA224(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA224),
 
+	/** HMAC with SHA-256 */
 	HMAC_SHA256(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA256),
 
+	/** HMAC with SHA-384 */
 	HMAC_SHA384(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA384),
 
+	/** HMAC with SHA-512 */
 	HMAC_SHA512(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA512),
 
+	/** HMAC with SHA3-224 */
 	HMAC_SHA3_224(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_224),
 
+	/** HMAC with SHA3-256 */
 	HMAC_SHA3_256(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_256),
 
+	/** HMAC with SHA3-384 */
 	HMAC_SHA3_384(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_384),
 
+	/** HMAC with SHA3-512 */
 	HMAC_SHA3_512(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_512),
 
+	/** HMAC with RIPEMD160 */
 	HMAC_RIPEMD160(EncryptionAlgorithm.HMAC, DigestAlgorithm.RIPEMD160),
 
 	// https://tools.ietf.org/html/rfc8419#section-3.1
+	/** EDDSA with SHA512 */
 	ED25519(EncryptionAlgorithm.EDDSA, DigestAlgorithm.SHA512),
 
+	/** EDDSA with SHAKE256-512 */
 	ED448(EncryptionAlgorithm.EDDSA, DigestAlgorithm.SHAKE256_512);
 
+	/** The encryption algorithm */
 	private final EncryptionAlgorithm encryptionAlgo;
 
+	/** The digest algorithm */
 	private final DigestAlgorithm digestAlgo;
 
+	/** The mask generation function */
 	private final MaskGenerationFunction maskGenerationFunction;
-	
-	/* RFC 3061 */
+
+	/** OID URI (RFC 3061) */
 	private static final String OID_NAMESPACE_PREFIX = "urn:oid:";
-	
+
+	/** Unsupported algorithm error string */
 	private static final String UNSUPPORTED_ALGO_MSG = "Unsupported algorithm: %s";
 
-	// http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
+	/** Map of XML algorithm URI with the signature algorithms (http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/) */
 	private static final Map<String, SignatureAlgorithm> XML_ALGORITHMS = registerXmlAlgorithms();
 
+	/** Map of signature algorithms with the XML URIs */
 	private static final Map<SignatureAlgorithm, String> XML_ALGORITHMS_FOR_KEY = registerXmlAlgorithmsForKey();
 
 	private static Map<String, SignatureAlgorithm> registerXmlAlgorithms() {
@@ -231,12 +310,15 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		Map<SignatureAlgorithm, String> xmlAlgorithms = new EnumMap<>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : XML_ALGORITHMS.entrySet()) {
 			xmlAlgorithms.put(entry.getValue(), entry.getKey());
+			ensurePlainECDSA(xmlAlgorithms, entry.getValue(), entry.getKey());
 		}
 		return xmlAlgorithms;
 	}
 
+	/** Map of signature algorithm OIDs */
 	private static final Map<String, SignatureAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
 
+	/** Map of signature algorithm OIDs by algorithms */
 	private static final Map<SignatureAlgorithm, String> OID_ALGORITHMS_FOR_KEY = registerOidAlgorithmsForKey();
 
 	private static Map<String, SignatureAlgorithm> registerOIDAlgorithms() {
@@ -294,6 +376,11 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.5", PLAIN_ECDSA_SHA512);
 		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.6", PLAIN_ECDSA_RIPEMD160);
 
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.8", PLAIN_ECDSA_SHA3_224);
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.9", PLAIN_ECDSA_SHA3_256);
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.10", PLAIN_ECDSA_SHA3_384);
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.11", PLAIN_ECDSA_SHA3_512);
+
 		oidAlgorithms.put("1.3.101.112", ED25519);
 		oidAlgorithms.put("1.3.101.113", ED448);
 
@@ -334,8 +421,10 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		return oidAlgorithms;
 	}
 
+	/** Map of JAVA signature algorithm names */
 	private static final Map<String, SignatureAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
 
+	/** Map of JAVA signature algorithm names by algorithm */
 	private static final Map<SignatureAlgorithm, String> JAVA_ALGORITHMS_FOR_KEY = registerJavaAlgorithmsForKey();
 
 	private static Map<String, SignatureAlgorithm> registerJavaAlgorithms() {
@@ -382,6 +471,11 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		javaAlgorithms.put("SHA512withECDSA", ECDSA_SHA512);
 		javaAlgorithms.put("RIPEMD160withECDSA", ECDSA_RIPEMD160);
 
+		javaAlgorithms.put("SHA3-224withECDSA", ECDSA_SHA3_224);
+		javaAlgorithms.put("SHA3-256withECDSA", ECDSA_SHA3_256);
+		javaAlgorithms.put("SHA3-384withECDSA", ECDSA_SHA3_384);
+		javaAlgorithms.put("SHA3-512withECDSA", ECDSA_SHA3_512);
+
 		javaAlgorithms.put("SHA1withPLAIN-ECDSA", PLAIN_ECDSA_SHA1);
 		javaAlgorithms.put("SHA224withPLAIN-ECDSA", PLAIN_ECDSA_SHA224);
 		javaAlgorithms.put("SHA256withPLAIN-ECDSA", PLAIN_ECDSA_SHA256);
@@ -389,10 +483,10 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		javaAlgorithms.put("SHA512withPLAIN-ECDSA", PLAIN_ECDSA_SHA512);
 		javaAlgorithms.put("RIPEMD160withPLAIN-ECDSA", PLAIN_ECDSA_RIPEMD160);
 
-		javaAlgorithms.put("SHA3-224withECDSA", ECDSA_SHA3_224);
-		javaAlgorithms.put("SHA3-256withECDSA", ECDSA_SHA3_256);
-		javaAlgorithms.put("SHA3-384withECDSA", ECDSA_SHA3_384);
-		javaAlgorithms.put("SHA3-512withECDSA", ECDSA_SHA3_512);
+		javaAlgorithms.put("SHA3-224withPLAIN-ECDSA", PLAIN_ECDSA_SHA3_224);
+		javaAlgorithms.put("SHA3-256withPLAIN-ECDSA", PLAIN_ECDSA_SHA3_256);
+		javaAlgorithms.put("SHA3-384withPLAIN-ECDSA", PLAIN_ECDSA_SHA3_384);
+		javaAlgorithms.put("SHA3-512withPLAIN-ECDSA", PLAIN_ECDSA_SHA3_512);
 
 		javaAlgorithms.put("Ed25519", ED25519);
 		javaAlgorithms.put("Ed448", ED448);
@@ -433,8 +527,10 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		return javaAlgorithms;
 	}
 
+	/** Map of JWA signature algorithm URIs */
 	private static final Map<String, SignatureAlgorithm> JWA_ALGORITHMS = registerJsonWebAlgorithms();
 
+	/** Map of JWA signature algorithm URIs by algorithm */
 	private static final Map<SignatureAlgorithm, String> JWA_ALGORITHMS_FOR_KEY = registerJsonWebAlgorithmsForKey();
 	
 	private static Map<String, SignatureAlgorithm> registerJsonWebAlgorithms() {
@@ -465,10 +561,17 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		final Map<SignatureAlgorithm, String> jsonWebAlgorithms = new EnumMap<>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : JWA_ALGORITHMS.entrySet()) {
 			jsonWebAlgorithms.put(entry.getValue(), entry.getKey());
+			ensurePlainECDSA(jsonWebAlgorithms, entry.getValue(), entry.getKey());
 		}
 		return jsonWebAlgorithms;
 	}
 
+	/**
+	 * Returns a corresponding {@code SignatureAlgorithm} by the XML URI string
+	 *
+	 * @param xmlName {@link String} XML URI
+	 * @return {@link SignatureAlgorithm}
+	 */
 	public static SignatureAlgorithm forXML(final String xmlName) {
 		final SignatureAlgorithm algorithm = XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
@@ -494,10 +597,23 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		return algorithm;
 	}
 
+	/**
+	 * Returns a corresponding {@code SignatureAlgorithm} by the OID
+	 *
+	 * @param oid {@link String}
+	 * @return {@link SignatureAlgorithm}
+	 */
 	public static SignatureAlgorithm forOID(final String oid) {
 		return forOidAndParams(oid, null);
 	}
 
+	/**
+	 * Returns a corresponding {@code SignatureAlgorithm} by the OID and signature algorithm parameters
+	 *
+	 * @param oid {@link String}
+	 * @param sigAlgParams a byte array of signature algorithm parameters
+	 * @return {@link SignatureAlgorithm}
+	 */
 	public static SignatureAlgorithm forOidAndParams(String oid, byte[] sigAlgParams) {
 		SignatureAlgorithm algorithm = OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
@@ -518,13 +634,25 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 
 		return algorithm;
 	}
-	
+
+	/**
+	 * Returns a corresponding {@code SignatureAlgorithm} by the JWA name
+	 *
+	 * @param jsonWebAlgorithm {@link String}
+	 * @return {@link SignatureAlgorithm}
+	 */
 	public static SignatureAlgorithm forJWA(String jsonWebAlgorithm) {
 		final SignatureAlgorithm algorithm = JWA_ALGORITHMS.get(jsonWebAlgorithm);
 		if (algorithm == null) {
 			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGO_MSG, jsonWebAlgorithm));
 		}
 		return algorithm;
+	}
+
+	private static void ensurePlainECDSA(Map<SignatureAlgorithm, String> algMap, SignatureAlgorithm signatureAlgorithm, String key) {
+		if (signatureAlgorithm != null && EncryptionAlgorithm.ECDSA.equals(signatureAlgorithm.getEncryptionAlgorithm())) {
+			algMap.put(SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, signatureAlgorithm.getDigestAlgorithm()), key);
+		}
 	}
 
 	/**
@@ -723,6 +851,25 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 	 */
 	public String getJWAId() {
 		return JWA_ALGORITHMS_FOR_KEY.get(this);
+	}
+
+	/**
+	 * Returns user-friendly name for the signature algorithm
+	 *
+	 * @return {@link String} name
+	 */
+	public String getName() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(encryptionAlgo.getName());
+		if (digestAlgo != null) {
+			stringBuilder.append(" with ");
+			stringBuilder.append(digestAlgo.getName());
+		}
+		if (maskGenerationFunction != null) {
+			stringBuilder.append(" and ");
+			stringBuilder.append(maskGenerationFunction.getName());
+		}
+		return stringBuilder.toString();
 	}
 
 }

@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.model.DSSException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 
 /**
  * This class holds the list of the candidates for the signing certificate of the main signature.
@@ -60,20 +59,6 @@ public class CandidatesForSigningCertificate implements Serializable {
 	 */
 	public boolean isEmpty() {
 		return certificateValidityList.isEmpty();
-	}
-
-	/**
-	 * @return the list of candidates for the signing certificate.
-	 */
-	public List<CertificateToken> getSigningCertificateTokenList() {
-		final List<CertificateToken> signCertificateTokenList = new ArrayList<>();
-		for (final CertificateValidity certificateValidity : certificateValidityList) {
-			final CertificateToken certificateToken = certificateValidity.getCertificateToken();
-			if (certificateToken != null) {
-				signCertificateTokenList.add(certificateToken);
-			}
-		}
-		return signCertificateTokenList;
 	}
 
 	/**

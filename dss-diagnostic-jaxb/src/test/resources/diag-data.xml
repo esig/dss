@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>SK_MIN-P-EN-B-LT-V-3.pdf</DocumentName>
-    <ValidationDate>2020-03-11T09:53:25</ValidationDate>
+    <ValidationDate>2020-03-11T09:53:25Z</ValidationDate>
     <Signatures>
         <Signature Id="S-66E2E6A060AF9318230EA29AE2CC56E0FDCAA4A6CC8A2ADD39738F1EFBAE0F76">
             <SignatureFilename>SK_MIN-P-EN-B-LT-V-3.pdf</SignatureFilename>
-            <ClaimedSigningTime>2019-05-15T08:17:51</ClaimedSigningTime>
+            <ClaimedSigningTime>2019-05-15T08:17:51Z</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -117,8 +117,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2023-06-10T12:43:39</NotAfter>
-            <NotBefore>2018-06-11T12:43:39</NotBefore>
+            <NotAfter>2023-06-10T12:43:39Z</NotAfter>
+            <NotBefore>2018-06-11T12:43:39Z</NotBefore>
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-38EF9A0929BD4B939BDB2C087A575931BD9FFDA730C675C339F9D95730031F92</EntityKey>
@@ -149,8 +149,6 @@
                 <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_ocsp_snca.pdf">1.3.158.36061701.0.1.5</certificatePolicy>
                 <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -169,7 +167,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://ep.nbu.gov.sk/kca/crls3/kcanbusr3.crl</ServiceSupplyPoint>
                                 <ServiceSupplyPoint>http://ocsp.nbu.gov.sk/ocsp/valid</ServiceSupplyPoint>
@@ -193,7 +191,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-07-31T08:00:00</StartDate>
+                            <StartDate>2019-07-31T08:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -206,8 +204,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-10-19T08:00:00</StartDate>
-                            <EndDate>2019-07-31T08:00:00</EndDate>
+                            <StartDate>2018-10-19T08:00:00Z</StartDate>
+                            <EndDate>2019-07-31T08:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -233,7 +231,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-07-31T08:00:00</StartDate>
+                            <StartDate>2019-07-31T08:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -254,8 +252,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-12-18T00:00:00</StartDate>
-                            <EndDate>2019-07-31T08:00:00</EndDate>
+                            <StartDate>2017-12-18T00:00:00Z</StartDate>
+                            <EndDate>2019-07-31T08:00:00Z</EndDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -296,8 +294,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2021-07-03T07:43:30</NotAfter>
-            <NotBefore>2018-07-04T07:43:30</NotBefore>
+            <NotAfter>2021-07-03T07:43:30Z</NotAfter>
+            <NotBefore>2018-07-04T07:43:30Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3CF95234A0190CD33AB408C7FC243CA31C3DFB7722D150B09207DC4A7EBF33A0</EntityKey>
@@ -325,11 +323,6 @@
                 <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
                 <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_snca.pdf">1.3.158.36061701.0.1.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -348,7 +341,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                             <ServiceSupplyPoints>
@@ -375,7 +368,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-07-31T08:00:00</StartDate>
+                            <StartDate>2019-07-31T08:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -396,8 +389,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-12-18T00:00:00</StartDate>
-                            <EndDate>2019-07-31T08:00:00</EndDate>
+                            <StartDate>2017-12-18T00:00:00Z</StartDate>
+                            <EndDate>2019-07-31T08:00:00Z</EndDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -448,8 +441,8 @@
                 <Source>TIMESTAMP</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2023-06-10T13:18:44</NotAfter>
-            <NotBefore>2018-06-11T13:18:44</NotBefore>
+            <NotAfter>2023-06-10T13:18:44Z</NotAfter>
+            <NotBefore>2018-06-11T13:18:44Z</NotBefore>
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4329A61FF2ADF1F4D135B25F8CC988B7998C5B8396353B8D55192F78BAB3BAF8</EntityKey>
@@ -478,8 +471,6 @@
                 <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
                 <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_tsa_snca.pdf">1.3.158.36061701.0.1.4</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -498,7 +489,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                             <ServiceSupplyPoints>
@@ -524,7 +515,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-07-31T08:00:00</StartDate>
+                            <StartDate>2019-07-31T08:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                         </TrustedService>
@@ -534,8 +525,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-12-04T12:00:00</StartDate>
-                            <EndDate>2019-07-31T08:00:00</EndDate>
+                            <StartDate>2018-12-04T12:00:00Z</StartDate>
+                            <EndDate>2019-07-31T08:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                         </TrustedService>
@@ -558,7 +549,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-07-31T08:00:00</StartDate>
+                            <StartDate>2019-07-31T08:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -579,8 +570,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-12-18T00:00:00</StartDate>
-                            <EndDate>2019-07-31T08:00:00</EndDate>
+                            <StartDate>2017-12-18T00:00:00Z</StartDate>
+                            <EndDate>2019-07-31T08:00:00Z</EndDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -622,8 +613,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2023-06-10T13:05:04</NotAfter>
-            <NotBefore>2018-06-11T13:05:04</NotBefore>
+            <NotAfter>2023-06-10T13:05:04Z</NotAfter>
+            <NotBefore>2018-06-11T13:05:04Z</NotBefore>
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C727784E842E5158A2A849FEBD4988EB836122272E79C59FEA39EFE636690D6F</EntityKey>
@@ -654,8 +645,6 @@
                 <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_ocsp_snca.pdf">1.3.158.36061701.0.1.5</certificatePolicy>
                 <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -673,7 +662,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-07-31T08:00:00</StartDate>
+                            <StartDate>2019-07-31T08:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -686,8 +675,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2018-10-19T08:00:00</StartDate>
-                            <EndDate>2019-07-31T08:00:00</EndDate>
+                            <StartDate>2018-10-19T08:00:00Z</StartDate>
+                            <EndDate>2019-07-31T08:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -713,7 +702,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://ep.nbu.gov.sk/kca/crls3/kcanbusr3.crl</ServiceSupplyPoint>
                                 <ServiceSupplyPoint>http://ocsp.nbu.gov.sk/ocsp/valid</ServiceSupplyPoint>
@@ -738,7 +727,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-07-31T08:00:00</StartDate>
+                            <StartDate>2019-07-31T08:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -759,8 +748,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-12-18T00:00:00</StartDate>
-                            <EndDate>2019-07-31T08:00:00</EndDate>
+                            <StartDate>2017-12-18T00:00:00Z</StartDate>
+                            <EndDate>2019-07-31T08:00:00Z</EndDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -800,8 +789,8 @@
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2025-11-06T07:29:09</NotAfter>
-            <NotBefore>2009-11-06T09:59:39</NotBefore>
+            <NotAfter>2025-11-06T07:29:09Z</NotAfter>
+            <NotBefore>2009-11-06T09:59:39Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F</EntityKey>
@@ -824,8 +813,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -844,7 +831,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://ep.nbu.gov.sk/kca/crls3/kcanbusr3.crl</ServiceSupplyPoint>
                                 <ServiceSupplyPoint>http://ocsp.nbu.gov.sk/ocsp/valid</ServiceSupplyPoint>
@@ -857,8 +844,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
-                            <StartDate>2002-03-15T00:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2002-03-15T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -923,8 +910,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -943,7 +928,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://ep.nbu.gov.sk/kca/crls3/kcanbusr3.crl</ServiceSupplyPoint>
                                 <ServiceSupplyPoint>http://ocsp.nbu.gov.sk/ocsp/valid</ServiceSupplyPoint>
@@ -968,7 +953,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-07-31T08:00:00</StartDate>
+                            <StartDate>2019-07-31T08:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -989,8 +974,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-12-18T00:00:00</StartDate>
-                            <EndDate>2019-07-31T08:00:00</EndDate>
+                            <StartDate>2017-12-18T00:00:00Z</StartDate>
+                            <EndDate>2019-07-31T08:00:00Z</EndDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>

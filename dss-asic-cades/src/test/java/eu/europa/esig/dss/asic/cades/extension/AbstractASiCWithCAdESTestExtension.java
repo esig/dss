@@ -47,13 +47,14 @@ import org.bouncycastle.cms.CMSSignedData;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExtension<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
 
@@ -68,7 +69,7 @@ public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExt
 	}
 
 	@Override
-	protected DSSDocument getOriginalDocument() {
+	protected FileDocument getOriginalDocument() {
 		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".bin");
 		try (FileOutputStream fos = new FileOutputStream(originalDoc)) {
 			fos.write("Hello world!".getBytes());
@@ -140,7 +141,7 @@ public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExt
 	protected void checkSignaturePackaging(DSSDocument signatureDocument) {
 		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(signatureDocument);
 		assertTrue(cmsSignedData.isDetachedSignature());
-		assertTrue(cmsSignedData.getSignedContent() == null);
+		assertNull(cmsSignedData.getSignedContent());
 	}
 
 	@Override
@@ -195,7 +196,7 @@ public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExt
 				assertNotNull(signatureIdentifier);
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+                assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 			}
 		}
 	}

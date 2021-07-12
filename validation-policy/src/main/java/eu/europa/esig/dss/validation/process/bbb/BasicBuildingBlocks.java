@@ -23,17 +23,16 @@ package eu.europa.esig.dss.validation.process.bbb;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -179,26 +178,13 @@ public class BasicBuildingBlocks {
 		XmlConclusion finalConclusion = result.getConclusion();
 
 		XmlConclusion currentConclusion = constraintsAndConclusion.getConclusion();
-		List<XmlConstraint> constraints = constraintsAndConclusion.getConstraint();
-
 		if (!Indication.PASSED.equals(currentConclusion.getIndication())) {
 			finalConclusion.setIndication(currentConclusion.getIndication());
 			finalConclusion.setSubIndication(currentConclusion.getSubIndication());
 			finalConclusion.getErrors().addAll(currentConclusion.getErrors());
 		}
-
-		if (Utils.isCollectionNotEmpty(constraints)) {
-			for (XmlConstraint constraint : constraints) {
-				XmlName info = constraint.getInfo();
-				if (info != null) {
-					finalConclusion.getInfos().add(info);
-				}
-				XmlName warning = constraint.getWarning();
-				if (warning != null) {
-					finalConclusion.getWarnings().add(warning);
-				}
-			}
-		}
+		finalConclusion.getWarnings().addAll(currentConclusion.getWarnings());
+		finalConclusion.getInfos().addAll(currentConclusion.getInfos());
 	}
 
 	private XmlFC executeFormatChecking() {
@@ -268,17 +254,25 @@ public class BasicBuildingBlocks {
 	
 	private void addAdditionalInfo(XmlXCV xcv) {
 		for (XmlSubXCV subXCV : xcv.getSubXCV()) {
-			List<CertificateWrapper> crossCertificates = diagnosticData.getCrossCertificates(
-					diagnosticData.getUsedCertificateById(subXCV.getId()));
+			CertificateWrapper cert = diagnosticData.getUsedCertificateById(subXCV.getId());
+			List<CertificateWrapper> crossCertificates = diagnosticData.getCrossCertificates(cert);
 			if (Utils.isCollectionNotEmpty(crossCertificates)) {
 				subXCV.getCrossCertificates().addAll(getCertificateWrapperIds(crossCertificates));
 			}
-			
-			List<CertificateWrapper> equivalentCertificates = diagnosticData.getEquivalentCertificates(
-					diagnosticData.getUsedCertificateById(subXCV.getId()));
+			List<OrphanCertificateTokenWrapper> orphanCrossCertificates = diagnosticData.getOrphanCrossCertificates(cert);
+			if (Utils.isCollectionNotEmpty(orphanCrossCertificates)) {
+				subXCV.getCrossCertificates().addAll(getOrphanCertificateWrapperIds(orphanCrossCertificates));
+			}
+
+			List<CertificateWrapper> equivalentCertificates = diagnosticData.getEquivalentCertificates(cert);
 			equivalentCertificates.removeAll(crossCertificates);
 			if (Utils.isCollectionNotEmpty(equivalentCertificates)) {
 				subXCV.getEquivalentCertificates().addAll(getCertificateWrapperIds(equivalentCertificates));
+			}
+			List<OrphanCertificateTokenWrapper> orphanEquivalentCertificates = diagnosticData.getOrphanEquivalentCertificates(cert);
+			orphanEquivalentCertificates.removeAll(orphanCrossCertificates);
+			if (Utils.isCollectionNotEmpty(orphanEquivalentCertificates)) {
+				subXCV.getEquivalentCertificates().addAll(getOrphanCertificateWrapperIds(orphanEquivalentCertificates));
 			}
 		}
 	}
@@ -291,6 +285,16 @@ public class BasicBuildingBlocks {
 	 */
 	private static List<String> getCertificateWrapperIds(Collection<CertificateWrapper> tokens) {
 		return tokens.stream().map(TokenProxy::getId).collect(Collectors.toList());
+	}
+
+	/**
+	 * Returns a list of orphan token ids
+	 *
+	 * @param tokens a collection of tokens to get ids from
+	 * @return a list of {@link String} ids
+	 */
+	private static List<String> getOrphanCertificateWrapperIds(Collection<OrphanCertificateTokenWrapper> tokens) {
+		return tokens.stream().map(OrphanCertificateTokenWrapper::getId).collect(Collectors.toList());
 	}
 
 	private XmlSAV executeSignatureAcceptanceValidation() {

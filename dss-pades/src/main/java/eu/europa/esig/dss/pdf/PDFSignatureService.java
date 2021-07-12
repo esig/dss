@@ -24,6 +24,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 
 import java.util.List;
 
@@ -74,24 +76,24 @@ public interface PDFSignatureService {
 	 * 
 	 * @param document
 	 *            the document to be extended
-	 * @param callbacks
-	 *            the callbacks to retrieve the revocation data,...
+	 * @param validationDataForInclusion
+	 *            {@link ValidationDataContainer}
 	 * @return the pdf document with the added dss dictionary
 	 */
-	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks);
+	DSSDocument addDssDictionary(DSSDocument document, ValidationDataContainer validationDataForInclusion);
 
 	/**
 	 * This method adds the DSS dictionary (Baseline-LT)
 	 * 
 	 * @param document
 	 *            the document to be extended
-	 * @param callbacks
-	 *            the callbacks to retrieve the revocation data,...
+	 * @param validationDataForInclusion
+	 *            {@link ValidationDataContainer}
 	 * @param pwd
 	 *            the password protection used to create the encrypted document
 	 * @return the pdf document with the added dss dictionary
 	 */
-	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks, final String pwd);
+	DSSDocument addDssDictionary(DSSDocument document, ValidationDataContainer validationDataForInclusion, final String pwd);
 
 	/**
 	 * This method returns not signed signature-fields
@@ -136,5 +138,14 @@ public interface PDFSignatureService {
 	 * @return the pdf document with the new added signature field
 	 */
 	DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, final String pwd);
+
+	/**
+	 * Analyze the PDF revision and try to detect any modification (shadow attacks)
+	 *
+	 * @param document {@link DSSDocument} the document
+	 * @param signatures       the different signatures to analyse
+	 * @param pwd                 {@link String} password protection
+	 */
+	void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd);
 
 }

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,11 +38,16 @@ import java.util.concurrent.TimeoutException;
  */
 public class NativeHTTPDataLoader implements DataLoader {
 
+	private static final long serialVersionUID = 4075489539157157286L;
+
 	/**
 	 * Available HTTPMethods
 	 */
 	protected enum HttpMethod {
-		GET, POST
+		/** GET method */
+		GET,
+		/** POST method */
+		POST
 	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
@@ -73,9 +78,9 @@ public class NativeHTTPDataLoader implements DataLoader {
 			return timeout > 0 ? result.get(timeout, TimeUnit.MILLISECONDS) : result.get();
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new DSSException(e);
+			throw new DSSExternalResourceException(e);
 		} catch (ExecutionException | TimeoutException e) {
-			throw new DSSException(e);
+			throw new DSSExternalResourceException(e);
 		} finally {
 			executorService.shutdown();
 		}
@@ -88,13 +93,13 @@ public class NativeHTTPDataLoader implements DataLoader {
 			try {
 				final byte[] bytes = get(urlString);
 				if (bytes != null) {
-					return new DataAndUrl(bytes, urlString);
+					return new DataAndUrl(urlString, bytes);
 				}
 			} catch (Exception e) {
 				LOGGER.warn("Impossible to obtain data using {}", urlString, e);
 			}
 		}
-		throw new DSSException(String.format("Impossible to obtain data using with given urls %s", urlStrings));
+		throw new DSSExternalResourceException(String.format("No data have been obtained from urls : %s", urlStrings));
 	}
 
 	@Override
@@ -114,7 +119,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 
 	@Override
 	public void setContentType(String contentType) {
-		throw new DSSException("Not implemented");
+		throw new UnsupportedOperationException("Content type change is not supported by this implementation!");
 	}
 
 	/**

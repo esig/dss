@@ -58,7 +58,7 @@ public class DataToSignASiCEWithXAdESFromFiles extends AbstractDataToSignASiCEWi
 
 	@Override
 	public String getSignatureFilename() {
-		return getSignatureFileName(asicParameters, Collections.<DSSDocument> emptyList());
+		return getSignatureFileName(asicParameters, Collections.emptyList());
 	}
 
 	@Override

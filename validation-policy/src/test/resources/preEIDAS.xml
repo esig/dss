@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-P-CZ_ALIS-1.pdf</DocumentName>
-    <ValidationDate>2017-01-26T08:15:56</ValidationDate>
+    <ValidationDate>2017-01-26T08:15:56Z</ValidationDate>
     <Signatures>
         <Signature Id="id-d151d6ee3916eb4825f7a40631024f76e39d2024c65f563e2e2116aaffafe83a">
             <SignatureFilename>Signature-P-CZ_ALIS-1.pdf</SignatureFilename>
-            <ClaimedSigningTime>2016-04-27T09:16:13</ClaimedSigningTime>
+            <ClaimedSigningTime>2016-04-27T09:16:13Z</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
                 <DigestMatcher type="MESSAGE_DIGEST">
@@ -80,8 +80,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2016-05-23T10:44:21</NotAfter>
-            <NotBefore>2015-05-04T10:44:21</NotBefore>
+            <NotAfter>2016-05-23T10:44:21Z</NotAfter>
+            <NotBefore>2015-05-04T10:44:21Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-452027DB8ABA14CDD1F484A86227B8FD19B576181D01B47B892EF76A2C44881B</EntityKey>
@@ -107,10 +107,9 @@
             <CertificatePolicies>
                 <certificatePolicy>2.23.134.1.4.1.7.300</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
@@ -120,7 +119,7 @@
 		                    <ServiceNames><ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-07-01T02:00:00</StartDate>
+                            <StartDate>2016-07-01T02:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
                             </CapturedQualifiers>
@@ -132,8 +131,8 @@
 		                    <ServiceNames><ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2010-01-19T12:31:20</StartDate>
-                            <EndDate>2016-07-01T02:00:00</EndDate>
+                            <StartDate>2010-01-19T12:31:20Z</StartDate>
+                            <EndDate>2016-07-01T02:00:00Z</EndDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD</Qualifier>
                             </CapturedQualifiers>
@@ -175,8 +174,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2020-01-19T12:30:20</NotAfter>
-            <NotBefore>2010-01-19T12:31:20</NotBefore>
+            <NotAfter>2020-01-19T12:30:20Z</NotAfter>
+            <NotBefore>2010-01-19T12:31:20Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC</EntityKey>
@@ -198,8 +197,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
@@ -209,7 +206,7 @@
                     		<ServiceNames><ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-07-01T02:00:00</StartDate>
+                            <StartDate>2016-07-01T02:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -218,8 +215,8 @@
                         	<ServiceNames><ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                            <StartDate>2010-01-19T12:31:20</StartDate>
-                            <EndDate>2016-07-01T02:00:00</EndDate>
+                            <StartDate>2010-01-19T12:31:20Z</StartDate>
+                            <EndDate>2016-07-01T02:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -249,8 +246,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2025-01-19T09:04:31</NotAfter>
-            <NotBefore>2010-01-19T09:04:31</NotBefore>
+            <NotAfter>2025-01-19T09:04:31Z</NotAfter>
+            <NotBefore>2010-01-19T09:04:31Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578</EntityKey>
@@ -271,8 +268,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -286,9 +281,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://www.postsignum.cz/crl/psqualifiedca2.crl</SourceAddress>
-            <ProductionDate>2017-01-26T07:58:13</ProductionDate>
-            <ThisUpdate>2017-01-26T07:58:13</ThisUpdate>
-            <NextUpdate>2017-01-27T05:20:00</NextUpdate>
+            <ProductionDate>2017-01-26T07:58:13Z</ProductionDate>
+            <ThisUpdate>2017-01-26T07:58:13Z</ThisUpdate>
+            <NextUpdate>2017-01-27T05:20:00Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -321,9 +316,9 @@
             <Url>https://tsl.gov.cz/publ/TSL_CZ.xtsl</Url>
             <SequenceNumber>43</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2017-01-26T08:15:39</LastLoading>
-            <IssueDate>2016-11-14T15:00:00</IssueDate>
-            <NextUpdate>2017-05-03T14:00:00</NextUpdate>
+            <LastLoading>2017-01-26T08:15:39Z</LastLoading>
+            <IssueDate>2016-11-14T15:00:00Z</IssueDate>
+            <NextUpdate>2017-05-03T14:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -331,9 +326,9 @@
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>160</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2017-01-26T08:15:39</LastLoading>
-	        <IssueDate>2017-01-23T12:00:00</IssueDate>
-	        <NextUpdate>2017-07-23T02:00:00</NextUpdate>
+	        <LastLoading>2017-01-26T08:15:39Z</LastLoading>
+	        <IssueDate>2017-01-23T12:00:00Z</IssueDate>
+	        <NextUpdate>2017-07-23T02:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

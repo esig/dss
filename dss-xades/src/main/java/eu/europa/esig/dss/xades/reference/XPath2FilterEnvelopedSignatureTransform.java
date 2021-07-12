@@ -28,6 +28,8 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
  */
 public final class XPath2FilterEnvelopedSignatureTransform extends XPath2FilterTransform {
 
+	private static final long serialVersionUID = -6358451916689562596L;
+	
 	/** The subtract filter */
 	private static final String SUBTRACT_FILTER = "subtract";
 

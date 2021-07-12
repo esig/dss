@@ -1,0 +1,877 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>2-signed-signed262-signed_revoked_certtel_alairt_eles_es_minositett_alairasos (1).pdf</DocumentName>
+    <ValidationDate>2020-10-02T13:25:48Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-870609011E93511FBA26BC6EFB9FC1C6B46D2C89CD7A510104FC6D2EBC0BD2CF">
+            <SignatureFilename>2-signed-signed262-signed_revoked_certtel_alairt_eles_es_minositett_alairasos (1).pdf</SignatureFilename>
+            <ClaimedSigningTime>2020-09-30T16:09:12Z</ClaimedSigningTime>
+            <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
+            <StructuralValidation valid="true" />
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>XSyhFaneBYBoTP9FZEJg0oca9PEs8ez/ytZbPgB8sPY=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-B395538A2042EB99CEEC06F0AB09B49FF137C173BC98F9EB7228881B28F13399"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-B395538A2042EB99CEEC06F0AB09B49FF137C173BC98F9EB7228881B28F13399"/>
+                <ChainItem Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <Policy>
+                <Id>IMPLICIT_POLICY</Id>
+            </Policy>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=TEZST Trust Qualified SCD CA, O=TEZST Ltd., L=Budapest, C=HU</IssuerName>
+                    <SerialNumber>0782723948319656423178326307535116</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature1</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <Type>Sig</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.CAdES.detached</SubFilter>
+                    <SignatureByteRange>0 980 38870 1417</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-711C531F7D49F99550A8FCA293399A3A8A5AE98BB2820DACDC48E07CFA1AD268">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-626D6426702581D2D772A8CF725A3F8D78CAA9468E69728E6FE8E11060986CD3">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-B395538A2042EB99CEEC06F0AB09B49FF137C173BC98F9EB7228881B28F13399">
+                    <Origin>SIGNED_DATA</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MHYwZKRiMGAxCzAJBgNVBAYTAkhVMREwDwYDVQQHDAhCdWRhcGVzdDEVMBMGA1UECgwMTkVUTE9DSyBMdGQuMScwJQYDVQQDDB5ORVRMT0NLIFRydXN0IFF1YWxpZmllZCBTQ0QgQ0ECDlfr8cMDCQVkey0yFK7M</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>s5VTiiBC65nO7Abwqwm0n/E3wXO8mPnrciiIGyjxM5k=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-C996D822DDDD92D3A569F33D0B196C7E256EFCBCF2A11F9BB118F4DD2108915B">
+                    <Type>CRL</Type>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-94C4F5E33BEC167E48FC8D5FD9775594469528ED66BC8F6ED6F07F5FF2E7264E">
+                    <Type>CRL</Type>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-8639D0EA228C7CD3476125CD6EAE0EDA4E05B94AEAD126AE77EAB0F981E25CE7">
+                    <Type>CRL</Type>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-FB6207D6602E4A7DE29FC73C5E80A3490273E71724BD6670054857B96D37EBE7">
+                    <Type>CRL</Type>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-AA3729353600C17007012EBB42093BA3E56A776A52A8B276D9560C1FD37CCE12"/>
+                <FoundTimestamp Timestamp="T-A152AFE20F8E2C109FBFB70D0D907C49794F9D2163A139A9AF10B4E59E10ACBF"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-24B2A3E53FDA05A3F7F46308C4439AB68962D8D62DE83A475C5D8A11E341CC7E">
+                    <Scope>PARTIAL</Scope>
+                    <Name>Partial PDF</Name>
+                    <Description>The document ByteRange : [0, 980, 38870, 1417]</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>dZQ9l5ZPlxHt4ZiIKcMzVx5mQoJeNaNwOPII5bZmKHg=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>IrpU1chF6uPjWOsFtBYl38Kq5wmDOpKXQFmJsrolJZ6hKQ4p02uYN+npgbNCghDjxLwLXN0SdVD8C0y60JZx0EU4VaTHA0aWhJMqfzxDKurOZSNrLcchLXavrByGpVcbA9Gy6MqWFI4OAGlhYIIi93bYCEC+xI/vFBzzB2/HPdF05xrsIEzr25Bj9rSCfMyv1oaVGfHJwwV+g0JtdsiFo/hNGStqqTIuTKdTXz28U40IkQxjF+cKkHzTCBswPwrSbWBEQUOCsunCrdELQkN1tovkXawRAjV37dmCm4PiHmYpNwCok2CRXTUB4lEbrFWRS1kzd0Jhirxqiq0wpmCSYA==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-626D6426702581D2D772A8CF725A3F8D78CAA9468E69728E6FE8E11060986CD3">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c1356415448552d31323230313532312d322d3432,cn=netlock qualified time stamping service 7,o=netlock ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c1356415448552d31323230313532312d322d3432,CN=NETLOCK Qualified Time Stamping Service 7,O=NETLOCK Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=netlock minősített eat. (class q legal) tanúsítványkiadó,ou=tanúsítványkiadók (certification services),o=netlock kft.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=NetLock Minősített Eat. (Class Q Legal) Tanúsítványkiadó,OU=Tanúsítványkiadók (Certification Services),O=NetLock Kft.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>1509990661545435002620451145619742</SerialNumber>
+            <CommonName>NETLOCK Qualified Time Stamping Service 7</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationIdentifier>VATHU-12201521-2-42</OrganizationIdentifier>
+            <OrganizationName>NETLOCK Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://aia1.netlock.hu/index.cgi?ca=cqlca</aiaUrl>
+                <aiaUrl>http://aia2.netlock.hu/index.cgi?ca=cqlca</aiaUrl>
+                <aiaUrl>http://aia3.netlock.hu/index.cgi?ca=cqlca</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl1.netlock.hu/index.cgi?crl=cqlca</crlUrl>
+                <crlUrl>http://crl2.netlock.hu/index.cgi?crl=cqlca</crlUrl>
+                <crlUrl>http://crl3.netlock.hu/index.cgi?crl=cqlca</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp1.netlock.hu/cqlca.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp2.netlock.hu/cqlca.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp3.netlock.hu/cqlca.cgi</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2024-10-06T14:39:44Z</NotAfter>
+            <NotBefore>2019-04-16T14:39:44Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-30DE21E511987C307838CCBA836AE8626AAFDCCA345CEB1E5F347073989517B8</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-C996D822DDDD92D3A569F33D0B196C7E256EFCBCF2A11F9BB118F4DD2108915B">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-FB6207D6602E4A7DE29FC73C5E80A3490273E71724BD6670054857B96D37EBE7">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Ym1kJnAlgdLXcqjPclo/jXjKqUaOaXKOb+jhEGCYbNM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E">
+            <SubjectDistinguishedName Format="CANONICAL">cn=netlock minősített eat. (class q legal) tanúsítványkiadó,ou=tanúsítványkiadók (certification services),o=netlock kft.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=NetLock Minősített Eat. (Class Q Legal) Tanúsítványkiadó,OU=Tanúsítványkiadók (Certification Services),O=NetLock Kft.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=netlock arany (class gold) főtanúsítvány,ou=tanúsítványkiadók (certification services),o=netlock kft.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=NetLock Arany (Class Gold) Főtanúsítvány,OU=Tanúsítványkiadók (Certification Services),O=NetLock Kft.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>80544274841623</SerialNumber>
+            <CommonName>NetLock Minősített Eat. (Class Q Legal) Tanúsítványkiadó</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NetLock Kft.</OrganizationName>
+            <OrganizationalUnit>Tanúsítványkiadók (Certification Services)</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://aia1.netlock.hu/index.cgi?ca=gold</aiaUrl>
+                <aiaUrl>http://aia2.netlock.hu/index.cgi?ca=gold</aiaUrl>
+                <aiaUrl>http://aia3.netlock.hu/index.cgi?ca=gold</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl1.netlock.hu/index.cgi?crl=gold</crlUrl>
+                <crlUrl>http://crl2.netlock.hu/index.cgi?crl=gold</crlUrl>
+                <crlUrl>http://crl3.netlock.hu/index.cgi?crl=gold</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp1.netlock.hu/gold.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp2.netlock.hu/gold.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp3.netlock.hu/gold.cgi</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2024-10-15T10:51:20Z</NotAfter>
+            <NotBefore>2009-07-31T10:51:20Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C1BA80BE3544C4DCD8824593FA9B106BB30371822C70648E6196B4726E71F373</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>YoSgO6+uhhow46JaAwQoMG9+tSvQuld6HZYqgJqDDJ4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98">
+            <SubjectDistinguishedName Format="CANONICAL">cn=netlock arany (class gold) főtanúsítvány,ou=tanúsítványkiadók (certification services),o=netlock kft.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=NetLock Arany (Class Gold) Főtanúsítvány,OU=Tanúsítványkiadók (Certification Services),O=NetLock Kft.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=netlock arany (class gold) főtanúsítvány,ou=tanúsítványkiadók (certification services),o=netlock kft.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=NetLock Arany (Class Gold) Főtanúsítvány,OU=Tanúsítványkiadók (Certification Services),O=NetLock Kft.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>80544274841616</SerialNumber>
+            <CommonName>NetLock Arany (Class Gold) Főtanúsítvány</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NetLock Kft.</OrganizationName>
+            <OrganizationalUnit>Tanúsítványkiadók (Certification Services)</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2028-12-06T15:08:21Z</NotAfter>
+            <NotBefore>2008-12-11T15:08:21Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-F48BADD7DF6A06690D0AE31373B12855F8DEDB14517F362A313101CC98CC6B35</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>bGHaw6Le8DFQa+A20qb+QBmU+9E9+cjUZlmSdMRG7Jg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-711C531F7D49F99550A8FCA293399A3A8A5AE98BB2820DACDC48E07CFA1AD268">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c1356415448552d31323230313532312d322d3432,cn=netlock qualified time stamping service 3,o=netlock ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c1356415448552d31323230313532312d322d3432,CN=NETLOCK Qualified Time Stamping Service 3,O=NETLOCK Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=netlock minősített eat. (class q legal) tanúsítványkiadó,ou=tanúsítványkiadók (certification services),o=netlock kft.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=NetLock Minősített Eat. (Class Q Legal) Tanúsítványkiadó,OU=Tanúsítványkiadók (Certification Services),O=NetLock Kft.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>1509990661556151504659165710299467</SerialNumber>
+            <CommonName>NETLOCK Qualified Time Stamping Service 3</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationIdentifier>VATHU-12201521-2-42</OrganizationIdentifier>
+            <OrganizationName>NETLOCK Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://aia1.netlock.hu/index.cgi?ca=cqlca</aiaUrl>
+                <aiaUrl>http://aia2.netlock.hu/index.cgi?ca=cqlca</aiaUrl>
+                <aiaUrl>http://aia3.netlock.hu/index.cgi?ca=cqlca</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl1.netlock.hu/index.cgi?crl=cqlca</crlUrl>
+                <crlUrl>http://crl2.netlock.hu/index.cgi?crl=cqlca</crlUrl>
+                <crlUrl>http://crl3.netlock.hu/index.cgi?crl=cqlca</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp1.netlock.hu/cqlca.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp2.netlock.hu/cqlca.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp3.netlock.hu/cqlca.cgi</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2024-09-14T17:44:36Z</NotAfter>
+            <NotBefore>2019-07-03T17:44:36Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C2C2820C00BF313469A20BD0D98C08F328C75564A3E958FF27D604FACA50E8E1</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-C996D822DDDD92D3A569F33D0B196C7E256EFCBCF2A11F9BB118F4DD2108915B">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-FB6207D6602E4A7DE29FC73C5E80A3490273E71724BD6670054857B96D37EBE7">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cRxTH31J+ZVQqPyikzmaOopa6Yuygg2s3EjgfPoa0mg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711">
+            <SubjectDistinguishedName Format="CANONICAL">cn=netlock trust qualified scd ca,o=netlock ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=NETLOCK Trust Qualified SCD CA,O=NETLOCK Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=netlock arany (class gold) főtanúsítvány,ou=tanúsítványkiadók (certification services),o=netlock kft.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=NetLock Arany (Class Gold) Főtanúsítvány,OU=Tanúsítványkiadók (Certification Services),O=NetLock Kft.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>80544274841673</SerialNumber>
+            <CommonName>NETLOCK Trust Qualified SCD CA</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NETLOCK Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://aia1.netlock.hu/index.cgi?ca=gold</aiaUrl>
+                <aiaUrl>http://aia2.netlock.hu/index.cgi?ca=gold</aiaUrl>
+                <aiaUrl>http://aia3.netlock.hu/index.cgi?ca=gold</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl1.netlock.hu/index.cgi?crl=gold</crlUrl>
+                <crlUrl>http://crl2.netlock.hu/index.cgi?crl=gold</crlUrl>
+                <crlUrl>http://crl3.netlock.hu/index.cgi?crl=gold</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp1.netlock.hu/gold.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp2.netlock.hu/gold.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp3.netlock.hu/gold.cgi</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2028-07-07T17:37:34Z</NotAfter>
+            <NotBefore>2016-09-28T17:37:34Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-7B6CBE21CCB2580EE664A4101562D51F7E1C7583A16BFDF74FF484D988FB8E9F</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>fOHbfRbpv+gGkyFKPXxiY6okeJ45kBfmnt5IAuz29xE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-AE5741EDAB35ED5B30FDCEEA2A829CB9C541452F75B497F235DFC6A72D948D4E">
+            <SubjectDistinguishedName Format="CANONICAL">cn=netlock trust qualified scd ocsp responder 8,o=netlock ltd.,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=NETLOCK Trust Qualified SCD OCSP Responder 8,O=NETLOCK Ltd.,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=netlock trust qualified scd ca,o=netlock ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=NETLOCK Trust Qualified SCD CA,O=NETLOCK Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>1783263075350767832284286964020535</SerialNumber>
+            <CommonName>NETLOCK Trust Qualified SCD OCSP Responder 8</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <OrganizationName>NETLOCK Ltd.</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2021-09-28T14:54:37Z</NotAfter>
+            <NotBefore>2020-09-28T14:54:37Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-0ECB43380A972ECE9BDC0B6EF346E6289A02B7AC1D1D0E3DCBE4B88BCB1B455C</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>rldB7as17Vsw/c7qKoKcucVBRS91tJfyNd/Gpy2UjU4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-B395538A2042EB99CEEC06F0AB09B49FF137C173BC98F9EB7228881B28F13399">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.42=#0c56e607416472696e,1.2.840.113549.1.9.1=#56c65716147465737a7463406e65746c6f636b2e6875,2.5.4.4=#c3b30c064a7a7361,2.5.4.5=#312e313138353930351324312e332e362e312e342e312e333535352e352e3034303034333235,cn=teszt,l=budapest,c=hu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.42=#0c56e607416472696e,1.2.840.113549.1.9.1=#56c65716147465737a7463406e65746c6f636b2e6875,2.5.4.4=#c3b30c064a7a7361,2.5.4.5=#312e313138353930351324312e332e362e312e342e312e333535352e352e3034303034333235,CN=TESZT,L=Budapest,C=HU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=netlock trust qualified scd ca,o=netlock ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=NETLOCK Trust Qualified SCD CA,O=NETLOCK Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <SerialNumber>1783263075350782723948319656423116</SerialNumber>
+            <SubjectSerialNumber>1.3.6.1.4.1.3555.5.1.118590504004325</SubjectSerialNumber>
+            <CommonName>TESZT</CommonName>
+            <Locality>Budapest</Locality>
+            <CountryName>HU</CountryName>
+            <GivenName>TESZT</GivenName>
+            <Surname>TESZT</Surname>
+            <Email>TESZT@test.hu</Email>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>TESZT@test.hu</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://aia1.netlock.hu/index.cgi?ca=qtrustscd</aiaUrl>
+                <aiaUrl>http://aia2.netlock.hu/index.cgi?ca=qtrustscd</aiaUrl>
+                <aiaUrl>http://aia3.netlock.hu/index.cgi?ca=qtrustscd</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl1.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
+                <crlUrl>http://crl2.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
+                <crlUrl>http://crl3.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp1.netlock.hu/qtrustscd.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp2.netlock.hu/qtrustscd.cgi</ocspServerUrl>
+                <ocspServerUrl>http://ocsp3.netlock.hu/qtrustscd.cgi</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2021-09-30T13:49:10Z</NotAfter>
+            <NotBefore>2020-09-30T13:49:10Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-4ABCC9C93B3F194C0C8D0186557FEBE5D5AB4B74721AE52A05E9C3454CBA1F24</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
+                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.48016.3.2.2.1.1.2</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-94C4F5E33BEC167E48FC8D5FD9775594469528ED66BC8F6ED6F07F5FF2E7264E">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-8639D0EA228C7CD3476125CD6EAE0EDA4E05B94AEAD126AE77EAB0F981E25CE7">
+                    <Status>REVOKED</Status>
+                    <Reason>certificateHold</Reason>
+                    <RevocationDate>2020-09-30T16:57:18Z</RevocationDate>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-95D660C73C71EC0D27B525B96DE8E5E94E265E9D0A773E539245C39B29C1BC75">
+                    <Status>REVOKED</Status>
+                    <Reason>certificateHold</Reason>
+                    <RevocationDate>2020-09-30T16:57:18Z</RevocationDate>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>s5VTiiBC65nO7Abwqwm0n/E3wXO8mPnrciiIGyjxM5k=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-8639D0EA228C7CD3476125CD6EAE0EDA4E05B94AEAD126AE77EAB0F981E25CE7">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2020-10-01T03:28:33Z</ProductionDate>
+            <ThisUpdate>2020-10-01T03:28:33Z</ThisUpdate>
+            <NextUpdate>2020-10-02T03:28:33Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>hjnQ6iKMfNNHYSXNbq4O2k4FuUrq0Saud+qw+YHiXOc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-94C4F5E33BEC167E48FC8D5FD9775594469528ED66BC8F6ED6F07F5FF2E7264E">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2020-09-30T15:28:33Z</ProductionDate>
+            <ThisUpdate>2020-09-30T15:28:33Z</ThisUpdate>
+            <NextUpdate>2020-10-01T15:28:33Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lMT14zvsFn5I/I1f2XdVlEaVKO1mvI9u1vB/X/LnJk4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-95D660C73C71EC0D27B525B96DE8E5E94E265E9D0A773E539245C39B29C1BC75">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp1.netlock.hu/qtrustscd.cgi</SourceAddress>
+            <ProductionDate>2020-10-02T13:25:48Z</ProductionDate>
+            <ThisUpdate>2020-10-02T13:25:48Z</ThisUpdate>
+            <NextUpdate>2020-10-03T13:25:48Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-AE5741EDAB35ED5B30FDCEEA2A829CB9C541452F75B497F235DFC6A72D948D4E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-AE5741EDAB35ED5B30FDCEEA2A829CB9C541452F75B497F235DFC6A72D948D4E"/>
+                <ChainItem Certificate="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-AE5741EDAB35ED5B30FDCEEA2A829CB9C541452F75B497F235DFC6A72D948D4E">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=NETLOCK Trust Qualified SCD OCSP Responder 8, O=NETLOCK Ltd., L=Budapest, C=HU</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ldZgxzxx7A0ntSW5bejl6U4mXp0Kdz5TkkXDmynBvHU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-C996D822DDDD92D3A569F33D0B196C7E256EFCBCF2A11F9BB118F4DD2108915B">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2020-10-01T02:28:21Z</ProductionDate>
+            <ThisUpdate>2020-10-01T02:28:21Z</ThisUpdate>
+            <NextUpdate>2020-10-02T02:28:21Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>yZbYIt3dktOlafM9CxlsfiVu/LzyoR+bsRj03SEIkVs=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-FB6207D6602E4A7DE29FC73C5E80A3490273E71724BD6670054857B96D37EBE7">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2020-09-30T15:14:45Z</ProductionDate>
+            <ThisUpdate>2020-09-30T15:14:45Z</ThisUpdate>
+            <NextUpdate>2020-10-01T15:14:45Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>+2IH1mAuSn3in8c8XoCjSQJz5xckvWZwBUhXuW036+c=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-AA3729353600C17007012EBB42093BA3E56A776A52A8B276D9560C1FD37CCE12">
+            <ProductionTime>2020-09-30T16:09:12Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>AiNSuA9fUWi0o0LfaKH7CMr6ULu9TaHuh3b+qkZKYPk=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-626D6426702581D2D772A8CF725A3F8D78CAA9468E69728E6FE8E11060986CD3"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-626D6426702581D2D772A8CF725A3F8D78CAA9468E69728E6FE8E11060986CD3"/>
+                <ChainItem Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=NetLock Minősített Eat. (Class Q Legal) Tanúsítványkiadó, OU=Tanúsítványkiadók (Certification Services), O=NetLock Kft., L=Budapest, C=HU</IssuerName>
+                    <SerialNumber>1509990661545435002620451145619742</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-626D6426702581D2D772A8CF725A3F8D78CAA9468E69728E6FE8E11060986CD3">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>yR3jbfzU3bq+F0GHYlLcWDoZk7Q=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-24B2A3E53FDA05A3F7F46308C4439AB68962D8D62DE83A475C5D8A11E341CC7E" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-870609011E93511FBA26BC6EFB9FC1C6B46D2C89CD7A510104FC6D2EBC0BD2CF" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-B395538A2042EB99CEEC06F0AB09B49FF137C173BC98F9EB7228881B28F13399" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>qjcpNTYAwXAHAS67Qgk7o+Vqd2pSqLJ22VYMH9N8zhI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-A152AFE20F8E2C109FBFB70D0D907C49794F9D2163A139A9AF10B4E59E10ACBF">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+            <ProductionTime>2020-09-30T16:09:12Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>IAxeHRfI4PovndDJ9IrZE/Z/jZJrvpqBwiqLC6Q9zzM=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-711C531F7D49F99550A8FCA293399A3A8A5AE98BB2820DACDC48E07CFA1AD268"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-711C531F7D49F99550A8FCA293399A3A8A5AE98BB2820DACDC48E07CFA1AD268"/>
+                <ChainItem Certificate="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E"/>
+                <ChainItem Certificate="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=NetLock Minősített Eat. (Class Q Legal) Tanúsítványkiadó, OU=Tanúsítványkiadók (Certification Services), O=NetLock Kft., L=Budapest, C=HU</IssuerName>
+                    <SerialNumber>1509990661556151504659165710299467</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature2</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <Type>DocTimeStamp</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.RFC3161</SubFilter>
+                    <SignatureByteRange>0 70720 89666 1209</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-711C531F7D49F99550A8FCA293399A3A8A5AE98BB2820DACDC48E07CFA1AD268">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>mA92xAaALb3NrYB8lXxe/VZqWVE=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="C-626D6426702581D2D772A8CF725A3F8D78CAA9468E69728E6FE8E11060986CD3" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-7CE1DB7D16E9BFE80693214A3D7C6263AA24789E399017E69EDE4802ECF6F711" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-B395538A2042EB99CEEC06F0AB09B49FF137C173BC98F9EB7228881B28F13399" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-6C61DAC3A2DEF031506BE036D2A6FE401994FBD13DF9C8D466599274C446EC98" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-6284A03BAFAE861A30E3A25A030428306F7EB52BD0BA577A1D962A809A830C9E" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-94C4F5E33BEC167E48FC8D5FD9775594469528ED66BC8F6ED6F07F5FF2E7264E" Category="REVOCATION"/>
+                <TimestampedObject Token="R-FB6207D6602E4A7DE29FC73C5E80A3490273E71724BD6670054857B96D37EBE7" Category="REVOCATION"/>
+                <TimestampedObject Token="T-AA3729353600C17007012EBB42093BA3E56A776A52A8B276D9560C1FD37CCE12" Category="TIMESTAMP"/>
+                <TimestampedObject Token="D-24B2A3E53FDA05A3F7F46308C4439AB68962D8D62DE83A475C5D8A11E341CC7E" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-870609011E93511FBA26BC6EFB9FC1C6B46D2C89CD7A510104FC6D2EBC0BD2CF" Category="SIGNATURE"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>oVKv4g+OLBCfv7cNDZB8SXlPnSFjoTmprxC05Z4QrL8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-24B2A3E53FDA05A3F7F46308C4439AB68962D8D62DE83A475C5D8A11E341CC7E">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>BWOytQ7J3mqhFhQDpGKwNKTStpek+q8nYbZWU2DHuIo=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-4F03CD535611130154A16D31C33F6E66DC326EE776B03D36A7BC77260498A09C">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Lwels4VsInEJT4dQrwxgFcnZP+LqsazX+7Baoa+PIVE=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-E14FBC3958E2F7B224C1CC3B9CDBD390533944983F9F279C26D7E3C4514C0761">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>9uVBNepmMVyLi+u/hx6MJwD1/P/YcTc8nFKub4pw+Sc=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <SequenceNumber>274</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-10-02T12:34:45Z</LastLoading>
+            <IssueDate>2020-10-01T10:00:00Z</IssueDate>
+            <NextUpdate>2021-04-01T00:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL-84E39259BAF8B3BB68AF54EDA113487542E0D30AFC7BFB1F824396B09ACD42D3">
+            <CountryCode>HU</CountryCode>
+            <Url>http://www.nmhh.hu/tl/pub/HU_TL.xml</Url>
+            <SequenceNumber>59</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-10-02T12:34:46Z</LastLoading>
+            <IssueDate>2020-07-24T10:00:00Z</IssueDate>
+            <NextUpdate>2020-12-21T10:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

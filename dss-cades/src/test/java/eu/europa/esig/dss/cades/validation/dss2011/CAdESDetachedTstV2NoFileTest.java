@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation.dss2011;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -36,6 +30,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESDetachedTstV2NoFileTest extends AbstractCAdESTestValidation {
 
@@ -84,8 +85,8 @@ public class CAdESDetachedTstV2NoFileTest extends AbstractCAdESTestValidation {
 	}
 	
 	@Override
-	protected void validateETSISignerDocuments(List<SignersDocumentType> signersDocuments) {
-		assertTrue(Utils.isCollectionEmpty(signersDocuments));
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		assertNull(signersDocument);
 	}
 
 }

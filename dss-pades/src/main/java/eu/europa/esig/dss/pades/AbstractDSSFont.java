@@ -26,6 +26,8 @@ import java.io.Serializable;
  * The abstract implementation of a {@code DSSFont}
  */
 public abstract class AbstractDSSFont implements DSSFont, Serializable {
+	
+	private static final long serialVersionUID = 3565389650822834584L;
 
 	/** The default font size (12f) */
 	protected static final float DEFAULT_TEXT_SIZE = 12f;

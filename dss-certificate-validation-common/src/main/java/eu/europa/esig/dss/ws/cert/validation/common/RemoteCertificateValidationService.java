@@ -78,7 +78,7 @@ public class RemoteCertificateValidationService {
 	private CertificateValidator initValidator(CertificateToValidateDTO certificateToValidate) {
 		CertificateSource adjunctCertSource = getAdjunctCertificateSource(certificateToValidate.getCertificateChain());
 		
-		CertificateVerifier usedCertificateVerifier = null;
+		CertificateVerifier usedCertificateVerifier;
 		if (adjunctCertSource == null) {
 			usedCertificateVerifier = verifier;
 		} else {

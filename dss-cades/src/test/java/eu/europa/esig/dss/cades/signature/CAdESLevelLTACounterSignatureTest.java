@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
@@ -40,10 +30,18 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESLevelLTACounterSignatureTest extends AbstractCAdESCounterSignatureTest {
 
@@ -152,7 +150,7 @@ public class CAdESLevelLTACounterSignatureTest extends AbstractCAdESCounterSigna
 	@Test
 	public void ltaLevelCounterSignatureTest() {
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		Exception exception = assertThrows(DSSException.class, () -> signAndVerify());
+		Exception exception = assertThrows(UnsupportedOperationException.class, () -> signAndVerify());
 		assertEquals("A counter signature with a level 'CAdES-BASELINE-LTA' is not supported! "
 				+ "Please, use CAdES-BASELINE-B", exception.getMessage());
 	}

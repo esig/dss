@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -37,6 +30,12 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class KeyUsageCheckTest extends AbstractTestCheck {
 
@@ -80,6 +79,28 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
 		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void multiValuesCheck() throws Exception {
+		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
+		keyUsageBits.add(KeyUsageBit.DIGITAL_SIGNATURE);
+		keyUsageBits.add(KeyUsageBit.NON_REPUDIATION);
+
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.getId().add(KeyUsageBit.NON_REPUDIATION.getValue());
+
+		XmlCertificate xc = new XmlCertificate();
+		xc.setKeyUsageBits(keyUsageBits);
+
+		XmlSubXCV result = new XmlSubXCV();
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		kuc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
 	}
 
 }

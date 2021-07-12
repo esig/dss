@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -77,7 +76,7 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 	}
 
 	@Override
-	protected DSSDocument getOriginalDocument() {
+	protected FileDocument getOriginalDocument() {
 		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".pdf");
 		try (FileOutputStream fos = new FileOutputStream(originalDoc); InputStream is = AbstractPAdESTestExtension.class.getResourceAsStream("/sample.pdf")) {
 			Utils.copy(is, fos);
@@ -218,7 +217,7 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 				assertNotNull(signatureIdentifier);
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
-				assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+				assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
 			}
 		}
 	}

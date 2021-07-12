@@ -22,15 +22,15 @@ package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -73,7 +73,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 		
 		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
 		if (Utils.isCollectionEmpty(signerInformationCollection)) {
-			throw new DSSException("Unable to extend the document! No signatures found.");
+			throw new IllegalInputException("Unable to extend the document! No signatures found.");
 		}
 		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 		
@@ -84,11 +84,11 @@ public class CAdESSignaturePolicyStoreBuilder {
 			CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 			SignaturePolicy signaturePolicy = cadesSignature.getSignaturePolicy();
 			if (signaturePolicy != null) {
+				signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
 				Digest expectedDigest = signaturePolicy.getDigest();
 				if (expectedDigest != null) {
-					signaturePolicy.setPolicyContent(signaturePolicyStore.getSignaturePolicyContent());
-					SignaturePolicyValidator validator = new SignaturePolicyValidatorLoader(signaturePolicy).loadValidator();
-					Digest computedDigest = validator.getComputedDigest(expectedDigest.getAlgorithm());
+					SignaturePolicyValidator validator = new DefaultSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
+					Digest computedDigest = validator.getComputedDigest(signaturePolicyStore.getSignaturePolicyContent(), expectedDigest.getAlgorithm());
 					if (expectedDigest.equals(computedDigest)) {
 						newSignerInformation = addSignaturePolicyStore(signerInformation, signaturePolicyStore);
 					} else {
@@ -140,7 +140,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 	 * }
 	 */
 	private ASN1Primitive getSPDocSpecificationId(String oidOrUri) {
-		ASN1Primitive spDocSpecification = null;
+		ASN1Primitive spDocSpecification;
 		if (DSSUtils.isOidCode(oidOrUri)) {
 			spDocSpecification = new ASN1ObjectIdentifier(oidOrUri);
 		} else {
@@ -151,7 +151,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 	
 	private void assertSignaturePolicyStoreExtensionPossible(SignerInformation signerInformation) {
 		if (CMSUtils.containsATSTv2(signerInformation)) {
-			throw new DSSException("Cannot add signature policy store to a CAdES containing an archiveTimestampV2");
+			throw new IllegalInputException("Cannot add signature policy store to a CAdES containing an archiveTimestampV2");
 		}
 	}
 

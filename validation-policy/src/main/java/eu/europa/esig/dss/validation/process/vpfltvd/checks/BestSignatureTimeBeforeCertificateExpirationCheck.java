@@ -70,7 +70,8 @@ public class BestSignatureTimeBeforeCertificateExpirationCheck extends ChainItem
 	@Override
 	protected String buildAdditionalInfo() {
 		String bestSignatureTimeStr = bestSignatureTime == null ? " ? " : ValidationProcessUtils.getFormattedDate(bestSignatureTime);
-		return i18nProvider.getMessage(MessageTag.BEST_SIGNATURE_TIME, bestSignatureTimeStr);
+		String certNotAfter = signingCertificate.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(signingCertificate.getNotAfter());
+		return i18nProvider.getMessage(MessageTag.BEST_SIGNATURE_TIME_CERT_NOT_AFTER, bestSignatureTimeStr, certNotAfter);
 	}
 
 	@Override

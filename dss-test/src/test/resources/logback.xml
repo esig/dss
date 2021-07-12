@@ -8,6 +8,7 @@
 	
 	<logger name="eu.europa.esig.dss" level="INFO" />
 	<logger name="org.apache.pdfbox" level="ERROR" />
+	<logger name="org.apache.fop" level="ERROR" />
 	<logger name="org.apache" level="INFO" />
 
 	<root level="info">

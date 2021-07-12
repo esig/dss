@@ -20,31 +20,31 @@
  */
 package eu.europa.esig.dss.jades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JWSConverterTest {
 
 	@Test
 	public void testNotJSONCompact() {
 		InMemoryDocument helloDoc = new InMemoryDocument("Hello".getBytes());
-		DSSException exception = assertThrows(DSSException.class, () -> JWSConverter.fromJWSCompactToJSONFlattenedSerialization(helloDoc));
+		Exception exception = assertThrows(IllegalInputException.class, () -> JWSConverter.fromJWSCompactToJSONFlattenedSerialization(helloDoc));
 		assertEquals("Unable to instantiate a compact JWS", exception.getMessage());
-		exception = assertThrows(DSSException.class, () -> JWSConverter.fromJWSCompactToJSONSerialization(helloDoc));
+		exception = assertThrows(IllegalInputException.class, () -> JWSConverter.fromJWSCompactToJSONSerialization(helloDoc));
 		assertEquals("Unable to instantiate a compact JWS", exception.getMessage());
 	}
 

@@ -167,8 +167,8 @@ public abstract class AbstractUtilsTest {
 	@Test
 	public void joinStrings() {
 		assertNull(Utils.joinStrings(null, null));
-		assertEquals("", Utils.joinStrings(new ArrayList<String>(), null));
-		assertEquals("", Utils.joinStrings(new ArrayList<String>(), ","));
+		assertEquals("", Utils.joinStrings(new ArrayList<>(), null));
+		assertEquals("", Utils.joinStrings(new ArrayList<>(), ","));
 
 		List<String> list = new ArrayList<>();
 		list.add("a");
@@ -487,9 +487,7 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void clearDirectoryNotFound() throws FileNotFoundException {
-		assertThrows(FileNotFoundException.class, () -> {
-			Utils.cleanDirectory(new File("wrong"));	
-		});
+		assertThrows(FileNotFoundException.class, () -> Utils.cleanDirectory(new File("wrong")));
 	}
 
 	@Test

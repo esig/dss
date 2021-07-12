@@ -20,22 +20,12 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -47,6 +37,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -54,6 +45,19 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2257
 public class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestValidation {
@@ -96,7 +100,7 @@ public class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestVali
 				new XAdES132Paths().getUnsignedSignaturePropertiesPath());
 		assertNotNull(unsignedSignatureProperties);
 
-		Element signatureTimeStamp = DomUtils.getElement(signature, new XAdES132Paths().getSignatureTimestampsPath());
+		Element signatureTimeStamp = DomUtils.getElement(signature, new XAdES132Paths().getSignatureTimestampPath());
 		assertNotNull(signatureTimeStamp);
 
 		unsignedSignatureProperties.removeChild(signatureTimeStamp);
@@ -129,6 +133,24 @@ public class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestVali
 			}
 		}
 		assertTrue(containsExternal);
+	}
+
+	@Override
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+		super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		FoundCertificatesProxy foundCertificates = signature.foundCertificates();
+		assertEquals(2, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
+		assertEquals(1, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+		// certificate for the removed timestamp
+		assertEquals(1, foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+	}
+
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
+		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
 	}
 
 	@Override

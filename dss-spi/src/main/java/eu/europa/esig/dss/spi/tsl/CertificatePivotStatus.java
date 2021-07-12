@@ -25,7 +25,14 @@ package eu.europa.esig.dss.spi.tsl;
  *
  */
 public enum CertificatePivotStatus {
-	
-	ADDED, NOT_CHANGED, REMOVED;
+
+	/** Certificate has been added with a new pivot */
+	ADDED,
+
+	/** Certificate has not been changed */
+	NOT_CHANGED,
+
+	/** Certificate has been removed with a new pivot */
+	REMOVED;
 
 }

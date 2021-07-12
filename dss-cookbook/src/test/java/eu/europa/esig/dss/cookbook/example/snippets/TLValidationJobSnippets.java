@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Executors;
-
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
@@ -57,6 +51,7 @@ import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.GrantedTrustService;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
+import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
@@ -70,6 +65,12 @@ import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 public class TLValidationJobSnippets {
 
@@ -235,6 +236,21 @@ public class TLValidationJobSnippets {
 		job.setTLAlerts(Arrays.asList(tlBrokenSignatureAlert));
 		
 		// end::alerting[]
+	}
+
+	public void predicates() {
+		LOTLSource lotlSource = new LOTLSource();
+
+		// tag::predicates[]
+		// the predicates filter TSL pointers to XML documents with
+		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists" type
+		lotlSource.setLotlPredicate(new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+
+		// the predicates filter only TSL pointers with scheme territories "DE" (Germany) and "RO" (Romania)
+		// to XML documents with "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric" type
+		lotlSource.setTlPredicate(new SchemeTerritoryOtherTSLPointer(Arrays.asList("DE","RO"))
+				.and(new EULOTLOtherTSLPointer()).and(new XMLOtherTSLPointer()));
+		// end::predicates[]
 	}
 	
 	private void executorService() {

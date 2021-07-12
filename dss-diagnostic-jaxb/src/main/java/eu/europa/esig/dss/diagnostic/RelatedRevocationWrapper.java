@@ -20,30 +20,50 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Wrapper for a {@code XmlRelatedRevocation} object
+ *
+ */
 public class RelatedRevocationWrapper extends RevocationWrapper {
 	
+	/** Wrapped {@code XmlRelatedRevocation} */
 	private final XmlRelatedRevocation relatedRevocation;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param relatedRevocation {@link XmlRelatedRevocation}
+	 */
 	public RelatedRevocationWrapper(XmlRelatedRevocation relatedRevocation) {
 		super(relatedRevocation.getRevocation());
 		this.relatedRevocation = relatedRevocation;
 	}
 	
+	/**
+	 * Returns a list of revocation token origins
+	 *
+	 * @return a list of {@link RevocationOrigin}s
+	 */
 	public List<RevocationOrigin> getOrigins() {
 		return relatedRevocation.getOrigins();
 	}
 	
-	public List<RevocationRefWrappper> getReferences() {
-		List<RevocationRefWrappper> references = new ArrayList<>();
+	/**
+	 * Returns a list of revocation token references from the signature
+	 *
+	 * @return a list of {@link RevocationRefWrapper}s
+	 */
+	public List<RevocationRefWrapper> getReferences() {
+		List<RevocationRefWrapper> references = new ArrayList<>();
 		for (XmlRevocationRef revocationRef : relatedRevocation.getRevocationRefs()) {
-			references.add(new RevocationRefWrappper(revocationRef));
+			references.add(new RevocationRefWrapper(revocationRef));
 		}
 		return references;
 	}

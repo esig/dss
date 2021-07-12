@@ -92,7 +92,7 @@ public class TLValidationJobAlerter {
 			alert.alert(info);
 		} catch (Exception e) {
 			LOG.warn("An error occurred while trying to detect changes inside '{}'. Reason : {}", 
-					info.getIdentifier().asXmlId(), e.getMessage());
+					info.getDSSId().asXmlId(), e.getMessage());
 		}
 	}
 	

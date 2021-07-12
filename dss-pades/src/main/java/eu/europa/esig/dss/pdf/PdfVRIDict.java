@@ -28,6 +28,8 @@ import java.util.List;
  */
 public class PdfVRIDict extends AbstractPdfDssDict {
 
+	private static final long serialVersionUID = -1545254066906625419L;
+	
 	/** The VRI dictionary key (SHA-1 value of a signature) */
 	private final String name;
 
@@ -62,7 +64,11 @@ public class PdfVRIDict extends AbstractPdfDssDict {
 		return PAdESConstants.OCSP_ARRAY_NAME_VRI;
 	}
 
-
+	/**
+	 * Returns key of the VRI dictionary
+	 *
+	 * @return {@link String}
+	 */
 	public String getName() {
 		return name;
 	}

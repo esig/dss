@@ -33,10 +33,20 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
  */
 public class EnvelopedSignatureTransform extends AbstractTransform {
 
+	private static final long serialVersionUID = -7029101849592279769L;
+
+	/**
+	 * Default constructor
+	 */
 	public EnvelopedSignatureTransform() {
 		super(XAdESNamespaces.XMLDSIG, Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
 	}
 
+	/**
+	 * Constructor with a custom namespace
+	 *
+	 * @param xmlDSigNamespace {@link DSSNamespace}
+	 */
 	public EnvelopedSignatureTransform(DSSNamespace xmlDSigNamespace) {
 		super(xmlDSigNamespace, Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
 	}

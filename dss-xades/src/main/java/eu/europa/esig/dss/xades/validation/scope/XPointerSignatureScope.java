@@ -20,14 +20,19 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.validation.scope.SignatureScopeWithTransformations;
+
+import java.util.List;
 
 /**
  * XPointer signature scope
  */
-public class XPointerSignatureScope extends SignatureScope {
+public class XPointerSignatureScope extends SignatureScopeWithTransformations {
+
+	private static final long serialVersionUID = 203530674533107438L;
 
 	/**
 	 * XPointer query
@@ -37,28 +42,35 @@ public class XPointerSignatureScope extends SignatureScope {
 	/**
 	 * Default constructor
 	 *
-	 * @param xmlId {@link String} id of the reference element
 	 * @param uri {@link String}
+	 * @param transformations a list of {@link String} transform descriptions
 	 * @param digest {@link Digest}
 	 */
-	protected XPointerSignatureScope(final String xmlId, final String uri, final Digest digest) {
-		super(xmlId, digest);
+	protected XPointerSignatureScope(final String uri, final List<String> transformations, final Digest digest) {
+		super(getDocumentNameFromXPointer(uri), digest, transformations);
 		this.uri = uri;
+	}
+
+	private static String getDocumentNameFromXPointer(String uri) {
+		return DomUtils.isRootXPointer(uri) ? "Full XML file" : DomUtils.getXPointerId(uri);
 	}
 
 	@Override
 	public String getDescription() {
-		StringBuilder sb = new StringBuilder("The XML element with ID '");
-		sb.append(getName());
-		sb.append("' is an XPointer query (uri: '");
-		sb.append(uri);
-		sb.append("').");
-		return sb.toString();
+		StringBuilder sb = new StringBuilder("XPointer query to ");
+		if (DomUtils.isRootXPointer(uri)) {
+			sb.append("root XML element");
+		} else {
+			sb.append("element with Id '");
+			sb.append(getName());
+			sb.append("'");
+		}
+		return addTransformationIfNeeded(sb.toString());
 	}
 
 	@Override
 	public SignatureScopeType getType() {
-		return SignatureScopeType.PARTIAL;
+		return DomUtils.isRootXPointer(uri) ? SignatureScopeType.FULL : SignatureScopeType.PARTIAL;
 	}
 
 }

@@ -20,22 +20,17 @@
  */
 package eu.europa.esig.dss.jaxb.parsers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Parses the {@code Date}
+ * Parses a date
  */
 public final class DateParser {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DateParser.class);
-
-	/** The data format to be parsed against */
-	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+	/** Default used date format */
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
 	/** The default timezone (UTC) */
 	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
@@ -44,28 +39,30 @@ public final class DateParser {
 	}
 
 	/**
-	 * Parses the value and returns {@code Date}
+	 * Parses the date
 	 *
-	 * @param v {@link String} to parse in the format "yyyy-MM-dd'T'HH:mm:ss"
-	 * @return {@link Date}
+	 * @param v {@link String} date in the format "yyyy-MM-dd'T'HH:mm:ss'Z'"
+	 * @return {@link Date}, null if not able to parse
 	 */
 	public static Date parse(String v) {
+		if (v == null) {
+			return null;
+		}
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 			sdf.setTimeZone(UTC);
 			sdf.setLenient(false);
 			return sdf.parse(v);
 		} catch (Exception e) {
-			LOG.warn("Unable to parse '{}'", v);
+			throw new IllegalArgumentException(String.format("String '%s' doesn't follow the pattern '%s'", v, DATE_FORMAT));
 		}
-		return null;
 	}
 
 	/**
-	 * Gets a text value of the date
+	 * Prints the date according to the format "yyyy-MM-dd'T'HH:mm:ss'Z'"
 	 *
 	 * @param v {@link Date}
-	 * @return {@link String} in the format "yyyy-MM-dd'T'HH:mm:ss"
+	 * @return {@link String}
 	 */
 	public static String print(Date v) {
 		if (v != null) {

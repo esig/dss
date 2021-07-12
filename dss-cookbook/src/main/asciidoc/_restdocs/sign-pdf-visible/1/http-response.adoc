@@ -1,13 +1,14 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Mon, 14 Dec 2020 15:38:57 GMT
+Date: Fri, 09 Jul 2021 16:49:55 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
+Content-Security-Policy: default-src 'self' http://localhost:9795 fonts.googleapis.com fonts.gstatic.com cdnjs.cloudflare.com 'unsafe-inline' data:;
 Server: ESIG-DSS
 Content-Type: application/json
 Transfer-Encoding: chunked
@@ -16,6 +17,6 @@ Connection: keep-alive
 Content-Length: 288
 
 {
-  "bytes" : "MYHEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwLwYJKoZIhvcNAQkEMSIEIJCZQzeO5FvXDJ9U+6w2cJ9IvUYPwkIY8tduSBJYQ/hVMHcGCyqGSIb3DQEJEAIvMWgwZjBkMGIEIALz68oBYydCU7yAnSdJjdQbsDFtfmsGaWARXeFVWJ2cMD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw=="
+  "bytes" : "MYHEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwLwYJKoZIhvcNAQkEMSIEICktGBaZ1ugCc/KOZColGggOcIzpekdB+IYVtwUino3gMHcGCyqGSIb3DQEJEAIvMWgwZjBkMGIEIALz68oBYydCU7yAnSdJjdQbsDFtfmsGaWARXeFVWJ2cMD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw=="
 }
 ----

@@ -20,16 +20,10 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -38,8 +32,15 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ASiCECAdESLevelBSignFourTimeTest extends AbstractASiCECAdESTestSignature {
+
+	private DSSDocument originalDocument;
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
@@ -47,7 +48,7 @@ public class ASiCECAdESLevelBSignFourTimeTest extends AbstractASiCECAdESTestSign
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+		originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -57,17 +58,26 @@ public class ASiCECAdESLevelBSignFourTimeTest extends AbstractASiCECAdESTestSign
 
 		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 	}
-	
+
 	@Override
-	@Test
-	public void signAndVerify() {
-		super.signAndVerify();
+	protected DSSDocument sign() {
+		documentToSign = originalDocument;
+		DSSDocument signedDocument = super.sign();
+
 		signatureParameters.bLevel().setSigningDate(new Date());
-		super.signAndVerify();
+		documentToSign = signedDocument;
+		signedDocument = super.sign();
+
 		signatureParameters.bLevel().setSigningDate(new Date());
-		super.signAndVerify();
+		documentToSign = signedDocument;
+		signedDocument = super.sign();
+
 		signatureParameters.bLevel().setSigningDate(new Date());
-		super.signAndVerify();
+		documentToSign = signedDocument;
+		signedDocument = super.sign();
+
+		documentToSign = originalDocument;
+		return signedDocument;
 	}
 	
 	@Override
@@ -77,6 +87,16 @@ public class ASiCECAdESLevelBSignFourTimeTest extends AbstractASiCECAdESTestSign
 		return validator;
 	}
 	
+	@Override
+	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+		assertEquals(4, diagnosticData.getSignatures().size());
+	}
+
+	@Override
+	protected void checkSigningDate(DiagnosticData diagnosticData) {
+		// skip
+	}
+
 	@Override
 	protected void verifySimpleReport(SimpleReport simpleReport) {
 		super.verifySimpleReport(simpleReport);

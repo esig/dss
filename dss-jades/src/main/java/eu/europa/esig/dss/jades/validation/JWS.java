@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.model.DSSException;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +34,9 @@ import java.util.Objects;
 /**
  * Extension of a JSON web Signature according to RFC 7515
  */
-public class JWS extends JsonWebSignature {
+public class JWS extends JsonWebSignature implements Serializable {
+
+	private static final long serialVersionUID = -3465226120689258742L;
 
 	/**
 	 * The unprotected header map
@@ -63,7 +66,7 @@ public class JWS extends JsonWebSignature {
 		try {
 			setCompactSerializationParts(parts);
 		} catch (JoseException e) {
-			throw new DSSException("Unable to instantiate a compact JWS", e);
+			throw new IllegalInputException("Unable to instantiate a compact JWS", e);
 		}
 	}
 

@@ -20,21 +20,15 @@
  */
 package eu.europa.esig.dss.xades.validation.dss1788;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -46,6 +40,14 @@ import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1788NoCertProvidedTest extends AbstractXAdESTestValidation {
 
@@ -93,6 +95,8 @@ public class DSS1788NoCertProvidedTest extends AbstractXAdESTestValidation {
 		
 		assertEquals(certificateSource.getSigningCertificateRefs().size(), 
 				foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+
+		checkOrphanTokens(diagnosticData);
 	}
 	
 	@Override
@@ -100,10 +104,22 @@ public class DSS1788NoCertProvidedTest extends AbstractXAdESTestValidation {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(Utils.isCollectionEmpty(signature.getCertificateChain()));
 	}
+
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		// The SigningCertificate shall be present in ds:KeyInfo
+		assertEquals(SignatureLevel.XML_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
 	
 	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(1, diagnosticData.getAllOrphanCertificateReferences().size());
+		List<OrphanCertificateTokenWrapper> allOrphanCertificateReferences = diagnosticData.getAllOrphanCertificateReferences();
+		assertEquals(1, allOrphanCertificateReferences.size());
+		OrphanCertificateTokenWrapper orphanCertificateTokenWrapper = allOrphanCertificateReferences.iterator().next();
+		assertNotNull(orphanCertificateTokenWrapper);
+		assertNotNull(orphanCertificateTokenWrapper.getDigestAlgoAndValue());
+		assertEquals("", orphanCertificateTokenWrapper.getCertificateDN());
+		assertEquals("", orphanCertificateTokenWrapper.getCertificateIssuerDN());
 		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 	

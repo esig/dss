@@ -229,8 +229,8 @@ public class LOTLWithPivotsRefreshTest {
 
 		List<Identifier> identifiers = new ArrayList<>();
 		for (PivotInfo pivotInfo : pivotInfos) {
-			assertFalse(identifiers.contains(pivotInfo.getIdentifier()));
-			identifiers.add(pivotInfo.getIdentifier());
+			assertFalse(identifiers.contains(pivotInfo.getDSSId()));
+			identifiers.add(pivotInfo.getDSSId());
 			assertTrue(pivotInfo.isPivot());
 
 			ValidationInfoRecord pivotValidationCacheInfo = pivotInfo.getValidationCacheInfo();

@@ -20,9 +20,8 @@ public final class SunPKCS11Initializer {
 	public static Provider getProvider(String configString) {
 		try {
 			Provider provider = Security.getProvider(SUN_PKCS11_PROVIDERNAME);
-			Method configureMethod = provider.getClass().getMethod("configure", String.class);
 			// "--" is permitted in the constructor sun.security.pkcs11.Config
-			return (Provider) configureMethod.invoke(provider, "--" + configString);
+			return provider.configure("--" + configString);
 		} catch (Exception e) {
 			throw new DSSException("Unable to instantiate PKCS11 (JDK >= 9)", e);
 		}

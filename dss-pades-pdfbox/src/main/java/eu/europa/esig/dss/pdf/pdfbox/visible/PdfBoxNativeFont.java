@@ -20,17 +20,18 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.AbstractDSSFont;
 import eu.europa.esig.dss.pades.DSSNativeFont;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
-import java.awt.*;
+import java.awt.Font;
 
 /**
  * The PDFBox native implementation of a Font
  */
 public class PdfBoxNativeFont extends AbstractDSSFont implements DSSNativeFont<PDFont> {
+
+	private static final long serialVersionUID = -7122453492359548221L;
 
 	/** PDFBox font */
 	private final PDFont pdFont;
@@ -51,7 +52,7 @@ public class PdfBoxNativeFont extends AbstractDSSFont implements DSSNativeFont<P
 
 	@Override
 	public Font getJavaFont() {
-		throw new DSSException("PdfBoxNativeFont.class can be used only with PdfBoxNativeObjectFactory!");
+		throw new UnsupportedOperationException("PdfBoxNativeFont.class can be used only with PdfBoxNativeObjectFactory!");
 	}
 
 }

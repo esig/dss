@@ -59,7 +59,7 @@ public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidat
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		List<DSSDocument> detachedContents = new ArrayList<>();
 		detachedContents.add(new HTTPHeader("(request-target)", 
 				"post https://api.testbank.com/v1/payments/sepa-credit-transfers"));
 		detachedContents.add(new HTTPHeader("Content-Type", "application/json"));

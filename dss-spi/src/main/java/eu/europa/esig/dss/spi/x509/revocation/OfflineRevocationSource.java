@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -41,7 +42,7 @@ import java.util.Set;
  *
  * @param <R> the revocation class type (CRL/OCSP)
  */
-public abstract class OfflineRevocationSource<R extends Revocation> implements MultipleRevocationSource<R> {
+public abstract class OfflineRevocationSource<R extends Revocation> implements RevocationSource<R>, MultipleRevocationSource<R> {
 
 	private static final long serialVersionUID = 8270762277613989997L;
 
@@ -188,6 +189,36 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
+	 * This method returns the latest issued revocation token from a set of all revocation data found for
+	 * the given {@code certificateToken}.
+	 * Returns NULL, if no corresponding revocation data found for the certificate.
+	 *
+	 * @param certificateToken
+	 *                               The {@code CertificateToken} for which the
+	 *                               request is made
+	 * @param issuerCertificateToken
+	 *                               The {@code CertificateToken} which is the
+	 *                               issuer of the certificateToken
+	 * @return {@link RevocationToken}
+	 */
+	@Override
+	public RevocationToken<R> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		RevocationToken<R> latestRevocationToken = null;
+
+		final List<RevocationToken<R>> revocationTokens = getRevocationTokens(certificateToken, issuerCertificateToken);
+		if (Utils.isCollectionNotEmpty(revocationTokens)) {
+			for (RevocationToken<R> revocationToken : revocationTokens) {
+				if (latestRevocationToken == null || (revocationToken.getProductionDate() != null
+						&& revocationToken.getProductionDate().after(latestRevocationToken.getProductionDate()))) {
+					latestRevocationToken = revocationToken;
+				}
+			}
+		}
+
+		return latestRevocationToken;
+	}
+
+	/**
 	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
 	 * present in the CMS SignedData
 	 * 
@@ -212,10 +243,18 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
+	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
+	 * present in 'RevocationValues' element
+	 *
+	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getRevocationValuesBinaries() {
+		return getBinariesByOrigin(RevocationOrigin.REVOCATION_VALUES);
+	}
+
+	/**
 	 * Retrieves the list of all {@code RevocationToken}s present in
 	 * 'RevocationValues' element
-	 * 
-	 * NOTE: Applicable only for CAdES and XAdES revocation sources
 	 * 
 	 * @return list of {@code RevocationToken}s
 	 */
@@ -224,10 +263,18 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
+	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
+	 * present in 'AttributeRevocationValues' element
+	 *
+	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getAttributeRevocationValuesBinaries() {
+		return getBinariesByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+	}
+
+	/**
 	 * Retrieves the list of all {@code RevocationToken}s present in
 	 * 'AttributeRevocationValues' element
-	 * 
-	 * NOTE: Applicable only for XAdES revocation source
 	 * 
 	 * @return list of {@code RevocationToken}s
 	 */
@@ -236,10 +283,18 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
+	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
+	 * present in 'TimestampValidationData' element
+	 *
+	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getTimestampValidationDataBinaries() {
+		return getBinariesByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+	}
+
+	/**
 	 * Retrieves the list of all {@code RevocationToken}s present in
 	 * 'TimestampValidationData' element
-	 * 
-	 * NOTE: Applicable only for XAdES revocation source
 	 * 
 	 * @return list of {@code RevocationToken}s
 	 */
@@ -296,8 +351,18 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements M
 	}
 
 	/**
-	 * Retrieves the list of all {@code RevocationToken}s present in the ADBE
-	 * element
+	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
+	 * present in the ADBE signed attribute
+	 *
+	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getADBERevocationValuesBinaries() {
+		return getBinariesByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+	}
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in
+	 * the ADBE signed attribute
 	 * 
 	 * NOTE: Applicable only for PAdES revocation source
 	 * 

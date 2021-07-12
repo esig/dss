@@ -21,14 +21,11 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
-
-import java.util.List;
 
 /**
  * Check if EncryptionAlgorithm is acceptable
@@ -56,24 +53,17 @@ public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck
 
 	@Override
 	protected boolean process() {
-		String algoToFind = encryptionAlgo == null ? Utils.EMPTY_STRING : encryptionAlgo.getName();
-		List<String> supportedEncryptionAlgorithms = constraintWrapper.getSupportedEncryptionAlgorithms();
-		if (Utils.isCollectionNotEmpty(supportedEncryptionAlgorithms)) {
-			if (!supportedEncryptionAlgorithms.contains(algoToFind)) {
-				return false;
-			}
-		}
-		return true;
+		return constraintWrapper.isEncryptionAlgorithmReliable(encryptionAlgo);
 	}
 	
 	@Override
-	protected XmlName buildConstraintMessage() {
-		return buildXmlName(MessageTag.ASCCM_EAA, encryptionAlgo);
+	protected XmlMessage buildConstraintMessage() {
+		return buildXmlMessage(MessageTag.ASCCM_EAA, getName(encryptionAlgo));
 	}
 	
 	@Override
-	protected XmlName buildErrorMessage() {
-		return buildXmlName(MessageTag.ASCCM_EAA_ANS, encryptionAlgo, position);
+	protected XmlMessage buildErrorMessage() {
+		return buildXmlMessage(MessageTag.ASCCM_EAA_ANS, getName(encryptionAlgo), position);
 	}
 
 }

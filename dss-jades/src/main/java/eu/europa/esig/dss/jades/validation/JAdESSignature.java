@@ -48,6 +48,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CommitmentTypeIndication;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -58,6 +59,7 @@ import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,12 +133,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
-		return getSignatureAlgorithm().getDigestAlgorithm();
+		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+		if (signatureAlgorithm == null) {
+			return null;
+		}
+		return signatureAlgorithm.getDigestAlgorithm();
 	}
 
 	@Override
 	public MaskGenerationFunction getMaskGenerationFunction() {
-		return getSignatureAlgorithm().getMaskGenerationFunction();
+		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+		if (signatureAlgorithm == null) {
+			return null;
+		}
+		return signatureAlgorithm.getMaskGenerationFunction();
 	}
 
 	@Override
@@ -430,12 +440,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public SignaturePolicy getSignaturePolicy() {
-		if (signaturePolicy != null) {
-			return signaturePolicy;
-		}
-		
+	protected SignaturePolicy buildSignaturePolicy() {
 		Map<String, Object> sigPolicy = (Map<String, Object>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SIG_PID);
 		if (Utils.isMapNotEmpty(sigPolicy)) {
 			Map<String, Object> policyId = (Map<String, Object>) sigPolicy.get(JAdESHeaderParameterNames.ID);
@@ -449,18 +454,76 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			List<Object> qualifiers = (List<Object>) sigPolicy.get(JAdESHeaderParameterNames.SIG_PQUALS);
 			if (Utils.isCollectionNotEmpty(qualifiers)) {
 				signaturePolicy.setUrl(getSPUri(qualifiers));
+				signaturePolicy.setNotice(getSPUserNotice(qualifiers));
+				signaturePolicy.setDocSpecification(getSPDSpec(qualifiers));
 			}
+
+			Boolean digPSp = (Boolean) sigPolicy.get(JAdESHeaderParameterNames.DIG_PSP);
+			if (digPSp != null) {
+				signaturePolicy.setHashAsInTechnicalSpecification(digPSp);
+			}
+
 		}
 		return signaturePolicy;
 	}
 
-	@SuppressWarnings("unchecked")
 	private String getSPUri(List<Object> qualifiers) {
 		for (Object qualifier : qualifiers) {
-			Map<String, Object> qualiferMap = (Map<String, Object>) qualifier;
-			String spUri = (String)qualiferMap.get(JAdESHeaderParameterNames.SP_URI);
+			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
+			String spUri = (String) qualifierMap.get(JAdESHeaderParameterNames.SP_URI);
 			if (Utils.isStringNotEmpty(spUri)) {
 				return spUri;
+			}
+		}
+		return null;
+	}
+
+	private String getSPUserNotice(List<Object> qualifiers) {
+		for (Object qualifier : qualifiers) {
+			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
+			Map<?, ?> spUserNotice = (Map<?, ?>) qualifierMap.get(JAdESHeaderParameterNames.SP_USER_NOTICE);
+			if (Utils.isMapNotEmpty(spUserNotice)) {
+				try {
+					String organizationString = null;
+					List<Number> noticeNumbersList = null;
+					String explicitTextString = null;
+
+					final Map<?, ?> noticeRef = (Map<?, ?>) spUserNotice.get(JAdESHeaderParameterNames.NOTICE_REF);
+					if (Utils.isMapNotEmpty(noticeRef)) {
+						final String organization = (String) noticeRef.get(JAdESHeaderParameterNames.ORGANTIZATION);
+						if (Utils.isStringNotBlank(organization)) {
+							organizationString = organization;
+						}
+
+						final List<Number> noticeNumbers = (List<Number>) noticeRef.get(JAdESHeaderParameterNames.NOTICE_NUMBERS);
+						if (Utils.isCollectionNotEmpty(noticeNumbers)) {
+							noticeNumbersList = noticeNumbers;
+						}
+					}
+					final String explTest = (String) spUserNotice.get(JAdESHeaderParameterNames.EXPL_TEXT);
+					if (Utils.isStringNotBlank(explTest)) {
+						explicitTextString = explTest;
+					}
+					return DSSUtils.getSPUserNoticeString(organizationString, noticeNumbersList, explicitTextString);
+
+				} catch (Exception e) {
+					LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
+					return null;
+				}
+			}
+		}
+		return null;
+	}
+
+	private String getSPDSpec(List<Object> qualifiers) {
+		for (Object qualifier : qualifiers) {
+			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
+			Map<?, ?> spDSpec = (Map<?, ?>) qualifierMap.get(JAdESHeaderParameterNames.SP_DSPEC);
+			if (Utils.isMapNotEmpty(spDSpec)) {
+				String id = (String) spDSpec.get(JAdESHeaderParameterNames.ID);
+				if (Utils.isStringNotEmpty(id)) {
+					return DSSUtils.getObjectIdentifier(id);
+				}
 			}
 		}
 		return null;
@@ -555,10 +618,16 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			
 			JAdESReferenceValidation signingInputReferenceValidation = getSigningInputReferenceValidation();
 			referenceValidations.add(signingInputReferenceValidation);
-			
-			List<JAdESReferenceValidation> detachedReferenceValidations = getDetachedReferenceValidations();
-			if (Utils.isCollectionNotEmpty(detachedReferenceValidations)) {
-				referenceValidations.addAll(detachedReferenceValidations);
+
+			if (isDetachedSignature()) {
+				List<JAdESReferenceValidation> detachedReferenceValidations = getDetachedReferenceValidations();
+				if (Utils.isCollectionNotEmpty(detachedReferenceValidations)) {
+					referenceValidations.addAll(detachedReferenceValidations);
+				}
+			}
+
+			if (isCounterSignature()) {
+				referenceValidations.add(getCounterSignatureReferenceValidation());
 			}
 			
 		}
@@ -606,11 +675,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 						LOG.warn("The payload is not found! The detached content must be provided!");
 						
 					}
-					
-					String payload = jws.getSignedPayload();
-					String headerAndPayloadResult = DSSJsonUtils.concatenate(encodedHeader, payload);
-					// The data to sign by RFC 7515 shall be ASCII-encoded
-					byte[] dataToSign = DSSJsonUtils.getAsciiBytes(headerAndPayloadResult);
+
+					byte[] dataToSign = DSSJsonUtils.getSigningInputBytes(jws);
 					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 					Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));
 					signatureValueReferenceValidation.setDigest(digest);
@@ -632,32 +698,35 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 			
-		} catch (DSSException e) {
+		} catch (Exception e) {
 			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage());
 		}
 		
 		return signatureValueReferenceValidation;
 	}
-	
+
+	/**
+	 * Gets Kid value when present
+	 *
+	 * @return {@link String}
+	 */
 	public String getKid() {
 		return jws.getKeyIdHeaderValue();
 	}
 
 	private List<JAdESReferenceValidation> getDetachedReferenceValidations() {
-		if (isDetachedSignature()) {
-			SigDMechanism sigDMechanism = getSigDMechanism();
-			if (sigDMechanism != null) {
-				switch (sigDMechanism) {
-					case HTTP_HEADERS:
-					case OBJECT_ID_BY_URI:
-						// the documents are added to the payload, not possible to extract separate reference validations
-						break;
-					case OBJECT_ID_BY_URI_HASH:
-						return getReferenceValidationsByUriHashMechanism();
-					default:
-						LOG.warn("The SigDMechanism '{}' is not supported!", sigDMechanism);
-						break;
-				}
+		SigDMechanism sigDMechanism = getSigDMechanism();
+		if (sigDMechanism != null) {
+			switch (sigDMechanism) {
+				case HTTP_HEADERS:
+				case OBJECT_ID_BY_URI:
+					// the documents are added to the payload, not possible to extract separate reference validations
+					break;
+				case OBJECT_ID_BY_URI_HASH:
+					return getReferenceValidationsByUriHashMechanism();
+				default:
+					LOG.warn("The SigDMechanism '{}' is not supported!", sigDMechanism);
+					break;
 			}
 		}
 		return Collections.emptyList();
@@ -684,7 +753,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	
 	private byte[] getPayloadForHttpHeadersMechanism() {
 		if (Utils.isCollectionEmpty(detachedContents)) {
-			throw new DSSException("The detached contents shall be provided for validating a detached signature!");
+			throw new IllegalArgumentException("The detached contents shall be provided for validating a detached signature!");
 		}
 		
 		/*
@@ -703,7 +772,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	
 	private byte[] getPayloadForObjectIdByUriMechanism() {
 		if (Utils.isCollectionEmpty(detachedContents)) {
-			throw new DSSException("The detached contents shall be provided for validating a detached signature!");
+			throw new IllegalArgumentException("The detached contents shall be provided for validating a detached signature!");
 		}
 		
 		List<DSSDocument> signedDocumentsByUri = getSignedDocumentsByUri(true);
@@ -898,6 +967,36 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				DSSJsonUtils.toBase64Url(computedDigestValue), document.getName(), DSSJsonUtils.toBase64Url(expectedDigest));
 		return false;
 	}
+
+	private JAdESReferenceValidation getCounterSignatureReferenceValidation() {
+		JAdESReferenceValidation referenceValidation = new JAdESReferenceValidation();
+		referenceValidation.setType(DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE);
+
+		JAdESSignature masterSignature = (JAdESSignature) getMasterSignature();
+		if (masterSignature != null) {
+
+			byte[] signatureValue = masterSignature.getJws().getSignatureValue();
+			if (Utils.isArrayNotEmpty(signatureValue)) {
+				referenceValidation.setFound(true);
+			}
+
+			byte[] unverifiedPayloadBytes = getJws().getUnverifiedPayloadBytes();
+			if (Utils.isArrayNotEmpty(unverifiedPayloadBytes)) {
+				boolean intact = Arrays.equals(signatureValue, unverifiedPayloadBytes);
+				if (!intact) {
+					LOG.warn("The payload of a cSig with Id '{}' does not match the signature value of its master signature!",
+							getDSSId().asXmlId());
+				}
+				referenceValidation.setIntact(intact);
+			} else {
+				// nothing to compare against for an attached signature
+				referenceValidation.setIntact(true);
+			}
+
+		}
+
+		return referenceValidation;
+	}
 	
 	private Object getUnsignedProperty(String headerName) {
 		List<EtsiUComponent> unsignedPropertiesWithHeaderName = 
@@ -972,8 +1071,9 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return SignatureLevel.JAdES_BASELINE_T;
 	}
 
-	private boolean hasBProfile() {
-		return getSigningTime() != null && getSignatureAlgorithm() != null;
+	@Override
+	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
+		return new JAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 	
 	@Override
@@ -983,6 +1083,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			LOG.warn("Error(s) occurred during the JSON schema validation : {}", validationErrors);
 		}
 		return validationErrors;
+	}
+
+	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		throw new UnsupportedOperationException("The method addExternalTimestamp(timestamp) is not supported for JAdES!");
 	}
 
 }

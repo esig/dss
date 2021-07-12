@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.pdf.encryption;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.Date;
-import java.util.Objects;
-
-import org.bouncycastle.crypto.prng.FixedSecureRandom;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.crypto.prng.FixedSecureRandom;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * Default {@code SecureRandomProvider} used in DSS, 
@@ -88,7 +87,7 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 	 */
 	public void setBinaryLength(int binaryLength) {
 		if (binaryLength < 16) {
-			throw new DSSException("The binaryLength cannot be less then 16 bytes!");
+			throw new IllegalArgumentException("The binaryLength cannot be less then 16 bytes!");
 		}
 		this.binaryLength = binaryLength;
 	}
@@ -105,9 +104,7 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 	}
 	
 	private byte[] buildSeed() {
-		if (parameters == null) {
-			throw new DSSException("Parameters must be defined! Unable to use DSSFixedSecureRandomProvider.");
-		}
+		Objects.requireNonNull(parameters, "Parameters must be defined! Unable to use DSSFixedSecureRandomProvider.");
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			baos.write(parameters.getContentSize());
 			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();

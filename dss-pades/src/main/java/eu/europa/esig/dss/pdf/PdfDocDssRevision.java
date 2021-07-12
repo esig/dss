@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents an LT-level PDF revision containing a DSS dictionary
@@ -33,9 +33,17 @@ import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
  */
 public class PdfDocDssRevision implements PdfRevision {
 	
+	private static final long serialVersionUID = -1369264311522424583L;
+
+	/** The DSS dictionary from the revision */
 	private final PdfDssDict dssDictionary;
-	
-	public PdfDocDssRevision(PdfDssDict dssDictionary) {
+
+	/**
+	 * Default constructor
+	 *
+	 * @param dssDictionary {@link PdfDssDict}
+	 */
+	public PdfDocDssRevision(final PdfDssDict dssDictionary) {
 		Objects.requireNonNull(dssDictionary, "The dssDictionary cannot be null!");
 		this.dssDictionary = dssDictionary;
 	}

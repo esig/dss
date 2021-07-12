@@ -33,13 +33,9 @@ public class ServiceLoaderPdfObjFactoryTest {
 	public void testFallback() {
 		IPdfObjFactory factory = new ServiceLoaderPdfObjFactory();
 
-		assertThrows(ExceptionInInitializerError.class, () -> {
-			factory.newPAdESSignatureService();
-		});
+		assertThrows(ExceptionInInitializerError.class, () -> factory.newPAdESSignatureService());
 
-		assertThrows(ExceptionInInitializerError.class, () -> {
-			factory.newSignatureTimestampService();
-		});
+		assertThrows(ExceptionInInitializerError.class, () -> factory.newSignatureTimestampService());
 	}
 
 }

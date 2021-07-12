@@ -30,7 +30,7 @@ import java.util.List;
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -92,9 +92,9 @@ public class CAdESLevelLTAExtendedTest extends AbstractCAdESTestValidation {
 				assertEquals(1, timestampFoundRevocations.size());
 				RelatedRevocationWrapper xmlFoundRevocation = timestampFoundRevocations.get(0);
 				assertTrue(xmlFoundRevocation.getOrigins().contains(RevocationOrigin.REVOCATION_VALUES));
-				List<RevocationRefWrappper> revocationRefs = xmlFoundRevocation.getReferences();
+				List<RevocationRefWrapper> revocationRefs = xmlFoundRevocation.getReferences();
 				assertEquals(1, revocationRefs.size());
-				RevocationRefWrappper xmlRevocationRef = revocationRefs.get(0);
+				RevocationRefWrapper xmlRevocationRef = revocationRefs.get(0);
 				assertTrue(xmlRevocationRef.getOrigins().contains(RevocationRefOrigin.COMPLETE_REVOCATION_REFS));
 				signatureTimestampCounter++;
 			}
@@ -107,7 +107,7 @@ public class CAdESLevelLTAExtendedTest extends AbstractCAdESTestValidation {
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.CAdES_101733_C, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_C, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 }

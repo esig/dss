@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.ws.converter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.Digest;
@@ -38,6 +29,13 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import org.junit.jupiter.api.Test;
+
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DTOConverterTest {
 	
@@ -45,7 +43,7 @@ public class DTOConverterTest {
 	public void toToBeSignedTest() {
 		ToBeSignedDTO toBeSignedDTO = new ToBeSignedDTO(new byte[] {'1','2','3'});
 		ToBeSigned toBeSigned = DTOConverter.toToBeSigned(toBeSignedDTO);
-		assertTrue(Arrays.equals(toBeSignedDTO.getBytes(), toBeSigned.getBytes()));
+        assertArrayEquals(toBeSignedDTO.getBytes(), toBeSigned.getBytes());
 		assertEquals(toBeSignedDTO.hashCode(), toBeSigned.hashCode());
 	}
 	
@@ -53,7 +51,7 @@ public class DTOConverterTest {
 	public void toToBeSignedNullByteArrayTest() {
 		ToBeSignedDTO toBeSignedDTO = new ToBeSignedDTO(null);
 		ToBeSigned toBeSigned = DTOConverter.toToBeSigned(toBeSignedDTO);
-		assertTrue(Arrays.equals(toBeSignedDTO.getBytes(), toBeSigned.getBytes()));
+		assertArrayEquals(toBeSignedDTO.getBytes(), toBeSigned.getBytes());
 		assertEquals(toBeSignedDTO.hashCode(), toBeSigned.hashCode());
 	}
 	
@@ -67,7 +65,7 @@ public class DTOConverterTest {
 	public void toToBeSignedDTOTest() {
 		ToBeSigned toBeSigned = new ToBeSigned(new byte[] {'1','2','3'});
 		ToBeSignedDTO toBeSignedDTO = DTOConverter.toToBeSignedDTO(toBeSigned);
-		assertTrue(Arrays.equals(toBeSignedDTO.getBytes(), toBeSigned.getBytes()));
+		assertArrayEquals(toBeSignedDTO.getBytes(), toBeSigned.getBytes());
 		assertEquals(toBeSignedDTO.hashCode(), toBeSigned.hashCode());
 	}
 	
@@ -77,7 +75,7 @@ public class DTOConverterTest {
 				Utils.fromBase64("7b907e3ef6f8a4342ba42f9c66518bf32f0ec242e8784284c1d8cd816cd77bf2"));
 		SignatureValue signatureValue = DTOConverter.toSignatureValue(signatureValueDTO);
 		assertEquals(signatureValueDTO.getAlgorithm(), signatureValue.getAlgorithm());
-		assertTrue(Arrays.equals(signatureValueDTO.getValue(), signatureValue.getValue()));
+		assertArrayEquals(signatureValueDTO.getValue(), signatureValue.getValue());
 		assertEquals(signatureValueDTO.hashCode(), signatureValue.hashCode());
 	}
 	
@@ -87,7 +85,7 @@ public class DTOConverterTest {
 				Utils.fromBase64("7b907e3ef6f8a4342ba42f9c66518bf32f0ec242e8784284c1d8cd816cd77bf2"));
 		SignatureValueDTO signatureValueDTO = DTOConverter.toSignatureValueDTO(signatureValue);
 		assertEquals(signatureValueDTO.getAlgorithm(), signatureValue.getAlgorithm());
-		assertTrue(Arrays.equals(signatureValueDTO.getValue(), signatureValue.getValue()));
+		assertArrayEquals(signatureValueDTO.getValue(), signatureValue.getValue());
 		assertEquals(signatureValueDTO.hashCode(), signatureValue.hashCode());
 	}
 	
@@ -112,7 +110,7 @@ public class DTOConverterTest {
 		Digest digest = DTOConverter.toDigest(digestDTO);
 		assertNotNull(digest);
 		assertEquals(digest.getAlgorithm(), digestDTO.getAlgorithm());
-		assertTrue(Arrays.equals(digest.getValue(), digestDTO.getValue()));
+		assertArrayEquals(digest.getValue(), digestDTO.getValue());
 	}
 	
 	@Test
@@ -121,7 +119,7 @@ public class DTOConverterTest {
 		DigestDTO digestDTO = DTOConverter.toDigestDTO(digest);
 		assertNotNull(digestDTO);
 		assertEquals(digest.getAlgorithm(), digestDTO.getAlgorithm());
-		assertTrue(Arrays.equals(digest.getValue(), digestDTO.getValue()));
+		assertArrayEquals(digest.getValue(), digestDTO.getValue());
 	}
 
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>testdocument(1).pdf</DocumentName>
-    <ValidationDate>2018-02-23T05:50:46</ValidationDate>
+    <ValidationDate>2018-02-23T05:50:46Z</ValidationDate>
     <Signatures>
         <Signature Id="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb">
             <SignatureFilename>testdocument(1).pdf</SignatureFilename>
-            <ClaimedSigningTime>2017-10-27T11:54:56</ClaimedSigningTime>
+            <ClaimedSigningTime>2017-10-27T11:54:56Z</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
@@ -84,8 +84,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2027-03-13T23:59:59</NotAfter>
-            <NotBefore>2017-05-15T16:19:53</NotBefore>
+            <NotAfter>2027-03-13T23:59:59Z</NotAfter>
+            <NotBefore>2017-05-15T16:19:53Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302</EntityKey>
@@ -111,11 +111,10 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://repository.eid.belgium.be">2.16.56.12.1.1.2.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -125,7 +124,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
                             </CapturedQualifiers>
@@ -164,8 +163,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2028-07-28T10:00:00</NotAfter>
-            <NotBefore>2016-11-28T10:00:00</NotBefore>
+            <NotAfter>2028-07-28T10:00:00Z</NotAfter>
+            <NotBefore>2016-11-28T10:00:00Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B</EntityKey>
@@ -191,8 +190,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://repository.eid.belgium.be">2.16.56.12.1.1.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -202,7 +199,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -235,8 +232,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2032-10-22T12:00:00</NotAfter>
-            <NotBefore>2013-06-26T12:00:00</NotBefore>
+            <NotAfter>2032-10-22T12:00:00Z</NotAfter>
+            <NotBefore>2013-06-26T12:00:00Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F</EntityKey>
@@ -259,8 +256,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://repository.eid.belgium.be">2.16.56.12.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -270,7 +265,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -280,8 +275,8 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2013-06-26T12:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2013-06-26T12:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -312,8 +307,8 @@
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
-            <NotAfter>2022-02-28T10:00:00</NotAfter>
-            <NotBefore>2016-11-28T10:00:00</NotBefore>
+            <NotAfter>2022-02-28T10:00:00Z</NotAfter>
+            <NotBefore>2016-11-28T10:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE</EntityKey>
@@ -341,8 +336,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://repository.pki.belgium.be">2.16.56.12.1.1.5</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -352,7 +345,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -385,8 +378,8 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2018-01-29T11:00:00</NotAfter>
-            <NotBefore>2016-12-10T11:00:00</NotBefore>
+            <NotAfter>2018-01-29T11:00:00Z</NotAfter>
+            <NotBefore>2016-12-10T11:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EB217219BADFC13B4FEA3EFA43882E9FECE49E542DCDBA83428DC6854499A35F</EntityKey>
@@ -412,8 +405,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -423,7 +414,7 @@
                             <ServiceNames><ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -443,9 +434,9 @@
         <Revocation Id="R-021ec5069eb8a903bd62b6769eddfe439dfa90a720c9a362d5fe76b9c31d0302bfc08d553a774d1f440ab36525a3290e2cc23b46d0ac954ea4d8201faff0d91a">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2017-10-27T11:55:08</ProductionDate>
-            <ThisUpdate>2017-10-27T11:55:08</ThisUpdate>
-            <NextUpdate>2017-10-27T11:56:08</NextUpdate>
+            <ProductionDate>2017-10-27T11:55:08Z</ProductionDate>
+            <ThisUpdate>2017-10-27T11:55:08Z</ThisUpdate>
+            <NextUpdate>2017-10-27T11:56:08Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -467,9 +458,9 @@
         <Revocation Id="R-7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2017-07-01T11:00:00</ProductionDate>
-            <ThisUpdate>2017-07-01T11:00:00</ThisUpdate>
-            <NextUpdate>2018-01-31T11:00:00</NextUpdate>
+            <ProductionDate>2017-07-01T11:00:00Z</ProductionDate>
+            <ThisUpdate>2017-07-01T11:00:00Z</ThisUpdate>
+            <NextUpdate>2018-01-31T11:00:00Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -491,7 +482,7 @@
     
             <UsedTimestamps>
                 <Timestamp Id="T-F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F" Type="SIGNATURE_TIMESTAMP">
-                    <ProductionTime>2017-10-27T11:55:08</ProductionTime>
+                    <ProductionTime>2017-10-27T11:55:08Z</ProductionTime>
                     <DigestMatcher type="MESSAGE_IMPRINT">
 		              <DigestMethod>SHA256</DigestMethod>
 		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
@@ -522,7 +513,7 @@
 		            </DigestAlgoAndValue>
                 </Timestamp>
                 <Timestamp Id="T-7F9B88A8161CC87905298FF8E0CD080516452FBA1480DD6AFAE38B7DD18E2A1B" Type="ARCHIVE_TIMESTAMP">
-                    <ProductionTime>2017-10-27T11:55:08</ProductionTime>
+                    <ProductionTime>2017-10-27T11:55:08Z</ProductionTime>
                     <DigestMatcher type="MESSAGE_IMPRINT">
 		              <DigestMethod>SHA256</DigestMethod>
 		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
@@ -577,9 +568,9 @@
             <Url>https://tsl.belgium.be/tsl-be.xml</Url>
             <SequenceNumber>36</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2018-02-23T05:15:00</LastLoading>
-            <IssueDate>2018-02-08T00:00:00</IssueDate>
-            <NextUpdate>2018-07-30T00:00:00</NextUpdate>
+            <LastLoading>2018-02-23T05:15:00Z</LastLoading>
+            <IssueDate>2018-02-08T00:00:00Z</IssueDate>
+            <NextUpdate>2018-07-30T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -587,9 +578,9 @@
 	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
 	        <SequenceNumber>200</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2018-02-23T05:15:00</LastLoading>
-	        <IssueDate>2018-02-19T13:00:00</IssueDate>
-	        <NextUpdate>2018-08-19T00:00:00</NextUpdate>
+	        <LastLoading>2018-02-23T05:15:00Z</LastLoading>
+	        <IssueDate>2018-02-19T13:00:00Z</IssueDate>
+	        <NextUpdate>2018-08-19T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

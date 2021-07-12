@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
-    <ValidationDate>2018-12-07T12:58:28</ValidationDate>
+    <ValidationDate>2018-12-07T12:58:28Z</ValidationDate>
     <UsedCertificates>
         <Certificate Id="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
             <SubjectDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tsp-5.3 name,cn=sdi-5.3.3</SubjectDistinguishedName>
@@ -19,8 +19,8 @@
             	<Source>UNKNOWN</Source>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2019-12-02T00:01:14</NotAfter>
-            <NotBefore>2017-12-02T00:01:14</NotBefore>
+            <NotAfter>2019-12-02T00:01:14Z</NotAfter>
+            <NotBefore>2017-12-02T00:01:14Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A</EntityKey>
@@ -41,8 +41,6 @@
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>
@@ -52,7 +50,7 @@
                             <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - A</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -61,7 +59,7 @@
                             <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - B</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -95,8 +93,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2019-12-02T00:01:15</NotAfter>
-            <NotBefore>2017-12-02T00:01:15</NotBefore>
+            <NotAfter>2019-12-02T00:01:15Z</NotAfter>
+            <NotBefore>2017-12-02T00:01:15Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E4A94773CF7B28C2BDF25015BE6716E501E73AB82BF0A9788D0DF8AD14D6876D</EntityKey>
@@ -119,14 +117,13 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes>
-                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
-            </QCTypes>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>
@@ -136,7 +133,7 @@
                             <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - A</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -146,7 +143,7 @@
                             <ServiceNames><ServiceName lang="en">TS-5.3.3 Name - B</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers>
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal</Qualifier>
                             </CapturedQualifiers>
@@ -173,9 +170,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://46.101.246.130:8080/esig-validation-tests/crl/SDI-5.3.3.crl</SourceAddress>
-            <ProductionDate>2018-12-07T12:54:39</ProductionDate>
-            <ThisUpdate>2018-12-07T12:54:39</ThisUpdate>
-            <NextUpdate>2018-12-08T12:54:39</NextUpdate>
+            <ProductionDate>2018-12-07T12:54:39Z</ProductionDate>
+            <ThisUpdate>2018-12-07T12:54:39Z</ThisUpdate>
+            <NextUpdate>2018-12-08T12:54:39Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -199,9 +196,9 @@
             <Url>http://46.101.246.130:8080/esig-validation-tests/tl/TL-5.xml</Url>
             <SequenceNumber>1</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2018-12-07T12:12:31</LastLoading>
-            <IssueDate>2018-12-01T00:00:00</IssueDate>
-            <NextUpdate>2019-01-02T00:00:00</NextUpdate>
+            <LastLoading>2018-12-07T12:12:31Z</LastLoading>
+            <IssueDate>2018-12-01T00:00:00Z</IssueDate>
+            <NextUpdate>2019-01-02T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -209,9 +206,9 @@
 	        <Url>http://46.101.246.130:8080/esig-validation-tests/tl/LOTL-3.xml</Url>
 	        <SequenceNumber>1</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2018-12-07T12:12:31</LastLoading>
-	        <IssueDate>2018-12-01T00:00:00</IssueDate>
-	        <NextUpdate>2019-01-02T00:00:00</NextUpdate>
+	        <LastLoading>2018-12-07T12:12:31Z</LastLoading>
+	        <IssueDate>2018-12-01T00:00:00Z</IssueDate>
+	        <NextUpdate>2019-01-02T00:00:00Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

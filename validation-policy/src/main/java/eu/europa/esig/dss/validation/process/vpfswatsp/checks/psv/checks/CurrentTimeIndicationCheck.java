@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -43,7 +43,7 @@ public class CurrentTimeIndicationCheck extends ChainItem<XmlPSV> {
 	private final SubIndication subIndication;
 
 	/** Current errors  */
-	private final List<XmlName> errors;
+	private final List<XmlMessage> errors;
 
 	/**
 	 * Default constructor
@@ -52,11 +52,11 @@ public class CurrentTimeIndicationCheck extends ChainItem<XmlPSV> {
 	 * @param result {@link XmlPSV}
 	 * @param indication {@link Indication}
 	 * @param subIndication {@link SubIndication}
-	 * @param errors a list of {@link XmlName}s
+	 * @param errors a list of {@link XmlMessage}s
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public CurrentTimeIndicationCheck(I18nProvider i18nProvider, XmlPSV result, Indication indication,
-									  SubIndication subIndication, List<XmlName> errors, LevelConstraint constraint) {
+									  SubIndication subIndication, List<XmlMessage> errors, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.indication = indication;
@@ -90,7 +90,7 @@ public class CurrentTimeIndicationCheck extends ChainItem<XmlPSV> {
 	}
 
 	@Override
-	protected List<XmlName> getPreviousErrors() {
+	protected List<XmlMessage> getPreviousErrors() {
 		return errors;
 	}
 

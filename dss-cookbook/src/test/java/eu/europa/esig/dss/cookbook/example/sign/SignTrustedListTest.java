@@ -1,7 +1,10 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
-import eu.europa.esig.dss.model.*;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
@@ -10,9 +13,6 @@ import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class SignTrustedListTest extends CookbookTools {
 
@@ -26,12 +26,10 @@ public class SignTrustedListTest extends CookbookTools {
 
             DSSPrivateKeyEntry privateKeyEntry = signingToken.getKeys().get(0);
             CertificateToken signingCertificate = privateKeyEntry.getCertificate();
-            // optionally the certificate chain can be provided
-            List<CertificateToken> certificateChain = Arrays.asList(privateKeyEntry.getCertificateChain());
 
             // This class creates the appropriated XAdESSignatureParameters object to sign a trusted list.
-            // It handles the configuration complexity and creates a ready-to-be-used XAdESSignatureParameters with the packaging, the references, the canononicalization,...
-            TrustedListSignatureParametersBuilder builder = new TrustedListSignatureParametersBuilder(signingCertificate, certificateChain, trustedList);
+            // It handles the configuration complexity and creates a ready-to-be-used XAdESSignatureParameters with a correct configuration.
+            TrustedListSignatureParametersBuilder builder = new TrustedListSignatureParametersBuilder(signingCertificate, trustedList);
             XAdESSignatureParameters parameters = builder.build();
 
             XAdESService service = new XAdESService(new CommonCertificateVerifier());

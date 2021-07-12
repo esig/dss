@@ -1,47 +1,24 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.spi.x509.revocation.ocsp;
-
-import java.io.StringWriter;
-import java.security.PublicKey;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Objects;
-
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
-import org.bouncycastle.asn1.isismtt.ISISMTTObjectIdentifiers;
-import org.bouncycastle.asn1.isismtt.ocsp.CertHash;
-import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.RevokedStatus;
-import org.bouncycastle.cert.ocsp.SingleResp;
-import org.bouncycastle.cert.ocsp.UnknownStatus;
-import org.bouncycastle.operator.ContentVerifierProvider;
-import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -60,6 +37,27 @@ import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.isismtt.ISISMTTObjectIdentifiers;
+import org.bouncycastle.asn1.isismtt.ocsp.CertHash;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.RevokedStatus;
+import org.bouncycastle.cert.ocsp.SingleResp;
+import org.bouncycastle.cert.ocsp.UnknownStatus;
+import org.bouncycastle.operator.ContentVerifierProvider;
+import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.x500.X500Principal;
+import java.io.StringWriter;
+import java.security.PublicKey;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).
@@ -73,7 +71,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	 * The encapsulated basic OCSP response.
 	 */
 	private final BasicOCSPResp basicOCSPResp;
-
+	
 	/**
 	 * The used SingleResp (can be null)
 	 */
@@ -84,7 +82,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	 */
 	private CertificateToken issuerCertificateToken;
 
-
+	
 	/**
 	 * The source of embedded into the OCSP token certificates
 	 */
@@ -92,7 +90,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 
 	/**
 	 * The default constructor to instantiate an OCSPToken with BasicOCSPResp only
-	 *
+	 * 
 	 * @param basicOCSPResp    {@link BasicOCSPResp} containing the response
 	 *                         binaries
 	 * @param latestSingleResp {@link SingleResp} to be used with the current
@@ -117,7 +115,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 			extractArchiveCutOff(latestSingleResp);
 			extractCertHashExtension(latestSingleResp);
 		}
-
+		
 		checkSignatureValidity(issuer);
 	}
 
@@ -164,14 +162,14 @@ public class OCSPToken extends RevocationToken<OCSP> {
 
 	/**
 	 * This method extracts the CertHash extension if present
-	 *
+	 * 
 	 * Common PKI Part 4: Operational Protocols
 	 * 3.1.2 Common PKI Private OCSP Extensions
-	 *
+	 * 
 	 * CertHash ::= SEQUENCE {
 	 * hashAlgorithm AlgorithmIdentifier,
 	 * certificateHash OCTET STRING }
-	 *
+	 * 
 	 * @param bestSingleResp
 	 *            the related SingleResponse
 	 */
@@ -196,12 +194,12 @@ public class OCSPToken extends RevocationToken<OCSP> {
 
 	private void checkSignatureValidity(CertificateToken caCertificateToken) {
 		CandidatesForSigningCertificate candidates = getCertificateSource().getCandidatesForSigningCertificate(caCertificateToken);
-
+		
 		SignatureIntegrityValidator signingCertificateValidator = new OCSPSignatureIntegrityValidator(this);
 		CertificateValidity certificateValidity = signingCertificateValidator.validate(candidates);
 		if (certificateValidity != null) {
 			candidates.setTheCertificateValidity(certificateValidity);
-
+			
 			CertificateToken certificateToken = certificateValidity.getCertificateToken();
 			this.issuerCertificateToken = certificateToken;
 		}
@@ -219,18 +217,20 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		return signatureAlgorithm;
 	}
 
-	@Override
-	public String getRevocationTokenKey() {
-		if (revocationTokenKey == null) {
-			revocationTokenKey = DSSRevocationUtils.getOcspRevocationKey(relatedCertificate, sourceURL);
-		}
-		return revocationTokenKey;
-	}
-
+	/**
+	 * Returns the {@code BasicOCSPResp}
+	 *
+	 * @return {@link BasicOCSPResp}
+	 */
 	public BasicOCSPResp getBasicOCSPResp() {
 		return basicOCSPResp;
 	}
 
+	/**
+	 * Returns the latest single response
+	 *
+	 * @return {@link SingleResp}
+	 */
 	public SingleResp getLatestSingleResp() {
 		return latestSingleResp;
 	}
@@ -271,11 +271,11 @@ public class OCSPToken extends RevocationToken<OCSP> {
 	public boolean isValid() {
 		return SignatureValidity.VALID == signatureValidity;
 	}
-
+	
 	/**
 	 * Verifies if the current OCSP token has been signed by the specified publicKey
 	 * @param publicKey {@link PublicKey} of a signing candidate
-	 *
+	 * 
 	 * @return {@link SignatureValidity}
 	 */
 	@Override
@@ -318,8 +318,8 @@ public class OCSPToken extends RevocationToken<OCSP> {
 			out.append(indentStr).append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
 		}
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm.getJCEId()).append('\n');
-		if (getRelatedCertificateID() != null) {
-			out.append(indentStr).append("Related certificate: ").append(getRelatedCertificateID()).append('\n');
+		if (getRelatedCertificateId() != null) {
+			out.append(indentStr).append("Related certificate: ").append(getRelatedCertificateId()).append('\n');
 		}
 		indentStr = indentStr.substring(1);
 		out.append(indentStr).append("]");

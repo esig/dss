@@ -30,7 +30,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationRefWrappper;
+import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -59,7 +59,7 @@ public class XAdESRevocationSourceESTest extends AbstractXAdESTestValidation {
 		int ocspResponses = 0;
 		List<String> revocationDigests = new ArrayList<>();
 		for (RelatedRevocationWrapper revocation : signature.foundRevocations().getRelatedRevocationsByRefOrigin(RevocationRefOrigin.COMPLETE_REVOCATION_REFS)) {
-			for (RevocationRefWrappper revocationRef : revocation.getReferences()) {
+			for (RevocationRefWrapper revocationRef : revocation.getReferences()) {
 				assertNotNull(revocationRef.getDigestAlgoAndValue());
 				assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 				assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());

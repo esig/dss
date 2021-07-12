@@ -20,14 +20,25 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import java.util.Arrays;
-
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 
+import java.util.Arrays;
+
+/**
+ * This class is used to verify if a given {@code CertificateToken} matches a {@code CertificateRef}
+ *
+ */
 public class CertificateTokenRefMatcher {
 
+	/**
+	 * This method verifies if the given {@code CertificateToken} matches the {@code CertificateRef}
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @param certificateRef {@link CertificateRef}
+	 * @return TRUE if the reference corresponds to the certificate, FALSE otherwise
+	 */
 	public boolean match(CertificateToken certificateToken, CertificateRef certificateRef) {
 		// If we only know the public key, the token is null
 		if (certificateToken == null) {
@@ -35,11 +46,11 @@ public class CertificateTokenRefMatcher {
 		}
 
 		Digest certDigest = certificateRef.getCertDigest();
-		CertificateIdentifier certificateIdentifier = certificateRef.getCertificateIdentifier();
+		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
 		ResponderId responderId = certificateRef.getResponderId();
 		if (certDigest != null) {
 			return matchByDigest(certificateToken, certificateRef);
-		} else if (certificateIdentifier != null && certificateIdentifier.isRelatedToCertificate(certificateToken)) {
+		} else if (signerIdentifier != null && signerIdentifier.isRelatedToCertificate(certificateToken)) {
 			return true;
 		} else if (responderId != null && responderId.isRelatedToCertificate(certificateToken)) {
 			return true;
@@ -47,6 +58,13 @@ public class CertificateTokenRefMatcher {
 		return false;
 	}
 
+	/**
+	 * This method verifies if only digest within the {@code certificateRef} corresponds to {@code certificateToken}
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @param certificateRef {@link CertificateRef}
+	 * @return TRUE if the digest present within a reference match the one computed on certificate token's binaries
+	 */
 	public boolean matchByDigest(CertificateToken certificateToken, CertificateRef certificateRef) {
 		Digest certDigest = certificateRef.getCertDigest();
 		if (certDigest != null) {
@@ -56,22 +74,46 @@ public class CertificateTokenRefMatcher {
 		return false;
 	}
 
+	/**
+	 * This method verifies if only the serial number within the {@code certificateRef} corresponds
+	 * to {@code certificateToken}
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @param certificateRef {@link CertificateRef}
+	 * @return TRUE if the the serial number present within a reference match the certificate token
+	 */
 	public boolean matchBySerialNumber(CertificateToken certificateToken, CertificateRef certificateRef) {
-		CertificateIdentifier certificateIdentifier = certificateRef.getCertificateIdentifier();
-		if (certificateIdentifier != null && certificateIdentifier.getSerialNumber() != null) {
-			return certificateToken.getSerialNumber().equals(certificateIdentifier.getSerialNumber());
+		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
+		if (signerIdentifier != null && signerIdentifier.getSerialNumber() != null) {
+			return certificateToken.getSerialNumber().equals(signerIdentifier.getSerialNumber());
 		}
 		return false;
 	}
 
+	/**
+	 * This method verifies if only the issuer name within the {@code certificateRef} corresponds
+	 * to {@code certificateToken}
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @param certificateRef {@link CertificateRef}
+	 * @return TRUE if the the issuer name present within a reference match the certificate token
+	 */
 	public boolean matchByIssuerName(CertificateToken certificateToken, CertificateRef certificateRef) {
-		CertificateIdentifier certificateIdentifier = certificateRef.getCertificateIdentifier();
-		if (certificateIdentifier != null && certificateIdentifier.getIssuerName() != null) {
-			return DSSASN1Utils.x500PrincipalAreEquals(certificateIdentifier.getIssuerName(), certificateToken.getIssuerX500Principal());
+		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
+		if (signerIdentifier != null && signerIdentifier.getIssuerName() != null) {
+			return DSSASN1Utils.x500PrincipalAreEquals(signerIdentifier.getIssuerName(), certificateToken.getIssuerX500Principal());
 		}
 		return false;
 	}
 	
+	/**
+	 * This method verifies if only the responder Id within the {@code certificateRef} corresponds
+	 * to {@code certificateToken}
+	 *
+	 * @param certificateToken {@link CertificateToken}
+	 * @param certificateRef {@link CertificateRef}
+	 * @return TRUE if the the responder Id present within a reference match the certificate token
+	 */
 	public boolean matchByResponderId(CertificateToken certificateToken, CertificateRef certificateRef) {
 		ResponderId responderId = certificateRef.getResponderId();
 		if (responderId != null) {

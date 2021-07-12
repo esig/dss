@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -42,6 +32,15 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESManifestFromDigestDocumentsLevelBTest extends AbstractXAdESTestSignature {
 
@@ -52,7 +51,7 @@ public class XAdESManifestFromDigestDocumentsLevelBTest extends AbstractXAdESTes
 	@BeforeEach
 	public void init() throws Exception {
 
-		List<DSSDocument> documents = Arrays.<DSSDocument> asList(new FileDocument("src/test/resources/sample.png"),
+		List<DSSDocument> documents = Arrays.asList(new FileDocument("src/test/resources/sample.png"),
 				new FileDocument("src/test/resources/sample.txt"), new FileDocument("src/test/resources/sample.xml"));
 
 		List<DSSDocument> digestDocuments = new ArrayList<>();

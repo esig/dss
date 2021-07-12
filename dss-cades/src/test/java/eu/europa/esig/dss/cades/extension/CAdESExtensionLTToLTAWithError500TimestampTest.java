@@ -48,9 +48,7 @@ public class CAdESExtensionLTToLTAWithError500TimestampTest extends AbstractCAdE
 	@Override
 	@Test
 	public void extendAndVerify() throws Exception {
-		assertThrows(DSSException.class, () -> {
-			super.extendAndVerify();
-		});
+		assertThrows(DSSException.class, () -> super.extendAndVerify());
 	}
 
 }

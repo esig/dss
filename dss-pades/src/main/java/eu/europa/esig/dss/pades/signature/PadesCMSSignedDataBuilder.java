@@ -75,14 +75,14 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 
 		signerInfoGeneratorBuilder = signerInfoGeneratorBuilder.setSignedAttributeGenerator(new CMSAttributeTableGenerator() {
 			@Override
-			public AttributeTable getAttributes(@SuppressWarnings("rawtypes") Map params) throws CMSAttributeTableGenerationException {
+			public AttributeTable getAttributes(Map params) throws CMSAttributeTableGenerationException {
 				return padesProfileB.getSignedAttributes(params, cadesLevelBaselineB, parameters, messageDigest);
 			}
 		});
 
 		signerInfoGeneratorBuilder = signerInfoGeneratorBuilder.setUnsignedAttributeGenerator(new CMSAttributeTableGenerator() {
 			@Override
-			public AttributeTable getAttributes(@SuppressWarnings("rawtypes") Map params) throws CMSAttributeTableGenerationException {
+			public AttributeTable getAttributes(Map params) throws CMSAttributeTableGenerationException {
 				return padesProfileB.getUnsignedAttributes();
 			}
 		});

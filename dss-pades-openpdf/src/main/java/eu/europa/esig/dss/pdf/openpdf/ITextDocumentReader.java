@@ -183,7 +183,8 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		if (Utils.isCollectionNotEmpty(fieldNames)) {
 			return acroFields.signatureCoversWholeDocument(fieldNames.get(0));
 		}
-		throw new DSSException("Not applicable use of the method isSignatureCoversWholeDocument. The requested signatureDictionary does not exist!");
+		throw new DSSException("Not applicable use of the method isSignatureCoversWholeDocument. " +
+				"The requested signatureDictionary does not exist!");
 	}
 
 	@Override
@@ -277,13 +278,12 @@ public class ITextDocumentReader implements PdfDocumentReader {
 
 	@Override
 	public BufferedImage generateImageScreenshot(int page) {
-		throw new DSSException("The image generation is not supported with OpenPDF implementation!");
+		throw new UnsupportedOperationException("The image generation is not supported with OpenPDF implementation!");
 	}
 
 	@Override
-	public BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> annotations)
-			throws IOException {
-		throw new DSSException("The image generation is not supported with OpenPDF implementation!");
+	public BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> annotations) {
+		throw new UnsupportedOperationException("The image generation is not supported with OpenPDF implementation!");
 	}
 
 }

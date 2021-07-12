@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>doc.pdf</DocumentName>
+    <ValidationDate>2021-01-21T13:54:58Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-9A35ABEA78868EC5AA9DED167728ABEB840776562CC5E07F8327C5FC47E98947">
+            <SignatureFilename>pades-5-signatures-and-1-document-timestamp.pdf</SignatureFilename>
+            <ClaimedSigningTime>2011-05-05T09:59:50Z</ClaimedSigningTime>
+            <SignatureFormat>PAdES-BASELINE-T</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>GD7cpiWfFFTipSqbjZGYoKw41vQnEJMuAPCoiFEfZNs=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6CA650FF093AEE46E8542D6F319124D54394424B0341E18DC47C7C46F96F1EFF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6CA650FF093AEE46E8542D6F319124D54394424B0341E18DC47C7C46F96F1EFF"/>
+                <ChainItem Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <SignatureProductionPlace>
+                <City>Bratislava</City>
+                <CountryName>SK</CountryName>
+            </SignatureProductionPlace>
+            <CommitmentTypeIndications>
+                <CommitmentTypeIndication>
+                    <Identifier>1.2.840.113549.1.9.16.6.5</Identifier>
+                </CommitmentTypeIndication>
+            </CommitmentTypeIndications>
+            <Policy>
+                <Id>1.3.158.36061701.0.0.1.10.4.0.12</Id>
+                <Url>http://www.nbusr.sk/archive/20100823000000zsignaturepolicy.der</Url>
+                <Notice>[EN: Signature policy for documents signed electronically by public administrations. SK: Podpisová politika pre ZEP. http://www.nbusr.sk/en/electronic-signature/signature-policies/index.html]</Notice>
+                <Identified>true</Identified>
+                <Asn1Processable>false</Asn1Processable>
+                <DigestAlgoAndValue digestAlgorithmsEqual="true" match="true">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>ekwDd5vSxRvMvXNmijwwEQ10UdkiK0cyaBhm6u+WHmU=</DigestValue>
+                </DigestAlgoAndValue>
+            </Policy>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=CA Disig, OU=ACA-307-2007-2, O=Disig a.s., L=Bratislava, C=SK</IssuerName>
+                    <SerialNumber>16782082</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature5</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <SignerName>Petr Anonymus</SignerName>
+                    <Type>Sig</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.CAdES.detached</SubFilter>
+                    <Location>Country=SK SLOVAKIA, Locality=Bratislava</Location>
+                    <Reason>Proof-Of-Approval</Reason>
+                    <SignatureByteRange>0 229036 261806 601</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-6CA650FF093AEE46E8542D6F319124D54394424B0341E18DC47C7C46F96F1EFF">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MG8wZ6RlMGMxCzAJBgNVBAYTAlNLMRMwEQYDVQQHDApCcmF0aXNsYXZhMRMwEQYDVQQKDApEaXNpZyBhLnMuMRcwFQYDVQQLDA5BQ0EtMzA3LTIwMDctMjERMA8GA1UEAwwIQ0EgRGlzaWcCBAEAEwI=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>bKZQ/wk67kboVC1vMZEk1UOUQksDQeGNxHx8RvlvHv8=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-1D509D65FB5806266FCA8935FD527B55BDD11CDDD09FC193CB29DB4A7A63F8DF">
+                    <Type>OCSP</Type>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-B3A3D298EFC2086488AE7AA5F0031A75FF08A9EB471AEFA4D3A6B73C7E052C53"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-732646718736AE5C31D573AD5EEE372B5F502AF3BFFAA5C1468467DA9D268A45">
+                    <Scope>PARTIAL</Scope>
+                    <Name>Partial PDF</Name>
+                    <Description>The document ByteRange : [0, 229036, 261806, 601]</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>XNRIVPDFJtKwyteVh5A8DVQHHj/OqJfskQoGlbFICZI=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>MEnxS8xdU8HqPkRhez3Ve3BkJ4wtDebfJg3qbVYj6NQ=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>KFbRdagXsFaScXsQawRJXp1e9bMUPTAvbb6TztbWImprhW3xnZ35qhKCzbvwK1UqkzC3nffuyB8Pch/k+ELT0BZLba7RldNqQCkR+1NNzXttcwiPClH/Ts8lewOZSfdMbwr3sDA4wDDpmyCmLT0otvdEobxqmOvKVQ0bMwSsY3L9sfgX3Fi6pdeALwPgl9QW/xiJHI2qzdhvjyqBNvwb3Ax9iqevkA6qWmOyeIqq2i/93X94QVTYDOgVwr4OoTAWwDnKnxwrXW2bDnKDj7F8Cu2IIm0u9BjPTZUD9s9/SxX3dMcS5ofb83vrKr5UN5ZHT6Lc90S4egHs7xL/iKIuCg==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-6CA650FF093AEE46E8542D6F319124D54394424B0341E18DC47C7C46F96F1EFF">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#534b2036363132333136323031310504e4f5,c=sk,l=bratislava,ou=testovacie ucely,o=nbu sr,2.5.4.4=#0c072656e6b6f43687,2.5.4.42=#0c044661697e,cn=petr anonymus</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#534b2036363132333136323031310504e4f5,C=SK,L=Bratislava,OU=testovacie ucely,O=NBU SR,2.5.4.4=#0c072656e6b6f43687,2.5.4.42=#0c044661697e,CN=Petr Anonymus</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca disig,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA Disig,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>16782082</SerialNumber>
+            <SubjectSerialNumber>PNOSK 6612316205</SubjectSerialNumber>
+            <CommonName>Petr Anonymus</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>NBU SR</OrganizationName>
+            <OrganizationalUnit>testovacie ucely</OrganizationalUnit>
+            <GivenName>Petr</GivenName>
+            <Surname>Anonymus</Surname>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>petr.anonimus@nbusr.sk</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.disig.sk/aca2/cert/aca2_disig.p7c</aiaUrl>
+                <aiaUrl>http://ca.disig.sk/aca2/cert/aca2_disig.p7c</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.disig.sk/aca2/crl/aca2_disig.crl</crlUrl>
+                <crlUrl>http://ca.disig.sk/aca2/crl/aca2_disig.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://aca-ocsp.disig.sk</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2011-08-09T11:48:41Z</NotAfter>
+            <NotBefore>2010-08-09T11:48:41Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-B35ED6F40A37F05F3DE50C4AED3CC3CF18DF6DE8922326A396AFFBB3B8721213</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.disig.sk/_pdf/cp_aca2.pdf">1.3.158.35975946.0.0.1.0.1.2.0</certificatePolicy>
+            </CertificatePolicies>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+                <QcCClegislation/>
+            </QcStatements>
+            <TrustedServiceProviders />
+            <Revocations>
+                <CertificateRevocation Revocation="R-1D509D65FB5806266FCA8935FD527B55BDD11CDDD09FC193CB29DB4A7A63F8DF">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-DCCB73CF5DEB380FB0126DA01D8F044BCF7280451991DF328F054CFDE8F51047">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>bKZQ/wk67kboVC1vMZEk1UOUQksDQeGNxHx8RvlvHv8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ca disig,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=CA Disig,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>244</SerialNumber>
+            <CommonName>CA Disig</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>Disig a.s.</OrganizationName>
+            <OrganizationalUnit>ACA-307-2007-2</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</aiaUrl>
+                <aiaUrl>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
+                <aiaUrl>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2019-12-08T12:46:25Z</NotAfter>
+            <NotBefore>2009-12-08T12:47:30Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-70FF571CA54F1356A63CC06FBABC94457E2A8948FB38715AAEB13BBE8690A020</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>OmcwWucQu1w76jPw4Jwh/U+H65dyzpzElJxTAGpkius=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+            <SubjectDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <CommonName>KCA NBU SR 3</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>Narodny bezpecnostny urad</OrganizationName>
+            <OrganizationalUnit>SIBEP</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TIMESTAMP</Source>
+                <Source>OTHER</Source>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2025-11-06T07:29:09Z</NotAfter>
+            <NotBefore>2009-11-06T09:59:39Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-8EFC8349B1D083224E7D4B427F27B0381977864A53196B83CB9816CE5BC952C6</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>2DR34DiMQLoJL+ykhKXr060wKL9gIgEy6VFYwA3c6Y8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-7CFA9E18D4B28736CDAAC46E526C4FC98E18CF758980BBE0D6842F2434EE83D8">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp ca disig qca,ou=responder 2_1,o=disig a.s.,2.5.4.5=#130e4e5452534b2d3335393735393436,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP CA Disig QCA,OU=Responder 2_1,O=Disig a.s.,2.5.4.5=#130e4e5452534b2d3335393735393436,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca disig,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA Disig,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>16810344</SerialNumber>
+            <SubjectSerialNumber>NTRSK-35975946</SubjectSerialNumber>
+            <CommonName>OCSP CA Disig QCA</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>Disig a.s.</OrganizationName>
+            <OrganizationalUnit>Responder 2_1</OrganizationalUnit>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>spravaca@disig.sk</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://cdp1.disig.sk/aca2/cert/aca2_disig.p7c</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://cdp1.disig.sk/aca2/crl/aca2_disig.crl</crlUrl>
+                <crlUrl>http://cdp2.disig.sk/aca2/crl/aca2_disig.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://aca-ocsp.disig.sk</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2019-12-07T17:33:38Z</NotAfter>
+            <NotBefore>2017-11-13T17:33:38Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-F4D7600ED99D0D0BF7310D4E3E6477DDB789E1FF58220CDC851AB36C8C0B1159</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.disig.sk/_pdf/cp_aca2.pdf">1.3.158.35975946.0.0.1.0.1</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>fPqeGNSyhzbNqsRuUmxPyY4Yz3WJgLvg1oQvJDTug9g=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+            <SubjectDistinguishedName Format="CANONICAL">cn=baltstamp qtsa tsu2,o=baltstamp uab,l=vilnius,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=BalTstamp QTSA TSU2,O=BalTstamp UAB,L=Vilnius,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ssc qualified class 3 ca,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SSC Qualified Class 3 CA,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</IssuerDistinguishedName>
+            <SerialNumber>104155880393078814540679</SerialNumber>
+            <CommonName>BalTstamp QTSA TSU2</CommonName>
+            <Locality>Vilnius</Locality>
+            <CountryName>LT</CountryName>
+            <OrganizationName>BalTstamp UAB</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.ssc.lt/cacert/ssc_class3nqc.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://ncrl.ssc.lt/class3nqc/cacrl.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp-3nqc.ssc.lt/</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TIMESTAMP</Source>
+                <Source>OTHER</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2022-05-15T11:34:54Z</NotAfter>
+            <NotBefore>2002-05-15T11:34:54Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-6B8F751FB030568FCEC7D43BBCD238B3876AD05E7ADEA61C2F1A493A306ACB2A</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lqVEdQJp/EAjc7mTBfk7EbgeMz1OS4gr2FNH+tps00A=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ssc qualified class 3 ca,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SSC Qualified Class 3 CA,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ssc root ca a,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SSC Root CA A,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</IssuerDistinguishedName>
+            <SerialNumber>117727027898364819414749499309229344414</SerialNumber>
+            <CommonName>SSC Qualified Class 3 CA</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
+            <OrganizationalUnit>Certification Authority</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.ssc.lt/cacert/ssc_root_a.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.ssc.lt/crl/ssc_root_a.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp2.ssc.lt</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TIMESTAMP</Source>
+                <Source>OTHER</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2026-10-25T12:05:00Z</NotAfter>
+            <NotBefore>2012-03-03T11:00:17Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-19EC2E86A9C59098407E816C29554E0CB566EDA0F53E92CC600FA01D36A42C8A</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>onfwYYsRYDtXap2bBFP6qp7CFgFyxW+mPYydQl+iyaU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ssc root ca a,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SSC Root CA A,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ssc root ca a,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SSC Root CA A,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</IssuerDistinguishedName>
+            <SerialNumber>135620924367389805115245033738757833813</SerialNumber>
+            <CommonName>SSC Root CA A</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
+            <OrganizationalUnit>Certification Authority</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://crl.ssc.lt/root-a/cacrl.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2026-12-28T12:05:04Z</NotAfter>
+            <NotBefore>2006-12-27T12:18:52Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-D1ECACCA44012C3E1E6D1B39DD2968FC7FD3127AAA57AB5182A3BEABCCD7A3A9</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>8bE/XJoyZAOw8xu+dpnNF8fRwLmBWG3Rp7IZxSUI/pk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-1D509D65FB5806266FCA8935FD527B55BDD11CDDD09FC193CB29DB4A7A63F8DF">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2019-12-05T15:31:10Z</ProductionDate>
+            <ThisUpdate>2019-12-05T15:31:06Z</ThisUpdate>
+            <NextUpdate>2019-12-05T15:41:06Z</NextUpdate>
+            <ArchiveCutOff>2009-12-08T12:47:30Z</ArchiveCutOff>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-7CFA9E18D4B28736CDAAC46E526C4FC98E18CF758980BBE0D6842F2434EE83D8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-7CFA9E18D4B28736CDAAC46E526C4FC98E18CF758980BBE0D6842F2434EE83D8"/>
+                <ChainItem Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-7CFA9E18D4B28736CDAAC46E526C4FC98E18CF758980BBE0D6842F2434EE83D8">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=OCSP CA Disig QCA, OU=Responder 2_1, O=Disig a.s., SERIALNUMBER=NTRSK-35975946, L=Bratislava, C=SK</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>HVCdZftYBiZvyok1/VJ7Vb3RHN3Qn8GTyynbSnpj+N8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-DCCB73CF5DEB380FB0126DA01D8F044BCF7280451991DF328F054CFDE8F51047">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://www.disig.sk/aca2/crl/aca2_disig.crl</SourceAddress>
+            <ProductionDate>2019-12-06T10:33:58Z</ProductionDate>
+            <ThisUpdate>2019-12-06T10:33:58Z</ThisUpdate>
+            <NextUpdate>2019-12-08T22:33:58Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>3Mtzz13rOA+wEm2gHY8ES89ygEUZkd8yjwVM/ej1EEc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-B3A3D298EFC2086488AE7AA5F0031A75FF08A9EB471AEFA4D3A6B73C7E052C53">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+            <ProductionTime>2010-12-05T15:34:02Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cu3Robk8jiPaRWgEP0X9xg2mPcFi49uOGBqS7RucWk8=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340"/>
+                <ChainItem Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=SSC Qualified Class 3 CA, OU=Certification Authority, O=Skaitmeninio sertifikavimo centras, C=LT</IssuerName>
+                    <SerialNumber>104155880393078814540679</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureFieldName>Signature6</SignatureFieldName>
+                <PDFSignatureDictionary>
+                    <Type>DocTimeStamp</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.RFC3161</SubFilter>
+                    <SignatureByteRange>0 316098 335044 512</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>IKNS4s4ucwcLs8+d3opO/vDwo1s=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-732646718736AE5C31D573AD5EEE372B5F502AF3BFFAA5C1468467DA9D268A45" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-9A35ABEA78868EC5AA9DED167728ABEB840776562CC5E07F8327C5FC47E98947" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-6CA650FF093AEE46E8542D6F319124D54394424B0341E18DC47C7C46F96F1EFF" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-3A67305AE710BB5C3BEA33F0E09C21FD4F87EB9772CE9CC4949C53006A648AEB" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-7CFA9E18D4B28736CDAAC46E526C4FC98E18CF758980BBE0D6842F2434EE83D8" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-1D509D65FB5806266FCA8935FD527B55BDD11CDDD09FC193CB29DB4A7A63F8DF" Category="REVOCATION"/>
+                <TimestampedObject Token="R-DCCB73CF5DEB380FB0126DA01D8F044BCF7280451991DF328F054CFDE8F51047" Category="REVOCATION"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>s6PSmO/CCGSIrnql8AMadf8IqetHGu+k06a3PH4FLFM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-732646718736AE5C31D573AD5EEE372B5F502AF3BFFAA5C1468467DA9D268A45">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>gjYx7wkAbdetnL27azEv4YiVzKH0L0rIfcMsokyczA8=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists />
+</DiagnosticData>

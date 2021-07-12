@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>Signature-P-TU_NG-1.pdf</DocumentName>
-    <ValidationDate>2017-01-26T09:13:30</ValidationDate>
+    <ValidationDate>2017-01-26T09:13:30Z</ValidationDate>
     <Signatures>
         <Signature Id="id-0a0becbe9213c626a1be4d98a9981596e2f922b90a2bb3c1ee938d9fc493a1bd">
             <SignatureFilename>Signature-P-TU_NG-1.pdf</SignatureFilename>
-            <ClaimedSigningTime>2016-05-20T17:03:09</ClaimedSigningTime>
+            <ClaimedSigningTime>2016-05-20T17:03:09Z</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
@@ -74,8 +74,8 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <NotAfter>2017-02-10T15:38:09</NotAfter>
-            <NotBefore>2016-02-11T15:38:09</NotBefore>
+            <NotAfter>2017-02-10T15:38:09Z</NotAfter>
+            <NotBefore>2016-02-11T15:38:09Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168</EntityKey>
@@ -94,8 +94,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -118,8 +116,8 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <NotAfter>2030-12-31T10:11:42</NotAfter>
-            <NotBefore>2011-04-29T11:11:42</NotBefore>
+            <NotAfter>2030-12-31T10:11:42Z</NotAfter>
+            <NotBefore>2011-04-29T11:11:42Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C</EntityKey>
@@ -138,8 +136,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -169,8 +165,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2018-04-06T01:59:59</NotAfter>
-            <NotBefore>2016-04-06T02:00:00</NotBefore>
+            <NotAfter>2018-04-06T01:59:59Z</NotAfter>
+            <NotBefore>2016-04-06T02:00:00Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE</EntityKey>
@@ -195,8 +191,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.788.1.2.6.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eeca921613208aaacbbbc6798e54b76546fca9d3437749f414ff57473b6d2f44ba">
@@ -232,8 +226,8 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2031-01-01T00:59:59</NotAfter>
-            <NotBefore>2011-05-30T02:00:00</NotBefore>
+            <NotAfter>2031-01-01T00:59:59Z</NotAfter>
+            <NotBefore>2011-05-30T02:00:00Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686</EntityKey>
@@ -258,8 +252,6 @@
             <CertificatePolicies>
                 <certificatePolicy>2.16.788.1.2.6.1.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-355e634464029b58fc89189da20cb1f3499373af91d8fa34b57b66775aa73686b671e62088b3f75a75ecee64dd3c5331cbf7045be28221c7fad8cbf2c4894f6d">
@@ -277,9 +269,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.certification.tn/TunPersonalCA1.crl</SourceAddress>
-            <ProductionDate>2017-01-25T13:22:22</ProductionDate>
-            <ThisUpdate>2017-01-25T13:22:22</ThisUpdate>
-            <NextUpdate>2017-01-31T13:22:22</NextUpdate>
+            <ProductionDate>2017-01-25T13:22:22Z</ProductionDate>
+            <ThisUpdate>2017-01-25T13:22:22Z</ThisUpdate>
+            <NextUpdate>2017-01-31T13:22:22Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -301,8 +293,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.certification.tn</SourceAddress>
-            <ProductionDate>2017-01-26T09:13:10</ProductionDate>
-            <ThisUpdate>2017-01-26T09:13:10</ThisUpdate>
+            <ProductionDate>2017-01-26T09:13:10Z</ProductionDate>
+            <ThisUpdate>2017-01-26T09:13:10Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -323,9 +315,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.certification.tn</SourceAddress>
-            <ProductionDate>2017-01-26T09:13:12</ProductionDate>
-            <ThisUpdate>2016-05-19T09:44:13</ThisUpdate>
-            <NextUpdate>2017-08-17T09:44:13</NextUpdate>
+            <ProductionDate>2017-01-26T09:13:12Z</ProductionDate>
+            <ThisUpdate>2016-05-19T09:44:13Z</ThisUpdate>
+            <NextUpdate>2017-08-17T09:44:13Z</NextUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

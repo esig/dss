@@ -28,31 +28,62 @@ import java.io.Serializable;
 public class TimestampInclude implements Serializable {
 
 	private static final long serialVersionUID = 8557108386646000784L;
-	
+
+	/** The reference URI */
 	private String uri;
-	/* The referencedData attribute shall be present in each and every Include element, and set to "true". */
+
+	/** The referencedData attribute shall be present in each and every Include element, and set to "true". */
 	private boolean referencedData;
 
+	/**
+	 * Empty constructor
+	 */
 	public TimestampInclude() {
 	}
 
+	/**
+	 * Default constructor
+	 *
+	 * @param uri {@link String} reference URI
+	 * @param referencedData if the reference is timestamped
+	 */
 	public TimestampInclude(String uri, boolean referencedData) {
 		this.uri = uri;
 		this.referencedData = referencedData;
 	}
 
+	/**
+	 * Gets the reference URI
+	 *
+	 * @return {@link String}
+	 */
 	public String getURI() {
 		return uri;
 	}
 
+	/**
+	 * Sets the reference URI
+	 *
+	 * @param uri {@link String}
+	 */
 	public void setURI(String uri) {
 		this.uri = uri;
 	}
 
+	/**
+	 * Returns if the data is referenced
+	 *
+	 * @return TRUE if the reference is timestamped, FALSE otherwise
+	 */
 	public boolean isReferencedData() {
 		return referencedData;
 	}
 
+	/**
+	 * Sets if the data is referenced
+	 *
+	 * @param referencedData if the reference is timestamped
+	 */
 	public void setReferencedData(boolean referencedData) {
 		this.referencedData = referencedData;
 	}

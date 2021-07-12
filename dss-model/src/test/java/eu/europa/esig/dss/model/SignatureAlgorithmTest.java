@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SignatureAlgorithmTest {
 
@@ -41,6 +41,9 @@ public class SignatureAlgorithmTest {
 	public void forXML() {
 		for (SignatureAlgorithm sigAlgo : SignatureAlgorithm.values()) {
 			if (sigAlgo.getUri() != null) {
+				if (EncryptionAlgorithm.PLAIN_ECDSA.equals(sigAlgo.getEncryptionAlgorithm())) {
+					sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, sigAlgo.getDigestAlgorithm());
+				}
 				assertEquals(sigAlgo, SignatureAlgorithm.forXML(sigAlgo.getUri()));
 			}
 		}
@@ -48,9 +51,7 @@ public class SignatureAlgorithmTest {
 
 	@Test
 	public void forXMLException() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			SignatureAlgorithm.forXML("aaa");
-		});
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> SignatureAlgorithm.forXML("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
@@ -66,10 +67,26 @@ public class SignatureAlgorithmTest {
 
 	@Test
 	public void forOidException() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			SignatureAlgorithm.forOID("1.2.3");
-		});
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> SignatureAlgorithm.forOID("1.2.3"));
 		assertEquals("Unsupported algorithm: 1.2.3", exception.getMessage());
+	}
+
+	@Test
+	public void forJWA() {
+		for (SignatureAlgorithm sigAlgo : SignatureAlgorithm.values()) {
+			if (sigAlgo.getJWAId() != null) {
+				if (EncryptionAlgorithm.PLAIN_ECDSA.equals(sigAlgo.getEncryptionAlgorithm())) {
+					sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, sigAlgo.getDigestAlgorithm());
+				}
+				assertEquals(sigAlgo, SignatureAlgorithm.forJWA(sigAlgo.getJWAId()));
+			}
+		}
+	}
+
+	@Test
+	public void forJWAException() {
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> SignatureAlgorithm.forJWA("aaa"));
+		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 }

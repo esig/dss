@@ -39,7 +39,7 @@ $ echo '{
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1607960338155,
+      "signingDate" : 1625817756185,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
@@ -58,7 +58,7 @@ $ echo '{
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "Gfr6s6sczvGl++5x7khH2+eEa2iMAmsQuQ6DjKZkHfTp6j/B9S4R44lOf6PnTEHKCGSxPJb8KInf3AbJS6v7MwvZw05fFznfoNAAROfEI3PWadhINmiY9cTa/U58oHNM8KQ/3SFe/D3b3CJ2hjKY99Nlry9ehCwa+UlJMfwzPSc+Yi/YtrX+st9DCNE2Y6eNs7T22bbpL1Lrr6hVZXXNa8iXrRJiZ7OkJkQNWLylvyt3gfiOpOBYAVVXf2AxWhTEN9MEmq+0csKXHRxheqT4vFr2hvcQvjzA4aPILVkldo8OVteEdS/t277n7ic8VDI9CPKldzvjjaot8Sm4I3lvVQ=="
+    "value" : "ru2Vj+K96WQ1bZaFbKlrTyq/JCo+UM5cz5Xgp+l5Wi/yfO8JZi9foL/VeJF3+tSgWqty5LKLAYq1sq27n0oMoGQet/3CulkefIa0QDwDHCO8dq1Zwvg69/Z7mrzFfJPzu1NuBfo+eFfFBbszXQn5GG7K5TofCncBISo3fFJBUK3cgO7E4gVpNUDcXZYL9gAbxMxkKW4wtrOfrTFidzGEdEB1Y+q/vt8iw9Ynk0w018JTLF0wC4N959ITytfTO3UmEjSJsVD4PqRiAj+8OF8M8Yi4JtSwlRCNINQby59a80VcfC/YF3FdqGNEerlrBJ+xdQjO+9jOCLMuZJkph99PZg=="
   },
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",

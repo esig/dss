@@ -20,24 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.job;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -51,6 +33,23 @@ import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MultiThreadTLValidationJobTest {
 
@@ -77,9 +76,8 @@ public class MultiThreadTLValidationJobTest {
 		offlineFileLoader.setCacheExpirationTime(Long.MAX_VALUE);
 		offlineFileLoader.setDataLoader(new MockDataLoader(urlMap));
 		offlineFileLoader.setFileCacheDirectory(cacheDirectory);
-		
-		Map<String, DSSDocument> onlineMap = new HashMap<>();
-		onlineMap.putAll(urlMap);
+
+		Map<String, DSSDocument> onlineMap = new HashMap<>(urlMap);
 		
 		onlineFileLoader = new FileCacheDataLoader();
 		onlineFileLoader.setCacheExpirationTime(0);
@@ -145,8 +143,8 @@ public class MultiThreadTLValidationJobTest {
 		executor.shutdown();
 
 	}
-	
-	class ValidationJobSummeryConcurrent implements Callable<TLValidationJobSummary> {
+
+	private static class ValidationJobSummeryConcurrent implements Callable<TLValidationJobSummary> {
 		ValidationJobSummeryConcurrent() {
 		}
 		@Override
@@ -154,16 +152,16 @@ public class MultiThreadTLValidationJobTest {
 			return tlValidationJob.getSummary();
 		}
 	}
-	
-	class OfflineRefreshConcurrent implements Callable<Boolean> {
+
+	private static class OfflineRefreshConcurrent implements Callable<Boolean> {
 		@Override
 		public Boolean call() throws Exception {
 			tlValidationJob.offlineRefresh();
 			return true;
 		}
 	}
-	
-	class OnlineRefreshConcurrent implements Callable<Boolean> {
+
+	private static class OnlineRefreshConcurrent implements Callable<Boolean> {
 		@Override
 		public Boolean call() throws Exception {
 			tlValidationJob.onlineRefresh();

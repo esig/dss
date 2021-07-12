@@ -146,7 +146,7 @@ public class SignedDocumentValidatorTest {
 
 		// The Templates object with the loaded XML Stylesheet to generate the HTML
 		// content from the JAXB Object (cached)
-		Templates bootstrap3Templates = DetailedReportXmlDefiner.getHtmlBootstrap3Templates();
+		Templates bootstrap4Templates = DetailedReportXmlDefiner.getHtmlBootstrap4Templates();
 
 		// The Templates object with the loaded XML Stylesheet to generate the PDF
 		// content from the JAXB Object (cached)
@@ -156,7 +156,7 @@ public class SignedDocumentValidatorTest {
 		assertNotNull(objectFactory);
 		assertNotNull(jaxbContext);
 		assertNotNull(schema);
-		assertNotNull(bootstrap3Templates);
+		assertNotNull(bootstrap4Templates);
 		assertNotNull(pdfTemplates);
 	}
 

@@ -82,7 +82,7 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 	private DSSDocument getCurrentDocument(ResourceResolverContext context) throws ResourceResolverException {
 		if (definedFilename(context) && isDocumentNamesDefined()) {
 			Attr uriAttr = context.attr;
-			String uriValue = DSSUtils.decodeUrl(uriAttr.getNodeValue());
+			String uriValue = DSSUtils.decodeURI(uriAttr.getNodeValue());
 			for (DSSDocument dssDocument : documents) {
 				if (Utils.areStringsEqual(dssDocument.getName(), uriValue)) {
 					return dssDocument;

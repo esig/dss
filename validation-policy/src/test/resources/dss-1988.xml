@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>xades-SHA1-lt.xml</DocumentName>
-    <ValidationDate>2020-02-27T08:16:31</ValidationDate>
+    <ValidationDate>2020-02-27T08:16:31Z</ValidationDate>
     <Signatures>
         <Signature Id="S-1D08BD6DB187F3AF164F261557C852C8523AFD1803F2B85D489F0B91AAFADAAF">
             <DAIdentifier>id-5f2a9c86dac78fc7aa5031fc3b345f97</DAIdentifier>
             <SignatureFilename>xades-SHA1-lt.xml</SignatureFilename>
-            <ClaimedSigningTime>2020-02-11T21:34:43</ClaimedSigningTime>
+            <ClaimedSigningTime>2020-02-11T21:34:43Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -115,8 +115,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-05-05T14:46:33</NotAfter>
-            <NotBefore>2015-05-06T14:46:33</NotBefore>
+            <NotAfter>2020-05-05T14:46:33Z</NotAfter>
+            <NotBefore>2015-05-06T14:46:33Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-260744774621184C1203555B5EFFF5A91005911DF38EE4865DDF2C0C42E2121A</EntityKey>
@@ -146,11 +146,10 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="https://www.firmaprofesional.com/cps">1.3.6.1.4.1.13177.10.1.40.2</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds>
-                <qcStatementOid>1.3.6.1.5.5.7.11.2</qcStatementOid>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes/>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -168,7 +167,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-10-28T01:00:00</StartDate>
+                            <StartDate>2019-10-28T01:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -182,8 +181,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-11-16T00:00:00</StartDate>
-                            <EndDate>2019-10-28T01:00:00</EndDate>
+                            <StartDate>2017-11-16T00:00:00Z</StartDate>
+                            <EndDate>2019-10-28T01:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -197,8 +196,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2017-11-16T00:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2017-11-16T00:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -211,8 +210,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2015-07-26T22:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2015-07-26T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                         </TrustedService>
@@ -255,8 +254,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2030-12-31T04:02:55</NotAfter>
-            <NotBefore>2014-09-18T10:00:54</NotBefore>
+            <NotAfter>2030-12-31T04:02:55Z</NotAfter>
+            <NotBefore>2014-09-18T10:00:54Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF</EntityKey>
@@ -282,8 +281,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -301,7 +298,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-10-28T01:00:00</StartDate>
+                            <StartDate>2019-10-28T01:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -314,8 +311,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-11-16T00:00:00</StartDate>
-                            <EndDate>2019-10-28T01:00:00</EndDate>
+                            <StartDate>2017-11-16T00:00:00Z</StartDate>
+                            <EndDate>2019-10-28T01:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -328,8 +325,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
-                            <EndDate>2017-11-16T00:00:00</EndDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2017-11-16T00:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -341,8 +338,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                            <StartDate>2015-07-26T22:00:00</StartDate>
-                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <StartDate>2015-07-26T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
                         </TrustedService>
                     </TrustedServices>
                 </TrustedServiceProvider>
@@ -376,8 +373,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2030-12-31T04:02:00</NotAfter>
-            <NotBefore>2018-12-14T10:13:23</NotBefore>
+            <NotAfter>2030-12-31T04:02:00Z</NotAfter>
+            <NotBefore>2018-12-14T10:13:23Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4CCF17C0C8C1C10D5876EC5E3280FE8D134DF36AEDD8444289B990BC3741E74F</EntityKey>
@@ -403,8 +400,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -422,7 +417,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-10-28T01:00:00</StartDate>
+                            <StartDate>2019-10-28T01:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -435,8 +430,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-11-16T00:00:00</StartDate>
-                            <EndDate>2019-10-28T01:00:00</EndDate>
+                            <StartDate>2017-11-16T00:00:00Z</StartDate>
+                            <EndDate>2019-10-28T01:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -471,8 +466,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-03-04T12:47:16</NotAfter>
-            <NotBefore>2019-03-05T12:47:16</NotBefore>
+            <NotAfter>2020-03-04T12:47:16Z</NotAfter>
+            <NotBefore>2019-03-05T12:47:16Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-57A59B9F37CD92F3E941DE8C263C28E6A89191C14AEEC83CFF733F09472F6AD9</EntityKey>
@@ -501,8 +496,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">1.3.6.1.4.1.13177.10.1.4.1</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -520,7 +513,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2019-10-28T01:00:00</StartDate>
+                            <StartDate>2019-10-28T01:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -533,8 +526,8 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-11-16T00:00:00</StartDate>
-                            <EndDate>2019-10-28T01:00:00</EndDate>
+                            <StartDate>2017-11-16T00:00:00Z</StartDate>
+                            <EndDate>2019-10-28T01:00:00Z</EndDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
@@ -563,8 +556,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2036-05-05T15:22:07</NotAfter>
-            <NotBefore>2014-09-23T15:22:07</NotBefore>
+            <NotAfter>2036-05-05T15:22:07Z</NotAfter>
+            <NotBefore>2014-09-23T15:22:07Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-57A59B9F37CD92F3E941DE8C263C28E6A89191C14AEEC83CFF733F09472F6AD9</EntityKey>
@@ -586,8 +579,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -614,8 +605,8 @@
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2022-02-06T10:21:23</NotAfter>
-            <NotBefore>2017-02-06T10:21:23</NotBefore>
+            <NotAfter>2022-02-06T10:21:23Z</NotAfter>
+            <NotBefore>2017-02-06T10:21:23Z</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219</EntityKey>
@@ -639,8 +630,6 @@
             <CertificatePolicies>
                 <certificatePolicy cpsUrl="http://www.izenpe.com/cps">1.3.6.1.4.1.14777.3.3</certificatePolicy>
             </CertificatePolicies>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -658,7 +647,7 @@
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2017-07-21T00:00:00</StartDate>
+                            <StartDate>2017-07-21T00:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
                         </TrustedService>
@@ -676,9 +665,9 @@
         <Revocation Id="R-CC56408DFD42F7A741D2819E745E7F1C609328268C237D55ED96D48E094AA868">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2020-02-11T21:30:23</ProductionDate>
-            <ThisUpdate>2020-02-11T21:30:23</ThisUpdate>
-            <NextUpdate>2020-02-11T21:35:23</NextUpdate>
+            <ProductionDate>2020-02-11T21:30:23Z</ProductionDate>
+            <ThisUpdate>2020-02-11T21:30:23Z</ThisUpdate>
+            <NextUpdate>2020-02-11T21:35:23Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -703,9 +692,9 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.firmaprofesional.com</SourceAddress>
-            <ProductionDate>2020-02-27T08:16:31</ProductionDate>
-            <ThisUpdate>2020-02-27T08:16:31</ThisUpdate>
-            <NextUpdate>2020-02-27T08:21:31</NextUpdate>
+            <ProductionDate>2020-02-27T08:16:31Z</ProductionDate>
+            <ThisUpdate>2020-02-27T08:16:31Z</ThisUpdate>
+            <NextUpdate>2020-02-27T08:21:31Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -729,7 +718,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-C2EA8EEBDBF8DEAFA6616DB871B0F06673C7BCC41A0DAE1D93E7FF31A063FFAB">
-            <ProductionTime>2020-02-11T21:34:47</ProductionTime>
+            <ProductionTime>2020-02-11T21:34:47Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>9sN3pS73lHyIeWIZchbBIYYoTgnNuAOzgV3zhbBwP8k=</DigestValue>
@@ -776,9 +765,9 @@
             <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
             <SequenceNumber>256</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-02-27T07:23:42</LastLoading>
-            <IssueDate>2020-02-21T07:00:00</IssueDate>
-            <NextUpdate>2020-08-21T00:00:00</NextUpdate>
+            <LastLoading>2020-02-27T07:23:42Z</LastLoading>
+            <IssueDate>2020-02-21T07:00:00Z</IssueDate>
+            <NextUpdate>2020-08-21T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
         <TrustedList Id="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014">
@@ -786,9 +775,9 @@
             <Url>https://sede.minetur.gob.es/Prestadores/TSL/TSL.xml</Url>
             <SequenceNumber>97</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2020-02-27T07:23:43</LastLoading>
-            <IssueDate>2020-01-16T01:00:00</IssueDate>
-            <NextUpdate>2020-07-16T00:00:00</NextUpdate>
+            <LastLoading>2020-02-27T07:23:43Z</LastLoading>
+            <IssueDate>2020-01-16T01:00:00Z</IssueDate>
+            <NextUpdate>2020-07-16T00:00:00Z</NextUpdate>
             <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>

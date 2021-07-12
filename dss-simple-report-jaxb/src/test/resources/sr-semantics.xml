@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<SimpleReport ValidationTime="2020-06-19T14:56:13" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+<SimpleReport ValidationTime="2020-06-19T14:56:13Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
     <ValidationPolicy>
         <PolicyName>QES AdESQC TL based</PolicyName>
         <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
@@ -23,16 +23,20 @@
         </CertificateChain>
         <Indication>TOTAL_FAILED</Indication>
         <SubIndication>SIG_CRYPTO_FAILURE</SubIndication>
-        <Errors>Unable to build a certificate chain until a trusted list!</Errors>
-        <Errors>The result of the LTV validation process is not acceptable to continue the process!</Errors>
-        <Errors>The certificate chain for signature is not trusted, it does not contain a trust anchor.</Errors>
-        <Errors>The signature is not intact!</Errors>
-        <Errors>The result of the timestamps validation process is not conclusive!</Errors>
-        <Errors>The algorithm is no longer considered reliable!</Errors>
-        <Errors>The certificate chain for timestamp is not trusted, it does not contain a trust anchor.</Errors>
-        <Warnings>The signature/seal is not a valid AdES digital signature!</Warnings>
-        <SigningTime>2018-08-31T14:49:38</SigningTime>
-        <BestSignatureTime>2020-06-19T14:56:13</BestSignatureTime>
+        <AdESValidationDetails>
+            <Error>The result of the LTV validation process is not acceptable to continue the process!</Error>
+            <Error>The certificate chain for signature is not trusted, it does not contain a trust anchor.</Error>
+            <Error>The signature is not intact!</Error>
+            <Error>The result of the timestamps validation process is not conclusive!</Error>
+            <Error>The algorithm is no longer considered reliable!</Error>
+            <Error>The certificate chain for timestamp is not trusted, it does not contain a trust anchor.</Error>
+        </AdESValidationDetails>
+        <QualificationDetails>
+            <Error>Unable to build a certificate chain until a trusted list!</Error>
+            <Warning>The signature/seal is not a valid AdES digital signature!</Warning>
+        </QualificationDetails>
+        <SigningTime>2018-08-31T14:49:38Z</SigningTime>
+        <BestSignatureTime>2020-06-19T14:56:13Z</BestSignatureTime>
         <SignedBy>TEST Signature.Bank</SignedBy>
         <SignatureLevel description="Not applicable">N/A</SignatureLevel>
         <SignatureScope name="Partial PDF" scope="PARTIAL">The document ByteRange : [0, 38045, 238047, 313]</SignatureScope>

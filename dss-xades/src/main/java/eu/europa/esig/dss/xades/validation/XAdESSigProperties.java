@@ -34,6 +34,8 @@ import java.util.List;
  */
 public abstract class XAdESSigProperties implements SignatureProperties<XAdESAttribute> {
 
+	private static final long serialVersionUID = -8950099614582666431L;
+
 	/** Signature properties element */
 	private final Element signaturePropertiesDom;
 

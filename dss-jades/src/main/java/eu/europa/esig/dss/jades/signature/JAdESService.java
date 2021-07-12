@@ -25,10 +25,13 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
+import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
+import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
@@ -63,6 +66,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 					MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters>,
 					CounterSignatureService<JAdESCounterSignatureParameters> {
 
+	private static final long serialVersionUID = -7057603783915654317L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESService.class);
 
 	/**
@@ -93,15 +98,12 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	 */
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
-		if (tspSource == null) {
-			throw new DSSException("A TSPSource is required!");
-		}
+		Objects.requireNonNull(tspSource, "A TSPSource is required!");
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new DSSException("Original documents must be provided to generate a content timestamp!");
+			throw new IllegalArgumentException("Original documents must be provided to generate a content timestamp!");
 		}
 		
-		byte[] messageImprint = DSSUtils.EMPTY_BYTE_ARRAY;
-
+		byte[] messageImprint;
 		if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
 			HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(toSignDocuments, true);
 			messageImprint = httpHeadersPayloadBuilder.build();
@@ -152,15 +154,15 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	 */
 	private void assertMultiDocumentsAllowed(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new DSSException("The documents to sign must be provided!");
+			throw new IllegalArgumentException("The documents to sign must be provided!");
 		}
 		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
 		if (!SignaturePackaging.DETACHED.equals(signaturePackaging) && toSignDocuments.size() > 1) {
-			throw new DSSException("Not supported operation (only DETACHED are allowed for multiple document signing)!");
+			throw new IllegalArgumentException("Not supported operation (only DETACHED are allowed for multiple document signing)!");
 		}
 		if (SignaturePackaging.DETACHED.equals(signaturePackaging) && SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism()) 
 				&& toSignDocuments.size() > 1) {
-			throw new DSSException("NO_SIG_D mechanism is not allowed for multiple documents!");
+			throw new IllegalArgumentException("NO_SIG_D mechanism is not allowed for multiple documents!");
 		}
 	}
 
@@ -200,7 +202,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		JWSJsonSerializationObject jwsJsonSerializationObject = getJWSJsonSerializationObjectToSign(documentsToSign);
 		if (containsSignatures(jwsJsonSerializationObject)) {
 			if (!jwsJsonSerializationObject.isValid()) {
-				throw new DSSException(String.format(
+				throw new IllegalInputException(String.format(
 						"Parallel signing is not supported for invalid RFC 7515 signatures. Reason(s) : %s",
 						jwsJsonSerializationObject.getStructuralValidationErrors()));
 			}
@@ -214,7 +216,6 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			case JSON_SERIALIZATION:
 			case FLATTENED_JSON_SERIALIZATION:
 				return new JAdESSerializationBuilder(certificateVerifier, parameters, documentsToSign);
-
 			default:
 				throw new DSSException(String.format("The requested JWS Serialization Type '%s' is not supported!",
 						parameters.getJwsSerializationType()));
@@ -223,7 +224,12 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 
 	private JWSJsonSerializationObject getJWSJsonSerializationObjectToSign(List<DSSDocument> documentsToSign) {
 		if (Utils.isCollectionNotEmpty(documentsToSign) && documentsToSign.size() == 1) {
-			return DSSJsonUtils.toJWSJsonSerializationObject(documentsToSign.get(0));
+			DSSDocument document = documentsToSign.get(0);
+			JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
+			if (documentValidatorFactory.isSupported(document)) {
+				AbstractJWSDocumentValidator documentValidator = documentValidatorFactory.create(document);
+				return documentValidator.getJwsJsonSerializationObject();
+			}
 		}
 		return null;
 	}
@@ -254,7 +260,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	private void assertExtensionPossible(JAdESSignatureParameters parameters) {
 		if (!JWSSerializationType.JSON_SERIALIZATION.equals(parameters.getJwsSerializationType()) &&
 				!JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(parameters.getJwsSerializationType())) {
-			throw new DSSException(String.format("The type '%s' does not support signature extension!",
+			throw new IllegalArgumentException(String.format("The type '%s' does not support signature extension!",
 					parameters.getJwsSerializationType()));
 		}
 	}
@@ -352,21 +358,31 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	
 	private void verifyAndSetCounterSignatureParameters(JAdESCounterSignatureParameters parameters) {
 		if (parameters.getSignaturePackaging() == null) {
-			parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		} else if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
-			throw new IllegalArgumentException(String.format("The SignaturePackaging '%s' is not supported by JAdES Counter Signature!", 
-					parameters.getSignaturePackaging()));
+			// attached counter signature is created by default
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		}
-		
-		if (parameters.getSigDMechanism() == null) {
-			parameters.setSigDMechanism(SigDMechanism.NO_SIG_D);
-		} else if (!SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
-			throw new IllegalArgumentException(String.format("The SigDMechanism '%s' is not supported by JAdES Counter Signature!", 
-					parameters.getSigDMechanism()));
+
+		switch (parameters.getSignaturePackaging()) {
+			case ENVELOPING:
+				break;
+			case DETACHED:
+				if (parameters.getSigDMechanism() == null) {
+					parameters.setSigDMechanism(SigDMechanism.NO_SIG_D);
+				} else if (!SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
+					throw new IllegalArgumentException(String.format("The SigDMechanism '%s' is not supported by JAdES Counter Signature!",
+							parameters.getSigDMechanism()));
+				}
+				break;
+			default:
+				throw new IllegalArgumentException(
+						String.format("The SignaturePackaging '%s' is not supported by JAdES Counter Signature!",
+						parameters.getSignaturePackaging()));
 		}
+
 		
 		if (JWSSerializationType.JSON_SERIALIZATION.equals(parameters.getJwsSerializationType())) {
-			throw new IllegalArgumentException("The JWSSerializationType.JSON_SERIALIZATION parameter is not supported for a JAdES Counter Signature!");
+			throw new IllegalArgumentException("The JWSSerializationType.JSON_SERIALIZATION parameter " +
+					"is not supported for a JAdES Counter Signature!");
 		}
 	}
 

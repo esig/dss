@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.timestamp.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -38,8 +28,8 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -57,6 +47,15 @@ import eu.europa.esig.validationreport.jaxb.ValidationConstraintsEvaluationRepor
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 
@@ -79,12 +78,14 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		ASiCWithCAdESSignatureParameters extendParameters = new ASiCWithCAdESSignatureParameters();
 		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(docToExtend, extendParameters));
 		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		assertThrows(DSSException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(docToExtend, extendParameters));
+		assertEquals("No supported signature documents found! Unable to extend the container.", exception.getMessage());
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(archiveWithTimestamp);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -96,8 +97,6 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(0, diagnosticData.getSignatureIdList().size());
 		assertEquals(1, diagnosticData.getTimestampIdList().size());
-
-		signaturesAndTimestampsIntact(diagnosticData);
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
@@ -122,8 +121,6 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		assertEquals(1, diagnosticData.getSignatureIdList().size());
 		assertEquals(1, diagnosticData.getTimestampIdList().size());
 
-		signaturesAndTimestampsIntact(diagnosticData);
-
 		timestampParameters = new ASiCWithCAdESTimestampParameters();
 		timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
@@ -141,8 +138,6 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, diagnosticData.getSignatureIdList().size());
 		assertEquals(2, diagnosticData.getTimestampIdList().size());
-
-		signaturesAndTimestampsIntact(diagnosticData);
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
@@ -167,7 +162,31 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		assertEquals(2, diagnosticData.getSignatureIdList().size());
 		assertEquals(2, diagnosticData.getTimestampIdList().size());
 
-		signaturesAndTimestampsIntact(diagnosticData);
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			assertTrue(signature.isSignatureIntact());
+			assertTrue(signature.isSignatureValid());
+		}
+
+		boolean firstTstFound = false;
+		boolean secondTstFound = false;
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+			assertTrue(timestamp.isMessageImprintDataFound());
+			assertTrue(timestamp.isMessageImprintDataIntact());
+			assertTrue(timestamp.isSignatureIntact());
+			assertTrue(timestamp.isSignatureValid());
+
+			if (timestamp.getDigestMatchers().size() == 2) {
+				assertEquals(2, timestamp.getTimestampedSignedData().size());
+				firstTstFound = true;
+			} else if (timestamp.getDigestMatchers().size() == 5) {
+				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getName());
+				assertEquals(4, timestamp.getTimestampedSignedData().size());
+				assertEquals(1, timestamp.getTimestampedTimestamps().size());
+				secondTstFound = true;
+			}
+		}
+		assertTrue(firstTstFound);
+		assertTrue(secondTstFound);
 
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReportJaxb);
@@ -203,21 +222,6 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		}
 		assertFalse(noTimestamp);
 
-	}
-
-	private void signaturesAndTimestampsIntact(DiagnosticData diagnosticData) {
-
-		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
-			assertTrue(signature.isSignatureIntact());
-			assertTrue(signature.isSignatureValid());
-		}
-
-		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
-			assertTrue(timestamp.isMessageImprintDataFound());
-			assertTrue(timestamp.isMessageImprintDataIntact());
-			assertTrue(timestamp.isSignatureIntact());
-			assertTrue(timestamp.isSignatureValid());
-		}
 	}
 
 	@Override

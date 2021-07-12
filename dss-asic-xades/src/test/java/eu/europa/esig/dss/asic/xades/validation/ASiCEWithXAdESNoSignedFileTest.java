@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
@@ -43,6 +36,13 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEWithXAdESNoSignedFileTest extends AbstractASiCWithXAdESTestValidation {
 
@@ -72,9 +72,9 @@ public class ASiCEWithXAdESNoSignedFileTest extends AbstractASiCWithXAdESTestVal
 		assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
 		
 		for (XmlConstraint xmlConstraint : fc.getConstraint()) {
-			if (MessageTag.BBB_FC_ISFP_ASICE.getId().equals(xmlConstraint.getName().getNameId())) {
+			if (MessageTag.BBB_FC_ISFP_ASICE.getId().equals(xmlConstraint.getName().getKey())) {
 				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-				assertEquals(MessageTag.BBB_FC_ISFP_ASICE_ANS.getId(), xmlConstraint.getError().getNameId());
+				assertEquals(MessageTag.BBB_FC_ISFP_ASICE_ANS.getId(), xmlConstraint.getError().getKey());
 			} else {
 				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
 			}
@@ -108,10 +108,17 @@ public class ASiCEWithXAdESNoSignedFileTest extends AbstractASiCWithXAdESTestVal
 			for (String error : signatureWrapper.getStructuralValidationMessages()) {
 				if (error.contains("NCName")) {
 					notValidNameErrorFound = true;
+					break;
 				}
 			}
 			assertTrue(notValidNameErrorFound);
 		}
+	}
+
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
+		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
 	}
 
 }

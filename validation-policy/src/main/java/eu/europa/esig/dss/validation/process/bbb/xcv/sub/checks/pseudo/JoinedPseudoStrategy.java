@@ -28,23 +28,23 @@ import eu.europa.esig.dss.utils.Utils;
 
 public class JoinedPseudoStrategy implements PseudoStrategy {
 
-	private static final List<PseudoStrategy> STRATEGIES;
+    private static final List<PseudoStrategy> STRATEGIES;
 
-	static {
-		STRATEGIES = new ArrayList<>();
-		STRATEGIES.add(new PseudoAttributeStrategy());
-		STRATEGIES.add(new PseudoGermanyStrategy());
-	}
+    static {
+        STRATEGIES = new ArrayList<>();
+        STRATEGIES.add(new PseudoAttributeStrategy());
+        STRATEGIES.add(new PseudoGermanyStrategy());
+    }
 
-	@Override
-	public String getPseudo(CertificateWrapper certificate) {
-		for (PseudoStrategy strategy : STRATEGIES) {
-			String pseudo = strategy.getPseudo(certificate);
-			if (Utils.isStringNotEmpty(pseudo)) {
-				return pseudo;
-			}
-		}
-		return null;
-	}
+    @Override
+    public String getPseudo(CertificateWrapper certificate) {
+        for (PseudoStrategy strategy : STRATEGIES) {
+            String pseudo = strategy.getPseudo(certificate);
+            if (Utils.isStringNotEmpty(pseudo)) {
+                return pseudo;
+            }
+        }
+        return null;
+    }
 
 }

@@ -20,22 +20,39 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * This class is used to get DataToSign for ASiC-S with XAdES container from an archive
+ *
+ */
 public class DataToSignASiCSWithXAdESFromArchive extends AbstractGetDataToSignASiCSWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 
+	/** List of signatures */
 	private final List<DSSDocument> embeddedSignatures;
+
+	/** List of signed files */
 	private final List<DSSDocument> embeddedSignedFiles;
+
+	/** Asic parameters */
 	private final ASiCParameters asicParameters;
 
-	public DataToSignASiCSWithXAdESFromArchive(List<DSSDocument> embeddedSignatures, List<DSSDocument> embeddedSignedFiles, ASiCParameters asicParameters) {
+	/**
+	 * Default constructor
+	 *
+	 * @param embeddedSignatures a list of {@link DSSDocument} signatures
+	 * @param embeddedSignedFiles a list of {@link DSSDocument} signed files
+	 * @param asicParameters {@link ASiCParameters}
+	 */
+	public DataToSignASiCSWithXAdESFromArchive(List<DSSDocument> embeddedSignatures,
+											   List<DSSDocument> embeddedSignedFiles, ASiCParameters asicParameters) {
 		this.embeddedSignatures = embeddedSignatures;
 		this.embeddedSignedFiles = embeddedSignedFiles;
 		this.asicParameters = asicParameters;

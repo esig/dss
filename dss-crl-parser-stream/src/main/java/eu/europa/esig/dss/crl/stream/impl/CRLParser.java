@@ -91,7 +91,7 @@ class CRLParser {
 	 * 
 	 * @param is
 	 *          {@link BinaryFilteringInputStream} an initialized CRLSignedDataInputStream
-	 * @throws IOException
+	 * @throws IOException if an error occurs during the InputStream reading
 	 */
 	public void getSignedData(BinaryFilteringInputStream is) throws IOException {
 		// We don't digest the beginning (not part of TBS)
@@ -393,7 +393,7 @@ class CRLParser {
 	 *            {@link InputStream}
 	 * @param length
 	 *            number of bytes to be skipped
-	 * @throws IOException
+	 * @throws IOException if an error occurs during the InputStream reading
 	 */
 	private void skip(InputStream is, int length) throws IOException {
 		long skipped = 0;

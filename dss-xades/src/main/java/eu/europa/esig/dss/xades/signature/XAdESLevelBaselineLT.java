@@ -21,14 +21,15 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -55,84 +56,66 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	 * - CertificateValues element and<br>
 	 * - RevocationValues element.
 	 *
-	 * @see XAdESLevelX#extendSignatureTag()
+	 * @see XAdESLevelBaselineT#extendSignatures(List)
 	 */
 	@Override
-	protected void extendSignatureTag() throws DSSException {
-		
-		super.extendSignatureTag();
-		
-		if (xadesSignature.hasLTAProfile()) {
+	protected void extendSignatures(List<AdvancedSignature> signatures) {
+		super.extendSignatures(signatures);
+
+		boolean ltLevelRequired = false;
+
+		// Reset sources
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			if (xadesSignature.hasLTAProfile()) {
+				continue;
+			}
+
+			/**
+			 * In all cases the -LT level need to be regenerated.
+			 */
+			checkSignatureIntegrity();
+
+			// Data sources can already be loaded in memory (force reload)
+			xadesSignature.resetCertificateSource();
+			xadesSignature.resetRevocationSources();
+			xadesSignature.resetTimestampSource();
+
+			ltLevelRequired = true;
+		}
+
+		if (!ltLevelRequired) {
 			return;
 		}
 
-		// Data sources can already be loaded in memory (force reload)
-		xadesSignature.resetCertificateSource();
-		xadesSignature.resetRevocationSources();
-		xadesSignature.resetTimestampSource();
+		// Perform signature validation
+		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
 
-		assertExtendSignatureToLTPossible();
-		Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
+		// Append ValidationData
+		for (AdvancedSignature signature : signatures) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			if (xadesSignature.hasLTAProfile()) {
+				continue;
+			}
 
-		/**
-		 * In all cases the -LT level need to be regenerated.
-		 */
-		checkSignatureIntegrity();
+			// shall be called after source re-generation and validation data inclusion
+			assertExtendSignatureToLTPossible();
 
-		// must be executed before data removing
-		final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+			String indent = removeOldCertificateValues();
+			removeOldRevocationValues();
 
-		String indent = removeOldCertificateValues();
-		removeOldRevocationValues();
-		
-		ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(validationContext);
+			Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
-		List<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
-		List<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
-		
-		incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
-		incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
-		
-		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
-	}
+			ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
 
-	/**
-	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
-	 *
-	 * @throws DSSException in case of the cryptographic signature verification fails
-	 */
-	protected void checkSignatureIntegrity() throws DSSException {
-		final SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
-		if (!signatureCryptographicVerification.isSignatureIntact()) {
-			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
-			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
-		}
-	}
+			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+			Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+			Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 
-	/**
-	 * This method removes old certificates values from the unsigned signature properties element.
-	 */
-	private String removeOldCertificateValues() {
-		String text = null;
-		final Element toRemove = xadesSignature.getCertificateValues();
-		if (toRemove != null) {
-			text = removeChild(unsignedSignaturePropertiesDom, toRemove);
-			/* Because the element was removed, the certificate source needs to be reset */
-			xadesSignature.resetCertificateSource();
-		}
-		return text;
-	}
+			incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
+			incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
 
-	/**
-	 * This method removes old revocation values from the unsigned signature properties element.
-	 */
-	private void removeOldRevocationValues() {
-		final Element toRemove = xadesSignature.getRevocationValues();
-		if (toRemove != null) {
-			removeChild(unsignedSignaturePropertiesDom, toRemove);
-			/* Because the element was removed, the revocation sources need to be reset */
-			xadesSignature.resetRevocationSources();
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
 		}
 	}
 
@@ -142,10 +125,10 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	private void assertExtendSignatureToLTPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		if (SignatureLevel.XAdES_BASELINE_LT.equals(signatureLevel) && xadesSignature.hasLTAProfile()) {
-			final String exceptionMessage = "Cannot extend the signature. The signedData is already extended with [%s]!";
-			throw new DSSException(String.format(exceptionMessage, "XAdES LTA"));
+			final String exceptionMessage = "Cannot extend the signature. The signature is already extended with [%s]!";
+			throw new IllegalInputException(String.format(exceptionMessage, "XAdES LTA"));
 		} else if (xadesSignature.areAllSelfSignedCertificates()) {
-			throw new DSSException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}
 

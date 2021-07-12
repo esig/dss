@@ -20,21 +20,12 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
@@ -43,12 +34,31 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * Provides a user-friendly interface of dealing with JAXB {@code XmlCertificate}
+ *
+ */
 public class CertificateWrapper extends AbstractTokenProxy {
 
+	/** The wrapped XmlCertificate instance */
 	private final XmlCertificate certificate;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param certificate {@link XmlCertificate} to be wrapped
+	 */
 	public CertificateWrapper(XmlCertificate certificate) {
 		Objects.requireNonNull(certificate, "XMLCertificate cannot be null!");
 		this.certificate = certificate;
@@ -74,14 +84,29 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.getSigningCertificate();
 	}
 
+	/**
+	 * Returns if the certificate is trusted
+	 *
+	 * @return TRUE if the certificate is trusted, FALSE otherwise
+	 */
 	public boolean isTrusted() {
 		return certificate.isTrusted();
 	}
 
+	/**
+	 * Returns if the certificate is self-signed
+	 *
+	 * @return TRUE if the certificate is self-signed, FALSE otherwise
+	 */
 	public boolean isSelfSigned() {
 		return certificate.isSelfSigned();
 	}
 
+	/**
+	 * Returns the defined key-usages for the certificate
+	 *
+	 * @return a list of {@link KeyUsageBit}s
+	 */
 	public List<KeyUsageBit> getKeyUsages() {
 		List<KeyUsageBit> keyUsageBits = certificate.getKeyUsageBits();
 		if (keyUsageBits != null) {
@@ -90,14 +115,29 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns if the revocation data is available for the certificate
+	 *
+	 * @return TRUE if the revocation data is available, FALSE otherwise
+	 */
 	public boolean isRevocationDataAvailable() {
 		return certificate.getRevocations() != null && certificate.getRevocations().size() > 0;
 	}
-	
+
+	/**
+	 * Returns a list of sources the certificate has been obtained from (e.g. TRUSTED_LIST, SIGNATURE, AIA, etc.)
+	 *
+	 * @return a list of {@link CertificateSourceType}s
+	 */
 	public List<CertificateSourceType> getSources() {
 		return certificate.getSources();
 	}
 
+	/**
+	 * Returns a list of revocation data relevant to the certificate
+	 *
+	 * @return a list of {@link CertificateRevocationWrapper}s
+	 */
 	public List<CertificateRevocationWrapper> getCertificateRevocationData() {
 		List<CertificateRevocationWrapper> certRevocationWrappers = new ArrayList<>();
 		List<XmlCertificateRevocation> revocations = certificate.getRevocations();
@@ -121,11 +161,21 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Returns if the certificate has id-pkix-ocsp-no-check attribute
+	 *
+	 * @return TRUE if the certificate has id-pkix-ocsp-no-check attribute, FALSE otherwise
+	 */
 	public boolean isIdPkixOcspNoCheck() {
 		return certificate.isIdPkixOcspNoCheck() != null && certificate.isIdPkixOcspNoCheck();
 	}
 
+	/**
+	 * Checks if the certificate has an extended-key-usage "ocspSigning" (1.3.6.1.5.5.7.3.9)
+	 *
+	 * @return TRUE if the certificate has extended-key-usage "ocspSigning", FALSE otherwise
+	 */
 	public boolean isIdKpOCSPSigning() {
 		List<XmlOID> extendedKeyUsages = certificate.getExtendedKeyUsages();
 		if (extendedKeyUsages != null) {
@@ -138,18 +188,38 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return false;
 	}
 
+	/**
+	 * Returns the certificate's notBefore date (the date the certificate cannot be used before)
+	 *
+	 * @return {@link Date} notBefore
+	 */
 	public Date getNotBefore() {
 		return certificate.getNotBefore();
 	}
 
+	/**
+	 * Returns the certificate's notAfter date (the date the certificate cannot be used after)
+	 *
+	 * @return {@link Date} notAfter
+	 */
 	public Date getNotAfter() {
 		return certificate.getNotAfter();
 	}
-	
+
+	/**
+	 * Returns a string identifier of the certificate's public key
+	 *
+	 * @return {@link String} public key's identifier
+	 */
 	public String getEntityKey() {
 		return certificate.getEntityKey();
 	}
 
+	/**
+	 * Returns expiredCertsRevocationInfo extension from TL Trusted Serviced
+	 *
+	 * @return {@link Date} expiredCertsRevocationInfo extension
+	 */
 	public Date getCertificateTSPServiceExpiredCertsRevocationInfo() {
 		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProviders();
 		if (trustedServiceProviders != null) {
@@ -165,76 +235,166 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return null;
 	}
 
+	/**
+	 * Returns the serial number of the certificate
+	 *
+	 * @return {@link String}
+	 */
 	public String getSerialNumber() {
 		BigInteger serialNumber = certificate.getSerialNumber();
 		return serialNumber == null ? "" : serialNumber.toString();
 	}
 
+	/**
+	 * Returns the subject serial number of the certificate
+	 *
+	 * @return {@link String}
+	 */
 	public String getSubjectSerialNumber() {
 		return certificate.getSubjectSerialNumber();
 	}
 
+	/**
+	 * Returns the title
+	 *
+	 * @return {@link String}
+	 */
 	public String getTitle() {
 		return certificate.getTitle();
 	}
 
+	/**
+	 * Returns the common name
+	 *
+	 * @return {@link String}
+	 */
 	public String getCommonName() {
 		return certificate.getCommonName();
 	}
 
+	/**
+	 * Returns the country code
+	 *
+	 * @return {@link String}
+	 */
 	public String getCountryName() {
 		return certificate.getCountryName();
 	}
 
+	/**
+	 * Returns the given name
+	 *
+	 * @return {@link String}
+	 */
 	public String getGivenName() {
 		return certificate.getGivenName();
 	}
 
+	/**
+	 * Returns the organization identifier
+	 *
+	 * @return {@link String}
+	 */
 	public String getOrganizationIdentifier() {
 		return certificate.getOrganizationIdentifier();
 	}
 
+	/**
+	 * Returns the organization name
+	 *
+	 * @return {@link String}
+	 */
 	public String getOrganizationName() {
 		return certificate.getOrganizationName();
 	}
 
+	/**
+	 * Returns the organization unit
+	 *
+	 * @return {@link String}
+	 */
 	public String getOrganizationalUnit() {
 		return certificate.getOrganizationalUnit();
 	}
 
+	/**
+	 * Returns the email
+	 *
+	 * @return {@link String}
+	 */
 	public String getEmail() {
 		return certificate.getEmail();
 	}
 
+	/**
+	 * Returns the locality
+	 *
+	 * @return {@link String}
+	 */
 	public String getLocality() {
 		return certificate.getLocality();
 	}
 
+	/**
+	 * Returns the state
+	 *
+	 * @return {@link String}
+	 */
 	public String getState() {
 		return certificate.getState();
 	}
 
+	/**
+	 * Returns the surname
+	 *
+	 * @return {@link String}
+	 */
 	public String getSurname() {
 		return certificate.getSurname();
 	}
 
+	/**
+	 * Returns the pseudo
+	 *
+	 * @return {@link String}
+	 */
 	public String getPseudo() {
 		return certificate.getPseudonym();
 	}
-	
+
+	/**
+	 * Returns the certificate's Digest if present
+	 *
+	 * @return {@link XmlDigestAlgoAndValue}
+	 */
 	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
 		return certificate.getDigestAlgoAndValue();
 	}
 
+	/**
+	 * Returns if the Trusted List has been reached for the particular certificate
+	 *
+	 * @return TRUE if the Trusted List has been reached, FALSE otherwise
+	 */
 	public boolean isTrustedListReached() {
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
 		return tsps != null && tsps.size() > 0;
 	}
 
+	/**
+	 * Returns a list of {@code XmlTrustedServiceProvider}s
+	 *
+	 * @return a list of {@link XmlTrustedServiceProvider}s
+	 */
 	public List<XmlTrustedServiceProvider> getTrustServiceProviders() {
 		return certificate.getTrustedServiceProviders();
 	}
 
+	/**
+	 * Returns a list of {@code TrustedServiceWrapper}s
+	 *
+	 * @return a list of {@link TrustedServiceWrapper}s
+	 */
 	public List<TrustedServiceWrapper> getTrustedServices() {
 		List<TrustedServiceWrapper> result = new ArrayList<>();
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
@@ -270,37 +430,60 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return langAndValues.stream().map(t -> t.getValue()).collect(Collectors.toList());
 	}
 
+	/**
+	 * Returns the certificate's Distinguished Name (by RFC 2253)
+	 *
+	 * @return {@link String}
+	 */
 	public String getCertificateDN() {
-		return getFormat(certificate.getSubjectDistinguishedName(), "RFC2253");
+		DistinguishedNameListWrapper distinguishedNameListWrapper = new DistinguishedNameListWrapper(
+				certificate.getSubjectDistinguishedName());
+		return distinguishedNameListWrapper.getValue("RFC2253");
 	}
 
+	/**
+	 * Returns the certificate issuer's Distinguished Name (by RFC 2253)
+	 *
+	 * @return {@link String}
+	 */
 	public String getCertificateIssuerDN() {
-		return getFormat(certificate.getIssuerDistinguishedName(), "RFC2253");
+		DistinguishedNameListWrapper distinguishedNameListWrapper = new DistinguishedNameListWrapper(
+				certificate.getIssuerDistinguishedName());
+		return distinguishedNameListWrapper.getValue("RFC2253");
 	}
 
-	private String getFormat(List<XmlDistinguishedName> distinguishedNames, String format) {
-		if (distinguishedNames != null) {
-			for (XmlDistinguishedName distinguishedName : distinguishedNames) {
-				if (distinguishedName.getFormat().equals(format)) {
-					return distinguishedName.getValue();
-				}
-			}
-		}
-		return "";
-	}
-
+	/**
+	 * Returns the Authority Information Access URLs
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getAuthorityInformationAccessUrls() {
 		return certificate.getAuthorityInformationAccessUrls();
 	}
 
+	/**
+	 * Returns the CRL Distribution Points URLs
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getCRLDistributionPoints() {
 		return certificate.getCRLDistributionPoints();
 	}
 
+	/**
+	 * Returns the OCSP Access URLs
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getOCSPAccessUrls() {
 		return certificate.getOCSPAccessUrls();
 	}
 
+	/**
+	 * Returns the certificate policies URLs
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getCpsUrls() {
 		List<String> result = new ArrayList<>();
 		List<XmlCertificatePolicy> certificatePolicyIds = certificate.getCertificatePolicies();
@@ -315,19 +498,61 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return result;
 	}
 
+	/**
+	 * Returns the certificate policies Ids
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getPolicyIds() {
 		List<XmlCertificatePolicy> certificatePolicyIds = certificate.getCertificatePolicies();
 		return getOidValues(certificatePolicyIds);
 	}
 
-	public List<String> getQCStatementIds() {
-		List<XmlOID> certificateQCStatementIds = certificate.getQCStatementIds();
-		return getOidValues(certificateQCStatementIds);
+	/**
+	 * Returns if the certificate is supported by QSCD (has id-etsi-qcs-QcSSCD extension)
+	 *
+	 * @return TRUE if the certificate is supported by QSCD, FALSE otherwise
+	 */
+	public boolean isSupportedByQSCD() {
+		return certificate.getQcStatements() != null && certificate.getQcStatements().getQcSSCD() != null
+				&& certificate.getQcStatements().getQcSSCD().isPresent();
 	}
 
-	public List<String> getQCTypes() {
-		List<XmlOID> certificateQCTypeIds = certificate.getQCTypes();
-		return getOidValues(certificateQCTypeIds);
+	/**
+	 * Returns if the certificate is QC compliant (has id-etsi-qcs-QcCompliance extension)
+	 *
+	 * @return TRUE if the certificate is QC compliant, FALSE otherwise
+	 */
+	public boolean isQcCompliance() {
+		return certificate.getQcStatements() != null && certificate.getQcStatements().getQcCompliance() != null
+				&& certificate.getQcStatements().getQcCompliance().isPresent();
+	}
+
+	/**
+	 * Returns a list of QCTypes (present inside id-etsi-qcs-QcType extension)
+	 *
+	 * @return a list of {@link QCType}s
+	 */
+	public List<QCType> getQCTypes() {
+		List<QCType> result = new ArrayList<>();
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getQcTypes() != null) {
+			for (XmlOID oid : certificate.getQcStatements().getQcTypes()) {
+				result.add(QCType.fromOid(oid.getValue()));
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a list of QCLegislation Country Codes (present inside id-etsi-qcs-QcCClegislation extension)
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getQcLegislationCountryCodes() {
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getQcCClegislation() != null) {
+			return certificate.getQcStatements().getQcCClegislation();
+		}
+		return Collections.emptyList();
 	}
 
 	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {
@@ -345,36 +570,92 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.getBase64Encoded();
 	}
 
+	/**
+	 * Returns a list of extended-key-usages
+	 *
+	 * @return a list of {@link XmlOID}s
+	 */
 	public List<XmlOID> getExtendedKeyUsages() {
 		return certificate.getExtendedKeyUsages();
 	}
 
+	/**
+	 * Returns the PSD2 QCStatement (id-etsi-psd2-qcStatement extension, ETSI TS 119 495)
+	 *
+	 * @return {@link PSD2InfoWrapper}
+	 */
 	public PSD2InfoWrapper getPSD2Info() {
-		if (certificate.getPSD2Info() != null) {
-			return new PSD2InfoWrapper(certificate.getPSD2Info());
+		if (certificate.getQcStatements() !=null && certificate.getQcStatements().getPSD2QcInfo() != null) {
+			return new PSD2InfoWrapper(certificate.getQcStatements().getPSD2QcInfo());
 		}
 		return null;
 	}
 
+	/**
+	 * Returns the QCEuLimitValue
+	 *
+	 * @return {@link QCLimitValueWrapper}
+	 */
 	public QCLimitValueWrapper getQCLimitValue() {
-		if (certificate.getQCLimitValue() !=null) {
-			return new QCLimitValueWrapper(certificate.getQCLimitValue());
+		if (certificate.getQcStatements() !=null && certificate.getQcStatements().getQcEuLimitValue() !=null) {
+			return new QCLimitValueWrapper(certificate.getQcStatements().getQcEuLimitValue());
 		}
 		return null;
 	}
 
+	/**
+	 * Returns QcEuRetentionPeriod
+	 *
+	 * @return {@link Integer} retention period
+	 */
+	public Integer getQCEuRetentionPeriod() {
+		if (certificate.getQcStatements() !=null ) {
+			return certificate.getQcStatements().getQcEuRetentionPeriod();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns QcEuPDS Locations
+	 *
+	 * @return a list of {@link XmlLangAndValue}s
+	 */
+	public List<XmlLangAndValue> getQCPDSLocations() {
+		if (certificate.getQcStatements() !=null) {
+			return certificate.getQcStatements().getQcEuPDS();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns the semantics identifier
+	 *
+	 * @return {@link SemanticsIdentifier}
+	 */
+	public SemanticsIdentifier getSemanticsIdentifier() {
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getSemanticsIdentifier() != null) {
+			XmlOID xmlOID = certificate.getQcStatements().getSemanticsIdentifier();
+			if (xmlOID != null) {
+				return SemanticsIdentifier.fromOid(xmlOID.getValue());
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns subject alternative names
+	 *
+	 * @return a list of {@link String}s
+	 */
 	public List<String> getSubjectAlternativeNames() {
 		return certificate.getSubjectAlternativeNames();
 	}
 
-	public SemanticsIdentifier getSemanticsIdentifier() {
-		XmlOID xmlOID = certificate.getSemanticsIdentifier();
-		if (xmlOID != null) {
-			return SemanticsIdentifier.fromOid(xmlOID.getValue());
-		}
-		return null;
-	}
-
+	/**
+	 * Returns human-readable certificate name
+	 *
+	 * @return {@link String}
+	 */
 	public String getReadableCertificateName() {
 		if (certificate.getCommonName() != null) {
 			return certificate.getCommonName();

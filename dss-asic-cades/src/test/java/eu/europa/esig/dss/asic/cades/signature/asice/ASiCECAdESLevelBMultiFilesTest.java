@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
@@ -55,21 +43,35 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ASiCECAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithCAdESService service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
-	private List<DSSDocument> documentToSigns = new ArrayList<>();
+	private List<DSSDocument> documentsToSign = new ArrayList<>();
 
 	@BeforeEach
 	public void init() throws Exception {
 		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 
-		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
-		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
-		documentToSigns.add(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
+		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
+		documentsToSign.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		documentsToSign.add(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -77,7 +79,7 @@ public class ASiCECAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSigns, signatureParameters);
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentsToSign, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 	}
 
@@ -157,6 +159,19 @@ public class ASiCECAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 	}
 
 	@Override
+	protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
+		super.validateETSISignersDocument(signersDocument);
+
+		DigestAlgAndValueType digestAlgoAndValue = getDigestAlgoAndValue(signersDocument);
+		assertNotNull(digestAlgoAndValue);
+		assertNotNull(digestAlgoAndValue.getDigestMethod());
+		assertNotNull(digestAlgoAndValue.getDigestValue());
+
+		List<ValidationObjectType> validationObjects = getValidationObjects(signersDocument);
+		assertEquals(4, validationObjects.size());
+	}
+
+	@Override
 	protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
@@ -178,7 +193,7 @@ public class ASiCECAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 
 	@Override
 	protected List<DSSDocument> getDocumentsToSign() {
-		return documentToSigns;
+		return documentsToSign;
 	}
 
 	@Override

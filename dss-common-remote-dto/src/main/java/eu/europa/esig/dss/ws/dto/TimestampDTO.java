@@ -22,12 +22,15 @@ package eu.europa.esig.dss.ws.dto;
 
 import eu.europa.esig.dss.enumerations.TimestampType;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * DTO to transfer a TimestampToken over REST/SOAP webServices
  */
-public class TimestampDTO {
+public class TimestampDTO implements Serializable {
+
+	private static final long serialVersionUID = -8661917001841886938L;
 
 	/** The timestamp token's DER-encoded binaries */
 	private byte[] binaries;

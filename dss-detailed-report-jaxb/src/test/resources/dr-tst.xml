@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DetailedReport ValidationTime="2020-02-10T13:14:22" xmlns="http://dss.esig.europa.eu/validation/detailed-report">
     <Timestamp Id="T-517648400E98B8EAEA60C1376EDA4D03A454CAA28DBA7E5ACEE5E96A2B1FE0CD">
-        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-11-26T09:39:46" Title="Validation Process for Timestamps">
+        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-11-26T09:39:46Z" Title="Validation Process for Timestamps">
             <Constraint Id="T-517648400E98B8EAEA60C1376EDA4D03A454CAA28DBA7E5ACEE5E96A2B1FE0CD">
-                <Name NameId="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
+                <Name Key="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
@@ -12,29 +12,29 @@
         </ValidationProcessTimestamp>
         <ValidationTimestampQualification TimestampQualification="QTSA" Title="Timestamp Qualification">
             <Constraint>
-                <Name NameId="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
+                <Name Key="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
-                <Name NameId="QUAL_TRUSTED_LIST_ACCEPT">Is the trusted list acceptable?</Name>
+                <Name Key="QUAL_TRUSTED_LIST_ACCEPT">Is the trusted list acceptable?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Trusted List : https://ec.europa.eu/tools/lotl/eu-lotl.xml</AdditionalInfo>
             </Constraint>
             <Constraint Id="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1">
-                <Name NameId="QUAL_TRUSTED_LIST_ACCEPT">Is the trusted list acceptable?</Name>
+                <Name Key="QUAL_TRUSTED_LIST_ACCEPT">Is the trusted list acceptable?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Trusted List : https://elektroninisparasas.lt/LT-TSL.xml</AdditionalInfo>
             </Constraint>
             <Constraint>
-                <Name NameId="QUAL_HAS_QTST">Is the certificate related to a TSA/QTST?</Name>
+                <Name Key="QUAL_HAS_QTST">Is the certificate related to a TSA/QTST?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name NameId="QUAL_HAS_GRANTED">Is the certificate related to a trust service with a granted status?</Name>
+                <Name Key="QUAL_HAS_GRANTED">Is the certificate related to a trust service with a granted status?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name NameId="QUAL_HAS_GRANTED_AT">Is the certificate related to a trust service with a granted status at the production time?</Name>
+                <Name Key="QUAL_HAS_GRANTED_AT">Is the certificate related to a trust service with a granted status at the production time?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
@@ -45,7 +45,7 @@
     <BasicBuildingBlocks Id="T-517648400E98B8EAEA60C1376EDA4D03A454CAA28DBA7E5ACEE5E96A2B1FE0CD" Type="TIMESTAMP">
         <ISC Title="Identification of the Signing Certificate">
             <Constraint>
-                <Name NameId="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
+                <Name Key="BBB_ICS_ISCI">Is there an identified candidate for the signing certificate?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
@@ -65,11 +65,11 @@
         </ISC>
         <XCV Title="X509 Certificate Validation">
             <Constraint>
-                <Name NameId="BBB_XCV_CCCBB">Can the certificate chain be built till a trust anchor?</Name>
+                <Name Key="BBB_XCV_CCCBB">Can the certificate chain be built till a trust anchor?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint Id="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
-                <Name NameId="BBB_XCV_SUB">Is the certificate validation conclusive?</Name>
+                <Name Key="BBB_XCV_SUB">Is the certificate validation conclusive?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
@@ -83,17 +83,17 @@
         </XCV>
         <CV Title="Cryptographic Verification">
             <Constraint>
-                <Name NameId="BBB_CV_IRDOF">Has the reference data object been found?</Name>
+                <Name Key="BBB_CV_IRDOF">Has the reference data object been found?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Reference : MESSAGE_IMPRINT</AdditionalInfo>
             </Constraint>
             <Constraint>
-                <Name NameId="BBB_CV_IRDOI">Is the reference data object intact?</Name>
+                <Name Key="BBB_CV_IRDOI">Is the reference data object intact?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Reference : MESSAGE_IMPRINT</AdditionalInfo>
             </Constraint>
             <Constraint>
-                <Name NameId="BBB_CV_ISIT">Is timestampss signature intact?</Name>
+                <Name Key="BBB_CV_ISIT">Is timestamp's signature intact?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Id = T-517648400E98B8EAEA60C1376EDA4D03A454CAA28DBA7E5ACEE5E96A2B1FE0CD</AdditionalInfo>
             </Constraint>
@@ -101,22 +101,25 @@
                 <Indication>PASSED</Indication>
             </Conclusion>
         </CV>
-        <SAV ValidationTime="2019-12-17T05:33:23" Title="Signature Acceptance Validation">
+        <SAV Title="Signature Acceptance Validation">
             <Constraint>
-                <Name NameId="ATCCM">Are timestamp cryptographic constraints met?</Name>
+                <Name Key="ATCCM">Are timestamp cryptographic constraints met?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Validation time : 2019-12-17 05:33 for token with ID : [T-517648400E98B8EAEA60C1376EDA4D03A454CAA28DBA7E5ACEE5E96A2B1FE0CD]</AdditionalInfo>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <CryptographicInfo>
-                <Algorithm>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Algorithm>
-                <KeyLength>2048</KeyLength>
-                <Secure>true</Secure>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>RSA with SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmldsig-more#rsa-sha256</Uri>
+                    <KeyLength>2048</KeyLength>
+                </Algorithm>
                 <NotAfter>2022-12-31T23:00:00</NotAfter>
+                <ValidationTime>2019-12-17T05:33:23</ValidationTime>
                 <ConcernedMaterial>T-517648400E98B8EAEA60C1376EDA4D03A454CAA28DBA7E5ACEE5E96A2B1FE0CD</ConcernedMaterial>
-            </CryptographicInfo>
+            </CryptographicValidation>
         </SAV>
         <CertificateChain>
             <ChainItem Id="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
@@ -135,19 +138,19 @@
     </BasicBuildingBlocks>
     <TLAnalysis CountryCode="EU" URL="https://ec.europa.eu/tools/lotl/eu-lotl.xml" Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" Title="List Of Trusted Lists EU">
         <Constraint>
-            <Name NameId="QUAL_TL_FRESH">Is the trusted list fresh?</Name>
+            <Name Key="QUAL_TL_FRESH">Is the trusted list fresh?</Name>
             <Status>OK</Status>
         </Constraint>
         <Constraint>
-            <Name NameId="QUAL_TL_EXP">Is the trusted list not expired?</Name>
+            <Name Key="QUAL_TL_EXP">Is the trusted list not expired?</Name>
             <Status>OK</Status>
         </Constraint>
         <Constraint>
-            <Name NameId="QUAL_TL_VERSION">Does the trusted list have the expected version?</Name>
+            <Name Key="QUAL_TL_VERSION">Does the trusted list have the expected version?</Name>
             <Status>OK</Status>
         </Constraint>
         <Constraint>
-            <Name NameId="QUAL_TL_WS">Is the trusted list well signed?</Name>
+            <Name Key="QUAL_TL_WS">Is the trusted list well signed?</Name>
             <Status>OK</Status>
         </Constraint>
         <Conclusion>
@@ -156,19 +159,19 @@
     </TLAnalysis>
     <TLAnalysis CountryCode="LT" URL="https://elektroninisparasas.lt/LT-TSL.xml" Id="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" Title="Trusted List LT">
         <Constraint>
-            <Name NameId="QUAL_TL_FRESH">Is the trusted list fresh?</Name>
+            <Name Key="QUAL_TL_FRESH">Is the trusted list fresh?</Name>
             <Status>OK</Status>
         </Constraint>
         <Constraint>
-            <Name NameId="QUAL_TL_EXP">Is the trusted list not expired?</Name>
+            <Name Key="QUAL_TL_EXP">Is the trusted list not expired?</Name>
             <Status>OK</Status>
         </Constraint>
         <Constraint>
-            <Name NameId="QUAL_TL_VERSION">Does the trusted list have the expected version?</Name>
+            <Name Key="QUAL_TL_VERSION">Does the trusted list have the expected version?</Name>
             <Status>OK</Status>
         </Constraint>
         <Constraint>
-            <Name NameId="QUAL_TL_WS">Is the trusted list well signed?</Name>
+            <Name Key="QUAL_TL_WS">Is the trusted list well signed?</Name>
             <Status>OK</Status>
         </Constraint>
         <Conclusion>

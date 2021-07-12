@@ -61,9 +61,7 @@ public class CAdESExtensionNoDetachedFileBToLTATest extends PKIFactoryAccess {
 		CAdESSignatureParameters extensionParameters = new CAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		
-		Exception exception = assertThrows(DSSException.class, () -> {
-			service.extendDocument(signedDocument, extensionParameters);
-		});
+		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, extensionParameters));
 		assertTrue(exception.getMessage().contains("Detached file not found!"));
 		
 	}

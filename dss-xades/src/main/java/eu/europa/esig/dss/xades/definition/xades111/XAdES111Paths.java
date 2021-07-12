@@ -34,6 +34,8 @@ import eu.europa.esig.xmldsig.XSDAbstractUtils;
  */
 public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 
+	private static final long serialVersionUID = -4625230696899261996L;
+
 	/** The path "./xades111:DigestMethod/xades111:Algorithm" */
 	public static final String DIGEST_METHOD_ALGORITHM_PATH = fromCurrentPosition(XAdES111Element.DIGEST_METHOD, XMLDSigAttribute.ALGORITHM);
 
@@ -83,11 +85,22 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getSigningCertificatePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
+				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNING_CERTIFICATE);
+	}
+
+	@Override
+	public String getSigningCertificateChildren() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
 				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNING_CERTIFICATE, XAdES111Element.CERT);
 	}
 
 	@Override
 	public String getSigningCertificateV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getSigningCertificateV2Children() {
 		return null;
 	}
 
@@ -103,9 +116,20 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public String getSignaturePolicyIdentifier() {
+	public String getSignaturePolicyIdentifierPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
 				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNATURE_POLICY_IDENTIFIER);
+	}
+
+	@Override
+	public String getSignerRolePath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
+				XAdES111Element.SIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNER_ROLE);
+	}
+
+	@Override
+	public String getSignerRoleV2Path() {
+		return null;
 	}
 
 	@Override
@@ -139,6 +163,12 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	public String getSignedDataObjectPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
 				XAdES111Element.SIGNED_DATA_OBJECT_PROPERTIES);
+	}
+
+	@Override
+	public String getDataObjectFormat() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.SIGNED_PROPERTIES,
+				XAdES111Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES111Element.DATA_OBJECT_FORMAT);
 	}
 
 	@Override
@@ -248,6 +278,11 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getAttrAuthoritiesCertValuesPath() {
+		return null;
+	}
+
+	@Override
 	public String getEncapsulatedAttrAuthoritiesCertValuesPath() {
 		return null;
 	}
@@ -268,7 +303,7 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public String getSignatureTimestampsPath() {
+	public String getSignatureTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.UNSIGNED_PROPERTIES,
 				XAdES111Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNATURE_TIMESTAMP);
 	}
@@ -281,6 +316,26 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 
 	@Override
 	public String getSigAndRefsTimestampV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getRefsOnlyTimestampPath() {
+		return null;
+	}
+
+	@Override
+	public String getRefsOnlyTimestampV2Path() {
+		return null;
+	}
+
+	@Override
+	public String getArchiveTimestampPath() {
+		return null;
+	}
+
+	@Override
+	public String getTimestampValidationDataPath() {
 		return null;
 	}
 
@@ -342,6 +397,11 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentCertRefs141CertChildren() {
+		return null;
+	}
+
+	@Override
 	public String getCurrentCertChildren() {
 		return fromCurrentPosition(XAdES111Element.CERT);
 	}
@@ -373,6 +433,32 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentSignaturePolicySPUserNotice() {
+		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_QUALIFIERS, XAdES111Element.SIG_POLICY_QUALIFIER,
+				XAdES111Element.SP_USER_NOTICE);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeNoticeRefOrganization() {
+		return fromCurrentPosition(XAdES111Element.NOTICE_REF, XAdES111Element.ORGANIZATION);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeNoticeRefNoticeNumbers() {
+		return fromCurrentPosition(XAdES111Element.NOTICE_REF, XAdES111Element.NOTICE_NUMBERS);
+	}
+
+	@Override
+	public String getCurrentSPUserNoticeExplicitText() {
+		return fromCurrentPosition(XAdES111Element.EXPLICIT_TEXT);
+	}
+
+	@Override
+	public String getCurrentSignaturePolicySPDocSpecificationIdentifier() {
+		return null;
+	}
+
+	@Override
 	public String getCurrentSignaturePolicyDescription() {
 		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_ID, XAdES111Element.DESCRIPTION);
 	}
@@ -390,6 +476,11 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentSignaturePolicyTransforms() {
 		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XMLDSigElement.TRANSFORMS);
+	}
+
+	@Override
+	public String getCurrentSignaturePolicyQualifiers() {
+		return fromCurrentPosition(XAdES111Element.SIGNATURE_POLICY_ID, XAdES111Element.SIG_POLICY_QUALIFIERS);
 	}
 
 	@Override
@@ -465,6 +556,26 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	@Override
 	public String getCurrentQualifyingPropertiesPath() {
 		return fromCurrentPosition(XAdES111Element.QUALIFYING_PROPERTIES);
+	}
+
+	@Override
+	public String getCurrentDescription() {
+		return fromCurrentPosition(XAdES111Element.DESCRIPTION);
+	}
+
+	@Override
+	public String getCurrentObjectIdentifier() {
+		return fromCurrentPosition(XAdES111Element.OBJECT_IDENTIFIER);
+	}
+
+	@Override
+	public String getCurrentMimeType() {
+		return fromCurrentPosition(XAdES111Element.MIME_TYPE);
+	}
+
+	@Override
+	public String getCurrentEncoding() {
+		return fromCurrentPosition(XAdES111Element.ENCODING);
 	}
 
 	// --------------------------- Signature Policy Store

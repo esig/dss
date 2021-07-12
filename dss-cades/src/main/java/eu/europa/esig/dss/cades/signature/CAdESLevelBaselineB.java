@@ -26,7 +26,6 @@ import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.CommitmentType;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
@@ -152,9 +151,8 @@ public class CAdESLevelBaselineB {
 	 * • certified attributes of the signer.
 	 * The signer-attributes attribute shall be a signed attribute.
 	 *
-	 * @param parameters
-	 * @param signedAttributes
-	 * @return
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @param signedAttributes {@link ASN1EncodableVector} signed attributes
 	 */
 	private void addSignerAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 		final List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
@@ -221,9 +219,8 @@ public class CAdESLevelBaselineB {
 	 * the provision of the Public Telegram Service (according to Recommendation ITU-T F.1 [11]).
 	 * The signer-location attribute shall be a signed attribute.
 	 *
-	 * @param parameters
-	 * @param signedAttributes
-	 * @return
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @param signedAttributes {@link ASN1EncodableVector} signed attributes
 	 */
 	private void addSignerLocation(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 		/*
@@ -267,8 +264,8 @@ public class CAdESLevelBaselineB {
 	 * type of commitment on behalf of the signer. The commitment-type-indication attribute conveys such
 	 * information.
 	 *
-	 * @param parameters
-	 * @param signedAttributes
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @param signedAttributes {@link ASN1EncodableVector} signed attributes
 	 */
 	private void addCommitmentType(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
@@ -282,7 +279,7 @@ public class CAdESLevelBaselineB {
 				
 				final CommitmentType commitmentType = commitmentTypeIndications.get(ii);
 				if (commitmentType.getOid() == null) {
-					throw new DSSException("The commitmentTypeIndication OID must be defined for CAdES creation!");
+					throw new IllegalArgumentException("The commitmentTypeIndication OID must be defined for CAdES creation!");
 				}
 
 				final ASN1ObjectIdentifier objectIdentifier = new ASN1ObjectIdentifier(commitmentType.getOid());
@@ -321,9 +318,8 @@ public class CAdESLevelBaselineB {
 	 * whereas the archive-timestamp
 	 * is computed on data as read.
 	 *
-	 * @param parameters
-	 * @param signedAttributes
-	 * @return
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @param signedAttributes {@link ASN1EncodableVector} signed attributes
 	 */
 	private void addContentTimestamps(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
@@ -361,9 +357,8 @@ public class CAdESLevelBaselineB {
 	 * NOTE 2: contentDescription is optional in ESS (RFC 2634 [5]). It may be used to complement
 	 * contentTypes defined elsewhere; such definitions are outside the scope of the present document.
 	 *
-	 * @param parameters
-	 * @param signedAttributes
-	 * @return
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @param signedAttributes {@link ASN1EncodableVector} signed attributes
 	 */
 	private void addContentHints(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 		if (Utils.isStringNotBlank(parameters.getContentHintsType())) {
@@ -397,8 +392,8 @@ public class CAdESLevelBaselineB {
 	 * information (such as a user name or public keying material identification information), a GeneralizedTime string,
 	 * and a random number.
 	 *
-	 * @param parameters
-	 * @param signedAttributes
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @param signedAttributes {@link ASN1EncodableVector} signed attributes
 	 */
 	private void addContentIdentifier(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 		/* this attribute is prohibited in PAdES B */
@@ -428,7 +423,7 @@ public class CAdESLevelBaselineB {
 		if (policy != null) {
 
 			final String policyId = policy.getId();
-			SignaturePolicyIdentifier sigPolicy = null;
+			SignaturePolicyIdentifier sigPolicy;
 
 			if (Utils.isStringEmpty(policyId)) {// implicit
 				sigPolicy = new SignaturePolicyIdentifier();

@@ -20,17 +20,28 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
+import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
+
 import java.util.Map;
 import java.util.Objects;
 
-import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
-
+/**
+ * This predicate allows filtering of TSL pointers by a MimeType
+ *
+ */
 public class MimetypeOtherTSLPointer extends AbstractOtherTSLPointerPredicate {
 
+	/** The MimeType tage name */
 	private static final String EXPECTED_TAG_NAME = "{http://uri.etsi.org/02231/v2/additionaltypes#}MimeType";
 
+	/** Expected MimeType */
 	private final String expectedMimeType;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param expectedMimeType {@link String} MimeType to filter by
+	 */
 	public MimetypeOtherTSLPointer(String expectedMimeType) {
 		Objects.requireNonNull(expectedMimeType, "Expected MimeType must be defined");
 		this.expectedMimeType = expectedMimeType;

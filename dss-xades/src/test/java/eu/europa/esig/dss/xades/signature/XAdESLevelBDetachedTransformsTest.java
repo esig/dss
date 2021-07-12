@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
@@ -41,7 +28,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -55,6 +41,18 @@ import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPathTransform;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	
@@ -63,7 +61,7 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	@Test
 	public void canonicalizationTest() throws Exception {
 		List<DSSReference> references = buildReferences(document, new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE));
-		XAdESSignatureParameters signatureParameters = getSignatureParameters(document, references);
+		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		
 		DSSDocument signed = sign(document, signatureParameters);
 		
@@ -79,7 +77,7 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	@Test
 	public void xPathTest() throws Exception {
 		List<DSSReference> references = buildReferences(document, new XPathTransform("ancestor-or-self::*[@Id='dss1']"));
-		XAdESSignatureParameters signatureParameters = getSignatureParameters(document, references);
+		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		
 		DSSDocument signed = sign(document, signatureParameters);
 		
@@ -95,18 +93,16 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	@Test
 	public void base64Test() throws Exception {
 		List<DSSReference> references = buildReferences(document, new Base64Transform());
-		XAdESSignatureParameters signatureParameters = getSignatureParameters(document, references);
+		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		
-		Exception exception = assertThrows(DSSException.class, () -> sign(document, signatureParameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> sign(document, signatureParameters));
 		assertEquals("Reference setting is not correct! Base64 transform is not compatible with DETACHED signature format.", exception.getMessage());
 	}
 	
 	private List<DSSReference> buildReferences(DSSDocument document, DSSTransform... transforms) {
 		
 		List<DSSTransform> dssTransforms = new ArrayList<>();
-		for (DSSTransform transform : transforms) {
-			dssTransforms.add(transform);
-		}
+		dssTransforms.addAll(Arrays.asList(transforms));
 
 		DSSReference ref1 = new DSSReference();
 		ref1.setContents(document);
@@ -122,7 +118,7 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		
 	}
 	
-	private XAdESSignatureParameters getSignatureParameters(DSSDocument document, List<DSSReference> references) {
+	private XAdESSignatureParameters getSignatureParameters(List<DSSReference> references) {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());

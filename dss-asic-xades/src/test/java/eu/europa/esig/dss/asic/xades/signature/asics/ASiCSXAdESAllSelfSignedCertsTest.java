@@ -20,25 +20,24 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ASiCSXAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	
@@ -78,14 +77,14 @@ public class ASiCSXAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	@Test
 	public void ltLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		Exception exception = assertThrows(DSSException.class, () -> sign());
+		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 
 	@Test
 	public void ltaLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		Exception exception = assertThrows(DSSException.class, () -> sign());
+		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
 		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
 	}
 	

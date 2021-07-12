@@ -30,6 +30,7 @@ import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentDiagnosticDataBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -90,7 +91,7 @@ public class ASiCContainerDiagnosticDataBuilder extends SignedDocumentDiagnostic
 			}
 			return xmlManifests;
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 }

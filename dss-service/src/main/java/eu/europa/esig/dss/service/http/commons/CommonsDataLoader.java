@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.service.http.commons;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.service.http.proxy.ProxyProperties;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -111,10 +110,10 @@ public class CommonsDataLoader implements DataLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
 	/** The default connection timeout (1 minute) */
-	private static final int TIMEOUT_CONNECTION = 6000;
+	private static final int TIMEOUT_CONNECTION = 60000;
 
 	/** The default socket timeout (1 minute) */
-	private static final int TIMEOUT_SOCKET = 6000;
+	private static final int TIMEOUT_SOCKET = 60000;
 
 	/** The default value of maximum connections in time (20) */
 	private static final int CONNECTIONS_MAX_TOTAL = 20;
@@ -128,7 +127,7 @@ public class CommonsDataLoader implements DataLoader {
 	/** The default SSL protocol */
 	private static final String DEFAULT_SSL_PROTOCOL = "TLSv1.2";
 
-	/** The list of accepted statuses for a successfull connection */
+	/** The list of accepted statuses for a successful connection */
 	private static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
 
 	/** The content type value */
@@ -139,6 +138,9 @@ public class CommonsDataLoader implements DataLoader {
 
 	/** The timeout connection */
 	private int timeoutConnection = TIMEOUT_CONNECTION;
+
+	/** The connection request timeout */
+	private int timeoutConnectionRequest = TIMEOUT_CONNECTION;
 
 	/** The timeout socket */
 	private int timeoutSocket = TIMEOUT_SOCKET;
@@ -159,7 +161,7 @@ public class CommonsDataLoader implements DataLoader {
 	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
 	/** Contains rules credentials for authentication to different resources */
-	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<>();
+	private Map<HostConnection, UserCredentials> authenticationMap;
 
 	/**
 	 * Used SSL protocol
@@ -204,7 +206,7 @@ public class CommonsDataLoader implements DataLoader {
 	/**
 	 * The trust strategy
 	 */
-	private TrustStrategy trustStrategy;
+	private transient TrustStrategy trustStrategy;
 
 	/**
 	 * Array of supported SSL protocols
@@ -219,17 +221,17 @@ public class CommonsDataLoader implements DataLoader {
 	/**
 	 * The hostname verifier
 	 */
-	private HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+	private transient HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
 
 	/**
 	 * The connection retry handler
 	 */
-	private HttpRequestRetryHandler retryHandler;
+	private transient HttpRequestRetryHandler retryHandler;
 
 	/**
 	 * The strategy to retry for unavailable services
 	 */
-	private ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
+	private transient ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
 
 	/**
 	 * The default constructor for CommonsDataLoader.
@@ -303,7 +305,7 @@ public class CommonsDataLoader implements DataLoader {
 					getSupportedSSLCipherSuites(), getHostnameVerifier());
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
 		} catch (final Exception e) {
-			throw new DSSException("Unable to configure the SSLContext/SSLConnectionSocketFactory", e);
+			throw new IllegalArgumentException("Unable to configure the SSLContext/SSLConnectionSocketFactory", e);
 		}
 	}
 
@@ -376,6 +378,7 @@ public class CommonsDataLoader implements DataLoader {
 		final RequestConfig.Builder custom = RequestConfig.custom();
 		custom.setSocketTimeout(timeoutSocket);
 		custom.setConnectTimeout(timeoutConnection);
+		custom.setConnectionRequestTimeout(timeoutConnectionRequest);
 		custom.setRedirectsEnabled(redirectsEnabled);
 		custom.setCookieSpec(CookieSpecs.STANDARD); // to allow interoperability with RFC 6265 cookies
 
@@ -409,11 +412,13 @@ public class CommonsDataLoader implements DataLoader {
 	private HttpClientBuilder configCredentials(HttpClientBuilder httpClientBuilder, final String url) {
 
 		final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-		for (final Map.Entry<HttpHost, UsernamePasswordCredentials> entry : authenticationMap.entrySet()) {
-
-			final HttpHost httpHost = entry.getKey();
-			final UsernamePasswordCredentials usernamePasswordCredentials = entry.getValue();
-			final AuthScope authscope = new AuthScope(httpHost.getHostName(), httpHost.getPort());
+		for (final Map.Entry<HostConnection, UserCredentials> entry : getAuthenticationMap().entrySet()) {
+			final HostConnection hostConnection = entry.getKey();
+			final UserCredentials userCredentials = entry.getValue();
+			final AuthScope authscope = new AuthScope(hostConnection.getHost(), hostConnection.getPort(),
+					hostConnection.getRealm(), hostConnection.getScheme());
+			final UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(
+					userCredentials.getUsername(), userCredentials.getPassword());
 			credentialsProvider.setCredentials(authscope, usernamePasswordCredentials);
 		}
 		httpClientBuilder = httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
@@ -439,7 +444,7 @@ public class CommonsDataLoader implements DataLoader {
 		final boolean proxyHTTPS = Protocol.isHttps(protocol) && (proxyConfig.getHttpsProperties() != null);
 		final boolean proxyHTTP = Protocol.isHttp(protocol) && (proxyConfig.getHttpProperties() != null);
 
-		ProxyProperties proxyProps = null;
+		ProxyProperties proxyProps;
 		if (proxyHTTPS) {
 			LOG.debug("Use proxy https parameters");
 			proxyProps = proxyConfig.getHttpsProperties();
@@ -494,7 +499,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	@Override
-	public byte[] get(final String urlString) throws DSSException {
+	public byte[] get(final String urlString) {
 
 		if (Protocol.isFileUrl(urlString)) {
 			return fileGet(urlString);
@@ -511,9 +516,9 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	@Override
-	public DataAndUrl get(final List<String> urlStrings) throws DSSException {
+	public DataAndUrl get(final List<String> urlStrings) {
 		if (Utils.isCollectionEmpty(urlStrings)) {
-			throw new DSSException("Cannot process the GET call. List of URLs is empty!");
+			throw new DSSExternalResourceException("Cannot process the GET call. List of URLs is empty!");
 		}
 
 		final Map<String, Throwable> exceptions = new HashMap<>(); // store map of exception thrown for urls
@@ -525,7 +530,7 @@ public class CommonsDataLoader implements DataLoader {
 					LOG.debug("The retrieved content from URL [{}] is empty. Continue with other URLs...", urlString);
 					continue;
 				}
-				return new DataAndUrl(bytes, urlString);
+				return new DataAndUrl(urlString, bytes);
 			} catch (Exception e) {
 				LOG.warn("Cannot obtain data using '{}' : {}", urlString, e.getMessage());
 				exceptions.put(urlString, e);
@@ -543,10 +548,9 @@ public class CommonsDataLoader implements DataLoader {
 	 * @param refresh
 	 *            if true indicates that the cached data should be refreshed
 	 * @return {@code byte} array of obtained data
-	 * @throws DSSException in case of DataLoader error
 	 */
 	@Override
-	public byte[] get(final String url, final boolean refresh) throws DSSException {
+	public byte[] get(final String url, final boolean refresh) {
 		return get(url);
 	}
 
@@ -558,9 +562,8 @@ public class CommonsDataLoader implements DataLoader {
 	 *
 	 * @param urlString {@link String}
 	 * @return byte array
-	 * @throws DSSException in case of DataLoader error
 	 */
-	protected byte[] ldapGet(String urlString) throws DSSException {
+	protected byte[] ldapGet(String urlString) {
 		
 		urlString = LdapURLUtils.encode(urlString);
 
@@ -582,16 +585,16 @@ public class CommonsDataLoader implements DataLoader {
 			final DirContext ctx = new InitialDirContext(env);
 			final Attributes attributes = ctx.getAttributes(Utils.EMPTY_STRING, new String[] { attributeName });
 			if ((attributes == null) || (attributes.size() < 1)) {
-				throw new DSSException(String.format("Cannot download binaries from: [%s], no attributes with name: [%s] returned", urlString, attributeName));
+				throw new DSSExternalResourceException(String.format("Cannot download binaries from: [%s], no attributes with name: [%s] returned", urlString, attributeName));
 			} else {
 				final Attribute attribute = attributes.getAll().next();
 				final byte[] ldapBytes = (byte[]) attribute.get();
 				if (Utils.isArrayNotEmpty(ldapBytes)) {
 					return ldapBytes;
 				}
-				throw new DSSException(String.format("The retrieved ldap content from url [%s] is empty", urlString));
+				throw new DSSExternalResourceException(String.format("The retrieved ldap content from url [%s] is empty", urlString));
 			}
-		} catch (DSSException e) {
+		} catch (DSSExternalResourceException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new DSSExternalResourceException(String.format("Cannot get data from URL [%s]. Reason : [%s]", urlString, e.getMessage()), e);
@@ -603,9 +606,8 @@ public class CommonsDataLoader implements DataLoader {
 	 *
 	 * @param urlString {@link String} url to retrieve data from
 	 * @return byte array
-	 * @throws DSSException in case of file download error
 	 */
-	protected byte[] ftpGet(final String urlString) throws DSSException {
+	protected byte[] ftpGet(final String urlString) {
 		final URL url = getURL(urlString);
 		try (InputStream inputStream = url.openStream()) {
 			return DSSUtils.toByteArray(inputStream);
@@ -628,7 +630,7 @@ public class CommonsDataLoader implements DataLoader {
 		try {
 			return new URL(urlString);
 		} catch (MalformedURLException e) {
-			throw new DSSException("Unable to create URL instance", e);
+			throw new DSSExternalResourceException("Unable to create URL instance", e);
 		}
 	}
 
@@ -639,7 +641,7 @@ public class CommonsDataLoader implements DataLoader {
 	 *            to access
 	 * @return {@code byte} array of obtained data or null
 	 */
-	protected byte[] httpGet(final String url) throws DSSException {
+	protected byte[] httpGet(final String url) {
 
 		HttpGet httpRequest = null;
 		CloseableHttpResponse httpResponse = null;
@@ -808,7 +810,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets the connection timeout.
 	 *
 	 * @return the value (millis)
 	 */
@@ -817,7 +819,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets the connection timeout.
 	 *
 	 * @param timeoutConnection
 	 *            the value (millis)
@@ -827,7 +829,26 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets the connection request timeout.
+	 *
+	 * @return the value (millis)
+	 */
+	public int getTimeoutConnectionRequest() {
+		return timeoutConnectionRequest;
+	}
+
+	/**
+	 * Sets the connection request timeout.
+	 *
+	 * @param timeoutConnectionRequest
+	 *            the value (millis)
+	 */
+	public void setTimeoutConnectionRequest(int timeoutConnectionRequest) {
+		this.timeoutConnectionRequest = timeoutConnectionRequest;
+	}
+
+	/**
+	 * Gets the socket timeout.
 	 *
 	 * @return the value (millis)
 	 */
@@ -836,7 +857,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets the socket timeout.
 	 *
 	 * @param timeoutSocket
 	 *            the value (millis)
@@ -846,16 +867,16 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets the maximum connections number.
 	 *
-	 * @return maximum number of connections
+	 * @return the value (millis)
 	 */
 	public int getConnectionsMaxTotal() {
 		return connectionsMaxTotal;
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets the maximum connections number.
 	 *
 	 * @param connectionsMaxTotal
 	 *            maximum number of connections
@@ -865,7 +886,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets the maximum connections number per route.
 	 *
 	 * @return maximum number of connections per one route
 	 */
@@ -874,7 +895,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets the maximum connections number per route.
 	 *
 	 * @param connectionsMaxPerRoute
 	 *            maximum number of connections per one route
@@ -884,7 +905,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Gets if redirect is enabled.
 	 *
 	 * @return true if http redirects are allowed
 	 */
@@ -893,7 +914,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Sets if redirect should be enabled.
 	 *
 	 * @param redirectsEnabled
 	 *            true if http redirects are allowed
@@ -1052,7 +1073,45 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Addz authentication credentials
+	 * Returns the current instance of the authentication map
+	 *
+	 * @return a map between {@link HostConnection} and {@link UserCredentials}
+	 */
+	public Map<HostConnection, UserCredentials> getAuthenticationMap() {
+		if (authenticationMap == null) {
+			authenticationMap = new HashMap<>();
+		}
+		return authenticationMap;
+	}
+
+	/**
+	 * Sets the authentication map
+	 *
+	 * NOTE: this method overrides the current instance of {@code authenticationMap}
+	 *
+	 * @param authenticationMap a map between {@link HostConnection} and {@link UserCredentials}
+	 */
+	public void setAuthenticationMap(Map<HostConnection, UserCredentials> authenticationMap) {
+		this.authenticationMap = authenticationMap;
+	}
+
+	/**
+	 * Adds authentication credentials to the existing {@code authenticationMap}
+	 *
+	 * @param hostConnection
+	 *            host connection details
+	 * @param userCredentials
+	 *            user login credentials
+	 * @return this for fluent addAuthentication
+	 */
+	public CommonsDataLoader addAuthentication(HostConnection hostConnection, UserCredentials userCredentials) {
+		Map<HostConnection, UserCredentials> authenticationMap = getAuthenticationMap();
+		authenticationMap.put(hostConnection, userCredentials);
+		return this;
+	}
+
+	/**
+	 * Adds authentication credentials to the existing {@code authenticationMap}
 	 *
 	 * @param host
 	 *            host
@@ -1068,31 +1127,28 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	public CommonsDataLoader addAuthentication(final String host, final int port, final String scheme,
 											   final String login, final String password) {
-
-		final HttpHost httpHost = new HttpHost(host, port, scheme);
-		final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(login, password);
-		authenticationMap.put(httpHost, credentials);
-
-		return this;
+		final HostConnection hostConnection = new HostConnection(host, port, scheme);
+		final UserCredentials userCredentials = new UserCredentials(login, password);
+		return addAuthentication(hostConnection, userCredentials);
 	}
 
 	/**
 	 * This method allows to propagate the authentication information from the
 	 * current object.
 	 *
+	 * Deprecated. Please use
+	 * {@code
+	 * 		currentDataLoader.setAuthenticationMap(oldDataLoader.getAuthenticationMap());
+	 * }
+	 *
 	 * @param commonsDataLoader
 	 *            {@code CommonsDataLoader} to be initialized with
 	 *            authentication information
+	 * @deprecated since v5.9
 	 */
+	@Deprecated
 	public void propagateAuthentication(final CommonsDataLoader commonsDataLoader) {
-
-		for (final Map.Entry<HttpHost, UsernamePasswordCredentials> credentialsEntry : authenticationMap.entrySet()) {
-
-			final HttpHost httpHost = credentialsEntry.getKey();
-			final UsernamePasswordCredentials credentials = credentialsEntry.getValue();
-			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(),
-					credentials.getPassword());
-		}
+		setAuthenticationMap(commonsDataLoader.getAuthenticationMap());
 	}
 
 	/**

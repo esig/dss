@@ -42,7 +42,7 @@ public class ServiceByDateFilterTest {
 	@Test
 	public void noCAQC() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
-		assertTrue(Utils.isCollectionEmpty(filter.filter(new ArrayList<TrustedServiceWrapper>())));
+		assertTrue(Utils.isCollectionEmpty(filter.filter(new ArrayList<>())));
 	}
 
 	@Test

@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -62,6 +64,26 @@ public abstract class AbstractCryptographicCheck extends ChainItem<XmlCC> {
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE;
+	}
+
+	/**
+	 * Returns name for a DigestAlgorithm safely
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @return {@link String} name
+	 */
+	protected String getName(DigestAlgorithm digestAlgorithm) {
+		return digestAlgorithm != null ? digestAlgorithm.getName() : "?";
+	}
+
+	/**
+	 * Returns name for an EncryptionAlgorithm safely
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
+	 * @return {@link String} name
+	 */
+	protected String getName(EncryptionAlgorithm encryptionAlgorithm) {
+		return encryptionAlgorithm != null ? encryptionAlgorithm.getName() : "?";
 	}
 
 }

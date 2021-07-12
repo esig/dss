@@ -30,8 +30,8 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -86,7 +86,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		
 		extendParams.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		extendParams.setSigningCertificate(getSigningCert());
-		DSSException exception = assertThrows(DSSException.class, () -> service.extendDocument(extendedDoc, extendParams));
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(extendedDoc, extendParams));
 		assertEquals("No signatures found to be extended!", exception.getMessage());
 		
 		PDFDocumentValidator validator = new PDFDocumentValidator(extendedDoc);
@@ -128,6 +128,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 			for (CertificateSourceType source : sources) {
 				if (CertificateSourceType.TIMESTAMP.equals(source)) {
 					timestampSource = true;
+					break;
 				}
 			}
 			assertTrue(timestampSource);

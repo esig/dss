@@ -45,6 +45,9 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
+	/** A cached list of processed {@link CRLValidity}s */
+	private final List<CRLValidity> cachedValidCRLValidities = new ArrayList<>();
+
 	/**
 	 * The default constructor
 	 */
@@ -58,24 +61,45 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 		Objects.requireNonNull(issuerToken, "The issuer of the certificate to be verified cannot be null");
 
 		List<RevocationToken<CRL>> result = new ArrayList<>();
-		final Set<EncapsulatedRevocationTokenIdentifier<CRL>> collectedBinaries = getAllRevocationBinaries();
-		LOG.trace("--> OfflineCRLSource queried for {} contains: {} element(s).", certificateToken.getDSSIdAsString(), collectedBinaries.size());
 
-		for (EncapsulatedRevocationTokenIdentifier<CRL> binary : collectedBinaries) {
-			CRLBinary crlBinary = (CRLBinary) binary;
-			try {
-				CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerToken);
-				if (crlValidity.isValid()) {
-					final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
-					addRevocation(crlToken, crlBinary);
-					result.add(crlToken);
+		List<CRLValidity> validCRLValiditiesForIssuer = getFromCachedCRLValidities(issuerToken);
+
+		if (validCRLValiditiesForIssuer.isEmpty()) {
+
+			final Set<EncapsulatedRevocationTokenIdentifier<CRL>> collectedBinaries = getAllRevocationBinaries();
+			LOG.trace("--> OfflineCRLSource queried for {} contains: {} element(s).", certificateToken.getDSSIdAsString(), collectedBinaries.size());
+
+			for (EncapsulatedRevocationTokenIdentifier<CRL> binary : collectedBinaries) {
+				CRLBinary crlBinary = (CRLBinary) binary;
+				try {
+					CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerToken);
+					if (crlValidity.isValid()) {
+						cachedValidCRLValidities.add(crlValidity);
+						validCRLValiditiesForIssuer.add(crlValidity);
+					}
+				} catch (Exception e) {
+					LOG.warn("Unable to retrieve the CRLValidity for CRL with ID '{}' : {}", crlBinary.asXmlId(), e.getMessage());
 				}
-			} catch (Exception e) {
-				LOG.warn("Unable to retrieve the CRLValidity for CRL with ID '{}' : {}", crlBinary.asXmlId(), e.getMessage());
 			}
 		}
 
+		for (CRLValidity crlValidity : validCRLValiditiesForIssuer) {
+			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
+			addRevocation(crlToken, crlValidity.getCrlBinary());
+			result.add(crlToken);
+		}
+
 		LOG.trace("--> OfflineCRLSource found result(s) : {}", result.size());
+		return result;
+	}
+
+	private List<CRLValidity> getFromCachedCRLValidities(CertificateToken issuerToken) {
+		List<CRLValidity> result = new ArrayList<>();
+		for (CRLValidity validity : cachedValidCRLValidities) {
+			if (issuerToken.equals(validity.getIssuerToken())) {
+				result.add(validity);
+			}
+		}
 		return result;
 	}
 

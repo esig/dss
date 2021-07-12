@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -56,15 +44,29 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.VOReferenceType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.bind.JAXBElement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
-	private static String FILE1 = "src/test/resources/sample.xml";
-	private static String FILE2 = "src/test/resources/sampleISO.xml";
+	private static final String FILE1 = "src/test/resources/sample.xml";
+	private static final String FILE2 = "src/test/resources/sampleISO.xml";
 
 	@Test
 	public void multiDocsEnveloping() throws Exception {
@@ -141,20 +143,22 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		SignatureValidationReportType signatureValidationReportType = etsiValidationReport.getSignatureValidationReport().get(0);
 		assertNotNull(signatureValidationReportType);
-		List<SignersDocumentType> signersDocuments = signatureValidationReportType.getSignersDocument();
-		assertNotNull(signersDocuments);
-		assertEquals(2, signersDocuments.size());
 
-		assertNotNull(signersDocuments.get(0));
-		DigestAlgAndValueType digestAlgAndValueFirstDoc = signersDocuments.get(0).getDigestAlgAndValue();
+		SignersDocumentType signersDocuments = signatureValidationReportType.getSignersDocument();
+		assertNotNull(signersDocuments);
+		assertNull(getXmlDigestAlgoAndValue(signersDocuments));
+
+		List<ValidationObjectType> validationObjects = getValidationObjects(signersDocuments);
+		assertEquals(2, validationObjects.size());
+
+		DigestAlgAndValueType digestAlgAndValueFirstDoc = validationObjects.get(0).getValidationObjectRepresentation().getDigestAlgAndValue();
 		assertNotNull(digestAlgAndValueFirstDoc);
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestValue());
 		assertEquals(Utils.toBase64(digestAlgAndValueFirstDoc.getDigestValue()),
 				fileToBeIndividualTimestamped.getDigest(DigestAlgorithm.forXML(digestAlgAndValueFirstDoc.getDigestMethod().getAlgorithm())));
 
-		assertNotNull(signersDocuments.get(1));
-		DigestAlgAndValueType digestAlgAndValueSecondDoc = signersDocuments.get(1).getDigestAlgAndValue();
+		DigestAlgAndValueType digestAlgAndValueSecondDoc = validationObjects.get(1).getValidationObjectRepresentation().getDigestAlgAndValue();
 		assertNotNull(digestAlgAndValueSecondDoc);
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestValue());
@@ -187,6 +191,38 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		assertEquals(2, timestampCounter);
 		assertEquals(2, signedDataCounter);
 
+	}
+
+	private DigestAlgAndValueType getXmlDigestAlgoAndValue(SignersDocumentType signersDocument) {
+		for (JAXBElement<?> jaxbElement : signersDocument.getContent()) {
+			Object value = jaxbElement.getValue();
+			if (value instanceof DigestAlgAndValueType) {
+				DigestAlgAndValueType digestAlgAndValueType = (DigestAlgAndValueType) value;
+				assertNotNull(digestAlgAndValueType.getDigestMethod());
+				assertNotNull(digestAlgAndValueType.getDigestValue());
+				return digestAlgAndValueType;
+			}
+		}
+		return null;
+	}
+
+	private List<ValidationObjectType> getValidationObjects(SignersDocumentType signersDocument) {
+		List<ValidationObjectType> validationObjects = new ArrayList<>();
+		for (JAXBElement<?> jaxbElement : signersDocument.getContent()) {
+			Object value = jaxbElement.getValue();
+			if (value instanceof VOReferenceType) {
+				VOReferenceType voReferenceType = (VOReferenceType) value;
+				List<Object> voReferences = voReferenceType.getVOReference();
+				assertNotNull(voReferences);
+				for (Object object : voReferences) {
+					assertTrue(object instanceof ValidationObjectType);
+					ValidationObjectType validationObjectType = (ValidationObjectType) object;
+					assertEquals(ObjectType.SIGNED_DATA, validationObjectType.getObjectType());
+					validationObjects.add(validationObjectType);
+				}
+			}
+		}
+		return validationObjects;
 	}
 
 	@Override

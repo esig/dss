@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.token;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.spi.DSSSecurityProvider;
+import org.junit.jupiter.api.Test;
 
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
@@ -30,18 +31,17 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.spi.DSSSecurityProvider;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class EdDSATest {
 
+	static {
+		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
+	}
+
 	@Test
 	public void ed25519() throws GeneralSecurityException {
-
-		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
-
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("Ed25519", DSSSecurityProvider.getSecurityProviderName());
 		KeyPair kp = kpg.generateKeyPair();
 		assertNotNull(kp);
@@ -58,9 +58,6 @@ public class EdDSATest {
 
 	@Test
 	public void ed448() throws GeneralSecurityException {
-
-		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
-
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("Ed448", DSSSecurityProvider.getSecurityProviderName());
 		KeyPair kp = kpg.generateKeyPair();
 		assertNotNull(kp);

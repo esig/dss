@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>document-signed-pades-baseline-lta.pdf</DocumentName>
-    <ValidationDate>2019-12-09T14:42:38</ValidationDate>
+    <ValidationDate>2019-12-09T14:42:38Z</ValidationDate>
     <Signatures>
         <Signature Id="S-6B6CACCA3251BBAB383718179170CB751085A2DD8BEC17F3812C0EAB3BA5AC23">
             <SignatureFilename>document-signed-pades-baseline-lta.pdf</SignatureFilename>
-            <ClaimedSigningTime>2019-12-09T14:42:34</ClaimedSigningTime>
+            <ClaimedSigningTime>2019-12-09T14:42:34Z</ClaimedSigningTime>
             <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
@@ -132,8 +132,8 @@
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-10-28T14:24:59</NotAfter>
-            <NotBefore>2018-10-28T14:24:59</NotBefore>
+            <NotAfter>2020-10-28T14:24:59Z</NotAfter>
+            <NotBefore>2018-10-28T14:24:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023</EntityKey>
@@ -154,8 +154,6 @@
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -182,8 +180,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-09-28T13:24:59</NotAfter>
-            <NotBefore>2018-11-28T14:24:59</NotBefore>
+            <NotAfter>2020-09-28T13:24:59Z</NotAfter>
+            <NotBefore>2018-11-28T14:24:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A67956063E9D60455B955541D8437C252DF781A29C403B778C9AAF48D1D129EB</EntityKey>
@@ -207,8 +205,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <Revocations>
                 <CertificateRevocation Revocation="R-72E466AA39FE2FFEE60E44CFF39103C1DEEBA2396A7BBE2CB83A44328D66FC24">
                     <Status>GOOD</Status>
@@ -239,8 +235,8 @@
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-09-28T13:25:03</NotAfter>
-            <NotBefore>2018-11-28T14:25:03</NotBefore>
+            <NotAfter>2020-09-28T13:25:03Z</NotAfter>
+            <NotBefore>2018-11-28T14:25:03Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2CFD70C719A4175EE5E68712499F8D33B45AB5CB727ED7D6FC43B62210AD26B4</EntityKey>
@@ -264,8 +260,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-F035FA4851330BFB70DCD7BCC13C4228EDC228F44CADCC492EFA1B2A1FF84FF6">
@@ -298,8 +292,8 @@
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-09-28T13:25:12</NotAfter>
-            <NotBefore>2018-11-28T14:25:12</NotBefore>
+            <NotAfter>2020-09-28T13:25:12Z</NotAfter>
+            <NotBefore>2018-11-28T14:25:12Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-88570AD47C9689BFB1505799EA362F65FBE2BEE501EF3A865E243104D76DC36E</EntityKey>
@@ -324,8 +318,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <Revocations>
                 <CertificateRevocation Revocation="R-72E466AA39FE2FFEE60E44CFF39103C1DEEBA2396A7BBE2CB83A44328D66FC24">
                     <Status>GOOD</Status>
@@ -353,8 +345,8 @@
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
             </Sources>
-            <NotAfter>2020-10-28T14:24:59</NotAfter>
-            <NotBefore>2018-10-28T14:24:59</NotBefore>
+            <NotAfter>2020-10-28T14:24:59Z</NotAfter>
+            <NotBefore>2018-10-28T14:24:59Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9B17A65F3F067CEDD7F21DC42793BE3CD58D5803D6CB2E08C4A0D47D42906ADA</EntityKey>
@@ -379,8 +371,6 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -392,8 +382,8 @@
         <Revocation Id="R-F035FA4851330BFB70DCD7BCC13C4228EDC228F44CADCC492EFA1B2A1FF84FF6">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>OCSP</Type>
-            <ProductionDate>2019-12-09T14:42:38</ProductionDate>
-            <ThisUpdate>2019-12-09T14:42:38</ThisUpdate>
+            <ProductionDate>2019-12-09T14:42:38Z</ProductionDate>
+            <ThisUpdate>2019-12-09T14:42:38Z</ThisUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -416,9 +406,9 @@
         <Revocation Id="R-72E466AA39FE2FFEE60E44CFF39103C1DEEBA2396A7BBE2CB83A44328D66FC24">
             <Origin>INPUT_DOCUMENT</Origin>
             <Type>CRL</Type>
-            <ProductionDate>2019-12-09T14:42:38</ProductionDate>
-            <ThisUpdate>2019-12-09T14:42:38</ThisUpdate>
-            <NextUpdate>2020-06-09T13:42:38</NextUpdate>
+            <ProductionDate>2019-12-09T14:42:38Z</ProductionDate>
+            <ThisUpdate>2019-12-09T14:42:38Z</ThisUpdate>
+            <NextUpdate>2020-06-09T13:42:38Z</NextUpdate>
             <CertHashExtensionPresent>false</CertHashExtensionPresent>
             <CertHashExtensionMatch>false</CertHashExtensionMatch>
             <BasicSignature>
@@ -440,7 +430,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-5327C1C85F8A6249C923CA41798B877944F4D24A66BE50659D05C8D10AC6A93B">
-            <ProductionTime>2019-12-09T14:42:37</ProductionTime>
+            <ProductionTime>2019-12-09T14:42:37Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>NFqVaH4Y7/IhVWX0SfEqxTPCHaCpHVZ9zTrck9YZMBY=</DigestValue>
@@ -473,7 +463,7 @@
             </DigestAlgoAndValue>
         </Timestamp>
         <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-C39D2D57CB4C2B9F278388903073AF8A85607D1BE665362651DA5BFBFAD5018C">
-            <ProductionTime>2019-12-09T14:42:38</ProductionTime>
+            <ProductionTime>2019-12-09T14:42:38Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>O5d8mVXNb0+OBDkUaXcf4GGcImy0e2hoGoeYKND3usQ=</DigestValue>

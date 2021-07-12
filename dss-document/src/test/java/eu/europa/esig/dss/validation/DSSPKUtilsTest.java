@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSSPKUtilsTest {
 
@@ -52,7 +51,8 @@ public class DSSPKUtilsTest {
 	public void getPublicKeySize() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/BA-QC-Wurzel-CA-2_PN.txt"));
 		assertEquals(2048, DSSPKUtils.getPublicKeySize(certificate.getPublicKey()));
-		assertEquals("2048", DSSPKUtils.getPublicKeySize(certificate));
+		assertEquals("2048", DSSPKUtils.getStringPublicKeySize(certificate.getPublicKey()));
+		assertEquals("2048", DSSPKUtils.getStringPublicKeySize(certificate));
 	}
 
 	@Test
@@ -65,7 +65,8 @@ public class DSSPKUtilsTest {
 	public void getPublicKeySizeSelfSign() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/certificates/belgiumrca2-self-sign.crt"));
 		assertEquals(2048, DSSPKUtils.getPublicKeySize(certificate.getPublicKey()));
-		assertEquals("2048", DSSPKUtils.getPublicKeySize(certificate));
+		assertEquals("2048", DSSPKUtils.getStringPublicKeySize(certificate.getPublicKey()));
+		assertEquals("2048", DSSPKUtils.getStringPublicKeySize(certificate));
 
 	}
 

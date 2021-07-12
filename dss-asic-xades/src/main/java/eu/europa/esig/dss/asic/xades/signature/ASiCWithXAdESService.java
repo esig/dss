@@ -33,8 +33,8 @@ import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -92,8 +92,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters) {
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new DSSException("List of documents to sign cannot be empty!");
+			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
+		assertSigningDateInCertificateValidityRange(parameters);
+
 		GetDataToSignASiCWithXAdESHelper dataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
 				.build(toSignDocuments, parameters);
 		XAdESSignatureParameters xadesParameters = getParameters(parameters, dataToSignHelper);
@@ -106,11 +108,11 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new DSSException("List of documents to sign cannot be empty!");
+			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
+		assertSigningDateInCertificateValidityRange(parameters);
 
 		final ASiCParameters asicParameters = parameters.aSiC();
-		assertSigningDateInCertificateValidityRange(parameters);
 
 		GetDataToSignASiCWithXAdESHelper dataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
 				.build(toSignDocuments, parameters);
@@ -192,13 +194,13 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	private void assertExtensionSupported(DSSDocument toExtendDocument) {
 		if (!ASiCUtils.isZip(toExtendDocument)) {
-			throw new DSSException("Unsupported file type");
+			throw new IllegalInputException("Unsupported file type");
 		}
 	}
 
 	private void assertValidSignaturesToExtendFound(List<DSSDocument> signatureDocuments) {
 		if (Utils.isCollectionEmpty(signatureDocuments)) {
-			throw new DSSException("No supported signature documents found! Unable to extend the container.");
+			throw new IllegalInputException("No supported signature documents found! Unable to extend the container.");
 		}
 	}
 
@@ -216,7 +218,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	private XAdESSignatureParameters getXAdESParameters(ASiCWithXAdESSignatureParameters parameters, DSSDocument existingXAdESSignature, boolean openDocument) {
 		XAdESSignatureParameters xadesParameters = parameters;
 		xadesParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		Document rootDocument = null;
+		Document rootDocument;
 		// If ASiC-S OR OpenDocument + already existing signature file, we re-use the same signature file
 		if (existingXAdESSignature != null) {
 			rootDocument = DomUtils.buildDOM(existingXAdESSignature);
@@ -229,7 +231,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	private Document buildDomRoot(boolean openDocument) {
 		Document rootDocument = DomUtils.buildDOM();
-		Element xadesSignatures = null;
+		Element xadesSignatures;
 		if (openDocument) {
 			xadesSignatures = rootDocument.createElementNS(ASiCNamespace.LIBREOFFICE_NS, ASiCNamespace.LIBREOFFICE_SIGNATURES);
 		} else {

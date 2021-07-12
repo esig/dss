@@ -20,57 +20,27 @@
  */
 package eu.europa.esig.dss.xades.requirements;
 
-import java.io.File;
-
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import org.junit.jupiter.api.BeforeEach;
 
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.signature.XAdESService;
+import javax.xml.xpath.XPathExpressionException;
 
-public class XAdESBaselineLTATest extends AbstractXAdESRequirementChecks {
-
-	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
-	private XAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+public class XAdESBaselineLTATest extends XAdESBaselineLTTest {
 
 	@BeforeEach
+	@Override
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-
-		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		super.init();
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-
-		service = new XAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
 	}
 
-	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
-		return service;
-	}
+	/**
+	 * Checks UnsignedSignatureProperties present for T/LT/LTA levels
+	 */
+	public void checkUnsignedProperties() throws XPathExpressionException {
+		super.checkUnsignedProperties();
 
-	@Override
-	protected XAdESSignatureParameters getSignatureParameters() {
-		return signatureParameters;
-	}
-
-	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
+		checkArchiveTimeStampPresent();
 	}
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
-    <ValidationDate>2018-06-25T14:45:33</ValidationDate>
+    <ValidationDate>2018-06-25T14:45:33Z</ValidationDate>
     <UsedCertificates>
         <Certificate Id="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-21.1 name,cn=sdi-21.1.1</SubjectDistinguishedName>
@@ -18,8 +18,8 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <NotAfter>2019-06-25T14:37:57</NotAfter>
-            <NotBefore>2017-06-25T14:37:57</NotBefore>
+            <NotAfter>2019-06-25T14:37:57Z</NotAfter>
+            <NotBefore>2017-06-25T14:37:57Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF</EntityKey>
@@ -39,8 +39,6 @@
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds/>
-            <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
@@ -50,7 +48,7 @@
                             <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -83,8 +81,8 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <NotAfter>2019-06-25T14:37:57</NotAfter>
-            <NotBefore>2017-06-25T14:37:57</NotBefore>
+            <NotAfter>2019-06-25T14:37:57Z</NotAfter>
+            <NotBefore>2017-06-25T14:37:57Z</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B</EntityKey>
@@ -107,14 +105,13 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <QCStatementIds>
-                <qcStatementOid Description="qc-compliance">0.4.0.1862.1.1</qcStatementOid>
-                <qcStatementOid Description="qc-sscd">0.4.0.1862.1.4</qcStatementOid>
-                <qcStatementOid>0.4.0.1862.1.6</qcStatementOid>
-            </QCStatementIds>
-            <QCTypes>
-                <qcTypeOid Description="qc-type-esign">0.4.0.1862.1.6.1</qcTypeOid>
-            </QCTypes>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+            </QcStatements>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-21.1 Name</TSPName></TSPNames>
@@ -124,7 +121,7 @@
                             <ServiceNames><ServiceName lang="en">TS-21.1.1 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
-                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
@@ -146,8 +143,8 @@
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-21.1.1</SourceAddress>
-            <ProductionDate>2018-06-25T14:45:33</ProductionDate>
-            <ThisUpdate>2018-06-25T14:45:33</ThisUpdate>
+            <ProductionDate>2018-06-25T14:45:33Z</ProductionDate>
+            <ThisUpdate>2018-06-25T14:45:33Z</ThisUpdate>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -171,9 +168,9 @@
             <Url>http://localhost:8080/qes-validation-web/tl/TL-21.xml</Url>
             <SequenceNumber>1</SequenceNumber>
             <Version>5</Version>
-            <LastLoading>2018-06-25T14:45:31</LastLoading>
-            <IssueDate>2018-06-24T14:37:39</IssueDate>
-            <NextUpdate>2018-07-26T14:37:39</NextUpdate>
+            <LastLoading>2018-06-25T14:45:31Z</LastLoading>
+            <IssueDate>2018-06-24T14:37:39Z</IssueDate>
+            <NextUpdate>2018-07-26T14:37:39Z</NextUpdate>
             <WellSigned>false</WellSigned>
         </TrustedList>
     	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
@@ -181,9 +178,9 @@
 	        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-2.xml</Url>
 	        <SequenceNumber>1</SequenceNumber>
 	        <Version>5</Version>
-	        <LastLoading>2018-06-25T14:45:31</LastLoading>
-	        <IssueDate>2018-06-24T14:37:39</IssueDate>
-	        <NextUpdate>2018-07-26T14:37:39</NextUpdate>
+	        <LastLoading>2018-06-25T14:45:31Z</LastLoading>
+	        <IssueDate>2018-06-24T14:37:39Z</IssueDate>
+	        <NextUpdate>2018-07-26T14:37:39Z</NextUpdate>
 	        <WellSigned>true</WellSigned>
 	    </TrustedList>
     </TrustedLists>

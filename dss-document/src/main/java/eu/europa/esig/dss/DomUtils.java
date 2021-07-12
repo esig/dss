@@ -23,7 +23,7 @@ package eu.europa.esig.dss;
 import eu.europa.esig.dss.definition.DSSAttribute;
 import eu.europa.esig.dss.definition.DSSElement;
 import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -37,6 +37,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -92,6 +93,9 @@ public final class DomUtils {
 	/** The 'xpointer' with id opener */
 	private static final String XP_WITH_ID_OPEN = "#xpointer(id(";
 
+	/** The 'xpointer' referring the root document element */
+	private static final String XP_ROOT = "#xpointer(/)";
+
 	/** The staring binaries of an XML file */
 	private static final byte[] xmlPreamble = new byte[] { '<' };
 
@@ -101,9 +105,6 @@ public final class DomUtils {
 	private DomUtils() {
 	}
 
-	/** The used DocumentBuilderFactory */
-	private static DocumentBuilderFactory dbFactory;
-
 	/** The used XPathFactory */
 	private static final XPathFactory factory = XPathFactory.newInstance();
 
@@ -112,61 +113,6 @@ public final class DomUtils {
 
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
-
-		dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setNamespaceAware(true);
-		dbFactory.setXIncludeAware(false);
-		dbFactory.setExpandEntityReferences(false);
-
-		// disable external entities details :
-		// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
-		setSecurityFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-		setSecurityFeature("http://xml.org/sax/features/external-general-entities", false);
-		setSecurityFeature("http://xml.org/sax/features/external-parameter-entities", false);
-		setSecurityFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-	}
-	
-	/**
-	 * Enables a feature for the DocumentBuilderFactory
-	 *
-	 * @param feature {@link String} feature name (URL) to enable
-	 * @throws ParserConfigurationException if an exception occurs
-	 */
-	public static void enableFeature(String feature) throws ParserConfigurationException {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Enabling DocumentBuilderFactory feature [{}]...", feature);
-		}
-		setFeature(feature, true);
-	}
-
-	/**
-	 * Disables a feature for the DocumentBuilderFactory
-	 *
-	 * @param feature {@link String} feature name (URL) to disable
-	 * @throws ParserConfigurationException if an exception occurs
-	 */
-	public static void disableFeature(String feature) throws ParserConfigurationException {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Disabling DocumentBuilderFactory feature [{}]...", feature);
-		}
-		setFeature(feature, false);
-	}
-
-	private static void setSecurityFeature(String property, boolean enable) {
-		try {
-			setFeature(property, enable);
-		} catch (ParserConfigurationException e) {
-			String message = String.format("SECURITY : unable to set feature %s = %s (more details in LOG debug)", property, enable);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug(message, e);
-			} else {
-				LOG.warn(message);
-			}
-		}
-	}
-
-	private static void setFeature(String property, boolean enable) throws ParserConfigurationException {
-		dbFactory.setFeature(property, enable);
 	}
 
 	/**
@@ -178,6 +124,15 @@ public final class DomUtils {
 	 */
 	public static boolean registerNamespace(final DSSNamespace namespace) {
 		return namespacePrefixMapper.registerNamespace(namespace.getPrefix(), namespace.getUri());
+	}
+
+	/**
+	 * This method returns a new instance of DocumentBuilderFactory with configured security features
+	 *
+	 * @return an instance of DocumentBuilderFactory with enabled security features
+	 */
+	public static DocumentBuilderFactory getSecureDocumentBuilderFactory() {
+		return XmlDefinerUtils.getInstance().getSecureDocumentBuilderFactory();
 	}
 
 	/**
@@ -198,12 +153,12 @@ public final class DomUtils {
 	 */
 	public static Transformer getSecureTransformer() {
 		TransformerFactory transformerFactory = getSecureTransformerFactory();
-		Transformer transformer = null;
+		Transformer transformer;
 		try {
 			transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.METHOD, TRANSFORMER_METHOD_VALUE);
 		} catch (TransformerConfigurationException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to instantiate a new secure Transformer. Reason : %s", e.getMessage()), e);
 		}
 		transformer.setErrorListener(new DSSXmlErrorListener());
 		return transformer;
@@ -229,9 +184,9 @@ public final class DomUtils {
 	 */
 	public static Document buildDOM() {
 		try {
-			return dbFactory.newDocumentBuilder().newDocument();
+			return getSecureDocumentBuilderFactory().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to build an empty DOM : %s", e.getMessage()), e);
 		}
 	}
 
@@ -328,9 +283,11 @@ public final class DomUtils {
 	 */
 	public static Document buildDOM(final InputStream inputStream) {
 		try (InputStream is = inputStream) {
-			return dbFactory.newDocumentBuilder().parse(is);
-		} catch (Exception e) {
-			throw new DSSException("Unable to parse content (XML expected)", e);
+			return getSecureDocumentBuilderFactory().newDocumentBuilder().parse(is);
+		} catch (ParserConfigurationException | SAXException e) {
+			throw new DSSException(String.format("Unable to parse content (XML expected) : %s", e.getMessage()), e);
+		} catch (IOException e) {
+			throw new DSSException(String.format("An error occurred while reading InputStream : %s", e.getMessage()), e);
 		}
 	}
 
@@ -347,7 +304,7 @@ public final class DomUtils {
 	 *            the value for the given attribute
 	 */
 	public static void setAttributeNS(Element element, DSSNamespace namespace, DSSAttribute attribute, String value) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(namespace.getPrefix());
 		sb.append(':');
 		sb.append(attribute.getAttributeName());
@@ -388,8 +345,8 @@ public final class DomUtils {
 		xpath.setNamespaceContext(namespacePrefixMapper);
 		try {
 			return xpath.compile(xpathString);
-		} catch (XPathExpressionException ex) {
-			throw new DSSException(ex);
+		} catch (XPathExpressionException e) {
+			throw new DSSException(String.format("Unable to create an XPath expression : %s", e.getMessage()), e);
 		}
 	}
 
@@ -408,7 +365,7 @@ public final class DomUtils {
 			final String string = (String) xPathExpression.evaluate(xmlNode, XPathConstants.STRING);
 			return Utils.trim(string);
 		} catch (XPathExpressionException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to extract value of the node. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -426,7 +383,8 @@ public final class DomUtils {
 			final XPathExpression expr = createXPathExpression(xPathString);
 			return (NodeList) expr.evaluate(xmlNode, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to find a NodeList by the given xPathString '%s'. Reason : %s",
+					xPathString, e.getMessage()), e);
 		}
 	}
 
@@ -470,9 +428,21 @@ public final class DomUtils {
 	 * @return true if the current node has any filled child node
 	 */
 	public static boolean isNotEmpty(final Node xmlNode, final String xPathString) {
-		// xpath suffix allows to skip text nodes and empty lines
-		NodeList nodeList = getNodeList(xmlNode, xPathString + "/child::node()[not(self::text())]");
-		return (nodeList != null) && (nodeList.getLength() > 0);
+		return getNodesAmount(xmlNode, xPathString + "/child::node()[not(self::text())]") > 0;
+	}
+
+	/**
+	 * Returns an amount of found nodes matching the {@code xPathString}
+	 *
+	 * @param xmlNode
+	 *            the current node
+	 * @param xPathString
+	 *            the expected child node
+	 * @return an amount of returned nodes
+	 */
+	public static int getNodesAmount(final Node xmlNode, final String xPathString) {
+		final NodeList list = getNodeList(xmlNode, xPathString);
+		return list.getLength();
 	}
 
 	/**
@@ -593,7 +563,7 @@ public final class DomUtils {
 			Transformer transformer = getSecureTransformer();
 			transformer.transform(xmlSource, outputTarget);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to store a DOM document to OutputStream : %s", e.getMessage()), e);
 		}
 	}
 
@@ -611,7 +581,7 @@ public final class DomUtils {
 			DomUtils.writeDocumentTo(document, baos);
 			return new InMemoryDocument(baos.toByteArray(), name, MimeType.XML);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to create a DSSDocument from DOM document : %s", e.getMessage()), e);
 		}
 	}
 
@@ -631,7 +601,7 @@ public final class DomUtils {
 			transformer.transform(source, result);
 			return stringWriter.getBuffer().toString();
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException(String.format("Unable to transform XML Node to string. Reason : %s", e.getMessage()), e);
 		}
 	}
 
@@ -646,6 +616,7 @@ public final class DomUtils {
 
 	/**
 	 * Returns case-insensitive xPath expression
+	 *
 	 * @param uri to find
 	 * @return {@link String} xPath expression
 	 */
@@ -654,16 +625,47 @@ public final class DomUtils {
 		return "[@Id='" + id + "' or @id='" + id + "' or @ID='" + id + "']";
 	}
 
+	/**
+	 * Gets Id value from the given URI reference
+	 * Ex. "#signature" = "signature"
+	 *
+	 * @param uri {@link String} representing a URI reference (e.g. "#r-signature-1")
+	 * @return {@link String} Id
+	 */
 	public static String getId(String uri) {
 		String id = uri;
 		if (startsFromHash(uri)) {
 			id = id.substring(1);
+		} else if (DomUtils.isXPointerQuery(uri)) {
+			id = DomUtils.getXPointerId(uri);
 		}
 		return id;
 	}
 
 	/**
+	 * Extract an element from the given document {@code node} with the given Id
+	 *
+	 * @param node {@link Node} containing the element with the Id
+	 * @param id {@link String} id of an element to find
+	 * @return {@link Element} with the given Id, NULL if unique result is not found
+	 */
+	public static Element getElementById(Node node, String id) {
+		try {
+			return DomUtils.getElement(node, ".//*" + DomUtils.getXPathByIdAttribute(id));
+		} catch (Exception e) {
+			String errorMessage = "An exception occurred during an attempt to extract an element by its Id '{}' : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, id, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, id, e.getMessage());
+			}
+			return null;
+		}
+	}
+
+	/**
 	 * Returns TRUE if the provided {@code uri} starts from the hash "#" character
+	 *
 	 * @param uri {@link String} to be checked
 	 * @return TRUE if {@code uri} is starts from "#", FALSE otherwise
 	 */
@@ -673,6 +675,7 @@ public final class DomUtils {
 	
 	/**
 	 * Returns TRUE if the provided {@code uri} refers to an element in the signature
+	 *
 	 * @param uri {@link String} to be checked
 	 * @return TRUE if {@code uri} is referred to an element, FALSE otherwise
 	 */
@@ -691,11 +694,15 @@ public final class DomUtils {
 		if (Utils.isStringEmpty(uriValue)) {
 			return false;
 		}
-		String decodedUri = DSSUtils.decodeUrl(uriValue);
+		String decodedUri = DSSUtils.decodeURI(uriValue);
 		if (decodedUri == null) {
 			return false;
 		}
-		final String[] parts = getId(decodedUri).split("\\s");
+		String uri = decodedUri;
+		if (startsFromHash(uri)) {
+			uri = uri.substring(1);
+		}
+		final String[] parts = uri.split("\\s");
 		int ii = 0;
 		for (; ii < parts.length - 1; ++ii) {
 			if (!parts[ii].endsWith(")") || !parts[ii].startsWith(XNS_OPEN)) {
@@ -728,6 +735,17 @@ public final class DomUtils {
 
         return null;
     }
+
+	/**
+	 * This method checks if the XPointer refers the document root.
+	 * See {@code org.apache.xml.security.utils.resolver.implementations.ResolverXPointer}
+	 *
+	 * @param uri {@link String} URI to verify
+	 * @return TRUE if the XPointer refers the document root, FALSE otherwise
+	 */
+	public static boolean isRootXPointer(String uri) {
+		return XP_ROOT.equals(uri);
+	}
 
 	/**
 	 * Creates an element with the given namespace

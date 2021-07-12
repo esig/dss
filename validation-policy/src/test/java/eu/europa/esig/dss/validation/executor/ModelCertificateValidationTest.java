@@ -20,25 +20,9 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlName;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
@@ -52,6 +36,21 @@ import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * JUnit test implementation for model based certificate validation.
@@ -132,7 +131,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File(testCase.getTestData().getDiagnosticData()));
 		assertNotNull(diagnosticData);
 		assertNotNull(diagnosticData.getSignatures());
-		assertTrue(!diagnosticData.getSignatures().isEmpty());
+		assertFalse(diagnosticData.getSignatures().isEmpty());
 		
 		diagnosticData.setValidationDate(testCase.getValidationDate());
 		
@@ -150,7 +149,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 		XmlDetailedReport detailedReport = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReport);
 		assertNotNull(detailedReport.getBasicBuildingBlocks());
-		assertTrue(!detailedReport.getBasicBuildingBlocks().isEmpty());
+		assertFalse(detailedReport.getBasicBuildingBlocks().isEmpty());
 		
 		Map<String, String> messages = new HashMap<>();
 		for (XmlBasicBuildingBlocks bb : detailedReport.getBasicBuildingBlocks()) {
@@ -158,8 +157,8 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 				String id = sub.getId().substring(sub.getId().length() - 4);
 				Indication ind = sub.getConclusion().getIndication();
 				if (!Indication.PASSED.equals(ind)) {
-					StringBuffer buf = new StringBuffer("");
-					for (XmlName n : sub.getConclusion().getInfos()) {
+					StringBuilder buf = new StringBuilder();
+					for (XmlMessage n : sub.getConclusion().getInfos()) {
 						if (buf.length() > 0) {
 							buf.append("\n\t");
 						}
@@ -167,8 +166,8 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 					}
 					String str = buf.length() > 0 ? ("Info:\n" + buf.toString()) : "";
 					
-					buf = new StringBuffer("");
-					for (XmlName n : sub.getConclusion().getWarnings()) {
+					buf = new StringBuilder();
+					for (XmlMessage n : sub.getConclusion().getWarnings()) {
 						if (buf.length() > 0) {
 							buf.append("\n\t");
 						}
@@ -176,8 +175,8 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 					}
 					str += buf.length() > 0 ? (str.length() > 0 ? "\n" : "") + "Warn:\n" + buf.toString() : str;
 					
-					buf = new StringBuffer("");
-					for (XmlName n : sub.getConclusion().getErrors()) {
+					buf = new StringBuilder();
+					for (XmlMessage n : sub.getConclusion().getErrors()) {
 						if (buf.length() > 0) {
 							buf.append("\n\t");
 						}
@@ -208,7 +207,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 			}
 			
 			Indication got = simpleReport.getCertificateIndication(id);
-			String key = id.substring(id.length() - 4, id.length());
+			String key = id.substring(id.length() - 4);
 			assertEquals(expected, got, "[" + key + "] Missmatched expected Indication " + expected + ", got " + got + ".\n" + messages.getOrDefault(key, ""));
 		}
 		assertEquals(testCase.getQualification(), simpleReport.getQualificationAtValidationTime());

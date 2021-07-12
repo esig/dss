@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
@@ -30,6 +29,8 @@ import java.util.List;
  * Defines a root XML document signature scope
  */
 public class XmlRootSignatureScope extends XmlElementSignatureScope {
+
+    private static final long serialVersionUID = 7325542318746995759L;
 
     /**
      * Default constructor
@@ -55,10 +56,7 @@ public class XmlRootSignatureScope extends XmlElementSignatureScope {
     @Override
     public String getDescription() {
         String description = "The full XML file";
-        if (Utils.isCollectionNotEmpty(getTransformations())) {
-        	description = addTransformationDescription(description);
-        }
-        return description;
+        return addTransformationIfNeeded(description);
     }
 
 	@Override

@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles method logic to process {@code XmlFoundCertificates} and returns wrappers
@@ -35,8 +35,14 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
  */
 public class FoundCertificatesProxy {
 	
+	/** Wrapped {@code XmlFoundCertificates} */
 	private XmlFoundCertificates foundCertificates;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param foundCertificates {@link XmlFoundCertificates}
+	 */
 	public FoundCertificatesProxy(final XmlFoundCertificates foundCertificates) {
 		this.foundCertificates = foundCertificates;
 	}
@@ -182,6 +188,12 @@ public class FoundCertificatesProxy {
 		return certificateRefs;
 	}
 	
+	/**
+	 * Returns a list of related certificate references by the given certificate reference origin
+	 *
+	 * @param refOrigin {@link CertificateRefOrigin}
+	 * @return a list of {@link CertificateRefWrapper}s
+	 */
 	public List<CertificateRefWrapper> getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin refOrigin) {
 		List<CertificateRefWrapper> certificateRefs = new ArrayList<>();
 		for (CertificateRefWrapper ref : getRelatedCertificateRefs()) {
@@ -192,6 +204,12 @@ public class FoundCertificatesProxy {
 		return certificateRefs;
 	}
 	
+	/**
+	 * Returns a list of orphan certificate references by the given certificate reference origin
+	 *
+	 * @param refOrigin {@link CertificateRefOrigin}
+	 * @return a list of {@link CertificateRefWrapper}s
+	 */
 	public List<CertificateRefWrapper> getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin refOrigin) {
 		List<CertificateRefWrapper> certificateRefs = new ArrayList<>();
 		for (CertificateRefWrapper ref : getOrphanCertificateRefs()) {

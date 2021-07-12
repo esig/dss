@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.detailedreport;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DetailedReportFacadeTest {
 
@@ -61,11 +60,12 @@ public class DetailedReportFacadeTest {
 		XmlDetailedReport detailedReport = facade.unmarshall(new File("src/test/resources/" + filename));
 		assertNotNull(detailedReport);
 
+		String detailedReportString = facade.marshall(detailedReport);
+
 		String htmlReport = facade.generateHtmlReport(detailedReport);
 		assertNotNull(htmlReport);
 
-		htmlReport = facade.generateHtmlBootstrap3Report(detailedReport);
-		assertNotNull(htmlReport);
+		assertNotNull(facade.generateHtmlReport(detailedReportString));
 	}
 
 }

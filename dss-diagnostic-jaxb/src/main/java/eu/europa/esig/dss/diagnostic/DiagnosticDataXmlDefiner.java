@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import java.io.IOException;
-import java.io.InputStream;
+import eu.europa.esig.dss.diagnostic.jaxb.ObjectFactory;
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -32,31 +33,45 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.diagnostic.jaxb.ObjectFactory;
-import eu.europa.esig.dss.jaxb.XmlDefinerUtils;
-
+/**
+ * This class is used to provide an XSD schema for a DiagnosticData and templates
+ *
+ */
 public final class DiagnosticDataXmlDefiner {
 
+	/** The location of DiagnosticData XSD */
 	private static final String DIAGNOSTIC_DATA_SCHEMA_LOCATION = "/xsd/DiagnosticData.xsd";
 	
+	/** The location of DiagnosticData XSLT remplate */
 	private static final String DIAGNOSTIC_DATA_XSLT_SVG_LOCATION = "/xslt/svg/diagnostic-data.xslt";
 
+	/**
+	 * Singleton
+	 */
 	private DiagnosticDataXmlDefiner() {
 	}
 
+	/** ObjectFactory instance */
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
-	// Thread-safe
+	/** JAXBContext (thread-safe) */
 	private static JAXBContext jc;
-	// Thread-safe
+
+	/** Schema (thread-safe) */
 	private static Schema schema;
 
-	// Thread-safe
+	/** SVG Templates (thread-safe) */
 	private static Templates svgTemplates;
 	
+	/**
+	 * Gets the JAXB context
+	 *
+	 * @return {@link JAXBContext}
+	 * @throws JAXBException if an exception occurs
+	 */
 	public static JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
 			jc = JAXBContext.newInstance(ObjectFactory.class);
@@ -64,6 +79,13 @@ public final class DiagnosticDataXmlDefiner {
 		return jc;
 	}
 
+	/**
+	 * Gets the XSD Schema for the DiagnosticData
+	 *
+	 * @return {@link Schema}
+	 * @throws IOException if XSD reading exception occurs
+	 * @throws SAXException if an exception occurs
+	 */
 	public static Schema getSchema() throws IOException, SAXException {
 		if (schema == null) {
 			try (InputStream isXSDDiagnosticData = DiagnosticDataXmlDefiner.class.getResourceAsStream(DIAGNOSTIC_DATA_SCHEMA_LOCATION)) {
@@ -74,6 +96,13 @@ public final class DiagnosticDataXmlDefiner {
 		return schema;
 	}
 
+	/**
+	 * Gets the SVG template
+	 *
+	 * @return {@link Templates}
+	 * @throws TransformerConfigurationException if an exception occurs
+	 * @throws IOException if file reading exception occurs
+	 */
 	public static Templates getSvgTemplates() throws TransformerConfigurationException, IOException {
 		if (svgTemplates == null) {
 			svgTemplates = loadTemplates(DIAGNOSTIC_DATA_XSLT_SVG_LOCATION);

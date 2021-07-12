@@ -60,41 +60,86 @@ public class TLSource {
 	 * The cached CacheKey value (the key is computed from url parameter)
 	 */
 	private CacheKey cacheKey;
-	
+
+	/**
+	 * Gets the TL URL
+	 *
+	 * @return {@link String}
+	 */
 	public String getUrl() {
 		return url;
 	}
-	
+
+	/**
+	 * Sets the TL access URL
+	 *
+	 * @param url {@link String}
+	 */
 	public void setUrl(String url) {
 		Objects.requireNonNull(url, "URL cannot be null.");
 		this.url = url;
 	}
 
+	/**
+	 * Gets the certificate source to be used for TL validation
+	 *
+	 * @return {@link CertificateSource}
+	 */
 	public CertificateSource getCertificateSource() {
 		return certificateSource;
 	}
 
+	/**
+	 * Sets the certificate source to be used for TL validation
+	 *
+	 * @param certificateSource {@link CertificateSource}
+	 */
 	public void setCertificateSource(CertificateSource certificateSource) {
 		Objects.requireNonNull(certificateSource);
 		this.certificateSource = certificateSource;
 	}
 
+	/**
+	 * Gets a predicate to filter TrustServiceProviders
+	 *
+	 * @return {@link TrustServiceProviderPredicate}
+	 */
 	public TrustServiceProviderPredicate getTrustServiceProviderPredicate() {
 		return trustServiceProviderPredicate;
 	}
 
+	/**
+	 * Sets a  predicate to filter TrustServiceProviders
+	 *
+	 * @param trustServiceProviderPredicate {@link TrustServiceProviderPredicate}
+	 */
 	public void setTrustServiceProviderPredicate(TrustServiceProviderPredicate trustServiceProviderPredicate) {
 		this.trustServiceProviderPredicate = trustServiceProviderPredicate;
 	}
 
+	/**
+	 * Gets a predicate to filter TrustServices
+	 *
+	 * @return {@link TrustServicePredicate}
+	 */
 	public TrustServicePredicate getTrustServicePredicate() {
 		return trustServicePredicate;
 	}
 
+	/**
+	 * Sets a  predicate to filter TrustServices
+	 *
+	 * @param trustServicePredicate {@link TrustServicePredicate}
+	 */
 	public void setTrustServicePredicate(TrustServicePredicate trustServicePredicate) {
 		this.trustServicePredicate = trustServicePredicate;
 	}
 
+	/**
+	 * Gets the TL cache key
+	 *
+	 * @return {@link CacheKey}
+	 */
 	public CacheKey getCacheKey() {
 		if (cacheKey == null) {
 			cacheKey = new CacheKey(url);

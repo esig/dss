@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -36,14 +37,6 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
  * the context of a signature.
  */
 public interface CertificateVerifier {
-
-	/**
-	 * Returns the OCSP source associated with this verifier.
-	 *
-	 * @return the used OCSP source for external access (web, filesystem,
-	 *         cached,...)
-	 */
-	RevocationSource<OCSP> getOcspSource();
 
 	/**
 	 * Returns the CRL source associated with this verifier.
@@ -62,6 +55,14 @@ public interface CertificateVerifier {
 	void setCrlSource(final RevocationSource<CRL> crlSource);
 
 	/**
+	 * Returns the OCSP source associated with this verifier.
+	 *
+	 * @return the used OCSP source for external access (web, filesystem,
+	 *         cached,...)
+	 */
+	RevocationSource<OCSP> getOcspSource();
+
+	/**
 	 * Defines the source of OCSP used by this class
 	 *
 	 * @param ocspSource
@@ -69,6 +70,23 @@ public interface CertificateVerifier {
 	 *                   filesystem, cached,...)
 	 */
 	void setOcspSource(final RevocationSource<OCSP> ocspSource);
+
+	/**
+	 * Returns a revocation data loading strategy associated with this verifier.
+	 *
+	 * @return the defined strategy to fetch OCSP or CRL for certificate validation
+	 */
+	RevocationDataLoadingStrategy getRevocationDataLoadingStrategy();
+
+	/**
+	 * Defines a strategy used to fetch OCSP or CRL for certificate validation.
+	 *
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategy} is used to extract OCSP token first and CRL after
+	 *
+	 * @param revocationDataLoadingStrategy
+	 *                   {@link RevocationDataLoadingStrategy}
+	 */
+	void setRevocationDataLoadingStrategy(final RevocationDataLoadingStrategy revocationDataLoadingStrategy);
 
 	/**
 	 * Returns the trusted certificate sources associated with this verifier. These
@@ -136,77 +154,55 @@ public interface CertificateVerifier {
 	void setAdjunctCertSources(final ListCertificateSource adjunctListCertificateSource);
 
 	/**
-	 * The data loader used to access AIA certificate source.
-	 *
-	 * @return the used data loaded to load AIA resources and policy files
-	 */
-	DataLoader getDataLoader();
-
-	/**
 	 * The data loader used to access AIA certificate source. If this property is
 	 * not set the default {@code CommonsHttpDataLoader} is created.
 	 *
 	 * @param dataLoader
 	 *                   the used data loaded to load AIA resources and policy files
+	 * @deprecated since v5.9
+	 *
+	 * Please, use the following code to define the {@code AIASource}:
+	 * {@code
+	 *       AIASource aiaSource = new DefaultAIASource(dataLoader);
+	 * 		 certificateVerifier.setAIASource(aiaSource);
+	 * }
+	 *
+	 * And the code to define a {@code DataLoader} for signature policy loading:
+	 * {@code
+	 *       SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+	 *       signaturePolicyProvider.setDataLoader(dataLoader);
+	 * 		 documentValidator.setSignaturePolicyProvider(signaturePolicyProvider);
+	 * }
 	 */
+	@Deprecated
 	void setDataLoader(final DataLoader dataLoader);
 
 	/**
-	 * This method returns the CRL source (information extracted from signatures).
-	 * 
-	 * @return the CRL sources from the signature
-	 */
-	ListRevocationSource<CRL> getSignatureCRLSource();
-
-	/**
-	 * This method allows to set the CRL source (information extracted from
-	 * signatures).
+	 * Gets the AIASource used to load a {@code eu.europa.esig.dss.model.x509.CertificateToken}'s issuer
+	 * by defined AIA URI(s) within the token
 	 *
-	 * @param signatureCRLSource
-	 *                           the CRL sources from the signature
+	 * @return aiaSource {@link AIASource}
 	 */
-	void setSignatureCRLSource(final ListRevocationSource<CRL> signatureCRLSource);
+	AIASource getAIASource();
 
 	/**
-	 * This method returns the OCSP source (information extracted from signatures).
-	 * 
-	 * @return the OCSP sources from the signatures
-	 */
-	ListRevocationSource<OCSP> getSignatureOCSPSource();
-
-	/**
-	 * This method allows to set the OCSP source (information extracted from
-	 * signatures).
+	 * Sets the AIASource used to load a {@code eu.europa.esig.dss.model.x509.CertificateToken}'s issuer
+	 * by defined AIA URI(s) within the token
 	 *
-	 * @param signatureOCSPSource
-	 *                            the OCSP sources from the signature
+	 * @param aiaSource {@link AIASource}
 	 */
-	void setSignatureOCSPSource(final ListRevocationSource<OCSP> signatureOCSPSource);
-
-	/**
-	 * This method returns the Certificate Source (information extracted from
-	 * signatures)
-	 * 
-	 * @return the certificate sources from the signatures
-	 */
-	ListCertificateSource getSignatureCertificateSource();
-
-	/**
-	 * This method allows to set the Certificate source (information extracted from
-	 * signatures).
-	 *
-	 * @param signatureCertificateSource the Certificate sources from the signatures
-	 */
-	void setSignatureCertificateSource(ListCertificateSource signatureCertificateSource);
+	void setAIASource(final AIASource aiaSource);
 
 	/**
 	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
+	 *
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use
 	 */
 	void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
 	
 	/**
 	 * This method returns a default Digest Algorithm what will be used for digest calculation
+	 *
 	 * @return {@link DigestAlgorithm}
 	 */
 	DigestAlgorithm getDefaultDigestAlgorithm();
@@ -223,8 +219,7 @@ public interface CertificateVerifier {
 	void setAlertOnInvalidTimestamp(StatusAlert alertOnInvalidTimestamp);
 
 	/**
-	 * This method returns true if an exception needs to be thrown on invalid
-	 * timestamp.
+	 * This method returns the defined execution behaviour on invalid timestamp.
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of an invalid timestamp
 	 */
@@ -242,8 +237,7 @@ public interface CertificateVerifier {
 	void setAlertOnMissingRevocationData(StatusAlert alertOnMissingRevocationData);
 
 	/**
-	 * This method returns true if an exception needs to be thrown on missing
-	 * revocation data.
+	 * This method returns the defined execution behaviour on missing revocation data.
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of missing revocation
 	 *         data
@@ -262,8 +256,7 @@ public interface CertificateVerifier {
 	void setAlertOnRevokedCertificate(StatusAlert alertOnRevokedCertificate);
 
 	/**
-	 * This method returns true if an exception needs to be thrown on revoked
-	 * certificate.
+	 * This method returns the defined execution behaviour on revoked certificate.
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of revoked certificate
 	 */
@@ -282,7 +275,7 @@ public interface CertificateVerifier {
 	void setAlertOnNoRevocationAfterBestSignatureTime(StatusAlert alertOnNoRevocationAfterBestSignatureTime);
 	
 	/**
-	 * This method returns true if an exception needs to be thrown in case if no
+	 * This method returns the defined execution behaviour if no
 	 * revocation data obtained with an issuance time after the bestSignatureTime
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of no revocation data
@@ -300,12 +293,29 @@ public interface CertificateVerifier {
 	void setAlertOnUncoveredPOE(StatusAlert alertOnUncoveredPOE);
 	
 	/**
-	 * This method returns true if an exception needs to be thrown on uncovered
-	 * POE(timestamp).
+	 * This method returns the defined execution behaviour on uncovered POE (timestamp).
 	 * 
 	 * @return {@link StatusAlert} to be processed in case of uncovered POE
 	 */
 	StatusAlert getAlertOnUncoveredPOE();
+
+	/**
+	 * This method allows to change the behavior on expired signature
+	 * (if the signing certificate or its POE(s) has been expired).
+	 *
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 *
+	 * @param alertOnUncoveredPOE defines a behaviour in case of an expired signature
+	 */
+	void setAlertOnExpiredSignature(StatusAlert alertOnUncoveredPOE);
+
+	/**
+	 * This method returns the defined execution behaviour on expired signature
+	 * (if the signing certificate or its POE(s) has been expired).
+	 *
+	 * @return {@link StatusAlert} to be processed in case of uncovered POE
+	 */
+	StatusAlert getAlertOnExpiredSignature();
 
 	/**
 	 * This method allows to enable revocation checking for untrusted certificate

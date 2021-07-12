@@ -24,7 +24,7 @@
 
     <xsl:template match="dss:ValidationPolicy">
 		<div>
-    		<xsl:attribute name="class">card</xsl:attribute>
+    		<xsl:attribute name="class">card mb-3</xsl:attribute>
     		<div>
     			<xsl:attribute name="class">card-header bg-primary</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapsePolicy</xsl:attribute>
@@ -32,7 +32,7 @@
     			Validation Policy : <xsl:value-of select="dss:PolicyName"/>
 	        </div>
     		<div>
-    			<xsl:attribute name="class">card-body collapse in</xsl:attribute>
+    			<xsl:attribute name="class">card-body collapse show</xsl:attribute>
 	        	<xsl:attribute name="id">collapsePolicy</xsl:attribute>
 	        	<xsl:value-of select="dss:PolicyDescription"/>
     		</div>
@@ -40,6 +40,7 @@
     </xsl:template>
 
     <xsl:template match="dss:Signature|dss:Timestamp">
+		<xsl:param name="cardStyle" select="'primary'" />
         <xsl:variable name="indicationText" select="dss:Indication/text()"/>
         <xsl:variable name="idToken" select="@Id" />
         <xsl:variable name="nodeName" select="name()" />
@@ -52,11 +53,17 @@
 				<xsl:when test="$indicationText='TOTAL_FAILED'">danger</xsl:when>
 			</xsl:choose>
         </xsl:variable>
+		<xsl:variable name="copyIdBtnColor">
+			<xsl:choose>
+				<xsl:when test="$cardStyle='primary'">light</xsl:when>
+				<xsl:otherwise>dark</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
         
         <div>
-    		<xsl:attribute name="class">card mt-3</xsl:attribute>
+    		<xsl:attribute name="class">card mb-3</xsl:attribute>
     		<div>
-    			<xsl:attribute name="class">card-header bg-primary</xsl:attribute>
+    			<xsl:attribute name="class">card-header bg-<xsl:value-of select="$cardStyle" /></xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseSig<xsl:value-of select="$idToken" /></xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 		       	
@@ -66,18 +73,27 @@
 						Counter-signature
 		        	</span>
 				</xsl:if>
-				
-				<xsl:if test="$nodeName = 'Signature'">
-					Signature
-				</xsl:if>
-				<xsl:if test="$nodeName = 'Timestamp'">
-					Timestamp
-				</xsl:if>
-		       	
-    			<xsl:value-of select="$idToken" />
+
+				<span>
+					<xsl:if test="$nodeName = 'Signature'">
+						Signature
+					</xsl:if>
+					<xsl:if test="$nodeName = 'Timestamp'">
+						Timestamp
+					</xsl:if>
+					<xsl:value-of select="$idToken" />
+				</span>
+				<i>
+					<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-<xsl:value-of select="$copyIdBtnColor"/> border-0 p-2 ml-1 mr-1</xsl:attribute>
+					<xsl:attribute name="data-id"><xsl:value-of select="$idToken"/></xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">right</xsl:attribute>
+					<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+					<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+				</i>
 	        </div>
     		<div>
-    			<xsl:attribute name="class">card-body collapse in</xsl:attribute>
+    			<xsl:attribute name="class">card-body collapse show</xsl:attribute>
 				<xsl:attribute name="id">collapseSig<xsl:value-of select="$idToken" /></xsl:attribute>
 				
 				<xsl:if test="dss:Filename">
@@ -137,7 +153,9 @@
 				    		</i>					
 			        	</dd>
 			        </dl>
-				</xsl:if>	
+				</xsl:if>
+
+				<xsl:apply-templates select="dss:QualificationDetails" />
 
 				<xsl:if test="@SignatureFormat">
 			        <dl>
@@ -166,9 +184,9 @@
 			
 						<div>
 			           		<xsl:attribute name="class">badge mr-2 badge-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
-			           		
-							<xsl:variable name="indicationText" select="dss:Indication" />
-							<xsl:variable name="semanticText" select="//dss:Semantic[contains(@Key,$indicationText)]"/>
+
+							<xsl:variable name="dssIndication" select="dss:Indication" />
+							<xsl:variable name="semanticText" select="//dss:Semantic[contains(@Key,$dssIndication)]"/>
 			           		
 			           		<xsl:if test="string-length($semanticText) &gt; 0">
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
@@ -213,10 +231,8 @@
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
 
-			    <xsl:apply-templates select="dss:Errors" />
-			    <xsl:apply-templates select="dss:Warnings" />
-		        <xsl:apply-templates select="dss:Infos" />
-		        
+				<xsl:apply-templates select="dss:AdESValidationDetails" />
+
 		        <dl>
 	        		<xsl:attribute name="class">row mb-0</xsl:attribute>
 		            <dt>
@@ -225,7 +241,7 @@
 			        	Certificate Chain:
 			        </dt>
 		            <xsl:choose>
-			            <xsl:when test="dss:CertificateChain">
+			            <xsl:when test="dss:CertificateChain/dss:Certificate">
 			        		<dd>
 		            			<xsl:attribute name="class">col-sm-9</xsl:attribute>
 		            			
@@ -251,7 +267,11 @@
 		        			</dd>
 			        	</xsl:when>
 			        	<xsl:otherwise>
-			        		<dd>/</dd>
+			        		<dd>
+								<xsl:attribute name="class">col-sm-9</xsl:attribute>
+
+								/
+							</dd>
 			        	</xsl:otherwise>
 		        	</xsl:choose>
 	        	</dl>
@@ -266,8 +286,10 @@
 			        	</dt>
 			            <dd>
 			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
-			            	
-			            	<xsl:value-of select="dss:SigningTime"/>
+
+							<xsl:call-template name="formatdate">
+								<xsl:with-param name="DateTimeStr" select="dss:SigningTime"/>
+							</xsl:call-template>
 			            </dd>
 			        </dl>
 		        </xsl:if>
@@ -283,7 +305,9 @@
 			            <dd>
 			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
 			            	
-			            	<xsl:value-of select="dss:ProductionTime"/>
+							<xsl:call-template name="formatdate">
+								<xsl:with-param name="DateTimeStr" select="dss:ProductionTime"/>
+							</xsl:call-template>
 			            </dd>
 			        </dl>
 		        </xsl:if>
@@ -298,8 +322,11 @@
 			            </dt>
 			            <dd>
 			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
-			            	
-			            	<xsl:value-of select="dss:BestSignatureTime"/>
+
+							<xsl:call-template name="formatdate">
+								<xsl:with-param name="DateTimeStr" select="dss:BestSignatureTime"/>
+							</xsl:call-template>
+
 			            	<i>
 				    			<xsl:attribute name="class">fa fa-info-circle text-info ml-2</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
@@ -346,10 +373,77 @@
 				        </dl>
 			        </xsl:for-each>
 		        </xsl:if>
-		        
+
+				<xsl:if test="dss:Timestamps">
+					<div>
+						<xsl:attribute name="class">card mt-3</xsl:attribute>
+						<div>
+							<xsl:attribute name="class">card-header bg-primary collapsed</xsl:attribute>
+							<xsl:attribute name="data-target">#collapseSigDetails<xsl:value-of select="$idToken" /></xsl:attribute>
+							<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+							<xsl:attribute name="aria-expanded">false</xsl:attribute>
+
+							Timestamps <span class="badge badge-light"><xsl:value-of select="count(dss:Timestamps/dss:Timestamp)" /></span>
+						</div>
+						<div>
+							<xsl:attribute name="class">card-body collapse pb-1</xsl:attribute>
+							<xsl:attribute name="id">collapseSigDetails<xsl:value-of select="$idToken" /></xsl:attribute>
+							<xsl:apply-templates select="dss:Timestamps" />
+						</div>
+					</div>
+				</xsl:if>
+
     		</div>
     	</div>
     </xsl:template>
+
+	<xsl:template match="dss:AdESValidationDetails|dss:QualificationDetails">
+		<xsl:variable name="header">
+			<xsl:choose>
+				<xsl:when test="name() = 'AdESValidationDetails'">AdES Validation Details</xsl:when>
+				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<dl>
+			<xsl:attribute name="class">row mb-0</xsl:attribute>
+			<dt>
+				<xsl:attribute name="class">col-sm-3</xsl:attribute>
+
+				<xsl:value-of select="$header" /> :
+			</dt>
+			<dd>
+				<xsl:attribute name="class">col-sm-9</xsl:attribute>
+				<ul>
+					<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
+					<xsl:apply-templates select="dss:Error" />
+					<xsl:apply-templates select="dss:Warning" />
+					<xsl:apply-templates select="dss:Info" />
+				</ul>
+			</dd>
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="dss:Error|dss:Warning|dss:Info">
+		<xsl:variable name="style">
+			<xsl:choose>
+				<xsl:when test="name() = 'Error'">danger</xsl:when>
+				<xsl:when test="name() = 'Warning'">warning</xsl:when>
+				<xsl:otherwise>auto</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<li>
+			<xsl:attribute name="class">text-<xsl:value-of select="$style" /></xsl:attribute>
+			<xsl:value-of select="." />
+		</li>
+	</xsl:template>
+
+	<xsl:template match="dss:Timestamps">
+		<div>
+			<xsl:apply-templates select="dss:Timestamp">
+				<xsl:with-param name="cardStyle" select="'light'"/>
+			</xsl:apply-templates>
+		</div>
+	</xsl:template>
 
 	<xsl:template match="dss:SubIndication">
 		<xsl:param name="indicationClass" />
@@ -380,49 +474,10 @@
 			</dd>
 		</dl>
 	</xsl:template>
-	
-	<xsl:template match="dss:Errors">
-		<dl>
-    		<xsl:attribute name="class">row mb-0</xsl:attribute>
-			<dt>
-				<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			</dt>
-			<dd>
-				<xsl:attribute name="class">col-sm-9 text-danger</xsl:attribute>
-				<xsl:value-of select="." />
-			</dd>
-		</dl>
-	</xsl:template>
-	
-	<xsl:template match="dss:Warnings">
-		<dl>
-    		<xsl:attribute name="class">row mb-0</xsl:attribute>
-			<dt>
-				<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			</dt>
-			<dd>
-				<xsl:attribute name="class">col-sm-9 text-warning</xsl:attribute>
-				<xsl:value-of select="." />
-			</dd>
-		</dl>
-	</xsl:template>
-	
-	<xsl:template match="dss:Infos">
-		<dl>
-    		<xsl:attribute name="class">row mb-0</xsl:attribute>
-			<dt>
-				<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			</dt>
-			<dd>
-				<xsl:attribute name="class">col-sm-9</xsl:attribute>
-				<xsl:value-of select="." />
-			</dd>
-		</dl>
-	</xsl:template>
 
     <xsl:template name="documentInformation">
 		<div>
-    		<xsl:attribute name="class">card mt-3</xsl:attribute>
+    		<xsl:attribute name="class">card</xsl:attribute>
     		<div>
     			<xsl:attribute name="class">card-header bg-primary</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseInfo</xsl:attribute>
@@ -430,7 +485,7 @@
     			Document Information
 	        </div>
     		<div>
-    			<xsl:attribute name="class">card-body collapse in</xsl:attribute>
+    			<xsl:attribute name="class">card-body collapse show</xsl:attribute>
 	        	<xsl:attribute name="id">collapseInfo</xsl:attribute>
 	        	
 				<xsl:if test="dss:ContainerType">
@@ -484,4 +539,34 @@
     		</div>
     	</div>
     </xsl:template>
+
+	<xsl:template name="formatdate">
+		<xsl:param name="DateTimeStr" />
+
+		<xsl:variable name="date">
+			<xsl:value-of select="substring-before($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="after-T">
+			<xsl:value-of select="substring-after($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="time">
+			<xsl:value-of select="substring-before($after-T,'Z')" />
+		</xsl:variable>
+
+		<xsl:choose>
+			<xsl:when test="string-length($date) &gt; 0 and string-length($time) &gt; 0">
+				<xsl:value-of select="concat($date,' ', $time, ' (UTC)')" />
+			</xsl:when>
+			<xsl:when test="string-length($date) &gt; 0">
+				<xsl:value-of select="$date" />
+			</xsl:when>
+			<xsl:when test="string-length($time) &gt; 0">
+				<xsl:value-of select="$time" />
+			</xsl:when>
+			<xsl:otherwise>-</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 </xsl:stylesheet>

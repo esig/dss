@@ -20,20 +20,35 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 
+/**
+ * Performs validation of a SignaturePolicy with zero-sigPolicyHash
+ * See EN 319 122-1 "5.2.9 The signature-policy-identifier attribute and the SigPolicyQualifierInfo type"
+ *
+ */
 public class ZeroHashSignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
 	@Override
-	public boolean canValidate() {
-		SignaturePolicy policy = getSignaturePolicy();
-		return policy.isZeroHash();
+	public boolean canValidate(SignaturePolicy signaturePolicy) {
+		return signaturePolicy.isZeroHash();
 	}
 
 	@Override
-	public void validate() {
-		setIdentified(true);
-		setStatus(true);
+	public SignaturePolicyValidationResult validate(SignaturePolicy signaturePolicy) {
+		SignaturePolicyValidationResult validationResult = new SignaturePolicyValidationResult();
+		validationResult.setIdentified(true);
+		validationResult.setDigestValid(true);
+		return validationResult;
+	}
+
+	@Override
+	public Digest getComputedDigest(DSSDocument policyDocument, DigestAlgorithm digestAlgorithm) {
+		return new Digest(digestAlgorithm, DSSUtils.EMPTY_BYTE_ARRAY);
 	}
 
 }

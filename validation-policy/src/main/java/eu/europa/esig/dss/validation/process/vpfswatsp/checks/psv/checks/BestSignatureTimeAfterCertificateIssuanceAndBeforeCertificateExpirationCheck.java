@@ -28,6 +28,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 import java.util.Date;
 
@@ -68,7 +69,8 @@ public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpira
 	@Override
 	protected boolean process() {
 		// inclusive by RFC 5280
-		return controlTime.compareTo(certificate.getNotBefore()) >= 0 && controlTime.compareTo(certificate.getNotAfter()) <= 0;
+		return certificate.getNotBefore() != null && controlTime.compareTo(certificate.getNotBefore()) >= 0
+				&& certificate.getNotAfter() != null && controlTime.compareTo(certificate.getNotAfter()) <= 0;
 	}
 
 	@Override
@@ -89,6 +91,14 @@ public class BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpira
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return currentTimeSubIndication;
+	}
+
+	@Override
+	protected String buildAdditionalInfo() {
+		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotBefore());
+		String notAfterStr = certificate.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(certificate.getNotAfter());
+		String validationTime = ValidationProcessUtils.getFormattedDate(controlTime);
+		return i18nProvider.getMessage(MessageTag.CERTIFICATE_VALIDITY, validationTime, notBeforeStr, notAfterStr);
 	}
 
 }

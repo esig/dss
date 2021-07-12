@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -29,7 +30,6 @@ import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -37,9 +37,10 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationDataForInclusion;
+import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.jose4j.json.internal.json_simple.JSONArray;
 
 import java.util.Collections;
@@ -61,31 +62,47 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 	}
 	
 	@Override
-	protected void extendSignature(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
-		super.extendSignature(jadesSignature, params);
-		
-		assertExtendSignatureToLTAPossible(jadesSignature, params);
-		checkSignatureIntegrity(jadesSignature);
-		
-		JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-		if (jadesSignature.hasLTAProfile()) {
-			// must be executed before data removing
-			final ValidationContext validationContext = jadesSignature.getSignatureValidationContext(certificateVerifier);
-			removeLastTimestampValidationData(jadesSignature, etsiUHeader);
+	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
+		super.extendSignatures(signatures, params);
 
-			final ValidationDataForInclusion validationDataForInclusion = getValidationDataForInclusion(jadesSignature, validationContext);
-			if (!validationDataForInclusion.isEmpty()) {
-				JsonObject tstVd = getTstVd(validationDataForInclusion);
-				etsiUHeader.addComponent(JAdESHeaderParameterNames.TST_VD, tstVd,
-						params.isBase64UrlEncodedEtsiUComponents());
+		boolean addTimestampValidationData = false;
+
+		for (AdvancedSignature signature : signatures) {
+			JAdESSignature jadesSignature = (JAdESSignature) signature;
+			assertExtendSignatureToLTAPossible(jadesSignature, params);
+			checkSignatureIntegrity(jadesSignature);
+
+			if (jadesSignature.hasLTAProfile()) {
+				addTimestampValidationData = true;
 			}
 		}
-		
-		TimestampBinary timestampBinary = getArchiveTimestamp(jadesSignature, params);
-		JsonObject arcTst = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary),
-				params.getArchiveTimestampParameters().getCanonicalizationMethod());
-		etsiUHeader.addComponent(JAdESHeaderParameterNames.ARC_TST, arcTst, params.isBase64UrlEncodedEtsiUComponents());
 
+		// Perform signature validation
+		ValidationDataContainer validationDataContainer = null;
+		if (addTimestampValidationData) {
+			validationDataContainer = documentValidator.getValidationData(signatures);
+		}
+
+		for (AdvancedSignature signature : signatures) {
+			JAdESSignature jadesSignature = (JAdESSignature) signature;
+			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
+
+			if (jadesSignature.hasLTAProfile() && addTimestampValidationData) {
+				removeLastTimestampValidationData(jadesSignature, etsiUHeader);
+
+				final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
+				if (!validationDataForInclusion.isEmpty()) {
+					JsonObject tstVd = getTstVd(validationDataForInclusion);
+					etsiUHeader.addComponent(JAdESHeaderParameterNames.TST_VD, tstVd, params.isBase64UrlEncodedEtsiUComponents());
+				}
+			}
+
+			TimestampBinary timestampBinary = getArchiveTimestamp(jadesSignature, params);
+			JsonObject arcTst = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary),
+					params.getArchiveTimestampParameters().getCanonicalizationMethod());
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.ARC_TST, arcTst,
+					params.isBase64UrlEncodedEtsiUComponents());
+		}
 	}
 
 	private void removeLastTimestampValidationData(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
@@ -94,10 +111,10 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		jadesSignature.resetRevocationSources();
 	}
 
-	private JsonObject getTstVd(final ValidationDataForInclusion validationDataForInclusion) {
+	private JsonObject getTstVd(final ValidationData validationDataForInclusion) {
 		Set<CertificateToken> certificateTokens = validationDataForInclusion.getCertificateTokens();
-		List<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
-		List<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
+		Set<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
+		Set<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
 		
 		JsonObject tstVd = new JsonObject();
 		if (Utils.isCollectionNotEmpty(certificateTokens)) {
@@ -136,7 +153,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		JAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		if (!params.isBase64UrlEncodedEtsiUComponents()
 				&& Utils.isStringEmpty(archiveTimestampParameters.getCanonicalizationMethod())) {
-			throw new DSSException(
+			throw new IllegalInputException(
 					"Unable to extend JAdES-LTA level. Clear 'etsiU' incorporation requires a canonicalization method!");
 		}
 	}
@@ -146,7 +163,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			for (DSSDocument detachedDocument : detachedContents) {
 				if (detachedDocument instanceof DigestDocument) {
-					throw new DSSException("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "
+					throw new IllegalArgumentException("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "
 							+ "Extension with a DigestDocument is not possible.");
 				}
 			}
@@ -156,7 +173,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 	private void checkEtsiUContentUnicity(JAdESSignature jadesSignature) {
 		List<Object> etsiU = DSSJsonUtils.getEtsiU(jadesSignature.getJws());
 		if (!DSSJsonUtils.checkComponentsUnicity(etsiU)) {
-			throw new DSSException("Unsupported 'etsiU' container structure! Extension is not possible.");
+			throw new IllegalInputException("Unsupported 'etsiU' container structure! Extension is not possible.");
 		}
 	}
 

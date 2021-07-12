@@ -37,36 +37,64 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum KeyUsageBit {
 
+	/** digitalSignature */
 	DIGITAL_SIGNATURE("digitalSignature",0),
 
+	/** nonRepudiation */
 	NON_REPUDIATION("nonRepudiation",1),
 
+	/** keyEncipherment */
 	KEY_ENCIPHERMENT("keyEncipherment",2),
 
+	/** dataEncipherment */
 	DATA_ENCIPHERMENT("dataEncipherment",3),
 
+	/** keyAgreement */
 	KEY_AGREEMENT("keyAgreement",4),
 
+	/** keyCertSign */
 	KEY_CERT_SIGN("keyCertSign",5),
 
+	/** crlSign */
 	CRL_SIGN("crlSign",6),
 
+	/** encipherOnly */
 	ENCIPHER_ONLY("encipherOnly",7),
 
+	/** decipherOnly */
 	DECIPHER_ONLY("decipherOnly",8);
 
+	/** Name of the key usage */
 	private final String value;
+
+	/** The bit value */
 	private final int index;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param value {@link String} name
+	 * @param index bit value
+	 */
 	KeyUsageBit(String value, int index) {
 		this.value = value;
 		this.index = index;
 	}
 
+	/**
+	 * Returns the key usage name
+	 *
+	 * @return {@link String}
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Returns the key usage bit value
+	 *
+	 * @return key usage bit
+	 */
 	public int getIndex() {
 		return index;
 	}
