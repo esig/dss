@@ -83,7 +83,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -1242,42 +1241,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method creates a user-friendly representation of SPUserNotice signature policy qualifier
-	 *
-	 * @param organization {@link String}
-	 * @param noticeNumbers a list of {@link Number}s
-	 * @param explicitText {@link String}
-	 * @param <N> {@link Number}
-	 * @return {@link String}
-	 */
-	public static <N extends Number> String getSPUserNoticeString(String organization, List<N> noticeNumbers, String explicitText) {
-		StringBuilder spUserNoticeStringBuilder = new StringBuilder();
-		if (Utils.isStringNotEmpty(organization)) {
-			spUserNoticeStringBuilder.append(organization);
-		}
-		if (Utils.isCollectionNotEmpty(noticeNumbers)) {
-			if (spUserNoticeStringBuilder.length() != 0) {
-				spUserNoticeStringBuilder.append("; ");
-			}
-			Iterator<N> iterator = noticeNumbers.iterator();
-			while (iterator.hasNext()) {
-				N number = iterator.next();
-				spUserNoticeStringBuilder.append(number);
-				if (iterator.hasNext()) {
-					spUserNoticeStringBuilder.append(", ");
-				}
-			}
-		}
-		if (Utils.isStringNotEmpty(explicitText)) {
-			if (spUserNoticeStringBuilder.length() != 0) {
-				spUserNoticeStringBuilder.append("; ");
-			}
-			spUserNoticeStringBuilder.append(explicitText);
-		}
-		return spUserNoticeStringBuilder.toString();
-	}
-
-	/**
 	 * This method verifies the validity of thw provided {@code UserNotice} object
 	 *
 	 * @param userNotice {@link UserNotice} to check
@@ -1302,20 +1265,6 @@ public final class DSSUtils {
 			bi.add(BigInteger.valueOf(i));
 		}
 		return bi;
-	}
-
-	/**
-	 * Converts a list of {@code Integer}s to an integers array
-	 *
-	 * @param integers a list of {@link Integer}s to convert
-	 * @return an integer array
-	 */
-	public static int[] toIntArray(List<Integer> integers) {
-		int[] intArray = new int[integers.size()];
-		for (int i = 0; i < integers.size(); i++) {
-			intArray[i] = integers.get(i).intValue();
-		}
-		return intArray;
 	}
 
 }

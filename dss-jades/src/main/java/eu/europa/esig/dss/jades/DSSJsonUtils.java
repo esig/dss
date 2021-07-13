@@ -32,6 +32,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -790,8 +791,7 @@ public class DSSJsonUtils {
 			if (etsiUComponent instanceof Map) {
 				Map<String, Object> map = (Map<String, Object>) etsiUComponent;
 				if (map.size() != 1) {
-					LOG.debug("A child of 'etsiU' shall contain only one entry! Found : {}. "
-							+ "The element is skipped for message a imprint computation!", map.size());
+					LOG.warn("The '{}' shall contain only one entry! Found : {}.", JAdESHeaderParameterNames.ETSI_U, map.size());
 					return null;
 				}
 				return map;
@@ -802,18 +802,56 @@ public class DSSJsonUtils {
 					byte[] itemBinaries = DSSJsonUtils.fromBase64Url(base64UrlEncoded);
 					return JsonUtil.parseJson(new String(itemBinaries));
 				} else {
-					LOG.debug("A String component of 'etsiU' array shall be base64Url encoded!");
+					LOG.warn("A String component of '{}' array shall be base64Url encoded!", JAdESHeaderParameterNames.ETSI_U);
 				}
 
 			} else {
-				LOG.debug("A component of unsupported class '{}' found inside an 'etsiU' array!",
-						etsiUComponent.getClass());
+				LOG.warn("A component of unsupported class '{}' found inside the '{}' array!",
+						etsiUComponent.getClass(), JAdESHeaderParameterNames.ETSI_U);
 			}
 
 		} catch (Exception e) {
-			LOG.warn("An error occurred during 'etsiU' component parsing : {}", e.getMessage(), e);
+			LOG.warn("An error occurred during '{}' component parsing : {}", JAdESHeaderParameterNames.ETSI_U, e.getMessage(), e);
 		}
 
+		return null;
+	}
+
+	/**
+	 * This method builds {@code SpDocSpecification} from the provided JSON object element
+	 *
+	 * @param spDocSpecificationObject {@link Object} json object
+	 * @return {@link SpDocSpecification}
+	 */
+	public static SpDocSpecification parseSPDocSpecification(Object spDocSpecificationObject) {
+		try {
+			if (spDocSpecificationObject instanceof Map) {
+				Map<String, Object> spDSpec = (Map<String, Object>) spDocSpecificationObject;
+				if (Utils.isMapEmpty(spDSpec)) {
+					LOG.warn("The {} element is empty!", JAdESHeaderParameterNames.SP_DSPEC);
+					return null;
+				}
+				SpDocSpecification spDocSpecification = new SpDocSpecification();
+				String id = (String) spDSpec.get(JAdESHeaderParameterNames.ID);
+				spDocSpecification.setId(DSSUtils.getObjectIdentifier(id));
+				spDocSpecification.setDescription((String) spDSpec.get(JAdESHeaderParameterNames.DESC));
+				Object docRefs = spDSpec.get(JAdESHeaderParameterNames.DOC_REFS);
+				if (docRefs instanceof List) {
+					List<String> docRefsList = (List<String>) docRefs;
+					spDocSpecification.setDocumentationReferences(docRefsList.toArray(new String[0]));
+				} else {
+					LOG.warn("The {} element shall be an instance of the List class!", JAdESHeaderParameterNames.DOC_REFS);
+				}
+				return spDocSpecification;
+
+			} else {
+				LOG.warn("A component of unsupported class '{}' found inside an '{}' array!",
+						spDocSpecificationObject.getClass(), JAdESHeaderParameterNames.SP_DSPEC);
+			}
+
+		} catch (Exception e) {
+			LOG.warn("An error occurred during '{}' component parsing : {}", JAdESHeaderParameterNames.SP_DSPEC, e.getMessage(), e);
+		}
 		return null;
 	}
 

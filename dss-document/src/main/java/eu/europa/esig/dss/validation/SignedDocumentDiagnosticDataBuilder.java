@@ -643,7 +643,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		if (signature.getSignaturePolicyStore() != null) {
 			policyContent = signature.getSignaturePolicyStore().getSignaturePolicyContent();
 		} else if (signaturePolicyProvider != null) {
-			policyContent = signaturePolicyProvider.getSignaturePolicy(signaturePolicy.getIdentifier(), signaturePolicy.getUrl());
+			policyContent = signaturePolicyProvider.getSignaturePolicy(signaturePolicy.getIdentifier(), signaturePolicy.getUri());
 		}
 		signaturePolicy.setPolicyContent(policyContent);
 

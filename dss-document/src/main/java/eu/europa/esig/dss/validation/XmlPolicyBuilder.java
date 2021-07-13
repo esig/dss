@@ -90,7 +90,7 @@ public class XmlPolicyBuilder {
 		xmlPolicy.setDescription(signaturePolicy.getDescription());
 		xmlPolicy.setDocumentationReferences(signaturePolicy.getDocumentationReferences());
 
-		xmlPolicy.setUrl(DSSUtils.removeControlCharacters(signaturePolicy.getUrl()));
+		xmlPolicy.setUrl(DSSUtils.removeControlCharacters(signaturePolicy.getUri()));
 		final UserNotice userNotice = signaturePolicy.getUserNotice();
 		if (userNotice != null) {
 			XmlUserNotice xmlUserNotice = new XmlUserNotice();

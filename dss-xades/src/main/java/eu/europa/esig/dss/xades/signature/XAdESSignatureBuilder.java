@@ -54,7 +54,6 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SignatureBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
@@ -962,37 +961,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		final SpDocSpecification spDocSpecification = signaturePolicy.getSpDocSpecification();
 		if (spDocSpecification != null && Utils.isStringNotEmpty(spDocSpecification.getId())) {
+
 			final Element sigPolicyQualifier = DomUtils.addElement(documentDom, sigPolicyQualifiers,
 					getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyQualifier());
+			incorporateSPDocSpecification(sigPolicyQualifier, spDocSpecification);
 
-			final Element spDocSpecElement = DomUtils.addElement(documentDom, sigPolicyQualifier,
-					getXades141Namespace(), XAdES141Element.SP_DOC_SPECIFICATION);
-			DomUtils.addNamespaceAttribute(spDocSpecElement, getXades141Namespace());
-
-			Element identifierElement = DomUtils.addElement(documentDom, spDocSpecElement,
-					getXadesNamespace(), getCurrentXAdESElements().getElementIdentifier());
-			if (spDocSpecification.getQualifier() != null) {
-				identifierElement.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(),
-						spDocSpecification.getQualifier().getValue());
-			}
-			DomUtils.setTextNode(documentDom, identifierElement, spDocSpecification.getId());
-
-			if (Utils.isStringNotEmpty(spDocSpecification.getDescription())) {
-				Element descriptionElement = DomUtils.addElement(documentDom, spDocSpecElement, getXadesNamespace(),
-						getCurrentXAdESElements().getElementDescription());
-				DomUtils.setTextNode(documentDom, descriptionElement, spDocSpecification.getDescription());
-			}
-
-			if (Utils.isArrayNotEmpty(spDocSpecification.getDocumentationReferences())) {
-				Element documentReferencesElement = DomUtils.addElement(documentDom, spDocSpecElement, getXadesNamespace(),
-						getCurrentXAdESElements().getElementDocumentationReferences());
-
-				for (String docRef : spDocSpecification.getDocumentationReferences()) {
-					Element documentReferenceElement = DomUtils.addElement(documentDom, documentReferencesElement, getXadesNamespace(),
-							getCurrentXAdESElements().getElementDocumentationReference());
-					DomUtils.setTextNode(documentDom, documentReferenceElement, docRef);
-				}
-			}
 		}
 	}
 

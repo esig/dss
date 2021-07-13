@@ -40,6 +40,7 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
@@ -250,16 +251,22 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					final String policyQualifierInfoValue = policyQualifierInfo.getSigQualifier().toString();
 
 					if (PKCSObjectIdentifiers.id_spq_ets_uri.equals(policyQualifierInfoId)) {
-						signaturePolicy.setUrl(policyQualifierInfoValue);
+						signaturePolicy.setUri(policyQualifierInfoValue);
+
 					} else if (PKCSObjectIdentifiers.id_spq_ets_unotice.equals(policyQualifierInfoId)) {
-						SPUserNotice spUserNotice = SPUserNotice.getInstance(policyQualifierInfo.getSigQualifier());
+						final SPUserNotice spUserNotice = SPUserNotice.getInstance(policyQualifierInfo.getSigQualifier());
 						signaturePolicy.setUserNotice(buildSPUserNoticeString(spUserNotice));
+
 					} else if (OID.id_sp_doc_specification.equals(policyQualifierInfoId)) {
-						signaturePolicy.setDocSpecification(policyQualifierInfoValue);
+						final SpDocSpecification spDocSpecification = new SpDocSpecification();
+						spDocSpecification.setId(policyQualifierInfoValue);
+						signaturePolicy.setDocSpecification(spDocSpecification);
+
 					} else {
 						LOG.error("Unknown signature policy qualifier id: {} with value: {}", policyQualifierInfoId,
 								policyQualifierInfoValue);
 					}
+
 				} catch (Exception e) {
 					LOG.error("Unable to read SigPolicyQualifierInfo {} : {}", ii, e.getMessage());
 				}
@@ -269,31 +276,30 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return signaturePolicy;
 	}
 
-	private String buildSPUserNoticeString(SPUserNotice spUserNotice) {
-		String organizationString = null;
-		List<Integer> noticeNumbersList = null;
-		String explicitTextString = null;
+	private UserNotice buildSPUserNoticeString(SPUserNotice spUserNotice) {
+		final UserNotice userNotice = new UserNotice();
 
-		NoticeReference noticeRef = spUserNotice.getNoticeRef();
+		final NoticeReference noticeRef = spUserNotice.getNoticeRef();
 		if (noticeRef != null) {
-			DisplayText organization = noticeRef.getOrganization();
+			final DisplayText organization = noticeRef.getOrganization();
 			if (organization != null) {
-				organizationString = organization.getString();
+				userNotice.setOrganization(organization.getString());
 			}
-			ASN1Integer[] noticeNumbers = noticeRef.getNoticeNumbers();
+			final ASN1Integer[] noticeNumbers = noticeRef.getNoticeNumbers();
 			if (noticeNumbers != null && noticeNumbers.length != 0) {
-				noticeNumbersList = new ArrayList<>();
-				for (ASN1Integer integer : noticeNumbers) {
-					noticeNumbersList.add(integer.intValueExact());
+				int[] noticeNumbersArray = new int[noticeNumbers.length];
+				for (int i = 0; i < noticeNumbers.length ; i++) {
+					noticeNumbersArray[i] = noticeNumbers[i].intValueExact();
 				}
+				userNotice.setNoticeNumbers(noticeNumbersArray);
 			}
 		}
-		DisplayText explicitText = spUserNotice.getExplicitText();
+		final DisplayText explicitText = spUserNotice.getExplicitText();
 		if (explicitText != null) {
-			explicitTextString = explicitText.getString();
+			userNotice.setExplicitText(explicitText.getString());
 		}
 
-		return DSSUtils.getSPUserNoticeString(organizationString, noticeNumbersList, explicitTextString);
+		return userNotice;
 	}
 	
 	@Override

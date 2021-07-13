@@ -40,6 +40,7 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
@@ -243,25 +244,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			if (Utils.isStringNotEmpty(sigPolDocBase64)) {
 				policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
 			}
-			Map<?, ?> spDocSpecificationMap = (Map<?, ?>) sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
-			if (Utils.isMapNotEmpty(spDocSpecificationMap)) {
-				spDocSpecification = new SpDocSpecification();
-				
-				String id = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.ID);
-				spDocSpecification.setId(DSSUtils.getObjectIdentifier(id));
-				
-				String description = (String) spDocSpecificationMap.get(JAdESHeaderParameterNames.DESC);
-				spDocSpecification.setDescription(description);
-				
-				String[] documentationReferences = null;
-				List<String> docRefs = (List<String>) spDocSpecificationMap.get(JAdESHeaderParameterNames.DOC_REFS);
-				if (Utils.isCollectionNotEmpty(docRefs)) {
-					documentationReferences = new String[docRefs.size()];
-					docRefs.toArray(documentationReferences);
-				}
-				spDocSpecification.setDocumentationReferences(documentationReferences);
+			Object spDSpec = sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
+			if (spDSpec != null) {
+				spDocSpecification = DSSJsonUtils.parseSPDocSpecification(spDSpec);
 			}
-
 			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 			signaturePolicyStore.setSignaturePolicyContent(policyContent);
 			signaturePolicyStore.setSpDocSpecification(spDocSpecification);
@@ -445,15 +431,15 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		if (Utils.isMapNotEmpty(sigPolicy)) {
 			Map<String, Object> policyId = (Map<String, Object>) sigPolicy.get(JAdESHeaderParameterNames.ID);
 			String id = (String) policyId.get(JAdESHeaderParameterNames.ID);
-
 			signaturePolicy = new SignaturePolicy(DSSUtils.getObjectIdentifier(id));
 			signaturePolicy.setDescription((String) policyId.get(JAdESHeaderParameterNames.DESC));
+			signaturePolicy.setDocumentationReferences((List<String>) policyId.get(JAdESHeaderParameterNames.DOC_REFS));
 
 			signaturePolicy.setDigest(DSSJsonUtils.getDigest(sigPolicy));
 
 			List<Object> qualifiers = (List<Object>) sigPolicy.get(JAdESHeaderParameterNames.SIG_PQUALS);
 			if (Utils.isCollectionNotEmpty(qualifiers)) {
-				signaturePolicy.setUrl(getSPUri(qualifiers));
+				signaturePolicy.setUri(getSPUri(qualifiers));
 				signaturePolicy.setUserNotice(getSPUserNotice(qualifiers));
 				signaturePolicy.setDocSpecification(getSPDSpec(qualifiers));
 			}
@@ -478,33 +464,31 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
-	private String getSPUserNotice(List<Object> qualifiers) {
+	private UserNotice getSPUserNotice(List<Object> qualifiers) {
 		for (Object qualifier : qualifiers) {
 			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
 			Map<?, ?> spUserNotice = (Map<?, ?>) qualifierMap.get(JAdESHeaderParameterNames.SP_USER_NOTICE);
 			if (Utils.isMapNotEmpty(spUserNotice)) {
 				try {
-					String organizationString = null;
-					List<Number> noticeNumbersList = null;
-					String explicitTextString = null;
+					final UserNotice userNotice = new UserNotice();
 
 					final Map<?, ?> noticeRef = (Map<?, ?>) spUserNotice.get(JAdESHeaderParameterNames.NOTICE_REF);
 					if (Utils.isMapNotEmpty(noticeRef)) {
 						final String organization = (String) noticeRef.get(JAdESHeaderParameterNames.ORGANTIZATION);
 						if (Utils.isStringNotBlank(organization)) {
-							organizationString = organization;
+							userNotice.setOrganization(organization);
 						}
 
 						final List<Number> noticeNumbers = (List<Number>) noticeRef.get(JAdESHeaderParameterNames.NOTICE_NUMBERS);
 						if (Utils.isCollectionNotEmpty(noticeNumbers)) {
-							noticeNumbersList = noticeNumbers;
+							userNotice.setNoticeNumbers(noticeNumbers.stream().mapToInt(i -> i.intValue()).toArray());
 						}
 					}
 					final String explTest = (String) spUserNotice.get(JAdESHeaderParameterNames.EXPL_TEXT);
 					if (Utils.isStringNotBlank(explTest)) {
-						explicitTextString = explTest;
+						userNotice.setExplicitText(explTest);
 					}
-					return DSSUtils.getSPUserNoticeString(organizationString, noticeNumbersList, explicitTextString);
+					return userNotice;
 
 				} catch (Exception e) {
 					LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
@@ -515,15 +499,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
-	private String getSPDSpec(List<Object> qualifiers) {
+	private SpDocSpecification getSPDSpec(List<Object> qualifiers) {
 		for (Object qualifier : qualifiers) {
 			Map<?, ?> qualifierMap = (Map<?, ?>) qualifier;
-			Map<?, ?> spDSpec = (Map<?, ?>) qualifierMap.get(JAdESHeaderParameterNames.SP_DSPEC);
-			if (Utils.isMapNotEmpty(spDSpec)) {
-				String id = (String) spDSpec.get(JAdESHeaderParameterNames.ID);
-				if (Utils.isStringNotEmpty(id)) {
-					return DSSUtils.getObjectIdentifier(id);
-				}
+			Object spDSpec = qualifierMap.get(JAdESHeaderParameterNames.SP_DSPEC);
+			if (spDSpec != null) {
+				return DSSJsonUtils.parseSPDocSpecification(spDSpec);
 			}
 		}
 		return null;

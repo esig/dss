@@ -66,7 +66,7 @@ public class SignaturePolicy implements Serializable {
 	 * Signature Policy URI qualifier
 	 * A URL where a copy of the signature policy MAY be obtained;
 	 */
-	private String url;
+	private String uri;
 
 	/**
 	 * Signature Policy User Notice qualifier
@@ -228,21 +228,21 @@ public class SignaturePolicy implements Serializable {
 	}
 
 	/**
-	 * Returns the signature policy url (if found)
+	 * Returns the signature policy URI (if found)
 	 *
-	 * @return the url of the signature policy (or null if not available information)
+	 * @return the URI of the signature policy (or null if not available information)
 	 */
-	public String getUrl() {
-		return url;
+	public String getUri() {
+		return uri;
 	}
 
 	/**
-	 * Sets the signature policy url
+	 * Sets the signature policy URI
 	 *
-	 * @param url signature policy url
+	 * @param uri signature policy URI
 	 */
-	public void setUrl(final String url) {
-		this.url = url;
+	public void setUri(final String uri) {
+		this.uri = uri;
 	}
 
 	/**

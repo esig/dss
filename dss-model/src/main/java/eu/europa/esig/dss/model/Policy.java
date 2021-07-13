@@ -63,6 +63,12 @@ public class Policy implements Serializable {
 	private SpDocSpecification spDocSpecification;
 
 	/**
+	 * This property is used only in JAdES, to indicate that the digest of the signature policy document
+	 * has been computed as specified in a technical specification
+	 */
+	private boolean hashAsInTechnicalSpecification;
+
+	/**
 	 * Empty constructor
 	 */
 	public Policy() {
@@ -239,6 +245,29 @@ public class Policy implements Serializable {
 	}
 
 	/**
+	 * Gets if the digests of the signature policy has been computed as in a technical specification
+	 *
+	 * @return TRUE if the digests has been computed as in a technical specification, FALSE otherwise
+	 */
+	public boolean isHashAsInTechnicalSpecification() {
+		return hashAsInTechnicalSpecification;
+	}
+
+	/**
+	 * Sets if the digests of the signature policy has been computed as in a technical specification.
+	 * If the property is set to FALSE, digest of the signature policy is computed in a default way (on the policy file).
+	 *
+	 * NOTE: The property is used only in JAdES
+	 *
+	 * Use method {@code setSpDocSpecification(SpDocSpecification)} to provide the technical specification
+	 *
+	 * @param hashAsInTechnicalSpecification if the digests has been computed as in a technical specification
+	 */
+	public void setHashAsInTechnicalSpecification(boolean hashAsInTechnicalSpecification) {
+		this.hashAsInTechnicalSpecification = hashAsInTechnicalSpecification;
+	}
+
+	/**
 	 * Checks if the object's data is not filled
 	 * 
 	 * @return TRUE if the Policy object does not have filled data, FALSE otherwise
@@ -269,6 +298,9 @@ public class Policy implements Serializable {
 			return false;
 		}
 		if (spDocSpecification != null && spDocSpecification.getId() != null && !spDocSpecification.getId().isEmpty()) {
+			return false;
+		}
+		if (hashAsInTechnicalSpecification) {
 			return false;
 		}
 		return true;
@@ -303,6 +335,7 @@ public class Policy implements Serializable {
 		result = 31 * result + (spUri != null ? spUri.hashCode() : 0);
 		result = 31 * result + (userNotice != null ? userNotice.hashCode() : 0);
 		result = 31 * result + (spDocSpecification != null ? spDocSpecification.hashCode() : 0);
+		result = 31 * result + (hashAsInTechnicalSpecification ? 1 : 0);
 		return result;
 	}
 
@@ -313,6 +346,7 @@ public class Policy implements Serializable {
 
 		Policy policy = (Policy) o;
 
+		if (hashAsInTechnicalSpecification != policy.hashAsInTechnicalSpecification) return false;
 		if (!Objects.equals(id, policy.id)) return false;
 		if (qualifier != policy.qualifier) return false;
 		if (!Objects.equals(description, policy.description)) return false;
@@ -331,7 +365,7 @@ public class Policy implements Serializable {
 				"', documentationReferences=" + Arrays.toString(documentationReferences) +
 				", digestAlgorithm=" + digestAlgorithm + ", digestValue=" + Arrays.toString(digestValue) +
 				", spUri='" + spUri + "', userNotice=" + userNotice + ", spDocSpecification='" + spDocSpecification +
-				"'}";
+				"', hashAsInTechnicalSpecification=" + hashAsInTechnicalSpecification + "}";
 	}
 
 }

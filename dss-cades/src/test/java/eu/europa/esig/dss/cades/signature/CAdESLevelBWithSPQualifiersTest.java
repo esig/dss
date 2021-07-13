@@ -1,5 +1,6 @@
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSPDocSpecification;
@@ -8,42 +9,36 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.io.File;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBWithSPQualifiersTest extends AbstractXAdESTestSignature {
+public class CAdESLevelBWithSPQualifiersTest extends AbstractCAdESTestSignature {
+
+    private static final String HELLO_WORLD = "Hello World";
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
-    private static final String SIGNATURE_POLICY_DESCRIPTION = "Test description";
-    private static final String SIGNATURE_POLICY_DOCUMENTATION = "http://nowina.lu/signature-policy.pdf";
     private static final String SIGNATURE_POLICY_ORGANIZATION = "Nowina Solutions";
     private static final int[] SIGNATURE_POLICY_NOTICE_NUMBERS = new int[] { 1, 2, 3, 4 };
     private static final String SIGNATURE_POLICY_EXPLICIT_TEXT = "This is the internal signature policy";
 
-    private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
-    private XAdESSignatureParameters signatureParameters;
+    private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
+    private CAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+        documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
         Policy signaturePolicy = new Policy();
         signaturePolicy.setId(SIGNATURE_POLICY_ID);
@@ -59,44 +54,18 @@ public class XAdESLevelBWithSPQualifiersTest extends AbstractXAdESTestSignature 
 
         SpDocSpecification spDocSpecification = new SpDocSpecification();
         spDocSpecification.setId(SIGNATURE_POLICY_ID);
-        spDocSpecification.setDescription(SIGNATURE_POLICY_DESCRIPTION);
-        spDocSpecification.setDocumentationReferences(SIGNATURE_POLICY_DOCUMENTATION, Utils.EMPTY_STRING);
         signaturePolicy.setSpDocSpecification(spDocSpecification);
 
-        signatureParameters = new XAdESSignatureParameters();
+        signatureParameters = new CAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
         signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+        signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 
-        service = new XAdESService(getOfflineCertificateVerifier());
-    }
+        service = new CAdESService(getOfflineCertificateVerifier());
 
-    @Override
-    protected SignaturePolicyProvider getSignaturePolicyProvider() {
-        return new SignaturePolicyProvider();
-    }
-
-    @Override
-    protected void onDocumentSigned(byte[] byteArray) {
-        super.onDocumentSigned(byteArray);
-        String xmlContent = new String(byteArray);
-        assertTrue(xmlContent.contains("description"));
-        assertTrue(xmlContent.contains(":DocumentationReferences>"));
-        assertTrue(xmlContent.contains(":DocumentationReference>"));
-        assertTrue(xmlContent.contains(":SigPolicyQualifiers>"));
-        assertTrue(xmlContent.contains(":SigPolicyQualifier>"));
-        assertTrue(xmlContent.contains(":SPURI>"));
-        assertTrue(xmlContent.contains(":SPUserNotice>"));
-        assertTrue(xmlContent.contains(":NoticeRef>"));
-        assertTrue(xmlContent.contains(":ExplicitText>"));
-        assertTrue(xmlContent.contains(":Organization>"));
-        assertTrue(xmlContent.contains(":NoticeNumbers>"));
-        assertTrue(xmlContent.contains(":int>"));
-        assertTrue(xmlContent.contains(":SPDocSpecification>"));
-        assertTrue(xmlContent.contains(HTTP_SPURI_TEST));
     }
 
     @Override
@@ -116,18 +85,15 @@ public class XAdESLevelBWithSPQualifiersTest extends AbstractXAdESTestSignature 
         XmlSPDocSpecification spDocSpecification = signature.getPolicyDocSpecification();
         assertNotNull(spDocSpecification);
         assertEquals(SIGNATURE_POLICY_ID, spDocSpecification.getId());
-        assertEquals(SIGNATURE_POLICY_DESCRIPTION, spDocSpecification.getDescription());
-        assertEquals(SIGNATURE_POLICY_DOCUMENTATION, spDocSpecification.getDocumentationReferences().get(0));
-        assertEquals(Utils.EMPTY_STRING, spDocSpecification.getDocumentationReferences().get(1));
     }
 
     @Override
-    protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
+    protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
         return service;
     }
 
     @Override
-    protected XAdESSignatureParameters getSignatureParameters() {
+    protected CAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
     }
 

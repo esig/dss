@@ -422,7 +422,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					policyUrlString = policyUrl.getTextContent();
 					policyUrlString = Utils.trim(policyUrlString);
 				}
-				xadesSignaturePolicy.setUrl(policyUrlString);
+				xadesSignaturePolicy.setUri(policyUrlString);
 
 				final Element spUserNotice = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPUserNotice());
 				if (spUserNotice != null) {
@@ -480,7 +480,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						noticeNumbersList.add(Integer.valueOf(child.getTextContent()));
 					}
 				}
-				userNotice.setNoticeNumbers(DSSUtils.toIntArray(noticeNumbersList));
+				userNotice.setNoticeNumbers(noticeNumbersList.stream().mapToInt(i -> i).toArray());
 			}
 			final Element explicitText = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeExplicitText());
 			if (explicitText != null) {
@@ -562,7 +562,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				Element spDocSpecificationElement = DomUtils.getElement(
 						signaturePolicyStoreElement, xadesPaths.getCurrentSPDocSpecification());
 				if (spDocSpecificationElement != null) {
-					spDocSpec = buildSpDocSpecification(signaturePolicyStoreElement);
+					spDocSpec = buildSpDocSpecification(spDocSpecificationElement);
 				}
 				
 				sps.setSpDocSpecification(spDocSpec);

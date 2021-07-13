@@ -28,6 +28,7 @@ import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CAdESWithSPUserNoticeTest extends AbstractCAdESTestValidation {
 
@@ -50,7 +51,8 @@ public class CAdESWithSPUserNoticeTest extends AbstractCAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertEquals("1.2.3.4.5.1", signature.getPolicyId());
         assertEquals("../../Data/TARGET-SIGPOL-ETSI1.der", signature.getPolicyUrl());
-        assertEquals("../../Data/TARGET-SIGPOL-ETSI1.der", signature.getPolicyUserNotice());
+        assertNotNull(signature.getPolicyUserNotice());
+        assertEquals("../../Data/TARGET-SIGPOL-ETSI1.der", signature.getPolicyUserNotice().getExplicitText());
     }
 
 }
