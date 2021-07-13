@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSPDocSpecification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
@@ -38,6 +39,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlUserNotice;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
@@ -868,19 +870,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	/**
-	 * Returns the policy notice
-	 *
-	 * @return {@link String}
-	 */
-	public String getPolicyNotice() {
-		XmlPolicy policy = signature.getPolicy();
-		if (policy != null) {
-			return policy.getNotice();
-		}
-		return "";
-	}
-
-	/**
 	 * Returns the signature policy url
 	 *
 	 * @return {@link String}
@@ -894,16 +883,29 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	/**
+	 * Returns the policy UserNotice
+	 *
+	 * @return {@link XmlUserNotice}
+	 */
+	public XmlUserNotice getPolicyUserNotice() {
+		XmlPolicy policy = signature.getPolicy();
+		if (policy != null) {
+			return policy.getUserNotice();
+		}
+		return null;
+	}
+
+	/**
 	 * Returns the signature policy document specification
 	 *
-	 * @return {@link String}
+	 * @return {@link XmlSPDocSpecification}
 	 */
-	public String getPolicyDocSpecification() {
+	public XmlSPDocSpecification getPolicyDocSpecification() {
 		XmlPolicy policy = signature.getPolicy();
 		if (policy != null) {
 			return policy.getDocSpecification();
 		}
-		return "";
+		return null;
 	}
 
 	/**

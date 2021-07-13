@@ -23,9 +23,11 @@ package eu.europa.esig.dss.model;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
- * Represents a "SpDocSpecification" element of a "SignaturePolicyStore"
+ * Represents a "SpDocSpecification" element
  *
  */
 public class SpDocSpecification implements Serializable {
@@ -95,7 +97,7 @@ public class SpDocSpecification implements Serializable {
 	 * 
 	 * @param documentationReferences an array of {@link String}s
 	 */
-	public void setDocumentationReferences(String[] documentationReferences) {
+	public void setDocumentationReferences(String... documentationReferences) {
 		this.documentationReferences = documentationReferences;
 	}
 
@@ -115,6 +117,38 @@ public class SpDocSpecification implements Serializable {
 	 */
 	public void setQualifier(ObjectIdentifierQualifier qualifier) {
 		this.qualifier = qualifier;
+	}
+
+
+
+	@Override
+	public int hashCode() {
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (description != null ? description.hashCode() : 0);
+		result = 31 * result + Arrays.hashCode(documentationReferences);
+		result = 31 * result + (qualifier != null ? qualifier.hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof SpDocSpecification)) return false;
+
+		SpDocSpecification that = (SpDocSpecification) o;
+
+		if (!Objects.equals(id, that.id)) return false;
+		if (!Objects.equals(description, that.description)) return false;
+		// Probably incorrect - comparing Object[] arrays with Arrays.equals
+		if (!Arrays.equals(documentationReferences, that.documentationReferences)) return false;
+		return qualifier == that.qualifier;
+	}
+
+	@Override
+	public String toString() {
+		return "SpDocSpecification {id='" + id + "', description='" + description +
+				"', documentationReferences=" + Arrays.toString(documentationReferences) +
+				", qualifier=" + qualifier + "}";
 	}
 
 }

@@ -23,6 +23,8 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.UserNotice;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -64,20 +66,20 @@ public class SignaturePolicy implements Serializable {
 	 * Signature Policy URI qualifier
 	 * A URL where a copy of the signature policy MAY be obtained;
 	 */
-	private String url;
+	private String uri;
 
 	/**
 	 * Signature Policy User Notice qualifier
 	 * User notice that should be displayed when the signature is verified.
 	 */
-	private String notice;
+	private UserNotice userNotice;
 
 	/**
 	 * Signature Policy Document Specification qualifier
 	 * An identifier of the technical specification that defines the syntax used for producing
 	 * the signature policy document.
 	 */
-	private String docSpecification;
+	private SpDocSpecification docSpecification;
 
 	/**
 	 * The default constructor for SignaturePolicy. It represents the implied policy.
@@ -226,21 +228,21 @@ public class SignaturePolicy implements Serializable {
 	}
 
 	/**
-	 * Returns the signature policy url (if found)
+	 * Returns the signature policy URI (if found)
 	 *
-	 * @return the url of the signature policy (or null if not available information)
+	 * @return the URI of the signature policy (or null if not available information)
 	 */
-	public String getUrl() {
-		return url;
+	public String getUri() {
+		return uri;
 	}
 
 	/**
-	 * Sets the signature policy url
+	 * Sets the signature policy URI
 	 *
-	 * @param url signature policy url
+	 * @param uri signature policy URI
 	 */
-	public void setUrl(final String url) {
-		this.url = url;
+	public void setUri(final String uri) {
+		this.uri = uri;
 	}
 
 	/**
@@ -248,34 +250,34 @@ public class SignaturePolicy implements Serializable {
 	 *
 	 * @return {@link String}
 	 */
-	public String getNotice() {
-		return notice;
+	public UserNotice getUserNotice() {
+		return userNotice;
 	}
 
 	/**
 	 * Sets user notice that should be displayed when the signature is verified
 	 *
-	 * @param notice {@link String} user notice
+	 * @param userNotice {@link UserNotice} user notice
 	 */
-	public void setNotice(final String notice) {
-		this.notice = notice;
+	public void setUserNotice(final UserNotice userNotice) {
+		this.userNotice = userNotice;
 	}
 
 	/**
 	 * Gets the Document Specification Qualifier when present
 	 *
-	 * @return {@link String}
+	 * @return {@link SpDocSpecification}
 	 */
-	public String getDocSpecification() {
+	public SpDocSpecification getDocSpecification() {
 		return docSpecification;
 	}
 
 	/**
 	 * Sets the Document Specification qualifier
 	 *
-	 * @param docSpecification {@link String}
+	 * @param docSpecification {@link SpDocSpecification}
 	 */
-	public void setDocSpecification(String docSpecification) {
+	public void setDocSpecification(SpDocSpecification docSpecification) {
 		this.docSpecification = docSpecification;
 	}
 

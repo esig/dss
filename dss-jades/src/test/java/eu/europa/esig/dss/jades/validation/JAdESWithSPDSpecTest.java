@@ -28,6 +28,7 @@ import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JAdESWithSPDSpecTest extends AbstractJAdESTestValidation {
 
@@ -50,7 +51,8 @@ public class JAdESWithSPDSpecTest extends AbstractJAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertEquals("1.2.3.4.5.6", signature.getPolicyId());
         assertEquals("Test description", signature.getPolicyDescription());
-        assertEquals("1.2.3.4.5.6", signature.getPolicyDocSpecification());
+        assertNotNull(signature.getPolicyDocSpecification());
+        assertEquals("1.2.3.4.5.6", signature.getPolicyDocSpecification().getId());
     }
 
 }

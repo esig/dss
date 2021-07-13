@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -65,6 +66,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -81,7 +83,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -1240,39 +1241,30 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method creates a user-friendly representation of SPUserNotice signature policy qualifier
+	 * This method verifies the validity of thw provided {@code UserNotice} object
 	 *
-	 * @param organization {@link String}
-	 * @param noticeNumbers a list of {@link Number}s
-	 * @param explicitText {@link String}
-	 * @param <N> {@link Number}
-	 * @return {@link String}
+	 * @param userNotice {@link UserNotice} to check
+	 * @throws IllegalArgumentException in case of an invalid configuration
 	 */
-	public static <N extends Number> String getSPUserNoticeString(String organization, List<N> noticeNumbers, String explicitText) {
-		StringBuilder spUserNoticeStringBuilder = new StringBuilder();
-		if (Utils.isStringNotEmpty(organization)) {
-			spUserNoticeStringBuilder.append(organization);
+	public static void assertSPUserNoticeConfigurationValid(final UserNotice userNotice) throws IllegalArgumentException {
+		boolean organizationEmpty = Utils.isStringEmpty(userNotice.getOrganization());
+		boolean noticeNumbersEmpty = userNotice.getNoticeNumbers() == null || userNotice.getNoticeNumbers().length == 0;
+		if (organizationEmpty != noticeNumbersEmpty) {
+			throw new IllegalArgumentException("Both Organization name and NoticeNumbers shall be defined " +
+					"within the UserNotice configuration!");
 		}
-		if (Utils.isCollectionNotEmpty(noticeNumbers)) {
-			if (spUserNoticeStringBuilder.length() != 0) {
-				spUserNoticeStringBuilder.append("; ");
-			}
-			Iterator<N> iterator = noticeNumbers.iterator();
-			while (iterator.hasNext()) {
-				N number = iterator.next();
-				spUserNoticeStringBuilder.append(number);
-				if (iterator.hasNext()) {
-					spUserNoticeStringBuilder.append(", ");
-				}
-			}
+	}
+	/**
+	 * Transforms the given array of integers to a list of {@code BigInteger}s
+	 *
+	 * @return a list of {@link BigInteger}s
+	 */
+	public static List<BigInteger> toBigIntegerList(int[] integers) {
+		List<BigInteger> bi = new ArrayList<>();
+		for (int i : integers) {
+			bi.add(BigInteger.valueOf(i));
 		}
-		if (Utils.isStringNotEmpty(explicitText)) {
-			if (spUserNoticeStringBuilder.length() != 0) {
-				spUserNoticeStringBuilder.append("; ");
-			}
-			spUserNoticeStringBuilder.append(explicitText);
-		}
-		return spUserNoticeStringBuilder.toString();
+		return bi;
 	}
 
 }

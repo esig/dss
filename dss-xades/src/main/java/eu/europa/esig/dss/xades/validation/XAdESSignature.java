@@ -40,6 +40,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
@@ -421,17 +422,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					policyUrlString = policyUrl.getTextContent();
 					policyUrlString = Utils.trim(policyUrlString);
 				}
-				xadesSignaturePolicy.setUrl(policyUrlString);
+				xadesSignaturePolicy.setUri(policyUrlString);
 
 				final Element spUserNotice = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPUserNotice());
 				if (spUserNotice != null) {
-					xadesSignaturePolicy.setNotice(buildSPUserNoticeString(spUserNotice));
+					xadesSignaturePolicy.setUserNotice(buildSPUserNotice(spUserNotice));
 				}
 
-				final Element spDocSpecification = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPDocSpecificationIdentifier());
+				final Element spDocSpecification = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicySPDocSpecification());
 				if (spDocSpecification != null) {
-					String spDocSpecificationString = spDocSpecification.getTextContent();
-					xadesSignaturePolicy.setDocSpecification(DSSUtils.getObjectIdentifier(spDocSpecificationString));
+					xadesSignaturePolicy.setDocSpecification(buildSpDocSpecification(spDocSpecification));
 				}
 
 				final Element policyDescription = DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDescription());
@@ -462,19 +462,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return xadesSignaturePolicy;
 	}
 
-	private String buildSPUserNoticeString(Element spUserNoticeElement) {
+	private UserNotice buildSPUserNotice(Element spUserNoticeElement) {
 		try {
-			String organizationString = null;
-			List<Integer> noticeNumbersList = null;
-			String explicitTextString = null;
+			final UserNotice userNotice = new UserNotice();
 
 			final Element organization = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeNoticeRefOrganization());
 			if (organization != null) {
-				organizationString = organization.getTextContent();
+				userNotice.setOrganization(organization.getTextContent());
 			}
 			final Element noticeNumbers = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeNoticeRefNoticeNumbers());
 			if (noticeNumbers != null && noticeNumbers.hasChildNodes()) {
-				noticeNumbersList = new ArrayList<>();
+				final List<Integer> noticeNumbersList = new ArrayList<>();
 				NodeList childNodes = noticeNumbers.getChildNodes();
 				for (int ii = 0; ii < childNodes.getLength(); ii++) {
 					Node child = childNodes.item(ii);
@@ -482,13 +480,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						noticeNumbersList.add(Integer.valueOf(child.getTextContent()));
 					}
 				}
+				userNotice.setNoticeNumbers(noticeNumbersList.stream().mapToInt(i -> i).toArray());
 			}
 			final Element explicitText = DomUtils.getElement(spUserNoticeElement, xadesPaths.getCurrentSPUserNoticeExplicitText());
 			if (explicitText != null) {
-				explicitTextString = explicitText.getTextContent();
+				userNotice.setExplicitText(explicitText.getTextContent());
 			}
 
-			return DSSUtils.getSPUserNoticeString(organizationString, noticeNumbersList, explicitTextString);
+			return userNotice;
 
 		} catch (Exception e) {
 			LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
@@ -552,38 +551,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			NodeList nodeList = DomUtils.getNodeList(signatureElement, signaturePolicyStorePath);
 			if (nodeList.getLength() > 0) {
 				SignaturePolicyStore sps = new SignaturePolicyStore();
-				SpDocSpecification spDocSpec = new SpDocSpecification();
 				
 				Element signaturePolicyStoreElement = (Element) nodeList.item(0);
 				String id = signaturePolicyStoreElement.getAttribute(XMLDSigAttribute.ID.getAttributeName());
 				if (Utils.isStringNotEmpty(id)) {
 					sps.setId(id);
 				}
-								
-				Element identifierElement = DomUtils.getElement(signaturePolicyStoreElement, xadesPaths.getCurrentSPDocSpecificationIdentifier());
-				if (identifierElement != null) {
-					String spDocSpecId = identifierElement.getTextContent();
-					spDocSpec.setId(DSSUtils.getObjectIdentifier(spDocSpecId));
-					
-					String qualifierString = identifierElement.getAttribute(XAdES132Attribute.QUALIFIER.getAttributeName());
-					if (Utils.isStringNotBlank(qualifierString)) {
-						spDocSpec.setQualifier(ObjectIdentifierQualifier.fromValue(qualifierString));
-					}
-				}
 
-				String description = DomUtils.getValue(signaturePolicyStoreElement, xadesPaths.getCurrentSPDocSpecificationDescription());
-				spDocSpec.setDescription(description);
-				
-				NodeList documentReferenceList = DomUtils.getNodeList(signaturePolicyStoreElement,
-						xadesPaths.getCurrentSPDocSpecificationDocumentReferenceElements());
-				String[] documentationReferences = null;
-				if (documentReferenceList != null && documentReferenceList.getLength() > 0) {
-					documentationReferences = new String[documentReferenceList.getLength()];
-					for (int i = 0; i < documentReferenceList.getLength(); i++) {
-						documentationReferences[i] = documentReferenceList.item(i).getTextContent();
-					}
+				SpDocSpecification spDocSpec = null;
+				Element spDocSpecificationElement = DomUtils.getElement(
+						signaturePolicyStoreElement, xadesPaths.getCurrentSPDocSpecification());
+				if (spDocSpecificationElement != null) {
+					spDocSpec = buildSpDocSpecification(spDocSpecificationElement);
 				}
-				spDocSpec.setDocumentationReferences(documentationReferences);
 				
 				sps.setSpDocSpecification(spDocSpec);
 				
@@ -596,6 +576,37 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return null;
+	}
+
+	private SpDocSpecification buildSpDocSpecification(Element spDocSpecificationElement) {
+		SpDocSpecification spDocSpec = new SpDocSpecification();
+
+		Element identifierElement = DomUtils.getElement(spDocSpecificationElement, xadesPaths.getCurrentIdentifier());
+		if (identifierElement != null) {
+			String spDocSpecId = identifierElement.getTextContent();
+			spDocSpec.setId(DSSUtils.getObjectIdentifier(spDocSpecId));
+
+			String qualifierString = identifierElement.getAttribute(XAdES132Attribute.QUALIFIER.getAttributeName());
+			if (Utils.isStringNotBlank(qualifierString)) {
+				spDocSpec.setQualifier(ObjectIdentifierQualifier.fromValue(qualifierString));
+			}
+		}
+
+		String description = DomUtils.getValue(spDocSpecificationElement, xadesPaths.getCurrentDescription());
+		spDocSpec.setDescription(description);
+
+		NodeList documentReferenceList = DomUtils.getNodeList(spDocSpecificationElement,
+				xadesPaths.getCurrentDocumentationReferenceElements());
+		String[] documentationReferences = null;
+		if (documentReferenceList != null && documentReferenceList.getLength() > 0) {
+			documentationReferences = new String[documentReferenceList.getLength()];
+			for (int i = 0; i < documentReferenceList.getLength(); i++) {
+				documentationReferences[i] = documentReferenceList.item(i).getTextContent();
+			}
+		}
+		spDocSpec.setDocumentationReferences(documentationReferences);
+
+		return spDocSpec;
 	}
 
 	@Override

@@ -46,6 +46,7 @@ import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERBitString;
+import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -1687,6 +1688,27 @@ public final class DSSASN1Utils {
 			basicOCSPResps.add(new BasicOCSPResp(basicOCSPRespons));
 		}
 		return basicOCSPResps.toArray(new BasicOCSPResp[0]);
+	}
+
+	/**
+	 * Builds SPDocSpecification attribute from the given {@code oidOrUri}
+	 *
+	 * SPDocSpecification ::= CHOICE {
+	 *  oid OBJECT IDENTIFIER,
+	 *  uri IA5String
+	 * }
+	 *
+	 * @param oidOrUri {@link String} represents OID or URI
+	 * @return {@link ASN1Primitive}
+	 */
+	public static ASN1Primitive buildSPDocSpecificationId(String oidOrUri) {
+		ASN1Primitive spDocSpecification;
+		if (DSSUtils.isOidCode(oidOrUri)) {
+			spDocSpecification = new ASN1ObjectIdentifier(oidOrUri);
+		} else {
+			spDocSpecification = new DERIA5String(oidOrUri);
+		}
+		return spDocSpecification;
 	}
 
 }

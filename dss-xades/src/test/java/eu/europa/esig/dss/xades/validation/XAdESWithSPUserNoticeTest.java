@@ -28,6 +28,7 @@ import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class XAdESWithSPUserNoticeTest extends AbstractXAdESTestValidation {
 
@@ -50,7 +51,8 @@ public class XAdESWithSPUserNoticeTest extends AbstractXAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertEquals("1.2.3.4.5", signature.getPolicyId());
         assertEquals("http://signinghubbeta.cloudapp.net:7777/adss/policy/sample_sig_policy_document.txt", signature.getPolicyUrl());
-        assertEquals("This is a test policy", signature.getPolicyNotice());
+        assertNotNull(signature.getPolicyUserNotice());
+        assertEquals("This is a test policy", signature.getPolicyUserNotice().getExplicitText());
     }
 
 }

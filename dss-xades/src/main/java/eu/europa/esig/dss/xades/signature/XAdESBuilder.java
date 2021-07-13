@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -43,8 +44,10 @@ import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
@@ -367,6 +370,51 @@ public abstract class XAdESBuilder {
 			return new XAdES111Paths();
 		} else {
 			throw new IllegalArgumentException("Unsupported URI : " + xadesURI);
+		}
+	}
+
+	/**
+	 * Creates SpDocSpecification DOM object:
+	 *
+	 * <pre>
+	 * {@code
+	 * 	<xades141:SPDocSpecification xmlns:xades141="http://uri.etsi.org/01903/v1.4.1#">
+	 * 	    <xades:Identifier>1.2.3.4.5</xades:Identifier>
+	 * 	</xades141:SPDocSpecification>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentElement {@link Element} element to create the new object inside
+	 * @param spDocSpecification {@link SpDocSpecification}
+	 */
+	protected void incorporateSPDocSpecification(Element parentElement, SpDocSpecification spDocSpecification) {
+		final Element spDocSpecElement = DomUtils.addElement(documentDom, parentElement,
+				getXades141Namespace(), XAdES141Element.SP_DOC_SPECIFICATION);
+		DomUtils.addNamespaceAttribute(spDocSpecElement, getXades141Namespace());
+
+		final Element identifierElement = DomUtils.addElement(documentDom, spDocSpecElement,
+				getXadesNamespace(), getCurrentXAdESElements().getElementIdentifier());
+		if (spDocSpecification.getQualifier() != null) {
+			identifierElement.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(),
+					spDocSpecification.getQualifier().getValue());
+		}
+		DomUtils.setTextNode(documentDom, identifierElement, spDocSpecification.getId());
+
+		if (Utils.isStringNotEmpty(spDocSpecification.getDescription())) {
+			final Element descriptionElement = DomUtils.addElement(documentDom, spDocSpecElement, getXadesNamespace(),
+					getCurrentXAdESElements().getElementDescription());
+			DomUtils.setTextNode(documentDom, descriptionElement, spDocSpecification.getDescription());
+		}
+
+		if (Utils.isArrayNotEmpty(spDocSpecification.getDocumentationReferences())) {
+			final Element documentReferencesElement = DomUtils.addElement(documentDom, spDocSpecElement, getXadesNamespace(),
+					getCurrentXAdESElements().getElementDocumentationReferences());
+
+			for (String docRef : spDocSpecification.getDocumentationReferences()) {
+				final Element documentReferenceElement = DomUtils.addElement(documentDom, documentReferencesElement, getXadesNamespace(),
+						getCurrentXAdESElements().getElementDocumentationReference());
+				DomUtils.setTextNode(documentDom, documentReferenceElement, docRef);
+			}
 		}
 	}
 	

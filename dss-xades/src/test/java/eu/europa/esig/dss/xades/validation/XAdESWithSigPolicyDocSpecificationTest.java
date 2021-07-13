@@ -28,6 +28,7 @@ import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class XAdESWithSigPolicyDocSpecificationTest extends AbstractXAdESTestValidation {
 
@@ -52,7 +53,8 @@ public class XAdESWithSigPolicyDocSpecificationTest extends AbstractXAdESTestVal
         assertEquals("Test description", signature.getPolicyDescription());
         assertEquals(2, signature.getPolicyDocumentationReferences().size());
         assertEquals("http://spuri.test", signature.getPolicyUrl());
-        assertEquals("1.2.3.4.5", signature.getPolicyDocSpecification());
+        assertNotNull(signature.getPolicyDocSpecification());
+        assertEquals("1.2.3.4.5", signature.getPolicyDocSpecification().getId());
     }
 
 }
