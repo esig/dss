@@ -1365,8 +1365,6 @@ Since v5.8, DSS includes a possibility of creation and validation of JSON Advanc
 
 JSON format for AdES Signatures (cf. [R05]) represents an extension of JSON Web Signatures (JWS) as specified in https://tools.ietf.org/html/rfc7515[IETF RFC 7515].
 
-WARNING: The implementation is based on a draft of the standard ETSI TS 119 182-1. Some modifications can occur in future releases.
-
 A typical example of a JAdES signature creation is represented below:
 
 [source,java,indent=0]
