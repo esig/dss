@@ -24,9 +24,13 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * This class allows to provide a CRL source based on the list of external CRL(s).
@@ -78,6 +82,15 @@ public class ExternalResourcesCRLSource extends OfflineCRLSource {
 		} catch (Exception e) {
 			throw new DSSException("Unable to parse the stream (CRL is expected)", e);
 		}
+	}
+
+	@Override
+	public List<RevocationToken<CRL>> getRevocationTokens(CertificateToken certificate, CertificateToken issuer) {
+		List<RevocationToken<CRL>> revocationTokens = super.getRevocationTokens(certificate, issuer);
+		for (RevocationToken<CRL> revocationToken : revocationTokens) {
+			revocationToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
+		}
+		return revocationTokens;
 	}
 
 }
