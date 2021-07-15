@@ -20,22 +20,21 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Result;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SVGGenerationTest {
 
@@ -52,6 +51,8 @@ public class SVGGenerationTest {
 		File file = new File("target/diag-data.svg");
 		assertTrue(file.exists());
 		assertTrue(file.length() > 0);
+		assertTrue(file.delete(), "Cannot delete the SVG file");
+		assertFalse(file.exists());
 	}
 
 }

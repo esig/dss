@@ -437,7 +437,11 @@ public abstract class AbstractUtilsTest {
 		FileOutputStream sampleFos = new FileOutputStream("target/sample3.txt");
 		Utils.closeQuietly(sampleFos);
 		Utils.closeQuietly(sampleFos); // must handle closed
-		assertTrue(new File("target/sample3.txt").exists());
+
+		File sample = new File("target/sample3.txt");
+		assertTrue(sample.exists());
+		assertTrue(sample.delete(), "Cannot delete the file");
+		assertFalse(sample.exists());
 	}
 
 	@Test
@@ -483,6 +487,8 @@ public abstract class AbstractUtilsTest {
 		Utils.cleanDirectory(dir);
 		assertTrue(dir.exists());
 		assertEquals(0, dir.list().length);
+		assertTrue(dir.delete(), "Cannot delete the directory");
+		assertFalse(dir.exists());
 	}
 
 	@Test

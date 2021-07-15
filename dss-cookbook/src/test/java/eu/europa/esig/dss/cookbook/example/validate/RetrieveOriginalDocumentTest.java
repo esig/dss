@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -75,6 +76,8 @@ public class RetrieveOriginalDocumentTest {
 		
 		assertNotNull(original);
 		assertTrue(path.toFile().exists());
+		assertTrue(path.toFile().delete(), "Cannot delete the file");
+		assertFalse(path.toFile().exists());
 
 	}
 
