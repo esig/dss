@@ -33,6 +33,9 @@ import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPositionBuilder;
+import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
 
 /**
  * The abstract implementation of an IText (OpenPDF) signature drawer
@@ -47,14 +50,6 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 
 	/** The visual signature appearance */
 	protected PdfSignatureAppearance appearance;
-
-	/** Defines the target signature field to create the visual signature within */
-	private AcroFields.Item signatureFieldItem;
-
-	@Override
-	public void setSignatureField(AcroFields.Item signatureFieldItem) {
-		this.signatureFieldItem = signatureFieldItem;
-	}
 
 	@Override
 	public void init(SignatureImageParameters parameters, PdfReader reader, PdfSignatureAppearance appearance) {
@@ -110,14 +105,27 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	}
 
 	private AnnotationBox getSignatureFieldAnnotationBox() {
-		if (signatureFieldItem != null) {
-			PdfDictionary widget = signatureFieldItem.getWidget(0);
+		AcroFields.Item signatureField = getExistingSignatureFieldToFill();
+		if (signatureField != null) {
+			PdfDictionary widget = signatureField.getWidget(0);
 			if (widget != null) {
 				PdfArray rectArray = widget.getAsArray(PdfName.RECT);
 				if (rectArray != null && rectArray.size() == 4) {
 					return new AnnotationBox(rectArray.getAsNumber(0).floatValue(), rectArray.getAsNumber(1).floatValue(),
 							rectArray.getAsNumber(2).floatValue(), rectArray.getAsNumber(3).floatValue());
 				}
+			}
+		}
+		return null;
+	}
+
+	private AcroFields.Item getExistingSignatureFieldToFill() {
+		String signatureFieldId = parameters.getFieldParameters().getFieldId();
+		if (Utils.isStringNotEmpty(signatureFieldId)) {
+			AcroFields acroFields = reader.getAcroFields();
+			List<String> signatureNames = acroFields.getFieldNamesWithBlankSignatures();
+			if (signatureNames.contains(signatureFieldId)) {
+				return acroFields.getFieldItem(signatureFieldId);
 			}
 		}
 		return null;
