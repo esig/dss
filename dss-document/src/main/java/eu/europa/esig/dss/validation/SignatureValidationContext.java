@@ -1056,13 +1056,13 @@ public class SignatureValidationContext implements ValidationContext {
 
 		// useful for short-life certificates (i.e. ocsp responder)
 		CertificateToken revocationIssuer = certificateTokenChain.iterator().next();
-		if (!hasPOEInTheValidityRange(revocationIssuer)) {
-			LOG.info("There is no POE for the revocation issuer '{}' for revocation '{}' within its validity range! " +
+		if (!isTrusted(revocationIssuer) && !hasPOEInTheValidityRange(revocationIssuer)) {
+			LOG.debug("There is no POE for the revocation issuer '{}' for revocation '{}' within its validity range! " +
 					"Certificate: {}", revocationIssuer.getDSSIdAsString(), revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
 			return false;
 		}
 
-		LOG.info("The revocation '{}' is consistent. Certificate: {}", revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
+		LOG.debug("The revocation '{}' is consistent. Certificate: {}", revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
 		return true;
 	}
 
