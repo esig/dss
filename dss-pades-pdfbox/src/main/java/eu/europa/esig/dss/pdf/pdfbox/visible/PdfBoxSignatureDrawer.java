@@ -24,7 +24,6 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
-import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 
 import java.io.IOException;
 
@@ -42,12 +41,5 @@ public interface PdfBoxSignatureDrawer extends SignatureDrawer {
 	 * @throws IOException if an exception occurs
 	 */
 	void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException;
-
-	/**
-	 * This method sets the target existing signature field to add a signature into
-	 *
-	 * @param pdSignatureField {@link PDSignatureField}
-	 */
-	void setSignatureField(final PDSignatureField pdSignatureField);
 
 }
