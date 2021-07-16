@@ -319,7 +319,12 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	private boolean hasPKCS7SubFilter() {
-		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
+		if (pdfSignatureRevision != null) {
+			String subFilter = pdfSignatureRevision.getPdfSigDictInfo().getSubFilter();
+			return PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(subFilter) ||
+					PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(subFilter);
+		}
+		return false;
 	}
 
 	/**
