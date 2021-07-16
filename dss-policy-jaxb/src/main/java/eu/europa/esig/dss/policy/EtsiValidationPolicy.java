@@ -732,19 +732,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateSemanticsIdentifierForNaturalPersonConstraint(Context context, SubContext subContext) {
+	public MultiValuesConstraint getCertificateSemanticsIdentifierConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getSemanticsIdentifierForNaturalPerson();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getCertificateSemanticsIdentifierForLegalPersonConstraint(Context context, SubContext subContext) {
-		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getSemanticsIdentifierForLegalPerson();
+			return certificateConstraints.getSemanticsIdentifier();
 		}
 		return null;
 	}

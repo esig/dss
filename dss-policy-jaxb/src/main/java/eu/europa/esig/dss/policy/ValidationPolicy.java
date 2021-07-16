@@ -572,24 +572,14 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificateIssuedToLegalPersonConstraint(Context context, SubContext subContext);
 
 	/**
-	 * Indicates the certificate's QCStatement contains a semantics identifier for natural person.
+	 * Indicates the certificate's QCStatement contains an acceptable semantics identifier.
 	 *
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if QcSemanticsIdentifierForNaturalPerson for a given context element is present
+	 * @return {@code LevelConstraint} if SemanticsIdentifier for a given context element is present
 	 *         in the constraint file, null otherwise.
 	 */
-	LevelConstraint getCertificateSemanticsIdentifierForNaturalPersonConstraint(Context context, SubContext subContext);
-
-	/**
-	 * Indicates the certificate's QCStatement contains a semantics identifier for legal person.
-	 *
-	 * @param context {@link Context}
-	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if QcSemanticsIdentifierForLegalPerson for a given context element is present
-	 *         in the constraint file, null otherwise.
-	 */
-	LevelConstraint getCertificateSemanticsIdentifierForLegalPersonConstraint(Context context, SubContext subContext);
+	MultiValuesConstraint getCertificateSemanticsIdentifierConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Indicates the acceptable QC PS2D roles for the certificate used for a signature.

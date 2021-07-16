@@ -5309,9 +5309,10 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
 		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
 				.getBasicSignatureConstraints().getSigningCertificate();
-		LevelConstraint constraint = new LevelConstraint();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.getId().add("0.4.0.194121.1.2");
 		constraint.setLevel(Level.FAIL);
-		certificateConstraints.setSemanticsIdentifierForLegalPerson(constraint);
+		certificateConstraints.setSemanticsIdentifier(constraint);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(xmlDiagnosticData);
@@ -5323,7 +5324,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
-				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCISILP_ANS)));
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCSCSIA_ANS)));
 
 		xmlOID.setDescription("Semantics identifier for legal person");
 		xmlOID.setValue("0.4.0.194121.1.2");
@@ -5351,9 +5352,11 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
 		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
 				.getBasicSignatureConstraints().getSigningCertificate();
-		LevelConstraint constraint = new LevelConstraint();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.getId().add("0.4.0.194121.1.1");
+		constraint.getId().add("0.4.0.194121.1.3");
 		constraint.setLevel(Level.FAIL);
-		certificateConstraints.setSemanticsIdentifierForNaturalPerson(constraint);
+		certificateConstraints.setSemanticsIdentifier(constraint);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(xmlDiagnosticData);
@@ -5365,10 +5368,97 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
-				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCISINP_ANS)));
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCSCSIA_ANS)));
 
 		xmlOID.setDescription("Semantics identifier for natural person");
 		xmlOID.setValue("0.4.0.194121.1.1");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void semanticsIdentifierForEIDASLegalPersonTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlOID xmlOID = new XmlOID();
+		xmlOID.setDescription("Semantics identifier for eIDAS natural person");
+		xmlOID.setValue("0.4.0.194121.1.3");
+		xmlQcStatements.setSemanticsIdentifier(xmlOID);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.getId().add("0.4.0.194121.1.2");
+		constraint.getId().add("0.4.0.194121.1.4");
+		constraint.setLevel(Level.FAIL);
+		certificateConstraints.setSemanticsIdentifier(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCSCSIA_ANS)));
+
+		xmlOID.setDescription("Semantics identifier for eIDAS legal person");
+		xmlOID.setValue("0.4.0.194121.1.4");
+
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void semanticsIdentifierForEIDASNaturalPersonTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
+				.getSigningCertificate().getCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		XmlOID xmlOID = new XmlOID();
+		xmlOID.setDescription("Semantics identifier for eIDAS legal person");
+		xmlOID.setValue("0.4.0.194121.1.4");
+		xmlQcStatements.setSemanticsIdentifier(xmlOID);
+		signingCertificate.setQcStatements(xmlQcStatements);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
+				.getBasicSignatureConstraints().getSigningCertificate();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.getId().add("0.4.0.194121.1.3");
+		constraint.setLevel(Level.FAIL);
+		certificateConstraints.setSemanticsIdentifier(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CMDCSCSIA_ANS)));
+
+		xmlOID.setDescription("Semantics identifier for eIDAS natural person");
+		xmlOID.setValue("0.4.0.194121.1.3");
 
 		reports = executor.execute();
 		simpleReport = reports.getSimpleReport();
