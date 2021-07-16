@@ -30,7 +30,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +80,7 @@ public class PerformanceManySignaturesTest {
     }
 
     @Test
-    void retrievePreviousPDFRevisionFirst() throws IOException, NoSuchAlgorithmException {
+    void retrievePreviousPDFRevisionFirst() {
         String expectedSHA256 = "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
         InMemoryDocument inMemoryDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
         ByteRange byteRange = new ByteRange(new int[]{0, 4883, 23829, 70196});
@@ -90,7 +89,7 @@ public class PerformanceManySignaturesTest {
     }
 
     @Test
-    void retrievePreviousPDFRevisionLast() throws IOException, NoSuchAlgorithmException {
+    void retrievePreviousPDFRevisionLast() {
         String expectedSHA256 = "kRdqr7p5115vX+2McvMb/f0X/Jah0qPzKFrYrlY4v8E=";
         InMemoryDocument inMemoryDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
         ByteRange byteRange = new ByteRange(new int[]{0, 4533638, 4552584, 17463});

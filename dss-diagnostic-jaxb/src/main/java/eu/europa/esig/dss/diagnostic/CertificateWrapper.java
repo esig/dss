@@ -643,6 +643,16 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	/**
+	 * Returns if the certificate contains id-etsi-ext-valassured-ST-certs extension,
+	 * as defined in ETSI EN 319 412-1 "5.2 Certificate Extensions regarding Validity Assured Certificate"
+	 *
+	 * @return TRUE if the certificate is a validity assured short-term certificate, FALSE otherwise
+	 */
+	public boolean isValAssuredShortTermCertificate() {
+		return certificate.isValAssuredShortTermCertificate() != null && certificate.isValAssuredShortTermCertificate();
+	}
+
+	/**
 	 * Returns subject alternative names
 	 *
 	 * @return a list of {@link String}s

@@ -373,8 +373,8 @@
 						</xs:complexType>
 					</xs:element>
 
-
 					<xs:element name="IdPkixOcspNoCheck" type="xs:boolean" minOccurs="0" />
+					<xs:element name="ValAssuredShortTermCertificate" type="xs:boolean" minOccurs="0" />
 
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
