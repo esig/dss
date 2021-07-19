@@ -32,7 +32,8 @@
 			.not-revoked {
 				stroke: #28a745;
 			}
-			.svg-certificate-revocation, #svg-validation-time-group { 
+			.svg-certificate-revocation, .svg-certificate-revocation-representation,
+			.svg-validation-time, .svg-validation-time-representation {
 				overflow: visible;
 			}
 			
@@ -350,6 +351,7 @@
     				constructor(svgElement) {
     					this.svgElement = svgElement;
     					this.id = svgElement.getAttribute("id");
+						this.representations = new Array();
 					}
 					
 					posX(newX) {
@@ -363,9 +365,20 @@
 					}
 					hide() {
 						this.svgElement.style.display="none";
+						for (var elementIdx = 0; elementIdx < this.representations.length; elementIdx++) {
+							var representation = this.representations[elementIdx];
+							representation.parentNode.removeChild(representation);
+						}
+						this.representations = new Array();
 					}
 					show() {
-						this.svgElement.style.display="";
+						var representation = this.svgElement.cloneNode(true);
+						representation.removeAttribute("id");
+						representation.removeAttribute("class");
+						representation.classList.add(this.svgElement.getAttribute("class") + "-representation");
+						representation.style.display="";
+						this.svgElement.parentNode.insertBefore(representation, this.svgElement.nextSibling);
+						this.representations.push(representation);
 					}
 					
     			}
@@ -621,7 +634,7 @@
 	  		
 	  	</defs>
 	  
-	  	<svg id="svg-validation-time-group">
+	  	<svg id="svg-validation-time-group" class="svg-validation-time">
 	  		<title>Validation time : <xsl:value-of select="diag:ValidationDate" /></title>
 			<text id="svg-validation-time" style="display:none"><xsl:value-of select="diag:ValidationDate" /></text>
 			<text>?</text>
