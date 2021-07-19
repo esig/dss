@@ -49,6 +49,16 @@
 					}
     				return ids;	
     			}
+
+    			document.getTimestampIds = function() {
+    				var ids = new Array();
+    				var timestamps = getTimestamps();
+    				for (var elementIdx = 0; elementIdx < timestamps.length; elementIdx++) {
+						var timestamp = timestamps[elementIdx];
+						ids.push(timestamp.id);
+					}
+    				return ids;
+    			}
     			
     			document.getCertificateIds = function() {
     				var ids = new Array();
@@ -82,11 +92,19 @@
 	    				this.maxDate = null;
 	    				this.ratio = null;
     				}
+
+    				isSignatureOrTimestampPresent() {
+    					return (this.signatures !== undefined && this.signatures.length > 0) ||
+    							(this.timestamps !== undefined && this.timestamps.length > 0);
+    				}
     				
-    				displayFirstSignature() {
-    					if (this.signatures !=null) {
+    				displayFirstSignatureOrTimestamp() {
+    					if (this.signatures !== undefined && this.signatures.length > 0) {
     						var currentSignature = this.signatures[0];
     						this.displaySignature(currentSignature);
+    					} else if (this.timestamps !== undefined && this.timestamps.length > 0) {
+    						var currentTimestamp = this.timestamps[0];
+    						this.displayTimestamp(currentTimestamp);
     					}
     				}
     				
@@ -101,6 +119,18 @@
 						this.computeRatio(this.collectDatesFromSignature(signature));
 						this.drawSig(signature);						
     				}
+
+    				displayTimestampById(timestampId) {
+   						var currentElement  = this.getTimestampById(timestampId);
+						this.displayTimestamp(currentElement);
+    				}
+
+    				displayTimestamp(timestamp) {
+						this.hideAll();
+
+						this.computeRatio(this.collectDatesFromTimestamp(timestamp));
+						this.drawTst(timestamp);
+    				}
     				
     				displayCertificateChainById(certId) {
    						var currentCert  = this.getCertificateById(certId);
@@ -109,6 +139,7 @@
     				
     				displayCertificateChain(currentCert) {
 						this.hideAll();
+
 						var chain = this.getCompleteCertificateChain(currentCert);
 						this.computeRatio(this.collectDatesFromChain(chain));
 						this.drawChain(chain);						
@@ -163,13 +194,35 @@
 					}
 					
 					drawTimestamp(timestamp, y) {
-						if (timestamp !=null) {
+						if (timestamp != null) {
 							timestamp.posX(this.getPosX(timestamp.productionTime));
 							timestamp.posY(y);
 							timestamp.show();
 							
 							var cert = this.getCertificateById(timestamp.signingCertificate);
 							this.drawCert(cert, y);
+						}
+					}
+
+					drawTst(tst) {
+						this.drawValidationTime();
+						this.drawTimeline();
+
+						var y = this.height - 70;
+
+						tst.posX(this.getPosX(tst.productionTime));
+						tst.posY(y);
+						tst.show();
+
+						var cert = this.getCertificateById(tst.signingCertificate);
+						this.drawCert(cert, y);
+
+	    				for (var elementIdx = 0; elementIdx < tst.timestamps.length; elementIdx++) {
+							var timestampId = tst.timestamps[elementIdx];
+							var timestamp = this.getTimestampById(timestampId);
+
+							y = y -15;
+							this.drawTimestamp(timestamp, y);
 						}
 					}
 					
@@ -251,6 +304,23 @@
 							dates = dates.concat(this.collectDatesForTimestamp(timestamp));
 						}
 						
+						return dates;
+					}
+
+    				collectDatesFromTimestamp(tst) {
+    					var dates = new Array();
+						dates.push(this.validationTime.time);
+						dates.push(tst.productionTime);
+
+						var cert = this.getCertificateById(tst.signingCertificate);
+						dates = dates.concat(this.collectDatesForCert(cert));
+
+	    				for (var elementIdx = 0; elementIdx < tst.timestamps.length; elementIdx++) {
+							var timestampId = tst.timestamps[elementIdx];
+							var timestamp = this.getTimestampById(timestampId);
+							dates = dates.concat(this.collectDatesForTimestamp(timestamp));
+						}
+
 						return dates;
 					}
 					
@@ -397,10 +467,11 @@
     			 }
     			 
     			 class Timestamp extends GraphicItem {
-    			 	constructor(svgElement, productionTime, signingCertificate) {
+    			 	constructor(svgElement, productionTime, signingCertificate, timestamps) {
     			 		super(svgElement);
     			 		this.productionTime = productionTime;
     			 		this.signingCertificate = signingCertificate;
+    			 		this.timestamps = timestamps;
     			 	}
     			 }
     			
@@ -523,14 +594,31 @@
 						var currentElement = elements[elementIdx];
 						var productionTime = getUniqueDate(currentElement, "svg-production-time");
 						var signingCertificateId = getUniqueValue(currentElement, "svg-signing-cert");
-						var timestamp = new Timestamp(currentElement, productionTime, signingCertificateId);
+						var timestampIds = getCoveringTimestampIds(currentElement);
+						var timestamp = new Timestamp(currentElement, productionTime, signingCertificateId, timestampIds);
 						timestamps.push(timestamp);
 					}
 					return timestamps;
     			}
+
+    			function getCoveringTimestampIds(currentElement) {
+					var timestampIds = new Array();
+					var tokenId = currentElement.getAttribute("id");
+					var elements = document.getElementsByClassName("svg-timestamp");
+					for (var elementIdx = 0; elementIdx < elements.length; elementIdx++) {
+						var currentTimestamp = elements[elementIdx];
+						var timestampRefIds = getValues(currentTimestamp, "svg-timestamped-ref");
+						for (var refIdx = 0; refIdx < timestampRefIds.length; refIdx++) {
+							if (tokenId === timestampRefIds[refIdx]) {
+								timestampIds.push(currentTimestamp.id);
+							}
+						}
+					}
+					return timestampIds;
+    			}
     			
     			function hideGraphicItems(items) {
-   					if (items !=null) {
+   					if (items != null) {
     					for (var elementIdx = 0; elementIdx < items.length; elementIdx++) {
 							var currentElement = items[elementIdx];
 							currentElement.hide();
@@ -560,8 +648,8 @@
     				var result = new Array();
 					var items = currentElement.getElementsByClassName(cssClass);
 					for (var elementIdx = 0; elementIdx < items.length; elementIdx++) {
-						var currentElement = items[elementIdx];
-						result.push(currentElement.textContent);
+						var element = items[elementIdx];
+						result.push(element.textContent);
 					}
 					return result;
     			}
@@ -680,7 +768,15 @@
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
+
+			<xsl:apply-templates select="diag:TimestampedObjects/diag:TimestampedObject" />
 		</use>
+	</xsl:template>
+
+	<xsl:template match="diag:TimestampedObject">
+		<text class="svg-timestamped-ref" style="display:none">
+			<xsl:value-of select="@Token" />
+		</text>
 	</xsl:template>
 	
 	<xsl:template match="diag:Certificate">
