@@ -549,6 +549,32 @@ public final class DSSASN1Utils {
 	}
 
 	/**
+	 * This extension indicates that the validity of the certificate is assured because
+	 * the certificate is a "short-term certificate". That is, the time as indicated in
+	 * the certificate attribute from notBefore through notAfter, inclusive, is shorter
+	 * than the maximum time to process a revocation request as specified by
+	 * the certificate practice statement or certificate policy.
+	 *
+	 * @param token
+	 *            the certificate to be checked
+	 * @return true if the certificate has the id-etsi-ext-valassured-ST-certs extension
+	 */
+	public static boolean hasValAssuredShortTermCertsExtension(CertificateToken token) {
+		final byte[] extensionValue = token.getCertificate().getExtensionValue(OID.id_etsi_ext_valassured_ST_certs.getId());
+		if (extensionValue != null) {
+			try {
+				final ASN1Primitive derObject = toASN1Primitive(extensionValue);
+				if (derObject instanceof DEROctetString) {
+					return isDEROctetStringNull((DEROctetString) derObject);
+				}
+			} catch (Exception e) {
+				LOG.debug("Exception when processing 'id-etsi-ext-valassured-ST-certs'", e);
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Retrieves a list of {@code CertificatePolicy}s from a certificate token
 	 *
 	 * @param certToken {@link CertificateToken}

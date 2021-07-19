@@ -143,4 +143,12 @@ public class OID {
 	 */
 	public static final ASN1ObjectIdentifier id_etsi_qcs_QcCClegislation = new ASN1ObjectIdentifier("0.4.0.1862.1.7");
 
+	/**
+	 * EN 319 412-1 "5.2.2 Validity Assured - Short Term"
+	 *
+	 * id-etsi-ext OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) etsi(0) id-cert-profile(194121) 2 }
+	 * id-etsi-ext-valassured-ST-certs OBJECT IDENTIFIER ::= { id-etsi-ext 1 }
+	 */
+	public static final ASN1ObjectIdentifier id_etsi_ext_valassured_ST_certs = new ASN1ObjectIdentifier("0.4.0.194121.2.1");
+
 }

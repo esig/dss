@@ -303,6 +303,49 @@ public class CertificateToken extends Token {
 		return getKeyUsageBits().contains(keyUsageBit);
 	}
 
+	/**
+	 * This method returns a list {@code KeyUsageBit} representing the key usages of the certificate.
+	 *
+	 * @return {@code List} of {@code KeyUsageBit}s of different certificate's key usages
+	 */
+	public List<KeyUsageBit> getKeyUsageBits() {
+		if (keyUsageBits == null) {
+			keyUsageBits = new ArrayList<>();
+			final boolean[] keyUsageArray = x509Certificate.getKeyUsage();
+			if (keyUsageArray != null) {
+				for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
+					if (keyUsageArray[keyUsageBit.getIndex()]) {
+						keyUsageBits.add(keyUsageBit);
+					}
+				}
+			}
+		}
+		return keyUsageBits;
+	}
+
+	/**
+	 * This method checks if the BasicConstraint is present
+	 * 
+	 * @return true if the certificate is defined as a CA
+	 */
+	public boolean isCA() {
+		return x509Certificate.getBasicConstraints() != -1;
+	}
+
+	/**
+	 * The signature value of the certificate
+	 * 
+	 * @return the signature value
+	 */
+	public byte[] getSignature() {
+		return x509Certificate.getSignature();
+	}
+
+	@Override
+	protected TokenIdentifier buildTokenIdentifier() {
+		return new CertificateTokenIdentifier(this);
+	}
+
 	@Override
 	public String toString(String indentStr) {
 		final StringBuilder out = new StringBuilder();
@@ -325,49 +368,6 @@ public class CertificateToken extends Token {
 		indentStr = indentStr.substring(1);
 		out.append(indentStr).append(']');
 		return out.toString();
-	}
-
-	/**
-	 * This method returns a list {@code KeyUsageBit} representing the key usages of the certificate.
-	 *
-	 * @return {@code List} of {@code KeyUsageBit}s of different certificate's key usages
-	 */
-	public List<KeyUsageBit> getKeyUsageBits() {
-		if (keyUsageBits == null) {
-			keyUsageBits = new ArrayList<>();
-			final boolean[] keyUsageArray = x509Certificate.getKeyUsage();
-			if (keyUsageArray != null) {
-				for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
-					if (keyUsageArray[keyUsageBit.getIndex()]) {
-						keyUsageBits.add(keyUsageBit);
-					}
-				}
-			}
-		}
-		return keyUsageBits;
-	}
-
-	/**
-	 * This method checks if the BasicConstaint is present
-	 * 
-	 * @return true if the certificate is defined as a CA
-	 */
-	public boolean isCA() {
-		return x509Certificate.getBasicConstraints() != -1;
-	}
-
-	/**
-	 * The signature value of the certificate
-	 * 
-	 * @return the signature value
-	 */
-	public byte[] getSignature() {
-		return x509Certificate.getSignature();
-	}
-
-	@Override
-	protected TokenIdentifier buildTokenIdentifier() {
-		return new CertificateTokenIdentifier(this);
 	}
 
 }

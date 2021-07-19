@@ -659,14 +659,9 @@
 					<xsd:documentation>Checks if the certificate is issued for a legal person (no TL overrule)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="SemanticsIdentifierForNaturalPerson" type="LevelConstraint" minOccurs="0">
+			<xsd:element name="SemanticsIdentifier" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's QCStatement contains a semantics identifier for natural person (no TL overrule).</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="SemanticsIdentifierForLegalPerson" type="LevelConstraint" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's QCStatement contains a semantics identifier for legal person (no TL overrule).</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's SemanticsIdentifier has a value from the acceptable values list.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="PSD2QcTypeRolesOfPSP" type="MultiValuesConstraint" minOccurs="0">

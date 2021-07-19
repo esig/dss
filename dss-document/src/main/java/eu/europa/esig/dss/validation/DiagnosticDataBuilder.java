@@ -1402,6 +1402,11 @@ public abstract class DiagnosticDataBuilder {
 
 		xmlCert.setIdPkixOcspNoCheck(DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken));
 
+		boolean valAssuredShortTermCert = DSSASN1Utils.hasValAssuredShortTermCertsExtension(certToken);
+		if (valAssuredShortTermCert) {
+			xmlCert.setValAssuredShortTermCertificate(valAssuredShortTermCert);
+		}
+
 		QcStatements qcStatements = QcStatementUtils.getQcStatements(certToken);
 		if (qcStatements != null) {
 			xmlCert.setQcStatements(getXmlQcStatements(qcStatements));

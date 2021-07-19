@@ -68,8 +68,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcEuP
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcSSCDCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSemanticsIdentifierForLegalPersonCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSemanticsIdentifierForNaturalPersonCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSemanticsIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateValidityRangeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
@@ -194,13 +193,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateQcCCLegislation(currentCertificate, subContext));
 
-		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
-
 		item = item.setNextItem(certificateIssuedToNaturalPerson(currentCertificate, subContext));
 
-		item = item.setNextItem(certificateSemanticsIdentifierForLegalPerson(currentCertificate, subContext));
+		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
 
-		item = item.setNextItem(certificateSemanticsIdentifierForNaturalPerson(currentCertificate, subContext));
+		item = item.setNextItem(certificateSemanticsIdentifier(currentCertificate, subContext));
 
 		item = item.setNextItem(certificatePS2DQcRolesOfPSP(currentCertificate, subContext));
 
@@ -478,24 +475,19 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new CertificateQcCCLegislationCheck(i18nProvider, result, certificate, constraint);
 	}
 
-	private ChainItem<XmlSubXCV> certificateIssuedToLegalPerson(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getCertificateIssuedToLegalPersonConstraint(context, subContext);
-		return new CertificateIssuedToLegalPersonCheck(i18nProvider, result, certificate, constraint);
-	}
-
 	private ChainItem<XmlSubXCV> certificateIssuedToNaturalPerson(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateIssuedToNaturalPersonConstraint(context, subContext);
 		return new CertificateIssuedToNaturalPersonCheck(i18nProvider, result, certificate, constraint);
 	}
 
-	private ChainItem<XmlSubXCV> certificateSemanticsIdentifierForLegalPerson(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getCertificateSemanticsIdentifierForLegalPersonConstraint(context, subContext);
-		return new CertificateSemanticsIdentifierForLegalPersonCheck(i18nProvider, result, certificate, constraint);
+	private ChainItem<XmlSubXCV> certificateIssuedToLegalPerson(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateIssuedToLegalPersonConstraint(context, subContext);
+		return new CertificateIssuedToLegalPersonCheck(i18nProvider, result, certificate, constraint);
 	}
 
-	private ChainItem<XmlSubXCV> certificateSemanticsIdentifierForNaturalPerson(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getCertificateSemanticsIdentifierForNaturalPersonConstraint(context, subContext);
-		return new CertificateSemanticsIdentifierForNaturalPersonCheck(i18nProvider, result, certificate, constraint);
+	private ChainItem<XmlSubXCV> certificateSemanticsIdentifier(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateSemanticsIdentifierConstraint(context, subContext);
+		return new CertificateSemanticsIdentifierCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificatePS2DQcRolesOfPSP(CertificateWrapper certificate, SubContext subContext) {
