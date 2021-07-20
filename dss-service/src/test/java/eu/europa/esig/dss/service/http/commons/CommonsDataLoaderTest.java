@@ -138,7 +138,7 @@ public class CommonsDataLoaderTest {
 		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
 
 		dataLoader.setTimeoutConnection(60000);
-		dataLoader.setTimeoutSocket(1);
+		dataLoader.setTimeoutResponse(1);
 		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
 		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
 	}
