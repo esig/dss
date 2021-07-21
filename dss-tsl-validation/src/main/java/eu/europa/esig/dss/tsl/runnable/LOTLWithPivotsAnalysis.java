@@ -20,6 +20,18 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -32,26 +44,12 @@ import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Runs the job for a LOTL with pivots analysis
  */
-public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable {
+public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements Runnable {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LOTLWithPivotsAnalysis.class);
 
 	/** Loads a relevant cache access object */
 	private final CacheAccessFactory cacheAccessFactory;
@@ -62,8 +60,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 	/** The file loader */
 	private final DSSFileLoader dssFileLoader;
 
-	/** The tasks counter */
-	private final CountDownLatch latch;
+
 
 	/**
 	 * Default constructor
@@ -75,26 +72,24 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 	 */
 	public LOTLWithPivotsAnalysis(final CacheAccessFactory cacheAccessFactory, final LOTLSource source,
 			final DSSFileLoader dssFileLoader, final CountDownLatch latch) {
-		super(cacheAccessFactory.getCacheAccess(source.getCacheKey()), dssFileLoader);
+		super(cacheAccessFactory.getCacheAccess(source.getCacheKey()), dssFileLoader, latch);
 		this.cacheAccessFactory = cacheAccessFactory;
 		this.lotlSource = source;
 		this.dssFileLoader = dssFileLoader;
-		this.latch = latch;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void run() {
-
+	protected void doAnalyze() {
 		DSSDocument document = download(lotlSource.getUrl());
 
 		if (document != null) {
-
 			lotlParsing(document, lotlSource);
 
 			validation(document, getCurrentCertificateSource());
 		}
-
-		latch.countDown();
 	}
 
 	private CertificateSource getCurrentCertificateSource() {
@@ -106,13 +101,13 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 		if (currentLOTLParsing != null) {
 			List<String> pivotURLs = currentLOTLParsing.getPivotUrls();
 			if (Utils.isCollectionEmpty(pivotURLs)) {
-				LOG.trace("No pivot LOTL found");
+				logger.trace("No pivot LOTL found");
 				currentCertificateSource = initialCertificateSource;
 			} else {
 				currentCertificateSource = getCurrentCertificateSourceFromPivots(initialCertificateSource, pivotURLs);
 			}
 		} else {
-			LOG.warn("Unable to retrieve the parsing result for the current LOTL (allowed signing certificates set from the configuration)");
+			logger.warn("Unable to retrieve the parsing result for the current LOTL (allowed signing certificates set from the configuration)");
 			currentCertificateSource = initialCertificateSource;
 		}
 
@@ -149,13 +144,13 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 					if (validationResult.isValid()) {
 						currentCertificateSource = pivotProcessingResult.getCertificateSource();
 					} else {
-						LOG.warn("Pivot LOTL '{}' is not valid ({}/{})", pivotUrl, validationResult.getIndication(), validationResult.getSubIndication());
+						logger.warn("Pivot LOTL '{}' is not valid ({}/{})", pivotUrl, validationResult.getIndication(), validationResult.getSubIndication());
 					}
 				} else {
-					LOG.warn("No validation result found for Pivot LOTL '{}'", pivotUrl);
+					logger.warn("No validation result found for Pivot LOTL '{}'", pivotUrl);
 				}
 			} else {
-				LOG.warn("No processing result for Pivot LOTL '{}'", pivotUrl);
+				logger.warn("No processing result for Pivot LOTL '{}'", pivotUrl);
 			}
 		}
 
@@ -166,11 +161,11 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (pivotCacheAccess.isValidationRefreshNeeded()) {
 			try {
-				LOG.debug("Validating the Pivot LOTL with cache key '{}'...", pivotCacheAccess.getCacheKey().getKey());
+				logger.debug("Validating the Pivot LOTL with cache key '{}'...", pivotCacheAccess.getCacheKey().getKey());
 				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
 				pivotCacheAccess.update(validationTask.get());
 			} catch (Exception e) {
-				LOG.error("Cannot validate the Pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
+				logger.error("Cannot validate the Pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
 				pivotCacheAccess.validationError(e);
 			}
 		}
@@ -187,7 +182,7 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 			pivotSource.setLotlPredicate(lotlSource.getLotlPredicate());
 			pivotSource.setTlPredicate(lotlSource.getTlPredicate());
 			pivotSource.setPivotSupport(lotlSource.isPivotSupport());
-			futures.put(pivotUrl, executorService.submit(new PivotProcessing(pivotSource, pivotCacheAccess, dssFileLoader)));
+			futures.put(pivotUrl, executorService.submit((Callable<PivotProcessingResult>)new PivotProcessing(pivotSource, pivotCacheAccess, dssFileLoader)));
 		}
 
 		Map<String, PivotProcessingResult> processingResults = new HashMap<>();
@@ -195,10 +190,10 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 			try {
 				processingResults.put(entry.getKey(), entry.getValue().get());
 			} catch (InterruptedException e) {
-				LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
+				logger.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
 				Thread.currentThread().interrupt();
 			} catch (ExecutionException e) {
-				LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
+				logger.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
 			}
 		}
 
@@ -223,12 +218,11 @@ public class LOTLWithPivotsAnalysis extends AbstractAnalysis implements Runnable
 		executorService.shutdownNow();
 		try {
 			if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
-				LOG.warn("More than 10s to terminate the service executor");
+				logger.warn("More than 10s to terminate the service executor");
 			}
 		} catch (InterruptedException e) {
-			LOG.warn("Unable to interrupt the service executor", e);
+			logger.warn("Unable to interrupt the service executor", e);
 			Thread.currentThread().interrupt();
 		}
 	}
-
 }
