@@ -22,45 +22,47 @@ package eu.europa.esig.dss.tsl.runnable;
 
 import java.util.concurrent.CountDownLatch;
 
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
-import eu.europa.esig.dss.tsl.source.LOTLSource;
 
 /**
- * Runs the job for a LOTL analysis
+ * Runnable facade to Processes the LOTL/TL validation job (download - parse - validate)
  */
-public class LOTLAnalysis extends AbstractRunnableAnalysis {
+public abstract class AbstractRunnableAnalysis extends AbstractAnalysis implements Runnable {
 
-	/** The LOTL source */
-	private final LOTLSource source;
+	private static final String LOG_ERROR_PERFORM_ANALYSIS = "Error performing analysis.";
+
+	/** The tasks counter */
+	private final CountDownLatch latch;
 
 	/**
 	 * Default constructor
 	 *
-	 * @param source {@link LOTLSource}
 	 * @param cacheAccess {@link CacheAccessByKey}
 	 * @param dssFileLoader {@link DSSFileLoader}
 	 * @param latch {@link CountDownLatch}
 	 */
-	public LOTLAnalysis(LOTLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
-						CountDownLatch latch) {
-		super(cacheAccess, dssFileLoader, latch);
-		this.source = source;
+	protected AbstractRunnableAnalysis(final CacheAccessByKey cacheAccess, final DSSFileLoader dssFileLoader, CountDownLatch latch) {
+		super(cacheAccess,dssFileLoader);
+		this.latch = latch;
 	}
 
+	/**
+	 * Perform analysis
+	 */
+	protected abstract void doAnalyze();
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doAnalyze() {
-		DSSDocument document = download(source.getUrl());
-
-		if (document != null) {
-			lotlParsing(document, source);
-
-			validation(document, source.getCertificateSource());
+	public void run() {
+		try {
+			this.doAnalyze();
+		} catch(final Throwable exception) {
+			logger.error(LOG_ERROR_PERFORM_ANALYSIS, exception);
+		} finally {
+			latch.countDown();
 		}
 	}
 }
