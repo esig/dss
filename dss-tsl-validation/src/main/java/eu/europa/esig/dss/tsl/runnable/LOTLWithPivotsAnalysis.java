@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -44,6 +32,18 @@ import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Runs the job for a LOTL with pivots analysis
@@ -60,19 +60,18 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 	/** The file loader */
 	private final DSSFileLoader dssFileLoader;
 
-
-
 	/**
 	 * Default constructor
 	 *
+	 * @param source             {@link LOTLSource}
+	 * @param cacheAccess        {@link CacheAccessByKey}
 	 * @param cacheAccessFactory {@link CacheAccessFactory}
-	 * @param source {@link LOTLSource}
-	 * @param dssFileLoader {@link DSSFileLoader}
-	 * @param latch {@link CountDownLatch}
+	 * @param dssFileLoader      {@link DSSFileLoader}
+	 * @param latch              {@link CountDownLatch}
 	 */
-	public LOTLWithPivotsAnalysis(final CacheAccessFactory cacheAccessFactory, final LOTLSource source,
-			final DSSFileLoader dssFileLoader, final CountDownLatch latch) {
-		super(cacheAccessFactory.getCacheAccess(source.getCacheKey()), dssFileLoader, latch);
+	public LOTLWithPivotsAnalysis(final LOTLSource source, final CacheAccessByKey cacheAccess,
+								  final DSSFileLoader dssFileLoader, final CacheAccessFactory cacheAccessFactory, final CountDownLatch latch) {
+		super(cacheAccess, dssFileLoader, latch);
 		this.cacheAccessFactory = cacheAccessFactory;
 		this.lotlSource = source;
 		this.dssFileLoader = dssFileLoader;
