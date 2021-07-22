@@ -327,7 +327,7 @@ public class TLValidationJob {
 		for (LOTLSource lotlSource : lotlSources) {
 			final CacheAccessByKey cacheAccess = cacheAccessFactory.getCacheAccess(lotlSource.getCacheKey());
 			if (lotlSource.isPivotSupport()) {
-				executorService.submit(new LOTLWithPivotsAnalysis(cacheAccessFactory, lotlSource, dssFileLoader, latch));
+				executorService.submit(new LOTLWithPivotsAnalysis(lotlSource, cacheAccess, dssFileLoader, cacheAccessFactory, latch));
 			} else {
 				executorService.submit(new LOTLAnalysis(lotlSource, cacheAccess, dssFileLoader, latch));
 			}
