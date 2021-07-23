@@ -291,7 +291,6 @@ public class CommonsDataLoader implements DataLoader {
 		this.timeoutConnectionRequest = timeoutConnectionRequest;
 	}
 
-
 	/**
 	 * Gets the server response timeout.
 	 *
@@ -1214,6 +1213,7 @@ public class CommonsDataLoader implements DataLoader {
 			return httpClientBuilder;
 		}
 
+		String scheme = proxyProps.getScheme();
 		String proxyHost = proxyProps.getHost();
 		int proxyPort = proxyProps.getPort();
 		String proxyUser = proxyProps.getUser();
@@ -1228,7 +1228,7 @@ public class CommonsDataLoader implements DataLoader {
 		}
 
 		LOG.debug("proxy host/port: {}:{}", proxyHost, proxyPort);
-		final HttpHost proxy = new HttpHost(protocol, proxyHost, proxyPort);
+		final HttpHost proxy = new HttpHost(scheme, proxyHost, proxyPort);
 
 		if (Utils.isCollectionNotEmpty(excludedHosts)) {
 
