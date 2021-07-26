@@ -26,17 +26,16 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
-import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpResponseInterceptor;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ManagedHttpClientConnection;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.HttpCoreContext;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.EntityDetails;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpResponseInterceptor;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.http.protocol.HttpCoreContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,9 +85,8 @@ public class SSLCertificateLoader implements Serializable {
      * 
      * @param urlString {@link String} representing a URL of a webpage with a secure connection (HTTPS)
      * @return a {@link CertificateToken} chain of the secure webpage
-     * @throws DSSException in case if an exception occurs
      */
-    public List<CertificateToken> getCertificates(final String urlString) throws DSSException {
+    public List<CertificateToken> getCertificates(final String urlString) {
     	final String trimmedUrl = Utils.trim(urlString);
     	if (Protocol.isHttpUrl(trimmedUrl)) {
 			Certificate[] httpGetCertificates = httpGetCertificates(trimmedUrl);
@@ -108,7 +106,7 @@ public class SSLCertificateLoader implements Serializable {
 			client = getHttpClient(url);
 
 			final HttpHost targetHost = getCommonsDataLoader().getHttpHost(httpRequest);
-			final HttpContext localContext = getCommonsDataLoader().getHttpContext(targetHost);
+			final HttpContext localContext = getCommonsDataLoader().getHttpContext();
 			httpResponse = client.execute(targetHost, httpRequest, localContext);
 
 			return readCertificates(localContext);
@@ -145,21 +143,22 @@ public class SSLCertificateLoader implements Serializable {
     
     private synchronized CloseableHttpClient getHttpClient(final String url) {
 		HttpClientBuilder httpClientBuilder = getCommonsDataLoader().getHttpClientBuilder(url);
-		httpClientBuilder.addInterceptorLast(getHttpResponseInterceptor());
+		httpClientBuilder.addResponseInterceptorLast(getHttpResponseInterceptor());
 		return httpClientBuilder.build();
 	}
 	
 	private HttpResponseInterceptor getHttpResponseInterceptor() {
 		return new HttpResponseInterceptor() {
+
 			@Override
-			public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
-				ManagedHttpClientConnection routedConnection = (ManagedHttpClientConnection)context.getAttribute(HttpCoreContext.HTTP_CONNECTION);
-	            SSLSession sslSession = routedConnection.getSSLSession();
-	            if (sslSession != null) {
-	                Certificate[] certificates = sslSession.getPeerCertificates();
-	                context.setAttribute(PEER_CERTIFICATES, certificates);
-	            }
+			public void process(HttpResponse httpResponse, EntityDetails entityDetails, HttpContext httpContext) throws IOException {
+				SSLSession sslSession = (SSLSession) httpContext.getAttribute(HttpCoreContext.SSL_SESSION);
+				if (sslSession != null) {
+					Certificate[] certificates = sslSession.getPeerCertificates();
+					httpContext.setAttribute(PEER_CERTIFICATES, certificates);
+				}
 			}
+
 		};
 	}
 
