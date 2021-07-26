@@ -20,15 +20,20 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.concurrent.CountDownLatch;
-
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Runnable facade to Processes the LOTL/TL validation job (download - parse - validate)
+ *
  */
 public abstract class AbstractRunnableAnalysis extends AbstractAnalysis implements Runnable {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractRunnableAnalysis.class);
 
 	private static final String LOG_ERROR_PERFORM_ANALYSIS = "Error performing analysis.";
 
@@ -48,21 +53,19 @@ public abstract class AbstractRunnableAnalysis extends AbstractAnalysis implemen
 	}
 
 	/**
-	 * Perform analysis
+	 * Performs analysis
 	 */
 	protected abstract void doAnalyze();
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void run() {
 		try {
 			this.doAnalyze();
 		} catch(final Throwable exception) {
-			logger.error(LOG_ERROR_PERFORM_ANALYSIS, exception);
+			LOG.error(LOG_ERROR_PERFORM_ANALYSIS, exception);
 		} finally {
 			latch.countDown();
 		}
 	}
+
 }
