@@ -177,4 +177,17 @@ public class CommonsDataLoaderTest {
 		assertTrue(exception.getMessage().contains(URL_TO_LOAD));
 	}
 
+	@Test
+	public void negativeTimeoutTest() {
+		// negative values enforce to use system properties
+		dataLoader.setTimeoutConnection(-1);
+		dataLoader.setTimeoutConnectionRequest(-1);
+		dataLoader.setTimeoutResponse(-1);
+		dataLoader.setTimeoutSocket(-1);
+		dataLoader.setConnectionKeepAlive(-1);
+		dataLoader.setConnectionTimeToLive(-1);
+
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+	}
+
 }

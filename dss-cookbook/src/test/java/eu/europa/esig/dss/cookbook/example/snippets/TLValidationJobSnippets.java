@@ -132,7 +132,7 @@ public class TLValidationJobSnippets {
 	// tag::job-loaders[]
 	public DSSFileLoader offlineLoader() {
 		FileCacheDataLoader offlineFileLoader = new FileCacheDataLoader();
-		offlineFileLoader.setCacheExpirationTime(Long.MAX_VALUE);
+		offlineFileLoader.setCacheExpirationTime(-1); // negative value means cache never expires
 		offlineFileLoader.setDataLoader(new IgnoreDataLoader()); // do not download from Internet
 		offlineFileLoader.setFileCacheDirectory(tlCacheDirectory());
 		return offlineFileLoader;

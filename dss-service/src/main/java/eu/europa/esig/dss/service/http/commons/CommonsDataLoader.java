@@ -107,10 +107,10 @@ public class CommonsDataLoader implements DataLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
 	/** The default connection timeout (1 minute) */
-	private static final int TIMEOUT_CONNECTION = 60000;
+	private static final Timeout TIMEOUT_CONNECTION = toTimeoutMilliseconds(60000);
 
 	/** The default socket timeout (1 minute) */
-	private static final int TIMEOUT_SOCKET = 60000;
+	private static final Timeout TIMEOUT_SOCKET = toTimeoutMilliseconds(60000);
 
 	/** The default value of maximum connections in time (20) */
 	private static final int CONNECTIONS_MAX_TOTAL = 20;
@@ -119,7 +119,7 @@ public class CommonsDataLoader implements DataLoader {
 	private static final int CONNECTIONS_MAX_PER_ROUTE = 2;
 
 	/** The default connection total time to live (TTL) (1 minute) */
-	private static final int CONNECTION_TIME_TO_LIVE = 60000;
+	private static final TimeValue CONNECTION_TIME_TO_LIVE = toTimeValueMilliseconds(60000);
 
 	/** The content-type string */
 	private static final String CONTENT_TYPE = "Content-Type";
@@ -137,19 +137,19 @@ public class CommonsDataLoader implements DataLoader {
 	private ProxyConfig proxyConfig;
 
 	/** The timeout connection */
-	private int timeoutConnection = TIMEOUT_CONNECTION;
+	private Timeout timeoutConnection = TIMEOUT_CONNECTION;
 
 	/** The connection request timeout */
-	private int timeoutConnectionRequest = TIMEOUT_CONNECTION;
+	private Timeout timeoutConnectionRequest = TIMEOUT_CONNECTION;
 
 	/** The server response timeout */
-	private int timeoutResponse = TIMEOUT_CONNECTION;
+	private Timeout timeoutResponse = TIMEOUT_CONNECTION;
 
 	/** The timeout socket */
-	private int timeoutSocket = TIMEOUT_SOCKET;
+	private Timeout timeoutSocket = TIMEOUT_SOCKET;
 
 	/** Connection keep alive timeout */
-	private int connectionKeepAlive = CONNECTION_TIME_TO_LIVE;
+	private TimeValue connectionKeepAlive = CONNECTION_TIME_TO_LIVE;
 
 	/** Maximum connections number in time */
 	private int connectionsMaxTotal = CONNECTIONS_MAX_TOTAL;
@@ -158,7 +158,7 @@ public class CommonsDataLoader implements DataLoader {
 	private int connectionsMaxPerRoute = CONNECTIONS_MAX_PER_ROUTE;
 
 	/** The finite connection total time to live (TTL) */
-	private int connectionTimeToLive = CONNECTION_TIME_TO_LIVE;
+	private TimeValue connectionTimeToLive = CONNECTION_TIME_TO_LIVE;
 
 	/** Defines if the redirection is enabled */
 	private boolean redirectsEnabled = true;
@@ -259,17 +259,19 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return the value (millis)
 	 */
 	public int getTimeoutConnection() {
-		return timeoutConnection;
+		return timeoutConnection.toMillisecondsIntBound();
 	}
 
 	/**
-	 * Sets the connection timeout.
+	 * Sets the connection timeout in milliseconds.
+	 *
+	 * A negative value is interpreted as undefined (use system default).
 	 *
 	 * @param timeoutConnection
 	 *            the value (millis)
 	 */
 	public void setTimeoutConnection(final int timeoutConnection) {
-		this.timeoutConnection = timeoutConnection;
+		this.timeoutConnection = toTimeoutMilliseconds(timeoutConnection);
 	}
 
 	/**
@@ -278,17 +280,19 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return the value (millis)
 	 */
 	public int getTimeoutConnectionRequest() {
-		return timeoutConnectionRequest;
+		return timeoutConnectionRequest.toMillisecondsIntBound();
 	}
 
 	/**
-	 * Sets the connection request timeout.
+	 * Sets the connection request in milliseconds.
+	 *
+	 * A negative value is interpreted as undefined (use system default).
 	 *
 	 * @param timeoutConnectionRequest
 	 *            the value (millis)
 	 */
 	public void setTimeoutConnectionRequest(int timeoutConnectionRequest) {
-		this.timeoutConnectionRequest = timeoutConnectionRequest;
+		this.timeoutConnectionRequest = toTimeoutMilliseconds(timeoutConnectionRequest);
 	}
 
 	/**
@@ -297,17 +301,19 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return the value (millis)
 	 */
 	public int getTimeoutResponse() {
-		return timeoutResponse;
+		return timeoutResponse.toMillisecondsIntBound();
 	}
 
 	/**
-	 * Sets the server response timeout.
+	 * Sets the server response timeout in milliseconds.
+	 *
+	 * A negative value is interpreted as undefined (use system default).
 	 *
 	 * @param timeoutResponse
 	 *            the value (millis)
 	 */
 	public void setTimeoutResponse(int timeoutResponse) {
-		this.timeoutResponse = timeoutResponse;
+		this.timeoutResponse = toTimeoutMilliseconds(timeoutResponse);
 	}
 
 	/**
@@ -316,17 +322,19 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return the value (millis)
 	 */
 	public int getTimeoutSocket() {
-		return timeoutSocket;
+		return timeoutSocket.toMillisecondsIntBound();
 	}
 
 	/**
-	 * Sets the socket timeout.
+	 * Sets the socket timeout in milliseconds.
+	 *
+	 * A negative value is interpreted as undefined (use system default).
 	 *
 	 * @param timeoutSocket
 	 *            the value (millis)
 	 */
 	public void setTimeoutSocket(final int timeoutSocket) {
-		this.timeoutSocket = timeoutSocket;
+		this.timeoutSocket = toTimeoutMilliseconds(timeoutSocket);
 	}
 
 	/**
@@ -335,17 +343,17 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return the value (millis)
 	 */
 	public int getConnectionKeepAlive() {
-		return connectionKeepAlive;
+		return connectionKeepAlive.toMillisecondsIntBound();
 	}
 
 	/**
-	 * Sets the connection keep alive timeout.
+	 * Sets the connection keep alive timeout in milliseconds.
 	 *
 	 * @param connectionKeepAlive
 	 *            the value (millis)
 	 */
 	public void setConnectionKeepAlive(int connectionKeepAlive) {
-		this.connectionKeepAlive = connectionKeepAlive;
+		this.connectionKeepAlive = toTimeValueMilliseconds(connectionKeepAlive);
 	}
 
 	/**
@@ -387,22 +395,22 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Gets the finite connection time to live
+	 * Gets the finite connection time to live.
 	 *
-	 * @return connection time to live
+	 * @return connection time to live (millis)
 	 */
 	public int getConnectionTimeToLive() {
-		return connectionTimeToLive;
+		return connectionTimeToLive.toMillisecondsIntBound();
 	}
 
 	/**
-	 * Sets the finite connection total time to live (TTL)
+	 * Sets the finite connection total time to live (TTL) in milliseconds.
 	 *
 	 * @param connectionTimeToLive
 	 *            the finite connection time to live (millis)
 	 */
 	public void setConnectionTimeToLive(int connectionTimeToLive) {
-		this.connectionTimeToLive = connectionTimeToLive;
+		this.connectionTimeToLive = toTimeValueMilliseconds(connectionTimeToLive);
 	}
 
 	/**
@@ -1017,7 +1025,7 @@ public class CommonsDataLoader implements DataLoader {
 				.setDefaultSocketConfig(getSocketConfig())
 				.setMaxConnTotal(getConnectionsMaxTotal())
 				.setMaxConnPerRoute(getConnectionsMaxPerRoute())
-				.setConnectionTimeToLive(toTimeValueMilliseconds(connectionTimeToLive));
+				.setConnectionTimeToLive(connectionTimeToLive);
 
 		final PoolingHttpClientConnectionManager connectionManager = builder.build();
 
@@ -1029,7 +1037,7 @@ public class CommonsDataLoader implements DataLoader {
 
 	private SocketConfig getSocketConfig() {
 		SocketConfig.Builder socketConfigBuilder = SocketConfig.custom();
-		socketConfigBuilder.setSoTimeout(toTimeoutMilliseconds(timeoutSocket));
+		socketConfigBuilder.setSoTimeout(timeoutSocket);
 		return socketConfigBuilder.build();
 	}
 
@@ -1136,10 +1144,10 @@ public class CommonsDataLoader implements DataLoader {
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
 
 		final RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
-				.setConnectTimeout(toTimeoutMilliseconds(timeoutConnection))
-				.setConnectionRequestTimeout(toTimeoutMilliseconds(timeoutConnectionRequest))
-				.setResponseTimeout(toTimeoutMilliseconds(timeoutResponse))
-				.setConnectionKeepAlive(toTimeoutMilliseconds(connectionKeepAlive))
+				.setConnectTimeout(timeoutConnection)
+				.setConnectionRequestTimeout(timeoutConnectionRequest)
+				.setResponseTimeout(timeoutResponse)
+				.setConnectionKeepAlive(connectionKeepAlive)
 				.setRedirectsEnabled(redirectsEnabled);
 
 		httpClientBuilder = httpClientBuilder.setConnectionManager(getConnectionManager())
@@ -1257,6 +1265,10 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	private static final Timeout toTimeoutMilliseconds(int millis) {
+		if (millis < 0) {
+			LOG.info("A negative timeout has been provided. Use system default.");
+			return null;
+		}
 		return Timeout.ofMilliseconds(millis);
 	}
 
