@@ -69,7 +69,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	private List<String> toIgnored;
 
 	/** The cache expiration time, after with the document shall be downloaded again */
-	private Long cacheExpirationTime;
+	private long cacheExpirationTime = -1;
 
 	/** The dataloader to be used for a remote files access */
 	private DataLoader dataLoader;
@@ -121,10 +121,12 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
 	/**
 	 * Sets the expiration time for the cached files in milliseconds.
-	 * If more time has passed from the cache file's last modified time, then a fresh copy is downloaded and cached,
-	 * otherwise a cached copy is used.
+	 * If the defined time has passed after the cache file's last modification time,
+	 * then a fresh copy is downloaded and cached, otherwise a cached copy is used.
 	 *
-	 * If the expiration time is not set, then the cache does not expire.
+	 * A negative value is interpreted as undefined (cache does not expire).
+	 *
+	 * Default: {@code -1}
 	 *
 	 * @param cacheExpirationTimeInMilliseconds value in milliseconds
 	 */
@@ -357,14 +359,14 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	}
 
 	private boolean isCacheExpired(File file) {
-		if (cacheExpirationTime == null) {
+		if (cacheExpirationTime < 0) {
 			return false;
 		}
 		if (!file.exists()) {
 			return true;
 		}
 		long currentTime = new Date().getTime();
-		if (currentTime - file.lastModified() > cacheExpirationTime) {
+		if (currentTime - file.lastModified() >= cacheExpirationTime) {
 			LOG.debug("Cache is expired");
 			return true;
 		}
