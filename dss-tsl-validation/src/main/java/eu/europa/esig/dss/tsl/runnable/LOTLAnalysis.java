@@ -20,15 +20,16 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.concurrent.CountDownLatch;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Runs the job for a LOTL analysis
+ *
  */
 public class LOTLAnalysis extends AbstractRunnableAnalysis {
 
@@ -49,10 +50,6 @@ public class LOTLAnalysis extends AbstractRunnableAnalysis {
 		this.source = source;
 	}
 
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void doAnalyze() {
 		DSSDocument document = download(source.getUrl());
@@ -63,4 +60,5 @@ public class LOTLAnalysis extends AbstractRunnableAnalysis {
 			validation(document, source.getCertificateSource());
 		}
 	}
+
 }

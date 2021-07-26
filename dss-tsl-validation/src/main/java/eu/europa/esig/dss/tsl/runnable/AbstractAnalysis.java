@@ -35,10 +35,11 @@ import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 
 /**
  * Processes the LOTL/TL validation job (download - parse - validate)
+ *
  */
 public abstract class AbstractAnalysis  {
 
-	protected final Logger logger = LoggerFactory.getLogger(getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractAnalysis.class);
 
 	/** The cache access of the record */
 	private final CacheAccessByKey cacheAccess;
@@ -66,7 +67,7 @@ public abstract class AbstractAnalysis  {
 	protected DSSDocument download(final String url) {
 		DSSDocument document = null;
 		try {
-			logger.debug("Downloading url '{}'...", url);
+			LOG.debug("Downloading url '{}'...", url);
 			XmlDownloadTask downloadTask = new XmlDownloadTask(dssFileLoader, url);
 			XmlDownloadResult downloadResult = downloadTask.get();
 			if (!cacheAccess.isUpToDate(downloadResult)) {
@@ -77,7 +78,7 @@ public abstract class AbstractAnalysis  {
 			document = downloadResult.getDSSDocument();
 		} catch (Exception e) {
 			// wrapped exception
-			logger.error(e.getMessage());
+			LOG.error(e.getMessage());
 			cacheAccess.downloadError(e);
 		}
 		return document;
@@ -102,11 +103,11 @@ public abstract class AbstractAnalysis  {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
-				logger.debug("Parsing LOTL with cache key '{}'...", source.getCacheKey().getKey());
+				LOG.debug("Parsing LOTL with cache key '{}'...", source.getCacheKey().getKey());
 				LOTLParsingTask parsingTask = new LOTLParsingTask(document, source);
 				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
-				logger.error("Cannot parse the LOTL with the cache key '{}' : {}", source.getCacheKey().getKey(), e.getMessage());
+				LOG.error("Cannot parse the LOTL with the cache key '{}' : {}", source.getCacheKey().getKey(), e.getMessage());
 				cacheAccess.parsingError(e);
 			}
 		}
@@ -122,11 +123,11 @@ public abstract class AbstractAnalysis  {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isValidationRefreshNeeded()) {
 			try {
-				logger.debug("Validating the TL/LOTL with cache key '{}'...", cacheAccess.getCacheKey().getKey());
+				LOG.debug("Validating the TL/LOTL with cache key '{}'...", cacheAccess.getCacheKey().getKey());
 				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
 				cacheAccess.update(validationTask.get());
 			} catch (Exception e) {
-				logger.error("Cannot validate the TL/LOTL with the cache key '{}' : {}", cacheAccess.getCacheKey().getKey(), e.getMessage());
+				LOG.error("Cannot validate the TL/LOTL with the cache key '{}' : {}", cacheAccess.getCacheKey().getKey(), e.getMessage());
 				cacheAccess.validationError(e);
 			}
 		}

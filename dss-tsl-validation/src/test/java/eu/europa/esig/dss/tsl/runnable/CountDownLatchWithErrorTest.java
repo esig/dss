@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.tsl.runnable;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -32,9 +30,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CountDownLatchWithErrorTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CountDownLatchWithErrorTest.class);
+public class CountDownLatchWithErrorTest extends AbstractTestRunnable {
 
     @Test
     void test() {
@@ -54,7 +50,7 @@ public class CountDownLatchWithErrorTest {
         executorService.submit(lotlWithPivotsTask);
 
         try {
-            latch.await();
+            latch.await(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -62,18 +58,6 @@ public class CountDownLatchWithErrorTest {
         assertEquals(0, latch.getCount());
 
         shutdownNowAndAwaitTermination(executorService);
-    }
-
-    private void shutdownNowAndAwaitTermination(ExecutorService executorService) {
-        executorService.shutdownNow();
-        try {
-            if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
-                LOG.warn("More than 10s to terminate the service executor");
-            }
-        } catch (InterruptedException e) {
-            LOG.warn("Unable to interrupt the service executor", e);
-            Thread.currentThread().interrupt();
-        }
     }
 
 }

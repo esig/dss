@@ -20,18 +20,23 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
-import java.util.concurrent.CountDownLatch;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Runs the job for a TL analysis
+ *
  */
 public class TLAnalysis extends AbstractRunnableAnalysis {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TLAnalysis.class);
 
 	/** The TL source */
 	private final TLSource source;
@@ -54,9 +59,6 @@ public class TLAnalysis extends AbstractRunnableAnalysis {
 		this.cacheAccess = cacheAccess;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void doAnalyze() {
 		DSSDocument document = download(source.getUrl());
@@ -69,16 +71,17 @@ public class TLAnalysis extends AbstractRunnableAnalysis {
 	}
 
 	private void trustedListParsing(DSSDocument document) {
-		// True if EMPTY / EXPIRED by TL/LOTL
+		// True if EMPTY/EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
-				logger.debug("Parsing TL with cache key '{}'...", source.getCacheKey().getKey());
+				LOG.debug("Parsing TL with cache key '{}'...", source.getCacheKey().getKey());
 				TLParsingTask parsingTask = new TLParsingTask(document, source);
 				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
-				logger.error("Cannot parse the TL with the cache key '{}' : {}", source.getCacheKey().getKey(), e.getMessage());
+				LOG.error("Cannot parse the TL with the cache key '{}' : {}", source.getCacheKey().getKey(), e.getMessage());
 				cacheAccess.parsingError(e);
 			}
 		}
 	}
+
 }

@@ -32,6 +32,8 @@ import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,9 +49,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Runs the job for a LOTL with pivots analysis
+ *
  */
 public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements Runnable {
 
+	private static final Logger LOG = LoggerFactory.getLogger(LOTLWithPivotsAnalysis.class);
 
 	/** Loads a relevant cache access object */
 	private final CacheAccessFactory cacheAccessFactory;
@@ -77,9 +81,6 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 		this.dssFileLoader = dssFileLoader;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void doAnalyze() {
 		DSSDocument document = download(lotlSource.getUrl());
@@ -100,13 +101,13 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 		if (currentLOTLParsing != null) {
 			List<String> pivotURLs = currentLOTLParsing.getPivotUrls();
 			if (Utils.isCollectionEmpty(pivotURLs)) {
-				logger.trace("No pivot LOTL found");
+				LOG.trace("No pivot LOTL found");
 				currentCertificateSource = initialCertificateSource;
 			} else {
 				currentCertificateSource = getCurrentCertificateSourceFromPivots(initialCertificateSource, pivotURLs);
 			}
 		} else {
-			logger.warn("Unable to retrieve the parsing result for the current LOTL (allowed signing certificates set from the configuration)");
+			LOG.warn("Unable to retrieve the parsing result for the current LOTL (allowed signing certificates set from the configuration)");
 			currentCertificateSource = initialCertificateSource;
 		}
 
@@ -143,13 +144,13 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 					if (validationResult.isValid()) {
 						currentCertificateSource = pivotProcessingResult.getCertificateSource();
 					} else {
-						logger.warn("Pivot LOTL '{}' is not valid ({}/{})", pivotUrl, validationResult.getIndication(), validationResult.getSubIndication());
+						LOG.warn("Pivot LOTL '{}' is not valid ({}/{})", pivotUrl, validationResult.getIndication(), validationResult.getSubIndication());
 					}
 				} else {
-					logger.warn("No validation result found for Pivot LOTL '{}'", pivotUrl);
+					LOG.warn("No validation result found for Pivot LOTL '{}'", pivotUrl);
 				}
 			} else {
-				logger.warn("No processing result for Pivot LOTL '{}'", pivotUrl);
+				LOG.warn("No processing result for Pivot LOTL '{}'", pivotUrl);
 			}
 		}
 
@@ -160,11 +161,11 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (pivotCacheAccess.isValidationRefreshNeeded()) {
 			try {
-				logger.debug("Validating the Pivot LOTL with cache key '{}'...", pivotCacheAccess.getCacheKey().getKey());
+				LOG.debug("Validating the Pivot LOTL with cache key '{}'...", pivotCacheAccess.getCacheKey().getKey());
 				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
 				pivotCacheAccess.update(validationTask.get());
 			} catch (Exception e) {
-				logger.error("Cannot validate the Pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
+				LOG.error("Cannot validate the Pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
 				pivotCacheAccess.validationError(e);
 			}
 		}
@@ -189,10 +190,10 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 			try {
 				processingResults.put(entry.getKey(), entry.getValue().get());
 			} catch (InterruptedException e) {
-				logger.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
+				LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
 				Thread.currentThread().interrupt();
 			} catch (ExecutionException e) {
-				logger.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
+				LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
 			}
 		}
 
@@ -217,11 +218,12 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 		executorService.shutdownNow();
 		try {
 			if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
-				logger.warn("More than 10s to terminate the service executor");
+				LOG.warn("More than 10s to terminate the service executor");
 			}
 		} catch (InterruptedException e) {
-			logger.warn("Unable to interrupt the service executor", e);
+			LOG.warn("Unable to interrupt the service executor", e);
 			Thread.currentThread().interrupt();
 		}
 	}
+
 }

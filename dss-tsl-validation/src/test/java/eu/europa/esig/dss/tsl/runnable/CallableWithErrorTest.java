@@ -21,21 +21,16 @@
 package eu.europa.esig.dss.tsl.runnable;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CallableWithErrorTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CallableWithErrorTest.class);
+public class CallableWithErrorTest extends AbstractTestRunnable {
 
     @Test
     void test() {
@@ -49,18 +44,6 @@ public class CallableWithErrorTest {
         assertThrows(ExecutionException.class, () -> future.get());
 
         shutdownNowAndAwaitTermination(executorService);
-    }
-
-    private void shutdownNowAndAwaitTermination(ExecutorService executorService) {
-        executorService.shutdownNow();
-        try {
-            if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
-                LOG.warn("More than 10s to terminate the service executor");
-            }
-        } catch (InterruptedException e) {
-            LOG.warn("Unable to interrupt the service executor", e);
-            Thread.currentThread().interrupt();
-        }
     }
     
 }
