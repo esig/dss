@@ -22,17 +22,17 @@ package eu.europa.esig.dss.pades.validation.timestamp;
 
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.PdfDssDictCertificateSource;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
-import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
@@ -147,11 +147,14 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 
             } else if (pdfRevision instanceof PdfDocDssRevision) {
                 PdfDocDssRevision pdfDocDssRevision = (PdfDocDssRevision) pdfRevision;
-                PdfRevisionTimestampSource pdfRevisionTimestampSource = new PdfRevisionTimestampSource(pdfDocDssRevision);
+                PdfRevisionTimestampSource pdfRevisionTimestampSource = new PdfRevisionTimestampSource(
+                        pdfDocDssRevision, certificateSource, crlSource, ocspSource);
                 addReferences(unsignedPropertiesReferences, pdfRevisionTimestampSource.getIncorporatedReferences());
 
-                PdfDssDict dssDictionary = pdfDocDssRevision.getDssDictionary();
-                certificateSource.add(new PdfDssDictCertificateSource(dssDictionary));
+                certificateSource.add(pdfDocDssRevision.getCertificateSource());
+                crlSource.add(pdfDocDssRevision.getCRLSource());
+                ocspSource.add(pdfDocDssRevision.getOCSPSource());
+
                 dssRevisionReached = true;
 
             } else if (pdfRevision instanceof PdfSignatureRevision) {
@@ -240,10 +243,10 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
             if (isAdbeRevocationInfoArchival(attribute)) {
                 RevocationInfoArchival revValues = PAdESUtils.getRevocationInfoArchival(attribute.getASN1Object());
                 if (revValues != null) {
-                    addReferences(references, createReferencesForCRLBinaries(
-                            buildCRLIdentifiers(revValues.getCrlVals())));
-                    addReferences(references, createReferencesForOCSPBinaries(
-                            buildOCSPIdentifiers(DSSASN1Utils.toBasicOCSPResps(revValues.getOcspVals()))));
+                    List<CRLBinary> crlBinaries = buildCRLIdentifiers(revValues.getCrlVals());
+                    addReferences(references, createReferencesForCRLBinaries(crlBinaries));
+                    List<OCSPResponseBinary> ocspBinaries = buildOCSPIdentifiers(DSSASN1Utils.toBasicOCSPResps(revValues.getOcspVals()));
+                    addReferences(references, createReferencesForOCSPBinaries(ocspBinaries, certificateSource));
                 }
             }
         }

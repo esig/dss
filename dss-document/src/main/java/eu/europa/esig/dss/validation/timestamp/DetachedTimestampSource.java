@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.validation.timestamp;
 
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.ManifestFile;
 
 import java.util.ArrayList;
@@ -31,7 +35,16 @@ import java.util.List;
 public class DetachedTimestampSource extends AbstractTimestampSource {
 
     /** A list of detached timestamps */
-    private List<TimestampToken> detachedTimestamps = new ArrayList<>();
+    private final List<TimestampToken> detachedTimestamps = new ArrayList<>();
+
+    /** Merged certificate source from timestamps */
+    private final ListCertificateSource certificateSource = new ListCertificateSource();
+
+    /** Merged CRL source */
+    private final ListRevocationSource<CRL> crlSource = new ListRevocationSource<>();
+
+    /** Merged OCSP source */
+    private final ListRevocationSource<OCSP> ocspSource = new ListRevocationSource<>();
 
     /**
      * Returns a list of processed detached timestamps
@@ -53,11 +66,16 @@ public class DetachedTimestampSource extends AbstractTimestampSource {
     }
 
     private void processExternalTimestamp(TimestampToken externalTimestamp) {
+        certificateSource.add(externalTimestamp.getCertificateSource());
+        crlSource.add(externalTimestamp.getCRLSource());
+        ocspSource.add(externalTimestamp.getOCSPSource());
+
         ManifestFile manifestFile = externalTimestamp.getManifestFile();
         if (manifestFile != null) {
             for (TimestampToken timestampToken : detachedTimestamps) {
                 if (manifestFile.isDocumentCovered(timestampToken.getFileName())) {
-                    addReferences(externalTimestamp.getTimestampedReferences(), getReferencesFromTimestamp(timestampToken));
+                    addReferences(externalTimestamp.getTimestampedReferences(),
+                            getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource));
                 }
             }
         }

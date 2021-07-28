@@ -39,7 +39,6 @@ import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
@@ -109,25 +108,12 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESTimestampSource.class);
 
 	/**
-	 * CertificateSource containing merged data from signature and timestamps
-	 */
-	protected ListCertificateSource certificateSource;
-
-	/**
 	 * The default constructor
 	 *
 	 * @param signature {@link CAdESSignature} to get timestamps for
 	 */
 	public CAdESTimestampSource(final CAdESSignature signature) {
 		super(signature);
-	}
-
-	@Override
-	protected void initializeSource() {
-		super.initializeSource();
-
-		// initialize combined revocation sources
-		certificateSource = new ListCertificateSource(signature.getCertificateSource());
 	}
 
 	@Override
@@ -259,11 +245,6 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	}
 
 	@Override
-	protected void populateSources(TimestampToken timestampToken) {
-		certificateSource.add(timestampToken.getCertificateSource());
-	}
-
-	@Override
 	protected void incorporateArchiveTimestampReferences(TimestampToken timestampToken,
 														 List<TimestampToken> previousTimestamps) {
 		if (isArchiveTimestampV2(timestampToken)) {
@@ -334,7 +315,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		// get CRL references
 		List<DEROctetString> crlsHashList = DSSASN1Utils.getDEROctetStrings(crlsHashIndex);
 		addReferences(references, createReferencesForCRLBinaries(getSignedDataCRLBinaries(crlsHashList, digestAlgorithm)));
-		addReferences(references, createReferencesForOCSPBinaries(getSignedDataOCSPResponseBinaries(crlsHashList, digestAlgorithm)));
+		addReferences(references, createReferencesForOCSPBinaries(getSignedDataOCSPResponseBinaries(crlsHashList, digestAlgorithm), certificateSource));
 		return references;
 	}
 
@@ -450,7 +431,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		byte[] derEncoded = DSSASN1Utils.getDEREncoded(asn1Object);
 		for (TimestampToken timestampToken : previousTimestamps) {
 			if (Arrays.equals(derEncoded, timestampToken.getEncoded())) {
-				return getReferencesFromTimestamp(timestampToken);
+				return getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource);
 			}
 		}
 		return Collections.emptyList();
@@ -472,7 +453,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		
 		OfflineOCSPSource signatureOCSPSource = signature.getOCSPSource();
 		if (signatureOCSPSource instanceof CMSOCSPSource) {
-			addReferences(references, createReferencesForOCSPBinaries(signatureOCSPSource.getCMSSignedDataRevocationBinaries()));
+			addReferences(references, createReferencesForOCSPBinaries(signatureOCSPSource.getCMSSignedDataRevocationBinaries(), certificateSource));
 		}
 		
 		return references;
@@ -672,7 +653,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		counterSigReferences.add(new TimestampedReference(counterSignature.getId(), TimestampedObjectType.SIGNATURE));
 		
 		List<CertificateRef> signingCertificateRefs = counterSignature.getCertificateSource().getSigningCertificateRefs();
-		addReferences(counterSigReferences, createReferencesForCertificateRefs(signingCertificateRefs));
+		addReferences(counterSigReferences, createReferencesForCertificateRefs(signingCertificateRefs, certificateSource));
 		
 		TimestampSource counterSignatureTimestampSource = counterSignature.getTimestampSource();
 		addReferences(counterSigReferences, counterSignatureTimestampSource.getSignerDataReferences());

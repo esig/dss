@@ -116,8 +116,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     @Override
     protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(Collection<T> signatures, Collection<TimestampToken> detachedTimestamps) {
         ValidationContext validationContext = super.prepareValidationContext(signatures, detachedTimestamps);
-        List<PdfDssDict> dssDictionaries = getDssDictionaries();
-        prepareDssDictionaryValidationContext(validationContext, dssDictionaries);
+        List<PdfDocDssRevision> dssRevisions = getDssRevisions();
+        prepareDssDictionaryValidationContext(validationContext, dssRevisions);
         return validationContext;
     }
 
@@ -130,13 +130,13 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      * Fills the {@code validateContext} with certificate tokens from {@code dssDicts}
      *
      * @param validationContext {@link ValidationContext} to enrich
-     * @param dssDicts a list of {@link PdfDssDict}s
+     * @param dssRevisions a list of {@link PdfDocDssRevision}s
      */
-    protected void prepareDssDictionaryValidationContext(final ValidationContext validationContext, List<PdfDssDict> dssDicts) {
-        for (PdfDssDict dssDict : dssDicts) {
-            validationContext.addDocumentCertificateSource(new PdfDssDictCertificateSource(dssDict));
-            validationContext.addDocumentCRLSource(new PdfDssDictCRLSource(dssDict));
-            validationContext.addDocumentOCSPSource(new PdfDssDictOCSPSource(dssDict));
+    protected void prepareDssDictionaryValidationContext(final ValidationContext validationContext, List<PdfDocDssRevision> dssRevisions) {
+        for (PdfDocDssRevision dssRevision : dssRevisions) {
+            validationContext.addDocumentCertificateSource(dssRevision.getCertificateSource());
+            validationContext.addDocumentCRLSource(dssRevision.getCRLSource());
+            validationContext.addDocumentOCSPSource(dssRevision.getOCSPSource());
         }
     }
 
@@ -171,10 +171,10 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
             if (pdfRevision instanceof PdfDocDssRevision) {
 
-                PdfDssDict dssDictionary = ((PdfDocDssRevision) pdfRevision).getDssDictionary();
-                dssCertificateSource.add(new PdfDssDictCertificateSource(dssDictionary));
-                dssCRLSource.add(new PdfDssDictCRLSource(dssDictionary));
-                dssOCSPSource.add(new PdfDssDictOCSPSource(dssDictionary));
+                PdfDocDssRevision docDssRevision = (PdfDocDssRevision) pdfRevision;
+                dssCertificateSource.add(docDssRevision.getCertificateSource());
+                dssCRLSource.add(docDssRevision.getCRLSource());
+                dssOCSPSource.add(docDssRevision.getOCSPSource());
 
             } else if (pdfRevision instanceof PdfSignatureRevision) {
 
@@ -217,18 +217,34 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
         final List<TimestampToken> timestamps = new ArrayList<>();
         final List<TimestampedReference> coveredReferences = new ArrayList<>();
 
+        final ListCertificateSource certificateSource = new ListCertificateSource();
+        final ListRevocationSource<CRL> crlSource = new ListRevocationSource<>();
+        final ListRevocationSource<OCSP> ocspSource = new ListRevocationSource<>();
+
         for (PdfRevision pdfRevision : Utils.reverseList(getRevisions())) {
             if (pdfRevision instanceof PdfDocTimestampRevision) {
                 PdfDocTimestampRevision pdfDocTimestampRevision = (PdfDocTimestampRevision) pdfRevision;
                 TimestampToken timestampToken = createPdfTimestampToken(pdfDocTimestampRevision);
+                certificateSource.add(timestampToken.getCertificateSource());
+                crlSource.add(timestampToken.getCRLSource());
+                ocspSource.add(timestampToken.getOCSPSource());
+
                 DSSUtils.enrichCollection(timestampToken.getTimestampedReferences(), coveredReferences);
                 timestamps.add(timestampToken);
+
+            } else if (pdfRevision instanceof PdfDocDssRevision) {
+                PdfDocDssRevision pdfDocDssRevision = (PdfDocDssRevision) pdfRevision;
+                certificateSource.add(pdfDocDssRevision.getCertificateSource());
+                crlSource.add(pdfDocDssRevision.getCRLSource());
+                ocspSource.add(pdfDocDssRevision.getOCSPSource());
 
             } else if (pdfRevision instanceof PdfSignatureRevision) {
                 break;
             }
-            // returns refs for timestamps and DSS dictionaries
-            PdfRevisionTimestampSource pdfRevisionTimestampSource = new PdfRevisionTimestampSource(pdfRevision);
+
+            // return refs for timestamps and DSS dictionaries
+            PdfRevisionTimestampSource pdfRevisionTimestampSource = new PdfRevisionTimestampSource(
+                    pdfRevision, certificateSource, crlSource, ocspSource);
             coveredReferences.addAll(pdfRevisionTimestampSource.getIncorporatedReferences());
         }
         return timestamps;
@@ -260,15 +276,27 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      * @return list of {@link PdfDssDict}s
      */
     public List<PdfDssDict> getDssDictionaries() {
-        List<PdfDssDict> docDssRevisions = new ArrayList<>();
+        List<PdfDssDict> dssDicts = new ArrayList<>();
+        for (PdfDocDssRevision dssRevision : getDssRevisions()) {
+            dssDicts.add(dssRevision.getDssDictionary());
+        }
+        return dssDicts;
+    }
+
+    /**
+     * This method returns a list of DSS revisions
+     *
+     * @return a list of {@link PdfDocDssRevision}s
+     */
+    protected List<PdfDocDssRevision> getDssRevisions() {
+        List<PdfDocDssRevision> dssRevisions = new ArrayList<>();
 
         for (PdfRevision pdfRevision : getRevisions()) {
             if (pdfRevision instanceof PdfDocDssRevision) {
-                PdfDocDssRevision dssRevision = (PdfDocDssRevision) pdfRevision;
-                docDssRevisions.add(dssRevision.getDssDictionary());
+                dssRevisions.add((PdfDocDssRevision) pdfRevision);
             }
         }
-        return Utils.reverseList(docDssRevisions);
+        return Utils.reverseList(dssRevisions);
     }
 
     /**
