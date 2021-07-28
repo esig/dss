@@ -23,10 +23,14 @@ package eu.europa.esig.dss.spi.x509.revocation.ocsp;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * This class is used to provide a collection of OCSP tokens by the user.
@@ -82,6 +86,15 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to load OCSP token : %s", e.getMessage()), e);
 		}
+	}
+
+	@Override
+	public List<RevocationToken<OCSP>> getRevocationTokens(CertificateToken certificate, CertificateToken issuer) {
+		List<RevocationToken<OCSP>> revocationTokens = super.getRevocationTokens(certificate, issuer);
+		for (RevocationToken<OCSP> revocationToken : revocationTokens) {
+			revocationToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
+		}
+		return revocationTokens;
 	}
 
 }
