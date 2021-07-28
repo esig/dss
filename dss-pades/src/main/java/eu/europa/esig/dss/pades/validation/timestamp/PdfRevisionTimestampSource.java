@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.timestamp;
 
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.pades.validation.PdfDssDictCRLSource;
 import eu.europa.esig.dss.pades.validation.PdfDssDictCertificateSource;
 import eu.europa.esig.dss.pades.validation.PdfDssDictOCSPSource;
@@ -76,16 +75,12 @@ public class PdfRevisionTimestampSource extends AbstractTimestampSource {
             addReferences(references, createReferencesForCertificates(certificateSource.getCertificates()));
 
             PdfDssDictCRLSource crlSource = new PdfDssDictCRLSource(dssDictionary);
-            addReferences(references, createReferencesForIdentifiers(
-                    crlSource.getDSSDictionaryBinaries(), TimestampedObjectType.REVOCATION));
-            addReferences(references, createReferencesForIdentifiers(
-                    crlSource.getVRIDictionaryBinaries(), TimestampedObjectType.REVOCATION));
+            addReferences(references, createReferencesForCRLBinaries(crlSource.getDSSDictionaryBinaries()));
+            addReferences(references, createReferencesForCRLBinaries(crlSource.getVRIDictionaryBinaries()));
 
             PdfDssDictOCSPSource ocspSource = new PdfDssDictOCSPSource(dssDictionary);
-            addReferences(references, createReferencesForIdentifiers(
-                    ocspSource.getDSSDictionaryBinaries(), TimestampedObjectType.REVOCATION));
-            addReferences(references, createReferencesForIdentifiers(
-                    ocspSource.getVRIDictionaryBinaries(), TimestampedObjectType.REVOCATION));
+            addReferences(references, createReferencesForOCSPBinaries(ocspSource.getDSSDictionaryBinaries()));
+            addReferences(references, createReferencesForOCSPBinaries(ocspSource.getVRIDictionaryBinaries()));
 
             return references;
         }

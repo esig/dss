@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation.timestamp;
 
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -448,8 +449,8 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	@Override
-	protected List<Identifier> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
-		List<Identifier> crlIdentifiers = new ArrayList<>();
+	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
+		List<CRLBinary> crlIdentifiers = new ArrayList<>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
 				xadesPaths.getCurrentRevocationValuesEncapsulatedCRLValue() : xadesPaths.getCurrentEncapsulatedCRLValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
@@ -471,8 +472,8 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	@Override
-	protected List<Identifier> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
-		List<Identifier> ocspIdentifiers = new ArrayList<>();
+	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
+		List<OCSPResponseBinary> ocspIdentifiers = new ArrayList<>();
 		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
 				xadesPaths.getCurrentRevocationValuesEncapsulatedOCSPValue() : xadesPaths.getCurrentEncapsulatedOCSPValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);

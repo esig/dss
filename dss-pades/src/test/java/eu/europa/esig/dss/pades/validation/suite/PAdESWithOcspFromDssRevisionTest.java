@@ -80,7 +80,7 @@ public class PAdESWithOcspFromDssRevisionTest extends AbstractPAdESTestValidatio
 				assertEquals(ArchiveTimestampType.PAdES, timestampWrapper.getArchiveTimestampType());
 				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
 				assertEquals(1, timestampWrapper.getTimestampedTimestamps().size());
-				assertEquals(5, timestampWrapper.getTimestampedCertificates().size());
+				assertEquals(11, timestampWrapper.getTimestampedCertificates().size()); // includes certificates from OCSP tokens
 				assertEquals(6, timestampWrapper.getTimestampedRevocations().size());
 				arcTstFound = true;
 			}

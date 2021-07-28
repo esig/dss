@@ -842,8 +842,19 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			}
 		}
 
-		List<String> revocIds = timestampWrapper.getTimestampedRevocations().stream()
-				.map(RevocationWrapper::getId).collect(Collectors.toList());
+		List<RevocationWrapper> timestampedRevocations = timestampWrapper.getTimestampedRevocations();
+		for (RevocationWrapper revocationWrapper : timestampedRevocations) {
+			List<RelatedCertificateWrapper> relatedCertificates = revocationWrapper.foundCertificates().getRelatedCertificates();
+			for (CertificateWrapper certificateWrapper : relatedCertificates) {
+				assertTrue(certIds.contains(certificateWrapper.getId()), String.format("%s is not covered", certificateWrapper.getId()));
+			}
+			List<OrphanCertificateWrapper> orphanCertificates = revocationWrapper.foundCertificates().getOrphanCertificates();
+			for (OrphanCertificateWrapper orphanCertificateWrapper : orphanCertificates) {
+				assertTrue(orphanCertIds.contains(orphanCertificateWrapper.getId()), String.format("%s is not covered", orphanCertificateWrapper.getId()));
+			}
+		}
+
+		List<String> revocIds = timestampedRevocations.stream().map(RevocationWrapper::getId).collect(Collectors.toList());
 		if (timestampWrapper.getType().coversSignature()) {
 			for (RevocationWrapper revocation : signatureWrapper.foundRevocations()
 					.getRelatedRevocationsByOrigin(RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL)) {
