@@ -3,11 +3,8 @@ package eu.europa.esig.dss.pades.validation.suite;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -21,17 +18,15 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS2513Test extends AbstractPAdESTestValidation {
+public class DSS2513LTTest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new InMemoryDocument(getClass().getResourceAsStream("/validation/belgian_pki_multiple_ocsps.pdf"));
+        return new InMemoryDocument(getClass().getResourceAsStream("/validation/belgian_pki_multiple_ocsps_lt.pdf"));
     }
 
     @Override
@@ -66,7 +61,7 @@ public class DSS2513Test extends AbstractPAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         CertificateWrapper signingCertificate = signature.getSigningCertificate();
         List<CertificateRevocationWrapper> certificateRevocationData = signingCertificate.getCertificateRevocationData();
-        assertEquals(1, certificateRevocationData.size());
+        assertEquals(2, certificateRevocationData.size());
 
         boolean externalOCSPFound = false;
         for (CertificateRevocationWrapper revocationWrapper  :certificateRevocationData) {
@@ -75,25 +70,7 @@ public class DSS2513Test extends AbstractPAdESTestValidation {
                 break;
             }
         }
-        assertFalse(externalOCSPFound);
-    }
-
-    @Override
-    protected void checkTimestamps(DiagnosticData diagnosticData) {
-        super.checkTimestamps(diagnosticData);
-
-        List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-        for (TimestampWrapper timestampWrapper : timestampList) {
-            if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestampWrapper.getType())) {
-                List<String> timestampedCertificateIds = timestampWrapper.getTimestampedCertificates()
-                        .stream().map(c -> c.getId()).collect(Collectors.toList());
-                for (RevocationWrapper revocationWrapper : timestampWrapper.getTimestampedRevocations()) {
-                    for (CertificateWrapper certificateWrapper : revocationWrapper.foundCertificates().getRelatedCertificates()) {
-                        assertTrue(timestampedCertificateIds.contains(certificateWrapper.getId()));
-                    }
-                }
-            }
-        }
+        assertTrue(externalOCSPFound);
     }
 
 }

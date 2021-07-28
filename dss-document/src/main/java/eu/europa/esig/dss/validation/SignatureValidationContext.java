@@ -709,6 +709,7 @@ public class SignatureValidationContext implements ValidationContext {
 			for (RevocationToken revocationToken : revocationTokens) {
 				revocations.add(revocationToken);
 				addRevocationTokenForVerification(revocationToken);
+				addDocumentCertificateSource(revocationToken.getCertificateSource()); // applicable only for OCSP
 			}
 		}
 

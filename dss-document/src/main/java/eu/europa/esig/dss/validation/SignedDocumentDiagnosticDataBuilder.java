@@ -74,7 +74,9 @@ import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
@@ -812,8 +814,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		}
 		if (revocationIdentifier instanceof CRLBinary) {
 			orphanToken.setRevocationType(RevocationType.CRL);
-		} else {
+		} else if (revocationIdentifier instanceof OCSPResponseBinary) {
 			orphanToken.setRevocationType(RevocationType.OCSP);
+			OCSPResponseBinary ocspResponseBinary = (OCSPResponseBinary) revocationIdentifier;
+			OCSPCertificateSource ocspCertificateSource = new OCSPCertificateSource(ocspResponseBinary.getBasicOCSPResp());
+			getXmlFoundCertificates(ocspResponseBinary, ocspCertificateSource); // create from OCSP Certificate Source
 		}
 		xmlOrphanRevocationTokensMap.put(revocationIdentifier.asXmlId(), orphanToken);
 		return orphanToken;
