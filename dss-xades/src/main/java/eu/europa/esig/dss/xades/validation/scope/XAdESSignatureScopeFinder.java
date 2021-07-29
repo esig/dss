@@ -68,7 +68,6 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 			}
 			XAdESReferenceValidation xadesReferenceValidation = (XAdESReferenceValidation) referenceValidation;
 			
-			final String id = xadesReferenceValidation.getId();
 			final String uri = xadesReferenceValidation.getUri();
 			final String xmlIdOfSignedElement = DomUtils.getId(uri);
 			final List<String> transformations = xadesReferenceValidation.getTransformationNames();

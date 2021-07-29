@@ -50,6 +50,9 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampDataBuilder.class);
 
+	/** The error message to be thrown in case of a message-imprint build error */
+	private static final String MESSAGE_IMPRINT_ERROR = "Unable to compute message-imprint for TimestampToken with Id '{}'. Reason : {}";
+
 	/** The signature */
 	private final JAdESSignature signature;
 
@@ -64,9 +67,16 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getContentTimestampData(TimestampToken timestampToken) {
-		byte[] signedDataBinaries = getSignedDataBinaries();
-		if (Utils.isArrayNotEmpty(signedDataBinaries)) {
+		try {
+			byte[] signedDataBinaries = getSignedDataBinaries();
 			return new InMemoryDocument(signedDataBinaries);
+
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
 		}
 		return null;
 	}
@@ -81,16 +91,21 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 	}
 	
 	private byte[] getJWSPayloadValue() {
+		byte[] payload;
 		if (signature.getJws().isRfc7797UnencodedPayload()) {
-			return signature.getJws().getUnverifiedPayloadBytes();
+			payload = signature.getJws().getUnverifiedPayloadBytes();
 		} else {
-			return signature.getJws().getEncodedPayload().getBytes();
+			payload = signature.getJws().getEncodedPayload().getBytes();
 		}
+		if (Utils.isArrayEmpty(payload)) {
+			throw new DSSException("Unable to extract JWS payload!");
+		}
+		return payload;
 	}
 	
 	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism) {
 		byte[] sigDOctets = null;
-		List<DSSDocument> documentList = null;
+		List<DSSDocument> documentList;
 
 		switch (sigDMechanism) {
 			case HTTP_HEADERS:
@@ -115,7 +130,18 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getSignatureTimestampData(TimestampToken timestampToken) {
-		return new InMemoryDocument(getSignatureTimestampData());
+		try {
+			byte[] signatureTimestampData = getSignatureTimestampData();
+			return new InMemoryDocument(signatureTimestampData);
+
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -135,18 +161,42 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getTimestampX1Data(TimestampToken timestampToken) {
-		
+		try {
+			byte[] timestampX1Data = getTimestampX1Data(timestampToken, null);
+			return new InMemoryDocument(timestampX1Data);
+
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Computes the message-imprint for SigRTst timestamp
+	 *
+	 * @param timestampToken
+	 *              {@link TimestampToken} on signature validation
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @return message-imprint octets
+	 */
+	protected byte[] getTimestampX1Data(TimestampToken timestampToken, String canonicalizationMethod) {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("--->Get '{}' timestamp data", JAdESHeaderParameterNames.SIG_R_TST);
 		}
-		String canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : null;
-		
+		canonicalizationMethod = timestampToken != null ?
+				timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+
 		JWS jws = signature.getJws();
 
 		/*
 		 * A.1.5.1	The sigRTst JSON object
-		 * 
-		 * The message imprint computation input shall be the concatenation of the components, 
+		 *
+		 * The message imprint computation input shall be the concatenation of the components,
 		 * in the order they are listed below.
 		 */
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -203,8 +253,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.SIG_R_TST, new String(messageImprint));
 			}
-			
-			return new InMemoryDocument(messageImprint);
+			return messageImprint;
 			
 		} catch (IOException e) {
 			throw new DSSException(String.format("An error occurred while building a message-imprint for '%s'! Reason : %s",
@@ -219,18 +268,42 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getTimestampX2Data(TimestampToken timestampToken) {
-		
+		try {
+			byte[] timestampX2Data = getTimestampX2Data(timestampToken, null);
+			return new InMemoryDocument(timestampX2Data);
+
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Computes the message-imprint for rfsTst timestamp
+	 *
+	 * @param timestampToken
+	 *              {@link TimestampToken} on signature validation
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @return message-imprint octets
+	 */
+	protected byte[] getTimestampX2Data(TimestampToken timestampToken, String canonicalizationMethod) {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("--->Get '{}' timestamp data", JAdESHeaderParameterNames.RFS_TST);
 		}
-		String canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : null;
-		
+		canonicalizationMethod = timestampToken != null ?
+				timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+
 		JWS jws = signature.getJws();
 		
 		/*
 		 * A.1.5.2.2 The rfsTst JSON object
-		 * 
-		 * The message imprint computation input shall be the concatenation of the components, 
+		 *
+		 * The message imprint computation input shall be the concatenation of the components,
 		 * in the order they are listed below.
 		 */
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -271,13 +344,12 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.RFS_TST, new String(messageImprint));
 			}
 			
-			return new InMemoryDocument(messageImprint);
-			
+			return messageImprint;
+
 		} catch (IOException e) {
 			throw new DSSException(String.format("An error occurred while building a message-imprint for '%s'! Reason : %s",
 					JAdESHeaderParameterNames.RFS_TST, e.getMessage()), e);
 		}
-		
 	}
 
 	@Override
@@ -285,10 +357,15 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 		try {
 			byte[] archiveTimestampData = getArchiveTimestampData(timestampToken, null);
 			return new InMemoryDocument(archiveTimestampData);
+
 		} catch (DSSException e) {
-			LOG.error("Unable to get data for TimestampToken with Id '{}'. Reason : {}", timestampToken.getDSSIdAsString(), e.getMessage(), e);
-			return null;
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
 		}
+		return null;
 	}
 	
 	/**
@@ -402,7 +479,7 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 			return messageImprint;
 			
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new DSSException(String.format("An error occurred while building a message-imprint for '%s'! Reason : %s",
 					JAdESHeaderParameterNames.ARC_TST, e.getMessage()), e);
 		}

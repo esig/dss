@@ -63,6 +63,9 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampDataBuilder.class);
 
+	/** The error message to be thrown in case of a message-imprint build error */
+	private static final String MESSAGE_IMPRINT_ERROR = "Unable to compute message-imprint for TimestampToken with Id '{}'. Reason : {}";
+
 	/** List of XAdES signature references */
 	private final List<Reference> references;
 
@@ -230,8 +233,18 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getSignatureTimestampData(final TimestampToken timestampToken) {
-		byte[] timestampData = getSignatureTimestampData(timestampToken, null);
-		return new InMemoryDocument(timestampData);
+		try {
+			byte[] timestampData = getSignatureTimestampData(timestampToken, null);
+			return new InMemoryDocument(timestampData);
+
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -267,8 +280,18 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	@Override
 	public DSSDocument getTimestampX1Data(final TimestampToken timestampToken) {
-		byte[] timestampX1Data = getTimestampX1Data(timestampToken, null, null);
-		return new InMemoryDocument(timestampX1Data);
+		try {
+			byte[] timestampX1Data = getTimestampX1Data(timestampToken, null, null);
+			return new InMemoryDocument(timestampX1Data);
+
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -374,14 +397,25 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			}
 			return byteArray;
 		} catch (IOException e) {
-			throw new DSSException("Error when computing the SigAndRefsTimeStamp (X1Timestamp)", e);
+			throw new DSSException(String.format("An error occurred when computing the SigAndRefsTimeStamp (X1Timestamp). " +
+					"Reason : %s", e.getMessage()), e);
 		}
 	}
 
 	@Override
 	public DSSDocument getTimestampX2Data(final TimestampToken timestampToken) {
-		byte[] timestampX2Data = getTimestampX2Data(timestampToken, null, null);
-		return new InMemoryDocument(timestampX2Data);
+		try {
+			byte[] timestampX2Data = getTimestampX2Data(timestampToken, null, null);
+			return new InMemoryDocument(timestampX2Data);
+
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -476,7 +510,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			}
 			return byteArray;
 		} catch (IOException e) {
-			throw new DSSException("Error when computing the RefsOnlyTimeStamp (TimestampX2D)", e);
+			throw new DSSException(String.format("An error occurred when computing the RefsOnlyTimeStamp (TimestampX2D). " +
+					"Reason : %s", e.getMessage()), e);
 		}
 	}
 	
@@ -486,10 +521,15 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		try {
 			byte[] archiveTimestampData = getArchiveTimestampData(timestampToken, null);
 			return new InMemoryDocument(archiveTimestampData);
+
 		} catch (DSSException e) {
-			LOG.error("Unable to get data for TimestampToken with Id '{}'. Reason : {}", timestampToken.getDSSIdAsString(), e.getMessage(), e);
-			return null;
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
 		}
+		return null;
 	}
 	
 	/**
@@ -617,7 +657,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 	
 	private Element getUnsignedSignaturePropertiesCanonicalizationCopy() {
 		/*
-         * This is the work around. The issue was reported on:
+         * This is a workaround. The issue was reported on:
          * https://issues.apache.org/jira/browse/SANTUARIO-139.
          * Namespaces are not added to canonicalizer for new created elements.
          * The binaries need to be parsed at a new instance of Document
@@ -696,7 +736,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			// timestamp creation
 			unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy();
 		} else {
-			unsignedProperties = getUnsignedSignaturePropertiesDom();;
+			unsignedProperties = getUnsignedSignaturePropertiesDom();
 		}
 		if (unsignedProperties == null) {
 			throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
@@ -745,7 +785,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 				 * !!! ETSI TS 101 903 V1.3.2 (2006-03)
 				 * 5) Take any ds:Object element in the signature that is not referenced by any ds:Reference within
 				 * ds:SignedInfo, except that one containing the QualifyingProperties element. Canonicalize each one
-				 * and concatenate each resulting octet tream to the final octet stream.
+				 * and concatenate each resulting octet stream to the final octet stream.
 				 * If ds:Canonicalization is present, the algorithm indicated by this element is used.
 				 * If not, the standard canonicalization method specified by XMLDSIG is used.
 				 */
