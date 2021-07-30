@@ -28,7 +28,9 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
@@ -117,15 +119,18 @@ public abstract class AbstractTimestampSource {
 
 		final TimestampCertificateSource timestampCertificateSource = timestampedTimestamp.getCertificateSource();
 		addReferences(references, createReferencesForCertificates(timestampCertificateSource.getCertificates()));
-		addReferences(references, createReferencesForCertificateRefs(timestampCertificateSource.getAllCertificateRefs(), certificateSource));
+		addReferences(references, createReferencesForCertificateRefs(timestampCertificateSource.getAllCertificateRefs(),
+				timestampCertificateSource, certificateSource));
 
 		final TimestampCRLSource timestampCRLSource = timestampedTimestamp.getCRLSource();
 		addReferences(references, createReferencesForCRLBinaries(timestampCRLSource.getAllRevocationBinaries()));
-		addReferences(references, createReferencesForCRLRefs(timestampCRLSource.getAllRevocationReferences(), crlSource));
+		addReferences(references, createReferencesForCRLRefs(timestampCRLSource.getAllRevocationReferences(),
+				timestampCRLSource, crlSource));
 
 		final TimestampOCSPSource timestampOCSPSource = timestampedTimestamp.getOCSPSource();
 		addReferences(references, createReferencesForOCSPBinaries(timestampOCSPSource.getAllRevocationBinaries(), certificateSource));
-		addReferences(references, createReferencesForOCSPRefs(timestampOCSPSource.getAllRevocationReferences(), certificateSource, ocspSource));
+		addReferences(references, createReferencesForOCSPRefs(timestampOCSPSource.getAllRevocationReferences(),
+				timestampOCSPSource, certificateSource, ocspSource));
 
 		return references;
 	}
@@ -228,7 +233,8 @@ public abstract class AbstractTimestampSource {
 
 		final OCSPCertificateSource ocspCertificateSource = new OCSPCertificateSource(ocspResponseBinary.getBasicOCSPResp());
 		addReferences(references, createReferencesForCertificates(ocspCertificateSource.getCertificates()));
-		addReferences(references, createReferencesForCertificateRefs(ocspCertificateSource.getAllCertificateRefs(), certificateSource));
+		addReferences(references, createReferencesForCertificateRefs(ocspCertificateSource.getAllCertificateRefs(),
+				ocspCertificateSource, certificateSource));
 
 		return references;
 	}
@@ -237,14 +243,19 @@ public abstract class AbstractTimestampSource {
 	 * Returns a list of timestamped references from the given collection of {@code certificateRefs}
 	 *
 	 * @param certificateRefs       a collection of {@link CertificateRef}s to get timestamped references from
-	 * @param listCertificateSource {@link ListCertificateSource} to find certificate binaries from if present
+	 * @param currentCertificateSource {@link CertificateSource} used to extract the collection of {@link CertificateRef}s
+	 * @param listCertificateSource {@link ListCertificateSource} merged certificate source
 	 * @return a list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> createReferencesForCertificateRefs(Collection<CertificateRef> certificateRefs,
+																			CertificateSource currentCertificateSource,
 																			ListCertificateSource listCertificateSource) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (CertificateRef certRef : certificateRefs) {
-			Set<CertificateToken> certificateTokens = listCertificateSource.findTokensFromRefs(certRef);
+			Set<CertificateToken> certificateTokens = currentCertificateSource.findTokensFromCertRef(certRef);
+			if (Utils.isCollectionEmpty(certificateTokens)) {
+				certificateTokens = listCertificateSource.findTokensFromRefs(certRef);
+			}
 			if (Utils.isCollectionNotEmpty(certificateTokens)) {
 				addReferences(timestampedReferences, createReferencesForCertificates(certificateTokens));
 			} else {
@@ -259,14 +270,19 @@ public abstract class AbstractTimestampSource {
 	 *
 	 * @param crlRefs             a collection of {@link eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef}s
 	 *                            to get timestamped references from
-	 * @param crlSource {@link ListRevocationSource} to find CRL binaries from if present
+	 * @param currentCRLSource {@link OfflineRevocationSource} used to extract CRL references
+	 * @param listCRLSource {@link ListRevocationSource} merged CRL source
 	 * @return a list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> createReferencesForCRLRefs(Collection<? extends RevocationRef<CRL>> crlRefs,
-																	ListRevocationSource<CRL> crlSource) {
+																	OfflineRevocationSource<CRL> currentCRLSource,
+																	ListRevocationSource<CRL> listCRLSource) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (RevocationRef<CRL> crlRef : crlRefs) {
-			EncapsulatedRevocationTokenIdentifier<CRL> token = crlSource.findBinaryForReference(crlRef);
+			EncapsulatedRevocationTokenIdentifier<CRL> token = currentCRLSource.findBinaryForReference(crlRef);
+			if (token == null) {
+				token = listCRLSource.findBinaryForReference(crlRef);
+			}
 			if (token != null) {
 				addReference(timestampedReferences, new TimestampedReference(token.asXmlId(), TimestampedObjectType.REVOCATION));
 			} else {
@@ -281,18 +297,23 @@ public abstract class AbstractTimestampSource {
 	 *
 	 * @param ocspRefs             a collection of {@link eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef}s
 	 *                             to get timestamped references from
-	 * @param certificateSource {@link ListCertificateSource} to find embedded certificates from OCSPCertificateSource references
-	 * @param ocspSource {@link ListRevocationSource} to find OCSP binaries from if present
+	 * @param currentOCSPSource {@link OfflineRevocationSource} used to extract the OCSP references
+	 * @param listCertificateSource {@link ListCertificateSource} merged certificate source
+	 * @param listOCSPSource {@link ListRevocationSource} merged OCSP source
 	 * @return a list of {@link TimestampedReference}s
 	 */
 	protected List<TimestampedReference> createReferencesForOCSPRefs(Collection<? extends RevocationRef<OCSP>> ocspRefs,
-																	 ListCertificateSource certificateSource,
-																	 ListRevocationSource<OCSP> ocspSource) {
+																	 OfflineRevocationSource<OCSP> currentOCSPSource,
+																	 ListCertificateSource listCertificateSource,
+																	 ListRevocationSource<OCSP> listOCSPSource) {
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		for (RevocationRef<OCSP> ocspRef : ocspRefs) {
-			EncapsulatedRevocationTokenIdentifier<OCSP> token = ocspSource.findBinaryForReference(ocspRef);
+			EncapsulatedRevocationTokenIdentifier<OCSP> token = currentOCSPSource.findBinaryForReference(ocspRef);
+			if (token == null) {
+				token = listOCSPSource.findBinaryForReference(ocspRef);
+			}
 			if (token != null) {
-				addReferences(timestampedReferences, createReferencesForOCSPBinary((OCSPResponseBinary) token, certificateSource));
+				addReferences(timestampedReferences, createReferencesForOCSPBinary((OCSPResponseBinary) token, listCertificateSource));
 			} else {
 				addReference(timestampedReferences, new TimestampedReference(ocspRef.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
 			}

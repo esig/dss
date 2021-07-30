@@ -759,7 +759,8 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      */
     protected List<TimestampedReference> getSigningCertificateTimestampReferences() {
         SignatureCertificateSource signatureCertificateSource = signature.getCertificateSource();
-        return createReferencesForCertificateRefs(signatureCertificateSource.getSigningCertificateRefs(), certificateSource);
+        return createReferencesForCertificateRefs(signatureCertificateSource.getSigningCertificateRefs(),
+                signatureCertificateSource, certificateSource);
     }
 
     /**
@@ -780,7 +781,8 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      * @return list of {@link TimestampedReference}s
      */
     protected List<TimestampedReference> getTimestampedCertificateRefs(SA unsignedAttribute) {
-        return createReferencesForCertificateRefs(getCertificateRefs(unsignedAttribute), certificateSource);
+        return createReferencesForCertificateRefs(getCertificateRefs(unsignedAttribute),
+                signature.getCertificateSource(), certificateSource);
     }
 
     /**
@@ -800,8 +802,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      */
     protected List<TimestampedReference> getTimestampedRevocationRefs(SA unsignedAttribute) {
         List<TimestampedReference> timestampedReferences = new ArrayList<>();
-        timestampedReferences.addAll(createReferencesForCRLRefs(getCRLRefs(unsignedAttribute), crlSource));
-        timestampedReferences.addAll(createReferencesForOCSPRefs(getOCSPRefs(unsignedAttribute), certificateSource, ocspSource));
+        timestampedReferences.addAll(createReferencesForCRLRefs(getCRLRefs(unsignedAttribute),
+                signature.getCRLSource(), crlSource));
+        timestampedReferences.addAll(createReferencesForOCSPRefs(getOCSPRefs(unsignedAttribute),
+                signature.getOCSPSource(), certificateSource, ocspSource));
         return timestampedReferences;
     }
 
