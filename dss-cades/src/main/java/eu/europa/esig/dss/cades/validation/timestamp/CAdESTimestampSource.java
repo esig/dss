@@ -653,7 +653,8 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		counterSigReferences.add(new TimestampedReference(counterSignature.getId(), TimestampedObjectType.SIGNATURE));
 		
 		List<CertificateRef> signingCertificateRefs = counterSignature.getCertificateSource().getSigningCertificateRefs();
-		addReferences(counterSigReferences, createReferencesForCertificateRefs(signingCertificateRefs, certificateSource));
+		addReferences(counterSigReferences, createReferencesForCertificateRefs(signingCertificateRefs,
+				counterSignature.getCertificateSource(), certificateSource));
 		
 		TimestampSource counterSignatureTimestampSource = counterSignature.getTimestampSource();
 		addReferences(counterSigReferences, counterSignatureTimestampSource.getSignerDataReferences());
