@@ -24,8 +24,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
 
 import java.util.List;
 
@@ -77,10 +77,10 @@ public interface PDFSignatureService {
 	 * @param document
 	 *            the document to be extended
 	 * @param validationDataForInclusion
-	 *            {@link ValidationDataContainer}
+	 *            {@link PdfValidationDataContainer}
 	 * @return the pdf document with the added dss dictionary
 	 */
-	DSSDocument addDssDictionary(DSSDocument document, ValidationDataContainer validationDataForInclusion);
+	DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion);
 
 	/**
 	 * This method adds the DSS dictionary (Baseline-LT)
@@ -88,12 +88,12 @@ public interface PDFSignatureService {
 	 * @param document
 	 *            the document to be extended
 	 * @param validationDataForInclusion
-	 *            {@link ValidationDataContainer}
+	 *            {@link PdfValidationDataContainer}
 	 * @param pwd
 	 *            the password protection used to create the encrypted document
 	 * @return the pdf document with the added dss dictionary
 	 */
-	DSSDocument addDssDictionary(DSSDocument document, ValidationDataContainer validationDataForInclusion, final String pwd);
+	DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion, final String pwd);
 
 	/**
 	 * This method returns not signed signature-fields

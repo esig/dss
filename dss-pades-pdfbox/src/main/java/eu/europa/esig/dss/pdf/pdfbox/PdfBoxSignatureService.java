@@ -33,6 +33,7 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -48,8 +49,8 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
@@ -80,9 +81,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -431,7 +430,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, ValidationDataContainer validationDataForInclusion, String pwd) {
+	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion, String pwd) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
 				PDDocument pdDocument = PDDocument.load(is, pwd)) {
@@ -454,100 +453,132 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private COSDictionary buildDSSDictionary(PDDocument pdDocument, ValidationDataContainer validationDataForInclusion)
+	private COSDictionary buildDSSDictionary(PDDocument pdDocument, PdfValidationDataContainer validationDataForInclusion)
 			throws IOException {
 		COSDictionary dss = new COSDictionary();
 
+		final COSArray certs = new COSArray();
+		final COSArray crls = new COSArray();
+		final COSArray ocsps = new COSArray();
+
 		Collection<AdvancedSignature> signatures = validationDataForInclusion.getSignatures();
-		Map<String, Long> knownObjects = buildKnownObjects(signatures);
+		if (Utils.isCollectionNotEmpty(signatures)) {
 
-		Map<String, COSStream> streams = new HashMap<>();
+			final COSDictionary vriDictionary = new COSDictionary();
+			for (AdvancedSignature signature : signatures) {
+				COSDictionary sigVriDictionary = new COSDictionary();
+				sigVriDictionary.setDirect(true);
 
-		ValidationData allValidationData = validationDataForInclusion.getAllValidationData();
+				ValidationData validationDataToAdd = new ValidationData();
 
-		COSDictionary vriDictionary = new COSDictionary();
-		for (AdvancedSignature signature : signatures) {
-			COSDictionary sigVriDictionary = new COSDictionary();
-			sigVriDictionary.setDirect(true);
+				ValidationData signatureValidationData = validationDataForInclusion.getAllValidationDataForSignature(signature);
+				validationDataToAdd.addValidationData(signatureValidationData);
 
-			ValidationData validationDataToAdd = new ValidationData();
+				if (!validationDataToAdd.isEmpty()) {
+					Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
+					if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
+						COSArray sigCerts = new COSArray();
+						for (CertificateToken certificateToken : certificateTokensToAdd) {
+							COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, certificateToken);
+							if (sigCerts.indexOf(cosObject) == -1) {
+								sigCerts.add(cosObject);
+								certs.add(cosObject);
+							}
+						}
+						sigVriDictionary.setItem(PAdESConstants.CERT_ARRAY_NAME_VRI, sigCerts);
+					}
 
-			ValidationData signatureValidationData = validationDataForInclusion.getAllValidationDataForSignature(signature);
-			validationDataToAdd.addValidationData(signatureValidationData);
+					Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
+					if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
+						COSArray sigCrls = new COSArray();
+						for (CRLToken crlToken : crlTokensToAdd) {
+							COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, crlToken);
+							if (sigCrls.indexOf(cosObject) == -1) {
+								sigCrls.add(cosObject);
+								crls.add(cosObject);
+							}
+						}
+						sigVriDictionary.setItem(PAdESConstants.CRL_ARRAY_NAME_VRI, sigCrls);
+					}
 
-			if (!validationDataToAdd.isEmpty()) {
-				Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
-				if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
-					sigVriDictionary.setItem(PAdESConstants.CERT_ARRAY_NAME_VRI,
-							buildArray(pdDocument, streams, certificateTokensToAdd, knownObjects));
+					Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
+					if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
+						COSArray sigOcsps = new COSArray();
+						for (OCSPToken ocspToken : ocspTokensToAdd) {
+							COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, ocspToken);
+							if (sigOcsps.indexOf(cosObject) == -1) {
+								sigOcsps.add(cosObject);
+								ocsps.add(cosObject);
+							}
+						}
+						sigVriDictionary.setItem(PAdESConstants.OCSP_ARRAY_NAME_VRI, sigOcsps);
+					}
+
+					// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
+					String vriKey = ((PAdESSignature) signature).getVRIKey();
+					vriDictionary.setItem(vriKey, sigVriDictionary);
 				}
+			}
+			dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
 
-				Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
-				if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
-					sigVriDictionary.setItem(PAdESConstants.CRL_ARRAY_NAME_VRI,
-							buildArray(pdDocument, streams, crlTokensToAdd, knownObjects));
+		} else { // for detached timestamps
+
+			ValidationData validationDataToAdd = validationDataForInclusion.getAllValidationData();
+			Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
+			if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
+				for (CertificateToken certToken : certificateTokensToAdd) {
+					COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, certToken);
+					if (certs.indexOf(cosObject) == -1) {
+						certs.add(cosObject);
+					}
 				}
-
-				Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
-				if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
-					sigVriDictionary.setItem(PAdESConstants.OCSP_ARRAY_NAME_VRI,
-							buildArray(pdDocument, streams, ocspTokensToAdd, knownObjects));
+			}
+			Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
+			if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
+				for (CRLToken crlToken : crlTokensToAdd) {
+					COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, crlToken);
+					if (crls.indexOf(cosObject) == -1) {
+						crls.add(cosObject);
+					}
 				}
-
-				// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
-				String vriKey = ((PAdESSignature) signature).getVRIKey();
-				vriDictionary.setItem(vriKey, sigVriDictionary);
+			}
+			Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
+			if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
+				for (OCSPToken ocspToken : validationDataToAdd.getOcspTokens()) {
+					COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, ocspToken);
+					if (ocsps.indexOf(cosObject) == -1) {
+						ocsps.add(cosObject);
+					}
+				}
 			}
 		}
-		dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
 
-		Set<CertificateToken> allCertificateTokens = allValidationData.getCertificateTokens();
-		if (Utils.isCollectionNotEmpty(allCertificateTokens)) {
-			dss.setItem(PAdESConstants.CERT_ARRAY_NAME_DSS,
-					buildArray(pdDocument, streams, allCertificateTokens, knownObjects));
+		if (certs.size() > 0) {
+			dss.setItem(PAdESConstants.CERT_ARRAY_NAME_DSS, certs);
 		}
-
-		Set<OCSPToken> allOCSPTokens = allValidationData.getOcspTokens();
-		if (Utils.isCollectionNotEmpty(allOCSPTokens)) {
-			dss.setItem(PAdESConstants.OCSP_ARRAY_NAME_DSS, buildArray(pdDocument, streams, allOCSPTokens, knownObjects));
+		if (crls.size() > 0) {
+			dss.setItem(PAdESConstants.CRL_ARRAY_NAME_DSS, crls);
 		}
-
-		Set<CRLToken> allCRLTokens = allValidationData.getCrlTokens();
-		if (Utils.isCollectionNotEmpty(allCRLTokens)) {
-			dss.setItem(PAdESConstants.CRL_ARRAY_NAME_DSS, buildArray(pdDocument, streams, allCRLTokens, knownObjects));
+		if (ocsps.size() > 0) {
+			dss.setItem(PAdESConstants.OCSP_ARRAY_NAME_DSS, ocsps);
 		}
 
 		return dss;
 	}
 
-	private COSArray buildArray(PDDocument pdDocument, Map<String, COSStream> streams,
-			Collection<? extends Token> tokens, Map<String, Long> knownObjects) throws IOException {
-		COSArray array = new COSArray();
-		// avoid duplicate CRLs
-		List<String> currentObjIds = new ArrayList<>();
-		for (Token token : tokens) {
-			String tokenKey = getTokenKey(token);
-			if (!currentObjIds.contains(tokenKey)) {
-				Long objectNumber = knownObjects.get(tokenKey);
-				if (objectNumber == null) {
-					COSStream stream = streams.get(tokenKey);
-					if (stream == null) {
-						stream = pdDocument.getDocument().createCOSStream();
-						try (OutputStream unfilteredStream = stream.createOutputStream()) {
-							unfilteredStream.write(token.getEncoded());
-							unfilteredStream.flush();
-						}
-						streams.put(tokenKey, stream);
-					}
-					array.add(stream);
-				} else {
-					COSObject foundCosObject = getByObjectNumber(pdDocument, objectNumber);
-					array.add(foundCosObject);
-				}
-				currentObjIds.add(tokenKey);
+	private COSBase getPdfObjectForToken(PDDocument pdDocument, PdfValidationDataContainer validationDataContainer,
+										 Token token) throws IOException {
+		Long objectNumber = validationDataContainer.getTokenReference(token);
+		if (objectNumber == null) {
+			COSStream stream = pdDocument.getDocument().createCOSStream();
+			try (OutputStream unfilteredStream = stream.createOutputStream()) {
+				unfilteredStream.write(token.getEncoded());
+				unfilteredStream.flush();
 			}
+			return stream;
+		} else {
+			return getByObjectNumber(pdDocument, objectNumber);
 		}
-		return array;
 	}
 
 	private COSObject getByObjectNumber(PDDocument pdDocument, Long objectNumber) {

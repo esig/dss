@@ -24,13 +24,13 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 	public DSSDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) {
 		assertExtensionPossible(document);
 
-		// check if needed to extends with PAdESLevelBaselineT
+		// check if needed to extend with PAdESLevelBaselineT
 		PDFDocumentValidator pdfDocumentValidator = getPDFDocumentValidator(document, parameters);
 
 		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
@@ -82,7 +82,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		assertExtendSignaturePossible(signatures);
 
 		List<TimestampToken> detachedTimestamps = pdfDocumentValidator.getDetachedTimestamps();
-		ValidationDataContainer validationData = pdfDocumentValidator.getValidationData(signatures, detachedTimestamps);
+		PdfValidationDataContainer validationData = pdfDocumentValidator.getValidationData(signatures, detachedTimestamps);
 
 		final PDFSignatureService signatureService = newPdfSignatureService();
 		return signatureService.addDssDictionary(document, validationData, parameters.getPasswordProtection());
@@ -92,9 +92,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
 		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
-		if (pdfObjectFactory != null) {
-			pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
-		}
+		pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
 		return pdfDocumentValidator;
 	}
 

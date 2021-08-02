@@ -347,9 +347,14 @@ public class SignatureValidationContext implements ValidationContext {
 			candidates = getIssuersFromSource(token, ((TimestampToken) token).getCertificateSource());
 		}
 
+		// Find issuer candidates from document sources
+		if (Utils.isCollectionEmpty(candidates)) {
+			candidates = getIssuersFromSources(token, documentCertificateSource);
+		}
+
+		// Find issuer candidates from all sources
 		ListCertificateSource allCertificateSources = getAllCertificateSources();
 		if (Utils.isCollectionEmpty(candidates)) {
-			// Find issuer candidates from all sources
 			candidates = getIssuersFromSources(token, allCertificateSources);
 		}
 		issuerCertificateToken = getTokenIssuerFromCandidates(token, candidates);

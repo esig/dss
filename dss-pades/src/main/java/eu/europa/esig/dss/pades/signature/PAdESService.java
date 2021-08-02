@@ -297,8 +297,11 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESTimestampParameters parameters) {
+		PAdESExtensionService extensionService = new PAdESExtensionService(certificateVerifier, pdfObjFactory);
+		DSSDocument extendedDocument = extensionService.incorporateValidationData(toTimestampDocument, parameters.getPasswordProtection());
+
 		PAdESTimestampService timestampService = new PAdESTimestampService(tspSource, pdfObjFactory.newSignatureTimestampService());
-		DSSDocument timestampedDocument = timestampService.timestampDocument(toTimestampDocument, parameters);
+		DSSDocument timestampedDocument = timestampService.timestampDocument(extendedDocument, parameters);
 		timestampedDocument.setName(getFinalFileName(toTimestampDocument, SigningOperation.TIMESTAMP, null));
 		return timestampedDocument;
 	}

@@ -313,6 +313,17 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
+    public <T extends AdvancedSignature> PdfValidationDataContainer getValidationData(
+            Collection<T> signatures, Collection<TimestampToken> detachedTimestamps) {
+        return (PdfValidationDataContainer) super.getValidationData(signatures, detachedTimestamps);
+    }
+
+    @Override
+    protected PdfValidationDataContainer instantiateValidationDataContainer() {
+        return new PdfValidationDataContainer(getDssRevisions());
+    }
+
+    @Override
     public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
         PAdESSignature padesSignature = (PAdESSignature) advancedSignature;
         List<DSSDocument> result = new ArrayList<>();
