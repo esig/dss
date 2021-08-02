@@ -23,35 +23,27 @@ package eu.europa.esig.dss.pdf;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.alert.status.Status;
-import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.ByteRange;
-import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
-import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
-import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfModification;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,9 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -277,8 +267,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document,
-										ValidationDataContainer validationDataForInclusion) {
+	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion) {
 		return addDssDictionary(document, validationDataForInclusion, null);
 	}
 
@@ -460,63 +449,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		/* Support historical TS 102 778-4 and new EN 319 142-1 */
 		return (type == null || PAdESConstants.SIGNATURE_TYPE.equals(type))
 				&& !PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter);
-	}
-
-	/**
-	 * Builds a map of token identifiers and their corresponding PDF object indexes
-	 *
-	 * @param signatures a collection of {@link AdvancedSignature}s
-	 * @return a map
-	 */
-	protected Map<String, Long> buildKnownObjects(Collection<AdvancedSignature> signatures) {
-		Map<String, Long> result = new HashMap<>();
-
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (AdvancedSignature signature : signatures) {
-				PAdESCertificateSource certSource = (PAdESCertificateSource) signature.getCertificateSource();
-				Map<Long, CertificateToken> storedCertificates = certSource.getCertificateMap();
-				for (Map.Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
-					String tokenKey = getTokenKey(certEntry.getValue());
-					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
-						result.put(tokenKey, certEntry.getKey());
-					}
-				}
-
-				PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
-				Map<Long, BasicOCSPResp> storedOcspResps = ocspSource.getOcspMap();
-				for (Map.Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
-					final OCSPResponseBinary ocspResponseBinary = OCSPResponseBinary.build(ocspEntry.getValue());
-					String tokenKey = ocspResponseBinary.getDSSId().asXmlId();
-					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
-						result.put(tokenKey, ocspEntry.getKey());
-					}
-				}
-
-				PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
-				Map<Long, CRLBinary> storedCrls = crlSource.getCrlMap();
-				for (Map.Entry<Long, CRLBinary> crlEntry : storedCrls.entrySet()) {
-					String tokenKey = crlEntry.getValue().asXmlId();
-					if (!result.containsKey(tokenKey)) { // keeps the really first occurrence
-						result.put(tokenKey, crlEntry.getKey());
-					}
-				}
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 * Gets a token key (DSS Id or EntityKey Id for a CertificateToken)
-	 *
-	 * @param token {@link Token}
-	 * @return {@link String} base64 encoded SHA-256 digest
-	 */
-	protected String getTokenKey(Token token) {
-		if (token instanceof CertificateToken) {
-			return ((CertificateToken) token).getEntityKey().asXmlId();
-		}
-		return token.getDSSIdAsString();
 	}
 
 	/**

@@ -507,7 +507,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		assertSignaturesValid(signatures, validationContext);
 
-		ValidationDataContainer validationDataContainer = new ValidationDataContainer();
+		ValidationDataContainer validationDataContainer = instantiateValidationDataContainer();
 		for (AdvancedSignature signature : signatures) {
 			ValidationData signatureValidationData = validationContext.getValidationData(signature);
 			validationDataContainer.addValidationData(signature, signatureValidationData);
@@ -526,6 +526,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 
 		return validationDataContainer;
+	}
+
+	/**
+	 * Creates a new instance of {@code ValidationDataContainer}
+	 *
+	 * @return {@link ValidationDataContainer}
+	 */
+	protected ValidationDataContainer instantiateValidationDataContainer() {
+		return new ValidationDataContainer();
 	}
 
 	private <T extends AdvancedSignature> void assertSignaturesValid(Collection<T> signatures,

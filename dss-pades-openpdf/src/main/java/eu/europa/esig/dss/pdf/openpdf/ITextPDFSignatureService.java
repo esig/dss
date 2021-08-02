@@ -52,6 +52,7 @@ import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfModification;
+import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -67,7 +68,6 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +80,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -321,7 +320,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, ValidationDataContainer validationDataForInclusion, String pwd) {
+	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion, String pwd) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
 				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
@@ -330,80 +329,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			PdfWriter writer = stp.getWriter();
 
 			if (!validationDataForInclusion.isEmpty()) {
-
-				Collection<AdvancedSignature> signatures = validationDataForInclusion.getSignatures();
-				Map<String, Long> knownObjects = buildKnownObjects(signatures);
-
 				PdfDictionary catalog = reader.getCatalog();
-
-				PdfDictionary dss = new PdfDictionary();
-				PdfDictionary vrim = new PdfDictionary();
-				PdfArray ocsps = new PdfArray();
-				PdfArray crls = new PdfArray();
-				PdfArray certs = new PdfArray();
-
-				for (AdvancedSignature signature : signatures) {
-					ValidationData validationDataToAdd = new ValidationData();
-
-					ValidationData signatureValidationData = validationDataForInclusion.getAllValidationDataForSignature(signature);
-					validationDataToAdd.addValidationData(signatureValidationData);
-
-					if (!validationDataToAdd.isEmpty()) {
-						PdfArray ocsp = new PdfArray();
-						PdfArray crl = new PdfArray();
-						PdfArray cert = new PdfArray();
-						PdfDictionary vri = new PdfDictionary();
-
-						Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
-						if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
-							for (CertificateToken certToken : certificateTokensToAdd) {
-								PdfObject iref = getPdfObjectForToken(certToken, knownObjects, reader, writer);
-								cert.add(iref);
-								certs.add(iref);
-							}
-							vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI), cert);
-						}
-
-						Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
-						if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
-							for (CRLToken crlToken : crlTokensToAdd) {
-								PdfObject iref = getPdfObjectForToken(crlToken, knownObjects, reader, writer);
-								crl.add(iref);
-								crls.add(iref);
-							}
-							vri.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_VRI), crl);
-						}
-
-						Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
-						if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
-							for (OCSPToken ocspToken : validationDataToAdd.getOcspTokens()) {
-								PdfObject iref = getPdfObjectForToken(ocspToken, knownObjects, reader, writer);
-								ocsp.add(iref);
-								ocsps.add(iref);
-							}
-							vri.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_VRI), ocsp);
-						}
-
-						String vriKey = ((PAdESSignature) signature).getVRIKey();
-						vrim.put(new PdfName(vriKey), vri);
-					}
-				}
-				dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME),
-						writer.addToBody(vrim, false).getIndirectReference());
-
-				if (ocsps.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_DSS), ocsps);
-				}
-				if (crls.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_DSS), crls);
-				}
-				if (certs.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_DSS), certs);
-				}
+				PdfDictionary dss = buildDSSDictionary(reader, writer, validationDataForInclusion);
 				catalog.put(new PdfName(PAdESConstants.DSS_DICTIONARY_NAME),
 						writer.addToBody(dss, false).getIndirectReference());
 
-				stp.getWriter().addToBody(reader.getCatalog(), reader.getCatalog().getIndRef(), false);
+				writer.addToBody(reader.getCatalog(), reader.getCatalog().getIndRef(), false);
 			}
 
 			stp.close();
@@ -416,10 +347,121 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private PdfObject getPdfObjectForToken(Token token, Map<String, Long> knownObjects, PdfReader reader, PdfWriter writer)
+	private PdfDictionary buildDSSDictionary(PdfReader reader, PdfWriter writer,
+											 PdfValidationDataContainer validationDataForInclusion) throws IOException {
+		final PdfDictionary dss = new PdfDictionary();
+		final PdfArray ocsps = new PdfArray();
+		final PdfArray crls = new PdfArray();
+		final PdfArray certs = new PdfArray();
+
+		Collection<AdvancedSignature> signatures = validationDataForInclusion.getSignatures();
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			PdfDictionary vrim = new PdfDictionary();
+
+			for (AdvancedSignature signature : signatures) {
+				ValidationData validationDataToAdd = new ValidationData();
+
+				ValidationData signatureValidationData = validationDataForInclusion.getAllValidationDataForSignature(signature);
+				validationDataToAdd.addValidationData(signatureValidationData);
+
+				if (!validationDataToAdd.isEmpty()) {
+					PdfDictionary vri = new PdfDictionary();
+
+					Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
+					if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
+						PdfArray sigCerts = new PdfArray();
+						for (CertificateToken certToken : certificateTokensToAdd) {
+							PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion, certToken);
+							if (!sigCerts.contains(iref)) {
+								sigCerts.add(iref);
+								certs.add(iref);
+							}
+						}
+						vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI), sigCerts);
+					}
+
+					Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
+					if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
+						PdfArray sigCrls = new PdfArray();
+						for (CRLToken crlToken : crlTokensToAdd) {
+							PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion, crlToken);
+							if (!sigCrls.contains(iref)) {
+								sigCrls.add(iref);
+								crls.add(iref);
+							}
+						}
+						vri.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_VRI), sigCrls);
+					}
+
+					Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
+					if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
+						PdfArray sigOcsps = new PdfArray();
+						for (OCSPToken ocspToken : validationDataToAdd.getOcspTokens()) {
+							PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion, ocspToken);
+							if (!sigOcsps.contains(iref)) {
+								sigOcsps.add(iref);
+								ocsps.add(iref);
+							}
+						}
+						vri.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_VRI), sigOcsps);
+					}
+
+					String vriKey = ((PAdESSignature) signature).getVRIKey();
+					vrim.put(new PdfName(vriKey), vri);
+				}
+			}
+			dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME),
+					writer.addToBody(vrim, false).getIndirectReference());
+
+		} else { // for detached timestamps
+
+			ValidationData validationDataToAdd = validationDataForInclusion.getAllValidationData();
+			Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
+			if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
+				for (CertificateToken certToken : certificateTokensToAdd) {
+					PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion, certToken);
+					if (!certs.contains(iref)) {
+						certs.add(iref);
+					}
+				}
+			}
+			Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
+			if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
+				for (CRLToken crlToken : crlTokensToAdd) {
+					PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion, crlToken);
+					if (!crls.contains(iref)) {
+						crls.add(iref);
+					}
+				}
+			}
+			Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
+			if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
+				for (OCSPToken ocspToken : validationDataToAdd.getOcspTokens()) {
+					PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion, ocspToken);
+					if (!ocsps.contains(iref)) {
+						ocsps.add(iref);
+					}
+				}
+			}
+		}
+
+		if (ocsps.size() > 0) {
+			dss.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_DSS), ocsps);
+		}
+		if (crls.size() > 0) {
+			dss.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_DSS), crls);
+		}
+		if (certs.size() > 0) {
+			dss.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_DSS), certs);
+		}
+
+		return dss;
+	}
+
+	private PdfObject getPdfObjectForToken(PdfReader reader, PdfWriter writer,
+										   PdfValidationDataContainer validationDataContainer, Token token)
 			throws IOException {
-		String tokenKey = getTokenKey(token);
-		Long objectNumber = knownObjects.get(tokenKey);
+		Long objectNumber = validationDataContainer.getTokenReference(token);
 		if (objectNumber == null) {
 			PdfStream ps = new PdfStream(token.getEncoded());
 			return writer.addToBody(ps, false).getIndirectReference();

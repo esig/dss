@@ -31,6 +31,8 @@ import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
+import java.util.Objects;
+
 /**
  * PAdES Baseline T signature
  */
@@ -49,6 +51,8 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 * @param pdfObjectFactory {@link IPdfObjFactory}
 	 */
 	protected PAdESLevelBaselineT(TSPSource tspSource, IPdfObjFactory pdfObjectFactory) {
+		Objects.requireNonNull(tspSource, "TSPSource shall be defined!");
+		Objects.requireNonNull(pdfObjectFactory, "pdfObjectFactory shall be defined!");
 		this.tspSource = tspSource;
 		this.pdfObjectFactory = pdfObjectFactory;
 	}

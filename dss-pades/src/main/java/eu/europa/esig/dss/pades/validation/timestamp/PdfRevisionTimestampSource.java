@@ -20,15 +20,16 @@
  */
 package eu.europa.esig.dss.pades.validation.timestamp;
 
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.PdfDssDictCRLSource;
-import eu.europa.esig.dss.pades.validation.PdfDssDictCertificateSource;
 import eu.europa.esig.dss.pades.validation.PdfDssDictOCSPSource;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
-import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
@@ -45,13 +46,29 @@ public class PdfRevisionTimestampSource extends AbstractTimestampSource {
     /** The PdfRevision */
     private final PdfRevision pdfRevision;
 
+    /** Merged CertificateSource to find certificate binaries from */
+    private final ListCertificateSource certificateSource;
+
+    /** Merged CRL source */
+    private final ListRevocationSource<CRL> crlSource;
+
+    /** Merged OCSP source */
+    private final ListRevocationSource<OCSP> ocspSource;
+
     /**
      * Default constructor
      *
-     * @param pdfRevision {@link PdfRevision}
+     * @param pdfRevision {@link PdfRevision} to extract references from
+     * @param certificateSource {@link CertificateSource} a merged certificate source to search certificate binaries
+     * @param crlSource {@link ListRevocationSource} merged CRL source
+     * @param ocspSource {@link ListRevocationSource} merged OCSP source
      */
-    public PdfRevisionTimestampSource(final PdfRevision pdfRevision) {
+    public PdfRevisionTimestampSource(final PdfRevision pdfRevision, final ListCertificateSource certificateSource,
+                                      final ListRevocationSource<CRL> crlSource, final ListRevocationSource<OCSP> ocspSource) {
         this.pdfRevision = pdfRevision;
+        this.certificateSource = certificateSource;
+        this.crlSource = crlSource;
+        this.ocspSource = ocspSource;
     }
 
     /**
@@ -64,28 +81,23 @@ public class PdfRevisionTimestampSource extends AbstractTimestampSource {
             PdfDocTimestampRevision pdfDocTimestampRevision = (PdfDocTimestampRevision) pdfRevision;
 
             final TimestampToken timestampToken = pdfDocTimestampRevision.getTimestampToken();
-            return getReferencesFromTimestamp(timestampToken);
+            return getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource);
 
         } else if (pdfRevision instanceof PdfDocDssRevision) {
             PdfDocDssRevision pdfDocDssRevision = (PdfDocDssRevision) pdfRevision;
 
-            PdfDssDict dssDictionary = pdfDocDssRevision.getDssDictionary();
             final List<TimestampedReference> references = new ArrayList<>();
 
-            CertificateSource certificateSource = new PdfDssDictCertificateSource(dssDictionary);
-            addReferences(references, createReferencesForCertificates(certificateSource.getCertificates()));
+            CertificateSource dssCertificateSource = pdfDocDssRevision.getCertificateSource();
+            addReferences(references, createReferencesForCertificates(dssCertificateSource.getCertificates()));
 
-            PdfDssDictCRLSource crlSource = new PdfDssDictCRLSource(dssDictionary);
-            addReferences(references, createReferencesForIdentifiers(
-                    crlSource.getDSSDictionaryBinaries(), TimestampedObjectType.REVOCATION));
-            addReferences(references, createReferencesForIdentifiers(
-                    crlSource.getVRIDictionaryBinaries(), TimestampedObjectType.REVOCATION));
+            PdfDssDictCRLSource dssCRLSource = pdfDocDssRevision.getCRLSource();
+            addReferences(references, createReferencesForCRLBinaries(dssCRLSource.getDSSDictionaryBinaries()));
+            addReferences(references, createReferencesForCRLBinaries(dssCRLSource.getVRIDictionaryBinaries()));
 
-            PdfDssDictOCSPSource ocspSource = new PdfDssDictOCSPSource(dssDictionary);
-            addReferences(references, createReferencesForIdentifiers(
-                    ocspSource.getDSSDictionaryBinaries(), TimestampedObjectType.REVOCATION));
-            addReferences(references, createReferencesForIdentifiers(
-                    ocspSource.getVRIDictionaryBinaries(), TimestampedObjectType.REVOCATION));
+            PdfDssDictOCSPSource dssOCSPSource = pdfDocDssRevision.getOCSPSource();
+            addReferences(references, createReferencesForOCSPBinaries(dssOCSPSource.getDSSDictionaryBinaries(), certificateSource));
+            addReferences(references, createReferencesForOCSPBinaries(dssOCSPSource.getVRIDictionaryBinaries(), certificateSource));
 
             return references;
         }
