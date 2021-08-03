@@ -706,7 +706,7 @@ public class JAdESLevelBaselineB {
 		 */
 		if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism()) && parameters.isBase64UrlEncodedPayload()) {
 			throw new IllegalArgumentException(String.format("'%s' SigD Mechanism can be used only with non-base64url encoded payload! "
-					+ "Set JAdESSignatureParameters.setBase64UrlEncodedPayload(true).", SigDMechanism.HTTP_HEADERS.getUri()));
+					+ "Set JAdESSignatureParameters.setBase64UrlEncodedPayload(false).", SigDMechanism.HTTP_HEADERS.getUri()));
 		}
 	}
 
@@ -714,7 +714,7 @@ public class JAdESLevelBaselineB {
 		Map<String, Object> sigDParams = new LinkedHashMap<>();
 
 		sigDParams.put(JAdESHeaderParameterNames.M_ID, SigDMechanism.HTTP_HEADERS.getUri());
-		sigDParams.put(JAdESHeaderParameterNames.PARS, getHttpHeaderNames());
+		sigDParams.put(JAdESHeaderParameterNames.PARS, getHttpHeaderNames(detachedContents));
 
 		return sigDParams;
 	}
@@ -812,7 +812,7 @@ public class JAdESLevelBaselineB {
 	 *
 	 * @return a set of HTTP message field names
 	 */
-	private Collection<String> getHttpHeaderNames() {
+	private Collection<String> getHttpHeaderNames(List<DSSDocument> detachedContents) {
 		/*
 		 * TS 119 182-1 "5.2.8.2 Mechanism HttpHeaders" : 
 		 * 
@@ -823,7 +823,7 @@ public class JAdESLevelBaselineB {
 		 */
 		List<String> httpHeaderNames = new ArrayList<>();
 		
-		for (DSSDocument document : documentsToSign) {
+		for (DSSDocument document : detachedContents) {
 			if (document instanceof HTTPHeader) {
 				String headerName = Utils.lowerCase(document.getName());
 				if (!httpHeaderNames.contains(headerName)) {
