@@ -631,6 +631,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			page.getAnnotations().add(widget);
 
 			acroForm.getFields().add(signatureField);
+			COSArray fields = acroForm.getCOSObject().getCOSArray(COSName.FIELDS);
+			if (fields != null) {
+				fields.setNeedToBeUpdated(true);
+			}
 
 			acroForm.getCOSObject().setNeedToBeUpdated(true);
 			signatureField.getCOSObject().setNeedToBeUpdated(true);
