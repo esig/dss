@@ -36,6 +36,7 @@ import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -133,6 +134,9 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 	 * @param params {@link JAdESSignatureParameters} the extension parameters
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
+				certificateVerifier, params);
+
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
@@ -140,6 +144,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 
 			// The timestamp must be added only if there is no one or the extension -T level is being created
 			if (!jadesSignature.hasTProfile() || SignatureLevel.JAdES_BASELINE_T.equals(params.getSignatureLevel())) {
+				signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 				JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 				DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();

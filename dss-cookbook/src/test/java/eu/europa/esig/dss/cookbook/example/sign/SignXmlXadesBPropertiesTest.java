@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
@@ -43,6 +37,11 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * How to add signed properties to the signature.
@@ -107,6 +106,23 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 			// end::demo[]
+
+			// tag::requirements[]
+
+			// This parameter defines whether a signature creation/extension with an expired certificate shall be allowed
+			// Default : false (signature creation with an expired certificate is not allowed)
+			parameters.setSignWithExpiredCertificate(false);
+
+			// This parameter defines whether a signature creation/extension with a not yet valid certificate shall be allowed
+			// Default : false (signature creation with a not yet valid certificate is not allowed)
+			parameters.setSignWithNotYetValidCertificate(false);
+
+			// This parameter defines whether a revocation check shall be performed on a signature creation/extension
+			// Default : false (revocation check is not performed)
+			// NOTE: a behavior of the revocation check shall be defined with alerts within the used {@code eu.europa.esig.dss.validation.CertificateVerifier}
+			parameters.setCheckCertificateRevocation(false);
+
+			// end::requirements[]
 
 			testFinalDocument(signedDocument);
 		}

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.signature;
 
+import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
@@ -44,7 +45,6 @@ import org.slf4j.LoggerFactory;
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.security.Signature;
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -63,7 +63,7 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureService.class);
 
-	/** The TSPSourse to use for timestamp requests */
+	/** The TSPSource to use for timestamp requests */
 	protected TSPSource tspSource;
 
 	/** The CertificateVerifier used for a certificate chain validation */
@@ -87,13 +87,14 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 	}
 
 	/**
-	 * This method raises an exception if the signing rules forbid the use on an expired certificate.
+	 * This method raises an exception if the signing rules forbid the use the certificate.
 	 *
 	 * @param parameters
 	 *            set of driving signing parameters
 	 */
-	protected void assertSigningDateInCertificateValidityRange(final SerializableSignatureParameters parameters) {
-		if (parameters.getSigningCertificate() == null) {
+	protected void assertSigningCertificateValid(final AbstractSignatureParameters<?> parameters) {
+		final CertificateToken signingCertificate = parameters.getSigningCertificate();
+		if (signingCertificate == null) {
 			if (parameters.isGenerateTBSWithoutCertificate()) {
 				return;
 			} else {
@@ -101,40 +102,10 @@ public abstract class AbstractSignatureService<SP extends SerializableSignatureP
 						"Set signing certificate or use method setGenerateTBSWithoutCertificate(true).");
 			}
 		}
-		assertSigningCertificateIsYetValid(parameters);
-		assertSigningCertificateIsNotExpired(parameters);
-	}
 
-	private void assertSigningCertificateIsYetValid(SerializableSignatureParameters parameters) {
-		if (parameters.isSignWithNotYetValidCertificate()) {
-			return;
-		}
-		final CertificateToken signingCertificate = parameters.getSigningCertificate();
-		final Date notBefore = signingCertificate.getNotBefore();
-		final Date notAfter = signingCertificate.getNotAfter();
-		final Date signingDate = parameters.bLevel().getSigningDate();
-		if (signingDate.before(notBefore)) {
-			throw new IllegalArgumentException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
-							"is not yet valid at signing time %s! Change signing certificate or use method " +
-							"setSignWithNotYetValidCertificate(true).",
-					notBefore.toString(), notAfter.toString(), signingDate.toString()));
-		}
-	}
-
-	private void assertSigningCertificateIsNotExpired(SerializableSignatureParameters parameters) {
-		if (parameters.isSignWithExpiredCertificate()) {
-			return;
-		}
-		final CertificateToken signingCertificate = parameters.getSigningCertificate();
-		final Date notBefore = signingCertificate.getNotBefore();
-		final Date notAfter = signingCertificate.getNotAfter();
-		final Date signingDate = parameters.bLevel().getSigningDate();
-		if (signingDate.after(notAfter)) {
-			throw new IllegalArgumentException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
-							"is expired at signing time %s! Change signing certificate or use method " +
-							"setSignWithExpiredCertificate(true).",
-					notBefore.toString(), notAfter.toString(), signingDate.toString()));
-		}
+		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
+				certificateVerifier, parameters);
+		signatureRequirementsChecker.assertSigningCertificateIsValid(signingCertificate);
 	}
 
 	/**

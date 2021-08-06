@@ -28,9 +28,11 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -44,6 +46,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PDFTimestampingTest extends PKIFactoryAccess {
@@ -59,7 +62,11 @@ public class PDFTimestampingTest extends PKIFactoryAccess {
 		
 		extendParams.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 		extendParams.setSigningCertificate(getSigningCert());
-		DSSDocument extendedDoc = service.extendDocument(doc, extendParams);
+
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, extendParams));
+		assertEquals("No signatures found to be extended!", exception.getMessage());
+
+		DSSDocument extendedDoc = service.timestamp(doc, new PAdESTimestampParameters());
 		
 		PDFDocumentValidator validator = new PDFDocumentValidator(extendedDoc);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());

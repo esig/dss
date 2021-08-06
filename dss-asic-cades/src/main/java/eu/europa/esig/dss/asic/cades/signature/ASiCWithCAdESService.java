@@ -113,7 +113,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
 			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESDataToSignHelperBuilder()
 				.build(SigningOperation.SIGN, toSignDocuments, parameters);
@@ -134,7 +134,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
 
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESDataToSignHelperBuilder()
 				.build(SigningOperation.SIGN, toSignDocuments, parameters);
@@ -552,7 +552,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	public ToBeSigned getDataToBeCounterSigned(DSSDocument asicContainer, CAdESCounterSignatureParameters parameters) {
 		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 		assertCounterSignatureParametersValid(parameters);
 
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);

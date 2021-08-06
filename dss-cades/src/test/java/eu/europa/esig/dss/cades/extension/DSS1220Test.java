@@ -21,11 +21,6 @@
 package eu.europa.esig.dss.cades.extension;
 
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -37,6 +32,10 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1220Test extends PKIFactoryAccess {
 
@@ -93,7 +92,8 @@ public class DSS1220Test extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 
 		DSSDocument toExtendDocument = new FileDocument("src/test/resources/validation/dss-1220/CAdES-BpB_revoked_signingCertificate.p7m");
-		assertThrows(AlertException.class, () -> service.extendDocument(toExtendDocument, parameters));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.extendDocument(toExtendDocument, parameters));
+		assertTrue(exception.getMessage().contains("is expired at signing time"));
 	}
 
 	@Override

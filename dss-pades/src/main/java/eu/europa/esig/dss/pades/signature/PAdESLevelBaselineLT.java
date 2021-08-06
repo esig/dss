@@ -28,21 +28,16 @@ import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * PAdES Baseline LT signature
  */
 class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
-
-	/** The used CertificateVerifier */
-	private final CertificateVerifier certificateVerifier;
 
 	/**
 	 * The default constructor
@@ -53,54 +48,25 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 	 */
 	PAdESLevelBaselineLT(final TSPSource tspSource, final CertificateVerifier certificateVerifier,
 						 final IPdfObjFactory pdfObjectFactory) {
-		super(tspSource, pdfObjectFactory);
-		this.certificateVerifier = certificateVerifier;
+		super(tspSource, certificateVerifier, pdfObjectFactory);
 	}
 
 	@Override
-	public DSSDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) {
-		assertExtensionPossible(document);
-
-		// check if needed to extend with PAdESLevelBaselineT
-		PDFDocumentValidator pdfDocumentValidator = getPDFDocumentValidator(document, parameters);
-
-		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
-		if (Utils.isCollectionEmpty(signatures)) {
-			throw new IllegalInputException("No signatures found to be extended!");
+	protected DSSDocument extendSignatures(DSSDocument document, PDFDocumentValidator documentValidator,
+										   PAdESSignatureParameters parameters) {
+		final DSSDocument extendedDocument = super.extendSignatures(document, documentValidator, parameters);
+		if (extendedDocument != document) { // check if T-level has been added
+			documentValidator = getPDFDocumentValidator(document, parameters);
 		}
 
-		for (final AdvancedSignature signature : signatures) {
-			if (requiresDocumentTimestamp(signature)) {
-				// extend to T-level
-				document = super.extendSignatures(document, parameters);
-				pdfDocumentValidator = getPDFDocumentValidator(document, parameters);
-				break;
-			}
-		}
-
-		signatures = pdfDocumentValidator.getSignatures();
+		List<AdvancedSignature> signatures = documentValidator.getSignatures();
 		assertExtendSignaturePossible(signatures);
 
-		List<TimestampToken> detachedTimestamps = pdfDocumentValidator.getDetachedTimestamps();
-		PdfValidationDataContainer validationData = pdfDocumentValidator.getValidationData(signatures, detachedTimestamps);
+		List<TimestampToken> detachedTimestamps = documentValidator.getDetachedTimestamps();
+		PdfValidationDataContainer validationData = documentValidator.getValidationData(signatures, detachedTimestamps);
 
 		final PDFSignatureService signatureService = newPdfSignatureService();
-		return signatureService.addDssDictionary(document, validationData, parameters.getPasswordProtection());
-	}
-	
-	private PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, PAdESSignatureParameters parameters) {
-		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
-		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
-		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
-		pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
-		return pdfDocumentValidator;
-	}
-
-	private boolean requiresDocumentTimestamp(AdvancedSignature signature) {
-		List<TimestampToken> timestamps = new ArrayList<>(signature.getSignatureTimestamps());
-		timestamps.addAll(signature.getArchiveTimestamps());
-		timestamps.addAll(signature.getDocumentTimestamps());
-		return Utils.isCollectionEmpty(timestamps);
+		return signatureService.addDssDictionary(extendedDocument, validationData, parameters.getPasswordProtection());
 	}
 
 	private void assertExtendSignaturePossible(List<AdvancedSignature> signatures) {

@@ -157,11 +157,11 @@ public class SignatureValidationContext implements ValidationContext {
 
 	/**
 	 * @param certificateVerifier
-	 *            The certificates verifier (eg: using the TSL as list of trusted certificates).
+	 *            The certificate verifier (eg: using the TSL as list of trusted certificates).
 	 */
 	@Override
 	public void initialize(final CertificateVerifier certificateVerifier) {
-		Objects.requireNonNull(certificateVerifier);
+		Objects.requireNonNull(certificateVerifier, "CertificateVerifier cannot be null!");
 
 		this.certificateVerifier = certificateVerifier;
 		this.remoteCRLSource = certificateVerifier.getCrlSource();
@@ -357,19 +357,25 @@ public class SignatureValidationContext implements ValidationContext {
 		if (Utils.isCollectionEmpty(candidates)) {
 			candidates = getIssuersFromSources(token, allCertificateSources);
 		}
+
+		// Find issuer from provided certificate tokens
+		if (Utils.isCollectionEmpty(candidates)) {
+			candidates = processedCertificates;
+		}
+
 		issuerCertificateToken = getTokenIssuerFromCandidates(token, candidates);
 
-		if ((issuerCertificateToken == null) && (token instanceof CertificateToken) && aiaSource != null) {
+		if (issuerCertificateToken == null && token instanceof CertificateToken && aiaSource != null) {
 			final AIACertificateSource aiaCertificateSource = new AIACertificateSource((CertificateToken) token, aiaSource);
 			issuerCertificateToken = aiaCertificateSource.getIssuerFromAIA();
 			addCertificateSource(aiaCertificateSources, aiaCertificateSource);
 		}
 		
-		if ((issuerCertificateToken == null) && (token instanceof OCSPToken)) {
+		if (issuerCertificateToken == null && token instanceof OCSPToken) {
 			issuerCertificateToken = getOCSPIssuer((OCSPToken) token, allCertificateSources);
 		}
 
-		if ((issuerCertificateToken == null) && (token instanceof TimestampToken)) {
+		if (issuerCertificateToken == null && token instanceof TimestampToken) {
 			issuerCertificateToken = getTSACertificate((TimestampToken) token, allCertificateSources);
 		}
 
@@ -473,6 +479,13 @@ public class SignatureValidationContext implements ValidationContext {
 		return null;
 	}
 
+	/**
+	 * This method returns a token issuer from a collection of {@code candidates}
+	 *
+	 * @param token {@link Token} to get an issuer for
+	 * @param candidates a collection of {@link CertificateToken} to get an issuer from
+	 * @return {@link CertificateToken} issuer certificate token if found, null if no matching issuer has been found
+	 */
 	private CertificateToken getTokenIssuerFromCandidates(Token token, Collection<CertificateToken> candidates) {
 		List<CertificateToken> issuers = new ArrayList<>();
 		for (CertificateToken candidate : candidates) {
@@ -668,8 +681,6 @@ public class SignatureValidationContext implements ValidationContext {
 			token = getNotYetVerifiedToken();
 		}
 	}
-
-
 
 	/**
 	 * Retrieves the revocation data from signature (if exists) or from the online

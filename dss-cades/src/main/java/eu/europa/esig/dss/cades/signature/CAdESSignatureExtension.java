@@ -76,15 +76,6 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * The default constructor
 	 * 
 	 * @param tspSource {@link TSPSource}
-	 */
-	protected CAdESSignatureExtension(final TSPSource tspSource) {
-		this(tspSource, null);
-	}
-
-	/**
-	 * The default constructor
-	 * 
-	 * @param tspSource {@link TSPSource}
 	 * @param certificateVerifier {@link CertificateVerifier}
 	 */
 	protected CAdESSignatureExtension(final TSPSource tspSource, final CertificateVerifier certificateVerifier) {
@@ -291,10 +282,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 */
 	protected CMSDocumentValidator getDocumentValidator(CMSSignedData signedData, CAdESSignatureParameters parameters) {
 		CMSDocumentValidator documentValidator = new CMSDocumentValidator(signedData);
-		if (certificateVerifier != null) {
-			// can be null for T-level extension
-			documentValidator.setCertificateVerifier(certificateVerifier);
-		}
+		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(parameters.getDetachedContents());
 		return documentValidator;
 	}

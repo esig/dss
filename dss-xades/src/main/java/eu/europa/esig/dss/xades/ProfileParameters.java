@@ -20,11 +20,16 @@
  */
 package eu.europa.esig.dss.xades;
 
+import eu.europa.esig.dss.signature.SigningOperation;
+
 import java.io.Serializable;
 
 /**
  * This class manages the internal variables used in the process of creating of a signature and which allows to
  * accelerate the generation.
+ *
+ * NOTE: Currently used only for XAdES.
+ *
  */
 public class ProfileParameters implements Serializable {
 
@@ -34,14 +39,14 @@ public class ProfileParameters implements Serializable {
 	private SignatureProfile profile;
 
 	/**
-	 * The builder used to create the signature structure. Currently used only for XAdES.
+	 * The builder used to create the signature structure.
 	 */
 	private SignatureBuilder builder;
 
 	/**
 	 * Indicates the type of the operation to be done
 	 */
-	private Operation operationKind;
+	private SigningOperation operationKind;
 
 	/**
 	 * Returns the current Profile used to generate the signature or its extension
@@ -83,29 +88,19 @@ public class ProfileParameters implements Serializable {
 	/**
 	 * Gets the current operation type
 	 *
-	 * @return {@link Operation}
+	 * @return {@link SigningOperation}
 	 */
-	public Operation getOperationKind() {
+	public SigningOperation getOperationKind() {
 		return operationKind;
 	}
 
 	/**
 	 * Sets the operation kind
 	 *
-	 * @param operationKind {@link Operation}
+	 * @param operationKind {@link SigningOperation}
 	 */
-	public void setOperationKind(Operation operationKind) {
+	public void setOperationKind(SigningOperation operationKind) {
 		this.operationKind = operationKind;
-	}
-
-	/**
-	 * The type of operation to perform.
-	 */
-	public enum Operation {
-		/** The signing operation */
-		SIGNING,
-		/** The extension operation */
-		EXTENDING
 	}
 
 }

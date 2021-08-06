@@ -34,6 +34,8 @@ import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -48,7 +50,6 @@ import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
-import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
@@ -71,7 +72,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
-import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 
 /**
  * -T profile of XAdES signature
@@ -120,7 +120,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		documentDom = documentValidator.getRootElement();
 
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
-
 		if (Utils.isCollectionEmpty(signatures)) {
 			throw new IllegalInputException("There is no signature to extend!");
 		}
@@ -129,8 +128,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		// we will just extend the signature that is being created (during creation process)
 		List<AdvancedSignature> signaturesToExtend = signatures;
 		
-		final Operation operationKind = context.getOperationKind();
-		if (SIGNING.equals(operationKind)) {
+		final SigningOperation operationKind = context.getOperationKind();
+		if (SigningOperation.SIGN.equals(operationKind)) {
 			String signatureId = params.getDeterministicId();
 
 			for (AdvancedSignature signature : signatures) {
@@ -155,6 +154,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param signatures a list of {@link AdvancedSignature}s to extend
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
+				certificateVerifier, params);
+
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
 
@@ -165,6 +167,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 			// The timestamp must be added only if there is no one or the extension -T level is being created
 			if (!xadesSignature.hasTProfile() || XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
+				signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 				final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 				final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
