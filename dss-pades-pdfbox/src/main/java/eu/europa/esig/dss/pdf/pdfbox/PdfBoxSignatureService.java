@@ -49,6 +49,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -81,7 +82,9 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -453,11 +456,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private COSDictionary buildDSSDictionary(PDDocument pdDocument, PdfValidationDataContainer validationDataForInclusion)
 			throws IOException {
-		COSDictionary dss = new COSDictionary();
-
+		final COSDictionary dss = new COSDictionary();
 		final COSArray certs = new COSArray();
 		final COSArray crls = new COSArray();
 		final COSArray ocsps = new COSArray();
+
+		final Map<String, COSBase> knownObjects = new HashMap<>();
 
 		Collection<AdvancedSignature> signatures = validationDataForInclusion.getSignatures();
 		if (Utils.isCollectionNotEmpty(signatures)) {
@@ -477,10 +481,14 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
 						COSArray sigCerts = new COSArray();
 						for (CertificateToken certificateToken : certificateTokensToAdd) {
-							COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, certificateToken);
+							final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+									knownObjects, certificateToken);
+							// ensure there is no duplicated references
 							if (sigCerts.indexOf(cosObject) == -1) {
 								sigCerts.add(cosObject);
-								certs.add(cosObject);
+								if (certs.indexOf(cosObject) == -1) {
+									certs.add(cosObject);
+								}
 							}
 						}
 						sigVriDictionary.setItem(PAdESConstants.CERT_ARRAY_NAME_VRI, sigCerts);
@@ -490,10 +498,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
 						COSArray sigCrls = new COSArray();
 						for (CRLToken crlToken : crlTokensToAdd) {
-							COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, crlToken);
+							final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+									knownObjects, crlToken);
 							if (sigCrls.indexOf(cosObject) == -1) {
 								sigCrls.add(cosObject);
-								crls.add(cosObject);
+								if (crls.indexOf(cosObject) == -1) {
+									crls.add(cosObject);
+								}
 							}
 						}
 						sigVriDictionary.setItem(PAdESConstants.CRL_ARRAY_NAME_VRI, sigCrls);
@@ -503,10 +514,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
 						COSArray sigOcsps = new COSArray();
 						for (OCSPToken ocspToken : ocspTokensToAdd) {
-							COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, ocspToken);
+							final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+									knownObjects, ocspToken);
 							if (sigOcsps.indexOf(cosObject) == -1) {
 								sigOcsps.add(cosObject);
-								ocsps.add(cosObject);
+								if (ocsps.indexOf(cosObject) == -1) {
+									ocsps.add(cosObject);
+								}
 							}
 						}
 						sigVriDictionary.setItem(PAdESConstants.OCSP_ARRAY_NAME_VRI, sigOcsps);
@@ -519,13 +533,17 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 			dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
 
-		} else { // for detached timestamps
+		}
+
+		Collection<TimestampToken> detachedTimestamps = validationDataForInclusion.getDetachedTimestamps();
+		if (Utils.isCollectionNotEmpty(detachedTimestamps)) { // for detached timestamps
 
 			ValidationData validationDataToAdd = validationDataForInclusion.getAllValidationData();
 			Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
 			if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
-				for (CertificateToken certToken : certificateTokensToAdd) {
-					COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, certToken);
+				for (CertificateToken certificateToken : certificateTokensToAdd) {
+					final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+							knownObjects, certificateToken);
 					if (certs.indexOf(cosObject) == -1) {
 						certs.add(cosObject);
 					}
@@ -534,7 +552,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
 			if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
 				for (CRLToken crlToken : crlTokensToAdd) {
-					COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, crlToken);
+					final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+							knownObjects, crlToken);
 					if (crls.indexOf(cosObject) == -1) {
 						crls.add(cosObject);
 					}
@@ -543,7 +562,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
 			if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
 				for (OCSPToken ocspToken : validationDataToAdd.getOcspTokens()) {
-					COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion, ocspToken);
+					final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+							knownObjects, ocspToken);
 					if (ocsps.indexOf(cosObject) == -1) {
 						ocsps.add(cosObject);
 					}
@@ -565,7 +585,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	private COSBase getPdfObjectForToken(PDDocument pdDocument, PdfValidationDataContainer validationDataContainer,
-										 Token token) throws IOException {
+										 Map<String, COSBase> knownObjects, Token token) throws IOException {
+		final String tokenKey = validationDataContainer.getTokenKey(token);
+		COSBase object = knownObjects.get(tokenKey);
+		if (object != null) {
+			return object;
+		}
+
 		Long objectNumber = validationDataContainer.getTokenReference(token);
 		if (objectNumber == null) {
 			COSStream stream = pdDocument.getDocument().createCOSStream();
@@ -573,10 +599,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				unfilteredStream.write(token.getEncoded());
 				unfilteredStream.flush();
 			}
-			return stream;
+			object = stream;
 		} else {
-			return getByObjectNumber(pdDocument, objectNumber);
+			object = getByObjectNumber(pdDocument, objectNumber);
 		}
+
+		knownObjects.put(tokenKey, object);
+		return object;
 	}
 
 	private COSObject getByObjectNumber(PDDocument pdDocument, Long objectNumber) {
