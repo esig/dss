@@ -11,25 +11,20 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESSignBLevelAndSignLTALevelTest extends AbstractJAdESTestSignature {
+public class JAdESDoubleSignBAndExtendToLTATest extends AbstractJAdESTestSignature {
+
+    private DSSDocument originalDocument;
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
-    private DSSDocument originalDocument;
     private JAdESSignatureParameters signatureParameters;
-
     private DSSDocument documentToSign;
-
-    private String firstSignatureId;
 
     @BeforeEach
     public void init() throws Exception {
@@ -37,31 +32,28 @@ public class JAdESSignBLevelAndSignLTALevelTest extends AbstractJAdESTestSignatu
         service.setTspSource(getGoodTsa());
 
         originalDocument = new FileDocument(new File("src/test/resources/sample.json"));
-
-        signatureParameters = new JAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
-        signatureParameters.setSigningCertificate(getSigningCert());
-        signatureParameters.setCertificateChain(getCertificateChain());
-        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
-        signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
     }
 
     @Override
     protected DSSDocument sign() {
+        signatureParameters = new JAdESSignatureParameters();
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
         documentToSign = originalDocument;
         DSSDocument signedDocument = super.sign();
 
-        SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-        List<AdvancedSignature> signatures = validator.getSignatures();
-        assertEquals(1, signatures.size());
-        firstSignatureId = signatures.get(0).getDSSId().asXmlId();
-
-        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
+        signatureParameters = new JAdESSignatureParameters();
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
         documentToSign = signedDocument;
         DSSDocument doubleSignedDocument = super.sign();
+
+        JAdESSignatureParameters extensionParameters = new JAdESSignatureParameters();
+        extensionParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
+        extensionParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
+        DSSDocument extendedDocument = service.extendDocument(doubleSignedDocument, extensionParameters);
+
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
         documentToSign = originalDocument;
-        return doubleSignedDocument;
+        return extendedDocument;
     }
 
     @Override
@@ -76,18 +68,16 @@ public class JAdESSignBLevelAndSignLTALevelTest extends AbstractJAdESTestSignatu
 
     @Override
     protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-        boolean bLevelSigFound = false;
-        boolean ltaLevelSigFound = false;
+        super.checkSignatureLevel(diagnosticData);
+
         for (SignatureWrapper signature : diagnosticData.getSignatures()) {
-            if (SignatureLevel.JAdES_BASELINE_B.equals(signature.getSignatureFormat())) {
-                assertEquals(firstSignatureId, signature.getId());
-                bLevelSigFound = true;
-            } else if (SignatureLevel.JAdES_BASELINE_LTA.equals(signature.getSignatureFormat())) {
-                ltaLevelSigFound = true;
-            }
+            assertEquals(SignatureLevel.JAdES_BASELINE_LTA, signature.getSignatureFormat());
         }
-        assertTrue(bLevelSigFound);
-        assertTrue(ltaLevelSigFound);
+    }
+
+    @Override
+    protected void checkSigningDate(DiagnosticData diagnosticData) {
+        // skip
     }
 
     @Override
@@ -102,6 +92,10 @@ public class JAdESSignBLevelAndSignLTALevelTest extends AbstractJAdESTestSignatu
 
     @Override
     protected JAdESSignatureParameters getSignatureParameters() {
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
         return signatureParameters;
     }
 
