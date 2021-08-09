@@ -121,7 +121,7 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         List<RelatedCertificateWrapper> timestampValidationDataCertificates = signature
         		.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
-        assertEquals(0, timestampValidationDataCertificates.size());
+        assertEquals(4, timestampValidationDataCertificates.size());
         
 		List<TimestampWrapper> timestampedTimestamps = secondArchiveTst.getTimestampedTimestamps();
 		assertEquals(2, timestampedTimestamps.size());
