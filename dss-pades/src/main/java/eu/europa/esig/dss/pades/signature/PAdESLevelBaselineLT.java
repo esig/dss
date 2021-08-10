@@ -56,7 +56,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 										   PAdESSignatureParameters parameters) {
 		final DSSDocument extendedDocument = super.extendSignatures(document, documentValidator, parameters);
 		if (extendedDocument != document) { // check if T-level has been added
-			documentValidator = getPDFDocumentValidator(document, parameters);
+			documentValidator = getPDFDocumentValidator(extendedDocument, parameters);
 		}
 
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
