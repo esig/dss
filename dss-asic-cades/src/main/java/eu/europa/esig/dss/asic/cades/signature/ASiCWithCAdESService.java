@@ -384,16 +384,19 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		if (lastTimestamp != null) {
 			ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(toExtendDocument);
 			validator.setCertificateVerifier(certificateVerifier);
-			List<AdvancedSignature> allSignatures = validator.getAllSignatures();
-			List<TimestampToken> detachedTimestamps = validator.getDetachedTimestamps();
+
+			final List<AdvancedSignature> allSignatures = validator.getAllSignatures();
+			final List<TimestampToken> detachedTimestamps = validator.getDetachedTimestamps();
+
+			ValidationDataContainer validationDataContainer = validator.getValidationData(allSignatures, detachedTimestamps);
+			ValidationData allValidationData = validationDataContainer.getAllValidationData();
+
+			// ensure the validation data is not duplicated
 			if (Utils.isCollectionNotEmpty(extendedDocuments)) {
 				for (DSSDocument documentToExtend : extendedDocuments) {
 					allSignatures.addAll(new CMSDocumentValidator(documentToExtend).getSignatures());
 				}
 			}
-
-			ValidationDataContainer validationDataContainer = validator.getValidationData(allSignatures, detachedTimestamps);
-			ValidationData allValidationData = validationDataContainer.getAllValidationData();
 			for (AdvancedSignature signature : allSignatures) {
 				allValidationData.excludeCertificateTokens(signature.getCompleteCertificateSource().getAllCertificateTokens());
 				allValidationData.excludeCRLTokens(signature.getCompleteCRLSource().getAllRevocationBinaries());
