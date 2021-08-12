@@ -271,7 +271,7 @@
 			<Algo>PLAIN-ECDSA</Algo>
 		</AcceptableEncryptionAlgo>
 		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
+			<Algo Size="1024">DSA</Algo>
 			<Algo Size="1024">RSA</Algo>
 			<Algo Size="192">ECDSA</Algo>
 			<Algo Size="192">PLAIN-ECDSA</Algo>
@@ -295,7 +295,7 @@
 			<Algo Date="2035-02-24">SHA384</Algo>
 			<Algo Date="2035-02-24">SHA512</Algo>
 			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24" Size="128">DSA</Algo>
+			<Algo Date="2017-02-24" Size="1024">DSA</Algo>
 			<Algo Date="2020-02-24" Size="1024">RSA</Algo>
 			<Algo Date="2020-02-24" Size="1536">RSA</Algo>
 			<Algo Date="2035-02-24" Size="2048">RSA</Algo>
