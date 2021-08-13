@@ -1035,9 +1035,15 @@ public class SignatureValidationContext implements ValidationContext {
 			return false;
 		}
 
+		if (!revocationDataHasInformationAboutCertificate(revocation, certToken)) {
+			LOG.debug("The revocation '{}' has been produced before the start of the validity of the certificate '{}'!",
+					revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
+			return false;
+		}
+
 		if (RevocationType.OCSP.equals(revocation.getRevocationType()) &&
 				!DSSRevocationUtils.checkIssuerValidAtRevocationProductionTime(revocation)) {
-			LOG.debug("The revocation {} is not consistent! The revocation has been produced outside " +
+			LOG.debug("The revocation '{}' is not consistent! The revocation has been produced outside " +
 					"the issuer certificate's validity range!", revocation.getDSSIdAsString());
 			return false;
 		}
@@ -1065,6 +1071,10 @@ public class SignatureValidationContext implements ValidationContext {
 
 		LOG.debug("The revocation '{}' is consistent. Certificate: {}", revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
 		return true;
+	}
+
+	private boolean revocationDataHasInformationAboutCertificate(RevocationToken<?> revocationToken, CertificateToken certificateToken) {
+		return certificateToken.getNotBefore().compareTo(revocationToken.getThisUpdate()) <= 0;
 	}
 
 	private boolean isInCertificateValidityRange(RevocationToken<?> revocationToken, CertificateToken certificateToken) {
