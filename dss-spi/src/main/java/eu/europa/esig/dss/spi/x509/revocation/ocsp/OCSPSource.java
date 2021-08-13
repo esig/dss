@@ -25,8 +25,8 @@ import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 
 /**
- * Typed sub-interface which allows to collect {@code OCSPToken}. The validation
- * of a certificate may require the use of OCSP information. Theses information
+ * Typed sub-interface which allows collection of {@code OCSPToken}(s). The validation
+ * of a certificate may require the use of OCSP information. This information
  * can be provided by multiple sources (the signature itself, online OCSP
  * server, ...). This interface provides an abstraction for a source of OCSPResp
  *
