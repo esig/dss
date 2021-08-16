@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,6 +74,21 @@ public class ITextSignatureFieldTest extends PKIFactoryAccess {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> padesService.addNewSignatureField(document, parameters));
         assertEquals("The page number '10' does not exist in the file!", exception.getMessage());
+    }
+
+    @Test
+    public void addSignatureFieldToEncryptedPdfTest() {
+        DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+        List<String> availableSignatureFields = padesService.getAvailableSignatureFields(document);
+        assertFalse(Utils.isCollectionNotEmpty(availableSignatureFields));
+
+        SignatureFieldParameters parameters = new SignatureFieldParameters();
+        parameters.setFieldId("signature-test");
+
+        DSSDocument docWithSignatureField = padesService.addNewSignatureField(document, parameters);
+        availableSignatureFields = padesService.getAvailableSignatureFields(docWithSignatureField);
+        assertTrue(Utils.isCollectionNotEmpty(availableSignatureFields));
+        assertEquals("signature-test", availableSignatureFields.get(0));
     }
 
     @Test
