@@ -69,6 +69,7 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -255,14 +256,20 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(targetFieldId)) {
 			PDAcroForm acroForm = pdDocument.getDocumentCatalog().getAcroForm();
 			if (acroForm != null) {
-				PDSignatureField signatureField = (PDSignatureField) acroForm.getField(targetFieldId);
-				if (signatureField != null) {
-					PDSignature signature = signatureField.getSignature();
-					if (signature != null) {
-						throw new IllegalArgumentException(String.format(
-								"The signature field '%s' can not be signed since its already signed.", targetFieldId));
+				PDField field = acroForm.getField(targetFieldId);
+				if (field != null) {
+					if (field instanceof PDSignatureField) {
+						PDSignatureField signatureField = (PDSignatureField) field;
+						PDSignature signature = signatureField.getSignature();
+						if (signature != null) {
+							throw new IllegalArgumentException(String.format(
+									"The signature field '%s' can not be signed since its already signed.", targetFieldId));
+						}
+						return signatureField;
+					} else {
+						throw new IllegalArgumentException(String.format("The field '%s' is not a signature field!",
+								targetFieldId));
 					}
-					return signatureField;
 				}
 			}
 			throw new IllegalArgumentException(String.format("The signature field '%s' does not exist.", targetFieldId));
