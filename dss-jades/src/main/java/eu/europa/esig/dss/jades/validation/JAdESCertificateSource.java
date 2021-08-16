@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 
 import java.security.PublicKey;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -243,12 +242,6 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	// ------------- Not supported
-
-	@Override
-	public List<CertificateToken> getTimeStampValidationDataCertValues() {
-		// Not supported
-		return Collections.emptyList();
-	}
 
 	@Override
 	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(

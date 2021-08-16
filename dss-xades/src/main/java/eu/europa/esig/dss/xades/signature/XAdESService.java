@@ -35,7 +35,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.ProfileParameters;
-import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -97,7 +96,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(certificateVerifier);
 		final byte[] dataToSign = levelBaselineB.getDataToSign(toSignDocument, parameters);
 		if (LOG.isTraceEnabled()) {
@@ -127,8 +126,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
 		
-		assertSigningDateInCertificateValidityRange(parameters);
-		parameters.getContext().setOperationKind(Operation.SIGNING);
+		assertSigningCertificateValid(parameters);
+		parameters.getContext().setOperationKind(SigningOperation.SIGN);
 		SignatureProfile profile;
 		final ProfileParameters context = parameters.getContext();
 		if (context.getProfile() != null) {
@@ -175,7 +174,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
 		
-		parameters.getContext().setOperationKind(Operation.EXTENDING);
+		parameters.getContext().setOperationKind(SigningOperation.EXTEND);
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
 			final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);

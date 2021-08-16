@@ -61,6 +61,19 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * @return true if signature with a not yet valid certificate is allowed
 	 */
 	boolean isSignWithNotYetValidCertificate();
+
+	/**
+	 * Indicates whether a revocation check shall be performed for a signing certificate and
+	 * a respectful certificate chain.
+	 * When set to false, the revocation check is not performed.
+	 * When set to true, a real-time revocation is being requested from external sources
+	 * (shall be defined in CertificateVerifier) and processed according to alerts set within that CertificateVerifier.
+	 *
+	 * Default value : false (no revocation check is performed on signature creation or T-level extension)
+	 *
+	 * @return if signature with a revoked certificate is allowed
+	 */
+	boolean isCheckCertificateRevocation();
 	
 	/**
 	 * Get Baseline B parameters (signed properties)

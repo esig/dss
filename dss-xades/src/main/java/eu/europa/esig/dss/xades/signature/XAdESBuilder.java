@@ -31,11 +31,11 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESElement;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
@@ -295,7 +295,7 @@ public abstract class XAdESBuilder {
 	 */
 	protected DSSDocument createXmlDocument() {
 		byte[] bytes;
-		if (Operation.SIGNING.equals(params.getContext().getOperationKind()) && params.isPrettyPrint()) {
+		if (SigningOperation.SIGN.equals(params.getContext().getOperationKind()) && params.isPrettyPrint()) {
 			alignNodes();
 			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignature(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
 		} else {

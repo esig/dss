@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.extension;
 
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -80,6 +81,13 @@ public class CAdESMultipleCounterSignatureExtensionTest extends AbstractCAdESTes
 		service.setTspSource(getGoodTsaByTime(tstTime));
 	}
 	
+	@Override
+	protected CAdESSignatureParameters getExtensionParameters() {
+		CAdESSignatureParameters extensionParameters = super.getExtensionParameters();
+		extensionParameters.setSignWithExpiredCertificate(true);
+		return extensionParameters;
+	}
+
 	@Test
 	@Override
 	public void extendAndVerify() throws Exception {

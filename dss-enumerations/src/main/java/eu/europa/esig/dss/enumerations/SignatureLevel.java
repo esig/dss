@@ -96,7 +96,7 @@ public enum SignatureLevel {
 		case PKCS7_LTA:
 			return SignatureForm.PKCS7;
 		default:
-			return null;
+			throw new UnsupportedOperationException(String.format("The signature level '%s' is not supported!", this));
 		}
 	}
 }

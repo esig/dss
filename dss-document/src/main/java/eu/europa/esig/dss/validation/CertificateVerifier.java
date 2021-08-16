@@ -318,7 +318,7 @@ public interface CertificateVerifier {
 	StatusAlert getAlertOnExpiredSignature();
 
 	/**
-	 * This method allows to enable revocation checking for untrusted certificate
+	 * This method allows enabling of revocation checking for untrusted certificate
 	 * chains (default : false)
 	 * 
 	 * @param enable

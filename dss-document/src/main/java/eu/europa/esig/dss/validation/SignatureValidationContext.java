@@ -157,11 +157,11 @@ public class SignatureValidationContext implements ValidationContext {
 
 	/**
 	 * @param certificateVerifier
-	 *            The certificates verifier (eg: using the TSL as list of trusted certificates).
+	 *            The certificate verifier (eg: using the TSL as list of trusted certificates).
 	 */
 	@Override
 	public void initialize(final CertificateVerifier certificateVerifier) {
-		Objects.requireNonNull(certificateVerifier);
+		Objects.requireNonNull(certificateVerifier, "CertificateVerifier cannot be null!");
 
 		this.certificateVerifier = certificateVerifier;
 		this.remoteCRLSource = certificateVerifier.getCrlSource();
@@ -357,19 +357,25 @@ public class SignatureValidationContext implements ValidationContext {
 		if (Utils.isCollectionEmpty(candidates)) {
 			candidates = getIssuersFromSources(token, allCertificateSources);
 		}
+
+		// Find issuer from provided certificate tokens
+		if (Utils.isCollectionEmpty(candidates)) {
+			candidates = processedCertificates;
+		}
+
 		issuerCertificateToken = getTokenIssuerFromCandidates(token, candidates);
 
-		if ((issuerCertificateToken == null) && (token instanceof CertificateToken) && aiaSource != null) {
+		if (issuerCertificateToken == null && token instanceof CertificateToken && aiaSource != null) {
 			final AIACertificateSource aiaCertificateSource = new AIACertificateSource((CertificateToken) token, aiaSource);
 			issuerCertificateToken = aiaCertificateSource.getIssuerFromAIA();
 			addCertificateSource(aiaCertificateSources, aiaCertificateSource);
 		}
 		
-		if ((issuerCertificateToken == null) && (token instanceof OCSPToken)) {
+		if (issuerCertificateToken == null && token instanceof OCSPToken) {
 			issuerCertificateToken = getOCSPIssuer((OCSPToken) token, allCertificateSources);
 		}
 
-		if ((issuerCertificateToken == null) && (token instanceof TimestampToken)) {
+		if (issuerCertificateToken == null && token instanceof TimestampToken) {
 			issuerCertificateToken = getTSACertificate((TimestampToken) token, allCertificateSources);
 		}
 
@@ -473,6 +479,13 @@ public class SignatureValidationContext implements ValidationContext {
 		return null;
 	}
 
+	/**
+	 * This method returns a token issuer from a collection of {@code candidates}
+	 *
+	 * @param token {@link Token} to get an issuer for
+	 * @param candidates a collection of {@link CertificateToken} to get an issuer from
+	 * @return {@link CertificateToken} issuer certificate token if found, null if no matching issuer has been found
+	 */
 	private CertificateToken getTokenIssuerFromCandidates(Token token, Collection<CertificateToken> candidates) {
 		List<CertificateToken> issuers = new ArrayList<>();
 		for (CertificateToken candidate : candidates) {
@@ -668,8 +681,6 @@ public class SignatureValidationContext implements ValidationContext {
 			token = getNotYetVerifiedToken();
 		}
 	}
-
-
 
 	/**
 	 * Retrieves the revocation data from signature (if exists) or from the online
@@ -1040,9 +1051,15 @@ public class SignatureValidationContext implements ValidationContext {
 			return false;
 		}
 
+		if (!revocationDataHasInformationAboutCertificate(revocation, certToken)) {
+			LOG.debug("The revocation '{}' has been produced before the start of the validity of the certificate '{}'!",
+					revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
+			return false;
+		}
+
 		if (RevocationType.OCSP.equals(revocation.getRevocationType()) &&
 				!DSSRevocationUtils.checkIssuerValidAtRevocationProductionTime(revocation)) {
-			LOG.debug("The revocation {} is not consistent! The revocation has been produced outside " +
+			LOG.debug("The revocation '{}' is not consistent! The revocation has been produced outside " +
 					"the issuer certificate's validity range!", revocation.getDSSIdAsString());
 			return false;
 		}
@@ -1070,6 +1087,10 @@ public class SignatureValidationContext implements ValidationContext {
 
 		LOG.debug("The revocation '{}' is consistent. Certificate: {}", revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
 		return true;
+	}
+
+	private boolean revocationDataHasInformationAboutCertificate(RevocationToken<?> revocationToken, CertificateToken certificateToken) {
+		return certificateToken.getNotBefore().compareTo(revocationToken.getThisUpdate()) <= 0;
 	}
 
 	private boolean isInCertificateValidityRange(RevocationToken<?> revocationToken, CertificateToken certificateToken) {

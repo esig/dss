@@ -124,6 +124,28 @@ public class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
     }
 
+    @Test
+    public void signBWithRevocationCheckEnabledTest() {
+        signingAlias = GOOD_USER;
+        initSignatureParameters();
+        signatureParameters.setCheckCertificateRevocation(true);
+        documentToSign = sign();
+
+        signingAlias = REVOKED_USER;
+        initSignatureParameters();
+        signatureParameters.setCheckCertificateRevocation(true);
+
+        Exception exception = assertThrows(AlertException.class, () -> sign());
+        assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
+
+        signingAlias = GOOD_USER_UNKNOWN;
+        initSignatureParameters();
+        signatureParameters.setCheckCertificateRevocation(true);
+
+        exception = assertThrows(AlertException.class, () -> sign());
+        assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
+    }
+
     @Override
     public void signAndVerify() {
         // do nothing

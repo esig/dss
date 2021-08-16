@@ -27,7 +27,9 @@ import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.bouncycastle.asn1.ASN1Object;
@@ -47,21 +49,12 @@ import java.util.List;
 public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 
 	/**
-	 * The default constructor
-	 *
-	 * @param tspSource {@link TSPSource} to request a timestamp
-	 */
-	public CAdESLevelBaselineT(TSPSource tspSource) {
-		super(tspSource);
-	}
-
-	/**
 	 * The default constructor with a {@code CertificateVerifier}
 	 *
 	 * @param tspSource {@link TSPSource} to request a timestamp
 	 * @param certificateVerifier {@link CertificateVerifier}
 	 */
-	protected CAdESLevelBaselineT(TSPSource tspSource, CertificateVerifier certificateVerifier) {
+	public CAdESLevelBaselineT(TSPSource tspSource, CertificateVerifier certificateVerifier) {
 		super(tspSource, certificateVerifier);
 	}
 
@@ -72,6 +65,12 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 
 		CMSDocumentValidator documentValidator = getDocumentValidator(cmsSignedData, parameters);
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		if (Utils.isCollectionEmpty(signatures)) {
+			throw new IllegalInputException("There is no signature to extend!");
+		}
+
+		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
+				certificateVerifier, parameters);
 
 		for (AdvancedSignature signature : signatures) {
 			final CAdESSignature cadesSignature = (CAdESSignature) signature;
@@ -79,7 +78,8 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 			SignerInformation newSignerInformation = signerInformation;
 
 			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
-				newSignerInformation = extendSignerInformation(cmsSignedData, signerInformation, parameters);
+				newSignerInformation = extendSignerInformation(cmsSignedData, signerInformation, parameters,
+						signatureRequirementsChecker);
 			}
 			newSignerInformationList.add(newSignerInformation);
 		}
@@ -88,10 +88,12 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 	}
 
 	private SignerInformation extendSignerInformation(CMSSignedData signedData, SignerInformation signerInformation,
-													  CAdESSignatureParameters parameters) {
+													  CAdESSignatureParameters parameters,
+													  SignatureRequirementsChecker signatureRequirementsChecker) {
 		final CAdESSignature cadesSignature = newCAdESSignature(signedData, signerInformation, parameters.getDetachedContents());
 		if (!cadesSignature.hasTProfile() || SignatureLevel.CAdES_BASELINE_T.equals(parameters.getSignatureLevel())) {
 			assertExtendSignatureLevelTPossible(cadesSignature);
+			signatureRequirementsChecker.assertSigningCertificateIsValid(cadesSignature);
 
 			AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 			unsignedAttributes = addSignatureTimestampAttribute(signerInformation, unsignedAttributes, parameters);

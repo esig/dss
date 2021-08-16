@@ -28,13 +28,16 @@ import eu.europa.esig.dss.pades.extension.suite.DSS2058QCLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionAllSelfSignedCertsTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTASelfSignedTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTATest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTAWithExpiredUserTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTWithRevokedCertTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTWithRevokedCertificateTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTWithRevokedSkipCheckTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithCompositeTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithError500TimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithFailTimestampTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithRevokedCertTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTAWithDifferentTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTASelfSignedTSATest;
@@ -69,7 +72,8 @@ import org.junit.runner.RunWith;
 		DSS1469ExtensionTest.class, DSS2058LTATest.class, DSS2058QCLTATest.class, PAdESExtensionLTAToLTAWithDifferentTSATest.class,
 		PAdESExtensionTToLTANotTrustedTSPTest.class, PAdESExtensionNonPDFToTLevelTest.class, PAdESExtensionNonPDFToLTLevelTest.class,
         PAdESExtensionNonPDFToLTALevelTest.class, PAdESExtensionBToLTWithRevokedCertificateTest.class,
-        PAdESExtensionBToLTWithRevokedSkipCheckTest.class, BuildKnownObjectsTest.class })
+        PAdESExtensionBToLTWithRevokedSkipCheckTest.class, BuildKnownObjectsTest.class, PAdESExtensionBToTWithRevokedCertTest.class,
+		PAdESExtensionBToLTWithRevokedCertTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class })
 public class ITextPAdESExtensionSuiteTest {
 
 }

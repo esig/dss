@@ -740,6 +740,21 @@ When the breakdown of this process is not necessary, than a simple call to only 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningProcessSignDocument]
 ----
 
+===== Signature requirements
+
+Signature parameters allow enforcing a signature and its signing certificate validation within a creation or extension process.
+
+[[SignXmlXadesBPropertiesTest.java]]
+[source,java,indent=0]
+.Signature creation requirements enforcement
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBPropertiesTest.java[tags=requirements]
+----
+
+NOTE: The aforementioned requirements, defined within signature parameters, are enforced only on a signature creation or T-level augmentation.
+
+The LT- and LTA- level extension requirements should be defined within <<certificateVerifier>> with <<Alerts>>.
+
 ===== Additional attributes
 
 For this type (XAdES-BASELINE-B) of signature it is possible to identify some additional attributes.

@@ -102,7 +102,7 @@ public class CAdESService extends
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
 		assertSignaturePackaging(packaging);
 
@@ -131,7 +131,7 @@ public class CAdESService extends
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
 
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
 		assertSignaturePackaging(packaging);
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
@@ -258,7 +258,7 @@ public class CAdESService extends
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 		switch (signatureLevel) {
 			case CAdES_BASELINE_T:
-				return new CAdESLevelBaselineT(tspSource);
+				return new CAdESLevelBaselineT(tspSource, certificateVerifier);
 			case CAdES_BASELINE_LT:
 				return new CAdESLevelBaselineLT(tspSource, certificateVerifier);
 			case CAdES_BASELINE_LTA:
@@ -331,7 +331,7 @@ public class CAdESService extends
 		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
 		Objects.requireNonNull(parameters, "parameters cannot be null!");
 		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The signature to be counter-signed must be specified");
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 		assertCounterSignaturePossible(parameters);
 
 		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
@@ -372,7 +372,7 @@ public class CAdESService extends
 		Objects.requireNonNull(parameters, "parameters cannot be null!");
 		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The signature to be counter-signed must be specified");
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 		assertCounterSignaturePossible(parameters);
 		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 

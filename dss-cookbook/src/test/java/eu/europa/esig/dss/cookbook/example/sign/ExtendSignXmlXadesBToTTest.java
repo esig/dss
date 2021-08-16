@@ -20,15 +20,19 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
 
 /**
  * How to extend with XAdES-BASELINE-T
@@ -37,10 +41,26 @@ public class ExtendSignXmlXadesBToTTest extends CookbookTools {
 
 	@Test
 	public void extendXAdESBToT() throws Exception {
+		prepareXmlDoc();
+
+		DSSDocument signedDocument = null;
+		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
+
+			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
+			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+			parameters.setSigningCertificate(privateKey.getCertificate());
+			parameters.setCertificateChain(privateKey.getCertificateChain());
+
+			XAdESService service = new XAdESService(new CommonCertificateVerifier());
+			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
+			signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+		}
 
 		// tag::demo[]
-
-		DSSDocument document = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
@@ -49,7 +69,7 @@ public class ExtendSignXmlXadesBToTTest extends CookbookTools {
 		XAdESService xadesService = new XAdESService(certificateVerifier);
 		xadesService.setTspSource(getOnlineTSPSource());
 
-		DSSDocument extendedDocument = xadesService.extendDocument(document, parameters);
+		DSSDocument extendedDocument = xadesService.extendDocument(signedDocument, parameters);
 
 		// end::demo[]
 

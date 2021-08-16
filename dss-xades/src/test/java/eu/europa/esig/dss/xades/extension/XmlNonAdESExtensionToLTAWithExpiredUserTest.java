@@ -73,6 +73,13 @@ public class XmlNonAdESExtensionToLTAWithExpiredUserTest extends AbstractXAdESTe
     }
 
     @Override
+    protected XAdESSignatureParameters getExtensionParameters() {
+        XAdESSignatureParameters extensionParameters = super.getExtensionParameters();
+        extensionParameters.setSignWithExpiredCertificate(true);
+        return extensionParameters;
+    }
+
+    @Override
     protected DSSDocument getSignedDocument(DSSDocument doc) {
         DSSDocument signedDocument = super.getSignedDocument(doc);
         Document docDom = DomUtils.buildDOM(signedDocument);

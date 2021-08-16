@@ -36,12 +36,15 @@ import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
-import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
+import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +52,7 @@ import java.util.Objects;
 /**
  * Creates a T-level of a JAdES signature
  */
-public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements SignatureExtension<JAdESSignatureParameters> {
+public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESLevelBaselineExtension {
 
 	/** The CertificateVerifier to use */
 	protected final CertificateVerifier certificateVerifier;
@@ -64,6 +67,11 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 	 * The cached instance of a document validator
 	 */
 	protected AbstractJWSDocumentValidator documentValidator;
+
+	/**
+	 * Internal variable: defines the current signing procedure (used in signature creation/extension)
+	 */
+	private SigningOperation operationKind;
 
 	/**
 	 * The default constructor
@@ -84,6 +92,11 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 	}
 
 	@Override
+	public void setOperationKind(SigningOperation signingOperation) {
+		this.operationKind = signingOperation;
+	}
+
+	@Override
 	public DSSDocument extendSignatures(DSSDocument document, JAdESSignatureParameters params) {
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
@@ -97,10 +110,20 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 		assertJWSJsonSerializationObjectValid(jwsJsonSerializationObject);
 
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
-		extendSignatures(signatures, params);
+		if (Utils.isCollectionEmpty(signatures)) {
+			throw new IllegalInputException("There is no signature to extend!");
+		}
 
-		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(jwsJsonSerializationObject,
-				params.getJwsSerializationType());
+		List<AdvancedSignature> signaturesToExtend = signatures;
+		// this method allows extension of only the current signature on creation
+		if (SigningOperation.SIGN.equals(operationKind)) {
+			signaturesToExtend = Arrays.asList(signatures.get(signatures.size() - 1));
+		}
+
+		extendSignatures(signaturesToExtend, params);
+
+		JWSJsonSerializationGenerator generator = new JWSJsonSerializationGenerator(
+				jwsJsonSerializationObject, params.getJwsSerializationType());
 		return generator.generate();
 	}
 
@@ -111,6 +134,9 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 	 * @param params {@link JAdESSignatureParameters} the extension parameters
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
+				certificateVerifier, params);
+
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
@@ -118,6 +144,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements Signat
 
 			// The timestamp must be added only if there is no one or the extension -T level is being created
 			if (!jadesSignature.hasTProfile() || SignatureLevel.JAdES_BASELINE_T.equals(params.getSignatureLevel())) {
+				signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 				JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 				DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();

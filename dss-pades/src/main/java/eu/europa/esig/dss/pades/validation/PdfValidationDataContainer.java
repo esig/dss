@@ -98,7 +98,7 @@ public class PdfValidationDataContainer extends ValidationDataContainer {
      * @param token {@link Token}
      * @return {@link String} base64 encoded SHA-256 digest
      */
-    private String getTokenKey(Token token) {
+    public String getTokenKey(Token token) {
         if (token instanceof CertificateToken) {
             return ((CertificateToken) token).getEntityKey().asXmlId();
         }

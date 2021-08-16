@@ -113,7 +113,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
 			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESDataToSignHelperBuilder()
 				.build(SigningOperation.SIGN, toSignDocuments, parameters);
@@ -134,7 +134,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
 		}
 
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESDataToSignHelperBuilder()
 				.build(SigningOperation.SIGN, toSignDocuments, parameters);
@@ -384,16 +384,19 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		if (lastTimestamp != null) {
 			ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(toExtendDocument);
 			validator.setCertificateVerifier(certificateVerifier);
-			List<AdvancedSignature> allSignatures = validator.getAllSignatures();
-			List<TimestampToken> detachedTimestamps = validator.getDetachedTimestamps();
+
+			final List<AdvancedSignature> allSignatures = validator.getAllSignatures();
+			final List<TimestampToken> detachedTimestamps = validator.getDetachedTimestamps();
+
+			ValidationDataContainer validationDataContainer = validator.getValidationData(allSignatures, detachedTimestamps);
+			ValidationData allValidationData = validationDataContainer.getAllValidationData();
+
+			// ensure the validation data is not duplicated
 			if (Utils.isCollectionNotEmpty(extendedDocuments)) {
 				for (DSSDocument documentToExtend : extendedDocuments) {
 					allSignatures.addAll(new CMSDocumentValidator(documentToExtend).getSignatures());
 				}
 			}
-
-			ValidationDataContainer validationDataContainer = validator.getValidationData(allSignatures, detachedTimestamps);
-			ValidationData allValidationData = validationDataContainer.getAllValidationData();
 			for (AdvancedSignature signature : allSignatures) {
 				allValidationData.excludeCertificateTokens(signature.getCompleteCertificateSource().getAllCertificateTokens());
 				allValidationData.excludeCRLTokens(signature.getCompleteCRLSource().getAllRevocationBinaries());
@@ -552,7 +555,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	public ToBeSigned getDataToBeCounterSigned(DSSDocument asicContainer, CAdESCounterSignatureParameters parameters) {
 		Objects.requireNonNull(asicContainer, "asicContainer cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 		assertCounterSignatureParametersValid(parameters);
 
 		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);
