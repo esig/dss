@@ -661,11 +661,13 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	@Override
 	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
 		if (XmlBlockType.REV_BBB.equals(constraint.getBlockType())) {
-			if (isMessageCollectingRequired(constraint.getId())) {
+			if (ValidationProcessUtils.isMessageCollectingRequiredForRevocation(constraint.getId(),
+					currentSignature.getCertificateChain(), certificateRevocationMap)) {
 				collectMessagesForBBB(conclusion, constraint);
 			}
-		} else if (XmlBlockType.REV_CC.equals(constraint.getBlockType())) {
-			if (isMessageCollectingRequired(constraint.getId())) {
+		} else if (XmlBlockType.RAC.equals(constraint.getBlockType())) {
+			if (ValidationProcessUtils.isMessageCollectingRequiredForRevocation(constraint.getId(),
+					currentSignature.getCertificateChain(), certificateRevocationMap)) {
 				super.collectMessages(conclusion, constraint);
 			}
 		} else if (XmlBlockType.TST_BBB.equals(constraint.getBlockType())) {
@@ -673,32 +675,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		} else {
 			super.collectMessages(conclusion, constraint);
 		}
-	}
-
-	private boolean isMessageCollectingRequired(String revocationId) {
-		for (CertificateWrapper certificateWrapper : currentSignature.getCertificateChain()) {
-			if (isRevocationRelatedToCertificate(certificateWrapper, revocationId) &&
-					!isCertificateRevocationValid(certificateWrapper)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isRevocationRelatedToCertificate(CertificateWrapper certificateWrapper, String revocationId) {
-		for (CertificateRevocationWrapper certificateRevocationWrapper : certificateWrapper.getCertificateRevocationData()) {
-			if (revocationId.equals(certificateRevocationWrapper.getId())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isCertificateRevocationValid(CertificateWrapper certificateWrapper) {
-		if (certificateWrapper.isTrusted()) {
-			return true;
-		}
-		return certificateRevocationMap.get(certificateWrapper) != null;
 	}
 
 	private void collectMessagesForBBB(XmlConclusion conclusion, XmlConstraint constraint) {

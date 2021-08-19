@@ -6321,6 +6321,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		boolean revocationIssuerPOECheckFound = false;
 		boolean usedRevocIssuerPOECheckFound = false;
+		boolean failedRevocFound = false;
+		boolean validRevocFound = false;
 		for (XmlConstraint constraint : psv.getConstraint()) {
 			if (MessageTag.PSV_IPCRIAIDBEDC.getId().equals(constraint.getName().getKey())) {
 				assertEquals(XmlStatus.WARNING, constraint.getStatus());
@@ -6332,10 +6334,21 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				assertNull(constraint.getWarning());
 				assertEquals(MessageTag.PSV_DIURDSCHPVR_ANS.getId(), constraint.getError().getKey());
 				usedRevocIssuerPOECheckFound = true;
+			} else if (MessageTag.ADEST_RORPIIC.getId().equals(constraint.getName().getKey())) {
+				if (XmlStatus.WARNING.equals(constraint.getStatus())) {
+					failedRevocFound = true;
+				} else if (XmlStatus.OK.equals(constraint.getStatus())) {
+					validRevocFound = true;
+				}
 			}
 		}
 		assertTrue(revocationIssuerPOECheckFound);
 		assertTrue(usedRevocIssuerPOECheckFound);
+		assertTrue(failedRevocFound);
+		assertTrue(validRevocFound);
+
+		assertTrue(checkMessageValuePresence(convert(psv.getConclusion().getWarnings()),
+				i18nProvider.getMessage(MessageTag.ADEST_RORPIIC_ANS)));
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -6347,6 +6360,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				i18nProvider.getMessage(MessageTag.PSV_DIURDSCHPVR)));
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.BBB_XCV_ICTIVRCIRI_ANS)));
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.ADEST_RORPIIC_ANS)));
 	}
 
 	@Test
@@ -6436,6 +6451,143 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(2, validationTimeFailedTimestampCounter);
 		assertEquals(1, validationTimePassedTimestampCounter);
 
+	}
+
+	@Test
+	public void xadesAWithValidInvalidAndInconsistentRevocationDataTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_xades_a_with_two_revocation.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
+
+		boolean invalidRevocFound = false;
+		boolean inconsistentRevocFound = false;
+		boolean validRevocFound = false;
+		for (XmlConstraint constraint : validationProcessLongTermData.getConstraint()) {
+			if (MessageTag.ADEST_RORPIIC.getId().equals(constraint.getName().getKey())) {
+				if (XmlStatus.WARNING.equals(constraint.getStatus())) {
+					invalidRevocFound = true;
+				}
+			} else if (MessageTag.BBB_XCV_RAC.getId().equals(constraint.getName().getKey())) {
+				if (XmlStatus.WARNING.equals(constraint.getStatus())) {
+					inconsistentRevocFound = true;
+				} else if (XmlStatus.OK.equals(constraint.getStatus())) {
+					validRevocFound = true;
+				}
+			}
+		}
+		assertTrue(invalidRevocFound);
+		assertTrue(inconsistentRevocFound);
+		assertTrue(validRevocFound);
+	}
+
+	@Test
+	public void failedRacWithinRacTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_failed_rac_within_rac.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(2, subXCVs.size());
+
+		XmlSubXCV xmlSubXCV = subXCVs.get(0);
+		List<XmlRAC> racs = xmlSubXCV.getRAC();
+		assertEquals(4, racs.size());
+
+		boolean validRacFound = false;
+		boolean failedRacFound = false;
+		boolean racWithAllFailedIssuerRacsFound = false;
+		boolean racWithOneFailedIssuerRacFound = false;
+		for (XmlRAC rac : racs) {
+			if (Indication.PASSED.equals(rac.getConclusion().getIndication())) {
+				int invalidRacCounter = 0;
+				int validRacCounter = 0;
+				for (XmlConstraint constraint : rac.getConstraint()) {
+					if (MessageTag.BBB_XCV_RAC.getId().equals(constraint.getName().getKey())) {
+						if (XmlStatus.OK.equals(constraint.getStatus())) {
+							++validRacCounter;
+						} else if (XmlStatus.WARNING.equals(constraint.getStatus())) {
+							++invalidRacCounter;
+						}
+					}
+				}
+				if (validRacCounter == 0 && invalidRacCounter == 0) {
+					validRacFound = true;
+				}
+				if (validRacCounter > 0 && invalidRacCounter > 0) {
+					assertFalse(checkMessageValuePresence(convert(rac.getConclusion().getWarnings()),
+							i18nProvider.getMessage(MessageTag.BBB_XCV_RAC_ANS)));
+
+					racWithOneFailedIssuerRacFound = true;
+				}
+
+			} else if (Indication.INDETERMINATE.equals(rac.getConclusion().getIndication())) {
+				int invalidRacCounter = 0;
+				int validRacCounter = 0;
+				for (XmlConstraint constraint : rac.getConstraint()) {
+					if (MessageTag.BBB_XCV_RAC.getId().equals(constraint.getName().getKey())) {
+						if (XmlStatus.OK.equals(constraint.getStatus())) {
+							++validRacCounter;
+						} else if (XmlStatus.WARNING.equals(constraint.getStatus())) {
+							++invalidRacCounter;
+						}
+					}
+				}
+				if (invalidRacCounter != 0 && validRacCounter == 0) {
+					assertTrue(checkMessageValuePresence(convert(rac.getConclusion().getWarnings()),
+							i18nProvider.getMessage(MessageTag.BBB_XCV_RAC_ANS)));
+
+					racWithAllFailedIssuerRacsFound = true;
+				}
+
+			} else if (Indication.FAILED.equals(rac.getConclusion().getIndication())) {
+				int racCounter = 0;
+				for (XmlConstraint constraint : rac.getConstraint()) {
+					if (MessageTag.BBB_XCV_RAC.getId().equals(constraint.getName().getKey())) {
+						++racCounter;
+					}
+				}
+				if (racCounter == 0) {
+					failedRacFound = true;
+				}
+			}
+		}
+		assertTrue(validRacFound);
+		assertTrue(failedRacFound);
+		assertTrue(racWithAllFailedIssuerRacsFound);
+		assertTrue(racWithOneFailedIssuerRacFound);
 	}
 
 	@Test
