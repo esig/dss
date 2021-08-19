@@ -592,7 +592,7 @@
 								<xsl:when test="$BlockType='SUB_XCV'">
 									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
 								</xsl:when>
-								<xsl:when test="$BlockType='RAC' and name(..) != 'RAC'">
+								<xsl:when test="$BlockType='RAC' and name(..)='SubXCV'">
 									<xsl:attribute name="href">#RAC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='RFC'">
