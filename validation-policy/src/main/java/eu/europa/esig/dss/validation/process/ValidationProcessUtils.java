@@ -414,4 +414,42 @@ public class ValidationProcessUtils {
 		return false;
 	}
 
+	/**
+	 * The method is used to check whether the validation messages of the corresponding constraint
+	 * should be augmented to the upper level
+	 *
+	 * @param revocationId {@link String} id of a revocation data being checked
+	 * @param certificateChain a collection of {@link CertificateWrapper} of the signature certificate chain
+	 * @param certificateRevocationMap a map of checked certificates from the chain and
+	 *                                    their corresponding last issued revocation data, when available
+	 * @return TRUE if the message collection is requires, FALSE otherwise
+	 */
+	public static boolean isMessageCollectingRequiredForRevocation(String revocationId, List<CertificateWrapper> certificateChain,
+													  Map<CertificateWrapper, CertificateRevocationWrapper> certificateRevocationMap) {
+		for (CertificateWrapper certificateWrapper : certificateChain) {
+			if (isRevocationRelatedToCertificate(certificateWrapper, revocationId) &&
+					!isCertificateRevocationValid(certificateWrapper, certificateRevocationMap)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean isRevocationRelatedToCertificate(CertificateWrapper certificateWrapper, String revocationId) {
+		for (CertificateRevocationWrapper certificateRevocationWrapper : certificateWrapper.getCertificateRevocationData()) {
+			if (revocationId.equals(certificateRevocationWrapper.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean isCertificateRevocationValid(CertificateWrapper certificateWrapper,
+					Map<CertificateWrapper, CertificateRevocationWrapper> certificateRevocationMap) {
+		if (certificateWrapper.isTrusted()) {
+			return true;
+		}
+		return certificateRevocationMap.get(certificateWrapper) != null;
+	}
+
 }
