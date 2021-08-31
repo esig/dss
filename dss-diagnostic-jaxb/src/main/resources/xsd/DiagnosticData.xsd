@@ -859,6 +859,14 @@
 					<xs:element name="FoundRevocations" type="FoundRevocations" />
 		
 					<xs:element name="TimestampedObjects" type="TimestampedObjects" />
+
+					<xs:element name="TimestampScopes" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="TimestampScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
 		
 					<xs:choice>
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />

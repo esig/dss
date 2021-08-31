@@ -354,25 +354,9 @@
 			            </dd>
 			        </dl>
 				</xsl:if>
-		        
-				<xsl:if test="dss:SignatureScope">
-			        <xsl:for-each select="dss:SignatureScope">
-				        <dl>
-				    		<xsl:attribute name="class">row mb-0</xsl:attribute>
-				            <dt>
-			        			<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        			
-			        			Signature scope:
-			        		</dt>
-				            <dd>
-			            		<xsl:attribute name="class">col-sm-9</xsl:attribute>
-			            	
-				            	<xsl:value-of select="@name"/> (<xsl:value-of select="@scope"/>)<br />
-				            	<xsl:value-of select="."/>
-				            </dd>
-				        </dl>
-			        </xsl:for-each>
-		        </xsl:if>
+
+				<xsl:apply-templates select="dss:SignatureScope" />
+				<xsl:apply-templates select="dss:TimestampScope" />
 
 				<xsl:if test="dss:Timestamps">
 					<div>
@@ -396,6 +380,28 @@
     		</div>
     	</div>
     </xsl:template>
+
+	<xsl:template match="dss:SignatureScope|dss:TimestampScope">
+		<xsl:variable name="header">
+			<xsl:choose>
+				<xsl:when test="name() = 'SignatureScope'">Signature scope</xsl:when>
+				<xsl:when test="name() = 'TimestampScope'">Timestamp scope</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<dl>
+			<xsl:attribute name="class">row mb-0</xsl:attribute>
+			<dt>
+				<xsl:attribute name="class">col-sm-3</xsl:attribute>
+				<xsl:value-of select="$header" />:
+			</dt>
+			<dd>
+				<xsl:attribute name="class">col-sm-9</xsl:attribute>
+
+				<xsl:value-of select="@name"/> (<xsl:value-of select="@scope"/>)<br />
+				<xsl:value-of select="."/>
+			</dd>
+		</dl>
+	</xsl:template>
 
 	<xsl:template match="dss:AdESValidationDetails|dss:QualificationDetails">
 		<xsl:variable name="header">

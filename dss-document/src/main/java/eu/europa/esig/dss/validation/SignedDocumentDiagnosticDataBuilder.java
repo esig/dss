@@ -899,9 +899,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 		xmlTimestampToken.setId(identifierProvider.getIdAsString(timestampToken));
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
-		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType()); // property is defined only
-																								// for archival
-																								// timestamps
+		// property is defined only for archival timestamps
+		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType());
+
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
 		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
 		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
@@ -921,6 +921,10 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 				getXmlFoundCertificates(timestampToken.getDSSId(), timestampToken.getCertificateSource()));
 		xmlTimestampToken.setFoundRevocations(
 				getXmlFoundRevocations(timestampToken.getCRLSource(), timestampToken.getOCSPSource()));
+
+		if (Utils.isCollectionNotEmpty(timestampToken.getTimestampScopes())) {
+			xmlTimestampToken.setTimestampScopes(getXmlSignatureScopes(timestampToken.getTimestampScopes()));
+		}
 
 		if (tokenExtractionStrategy.isTimestamp()) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());

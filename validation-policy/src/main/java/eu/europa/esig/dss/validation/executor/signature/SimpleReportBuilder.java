@@ -302,14 +302,18 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	private void addSignatureScope(final SignatureWrapper signature, final XmlSignature xmlSignature) {
 		List<eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		if (Utils.isCollectionNotEmpty(signatureScopes)) {
-			for (eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope scopeType : signatureScopes) {
-				XmlSignatureScope scope = new XmlSignatureScope();
-				scope.setName(scopeType.getName());
-				scope.setScope(scopeType.getScope().name());
-				scope.setValue(scopeType.getDescription());
-				xmlSignature.getSignatureScope().add(scope);
+			for (eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope signatureScope : signatureScopes) {
+				xmlSignature.getSignatureScope().add(getXmlSignatureScope(signatureScope));
 			}
 		}
+	}
+
+	private XmlSignatureScope getXmlSignatureScope(eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope signatureScope) {
+		XmlSignatureScope xmlSignatureScope = new XmlSignatureScope();
+		xmlSignatureScope.setName(signatureScope.getName());
+		xmlSignatureScope.setScope(signatureScope.getScope().name());
+		xmlSignatureScope.setValue(signatureScope.getDescription());
+		return xmlSignatureScope;
 	}
 
 	private void addSigningTime(final SignatureWrapper signature, final XmlSignature xmlSignature) {
@@ -370,6 +374,12 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		XmlDetails qualificationDetails = getQualificationDetails(timestampId);
 		if (isNotEmpty(qualificationDetails)) {
 			xmlTimestamp.setQualificationDetails(qualificationDetails);
+		}
+
+		if (Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes())) {
+			for (eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope timestampScope : timestampWrapper.getTimestampScopes()) {
+				xmlTimestamp.getTimestampScope().add(getXmlSignatureScope(timestampScope));
+			}
 		}
 
 		return xmlTimestamp;

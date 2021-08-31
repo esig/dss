@@ -76,16 +76,7 @@
 					<xs:element name="BestSignatureTime" type="xs:dateTime" />
 					<xs:element name="SignedBy" type="xs:string" minOccurs="0" />
 					<xs:element name="SignatureLevel" type="SignatureLevel" minOccurs="0" />
-					<xs:element name="SignatureScope" minOccurs="0" maxOccurs="unbounded">
-						<xs:complexType>
-							<xs:simpleContent>
-								<xs:extension base="xs:string">
-									<xs:attribute type="xs:string" name="name"/>
-									<xs:attribute type="xs:string" name="scope"/>
-								</xs:extension>
-							</xs:simpleContent>
-						</xs:complexType>
-					</xs:element>
+					<xs:element name="SignatureScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Timestamps" type="Timestamps" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
@@ -96,6 +87,15 @@
 				<xs:attribute name="ExtensionPeriodMax" type="xs:dateTime" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="SignatureScope">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute type="xs:string" name="name"/>
+				<xs:attribute type="xs:string" name="scope"/>
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 
 	<xs:complexType name="Timestamps">
@@ -111,6 +111,7 @@
 					<xs:element name="ProductionTime" type="xs:dateTime" />
 					<xs:element name="ProducedBy" type="xs:string" minOccurs="0" />
 					<xs:element name="TimestampLevel" type="TimestampLevel" minOccurs="0" />
+					<xs:element name="TimestampScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

@@ -31,6 +31,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
@@ -506,6 +507,15 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 */
 	public boolean isTSAGeneralNameOrderMatch() {
 		return isTSAGeneralNamePresent() && timestamp.getTSAGeneralName().isOrderMatch();
+	}
+
+	/**
+	 * Returns Timestamp's Signature Scopes
+	 *
+	 * @return a list of {@link XmlSignatureScope}s
+	 */
+	public List<XmlSignatureScope> getTimestampScopes() {
+		return timestamp.getTimestampScopes();
 	}
 
 	/**

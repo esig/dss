@@ -115,7 +115,7 @@
 						<fo:block>
 							<xsl:attribute name="keep-together.within-page">always</xsl:attribute>
 							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:attribute name="margin-top">25px</xsl:attribute>
+							<xsl:attribute name="margin-top">5px</xsl:attribute>
 				       		<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 				       		<xsl:attribute name="color">#004494</xsl:attribute>
 				       		
@@ -125,8 +125,13 @@
    					
    							Semantics
    						</fo:block>
-						
-						<xsl:apply-templates select="dss:Semantic"/>
+
+						<fo:block-container>
+							<xsl:attribute name="margin-top">2px</xsl:attribute>
+							<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+
+							<xsl:apply-templates select="dss:Semantic"/>
+						</fo:block-container>
    					</xsl:if>
 	    			
 					<fo:block>
@@ -292,6 +297,8 @@
 						
 							<xsl:if test="dss:Filename">
 								<fo:table-row>
+									<xsl:attribute name="margin-top">1px</xsl:attribute>
+									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 									<fo:table-cell>
 										<fo:block>
 											<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -319,6 +326,8 @@
 						
 							<xsl:if test="dss:SignatureLevel | dss:TimestampLevel">
 								<fo:table-row>
+									<xsl:attribute name="margin-top">1px</xsl:attribute>
+									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 									<fo:table-cell>
 										<fo:block>
 											<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -347,6 +356,8 @@
 							<xsl:apply-templates select="dss:QualificationDetails" />
 						
 							<fo:table-row>
+								<xsl:attribute name="margin-top">1px</xsl:attribute>
+								<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 								<fo:table-cell>
 									<fo:block>
 										<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -373,6 +384,8 @@
 							
 							<xsl:if test="@SignatureFormat">
 								<fo:table-row>
+									<xsl:attribute name="margin-top">1px</xsl:attribute>
+									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 									<fo:table-cell>
 										<fo:block>
 											<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -394,12 +407,14 @@
 							</xsl:if>
 							
 							<fo:table-row>
+								<xsl:attribute name="margin-top">1px</xsl:attribute>
+								<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 								<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
 								
 								<fo:table-cell>
 									<fo:block>
-										<xsl:attribute name="margin-top">2px</xsl:attribute>
-										<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+										<xsl:attribute name="margin-top">1px</xsl:attribute>
+										<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 			  							<xsl:attribute name="font-weight">bold</xsl:attribute>
 										Certificate chain:
@@ -410,8 +425,8 @@
 							            <xsl:when test="dss:CertificateChain/dss:Certificate">
 								            <xsl:for-each select="dss:CertificateChain/dss:Certificate">
 								        		<fo:block>
-													<xsl:attribute name="margin-top">2px</xsl:attribute>
-													<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+													<xsl:attribute name="margin-top">1px</xsl:attribute>
+													<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 								        			<xsl:value-of select="dss:qualifiedName" />
 								        		</fo:block>	
@@ -425,10 +440,12 @@
 							</fo:table-row>
 							
 							<fo:table-row>
+								<xsl:attribute name="margin-top">1px</xsl:attribute>
+								<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 								<fo:table-cell>
 									<fo:block>
-										<xsl:attribute name="margin-top">2px</xsl:attribute>
-										<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+										<xsl:attribute name="margin-top">1px</xsl:attribute>
+										<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 			       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 										<xsl:if test="$nodeName = 'Signature'">
@@ -441,8 +458,8 @@
 								</fo:table-cell>
 								<fo:table-cell>
 									<fo:block>
-										<xsl:attribute name="margin-top">2px</xsl:attribute>
-										<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+										<xsl:attribute name="margin-top">1px</xsl:attribute>
+										<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 										<xsl:if test="$nodeName = 'Signature'">
 											<xsl:call-template name="formatdate">
@@ -460,6 +477,8 @@
 							
 							<xsl:if test="dss:BestSignatureTime">
 								<fo:table-row>
+									<xsl:attribute name="margin-top">1px</xsl:attribute>
+									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 									<fo:table-cell>
 										<fo:block>
 											<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -484,6 +503,8 @@
 							
 							<xsl:if test="$nodeName = 'Signature'">
 								<fo:table-row>
+									<xsl:attribute name="margin-top">1px</xsl:attribute>
+									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 									<fo:table-cell>
 										<fo:block>
 											<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -503,38 +524,9 @@
 									</fo:table-cell>
 								</fo:table-row>
 							</xsl:if>
-						
-							<xsl:if test="dss:SignatureScope">
-								<xsl:for-each select="dss:SignatureScope">
-									<fo:table-row>
-										<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
-										
-										<fo:table-cell>
-											<fo:block>
-												<xsl:attribute name="margin-top">1px</xsl:attribute>
-												<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-											
-				       							<xsl:attribute name="font-weight">bold</xsl:attribute>
-												Signature scope:
-											</fo:block>
-										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>
-												<xsl:attribute name="margin-top">1px</xsl:attribute>
-												<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-											
-												<xsl:value-of select="@name" />	(<xsl:value-of select="@scope" />)
-											</fo:block>
-											<fo:block>
-												<xsl:attribute name="margin-top">1px</xsl:attribute>
-												<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-											
-												<xsl:value-of select="." />
-											</fo:block>
-										</fo:table-cell>
-									</fo:table-row>
-								</xsl:for-each>
-							</xsl:if>
+
+							<xsl:apply-templates select="dss:SignatureScope" />
+							<xsl:apply-templates select="dss:TimestampScope" />
 							
 						</fo:table-body>	
 					</fo:table>
@@ -550,6 +542,44 @@
 
     </xsl:template>
 
+	<xsl:template match="dss:SignatureScope|dss:TimestampScope">
+		<xsl:variable name="header">
+			<xsl:choose>
+				<xsl:when test="name() = 'SignatureScope'">Signature scope</xsl:when>
+				<xsl:when test="name() = 'TimestampScope'">Timestamp scope</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:table-row>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
+
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+					<xsl:value-of select="$header" />:
+				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:value-of select="@name" />	(<xsl:value-of select="@scope" />)
+				</fo:block>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:value-of select="." />
+				</fo:block>
+			</fo:table-cell>
+		</fo:table-row>
+	</xsl:template>
+
 	<xsl:template match="dss:QualificationDetails|dss:AdESValidationDetails">
 		<xsl:variable name="header">
 			<xsl:choose>
@@ -558,6 +588,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		<fo:table-row>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 			<fo:table-cell>
 				<fo:block>
 					<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -586,8 +618,8 @@
 			</xsl:choose>
         </xsl:variable>
 	    <fo:block>
-			<xsl:attribute name="margin-top">2px</xsl:attribute>
-			<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 			<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
 			<xsl:value-of select="." />
@@ -598,8 +630,8 @@
 		<xsl:param name="sigCounter" />
 		<fo:block-container>
 			<fo:block>
-				<xsl:attribute name="margin-top">1px</xsl:attribute>
-				<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+				<xsl:attribute name="margin-top">2px</xsl:attribute>
+				<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 				<xsl:attribute name="font-size">7pt</xsl:attribute>
 
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -617,8 +649,7 @@
     
     <xsl:template name="documentInformation">
     	<fo:table table-layout="fixed">
-			<xsl:attribute name="margin-top">4px</xsl:attribute>
-			<xsl:attribute name="font-size">7pt</xsl:attribute>
+			<xsl:attribute name="margin-top">5px</xsl:attribute>
 			
 			<fo:table-body>
 				<xsl:attribute name="start-indent">0</xsl:attribute>
@@ -651,6 +682,7 @@
        		
 			<xsl:attribute name="margin-top">2px</xsl:attribute>
 			<xsl:attribute name="margin-bottom">2px</xsl:attribute>
+			<xsl:attribute name="font-size">7pt</xsl:attribute>
        		
 			<fo:block-container>
 				<xsl:attribute name="margin-left">10px</xsl:attribute>
@@ -671,6 +703,8 @@
 						
 							<xsl:if test="dss:ContainerType">
 								<fo:table-row>
+									<xsl:attribute name="margin-top">1px</xsl:attribute>
+									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 									<fo:table-cell>
 										<fo:block>
 											<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -692,6 +726,8 @@
 					        </xsl:if>
 						
 							<fo:table-row>
+								<xsl:attribute name="margin-top">1px</xsl:attribute>
+								<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 								<fo:table-cell>
 									<fo:block>
 										<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -711,6 +747,8 @@
 								</fo:table-cell>
 							</fo:table-row>
 							<fo:table-row>
+								<xsl:attribute name="margin-top">1px</xsl:attribute>
+								<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 								<fo:table-cell>
 									<fo:block>
 										<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -754,12 +792,15 @@
 				<xsl:attribute name="end-indent">0</xsl:attribute>
 				
 		    	<fo:table-row>
+					<xsl:attribute name="margin-top">2px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 					<fo:table-cell>
 						<xsl:attribute name="display-align">center</xsl:attribute>
 						
 						<fo:block>
 		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
     						<xsl:attribute name="font-size">7pt</xsl:attribute>
+							<xsl:attribute name="margin-top">2px</xsl:attribute>
        						<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 		    				
 							<xsl:value-of select="@Key"/>
@@ -771,6 +812,7 @@
 						<fo:block>
 		    				<xsl:attribute name="font-weight">normal</xsl:attribute>
 							<xsl:attribute name="font-size">7pt</xsl:attribute>
+							<xsl:attribute name="margin-top">2px</xsl:attribute>
        						<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 							
 							<xsl:value-of select="."/>
