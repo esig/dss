@@ -216,6 +216,9 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 
 		int nbTries = ocspUrls.size();
 		for (String ocspAccessLocation : ocspUrls) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Trying to retrieve an OCSP response from URL '{}'...", ocspAccessLocation);
+			}
 			nbTries--;
 
 			try {
@@ -232,6 +235,10 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 						ocspToken.setSourceURL(ocspAccessLocation);
 						ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
 						if (isAcceptableDigestAlgo(ocspToken.getSignatureAlgorithm())) {
+							if (LOG.isDebugEnabled()) {
+								LOG.debug("OCSP Response '{}' has been retrieved from a source with URL '{}'.",
+										ocspToken.getDSSIdAsString(), ocspAccessLocation);
+							}
 							return new RevocationTokenAndUrl<>(ocspAccessLocation, ocspToken);
 
 						} else {
@@ -250,7 +257,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			} catch (Exception e) {
 				if (nbTries == 0) {
 					throw new DSSExternalResourceException(String.format(
-							"Unable to retrieve OCSP response for certificate with Id '%s'", certificateToken.getDSSIdAsString()));
+							"Unable to retrieve OCSP response for certificate with Id '%s' from URL '%s'. Reason : %s",
+							certificateToken.getDSSIdAsString(), ocspAccessLocation, e.getMessage()), e);
 				} else {
 					LOG.warn("Unable to retrieve OCSP response with URL '{}' : {}", ocspAccessLocation, e.getMessage());
 				}

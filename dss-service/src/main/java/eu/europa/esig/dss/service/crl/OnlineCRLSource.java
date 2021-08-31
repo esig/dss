@@ -180,6 +180,9 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 		}
 		prioritize(crlUrls);
 
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Trying to retrieve a CRL from URL(s) {}...", crlUrls);
+		}
 		final DataLoader.DataAndUrl dataAndUrl = downloadCrl(crlUrls);
 		if (dataAndUrl == null) {
 			return null;
@@ -190,7 +193,12 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 			crlToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
 			crlToken.setSourceURL(dataAndUrl.getUrlString());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("CRL '{}' has been retrieved from a source with URL '{}'.",
+						crlToken.getDSSIdAsString(), dataAndUrl.getUrlString());
+			}
 			return new RevocationTokenAndUrl<>(dataAndUrl.getUrlString(), crlToken);
+
 		} catch (Exception e) {
 			LOG.warn("Unable to parse/validate the CRL (url: {}) : {}", dataAndUrl.getUrlString(), e.getMessage(), e);
 			return null;
