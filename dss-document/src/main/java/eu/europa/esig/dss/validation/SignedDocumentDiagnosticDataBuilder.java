@@ -99,7 +99,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * The common class for DiagnosticData creation from a signed/timestamped document
@@ -317,44 +316,42 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	private Collection<XmlSignerData> buildXmlSignerDataList(Collection<AdvancedSignature> signatures,
-			Collection<TimestampToken> timestamps) {
+															 Collection<TimestampToken> timestamps) {
 		List<XmlSignerData> signerDataList = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (AdvancedSignature signature : signatures) {
-				buildXmlSignerData(signature.getSignatureScopes(), signerDataList);
+				signerDataList.addAll(buildXmlSignerData(signature.getSignatureScopes()));
 			}
 		}
 		if (Utils.isCollectionNotEmpty(timestamps)) {
 			for (TimestampToken timestampToken : timestamps) {
-				if (Utils.isCollectionNotEmpty(timestampToken.getTimestampScopes())) {
-					buildXmlSignerData(timestampToken.getTimestampScopes(), signerDataList);
-				}
+				signerDataList.addAll(buildXmlSignerData(timestampToken.getTimestampScopes()));
 			}
 		}
 		return signerDataList;
 	}
 
-	private void buildXmlSignerData(List<SignatureScope> signatureScopes, Collection<XmlSignerData> result) {
-		buildXmlSignerData(signatureScopes, result, null);
+	private List<XmlSignerData> buildXmlSignerData(List<SignatureScope> signatureScopes) {
+		return buildXmlSignerData(signatureScopes, null);
 	}
 
-	private void buildXmlSignerData(List<SignatureScope> signatureScopes, Collection<XmlSignerData> result, XmlSignerData parentSignerData) {
-		List<String> addedSignedDataIds = result.stream().map(sd -> sd.getId()).collect(Collectors.toList());
+	private List<XmlSignerData> buildXmlSignerData(List<SignatureScope> signatureScopes, XmlSignerData parentSignerData) {
+		List<XmlSignerData> result = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(signatureScopes)) {
 			for (SignatureScope signatureScope : signatureScopes) {
-				if (!addedSignedDataIds.contains(signatureScope.getDSSIdAsString())) {
+				if (xmlSignedDataMap.get(signatureScope.getDSSIdAsString()) == null) {
 					XmlSignerData xmlSignerData = buildXmlSignerData(signatureScope);
 					if (parentSignerData != null) {
 						xmlSignerData.setParent(parentSignerData);
 					}
 					result.add(xmlSignerData);
-					addedSignedDataIds.add(signatureScope.getDSSIdAsString());
 					if (Utils.isCollectionNotEmpty(signatureScope.getChildren())) {
-						buildXmlSignerData(signatureScope.getChildren(), result, xmlSignerData);
+						result.addAll(buildXmlSignerData(signatureScope.getChildren(), xmlSignerData));
 					}
 				}
 			}
 		}
+		return result;
 	}
 
 	private XmlSignerData buildXmlSignerData(SignatureScope signatureScope) {
