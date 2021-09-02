@@ -336,10 +336,19 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	private PdfDssDict getDSSDictionaryPresentInRevision(final byte[] originalBytes, final String pwd) {
+		if (Utils.isArrayEmpty(originalBytes)) {
+			return null;
+		}
+
 		try (PdfDocumentReader reader = loadPdfDocumentReader(originalBytes, pwd)) {
 			return reader.getDSSDictionary();
 		} catch (Exception e) {
-			LOG.debug("Cannot extract DSS dictionary from the previous revision : {}", e.getMessage(), e);
+			String message = String.format("Cannot extract DSS dictionary from the previous revision : %s", e.getMessage());
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(message, e);
+			} else {
+				LOG.warn(message);
+			}
 			return null;
 		}
 	}
@@ -368,7 +377,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			String message = String.format("Unable to retrieve data from the ByteRange : [%s]", byteRange);
 			if (LOG.isDebugEnabled()) {
 				// Exception displays the (long) hex value
-				LOG.debug(message, e);
+				LOG.error(message, e);
 			} else {
 				LOG.error(message);
 			}
