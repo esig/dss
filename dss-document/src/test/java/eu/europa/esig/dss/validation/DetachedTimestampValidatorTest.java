@@ -70,6 +70,7 @@ public class DetachedTimestampValidatorTest {
 			assertNotNull(cert.getMaskGenerationFunction());
 		}
 
+		assertEquals(1, diagnosticData.getTimestampList().size());
 		for (TimestampWrapper tst : diagnosticData.getTimestampList()) {
 			assertNotNull(tst.getMaskGenerationFunction());
 		}
@@ -136,6 +137,9 @@ public class DetachedTimestampValidatorTest {
 		assertFalse(timestampWrapper.isMessageImprintDataIntact());
 		assertTrue(timestampWrapper.isSignatureIntact());
 		assertFalse(timestampWrapper.isSignatureValid());
+
+		assertEquals(0, timestampWrapper.getTimestampScopes().size());
+		assertEquals(0, timestampWrapper.getTimestampedSignedData().size());
 	}
 
 	@Test
@@ -280,6 +284,9 @@ public class DetachedTimestampValidatorTest {
 
 		assertTrue(timestampWrapper.isMessageImprintDataFound());
 		assertTrue(timestampWrapper.isMessageImprintDataIntact());
+
+		assertEquals(1, timestampWrapper.getTimestampScopes().size());
+		assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		List<String> timestampIdList = simpleReport.getTimestampIdList();

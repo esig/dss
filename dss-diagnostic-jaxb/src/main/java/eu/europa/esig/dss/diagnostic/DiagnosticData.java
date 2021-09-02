@@ -1057,9 +1057,32 @@ public class DiagnosticData {
 	
 	/**
 	 * Returns a complete list of original signer documents signed by all signatures
+	 *
 	 * @return list of {@link SignerDataWrapper}s
 	 */
 	public List<SignerDataWrapper> getOriginalSignerDocuments() {
+		List<SignerDataWrapper> signerDocuments = new ArrayList<>();
+		for (SignatureWrapper signatureWrapper : getSignatures()) {
+			for (XmlSignatureScope signatureScope : signatureWrapper.getSignatureScopes()) {
+				XmlSignerData signerData = signatureScope.getSignerData();
+				if (signerData != null) {
+					SignerDataWrapper wrappedSignedData = new SignerDataWrapper(signerData);
+					if (!signerDocuments.contains(wrappedSignedData)) {
+						signerDocuments.add(wrappedSignedData);
+					}
+				}
+			}
+
+		}
+		return signerDocuments;
+	}
+
+	/**
+	 * This method returns a list of all covered documents, including the ones covering by timestamp(s), when applicable
+	 *
+	 * @return list of {@link SignerDataWrapper}s
+	 */
+	public List<SignerDataWrapper> getAllSignerDocuments() {
 		List<SignerDataWrapper> signerDocuments = new ArrayList<>();
 		for (XmlSignerData signerData : wrapped.getOriginalDocuments()) {
 			signerDocuments.add(new SignerDataWrapper(signerData));

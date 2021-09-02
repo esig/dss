@@ -38,9 +38,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -54,7 +52,6 @@ import eu.europa.esig.dss.xades.validation.XAdESRevocationRefExtractionUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESSignedDataObjectProperties;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
-import org.apache.xml.security.signature.Reference;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -307,40 +304,10 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			List<TimestampedReference> references) {
 		throw new UnsupportedOperationException("XAdESTimeStampType element can contain more than one timestamp");
 	}
-
-	@Override
-	protected List<TimestampedReference> getIndividualContentTimestampedReferences(XAdESAttribute signedAttribute) {
-		List<TimestampInclude> includes = signedAttribute.getTimestampIncludedReferences();
-		List<TimestampedReference> timestampReferences = new ArrayList<>();
-		List<SignatureScope> signatureScopeListToAdd = new ArrayList<>();
-		for (Reference reference : signature.getReferences()) {
-			if (isContentTimestampedReference(reference, includes)) {
-				List<SignatureScope> signatureScopes = signature.getSignatureScopes();
-				if (Utils.isCollectionNotEmpty(signatureScopes)) {
-					for (SignatureScope signatureScope : signatureScopes) {
-						if (Utils.endsWithIgnoreCase(reference.getURI(), signatureScope.getName())) {
-							signatureScopeListToAdd.add(signatureScope);
-						}
-					}
-				}
-			}
-		}
-		populateSignerDataReferencesList(timestampReferences, signatureScopeListToAdd);
-		return timestampReferences;
-	}
 	
 	@Override
 	protected List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken) {
 		return getKeyInfoReferences();
-	}
-	
-	private boolean isContentTimestampedReference(Reference reference, List<TimestampInclude> includes) {
-		for (TimestampInclude timestampInclude : includes) {
-			if (reference.getId().equals(timestampInclude.getURI())) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	@Override

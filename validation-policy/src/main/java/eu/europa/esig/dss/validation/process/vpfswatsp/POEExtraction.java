@@ -85,7 +85,7 @@ public class POEExtraction {
 		for (RevocationWrapper revocation : diagnosticData.getAllRevocationData()) {
 			addPOE(revocation.getId(), controlTimePoe);
 		}
-		for (SignerDataWrapper signerData : diagnosticData.getOriginalSignerDocuments()) {
+		for (SignerDataWrapper signerData : diagnosticData.getAllSignerDocuments()) {
 			addPOE(signerData.getId(), controlTimePoe);
 		}
 		for (OrphanTokenWrapper orphanCertificate : diagnosticData.getAllOrphanCertificateObjects()) {

@@ -780,6 +780,13 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				}
 
 				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
+
+				if (timestampWrapper.getType().isContentTimestamp() || timestampWrapper.getType().isArchivalTimestamp() ||
+						timestampWrapper.getType().isDocumentTimestamp()) {
+					assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
+				} else {
+					assertFalse(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
+				}
 			}
 		}
 	}
@@ -1631,7 +1638,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					.filter(r -> RevocationType.OCSP.equals(r.getRevocationType())).count();
 			assertEquals(ddOcsps, ocspCounter);
 			assertEquals(diagnosticData.getTimestampList().size(), timestampCounter);
-			assertEquals(diagnosticData.getOriginalSignerDocuments().size(), signedDataCounter);
+			assertEquals(diagnosticData.getAllSignerDocuments().size(), signedDataCounter);
 			assertEquals(0, otherCounter);
 			
 		} else {
@@ -1639,7 +1646,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertEquals(0, diagnosticData.getUsedCertificates().size());
 			assertEquals(0, diagnosticData.getAllRevocationData().size());
 			assertEquals(0, diagnosticData.getTimestampList().size());
-			assertEquals(0, diagnosticData.getOriginalSignerDocuments().size());
+			assertEquals(0, diagnosticData.getAllSignerDocuments().size());
 			checkOrphanTokens(diagnosticData);
 		}
 		

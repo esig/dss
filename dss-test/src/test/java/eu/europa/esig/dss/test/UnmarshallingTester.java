@@ -263,7 +263,7 @@ public class UnmarshallingTester {
 		assertEquals(original.getListOfTrustedLists().size(), unmarshalled.getListOfTrustedLists().size());
 		assertEquals(original.getUsedCertificates().size(), unmarshalled.getUsedCertificates().size());
 		assertEquals(original.getTimestampList().size(), unmarshalled.getTimestampList().size());
-		assertEquals(original.getOriginalSignerDocuments().size(), unmarshalled.getOriginalSignerDocuments().size());
+		assertEquals(original.getAllSignerDocuments().size(), unmarshalled.getAllSignerDocuments().size());
 
 		compareUnmarshalledCertificates(original, unmarshalled.getUsedCertificates());
 		compareUnmarshalledTimestamps(original, unmarshalled.getTimestampList());

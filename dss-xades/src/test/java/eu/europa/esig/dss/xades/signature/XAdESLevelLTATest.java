@@ -28,6 +28,7 @@ import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -52,6 +53,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -126,6 +128,28 @@ public class XAdESLevelLTATest extends AbstractXAdESTestSignature {
 			}
 
 		}
+	}
+
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+
+		assertEquals(2, diagnosticData.getTimestampList().size());
+		boolean sigTstFound = false;
+		boolean arcTstFound = false;
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(0, timestampWrapper.getTimestampScopes().size());
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+				sigTstFound = true;
+			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(1, timestampWrapper.getTimestampScopes().size());
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+				arcTstFound = true;
+			}
+		}
+		assertTrue(sigTstFound);
+		assertTrue(arcTstFound);
 	}
 
 	@Override

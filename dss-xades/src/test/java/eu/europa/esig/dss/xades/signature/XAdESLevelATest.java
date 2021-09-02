@@ -22,8 +22,10 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -109,6 +111,34 @@ public class XAdESLevelATest extends AbstractXAdESTestSignature {
 		assertEquals(SignatureLevel.XAdES_A, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+
+		assertEquals(3, diagnosticData.getTimestampList().size());
+		boolean sigTstFound = false;
+		boolean sigAndRefsTstFound = false;
+		boolean arcTstFound = false;
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(0, timestampWrapper.getTimestampScopes().size());
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+				sigTstFound = true;
+			} else if (TimestampType.VALIDATION_DATA_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(0, timestampWrapper.getTimestampScopes().size());
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+				sigAndRefsTstFound = true;
+			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(1, timestampWrapper.getTimestampScopes().size());
+				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+				arcTstFound = true;
+			}
+		}
+		assertTrue(sigTstFound);
+		assertTrue(sigAndRefsTstFound);
+		assertTrue(arcTstFound);
 	}
 
 	@Override

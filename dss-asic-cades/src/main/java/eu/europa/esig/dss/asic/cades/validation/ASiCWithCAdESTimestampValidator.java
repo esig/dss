@@ -20,22 +20,17 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
+import eu.europa.esig.dss.asic.cades.validation.scope.ASiCWithCAdESTimestampScopeFinder;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.scope.ContainerContentSignatureScope;
-import eu.europa.esig.dss.validation.scope.ContainerSignatureScope;
-import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
+import eu.europa.esig.dss.validation.scope.DetachedTimestampScopeFinder;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -99,66 +94,29 @@ public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator 
 	}
 
 	@Override
-	public TimestampToken getTimestamp() {
-		TimestampToken timestamp = super.getTimestamp();
+	protected TimestampToken createTimestampToken() {
+		TimestampToken timestamp = super.createTimestampToken();
 		if (manifestFile != null) {
 			timestamp.setManifestFile(manifestFile);
 		}
 		if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampType)) {
 			timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_DETACHED);
 		}
-		timestamp.setTimestampScopes(getTimestampSignatureScopes());
 		return timestamp;
 	}
 
 	@Override
-	protected List<SignatureScope> getTimestampSignatureScopes() {
-		if (manifestFile != null) {
-			return getTimestampSignatureScopeForManifest();
-		} else {
-			return getTimestampSignatureScopeForDocument(getTimestampedData());
-		}
-	}
-
-	/**
-	 * Extracts timestamped signature scopes from a {@code ManifestFile}
-	 *
-	 * @return a list of timestamped {@link SignatureScope}s
-	 */
-	private List<SignatureScope> getTimestampSignatureScopeForManifest() {
-		List<SignatureScope> result = new ArrayList<>();
-		result.add(new ManifestSignatureScope(manifestFile.getFilename(), getDigest(getTimestampedData())));
-		if (Utils.isCollectionNotEmpty(originalDocuments)) {
-			for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-				for (DSSDocument document : originalDocuments) {
-					if (Utils.areStringsEqual(manifestEntry.getFileName(), document.getName())) {
-						result.addAll(getTimestampSignatureScopeForDocument(document));
-					}
-				}
-			}
-		}
-		return result;
+	protected ASiCWithCAdESTimestampScopeFinder getTimestampScopeFinder() {
+		return new ASiCWithCAdESTimestampScopeFinder();
 	}
 
 	@Override
-	protected List<SignatureScope> getTimestampSignatureScopeForDocument(DSSDocument document) {
-		if (ASiCUtils.isASiCSArchive(document)) {
-			return getTimestampSignatureScopeForZipPackage(document);
-		} else {
-			return super.getTimestampSignatureScopeForDocument(document);
-		}
-	}
+	protected void prepareDetachedTimestampScopeFinder(DetachedTimestampScopeFinder timestampScopeFinder) {
+		super.prepareDetachedTimestampScopeFinder(timestampScopeFinder);
 
-	private List<SignatureScope> getTimestampSignatureScopeForZipPackage(DSSDocument document) {
-		List<SignatureScope> result = new ArrayList<>();
-		result.add(new ContainerSignatureScope(document.getName(), getDigest(document)));
-		if (Utils.isCollectionNotEmpty(archiveDocuments)) {
-			for (DSSDocument archivedDocument : archiveDocuments) {
-				result.add(new ContainerContentSignatureScope(DSSUtils.decodeURI(archivedDocument.getName()),
-						getDigest(archivedDocument)));
-			}
-		}
-		return result;
+		ASiCWithCAdESTimestampScopeFinder asicWithCAdESTimestampScopeFinder = (ASiCWithCAdESTimestampScopeFinder) timestampScopeFinder;
+		asicWithCAdESTimestampScopeFinder.setContainerDocuments(originalDocuments);
+		asicWithCAdESTimestampScopeFinder.setArchiveDocuments(archiveDocuments);
 	}
 
 	@Override

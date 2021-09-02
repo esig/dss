@@ -36,6 +36,7 @@ import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.ManifestEntrySignatureScope;
 import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -48,7 +49,7 @@ import java.util.List;
 /**
  * Performs operations in order to find all signed data for a XAdES Signature
  */
-public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdESSignature> {
+public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder implements SignatureScopeFinder<XAdESSignature> {
 	
 	@Override
 	public List<SignatureScope> findSignatureScope(final XAdESSignature xadesSignature) {

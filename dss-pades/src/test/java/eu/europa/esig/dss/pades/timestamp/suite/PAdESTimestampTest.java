@@ -21,7 +21,10 @@
 package eu.europa.esig.dss.pades.timestamp.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -117,6 +120,18 @@ public class PAdESTimestampTest extends AbstractPkiFactoryTestValidation<PAdESSi
 	@Override
 	protected void validateValidationStatus(ValidationStatusType signatureValidationStatus) {
 		assertEquals(Indication.NO_SIGNATURE_FOUND, signatureValidationStatus.getMainIndication());
+	}
+
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+
+		assertEquals(1, diagnosticData.getTimestampList().size());
+		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
+		assertEquals(TimestampType.DOCUMENT_TIMESTAMP, timestampWrapper.getType());
+		assertEquals(1, timestampWrapper.getTimestampScopes().size());
+		assertEquals(SignatureScopeType.FULL, timestampWrapper.getTimestampScopes().get(0).getScope());
+		assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
 	}
 
 	@Override

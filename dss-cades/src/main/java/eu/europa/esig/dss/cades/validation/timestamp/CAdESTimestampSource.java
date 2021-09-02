@@ -51,6 +51,7 @@ import eu.europa.esig.dss.validation.CMSCertificateSource;
 import eu.europa.esig.dss.validation.CMSOCSPSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -269,12 +270,6 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 					getUnsignedAttributesReferences(unsignedAttrsHashIndex, digestAlgorithm, previousTimestamps));
 		}
 		timestampToken.getTimestampedReferences().addAll(timestampedReferences);
-	}
-
-	@Override
-	protected List<TimestampedReference> getIndividualContentTimestampedReferences(CAdESAttribute signedAttribute) {
-		// not applicable for CAdES, must be not executed
-		throw new UnsupportedOperationException("Not applicable for CAdES!");
 	}
 	
 	@Override

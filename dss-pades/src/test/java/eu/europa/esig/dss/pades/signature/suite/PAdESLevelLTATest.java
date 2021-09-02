@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -37,6 +31,12 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
 
@@ -68,7 +68,13 @@ public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
 		
 		String signatureId = diagnosticData.getFirstSignatureId();
 		String timestampId = diagnosticData.getSignatures().get(0).getTimestampList().get(0).getId();
-		for (TimestampWrapper wrapper : diagnosticData.getTimestampList(diagnosticData.getFirstSignatureId())) {
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList(diagnosticData.getFirstSignatureId());
+		assertEquals(2, timestampList.size());
+
+		boolean arcTstFound = false;
+
+		for (TimestampWrapper wrapper : timestampList) {
 			boolean sigTstFound = false;
 			for (SignatureWrapper signatureWrapper : wrapper.getTimestampedSignatures()) {
 				if (signatureId.equals(signatureWrapper.getId())) {
@@ -76,8 +82,12 @@ public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
 				}
 			}
 			assertTrue(sigTstFound);
-			
-			if (TimestampType.ARCHIVE_TIMESTAMP.equals(wrapper.getType())) {
+
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(wrapper.getType())) {
+				assertEquals(0, wrapper.getTimestampScopes().size());
+				assertEquals(1, wrapper.getTimestampedSignedData().size());
+
+			} else if (TimestampType.DOCUMENT_TIMESTAMP.equals(wrapper.getType())) {
 				boolean coverPreviousTsp = false;
 				List<TimestampWrapper> timestampedTimestamps = wrapper.getTimestampedTimestamps();
 				for (TimestampWrapper timestampWrapper : timestampedTimestamps) {
@@ -86,8 +96,13 @@ public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
 					}
 				}
 				assertTrue(coverPreviousTsp);
+				assertEquals(1, wrapper.getTimestampScopes().size());
+				assertEquals(2, wrapper.getTimestampedSignedData().size());
+
+				arcTstFound = true;
 			}
 		}
+		assertTrue(arcTstFound);
 	}
 
 	@Override

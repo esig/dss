@@ -24,7 +24,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfDocTimestampRevision.class);
 
 	/** The document timestamp token from the revision */
-	private final TimestampToken timestampToken;
+	private final PdfTimestampToken timestampToken;
 
 	/**
 	 * Default constructor to create PdfDocTimestampInfo
@@ -76,11 +75,11 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 	}
 
 	/**
-	 * Returns the corresponding {@code TimestampToken}
+	 * Returns the corresponding {@code PdfTimestampToken}
 	 *
-	 * @return {@link TimestampToken}
+	 * @return {@link PdfTimestampToken}
 	 */
-	public TimestampToken getTimestampToken() {
+	public PdfTimestampToken getTimestampToken() {
 		return timestampToken;
 	}
 

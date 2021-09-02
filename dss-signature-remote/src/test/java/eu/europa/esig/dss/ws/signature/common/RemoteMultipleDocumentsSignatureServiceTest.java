@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -49,6 +38,16 @@ import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class RemoteMultipleDocumentsSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 	
@@ -118,7 +117,8 @@ public class RemoteMultipleDocumentsSignatureServiceTest extends AbstractRemoteS
 		
 		assertEquals(0, diagnosticData.getSignatures().size());
 		assertEquals(1, diagnosticData.getTimestampList().size());
-		assertEquals(3, diagnosticData.getOriginalSignerDocuments().size()); // plus manifest file
+		assertEquals(0, diagnosticData.getOriginalSignerDocuments().size());
+		assertEquals(3, diagnosticData.getAllSignerDocuments().size()); // plus manifest file
 	}
 
 }

@@ -91,14 +91,20 @@ public class XAdESLevelLTADetachedNoDataProvidedTest extends AbstractXAdESTestSi
             if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timestampWrapper.getType())) {
                 assertFalse(timestampWrapper.isMessageImprintDataFound());
                 assertFalse(timestampWrapper.isMessageImprintDataIntact());
+                assertEquals(0, timestampWrapper.getTimestampScopes().size());
+                assertEquals(0, timestampWrapper.getTimestampedSignedData().size());
                 cntTstFound = true;
             } else if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
                 assertTrue(timestampWrapper.isMessageImprintDataFound());
                 assertTrue(timestampWrapper.isMessageImprintDataIntact());
+                assertEquals(0, timestampWrapper.getTimestampScopes().size());
+                assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
                 sigTstFound = true;
             } else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
                 assertFalse(timestampWrapper.isMessageImprintDataFound());
                 assertFalse(timestampWrapper.isMessageImprintDataIntact());
+                assertEquals(0, timestampWrapper.getTimestampScopes().size());
+                assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
                 arcTstFound = true;
             }
         }

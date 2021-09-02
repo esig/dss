@@ -330,28 +330,22 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
             List<TimestampToken> timestampTokens;
 
             if (isContentTimestamp(signedAttribute)) {
-                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.CONTENT_TIMESTAMP, getSignerDataReferences());
-                if (Utils.isCollectionEmpty(timestampTokens)) {
-                    continue;
-                }
+                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.CONTENT_TIMESTAMP);
 
             } else if (isAllDataObjectsTimestamp(signedAttribute)) {
-                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, getSignerDataReferences());
-                if (Utils.isCollectionEmpty(timestampTokens)) {
-                    continue;
-                }
+                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
 
             } else if (isIndividualDataObjectsTimestamp(signedAttribute)) {
-                List<TimestampedReference> references = getIndividualContentTimestampedReferences(signedAttribute);
-                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP, references);
-                if (Utils.isCollectionEmpty(timestampTokens)) {
-                    continue;
-                }
+                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 
             } else {
                 continue;
-
             }
+
+            if (Utils.isCollectionEmpty(timestampTokens)) {
+                continue;
+            }
+
             populateSources(timestampTokens);
             contentTimestamps.addAll(timestampTokens);
         }
@@ -436,8 +430,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
                 continue;
 
             } else if (isArchiveTimestamp(unsignedAttribute)) {
-                timestampTokens = makeTimestampTokens(unsignedAttribute, TimestampType.ARCHIVE_TIMESTAMP,
-                        new ArrayList<>());
+                timestampTokens = makeTimestampTokens(unsignedAttribute, TimestampType.ARCHIVE_TIMESTAMP);
                 if (Utils.isCollectionEmpty(timestampTokens)) {
                     continue;
                 }
@@ -679,6 +672,18 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      *
      * @param signatureAttribute {@link SignatureAttribute} to create timestamp from
      * @param timestampType      a target {@link TimestampType}
+     * @return a list of {@link TimestampToken}s
+     */
+    protected List<TimestampToken> makeTimestampTokens(SA signatureAttribute, TimestampType timestampType) {
+        return makeTimestampTokens(signatureAttribute, timestampType, new ArrayList<>());
+    }
+
+    /**
+     * Creates timestamp tokens from the provided {@code signatureAttribute}
+     * with a given list of {@code TimestampedReference}s
+     *
+     * @param signatureAttribute {@link SignatureAttribute} to create timestamp from
+     * @param timestampType      a target {@link TimestampType}
      * @param references         list of {@link TimestampedReference}s covered by the current timestamp
      * @return a list of {@link TimestampToken}s
      */
@@ -693,36 +698,27 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
 
     @Override
     public List<TimestampedReference> getSignerDataReferences() {
-        final List<TimestampedReference> references = new ArrayList<>();
-        populateSignerDataReferencesList(references, signature.getSignatureScopes());
-        return references;
+        return getSignerDataTimestampedReferences(signature.getSignatureScopes());
     }
 
     /**
-     * Populates the {@code result} list with references creates from the {@code signatureScopes} list
+     * Creates a list of {@link TimestampedReference}s from a given list of {@code SignatureScope}s
      *
-     * @param result a final list of {@link TimestampedReference} to populate
-     * @param signatureScopes a list of {@link SignatureScope} to use
+     * @param signatureScopes a list of {@link SignatureScope} to create {@link TimestampedReference}s for
+     * @return a list of {@link TimestampedReference}s
      */
-    protected void populateSignerDataReferencesList(final List<TimestampedReference> result, List<SignatureScope> signatureScopes) {
+    protected List<TimestampedReference> getSignerDataTimestampedReferences(List<SignatureScope> signatureScopes) {
+        final List<TimestampedReference> references = new ArrayList<>();
         if (Utils.isCollectionNotEmpty(signatureScopes)) {
             for (SignatureScope signatureScope : signatureScopes) {
-                addReference(result, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+                addReference(references, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
                 if (Utils.isCollectionNotEmpty(signatureScope.getChildren())) {
-                    populateSignerDataReferencesList(result, signatureScope.getChildren());
+                    addReferences(references, getSignerDataTimestampedReferences(signatureScope.getChildren()));
                 }
             }
         }
+        return references;
     }
-
-    /**
-     * Returns a list of {@link TimestampedReference}s for an "individual-data-objects-timestamp"
-     * NOTE: Used only in XAdES
-     *
-     * @param signedAttribute {@link SA}
-     * @return a list of {@link TimestampedReference}s
-     */
-    protected abstract List<TimestampedReference> getIndividualContentTimestampedReferences(SA signedAttribute);
 
     /**
      * Returns a list of {@link TimestampedReference} for a "signature-timestamp" element

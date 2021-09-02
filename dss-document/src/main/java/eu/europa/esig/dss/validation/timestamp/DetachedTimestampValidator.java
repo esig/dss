@@ -21,24 +21,19 @@
 package eu.europa.esig.dss.validation.timestamp;
 
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
-import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
-import eu.europa.esig.dss.validation.scope.FullSignatureScope;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.validation.scope.DetachedTimestampScopeFinder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -105,11 +100,20 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 	public TimestampToken getTimestamp() {
 		if (timestampToken == null) {
 			timestampToken = createTimestampToken();
+
+			DetachedTimestampScopeFinder timestampScopeFinder = getTimestampScopeFinder();
+			prepareDetachedTimestampScopeFinder(timestampScopeFinder);
+			findTimestampScopes(timestampToken, timestampScopeFinder);
 		}
 		return timestampToken;
 	}
 
-	private TimestampToken createTimestampToken() {
+	/**
+	 * This method creates a timestamp token from the validating document
+	 *
+	 * @return {@link TimestampToken}
+	 */
+	protected TimestampToken createTimestampToken() {
 		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
 		Objects.requireNonNull(document, "The timestampFile must be defined!");
 		Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
@@ -117,8 +121,6 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 			timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
 			timestampToken.setFileName(document.getName());
 			timestampToken.matchData(getTimestampedData());
-			timestampToken.setTimestampScopes(getTimestampSignatureScopes());
-			timestampToken.getTimestampedReferences().addAll(getTimestampedReferences());
 			return timestampToken;
 
 		} catch (CMSException | TSPException | IOException e) {
@@ -156,64 +158,19 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 		return detachedContents.iterator().next();
 	}
 
-	/**
-	 * Returns a list of timestamp signature scopes (timestamped data)
-	 * 
-	 * @return a list of {@link SignatureScope}s
-	 */
-	protected List<SignatureScope> getTimestampSignatureScopes() {
-		DSSDocument timestampedData = getTimestampedData();
-		if (timestampedData != null) {
-			return getTimestampSignatureScopeForDocument(timestampedData);
-		}
-		return Collections.emptyList();
+	@Override
+	protected DetachedTimestampScopeFinder getTimestampScopeFinder() {
+		return new DetachedTimestampScopeFinder();
 	}
 
 	/**
-	 * Returns a timestamped {@code SignatureScope} for the given document
+	 * This method is used to prepare a {@code DetachedTimestampScopeFinder} for execution
 	 *
-	 * @param document {@link DSSDocument}
-	 * @return a list of {@link SignatureScope}s
+	 * @param timestampScopeFinder {@link DetachedTimestampScopeFinder}
 	 */
-	protected List<SignatureScope> getTimestampSignatureScopeForDocument(DSSDocument document) {
-		String documentName = document.getName();
-		if (document instanceof DigestDocument) {
-			return Arrays.asList(new DigestSignatureScope(Utils.isStringNotEmpty(documentName) ? documentName : "Digest document",
-					((DigestDocument) document).getExistingDigest()));
-		} else {
-			return Arrays.asList(new FullSignatureScope(Utils.isStringNotEmpty(documentName) ? documentName : "Full document",
-					getDigest(document)));
-		}
-	}
-
-	/**
-	 * Returns a list of timestamped references
-	 *
-	 * @return a list of {@link TimestampedReference}s
-	 */
-	protected List<TimestampedReference> getTimestampedReferences() {
-		List<TimestampedReference> timestampedReferences = new ArrayList<>();
-		List<SignatureScope> signatureScopes = getTimestampSignatureScopes();
-		for (SignatureScope signatureScope : signatureScopes) {
-			if (addReference(signatureScope)) {
-				timestampedReferences.add(new TimestampedReference(
-						signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
-			}
-		}
-		return timestampedReferences;
-	}
-
-	/**
-	 * Checks if the signature scope shall be added as a timestamped reference
-	 *
-	 * NOTE: used to avoid duplicates in ASiC with CAdES validator, due to covered signature/timestamp files
-	 *
-	 * @param signatureScope {@link SignatureScope} to check
-	 * @return TRUE if the timestamped reference shall be created for the given {@link SignatureScope}, FALSE otherwise
-	 */
-	protected boolean addReference(SignatureScope signatureScope) {
-		// accept all for a simple detached timestamp
-		return true;
+	protected void prepareDetachedTimestampScopeFinder(DetachedTimestampScopeFinder timestampScopeFinder) {
+		timestampScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
+		timestampScopeFinder.setTimestampedData(getTimestampedData());
 	}
 
 	@Override

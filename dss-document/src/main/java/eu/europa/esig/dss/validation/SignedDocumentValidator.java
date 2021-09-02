@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -45,8 +46,13 @@ import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessE
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.scope.DetachedTimestampScopeFinder;
+import eu.europa.esig.dss.validation.scope.EncapsulatedTimestampScopeFinder;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
+import eu.europa.esig.dss.validation.scope.TimestampScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -687,7 +693,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
-	 * Executes the validation regarding to the given {@code validationPolicy}
+	 * Executes the validation regarding the given {@code validationPolicy}
 	 * 
 	 * @param diagnosticData   {@link DiagnosticData} contained a data to be
 	 *                         validated
@@ -775,6 +781,86 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public <T extends AdvancedSignature> void findSignatureScopes(Collection<T> allSignatures) {
 		for (final AdvancedSignature signature : allSignatures) {
 			signature.findSignatureScope(signatureScopeFinder);
+
+			TimestampScopeFinder timestampScopeFinder = getTimestampScopeFinder();
+			prepareTimestampScopeFinder(timestampScopeFinder, signature);
+			for (TimestampToken timestampToken : signature.getContentTimestamps()) {
+				findTimestampScopes(timestampToken, timestampScopeFinder);
+			}
+			for (TimestampToken timestampToken : signature.getArchiveTimestamps()) {
+				findTimestampScopes(timestampToken, timestampScopeFinder);
+			}
+			for (TimestampToken timestampToken : signature.getDocumentTimestamps()) {
+				findTimestampScopes(timestampToken, timestampScopeFinder);
+			}
+		}
+	}
+
+	/**
+	 * Finds timestamp scope for the {@code TimestampToken}
+	 *
+	 * @param timestampToken {@link TimestampToken} to find timestamp scope for
+	 * @param timestampScopeFinder {@link TimestampScopeFinder} to use
+	 */
+	protected void findTimestampScopes(TimestampToken timestampToken, TimestampScopeFinder timestampScopeFinder) {
+		List<SignatureScope> timestampScopes = timestampScopeFinder.findTimestampScope(timestampToken);
+		timestampToken.setTimestampScopes(timestampScopes);
+		timestampToken.getTimestampedReferences().addAll(getTimestampedReferences(timestampScopes));
+	}
+
+	/**
+	 * Returns a list of timestamped references from the given list of {@code SignatureScope}s
+	 *
+	 * @param signatureScopes a list of {@link SignatureScope}s
+	 * @return a list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getTimestampedReferences(List<SignatureScope> signatureScopes) {
+		List<TimestampedReference> timestampedReferences = new ArrayList<>();
+		if (Utils.isCollectionNotEmpty(signatureScopes)) {
+			for (SignatureScope signatureScope : signatureScopes) {
+				if (addReference(signatureScope)) {
+					timestampedReferences.add(new TimestampedReference(
+							signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+				}
+			}
+		}
+		return timestampedReferences;
+	}
+
+	/**
+	 * Checks if the signature scope shall be added as a timestamped reference
+	 *
+	 * NOTE: used to avoid duplicates in ASiC with CAdES validator, due to covered signature/timestamp files
+	 *
+	 * @param signatureScope {@link SignatureScope} to check
+	 * @return TRUE if the timestamped reference shall be created for the given {@link SignatureScope}, FALSE otherwise
+	 */
+	protected boolean addReference(SignatureScope signatureScope) {
+		// accept all by default
+		return true;
+	}
+
+	/**
+	 * This method returns a timestamp scope finder
+	 *
+	 * @return {@link TimestampScopeFinder}
+	 */
+	protected TimestampScopeFinder getTimestampScopeFinder() {
+		// signature encapsulated timestamp scope finder is used by default
+		return new EncapsulatedTimestampScopeFinder();
+	}
+
+	/**
+	 * This method is used to prepare a {@code DetachedTimestampScopeFinder} for execution
+	 *
+	 * @param timestampScopeFinder {@link DetachedTimestampScopeFinder}
+	 * @param signature {@link AdvancedSignature} used for encapsulated timestamps
+	 */
+	protected void prepareTimestampScopeFinder(TimestampScopeFinder timestampScopeFinder, AdvancedSignature signature) {
+		timestampScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
+		if (timestampScopeFinder instanceof EncapsulatedTimestampScopeFinder) {
+			EncapsulatedTimestampScopeFinder encapsulatedTimestampScopeFinder = (EncapsulatedTimestampScopeFinder) timestampScopeFinder;
+			encapsulatedTimestampScopeFinder.setSignature(signature);
 		}
 	}
 

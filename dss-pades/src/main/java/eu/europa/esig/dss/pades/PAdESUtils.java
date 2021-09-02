@@ -24,13 +24,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
 import eu.europa.esig.dss.pdf.PdfCMSRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.pades.validation.ByteRange;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,14 +50,15 @@ public final class PAdESUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESUtils.class);
 
-	/**
-	 * Defines a number of a first page in a document
-	 */
+	/** Defines a number of the first page in a document */
 	public static final int DEFAULT_FIRST_PAGE = 1;
 
 	/** The starting bytes of a PDF document */
 	private static final byte[] PDF_PREAMBLE = new byte[]{'%', 'P', 'D', 'F', '-'};
 
+	/**
+	 * Empty constructor (singleton)
+	 */
 	private PAdESUtils() {
 	}
 

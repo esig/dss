@@ -441,7 +441,7 @@ public class ETSIValidationReportBuilder {
 			validationObjectListType.getValidationObject().add(orphanRevocationValidationObject);
 		}
 
-		for (SignerDataWrapper signedData : diagnosticData.getOriginalSignerDocuments()) {
+		for (SignerDataWrapper signedData : diagnosticData.getAllSignerDocuments()) {
 			ValidationObjectType signerDataValidationObject = getSignerDataValidationObject(signedData);
 			signerDataValidationObject.setPOE(getPOE(signedData.getId(), poeExtraction));
 			validationObjectListType.getValidationObject().add(signerDataValidationObject);

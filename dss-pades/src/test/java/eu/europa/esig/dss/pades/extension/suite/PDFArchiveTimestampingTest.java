@@ -142,8 +142,9 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		}
 		
 		assertTrue(Utils.isCollectionEmpty(diagnosticData.getSignatures()));
-		
-		List<SignerDataWrapper> originalDocuments = diagnosticData.getOriginalSignerDocuments();
+		assertEquals(0, diagnosticData.getOriginalSignerDocuments().size());
+
+		List<SignerDataWrapper> originalDocuments = diagnosticData.getAllSignerDocuments();
 		assertEquals(1, originalDocuments.size());
 		boolean fullDocFound = false;
 		for (SignerDataWrapper signerData : originalDocuments) {
@@ -194,7 +195,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		assertEquals(diagnosticData.getUsedCertificates().size(), certificatesCounter);
 		assertEquals(diagnosticData.getAllRevocationData().size(), revocationCounter);
 		assertEquals(diagnosticData.getTimestampList().size(), timestampCounter);
-		assertEquals(diagnosticData.getOriginalSignerDocuments().size(), signerDataCounter);
+		assertEquals(diagnosticData.getAllSignerDocuments().size(), signerDataCounter);
 		
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReportJaxb);
