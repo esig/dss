@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
@@ -51,6 +52,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
@@ -111,6 +113,11 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 
 		signatureParameters.setImageParameters(imageParameters);
 
+		Exception exception = assertThrows(AlertException.class, () -> signAndValidate());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setWidth(400);
+		fieldParameters.setHeight(200);
 		signAndValidate();
 	}
 

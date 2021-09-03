@@ -150,7 +150,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				signatureDrawer.init(imageParameters, reader, sap);
 
 				if (fieldItem == null) {
-					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
+					getVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
 				}
 
 				signatureDrawer.draw();
@@ -526,7 +526,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
 			
-			AnnotationBox annotationBox = checkVisibleSignatureFieldBoxPosition(new ITextDocumentReader(reader), parameters);
+			AnnotationBox annotationBox = getVisibleSignatureFieldBoxPosition(new ITextDocumentReader(reader), parameters);
 			
 			stp.addSignature(parameters.getFieldId(), parameters.getPage(), 
 					annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());

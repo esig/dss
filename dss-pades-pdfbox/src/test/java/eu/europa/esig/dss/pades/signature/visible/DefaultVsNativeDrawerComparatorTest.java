@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
@@ -56,6 +57,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
 public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
@@ -149,7 +151,13 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.setFieldParameters(fieldParameters);
 		
 		signatureParameters.setImageParameters(imageParameters);
-		drawAndCompareExplicitly();
+
+		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setWidth(400);
+		fieldParameters.setHeight(200);
+		drawAndCompareVisually();
 	}
 	
 	@Test
@@ -161,6 +169,8 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setOriginX(100);
 		fieldParameters.setOriginY(100);
+		fieldParameters.setHeight(200);
+		fieldParameters.setWidth(400);
 		imageParameters.setFieldParameters(fieldParameters);
 		
 		imageParameters.setAlignmentVertical(VisualSignatureAlignmentVertical.BOTTOM);
@@ -227,6 +237,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		
 		signatureParameters.setImageParameters(imageParameters);
 		
+		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setWidth(400);
+		fieldParameters.setHeight(200);
 		drawAndCompareVisually();
 	}
 	
@@ -270,6 +285,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.setTextParameters(textParameters);
 
 		signatureParameters.setImageParameters(imageParameters);
+
+		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setWidth(400);
+		fieldParameters.setHeight(200);
 		drawAndCompareVisually();
 	}
 	
@@ -316,6 +337,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.setTextParameters(textParameters);
 
 		signatureParameters.setImageParameters(imageParameters);
+
+		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setWidth(400);
+		fieldParameters.setHeight(200);
 		drawAndCompareVisually();
 	}
 	
@@ -337,6 +364,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.setTextParameters(textParameters);
 
 		signatureParameters.setImageParameters(imageParameters);
+
+		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setWidth(400);
+		fieldParameters.setHeight(200);
 		drawAndCompareVisually();
 	}
 	
@@ -415,8 +448,8 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-		fieldParameters.setOriginX(200);
-		fieldParameters.setOriginY(300);
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(200);
 		imageParameters.setFieldParameters(fieldParameters);
 		
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
@@ -503,6 +536,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.getTextParameters().setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		imageParameters.setDpi(144);
 		signatureParameters.setImageParameters(imageParameters);
+
+		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setOriginX(100);
 		drawAndCompareVisually();
 	}
 	
@@ -732,7 +770,12 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 
 		signatureParameters.setImageParameters(imageParameters);
 
-		drawAndCompareExplicitly();
+		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setWidth(400);
+		fieldParameters.setHeight(200);
+		drawAndCompareVisually();
 	}
 	
 	@Test

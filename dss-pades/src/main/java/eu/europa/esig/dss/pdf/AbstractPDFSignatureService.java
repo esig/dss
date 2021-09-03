@@ -80,6 +80,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	private StatusAlert alertOnSignatureFieldOverlap = new ExceptionOnStatusAlert();
 
 	/**
+	 * This variable allows setting a behavior when
+	 * a new signature field is created outside the page dimensions
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert alertOnSignatureFieldOutsidePageDimensions = new ExceptionOnStatusAlert();
+
+	/**
 	 * This variable sets the maximal amount of pages in a PDF to execute visual
 	 * screenshot comparison for Example: for value 10, the visual comparison will
 	 * be executed for a PDF containing 10 and less pages
@@ -113,6 +121,17 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	public void setAlertOnSignatureFieldOverlap(StatusAlert alertOnSignatureFieldOverlap) {
 		Objects.requireNonNull(alertOnSignatureFieldOverlap, "StatusAlert cannot be null!");
 		this.alertOnSignatureFieldOverlap = alertOnSignatureFieldOverlap;
+	}
+
+	/**
+	 * Sets a behavior to follow when a new signature field is created outside the page's dimensions
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 *
+	 * @param alertOnSignatureFieldOutsidePageDimensions {@link StatusAlert} to execute
+	 */
+	public void setAlertOnSignatureFieldOutsidePageDimensions(StatusAlert alertOnSignatureFieldOutsidePageDimensions) {
+		this.alertOnSignatureFieldOutsidePageDimensions = alertOnSignatureFieldOutsidePageDimensions;
 	}
 
 	/**
@@ -461,22 +480,25 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	/**
-	 * Checks validity of the SignatureField position
+	 * Checks validity of the SignatureField position and returns the calculated signature field box
 	 * 
 	 * @param signatureDrawer {@link SignatureDrawer}
 	 * @param documentReader  {@link PdfDocumentReader}
 	 * @param fieldParameters {@link SignatureFieldParameters}
+	 * @return {@link AnnotationBox}
 	 * @throws IOException if an exception occurs
 	 */
-	protected void checkVisibleSignatureFieldBoxPosition(SignatureDrawer signatureDrawer,
-			PdfDocumentReader documentReader, SignatureFieldParameters fieldParameters) throws IOException {
+	protected AnnotationBox getVisibleSignatureFieldBoxPosition(SignatureDrawer signatureDrawer,
+													   PdfDocumentReader documentReader,
+													   SignatureFieldParameters fieldParameters) throws IOException {
 		AnnotationBox signatureFieldAnnotation = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldAnnotation != null) {
 			AnnotationBox pageBox = documentReader.getPageBox(fieldParameters.getPage());
 			signatureFieldAnnotation = signatureFieldAnnotation.toPdfPageCoordinates(pageBox.getHeight());
 
-			checkSignatureFieldBoxOverlap(documentReader, signatureFieldAnnotation, fieldParameters.getPage());
+			assertSignatureFieldPositionValid(signatureFieldAnnotation, documentReader, fieldParameters);
 		}
+		return signatureFieldAnnotation;
 	}
 
 	/**
@@ -503,22 +525,29 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	/**
 	 * Checks if the signatureFieldBox overlaps with any existing annotations on the
-	 * given page
+	 * given page and returns the respectful signature field box
 	 * 
 	 * @param reader     {@link PdfDocumentReader} to be validated
 	 * @param parameters {@link SignatureFieldParameters}
 	 * @return {@link AnnotationBox} computed signature field box
 	 * @throws IOException if an exception occurs
 	 */
-	protected AnnotationBox checkVisibleSignatureFieldBoxPosition(final PdfDocumentReader reader,
-			SignatureFieldParameters parameters) throws IOException {
+	protected AnnotationBox getVisibleSignatureFieldBoxPosition(final PdfDocumentReader reader,
+																SignatureFieldParameters parameters) throws IOException {
 		AnnotationBox annotationBox = new AnnotationBox(parameters);
 		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
 		annotationBox = annotationBox.toPdfPageCoordinates(pageBox.getHeight());
 
+		assertSignatureFieldPositionValid(annotationBox, reader, parameters);
+		return annotationBox;
+	}
+
+	private void assertSignatureFieldPositionValid(final AnnotationBox annotationBox, final PdfDocumentReader reader,
+												  SignatureFieldParameters parameters) throws IOException {
 		checkSignatureFieldBoxOverlap(reader, annotationBox, parameters.getPage());
 
-		return annotationBox;
+		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
+		checkSignatureFieldAgainstPageDimensions(annotationBox, pageBox);
 	}
 
 	private void checkSignatureFieldBoxOverlap(final PdfDocumentReader reader, final AnnotationBox signatureFieldBox,
@@ -535,6 +564,23 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	private void alertOnSignatureFieldOverlap() {
 		String alertMessage = "The new signature field position overlaps with an existing annotation!";
 		alertOnSignatureFieldOverlap.alert(new Status(alertMessage));
+	}
+
+	private void checkSignatureFieldAgainstPageDimensions(final AnnotationBox signatureFieldBox, final AnnotationBox pageBox) {
+		if (signatureFieldBox.getMinX() < pageBox.getMinX() || signatureFieldBox.getMaxX() > pageBox.getMaxX() ||
+				signatureFieldBox.getMinY() < pageBox.getMinY() || signatureFieldBox.getMaxY() > pageBox.getMaxY()) {
+			alertOnSignatureFieldOutsidePageDimensions(signatureFieldBox, pageBox);
+		}
+	}
+
+	private void alertOnSignatureFieldOutsidePageDimensions(final AnnotationBox signatureFieldBox,
+															final AnnotationBox pageBox) {
+		String alertMessage = String.format("The new signature field position is outside the page dimensions! " +
+				"Signature Field : [minX=%s, maxX=%s, minY=%s, maxY=%s], " +
+				"Page : [minX=%s, maxX=%s, minY=%s, maxY=%s]",
+				signatureFieldBox.getMinX(), signatureFieldBox.getMaxX(), signatureFieldBox.getMinY(), signatureFieldBox.getMaxY(),
+				pageBox.getMinX(), pageBox.getMaxX(), pageBox.getMinY(), pageBox.getMaxY());
+		alertOnSignatureFieldOutsidePageDimensions.alert(new Status(alertMessage));
 	}
 
 	@Override

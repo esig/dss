@@ -20,15 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -37,6 +29,15 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PDFSignatureServiceTest {
 	
@@ -75,6 +76,128 @@ public class PDFSignatureServiceTest {
 		assertNotNull(withSecondField);
 		
 		assertEquals(2, service.getAvailableSignatureFields(withSecondField).size());
+	}
+
+	@Test
+	public void alertOnSignatureFieldOutsidePageDimensions() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("signature1");
+		parameters.setOriginX(0);
+		parameters.setOriginY(0);
+		parameters.setHeight(0);
+		parameters.setWidth(0);
+		DSSDocument signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		parameters.setOriginX(0);
+		parameters.setOriginY(0);
+		parameters.setHeight(100);
+		parameters.setWidth(100);
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		parameters.setOriginX(200);
+		parameters.setOriginY(200);
+		parameters.setHeight(100);
+		parameters.setWidth(100);
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		parameters.setOriginX(-1);
+		parameters.setOriginY(0);
+		parameters.setHeight(100);
+		parameters.setWidth(100);
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+		parameters.setOriginX(0);
+		parameters.setOriginY(-1);
+		parameters.setHeight(100);
+		parameters.setWidth(100);
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+		parameters.setOriginX(0);
+		parameters.setOriginY(0);
+		parameters.setHeight(100);
+		parameters.setWidth(100);
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		parameters.setOriginX(612);
+		parameters.setOriginY(792);
+		parameters.setHeight(0);
+		parameters.setWidth(0);
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		parameters.setOriginX(512);
+		parameters.setOriginY(692);
+		parameters.setHeight(100);
+		parameters.setWidth(100);
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		parameters.setOriginX(513);
+		parameters.setOriginY(692);
+		parameters.setHeight(100);
+		parameters.setWidth(100);
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+		parameters.setOriginX(512);
+		parameters.setOriginY(692);
+		parameters.setHeight(101);
+		parameters.setWidth(100);
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+		parameters.setOriginX(512);
+		parameters.setOriginY(693);
+		parameters.setHeight(100);
+		parameters.setWidth(100);
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+		parameters.setOriginX(512);
+		parameters.setOriginY(692);
+		parameters.setHeight(100);
+		parameters.setWidth(101);
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		service.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
 	}
 
 }

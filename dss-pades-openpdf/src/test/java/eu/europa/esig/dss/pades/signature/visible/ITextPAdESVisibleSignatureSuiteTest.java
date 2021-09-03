@@ -27,6 +27,7 @@ import eu.europa.esig.dss.pades.signature.visible.suite.PAdESNonLatinCharactersS
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESSignatureFieldTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESTextWrappingTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleImageScalingTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSigOutsidePageTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignWithSignatureFieldTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignatureTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESVisibleSignatureWithJavaFontTest;
@@ -46,7 +47,8 @@ import org.junit.runner.RunWith;
         PAdESWithSignatureInvisibleAndTimestampVisibleTest.class, PAdESVisibleSignatureWithJavaFontTest.class,
         PAdESNonLatinCharactersSignatureTest.class, PAdESVisibleZoomRotationTest.class, PAdESVisibleSignWithSignatureFieldTest.class,
         PDFSignatureServiceTest.class, PAdESMultipleVisibleSignaturesTest.class, PAdESVisibleWithOverlappingFieldsTest.class,
-        PAdESVisibleImageScalingTest.class, PAdESExistingSignatureFieldTest.class, PAdESTextWrappingTest.class })
+        PAdESVisibleImageScalingTest.class, PAdESExistingSignatureFieldTest.class, PAdESTextWrappingTest.class,
+        PAdESVisibleSigOutsidePageTest.class })
 public class ITextPAdESVisibleSignatureSuiteTest {
 
 }

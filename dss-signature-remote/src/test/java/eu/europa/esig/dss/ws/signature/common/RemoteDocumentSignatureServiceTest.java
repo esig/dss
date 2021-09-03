@@ -236,6 +236,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		fieldParameters.setOriginY(100.F);
 		fieldParameters.setWidth(130.F);
 		fieldParameters.setHeight(50.F);
+		imageParameters.setFieldParameters(fieldParameters);
 
 		RemoteSignatureImageTextParameters textParameters = new RemoteSignatureImageTextParameters();
 		textParameters.setText("Signature");

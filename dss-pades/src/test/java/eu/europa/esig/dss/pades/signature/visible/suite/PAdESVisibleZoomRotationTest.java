@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
@@ -38,6 +39,9 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.Color;
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 
@@ -136,6 +140,10 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
 
+		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setHeight(200);
 		super.signAndVerify();
 	}
 

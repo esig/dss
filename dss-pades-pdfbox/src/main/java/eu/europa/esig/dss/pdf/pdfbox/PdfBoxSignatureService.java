@@ -229,7 +229,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				
 				if (pdSignatureField == null) {
 					// check signature field position only for new annotations
-					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new PdfBoxDocumentReader(pdDocument), fieldParameters);
+					getVisibleSignatureFieldBoxPosition(signatureDrawer, new PdfBoxDocumentReader(pdDocument), fieldParameters);
 				}
 				
 				signatureDrawer.draw();
@@ -678,7 +678,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				signatureField.setPartialName(parameters.getFieldId());
 			}
 
-			AnnotationBox annotationBox = checkVisibleSignatureFieldBoxPosition(pdfBoxDocumentReader, parameters);
+			AnnotationBox annotationBox = getVisibleSignatureFieldBoxPosition(pdfBoxDocumentReader, parameters);
 			
 			// start counting from TOP of the page
 			PDRectangle rect = new PDRectangle(annotationBox.getMinX(), annotationBox.getMinY(),
