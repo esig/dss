@@ -362,11 +362,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		try (PdfDocumentReader reader = loadPdfDocumentReader(originalBytes, pwd)) {
 			return reader.getDSSDictionary();
 		} catch (Exception e) {
-			String message = String.format("Cannot extract DSS dictionary from the previous revision : %s", e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(message, e);
-			} else {
-				LOG.warn(message);
+				LOG.debug("Cannot extract DSS dictionary from the previous revision : {}", e.getMessage());
 			}
 			return null;
 		}
