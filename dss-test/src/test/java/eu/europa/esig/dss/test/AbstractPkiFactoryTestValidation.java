@@ -89,10 +89,12 @@ import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessE
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.validationreport.jaxb.AttributeBaseType;
 import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
 import eu.europa.esig.validationreport.jaxb.POEType;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SACertIDType;
+import eu.europa.esig.validationreport.jaxb.SACommitmentTypeIndicationType;
 import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
 import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
 import eu.europa.esig.validationreport.jaxb.SADSSType;
@@ -100,10 +102,12 @@ import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 import eu.europa.esig.validationreport.jaxb.SAFilterType;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 import eu.europa.esig.validationreport.jaxb.SANameType;
+import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SAReasonType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SASigPolicyIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
+import eu.europa.esig.validationreport.jaxb.SASignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SASigningTimeType;
 import eu.europa.esig.validationreport.jaxb.SASubFilterType;
 import eu.europa.esig.validationreport.jaxb.SATimestampType;
@@ -1315,6 +1319,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					} else if (value instanceof SACertIDListType) {
 						SACertIDListType certIdList = (SACertIDListType) value;
 						validateETSIACertIDListType(certIdList);
+					} else if (value instanceof SACommitmentTypeIndicationType) {
+						SACommitmentTypeIndicationType commitmentTypeIndicationType = (SACommitmentTypeIndicationType) value;
+						validateETSICommitmentTypeIndicationType(commitmentTypeIndicationType);
 					} else if (value instanceof SADataObjectFormatType) {
 						SADataObjectFormatType dataObjectFormatType = (SADataObjectFormatType) value;
 						validateETSIDataObjectFormatType(dataObjectFormatType);
@@ -1322,6 +1329,18 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						SATimestampType timestamp = (SATimestampType) value;
 						assertNotNull(timestamp.getAttributeObject());
 						assertNotNull(timestamp.getTimeStampValue());
+					} else if (value instanceof SASigPolicyIdentifierType) {
+						SASigPolicyIdentifierType saSigPolicyIdentifier = (SASigPolicyIdentifierType) value;
+						validateETSISASigPolicyIdentifierType(saSigPolicyIdentifier);
+					} else if (value instanceof SASignatureProductionPlaceType) {
+						SASignatureProductionPlaceType saSignatureProductionPlace = (SASignatureProductionPlaceType) value;
+						validateETSISASignatureProductionPlaceType(saSignatureProductionPlace);
+					} else if (value instanceof SASignerRoleType) {
+						SASignerRoleType saSignerRoleType = (SASignerRoleType) value;
+						validateETSISASignerRoleType(saSignerRoleType);
+					} else if (value instanceof SACounterSignatureType) {
+						SACounterSignatureType saCounterSignature = (SACounterSignatureType) value;
+						validateETSISACounterSignatureType(saCounterSignature);
 					} else if (value instanceof SAMessageDigestType) {
 						SAMessageDigestType md = (SAMessageDigestType) value;
 						validateETSIMessageDigest(md);
@@ -1349,25 +1368,31 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					} else if (value instanceof SARevIDListType) {
 						SARevIDListType revIdList = (SARevIDListType) value;
 						validateETSIRevIDListType(revIdList);
-					} else if (value instanceof SASigPolicyIdentifierType) {
-						SASigPolicyIdentifierType saSigPolicyIdentifier = (SASigPolicyIdentifierType) value;
-						validateETSISASigPolicyIdentifierType(saSigPolicyIdentifier);
-					} else if (value instanceof SASignatureProductionPlaceType) {
-						SASignatureProductionPlaceType saSignatureProductionPlace = (SASignatureProductionPlaceType) value;
-						validateETSISASignatureProductionPlaceType(saSignatureProductionPlace);
-					} else if (value instanceof SACounterSignatureType) {
-						SACounterSignatureType saCounterSignature = (SACounterSignatureType) value;
-						validateETSISACounterSignatureType(saCounterSignature);
+					} else if ("CertificateValues".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSICertificateValues((AttributeBaseType) value);
+					} else if ("RevocationValues".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSIRevocationValues((AttributeBaseType) value);
+					} else if ("AttrAuthoritiesCertValues".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSIAttrAuthoritiesCertValues((AttributeBaseType) value);
+					} else if ("AttributeRevocationValues".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSIAttributeRevocationValues((AttributeBaseType) value);
+					} else if ("TimeStampValidationData".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSITimeStampValidationData((AttributeBaseType) value);
 					} else if ("ByteRange".equals(jaxbElement.getName().getLocalPart())) {
 						assertTrue(value instanceof List<?>);
-						List<?> byteArray = (List<?>) value;
-						validateETSIByteArray(byteArray);
+						validateETSIByteArray((List<?>) value);
 					} else {
-						LOG.warn("{} not tested", value.getClass());
+						fail(String.format("Not tested! Name : %s, class : %s",
+								jaxbElement.getName().getLocalPart(), value.getClass()));
 					}
 
 				} else {
-					fail("Only JAXBElement are accepted");
+					fail("Only JAXBElements are accepted!");
 				}
 			}
 		}
@@ -1417,6 +1442,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 	}
 
+	protected void validateETSICommitmentTypeIndicationType(SACommitmentTypeIndicationType commitmentTypeIndication) {
+		assertNotNull(commitmentTypeIndication.getCommitmentTypeIdentifier());
+	}
+
 	protected void validateETSIDataObjectFormatType(SADataObjectFormatType dataObjectFormat) {
 		assertTrue((dataObjectFormat.getContentType() != null) || (dataObjectFormat.getMimeType() != null));
 	}
@@ -1436,10 +1465,46 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNotNull(saSignatureProductionPlace);
 		assertTrue(Utils.isCollectionNotEmpty(saSignatureProductionPlace.getAddressString()));
 	}
+
+	protected void validateETSISASignerRoleType(SASignerRoleType signerRole) {
+		List<SAOneSignerRoleType> roleDetails = signerRole.getRoleDetails();
+		assertTrue(Utils.isCollectionNotEmpty(roleDetails));
+		for (SAOneSignerRoleType oneSignerRole : roleDetails) {
+			assertNotNull(oneSignerRole.getRole());
+			assertNotNull(oneSignerRole.getEndorsementType());
+		}
+	}
 	
 	protected void validateETSISACounterSignatureType(SACounterSignatureType saCounterSignature) {
 		assertNotNull(saCounterSignature);
 		assertNotNull(saCounterSignature.getCounterSignature());
+	}
+
+	protected void validateETSICertificateValues(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSIRevocationValues(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSIAttrAuthoritiesCertValues(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSIAttributeRevocationValues(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSITimeStampValidationData(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSIAttributeBaseType(AttributeBaseType attributeBase) {
+		assertFalse(attributeBase.isSigned() != null && attributeBase.isSigned());
+		List<VOReferenceType> attributeObject = attributeBase.getAttributeObject();
+		assertEquals(1, attributeObject.size());
+		assertTrue(Utils.isCollectionNotEmpty(attributeObject.iterator().next().getVOReference()));
 	}
 
 	protected void validateETSIByteArray(List<?> byteArray) {
