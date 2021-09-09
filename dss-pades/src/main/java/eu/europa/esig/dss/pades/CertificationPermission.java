@@ -47,17 +47,37 @@ public enum CertificationPermission {
 	/** The code of the DocMDP enumeration */
 	private final int code;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param code value
+	 */
 	CertificationPermission(int code) {
 		this.code = code;
 	}
 
 	/**
-	 * Gets code
+	 * Gets value of /DocMDP dictionary
 	 *
 	 * @return code
 	 */
 	public int getCode() {
 		return code;
+	}
+
+	/**
+	 * Returns a CertificationPermission corresponding to the given code value
+	 *
+	 * @param code value
+	 * @return {@link CertificationPermission}
+	 */
+	public static CertificationPermission fromCode(int code) {
+		for (CertificationPermission certificationPermission : values()) {
+			if (code == certificationPermission.getCode()) {
+				return certificationPermission;
+			}
+		}
+		throw new IllegalArgumentException(String.format("Not supported /DocMDP code value : %s", code));
 	}
 
 }

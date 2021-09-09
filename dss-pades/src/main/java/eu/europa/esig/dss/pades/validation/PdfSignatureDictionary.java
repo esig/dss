@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import eu.europa.esig.dss.pdf.SigFieldPermissions;
 import org.bouncycastle.cms.CMSSignedData;
 
 import java.util.Date;
@@ -106,5 +107,12 @@ public interface PdfSignatureDictionary {
 	 * @return {@link Date}
 	 */
 	Date getSigningDate();
+
+	/**
+	 * Returns a /FieldMDP dictionary, when present
+	 *
+	 * @return {@link SigFieldPermissions}
+	 */
+	SigFieldPermissions getFieldMDP();
 
 }

@@ -45,7 +45,7 @@ public class PerformanceManySignaturesTest {
         InMemoryDocument inMemoryDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
 
         PdfBoxDocumentReader reader = new PdfBoxDocumentReader(inMemoryDocument);
-        Map<PdfSignatureDictionary, List<String>> pdfSignatureDictionaryListMap = reader.extractSigDictionaries();
+        Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionaryListMap = reader.extractSigDictionaries();
         assertNotNull(pdfSignatureDictionaryListMap);
     }
 

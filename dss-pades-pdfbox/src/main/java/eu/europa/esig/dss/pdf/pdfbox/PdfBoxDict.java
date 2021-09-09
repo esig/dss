@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -54,6 +55,8 @@ class PdfBoxDict implements PdfDict {
 	 * @param document {@link PDDocument}
 	 */
 	public PdfBoxDict(COSDictionary wrapped, PDDocument document) {
+		Objects.requireNonNull(wrapped, "Pdf catalog shall be provided!");
+		Objects.requireNonNull(document, "Pdf document shall be provided!");
 		this.wrapped = wrapped;
 		this.document = document;
 	}
@@ -97,11 +100,6 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	@Override
-	public String toString() {
-		return wrapped.toString();
-	}
-
-	@Override
 	public String getStringValue(String name) {
 		return wrapped.getString(name);
 	}
@@ -118,6 +116,20 @@ class PdfBoxDict implements PdfDict {
 			return cal.getTime();
 		}
 		return null;
+	}
+
+	@Override
+	public Integer getNumberValue(String name) {
+		int number = wrapped.getInt(name);
+		if (number != -1) {
+			return number;
+		}
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return wrapped.toString();
 	}
 
 }

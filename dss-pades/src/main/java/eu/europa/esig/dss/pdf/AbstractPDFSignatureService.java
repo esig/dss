@@ -26,6 +26,7 @@ import eu.europa.esig.dss.alert.status.Status;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -36,6 +37,7 @@ import eu.europa.esig.dss.pades.validation.PdfModification;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
@@ -88,6 +90,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	private StatusAlert alertOnSignatureFieldOutsidePageDimensions = new ExceptionOnStatusAlert();
 
 	/**
+	 * This variable indicates a behavior for creation of a new signature
+	 * in a document that does not permit a new signature creation
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert alertOnForbiddenSignatureCreation = new ExceptionOnStatusAlert();
+
+	/**
 	 * This variable sets the maximal amount of pages in a PDF to execute visual
 	 * screenshot comparison for Example: for value 10, the visual comparison will
 	 * be executed for a PDF containing 10 and less pages
@@ -132,6 +142,17 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 */
 	public void setAlertOnSignatureFieldOutsidePageDimensions(StatusAlert alertOnSignatureFieldOutsidePageDimensions) {
 		this.alertOnSignatureFieldOutsidePageDimensions = alertOnSignatureFieldOutsidePageDimensions;
+	}
+
+	/**
+	 * Sets a behavior to follow when creating a new signature in a document that forbids creation of new signatures
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 *
+	 * @param alertOnForbiddenSignatureCreation {@link StatusAlert} to execute
+	 */
+	public void setAlertOnForbiddenSignatureCreation(StatusAlert alertOnForbiddenSignatureCreation) {
+		this.alertOnForbiddenSignatureCreation = alertOnForbiddenSignatureCreation;
 	}
 
 	/**
@@ -190,14 +211,62 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	/**
-	 * This method checks if the document is not encrypted or with limited edition
-	 * rights
+	 * This method checks if the document is not encrypted or with limited edition rights
 	 * 
-	 * @param toSignDocument {@link DSSDocument} the document which will be modified
-	 * @param pwd            {@link String} password protection phrase used to
-	 *                       encrypt the document
+	 * @param pdfDocumentReader {@link PdfDocumentReader} to check
 	 */
-	protected abstract void checkDocumentPermissions(final DSSDocument toSignDocument, final String pwd);
+	protected void checkDocumentPermissions(final PdfDocumentReader pdfDocumentReader) {
+		pdfDocumentReader.checkDocumentPermissions();
+	}
+
+	/**
+	 * This method verifies whether a new signature is permitted
+	 *
+	 * @param reader {@link PdfDocumentReader}
+	 * @param fieldParameters {@link SignatureFieldParameters}
+	 */
+	protected void checkNewSignatureIsPermitted(final PdfDocumentReader reader,
+												final SignatureFieldParameters fieldParameters) {
+		final CertificationPermission certificationPermission = reader.getCertificationPermission();
+		if (isDocumentChangeForbidden(certificationPermission)) {
+			alertOnForbiddenSignatureCreation();
+		}
+		if (reader.isUsageRightsSignaturePresent()) {
+			/*
+			 * Deprecated. See ISO 32000-2:
+			 *
+			 * When a usage rights signature is present, it is up to the PDF processor or
+			 * to the signature handler to process it or not.
+			 */
+			LOG.info("A usage rights signature is present. The feature is deprecated and the entry is not handled.");
+		}
+
+		try {
+			String signatureFieldId = fieldParameters.getFieldId();
+
+			Map<PdfSignatureDictionary, List<PdfSignatureField>> sigDictionaries = reader.extractSigDictionaries();
+			sigDictionaries = sortSignatureDictionaries(sigDictionaries);
+			for (PdfSignatureDictionary signatureDictionary : sigDictionaries.keySet()) {
+				SigFieldPermissions fieldMDP = signatureDictionary.getFieldMDP();
+				if (fieldMDP != null && isSignatureFieldCreationForbidden(fieldMDP, signatureFieldId)) {
+					alertOnForbiddenSignatureCreation();
+				}
+			}
+
+			for (List<PdfSignatureField> signatureFieldList : sigDictionaries.values()) {
+				for (PdfSignatureField signatureField : signatureFieldList) {
+					SigFieldPermissions lockDict = signatureField.getLockDictionary();
+					if (lockDict != null && lockDict.getCertificationPermission() != null &&
+							isSignatureFieldCreationForbidden(lockDict, signatureFieldId)) {
+						alertOnForbiddenSignatureCreation();
+					}
+				}
+			}
+
+		} catch (IOException e) {
+			LOG.warn("An error occurred while reading signature dictionary entries : {}", e.getMessage(), e);
+		}
+	}
 
 	@Override
 	public List<PdfRevision> getRevisions(final DSSDocument document, final String pwd) {
@@ -207,14 +276,17 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			final PdfDssDict dssDictionary = reader.getDSSDictionary();
 			PdfDssDict lastDSSDictionary = dssDictionary; // defined the last created DSS dictionary
 
-			Map<PdfSignatureDictionary, List<String>> sigDictionaries = reader.extractSigDictionaries();
+			Map<PdfSignatureDictionary, List<PdfSignatureField>> sigDictionaries = reader.extractSigDictionaries();
 			sigDictionaries = sortSignatureDictionaries(sigDictionaries); // sort from the latest revision to the first
 
-			for (Map.Entry<PdfSignatureDictionary, List<String>> sigDictEntry : sigDictionaries.entrySet()) {
+			for (Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> sigDictEntry : sigDictionaries.entrySet()) {
 				PdfSignatureDictionary signatureDictionary = sigDictEntry.getKey();
-				List<String> fieldNames = sigDictEntry.getValue();
+				List<PdfSignatureField> fields = sigDictEntry.getValue();
+				// TODO : provide the whole signature field data
+				List<String> fieldNames = fields.stream().map(f -> f.getFieldName()).collect(Collectors.toList());
+
 				try {
-					LOG.info("Signature field name: {}", fieldNames);
+					LOG.info("Signature fields: {}", fieldNames);
 
 					final ByteRange byteRange = signatureDictionary.getByteRange();
 					byteRange.validate();
@@ -335,14 +407,13 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 *                               and list of field names to sort
 	 * @return a sorted map
 	 */
-	private Map<PdfSignatureDictionary, List<String>> sortSignatureDictionaries(
-			Map<PdfSignatureDictionary, List<String>> pdfSignatureDictionary) {
+	private Map<PdfSignatureDictionary, List<PdfSignatureField>> sortSignatureDictionaries(
+			Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionary) {
 		return pdfSignatureDictionary.entrySet().stream()
-				.sorted(Map.Entry
-						.<PdfSignatureDictionary, List<String>>comparingByKey(new PdfSignatureDictionaryComparator())
-						.reversed())
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
-						LinkedHashMap::new));
+				.sorted(Map.Entry.<PdfSignatureDictionary, List<PdfSignatureField>>comparingByKey(
+						new PdfSignatureDictionaryComparator()).reversed())
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+						(oldValue, newValue) -> oldValue, LinkedHashMap::new));
 	}
 
 	private PdfDssDict getPreviousDssDictAndUpdateIfNeeded(List<PdfRevision> revisions, PdfDssDict lastDSSDictionary,
@@ -634,6 +705,43 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					pagesAmount, maximalPagesAmountForVisualComparison);
 		}
 		return Collections.emptyList();
+	}
+
+	private boolean isDocumentChangeForbidden(CertificationPermission certificationPermission) {
+		return CertificationPermission.NO_CHANGE_PERMITTED.equals(certificationPermission);
+	}
+
+	private void alertOnForbiddenSignatureCreation() {
+		String errorMessage = "The creation of new signatures is not permitted in the current document.";
+		alertOnForbiddenSignatureCreation.alert(new Status(errorMessage));
+	}
+
+	private boolean isSignatureFieldCreationForbidden(SigFieldPermissions sigFieldPermissions, String signatureFieldId) {
+		switch (sigFieldPermissions.getAction()) {
+			case ALL:
+				return true;
+			case INCLUDE:
+				if (Utils.isStringEmpty(signatureFieldId)) {
+					return false;
+				}
+				if (sigFieldPermissions.getFields().contains(signatureFieldId)) {
+					return true;
+				}
+				break;
+			case EXCLUDE:
+				if (Utils.isStringEmpty(signatureFieldId)) {
+					return true;
+				}
+				if (!sigFieldPermissions.getFields().contains(signatureFieldId)) {
+					return true;
+				}
+				break;
+			default:
+				throw new UnsupportedOperationException(
+						String.format("The action value '%s' is not supported!", sigFieldPermissions.getAction()));
+		}
+		CertificationPermission certificationPermission = sigFieldPermissions.getCertificationPermission();
+		return CertificationPermission.NO_CHANGE_PERMITTED.equals(certificationPermission);
 	}
 
 }

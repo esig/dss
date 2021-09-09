@@ -21,8 +21,13 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
@@ -31,13 +36,16 @@ import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.pades.validation.ByteRange;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
@@ -66,6 +74,9 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	/** The PDFBox implementation of the document */
 	private final PDDocument pdDocument;
 
+	/** The map of signature dictionaries and corresponding signature fields */
+	private Map<PdfSignatureDictionary, List<PdfSignatureField>> signatureDictionaryMap;
+
 	/**
 	 * Default constructor of the PDFBox implementation of the Reader
 	 * 
@@ -92,20 +103,10 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * The PDFBox implementation of the Reader
 	 * 
 	 * @param dssDocument        {@link DSSDocument} to read
-	 * @param passwordProtection {@link String} a password to open a protected
-	 *                           document
-	 * @throws IOException                                                 if an
-	 *                                                                     exception
-	 *                                                                     occurs
-	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the
-	 *                                                                     password
-	 *                                                                     is not
-	 *                                                                     provided
-	 *                                                                     or
-	 *                                                                     invalid
-	 *                                                                     for a
-	 *                                                                     protected
-	 *                                                                     document
+	 * @param passwordProtection {@link String} a password to open a protected document
+	 * @throws IOException       if an exception occurs
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or
+	 *                           invalid for a protected document
 	 */
 	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
@@ -114,7 +115,8 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		try (InputStream is = dssDocument.openStream()) {
 			this.pdDocument = PDDocument.load(is, passwordProtection);
 		} catch (InvalidPasswordException e) {
-			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
+			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(
+					String.format("Encrypted document : %s", e.getMessage()));
 		}
 	}
 
@@ -124,18 +126,9 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * @param binaries           a byte array of a PDF to read
 	 * @param passwordProtection {@link String} a password to open a protected
 	 *                           document
-	 * @throws IOException                                                 if an
-	 *                                                                     exception
-	 *                                                                     occurs
-	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the
-	 *                                                                     password
-	 *                                                                     is not
-	 *                                                                     provided
-	 *                                                                     or
-	 *                                                                     invalid
-	 *                                                                     for a
-	 *                                                                     protected
-	 *                                                                     document
+	 * @throws IOException       if an exception occurs
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or
+	 *                           invalid for a protected document
 	 */
 	public PdfBoxDocumentReader(byte[] binaries, String passwordProtection)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
@@ -143,7 +136,8 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		try {
 			this.pdDocument = PDDocument.load(binaries, passwordProtection);
 		} catch (InvalidPasswordException e) {
-			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(e.getMessage());
+			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(
+					String.format("Encrypted document : %s", e.getMessage()));
 		}
 	}
 
@@ -156,6 +150,15 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		this.pdDocument = pdDocument;
 	}
 
+	/**
+	 * Returns the current instance of {@code PDDocument}
+	 *
+	 * @return {@link PDDocument}
+	 */
+	public PDDocument getPDDocument() {
+		return pdDocument;
+	}
+
 	@Override
 	public PdfDssDict getDSSDictionary() {
 		PdfDict catalog = new PdfBoxDict(pdDocument.getDocumentCatalog().getCOSObject(), pdDocument);
@@ -163,51 +166,53 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
-	public Map<PdfSignatureDictionary, List<String>> extractSigDictionaries() throws IOException {
-		Map<PdfSignatureDictionary, List<String>> pdfDictionaries = new LinkedHashMap<>();
-		Map<Long, PdfSignatureDictionary> pdfObjectDictMap = new LinkedHashMap<>();
+	public Map<PdfSignatureDictionary, List<PdfSignatureField>> extractSigDictionaries() throws IOException {
+		if (signatureDictionaryMap == null) {
+			signatureDictionaryMap = new LinkedHashMap<>();
+			Map<Long, PdfSignatureDictionary> pdfObjectDictMap = new LinkedHashMap<>();
 
-		List<PDSignatureField> pdSignatureFields = pdDocument.getSignatureFields();
-		if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
-			LOG.debug("{} signature(s) found", pdSignatureFields.size());
+			final List<PDSignatureField> pdSignatureFields = pdDocument.getSignatureFields();
+			if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
+				LOG.debug("{} signature(s) found", pdSignatureFields.size());
 
-			for (PDSignatureField signatureField : pdSignatureFields) {
+				for (PDSignatureField signatureField : pdSignatureFields) {
+					final PdfBoxDict sigFieldDict = new PdfBoxDict(signatureField.getCOSObject(), pdDocument);
+					final PdfSignatureField pdfSignatureField = new PdfSignatureField(sigFieldDict);
 
-				String signatureFieldName = signatureField.getPartialName();
-
-				COSObject sigDictObject = signatureField.getCOSObject().getCOSObject(COSName.V);
-				if (sigDictObject == null || !(sigDictObject.getObject() instanceof COSDictionary)) {
-					LOG.warn("Signature field with name '{}' does not contain a signature", signatureFieldName);
-					continue;
-				}
-
-				long sigDictNumber = sigDictObject.getObjectNumber();
-				PdfSignatureDictionary signature = pdfObjectDictMap.get(sigDictNumber);
-				if (signature == null) {
-					try {
-						PdfDict dictionary = new PdfBoxDict((COSDictionary) sigDictObject.getObject(), pdDocument);
-						signature = new PdfSigDictWrapper(dictionary);
-					} catch (Exception e) {
-						LOG.warn("Unable to create a PdfSignatureDictionary for field with name '{}'",
-								signatureFieldName, e);
+					COSObject sigDictObject = signatureField.getCOSObject().getCOSObject(COSName.V);
+					if (sigDictObject == null || !(sigDictObject.getObject() instanceof COSDictionary)) {
+						LOG.warn("Signature field with name '{}' does not contain a signature", pdfSignatureField.getFieldName());
 						continue;
 					}
 
-					List<String> fieldNames = new ArrayList<>();
-					fieldNames.add(signatureFieldName);
-					pdfDictionaries.put(signature, fieldNames);
-					pdfObjectDictMap.put(sigDictNumber, signature);
+					long sigDictNumber = sigDictObject.getObjectNumber();
+					PdfSignatureDictionary signature = pdfObjectDictMap.get(sigDictNumber);
+					if (signature == null) {
+						try {
+							PdfDict dictionary = new PdfBoxDict((COSDictionary) sigDictObject.getObject(), pdDocument);
+							signature = new PdfSigDictWrapper(dictionary);
+						} catch (Exception e) {
+							LOG.warn("Unable to create a PdfSignatureDictionary for field with name '{}'",
+									pdfSignatureField.getFieldName(), e);
+							continue;
+						}
 
-				} else {
-					List<String> fieldNameList = pdfDictionaries.get(signature);
-					fieldNameList.add(signatureFieldName);
-					LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldNameList);
+						List<PdfSignatureField> fields = new ArrayList<>();
+						fields.add(pdfSignatureField);
+						signatureDictionaryMap.put(signature, fields);
+						pdfObjectDictMap.put(sigDictNumber, signature);
+
+					} else {
+						List<PdfSignatureField> fieldList = signatureDictionaryMap.get(signature);
+						fieldList.add(pdfSignatureField);
+						LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldList);
+
+					}
 
 				}
-
 			}
 		}
-		return pdfDictionaries;
+		return signatureDictionaryMap;
 	}
 
 	@Override
@@ -313,6 +318,86 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 			}
 		}
 		return generateImageScreenshot(page);
+	}
+
+	@Override
+	public void checkDocumentPermissions() {
+		AccessPermission accessPermission = pdDocument.getCurrentAccessPermission();
+		if (accessPermission.isReadOnly()) {
+			throw new ProtectedDocumentException("The document cannot be modified (read-only)");
+		}
+
+		if (!accessPermission.canModify()) {
+			throw new ProtectedDocumentException("Cannot modify the document");
+		}
+
+		if (!accessPermission.canModifyAnnotations()) {
+			throw new ProtectedDocumentException("Cannot modify the annotation");
+		}
+
+		if (!accessPermission.canFillInForm()) {
+			throw new ProtectedDocumentException("Cannot fill in form");
+		}
+	}
+
+	@Override
+	public CertificationPermission getCertificationPermission() {
+		/*
+		 * Origin: https://github.com/ETDA/PDFTimestamping/blob/master/src/main/java/SigUtils.java
+		 */
+		PDDocumentCatalog catalog = pdDocument.getDocumentCatalog();
+		if (catalog != null) {
+			COSBase base = catalog.getCOSObject().getDictionaryObject(COSName.PERMS);
+			if (base instanceof COSDictionary) {
+				COSDictionary permsDict = (COSDictionary) base;
+				base = permsDict.getDictionaryObject(COSName.DOCMDP);
+				if (base instanceof COSDictionary) {
+					COSDictionary signatureDict = (COSDictionary) base;
+					base = signatureDict.getDictionaryObject(COSName.REFERENCE);
+					if (base instanceof COSArray) {
+						COSArray refArray = (COSArray) base;
+						for (int i = 0; i < refArray.size(); i++) {
+							base = refArray.getObject(i);
+							if (base instanceof COSDictionary) {
+								COSDictionary sigRefDict = (COSDictionary) base;
+								if (COSName.DOCMDP.equals(sigRefDict.getDictionaryObject(COSName.TRANSFORM_METHOD))) {
+									base = sigRefDict.getDictionaryObject(COSName.TRANSFORM_PARAMS);
+									if (base instanceof COSDictionary) {
+										COSDictionary transformDict = (COSDictionary) base;
+										int accessPermissions = transformDict.getInt(COSName.P, 2);
+										if (accessPermissions < 1 || accessPermissions > 3) {
+											accessPermissions = 2;
+										}
+										return CertificationPermission.fromCode(accessPermissions);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isUsageRightsSignaturePresent() {
+		PDDocumentCatalog catalog = pdDocument.getDocumentCatalog();
+		if (catalog != null) {
+			COSBase base = catalog.getCOSObject().getDictionaryObject(COSName.PERMS);
+			if (base instanceof COSDictionary) {
+				COSDictionary permsDict = (COSDictionary) base;
+				base = permsDict.getDictionaryObject(PAdESConstants.UR_NAME);
+				if (base != null) {
+					return true;
+				}
+				base = permsDict.getDictionaryObject(PAdESConstants.UR3_NAME);
+				if (base != null) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

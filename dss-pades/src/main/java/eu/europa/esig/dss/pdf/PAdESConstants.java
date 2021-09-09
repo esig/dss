@@ -61,6 +61,64 @@ public final class PAdESConstants {
 	/** 'CRL' */
 	public static final String CRL_ARRAY_NAME_VRI = "CRL";
 
+	/* Field names */
+
+	/** 'Action' */
+	public static final String ACTION_NAME = "Action";
+	/** 'ByteRange' */
+	public static final String BYTE_RANGE_NAME = "ByteRange";
+	/** 'Catalog' */
+	public static final String CATALOG_NAME = "Catalog";
+	/** 'ContactInfo' */
+	public static final String CONTACT_INFO_NAME = "ContactInfo";
+	/** 'Contents' */
+	public static final String CONTENTS_NAME = "Contents";
+	/** 'Data' */
+	public static final String DATA_NAME = "Data";
+	/** 'FieldMDP' */
+	public static final String FIELD_MDP_NAME = "FieldMDP";
+	/** 'Fields' */
+	public static final String FIELDS_NAME = "Fields";
+	/** 'T' (Field name) */
+	public static final String FIELD_NAME_NAME = "T";
+	/** 'Filter' */
+	public static final String FILTER_NAME = "Filter";
+	/** 'Location' */
+	public static final String LOCATION_NAME = "Location";
+	/** 'Lock' */
+	public static final String LOCK_NAME = "Lock";
+	/** 'Name' */
+	public static final String NAME_NAME = "Name";
+	/** 'P' (Permissions) */
+	public static final String PERMISSIONS_NAME = "P";
+	/** 'Reason' */
+	public static final String REASON_NAME = "Reason";
+	/** 'Reference' */
+	public static final String REFERENCE_NAME = "Reference";
+	/** 'M' (Signing date) */
+	public static final String SIGNING_DATE_NAME = "M";
+	/** 'SigFieldLock' */
+	public static final String SIG_FIELD_LOCK_NAME = "SigFieldLock";
+	/** 'SigRef' */
+	public static final String SIG_REF_NAME = "SigRef";
+	/** 'SubFilter' */
+	public static final String SUB_FILTER_NAME = "SubFilter";
+	/** 'Type' */
+	public static final String TYPE_NAME = "Type";
+	/** 'TransformMethod' */
+	public static final String TRANSFORM_METHOD_NAME = "TransformMethod";
+	/** 'TransformParams' */
+	public static final String TRANSFORM_PARAMS_NAME = "TransformParams";
+	/** 'UR' (User rights) */
+	public static final String UR_NAME = "UR";
+	/** 'UR3' (User rights) */
+	public static final String UR3_NAME = "UR3";
+
+	/* Field values */
+
+	/** 'V=1.2' */
+	public static final String VERSION_DEFAULT = "1.2";
+
 	/**
 	 * Utils class
 	 */

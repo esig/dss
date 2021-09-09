@@ -20,13 +20,18 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.PdfArray;
+import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -34,6 +39,8 @@ import java.io.IOException;
  * The PDFBox implementation of {@code eu.europa.esig.dss.pdf.PdfArray}
  */
 class PdfBoxArray implements PdfArray {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxArray.class);
 
 	/** The PDFBox object */
 	private COSArray wrapped;
@@ -43,7 +50,6 @@ class PdfBoxArray implements PdfArray {
 	 *
 	 * NOTE for developers: Retain this reference ! PDDocument must not be garbage collected
 	 */
-	@SuppressWarnings("unused")
 	private PDDocument document;
 
 	/**
@@ -89,9 +95,31 @@ class PdfBoxArray implements PdfArray {
 			}
 		}
 		if (cosStream == null) {
-			throw new RuntimeException("Cannot find value for " + val + " of class " + val.getClass());
+			throw new DSSException("Cannot find value for " + val + " of class " + val.getClass());
 		}
 		return DSSUtils.toByteArray(cosStream.createInputStream());
+	}
+
+	@Override
+	public String getString(int i) {
+		return wrapped.getString(i);
+	}
+
+	@Override
+	public PdfDict getAsDict(int i) {
+		COSDictionary cosDictionary = null;
+		COSBase cosBaseObject = wrapped.get(i);
+		if (cosBaseObject instanceof COSDictionary) {
+			cosDictionary = (COSDictionary) cosBaseObject;
+		} else if (cosBaseObject instanceof COSObject) {
+			COSObject cosObject = (COSObject) wrapped.get(i);
+			cosDictionary = (COSDictionary) cosObject.getObject();
+		}
+		if (cosDictionary != null) {
+			return new PdfBoxDict(cosDictionary, document);
+		}
+		LOG.warn("Unable to extract array entry as dictionary.");
+		return null;
 	}
 
 	@Override

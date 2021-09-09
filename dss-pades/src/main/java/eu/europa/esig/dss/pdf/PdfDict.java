@@ -85,4 +85,12 @@ public interface PdfDict {
 	 */
 	Date getDateValue(String name);
 
+	/**
+	 * Returns a number value
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link Integer} value
+	 */
+	Integer getNumberValue(String name);
+
 }

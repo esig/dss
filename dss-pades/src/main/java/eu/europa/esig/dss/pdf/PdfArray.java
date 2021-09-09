@@ -63,4 +63,22 @@ public interface PdfArray {
 	 */
 	int getInt(int i) throws IOException;
 
+	/**
+	 * Returns a String entry at the position i
+	 *
+	 * @param i
+	 *          the position
+	 * @return {@link String}
+	 */
+	String getString(int i);
+
+	/**
+	 * Returns a dictionary entry at the position i
+	 *
+	 * @param i
+	 *          the position
+	 * @return {@link PdfDict}
+	 */
+	PdfDict getAsDict(int i);
+
 }

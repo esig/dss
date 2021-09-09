@@ -49,7 +49,6 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
-import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfModification;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
@@ -106,82 +105,61 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		super(serviceMode, signatureDrawerFactory);
 	}
 
-	@Override
-	protected void checkDocumentPermissions(final DSSDocument toSignDocument, final String pwd) {
-		try (InputStream is = toSignDocument.openStream(); PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
-			if (!reader.isOpenedWithFullPermissions()) {
-				throw new ProtectedDocumentException("Protected document");
-			} 
-			else if (reader.isEncrypted()) {
-				throw new ProtectedDocumentException("Encrypted document");
-			}
-		} catch (BadPasswordException e) {
-			throw new InvalidPasswordException("Encrypted document");
-		} catch (DSSException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new DSSException("Unable to check document permissions", e);
-		}
-	}
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private PdfStamper prepareStamper(InputStream pdfData, OutputStream output, PAdESCommonParameters parameters)
+	private PdfStamper prepareStamper(PdfReader reader, OutputStream output, PAdESCommonParameters parameters)
 			throws IOException {
-		try (PdfReader reader = new PdfReader(pdfData, getPasswordBinary(parameters.getPasswordProtection()))) {
+		PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
+		stp.setIncludeFileID(true);
+		stp.setOverrideFileId(generateFileId(parameters));
 
-			PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
-			stp.setIncludeFileID(true);
-			stp.setOverrideFileId(generateFileId(parameters));
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(parameters.getSigningDate());
 
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(parameters.getSigningDate());
+		stp.setEnforcedModificationDate(cal);
 
-			stp.setEnforcedModificationDate(cal);
+		PdfSignatureAppearance sap = stp.getSignatureAppearance();
+		sap.setAcro6Layers(true);
 
-			PdfSignatureAppearance sap = stp.getSignatureAppearance();
-			sap.setAcro6Layers(true);
+		SignatureImageParameters imageParameters = parameters.getImageParameters();
+		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
 
-			SignatureImageParameters imageParameters = parameters.getImageParameters();
-			SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+		Item fieldItem = findExistingSignatureField(reader, fieldParameters);
+		if (!imageParameters.isEmpty()) {
+			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(imageParameters);
+			signatureDrawer.init(imageParameters, reader, sap);
 
-			Item fieldItem = findExistingSignatureField(reader, fieldParameters);
-			if (!imageParameters.isEmpty()) {
-				ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(imageParameters);
-				signatureDrawer.init(imageParameters, reader, sap);
-
-				if (fieldItem == null) {
-					getVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
-				}
-
-				signatureDrawer.draw();
+			if (fieldItem == null) {
+				getVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
 			}
 
-			PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
-			if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
-				PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
-
-				CertificationPermission permission = signatureParameters.getPermission();
-				// A document can contain only one signature field that contains a DocMDP
-				// transform method;
-				// it shall be the first signed field in the document.
-				if (permission != null && !containsFilledSignature(reader)) {
-					sap.setCertificationLevel(permission.getCode());
-				}
-
-				cal.setTimeZone(signatureParameters.getSigningTimeZone());
-				signatureDictionary.put(PdfName.M, new PdfDate(cal));
-			}
-
-			sap.setCryptoDictionary(signatureDictionary);
-
-			int csize = parameters.getContentSize();
-			HashMap exc = new HashMap();
-			exc.put(PdfName.CONTENTS, csize * 2 + 2);
-
-			sap.preClose(exc);
-
-			return stp;
+			signatureDrawer.draw();
 		}
+
+		PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
+		if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
+			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
+
+			CertificationPermission permission = signatureParameters.getPermission();
+			// A document can contain only one signature field that contains a DocMDP
+			// transform method;
+			// it shall be the first signed field in the document.
+			if (permission != null && !containsFilledSignature(reader)) {
+				sap.setCertificationLevel(permission.getCode());
+			}
+
+			cal.setTimeZone(signatureParameters.getSigningTimeZone());
+			signatureDictionary.put(PdfName.M, new PdfDate(cal));
+		}
+
+		sap.setCryptoDictionary(signatureDictionary);
+
+		int csize = parameters.getContentSize();
+		HashMap exc = new HashMap();
+		exc.put(PdfName.CONTENTS, csize * 2 + 2);
+
+		sap.preClose(exc);
+
+		return stp;
 	}
 	
 	private Item findExistingSignatureField(PdfReader reader, SignatureFieldParameters fieldParameters) {
@@ -271,11 +249,15 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
-		
-		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 	ITextDocumentReader documentReader = new ITextDocumentReader(
+						 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
+			checkDocumentPermissions(documentReader);
+			if (parameters instanceof PAdESSignatureParameters) {
+				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
+			}
 
-		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			PdfStamper stp = prepareStamper(is, baos, parameters);
+			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 			final byte[] digest = DSSUtils.digest(parameters.getDigestAlgorithm(), sap.getRangeStream());
 			if (LOG.isDebugEnabled()) {
@@ -290,10 +272,15 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESCommonParameters parameters) {
 
-		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 	ITextDocumentReader documentReader = new ITextDocumentReader(
+						 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())); ) {
+			checkDocumentPermissions(documentReader);
+			if (parameters instanceof PAdESSignatureParameters) {
+				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
+			}
 
-		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			PdfStamper stp = prepareStamper(is, baos, parameters);
+			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
 			byte[] pk = signatureValue;
@@ -513,13 +500,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String pwd) {
-
-		checkDocumentPermissions(document, pwd);
-		
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				InputStream is = document.openStream();
-				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
+			 	ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBinary(pwd))) {
+			checkDocumentPermissions(documentReader);
+			checkNewSignatureIsPermitted(documentReader, parameters);
 
+			final PdfReader reader = documentReader.getPdfReader();
 			if (reader.getNumberOfPages() < parameters.getPage()) {
 				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}

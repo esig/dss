@@ -22,12 +22,15 @@ package eu.europa.esig.dss.pdf.openpdf;
 
 import com.lowagie.text.pdf.PRStream;
 import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
+import com.lowagie.text.pdf.PdfString;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pdf.PdfDict;
 
 import java.io.IOException;
 
@@ -44,7 +47,7 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	 *
 	 * @param wrapped {@link PdfArray}
 	 */
-	ITextPdfArray(PdfArray wrapped) {
+	public ITextPdfArray(PdfArray wrapped) {
 		this.wrapped = wrapped;
 	}
 
@@ -76,6 +79,21 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 			return number.intValue();
 		}
 		return 0;
+	}
+
+	@Override
+	public String getString(int i) {
+		PdfString pdfString = wrapped.getAsString(i);
+		if (pdfString != null) {
+			return pdfString.toString();
+		}
+		return null;
+	}
+
+	@Override
+	public PdfDict getAsDict(int i) {
+		PdfDictionary dict = wrapped.getAsDict(i);
+		return new ITextPdfDict(dict);
 	}
 
 	@Override

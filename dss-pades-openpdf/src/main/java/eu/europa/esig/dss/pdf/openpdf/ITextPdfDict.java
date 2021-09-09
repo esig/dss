@@ -23,12 +23,14 @@ package eu.europa.esig.dss.pdf.openpdf;
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfString;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -45,9 +47,7 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	 * @param wrapped {@link PdfDictionary}
 	 */
 	public ITextPdfDict(PdfDictionary wrapped) {
-		if (wrapped == null) {
-			throw new IllegalArgumentException();
-		}
+		Objects.requireNonNull(wrapped, "Pdf catalog shall be provided!");
 		this.wrapped = wrapped;
 	}
 
@@ -123,6 +123,15 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 			return null;
 		}
 		return PdfDate.decode(s.toString()).getTime();
+	}
+
+	@Override
+	public Integer getNumberValue(String name) {
+		PdfNumber pdfNumber = wrapped.getAsNumber(new PdfName(name));
+		if (pdfNumber != null) {
+			return pdfNumber.intValue();
+		}
+		return null;
 	}
 
 }
