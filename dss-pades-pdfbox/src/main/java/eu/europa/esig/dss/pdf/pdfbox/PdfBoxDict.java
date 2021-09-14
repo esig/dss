@@ -24,10 +24,17 @@ import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSBoolean;
 import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNull;
+import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +48,8 @@ import java.util.Set;
  * The PDFBox implementation of {@code eu.europa.esig.dss.pdf.PdfDict}
  */
 class PdfBoxDict implements PdfDict {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxDict.class);
 
 	/** The PDFBox object */
 	private COSDictionary wrapped;
@@ -63,11 +72,21 @@ class PdfBoxDict implements PdfDict {
 
 	@Override
 	public PdfDict getAsDict(String name) {
-		COSDictionary dict = (COSDictionary) wrapped.getDictionaryObject(name);
-		if (dict == null) {
+		COSBase cosBaseObject = wrapped.getDictionaryObject(name);
+		if (cosBaseObject == null) {
 			return null;
 		}
-		return new PdfBoxDict(dict, document);
+		COSDictionary cosDictionary;
+		if (cosBaseObject instanceof COSDictionary) {
+			cosDictionary = (COSDictionary) cosBaseObject;
+		} else if (cosBaseObject instanceof COSObject) {
+			COSObject cosObject = (COSObject) cosBaseObject;
+			cosDictionary = (COSDictionary) cosObject.getObject();
+		} else {
+			LOG.warn("Unable to extract entry with name '{}' as dictionary!", name);
+			return null;
+		}
+		return new PdfBoxDict(cosDictionary, document);
 	}
 
 	@Override
@@ -123,6 +142,43 @@ class PdfBoxDict implements PdfDict {
 		int number = wrapped.getInt(name);
 		if (number != -1) {
 			return number;
+		}
+		return null;
+	}
+
+	@Override
+	public Object getObject(String name) {
+		COSBase dictionaryObject = wrapped.getDictionaryObject(name);
+		if (dictionaryObject == null) {
+			return null;
+		} else if (dictionaryObject instanceof COSDictionary ||
+				dictionaryObject instanceof COSObject) {
+			return getAsDict(name);
+		} else if (dictionaryObject instanceof COSArray) {
+			return getAsArray(name);
+		} else if (dictionaryObject instanceof COSString) {
+			return getStringValue(name);
+		} else if (dictionaryObject instanceof COSName) {
+			return getNameValue(name);
+		} else if (dictionaryObject instanceof COSInteger) {
+			return getNumberValue(name);
+		} else if (dictionaryObject instanceof COSBoolean) {
+			return ((COSBoolean) dictionaryObject).getValueAsObject();
+		} else if (dictionaryObject instanceof COSFloat) {
+			return ((COSFloat) dictionaryObject).floatValue();
+		} else if (dictionaryObject instanceof COSNull) {
+			return null;
+		} else {
+			LOG.warn("Unable to process an entry with name '{}' of type '{}'.", name, dictionaryObject.getClass());
+		}
+		return null;
+	}
+
+	@Override
+	public Long getObjectNumber(String name) {
+		COSBase dictionaryObject = wrapped.getItem(name);
+		if (dictionaryObject != null && dictionaryObject instanceof COSObject) {
+			return ((COSObject) dictionaryObject).getObjectNumber();
 		}
 		return null;
 	}

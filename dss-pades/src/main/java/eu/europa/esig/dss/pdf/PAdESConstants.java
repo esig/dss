@@ -63,8 +63,14 @@ public final class PAdESConstants {
 
 	/* Field names */
 
+	/** 'AcroForm' */
+	public static final String ACRO_FORM_NAME = "AcroForm";
 	/** 'Action' */
 	public static final String ACTION_NAME = "Action";
+	/** 'Action' */
+	public static final String ANNOTS_NAME = "Annots";
+	/** 'AS' */
+	public static final String AS_NAME = "AS";
 	/** 'ByteRange' */
 	public static final String BYTE_RANGE_NAME = "ByteRange";
 	/** 'Catalog' */
@@ -87,6 +93,8 @@ public final class PAdESConstants {
 	public static final String LOCATION_NAME = "Location";
 	/** 'Lock' */
 	public static final String LOCK_NAME = "Lock";
+	/** 'Metadata' */
+	public static final String METADATA_NAME = "Metadata";
 	/** 'Name' */
 	public static final String NAME_NAME = "Name";
 	/** 'P' (Permissions) */
@@ -113,6 +121,8 @@ public final class PAdESConstants {
 	public static final String UR_NAME = "UR";
 	/** 'UR3' (User rights) */
 	public static final String UR3_NAME = "UR3";
+	/** 'V' (Value) */
+	public static final String VALUE_NAME = "V";
 
 	/* Field values */
 

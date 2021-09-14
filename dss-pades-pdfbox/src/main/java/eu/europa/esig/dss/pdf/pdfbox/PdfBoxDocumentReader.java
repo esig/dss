@@ -63,6 +63,7 @@ import java.util.Objects;
 
 /**
  * The PDFBox implementation of {@code PdfDocumentReader}
+ *
  */
 public class PdfBoxDocumentReader implements PdfDocumentReader {
 
@@ -398,6 +399,11 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public PdfDict getCatalogDictionary() {
+		return new PdfBoxDict(pdDocument.getDocumentCatalog().getCOSObject(), pdDocument);
 	}
 
 }

@@ -23,6 +23,8 @@ package eu.europa.esig.dss.pades.validation;
 import eu.europa.esig.dss.cades.validation.CAdESDiagnosticDataBuilder;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanTokens;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
@@ -33,6 +35,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
+import eu.europa.esig.dss.pdf.ObjectModification;
+import eu.europa.esig.dss.pdf.PdfObjectModifications;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -113,6 +117,11 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 				xmlModificationDetection.getPageDifference().addAll(getXmlModifications(pageDifferences));
 			}
 
+			PdfObjectModifications objectModifications = modificationDetection.getObjectModifications();
+			if (!objectModifications.isEmpty()) {
+				xmlModificationDetection.setObjectModifications(getXmlObjectModifications(objectModifications));
+			}
+
 			return xmlModificationDetection;
 		}
 		return null;
@@ -132,6 +141,30 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 		XmlModification xmlModification = new XmlModification();
 		xmlModification.setPage(BigInteger.valueOf(pdfModification.getPage()));
 		return xmlModification;
+	}
+
+	private XmlObjectModifications getXmlObjectModifications(PdfObjectModifications objectModifications) {
+		XmlObjectModifications xmlObjectModifications = new XmlObjectModifications();
+		for (ObjectModification modification : objectModifications.getSecureChanges()) {
+			xmlObjectModifications.getSecureChange().add(getXmlObjectModification(modification));
+		}
+		for (ObjectModification modification : objectModifications.getFormFillInAndSignatureCreationChanges()) {
+			xmlObjectModifications.getFormFillOrSignatureCreation().add(getXmlObjectModification(modification));
+		}
+		for (ObjectModification modification : objectModifications.getAnnotCreationChanges()) {
+			xmlObjectModifications.getAnnotCreation().add(getXmlObjectModification(modification));
+		}
+		for (ObjectModification modification : objectModifications.getUndefinedChanges()) {
+			xmlObjectModifications.getUndefined().add(getXmlObjectModification(modification));
+		}
+		return xmlObjectModifications;
+	}
+
+	private XmlObjectModification getXmlObjectModification(ObjectModification objectModification) {
+		XmlObjectModification xmlObjectModification = new XmlObjectModification();
+		xmlObjectModification.setValue(objectModification.getObjectTree().toString());
+		xmlObjectModification.setType(objectModification.getType());
+		return xmlObjectModification;
 	}
 
 	@Override

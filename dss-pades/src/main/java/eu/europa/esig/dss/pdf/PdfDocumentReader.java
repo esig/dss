@@ -121,4 +121,11 @@ public interface PdfDocumentReader extends Closeable {
 	 */
 	boolean isUsageRightsSignaturePresent();
 
+	/**
+	 * Returns a document catalog as a dictionary
+	 *
+	 * @return {@link PdfDict}
+	 */
+	PdfDict getCatalogDictionary();
+
 }

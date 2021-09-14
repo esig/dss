@@ -93,4 +93,20 @@ public interface PdfDict {
 	 */
 	Integer getNumberValue(String name);
 
+	/**
+	 * Returns an object
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link Object} value
+	 */
+	Object getObject(String name);
+
+	/**
+	 * Returns a number of indirect reference to an object, when applicable
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link Object} value
+	 */
+	Long getObjectNumber(String name);
+
 }

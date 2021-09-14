@@ -26,9 +26,15 @@ import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSBoolean;
 import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSInteger;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNull;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,13 +81,16 @@ class PdfBoxArray implements PdfArray {
 	}
 
 	@Override
-	public long getObjectNumber(int i) {
-		COSObject cosObject = (COSObject) wrapped.get(i);
-		return cosObject.getObjectNumber();
+	public Long getObjectNumber(int i) {
+		COSBase val = wrapped.get(i);
+		if (val instanceof COSObject) {
+			return ((COSObject) val).getObjectNumber();
+		}
+		return null;
 	}
 
 	@Override
-	public int getInt(int i) throws IOException {
+	public Integer getInt(int i) {
 		return wrapped.getInt(i);
 	}
 
@@ -112,13 +121,42 @@ class PdfBoxArray implements PdfArray {
 		if (cosBaseObject instanceof COSDictionary) {
 			cosDictionary = (COSDictionary) cosBaseObject;
 		} else if (cosBaseObject instanceof COSObject) {
-			COSObject cosObject = (COSObject) wrapped.get(i);
+			COSObject cosObject = (COSObject) cosBaseObject;
 			cosDictionary = (COSDictionary) cosObject.getObject();
 		}
 		if (cosDictionary != null) {
 			return new PdfBoxDict(cosDictionary, document);
 		}
-		LOG.warn("Unable to extract array entry as dictionary.");
+		LOG.warn("Unable to extract array entry as dictionary!");
+		return null;
+	}
+
+	@Override
+	public Object getObject(int i) {
+		COSBase dictionaryObject = wrapped.getObject(i);
+		if (dictionaryObject == null) {
+			return null;
+		}
+		if (dictionaryObject instanceof COSDictionary ||
+				dictionaryObject instanceof COSObject) {
+			return getAsDict(i);
+		} else if (dictionaryObject instanceof COSArray) {
+			return new PdfBoxArray((COSArray) dictionaryObject, document);
+		} else if (dictionaryObject instanceof COSString) {
+			return getString(i);
+		} else if (dictionaryObject instanceof COSName) {
+			return wrapped.getName(i);
+		} else if (dictionaryObject instanceof COSInteger) {
+			return getInt(i);
+		}else if (dictionaryObject instanceof COSBoolean) {
+			return ((COSBoolean) dictionaryObject).getValueAsObject();
+		} else if (dictionaryObject instanceof COSFloat) {
+			return ((COSFloat) dictionaryObject).floatValue();
+		} else if (dictionaryObject instanceof COSNull) {
+			return null;
+		} else {
+			LOG.warn("Unable to process an entry on position '{}' of type '{}'.", i, dictionaryObject.getClass());
+		}
 		return null;
 	}
 

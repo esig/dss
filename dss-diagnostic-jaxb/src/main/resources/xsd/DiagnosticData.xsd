@@ -287,12 +287,39 @@
 			<xs:element name="AnnotationOverlap" type="Modification" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="VisualDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="PageDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
+
+			<xs:element name="ObjectModifications" type="ObjectModifications" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
-	
+
 	<xs:complexType name="Modification">
 		<xs:attribute name="Page" type="xs:integer" use="required" />
 	</xs:complexType>
+
+	<xs:complexType name="ObjectModifications">
+		<xs:sequence>
+			<xs:element name="SecureChange" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="FormFillOrSignatureCreation" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="AnnotCreation" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Undefined" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ObjectModification">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="ObjectModificationType" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="ObjectModificationType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CREATION" />
+			<xs:enumeration value="DELETION" />
+			<xs:enumeration value="MODIFICATION" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="Certificate">
 		<xs:complexContent>

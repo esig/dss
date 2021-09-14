@@ -51,7 +51,7 @@ public interface PdfArray {
 	 *          the position
 	 * @return the object number
 	 */
-	long getObjectNumber(int i);
+	Long getObjectNumber(int i);
 
 	/**
 	 * Retrieves the integer at the position i
@@ -59,9 +59,8 @@ public interface PdfArray {
 	 * @param i
 	 *          the position
 	 * @return the found integer
-	 * @throws IOException if an exception occurs\ASiCUtils.
 	 */
-	int getInt(int i) throws IOException;
+	Integer getInt(int i);
 
 	/**
 	 * Returns a String entry at the position i
@@ -80,5 +79,14 @@ public interface PdfArray {
 	 * @return {@link PdfDict}
 	 */
 	PdfDict getAsDict(int i);
+
+	/**
+	 * Returns an object entry at the position i
+	 *
+	 * @param i
+	 *          the position
+	 * @return {@link Object}
+	 */
+	Object getObject(int i);
 
 }

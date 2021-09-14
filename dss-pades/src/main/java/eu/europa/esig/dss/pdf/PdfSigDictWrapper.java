@@ -76,12 +76,7 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 		int arraySize = byteRangeArray.size();
 		int[] result = new int[arraySize];
 		for (int i = 0; i < arraySize; i++) {
-			try {
-				result[i] = byteRangeArray.getInt(i);
-			} catch (IOException e) {
-				throw new DSSException(String.format("Unable to parse integer from the '%s' field value.",
-						PAdESConstants.BYTE_RANGE_NAME), e);
-			}
+			result[i] = byteRangeArray.getInt(i);
 		}
 		return new ByteRange(result);
 	}

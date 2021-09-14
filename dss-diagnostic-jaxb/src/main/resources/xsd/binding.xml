@@ -157,6 +157,12 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureFormatParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureFormatParser.print" />
 		</jaxb:bindings>
+
+	  <jaxb:bindings node="//xs:simpleType[@name='ObjectModificationType']">
+		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.PdfObjectModificationType"
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.PdfObjectModificationTypeParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.PdfObjectModificationTypeParser.print" />
+	  </jaxb:bindings>
 		
   	<jaxb:bindings node="//xs:complexType[@name='FoundCertificates']//xs:element[@name='RelatedCertificate']">
 		<jaxb:property name="RelatedCertificates" />

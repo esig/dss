@@ -658,7 +658,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				PAdESSignature padesSignature = (PAdESSignature) signature;
 				PdfSignatureRevision pdfRevision = padesSignature.getPdfRevision();
 				byte[] revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
-				pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, new InMemoryDocument(revisionContent), pdfRevision, pwd));
+				pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, new InMemoryDocument(revisionContent), pwd));
 			}
 		} catch (IOException e) {
 			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
@@ -670,16 +670,22 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
-	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader, DSSDocument originalDocument, PdfSignatureRevision revision, String pwd) throws IOException {
+	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader, DSSDocument originalDocument, String pwd) throws IOException {
 		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(originalDocument , pwd)) {
 			PdfModificationDetectionImpl pdfModificationDetection = new PdfModificationDetectionImpl();
 
-			pdfModificationDetection
-					.setAnnotationOverlaps(PdfModificationDetectionUtils.getAnnotationOverlaps(finalRevisionReader));
+			pdfModificationDetection.setAnnotationOverlaps(
+					PdfModificationDetectionUtils.getAnnotationOverlaps(finalRevisionReader));
 			pdfModificationDetection.setPageDifferences(
 					PdfModificationDetectionUtils.getPagesDifferences(signedRevisionReader, finalRevisionReader));
-			pdfModificationDetection
-					.setVisualDifferences(getVisualDifferences(signedRevisionReader, finalRevisionReader));
+			pdfModificationDetection.setVisualDifferences(
+					getVisualDifferences(signedRevisionReader, finalRevisionReader));
+
+			List<ObjectModification> modificationsList =
+					PdfModificationDetectionUtils.getModificationsList(signedRevisionReader, finalRevisionReader);
+			pdfModificationDetection.setObjectModifications(
+					PdfModificationDetectionUtils.categorizeObjectModifications(modificationsList));
+
 			return pdfModificationDetection;
 		}
 	}

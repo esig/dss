@@ -61,6 +61,7 @@ import java.util.Objects;
 
 /**
  * The IText (OpenPdf) implementation of {@code PdfDocumentReader}
+ *
  */
 public class ITextDocumentReader implements PdfDocumentReader {
 
@@ -336,6 +337,11 @@ public class ITextDocumentReader implements PdfDocumentReader {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public PdfDict getCatalogDictionary() {
+		return new ITextPdfDict(pdfReader.getCatalog());
 	}
 
 }

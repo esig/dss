@@ -22,12 +22,15 @@ package eu.europa.esig.dss.pdf.openpdf;
 
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfString;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Objects;
@@ -37,6 +40,8 @@ import java.util.Set;
  * The IText (OpenPDF) implementation of {@code eu.europa.esig.dss.pdf.PdfDict}
  */
 class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ITextPdfDict.class);
 
 	/** The OpenPDF object */
 	private PdfDictionary wrapped;
@@ -130,6 +135,34 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 		PdfNumber pdfNumber = wrapped.getAsNumber(new PdfName(name));
 		if (pdfNumber != null) {
 			return pdfNumber.intValue();
+		}
+		return null;
+	}
+
+	@Override
+	public Object getObject(String name) {
+		PdfObject pdfObject = wrapped.getDirectObject(new PdfName(name));
+		if (pdfObject == null) {
+			return null;
+		} else if (pdfObject instanceof PdfDictionary) {
+			return getAsDict(name);
+		} else if (pdfObject instanceof com.lowagie.text.pdf.PdfArray) {
+			return getAsArray(name);
+		} else if (pdfObject instanceof PdfString) {
+			return getStringValue(name);
+		} else if (pdfObject instanceof PdfNumber) {
+			return getNumberValue(name);
+		} else {
+			LOG.warn("Unable to process an entry with name '{}' of type '{}'.", name, pdfObject.getClass());
+		}
+		return null;
+	}
+
+	@Override
+	public Long getObjectNumber(String name) {
+		PdfIndirectReference indirectObject = wrapped.getAsIndirectObject(new PdfName(name));
+		if (indirectObject != null) {
+			return Long.valueOf(indirectObject.getNumber());
 		}
 		return null;
 	}
