@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.pades.CertificationPermission;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 public class SigFieldPermissions {
 
     /** Indicates the set of fields that should be locked */
-    private Action action;
+    private PdfLockAction action;
 
     /** Contains a set of fields */
     private List<String> fields;
@@ -23,18 +24,18 @@ public class SigFieldPermissions {
     /**
      * Gets the defined action
      *
-     * @return {@link Action}
+     * @return {@link PdfLockAction}
      */
-    public Action getAction() {
+    public PdfLockAction getAction() {
         return action;
     }
 
     /**
      * Sets the action
      *
-     * @param action {@link Action}
+     * @param action {@link PdfLockAction}
      */
-    public void setAction(Action action) {
+    public void setAction(PdfLockAction action) {
         this.action = action;
     }
 
@@ -72,58 +73,6 @@ public class SigFieldPermissions {
      */
     public void setCertificationPermission(CertificationPermission certificationPermission) {
         this.certificationPermission = certificationPermission;
-    }
-
-    /**
-     * A name which, in conjunction with Fields, indicates the set of fields that should be locked.
-     */
-    public enum Action {
-
-        /** All form fields do not permit changes */
-        ALL("All"),
-
-        /** Only those form fields specified in fields do not permit changes */
-        INCLUDE("Include"),
-
-        /** Only those form fields not specified in fields do not permit changes */
-        EXCLUDE("Exclude");
-
-        /** The value of the /Action field */
-        private String name;
-
-        /**
-         * Default constructor
-         *
-         * @param name {@link String} value of the field
-         */
-        Action(String name) {
-            this.name = name;
-        }
-
-        /**
-         * Returns name value of the field parameter
-         *
-         * @return {@link String}
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * Returns a {@code Action} corresponding to the given {@code name}
-         *
-         * @param name {@link String}
-         * @return {@link Action}
-         */
-        public static Action forName(String name) {
-            for (Action action : values()) {
-                if (name.equals(action.getName())) {
-                    return action;
-                }
-            }
-            throw new IllegalArgumentException(String.format("Unsupported /Action field value : %s", name));
-        }
-
     }
 
 }

@@ -24,10 +24,12 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 import java.util.List;
@@ -84,6 +86,24 @@ public class DSS2471Test extends AbstractPAdESTestValidation {
             assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
             assertFalse(timestampWrapper.isSigningCertificateReferenceUnique());
         }
+    }
+
+    @Override
+    protected void checkPdfRevision(DiagnosticData diagnosticData) {
+        boolean lastSignatureFound = false;
+        assertEquals(3, diagnosticData.getSignatures().size());
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            XmlObjectModifications pdfObjectModifications = signatureWrapper.getPdfObjectModifications();
+            assertNotNull(pdfObjectModifications);
+            assertFalse(Utils.isCollectionEmpty(pdfObjectModifications.getSecureChange()));
+            assertTrue(Utils.isCollectionEmpty(pdfObjectModifications.getAnnotCreation()));
+            assertTrue(Utils.isCollectionEmpty(pdfObjectModifications.getUndefined()));
+
+            if (Utils.isCollectionEmpty(pdfObjectModifications.getFormFillOrSignatureCreation())) {
+                lastSignatureFound = true;
+            }
+        }
+        assertTrue(lastSignatureFound);
     }
 
 }

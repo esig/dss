@@ -28,10 +28,9 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSBoolean;
 import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSFloat;
-import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSNull;
+import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.cos.COSString;
@@ -40,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * The PDFBox implementation of {@code eu.europa.esig.dss.pdf.PdfArray}
@@ -75,23 +75,9 @@ class PdfBoxArray implements PdfArray {
 	}
 
 	@Override
-	public byte[] getBytes(int i) throws IOException {
+	public byte[] getStreamBytes(int i) throws IOException {
 		COSBase val = wrapped.get(i);
 		return toBytes(val);
-	}
-
-	@Override
-	public Long getObjectNumber(int i) {
-		COSBase val = wrapped.get(i);
-		if (val instanceof COSObject) {
-			return ((COSObject) val).getObjectNumber();
-		}
-		return null;
-	}
-
-	@Override
-	public Integer getInt(int i) {
-		return wrapped.getInt(i);
 	}
 
 	private byte[] toBytes(COSBase val) throws IOException {
@@ -99,14 +85,34 @@ class PdfBoxArray implements PdfArray {
 		if (val instanceof COSObject) {
 			COSObject o = (COSObject) val;
 			final COSBase object = o.getObject();
-			if (object instanceof COSStream) {
+			if (object != null && object instanceof COSStream) {
 				cosStream = (COSStream) object;
 			}
 		}
 		if (cosStream == null) {
 			throw new DSSException("Cannot find value for " + val + " of class " + val.getClass());
 		}
-		return DSSUtils.toByteArray(cosStream.createInputStream());
+		try (InputStream is = cosStream.createInputStream()) {
+			return DSSUtils.toByteArray(is);
+		}
+	}
+
+	@Override
+	public Long getObjectNumber(int i) {
+		COSBase val = wrapped.get(i);
+		if (val != null && val instanceof COSObject) {
+			return ((COSObject) val).getObjectNumber();
+		}
+		return null;
+	}
+
+	@Override
+	public Number getNumber(int i) {
+		COSBase val = wrapped.get(i);
+		if (val != null && val instanceof COSNumber) {
+			return ((COSNumber) val).floatValue();
+		}
+		return null;
 	}
 
 	@Override
@@ -146,12 +152,10 @@ class PdfBoxArray implements PdfArray {
 			return getString(i);
 		} else if (dictionaryObject instanceof COSName) {
 			return wrapped.getName(i);
-		} else if (dictionaryObject instanceof COSInteger) {
-			return getInt(i);
+		} else if (dictionaryObject instanceof COSNumber) {
+			return getNumber(i);
 		}else if (dictionaryObject instanceof COSBoolean) {
 			return ((COSBoolean) dictionaryObject).getValueAsObject();
-		} else if (dictionaryObject instanceof COSFloat) {
-			return ((COSFloat) dictionaryObject).floatValue();
 		} else if (dictionaryObject instanceof COSNull) {
 			return null;
 		} else {

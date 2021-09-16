@@ -36,7 +36,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature1</SignatureFieldName>
+                <SignatureField name="Signature1" />
                 <PDFSignatureDictionary>
                     <SignerName>Devendra T. Rane</SignerName>
                     <Type>Sig</Type>

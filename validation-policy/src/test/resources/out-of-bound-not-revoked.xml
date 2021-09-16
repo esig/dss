@@ -41,7 +41,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature1</SignatureFieldName>
+                <SignatureField name="Signature1" />
                 <PDFSignatureDictionary>
                     <SignerName>R - eský úad zemmický a katastrální</SignerName>
                     <Filter>Adobe.PPKMS</Filter>

@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /* See DSS-1895 */
 public class PAdESMultipleFieldSignatureReferenceTest extends AbstractPAdESTestValidation {
@@ -47,8 +47,6 @@ public class PAdESMultipleFieldSignatureReferenceTest extends AbstractPAdESTestV
 	
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
-		super.checkPdfRevision(diagnosticData);
-
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		List<String> signatureFieldNames = signatures.get(0).getSignatureFieldNames();
 		assertEquals(2, signatureFieldNames.size());

@@ -2,6 +2,8 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 
+import java.util.Objects;
+
 /**
  * This object represents a modification occurred in a PDF document
  *
@@ -101,8 +103,67 @@ public class ObjectModification {
      *
      * @return {@link PdfObjectModificationType}
      */
-    public PdfObjectModificationType getType() {
+    public PdfObjectModificationType getActionType() {
         return objectModificationType;
+    }
+
+    /**
+     * Returns a name of the changed field object, when applicable
+     *
+     * NOTE: the object shall be a type of field. Returns null for other objects.
+     *
+     * @return {@link String} field name, when applicable. NULL otherwise.
+     */
+    public String getFieldName() {
+        String fieldName = null;
+        if (originalObject != null && originalObject instanceof PdfDict) {
+            fieldName = ((PdfDict) originalObject).getStringValue(PAdESConstants.FIELD_NAME_NAME);
+        } else if (finalObject != null && finalObject instanceof PdfDict) {
+            fieldName = ((PdfDict) finalObject).getStringValue(PAdESConstants.FIELD_NAME_NAME);
+        }
+        return fieldName;
+    }
+
+    /**
+     * Returns a type of concerned object, when applicable
+     *
+     * @return {@link String} type
+     */
+    public String getType() {
+        String type = null;
+        if (originalObject != null && originalObject instanceof PdfDict) {
+            type = getType((PdfDict) originalObject);
+        } else if (finalObject != null && finalObject instanceof PdfDict) {
+            type = getType((PdfDict) finalObject);
+        }
+        return type;
+    }
+
+    private String getType(PdfDict pdfDict) {
+        PdfDict valueDict = pdfDict.getAsDict(PAdESConstants.VALUE_NAME);
+        if (valueDict != null) {
+            return valueDict.getNameValue(PAdESConstants.TYPE_NAME);
+        } else {
+            return pdfDict.getNameValue(PAdESConstants.TYPE_NAME);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ObjectModification)) return false;
+
+        ObjectModification that = (ObjectModification) o;
+
+        if (!Objects.equals(objectTree, that.objectTree)) return false;
+        return objectModificationType == that.objectModificationType;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = objectTree != null ? objectTree.hashCode() : 0;
+        result = 31 * result + (objectModificationType != null ? objectModificationType.hashCode() : 0);
+        return result;
     }
 
 }

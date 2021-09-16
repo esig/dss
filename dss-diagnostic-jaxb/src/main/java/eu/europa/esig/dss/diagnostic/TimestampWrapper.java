@@ -26,9 +26,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureField;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -433,6 +435,16 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		return getPdfPageDifferenceConcernedPages(pdfRevision);
 	}
+
+
+	/**
+	 * Returns a collection of modified objects in comparison between the current timestamp revision and final document
+	 *
+	 * @return {@link XmlObjectModifications}
+	 */
+	public XmlObjectModifications getPdfObjectModifications() {
+		return getPdfObjectModifications(timestamp.getPDFRevision());
+	}
 	
 	/**
 	 * Returns the first signature field name
@@ -442,7 +454,10 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	public String getFirstFieldName() {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
-			return pdfRevision.getSignatureFieldName().get(0);
+			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
+			if (fields != null && fields.size() > 0) {
+				return fields.iterator().next().getName();
+			}
 		}
 		return null;
 	}
@@ -453,11 +468,17 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * @return a list of {@link String} signature field names
 	 */
 	public List<String> getSignatureFieldNames() {
+		List<String> names = new ArrayList<>();
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
-			return pdfRevision.getSignatureFieldName();
+			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
+			if (fields != null && fields.size() > 0) {
+				for (XmlPDFSignatureField signatureField : fields) {
+					names.add(signatureField.getName());
+				}
+			}
 		}
-		return Collections.emptyList();
+		return names;
 	}
 	
 	/**

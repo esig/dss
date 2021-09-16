@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
-import java.awt.Color;
-
-import org.junit.jupiter.api.BeforeEach;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
+import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -37,6 +38,17 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.awt.Color;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTestSignature {
 
@@ -81,6 +93,47 @@ public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTest
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		super.checkPdfRevision(diagnosticData);
+
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+
+		SignatureWrapper signatureWrapper = signatures.get(0);
+		XmlObjectModifications pdfObjectModifications = signatureWrapper.getPdfObjectModifications();
+		assertNotNull(pdfObjectModifications);
+
+		assertTrue(Utils.isCollectionNotEmpty(pdfObjectModifications.getSecureChange()));
+		assertFalse(Utils.isCollectionNotEmpty(pdfObjectModifications.getFormFillOrSignatureCreation()));
+		assertFalse(Utils.isCollectionNotEmpty(pdfObjectModifications.getAnnotCreation()));
+		assertFalse(Utils.isCollectionNotEmpty(pdfObjectModifications.getUndefined()));
+
+		List<XmlObjectModification> secureChanges = pdfObjectModifications.getSecureChange();
+		assertEquals(3, secureChanges.size());
+
+		boolean dssDictFound = false;
+		boolean docTimeStampFound = false;
+		boolean newFieldFound = false;
+
+		assertTrue(secureChanges.stream().map(c -> c.getType()).collect(Collectors.toSet()).contains("DocTimeStamp"));
+		for (XmlObjectModification objectModification : secureChanges) {
+			assertEquals(PdfObjectModificationType.CREATION, objectModification.getAction());
+			if (objectModification.getValue().contains("/DSS")) {
+				dssDictFound = true;
+			}
+			if ("DocTimeStamp".equals(objectModification.getType())) {
+				docTimeStampFound = true;
+			}
+			if ("Signature2".equals(objectModification.getFieldName())) {
+				newFieldFound = true;
+			}
+		}
+		assertTrue(dssDictFound);
+		assertTrue(docTimeStampFound);
+		assertTrue(newFieldFound);
 	}
 
 	@Override

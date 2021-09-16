@@ -89,9 +89,9 @@ public interface PdfDict {
 	 * Returns a number value
 	 *
 	 * @param name {@link String} property name
-	 * @return {@link Integer} value
+	 * @return {@link Number} value
 	 */
-	Integer getNumberValue(String name);
+	Number getNumberValue(String name);
 
 	/**
 	 * Returns an object
@@ -108,5 +108,13 @@ public interface PdfDict {
 	 * @return {@link Object} value
 	 */
 	Long getObjectNumber(String name);
+
+	/**
+	 * Returns object's stream binaries, when available
+	 *
+	 * @return byte array
+	 * @throws IOException if a stream reading exception occurs
+	 */
+	byte[] getStreamBytes() throws IOException;
 
 }

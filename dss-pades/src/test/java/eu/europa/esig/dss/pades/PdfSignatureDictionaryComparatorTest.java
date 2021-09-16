@@ -228,6 +228,11 @@ public class PdfSignatureDictionaryComparatorTest {
 		}
 
 		@Override
+		public CertificationPermission getDocMDP() {
+			return null;
+		}
+
+		@Override
 		public SigFieldPermissions getFieldMDP() {
 			return null;
 		}

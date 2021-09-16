@@ -56,7 +56,7 @@ public class DSSDictionaryExtractionUtils {
 				try {
 					final long objectNumber = certsArray.getObjectNumber(ii);
 					if (!certMap.containsKey(objectNumber)) {
-						certMap.put(objectNumber, DSSUtils.loadCertificate(certsArray.getBytes(ii)));
+						certMap.put(objectNumber, DSSUtils.loadCertificate(certsArray.getStreamBytes(ii)));
 					}
 				} catch (Exception e) {
 					LOG.debug("Unable to read Cert '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
@@ -85,7 +85,7 @@ public class DSSDictionaryExtractionUtils {
 				try {
 					long objectNumber = crlArray.getObjectNumber(ii);
 					if (!crlMap.containsKey(objectNumber)) {
-						crlMap.put(objectNumber, CRLUtils.buildCRLBinary(crlArray.getBytes(ii)));
+						crlMap.put(objectNumber, CRLUtils.buildCRLBinary(crlArray.getStreamBytes(ii)));
 					}
 				} catch (Exception e) {
 					LOG.debug("Unable to read CRL '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
@@ -114,7 +114,7 @@ public class DSSDictionaryExtractionUtils {
 				try {
 					final long objectNumber = ocspArray.getObjectNumber(ii);
 					if (!ocspMap.containsKey(objectNumber)) {
-						final OCSPResp ocspResp = new OCSPResp(ocspArray.getBytes(ii));
+						final OCSPResp ocspResp = new OCSPResp(ocspArray.getStreamBytes(ii));
 						final BasicOCSPResp responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
 						ocspMap.put(objectNumber, responseObject);
 					}

@@ -22,21 +22,23 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.utils.Utils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSBoolean;
 import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSFloat;
-import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSNull;
+import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,7 +66,7 @@ class PdfBoxDict implements PdfDict {
 	 * @param document {@link PDDocument}
 	 */
 	public PdfBoxDict(COSDictionary wrapped, PDDocument document) {
-		Objects.requireNonNull(wrapped, "Pdf catalog shall be provided!");
+		Objects.requireNonNull(wrapped, "Pdf dictionary shall be provided!");
 		Objects.requireNonNull(document, "Pdf document shall be provided!");
 		this.wrapped = wrapped;
 		this.document = document;
@@ -138,10 +140,10 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	@Override
-	public Integer getNumberValue(String name) {
-		int number = wrapped.getInt(name);
-		if (number != -1) {
-			return number;
+	public Number getNumberValue(String name) {
+		COSBase val = wrapped.getDictionaryObject(name);
+		if (val != null && val instanceof COSNumber) {
+			return ((COSNumber) val).floatValue();
 		}
 		return null;
 	}
@@ -160,12 +162,10 @@ class PdfBoxDict implements PdfDict {
 			return getStringValue(name);
 		} else if (dictionaryObject instanceof COSName) {
 			return getNameValue(name);
-		} else if (dictionaryObject instanceof COSInteger) {
+		} else if (dictionaryObject instanceof COSNumber) {
 			return getNumberValue(name);
 		} else if (dictionaryObject instanceof COSBoolean) {
 			return ((COSBoolean) dictionaryObject).getValueAsObject();
-		} else if (dictionaryObject instanceof COSFloat) {
-			return ((COSFloat) dictionaryObject).floatValue();
 		} else if (dictionaryObject instanceof COSNull) {
 			return null;
 		} else {
@@ -179,6 +179,16 @@ class PdfBoxDict implements PdfDict {
 		COSBase dictionaryObject = wrapped.getItem(name);
 		if (dictionaryObject != null && dictionaryObject instanceof COSObject) {
 			return ((COSObject) dictionaryObject).getObjectNumber();
+		}
+		return null;
+	}
+
+	@Override
+	public byte[] getStreamBytes() throws IOException {
+		if (wrapped instanceof COSStream) {
+			try (InputStream is = ((COSStream) wrapped).createInputStream()) {
+				return Utils.toByteArray(is);
+			}
 		}
 		return null;
 	}

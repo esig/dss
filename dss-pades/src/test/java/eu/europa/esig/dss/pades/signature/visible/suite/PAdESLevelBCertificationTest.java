@@ -18,17 +18,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature.visible;
+package eu.europa.esig.dss.pades.signature.visible.suite;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.jupiter.api.BeforeEach;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -40,16 +36,24 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 
-	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
+	private DSSDocument originalDocument;
+
+	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-two-fields.pdf"));
+		originalDocument = new InMemoryDocument(getClass().getResourceAsStream("/pdf-two-fields.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -70,20 +74,47 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 	}
 
 	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		super.onDocumentSigned(byteArray);
+	protected DSSDocument sign() {
+		documentToSign = originalDocument;
 
-		try (PDDocument document = PDDocument.load(byteArray);) {
-			COSBase docMDP = null;
-			COSBase perms = document.getDocumentCatalog().getCOSObject().getDictionaryObject(COSName.PERMS);
-			if (perms instanceof COSDictionary) {
-				COSDictionary permsDict = (COSDictionary) perms;
-				docMDP = permsDict.getDictionaryObject(COSName.DOCMDP);
-			}
-			assertNotNull(docMDP);
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
+		List<String> availableSignatureFields = service.getAvailableSignatureFields(documentToSign);
+		assertEquals(2, availableSignatureFields.size());
+
+		DSSDocument signedDoc = super.sign();
+		assertNotNull(signedDoc);
+
+		documentToSign = signedDoc;
+		signatureParameters.setImageParameters(null);
+		super.sign(); // should allow signing with /DodMDP P=2
+
+		documentToSign = originalDocument;
+		return signedDoc;
+	}
+
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		InMemoryDocument signedDoc = new InMemoryDocument(byteArray);
+		List<String> availableSignatureFields = service.getAvailableSignatureFields(signedDoc);
+		assertEquals(1, availableSignatureFields.size());
+	}
+
+	@Override
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		super.checkPdfRevision(diagnosticData);
+
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+
+		SignatureWrapper signatureWrapper = signatures.get(0);
+		XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
+		assertNotNull(pdfRevision);
+
+		XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
+		assertNotNull(pdfSignatureDictionary);
+
+		XmlDocMDP docMDP = pdfSignatureDictionary.getDocMDP();
+		assertNotNull(docMDP);
+		assertEquals(2, docMDP.getPermissions().intValue());
 	}
 
 	@Override

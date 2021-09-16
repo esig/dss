@@ -35,14 +35,14 @@ public interface PdfArray {
 	int size();
 
 	/**
-	 * Retrieves the byte array at the position i
+	 * Retrieves the stream byte array at the position i
 	 * 
 	 * @param i
 	 *          the position
-	 * @return the found byte array
+	 * @return the found stream byte array
 	 * @throws IOException if an exception occurs
 	 */
-	byte[] getBytes(int i) throws IOException;
+	byte[] getStreamBytes(int i) throws IOException;
 
 	/**
 	 * Retrieves the Object Number for the position i
@@ -54,13 +54,13 @@ public interface PdfArray {
 	Long getObjectNumber(int i);
 
 	/**
-	 * Retrieves the integer at the position i
+	 * Retrieves the number at the position i
 	 * 
 	 * @param i
 	 *          the position
-	 * @return the found integer
+	 * @return the found number
 	 */
-	Integer getInt(int i);
+	Number getNumber(int i);
 
 	/**
 	 * Returns a String entry at the position i

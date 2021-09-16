@@ -26,7 +26,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureField;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSPDocSpecification;
@@ -1010,6 +1012,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		return getPdfPageDifferenceConcernedPages(pdfRevision);
 	}
+
+	/**
+	 * Returns a collection of modified objects in comparison between the current signature revision and final document
+	 *
+	 * @return {@link XmlObjectModifications}
+	 */
+	public XmlObjectModifications getPdfObjectModifications() {
+		return getPdfObjectModifications(signature.getPDFRevision());
+	}
 	
 	/**
 	 * Returns the first signature field name
@@ -1019,7 +1030,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public String getFirstFieldName() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
-			return pdfRevision.getSignatureFieldName().get(0);
+			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
+			if (fields != null && fields.size() > 0) {
+				return fields.iterator().next().getName();
+			}
 		}
 		return null;
 	}
@@ -1030,11 +1044,17 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return a list of {@link String} signature field names
 	 */
 	public List<String> getSignatureFieldNames() {
+		List<String> names = new ArrayList<>();
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
-			return pdfRevision.getSignatureFieldName();
+			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
+			if (fields != null && fields.size() > 0) {
+				for (XmlPDFSignatureField signatureField : fields) {
+					names.add(signatureField.getName());
+				}
+			}
 		}
-		return Collections.emptyList();
+		return names;
 	}
 	
 	/**

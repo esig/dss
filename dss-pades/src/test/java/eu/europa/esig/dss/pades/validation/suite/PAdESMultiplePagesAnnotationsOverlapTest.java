@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESMultiplePagesAnnotationsOverlapTest extends AbstractPAdESTestValidation {
 
@@ -36,8 +36,6 @@ public class PAdESMultiplePagesAnnotationsOverlapTest extends AbstractPAdESTestV
 	
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
-		super.checkPdfRevision(diagnosticData);
-		
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertTrue(signatureWrapper.arePdfModificationsDetected());
 			assertTrue(signatureWrapper.getPdfAnnotationsOverlapConcernedPages().size() > 2);

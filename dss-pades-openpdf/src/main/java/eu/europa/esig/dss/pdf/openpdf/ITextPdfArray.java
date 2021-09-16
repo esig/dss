@@ -22,8 +22,11 @@ package eu.europa.esig.dss.pdf.openpdf;
 
 import com.lowagie.text.pdf.PRStream;
 import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfBoolean;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfIndirectReference;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNull;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
@@ -31,6 +34,8 @@ import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.PdfDict;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -38,6 +43,8 @@ import java.io.IOException;
  * The IText (OpenPDF) implementation of {@code eu.europa.esig.dss.pdf.PdfArray}
  */
 class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ITextPdfArray.class);
 
 	/** The OpenPDF object */
 	private PdfArray wrapped;
@@ -52,7 +59,7 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	}
 
 	@Override
-	public byte[] getBytes(int i) throws IOException {
+	public byte[] getStreamBytes(int i) throws IOException {
 		return PdfReader.getStreamBytes((PRStream) wrapped.getAsStream(i));
 	}
 
@@ -69,14 +76,14 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 			PdfIndirectReference asIndirectObject = wrapped.getAsIndirectObject(i);
 			return Long.valueOf(asIndirectObject.getNumber());
 		}
-		throw new DSSException(String.format("Not supported PDF object type '%s'", pdfObject.type()));
+		return null;
 	}
 
 	@Override
-	public Integer getInt(int i) {
+	public Number getNumber(int i) {
 		PdfNumber number = wrapped.getAsNumber(i);
 		if (number != null) {
-			return number.intValue();
+			return number.floatValue();
 		}
 		return null;
 	}
@@ -92,12 +99,36 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 
 	@Override
 	public PdfDict getAsDict(int i) {
-		PdfDictionary dict = wrapped.getAsDict(i);
-		return new ITextPdfDict(dict);
+		PdfObject directObject = wrapped.getDirectObject(i);
+		if (directObject != null && directObject instanceof PdfDictionary) {
+			return new ITextPdfDict((PdfDictionary) directObject);
+		}
+		return null;
 	}
 
 	@Override
 	public Object getObject(int i) {
+		PdfObject directObject = wrapped.getDirectObject(i);
+		if (directObject == null) {
+			return null;
+		}
+		if (directObject instanceof PdfDictionary) {
+			return getAsDict(i);
+		} else if (directObject instanceof com.lowagie.text.pdf.PdfArray) {
+			return new ITextPdfArray((com.lowagie.text.pdf.PdfArray) directObject);
+		} else if (directObject instanceof PdfString) {
+			return getString(i);
+		} else if (directObject instanceof PdfName) {
+			return PdfName.decodeName(directObject.toString());
+		} else if (directObject instanceof PdfNumber) {
+			return getNumber(i);
+		} else if (directObject instanceof PdfBoolean) {
+			return ((PdfBoolean) directObject).booleanValue();
+		} else if (directObject instanceof PdfNull) {
+			return null;
+		} else {
+			LOG.warn("Unable to process an entry on position '{}' of type '{}'.", i, directObject.getClass());
+		}
 		return null;
 	}
 

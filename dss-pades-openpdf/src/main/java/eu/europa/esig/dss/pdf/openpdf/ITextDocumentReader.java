@@ -26,6 +26,7 @@ import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
@@ -159,10 +160,13 @@ public class ITextDocumentReader implements PdfDocumentReader {
 				final ITextPdfDict fieldDict = new ITextPdfDict(pdfField);
 				final PdfSignatureField pdfSignatureField = new PdfSignatureField(fieldDict);
 
-				int refNumber = pdfField.getAsIndirectObject(PdfName.V).getNumber();
+				int refNumber = 0;
+				PdfIndirectReference indirectObject = pdfField.getAsIndirectObject(PdfName.V);
+				if (indirectObject != null) {
+					refNumber = indirectObject.getNumber();
+				}
 				PdfSigDictWrapper signature = pdfObjectDictMap.get(refNumber);
 				if (signature == null) {
-
 					try {
 						PdfDict dictionary = new ITextPdfDict(pdfField.getAsDict(PdfName.V));
 						signature = new PdfSigDictWrapper(dictionary);
@@ -175,6 +179,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 					fieldList.add(pdfSignatureField);
 					signatureDictionaryMap.put(signature, fieldList);
 					pdfObjectDictMap.put(refNumber, signature);
+
 				} else {
 					List<PdfSignatureField> fieldList = signatureDictionaryMap.get(signature);
 					fieldList.add(pdfSignatureField);

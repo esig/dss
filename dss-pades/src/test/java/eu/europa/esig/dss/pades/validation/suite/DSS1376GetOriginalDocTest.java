@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -34,6 +27,12 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 
@@ -77,6 +76,11 @@ public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 		// Signature has been generated in the very first version of the PDF
 		byte[] byteArray = DSSUtils.toByteArray(retrievedDoc);
 		assertEquals(0, byteArray.length);
+	}
+
+	@Override
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		// skip (openpdf does not detect visual difference)
 	}
 
 }

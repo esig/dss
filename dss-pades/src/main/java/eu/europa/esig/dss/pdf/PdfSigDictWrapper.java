@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
@@ -76,7 +77,7 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 		int arraySize = byteRangeArray.size();
 		int[] result = new int[arraySize];
 		for (int i = 0; i < arraySize; i++) {
-			result[i] = byteRangeArray.getInt(i);
+			result[i] = byteRangeArray.getNumber(i).intValue();
 		}
 		return new ByteRange(result);
 	}
@@ -138,6 +139,32 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 	@Override
 	public ByteRange getByteRange() {
 		return byteRange;
+	}
+
+	@Override
+	public CertificationPermission getDocMDP() {
+		PdfArray referenceArray = dictionary.getAsArray(PAdESConstants.REFERENCE_NAME);
+		if (referenceArray != null) {
+			for (int i = 0; i < referenceArray.size(); i++) {
+				PdfDict sigRef = referenceArray.getAsDict(i);
+				if (PAdESConstants.DOC_MDP_NAME.equals(sigRef.getNameValue(PAdESConstants.TRANSFORM_METHOD_NAME))) {
+					PdfDict transformParams = sigRef.getAsDict(PAdESConstants.TRANSFORM_PARAMS_NAME);
+					if (transformParams == null) {
+						LOG.warn("No '{}' dictionary found. Unable to perform a '{}' entry validation!",
+								PAdESConstants.TRANSFORM_PARAMS_NAME, PAdESConstants.DOC_MDP_NAME);
+						continue;
+					}
+					Number permissions = transformParams.getNumberValue(PAdESConstants.PERMISSIONS_NAME);
+					if (permissions == null) {
+						LOG.warn("No '{}' parameter found. Unable to perform a '{}' entry validation!",
+								PAdESConstants.PERMISSIONS_NAME, PAdESConstants.DOC_MDP_NAME);
+						continue;
+					}
+					return CertificationPermission.fromCode(permissions.intValue());
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override

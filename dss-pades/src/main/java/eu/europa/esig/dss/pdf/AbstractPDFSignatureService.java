@@ -58,6 +58,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -282,7 +283,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			for (Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> sigDictEntry : sigDictionaries.entrySet()) {
 				PdfSignatureDictionary signatureDictionary = sigDictEntry.getKey();
 				List<PdfSignatureField> fields = sigDictEntry.getValue();
-				// TODO : provide the whole signature field data
 				List<String> fieldNames = fields.stream().map(f -> f.getFieldName()).collect(Collectors.toList());
 
 				try {
@@ -309,12 +309,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 					PdfCMSRevision newRevision = null;
 					if (isDocTimestamp(signatureDictionary)) {
-						newRevision = new PdfDocTimestampRevision(signatureDictionary, fieldNames, signedContent,
+						newRevision = new PdfDocTimestampRevision(signatureDictionary, fields, signedContent,
 								signatureCoversWholeDocument);
 
 					} else if (isSignature(signatureDictionary)) {
 						// signature contains all dss dictionaries present after
-						newRevision = new PdfSignatureRevision(signatureDictionary, dssDictionary, fieldNames,
+						newRevision = new PdfSignatureRevision(signatureDictionary, dssDictionary, fields,
 								signedContent, signatureCoversWholeDocument);
 
 					} else {
@@ -448,7 +448,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param document {@link DSSDocument} to be validated
 	 * @param byteRange {@link ByteRange}
 	 * @param cms binaries of the CMSSignedData
-	 * @param signatureFieldNames a list of {@link String}
+	 * @param signatureFieldNames a list of signature field {@link String} names
 	 * @return TRUE if the content value equals the byte range extraction, FALSE otherwise
 	 */
 	protected boolean isContentValueEqualsByteRangeExtraction(DSSDocument document, ByteRange byteRange, byte[] cms,
@@ -660,7 +660,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				byte[] revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
 				pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, new InMemoryDocument(revisionContent), pwd));
 			}
-		} catch (IOException e) {
+
+		} catch (Exception e) {
 			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
 			if (LOG.isDebugEnabled()) {
 				LOG.error(errorMessage, e.getMessage(), e);
@@ -681,8 +682,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			pdfModificationDetection.setVisualDifferences(
 					getVisualDifferences(signedRevisionReader, finalRevisionReader));
 
-			List<ObjectModification> modificationsList =
-					PdfModificationDetectionUtils.getModificationsList(signedRevisionReader, finalRevisionReader);
+			Set<ObjectModification> modificationsList =
+					PdfModificationDetectionUtils.getModificationSet(signedRevisionReader, finalRevisionReader);
 			pdfModificationDetection.setObjectModifications(
 					PdfModificationDetectionUtils.categorizeObjectModifications(modificationsList));
 

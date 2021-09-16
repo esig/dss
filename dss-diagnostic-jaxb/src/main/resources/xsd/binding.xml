@@ -163,6 +163,12 @@
 						 parseMethod="eu.europa.esig.dss.jaxb.parsers.PdfObjectModificationTypeParser.parse"
 						 printMethod="eu.europa.esig.dss.jaxb.parsers.PdfObjectModificationTypeParser.print" />
 	  </jaxb:bindings>
+
+	  <jaxb:bindings node="//xs:simpleType[@name='PDFLockAction']">
+		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.PdfLockAction"
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.PdfLockActionParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.PdfLockActionParser.print" />
+	  </jaxb:bindings>
 		
   	<jaxb:bindings node="//xs:complexType[@name='FoundCertificates']//xs:element[@name='RelatedCertificate']">
 		<jaxb:property name="RelatedCertificates" />
@@ -202,6 +208,12 @@
 	</jaxb:bindings>
   	<jaxb:bindings node="//xs:complexType[@name='StructuralValidation']//xs:element[@name='Message']">
 		<jaxb:property name="Messages" />
+	</jaxb:bindings>
+	<jaxb:bindings node="//xs:complexType[@name='PDFRevision']//xs:element[@name='SignatureField']">
+		<jaxb:property name="Fields" />
+	</jaxb:bindings>
+	<jaxb:bindings node="//xs:complexType[@name='PDFLockDictionary']//xs:element[@name='Field']">
+		<jaxb:property name="Fields" />
 	</jaxb:bindings>
 		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:attribute[@name='Parent']">

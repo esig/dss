@@ -22,16 +22,15 @@ package eu.europa.esig.dss.pades.validation.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class PAdESEnvelopingOtherPdfTest extends AbstractPAdESTestValidation {
 
@@ -48,8 +47,7 @@ public class PAdESEnvelopingOtherPdfTest extends AbstractPAdESTestValidation {
         XmlPDFRevision pdfRevision = signature.getPDFRevision();
         assertNotNull(pdfRevision);
 
-        XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
-        assertNull(modificationDetection);
+        assertFalse(signature.arePdfModificationsDetected());
     }
 
     @Override

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -272,7 +273,7 @@ public final class PAdESUtils {
 		final SigFieldPermissions sigFieldPermissions = new SigFieldPermissions();
 
 		String action = wrapper.getNameValue(PAdESConstants.ACTION_NAME);
-		sigFieldPermissions.setAction(SigFieldPermissions.Action.forName(action));
+		sigFieldPermissions.setAction(PdfLockAction.ALL.forName(action));
 
 		List<String> fields = new ArrayList<>();
 		PdfArray fieldsArray = wrapper.getAsArray(PAdESConstants.FIELDS_NAME);
@@ -287,9 +288,9 @@ public final class PAdESUtils {
 		sigFieldPermissions.setFields(fields);
 
 		if (PAdESConstants.SIG_FIELD_LOCK_NAME.equals(wrapper.getNameValue(PAdESConstants.TYPE_NAME))) {
-			Integer permissions = wrapper.getNumberValue(PAdESConstants.PERMISSIONS_NAME);
+			Number permissions = wrapper.getNumberValue(PAdESConstants.PERMISSIONS_NAME);
 			if (permissions != null) {
-				CertificationPermission certificationPermission = CertificationPermission.fromCode(permissions);
+				CertificationPermission certificationPermission = CertificationPermission.fromCode(permissions.intValue());
 				sigFieldPermissions.setCertificationPermission(certificationPermission);
 			}
 		}

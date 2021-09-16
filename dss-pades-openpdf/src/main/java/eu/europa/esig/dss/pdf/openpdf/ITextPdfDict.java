@@ -20,18 +20,23 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
+import com.lowagie.text.pdf.PRStream;
+import com.lowagie.text.pdf.PdfBoolean;
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNull;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
+import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -52,18 +57,17 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	 * @param wrapped {@link PdfDictionary}
 	 */
 	public ITextPdfDict(PdfDictionary wrapped) {
-		Objects.requireNonNull(wrapped, "Pdf catalog shall be provided!");
+		Objects.requireNonNull(wrapped, "Pdf dictionary shall be provided!");
 		this.wrapped = wrapped;
 	}
 
 	@Override
 	public PdfDict getAsDict(String name) {
-		PdfDictionary asDict = wrapped.getAsDict(new PdfName(name));
-		if (asDict == null) {
-			return null;
-		} else {
-			return new ITextPdfDict(asDict);
+		PdfObject directObject = wrapped.getDirectObject(new PdfName(name));
+		if (directObject != null && directObject instanceof PdfDictionary) {
+			return new ITextPdfDict((PdfDictionary) directObject);
 		}
+		return null;
 	}
 
 	@Override
@@ -131,10 +135,10 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	}
 
 	@Override
-	public Integer getNumberValue(String name) {
+	public Number getNumberValue(String name) {
 		PdfNumber pdfNumber = wrapped.getAsNumber(new PdfName(name));
 		if (pdfNumber != null) {
-			return pdfNumber.intValue();
+			return pdfNumber.floatValue();
 		}
 		return null;
 	}
@@ -150,8 +154,14 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 			return getAsArray(name);
 		} else if (pdfObject instanceof PdfString) {
 			return getStringValue(name);
+		} else if (pdfObject instanceof PdfName) {
+			return getNameValue(name);
 		} else if (pdfObject instanceof PdfNumber) {
 			return getNumberValue(name);
+		} else if (pdfObject instanceof PdfBoolean) {
+			return ((PdfBoolean) pdfObject).booleanValue();
+		} else if (pdfObject instanceof PdfNull) {
+			return null;
 		} else {
 			LOG.warn("Unable to process an entry with name '{}' of type '{}'.", name, pdfObject.getClass());
 		}
@@ -163,6 +173,14 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 		PdfIndirectReference indirectObject = wrapped.getAsIndirectObject(new PdfName(name));
 		if (indirectObject != null) {
 			return Long.valueOf(indirectObject.getNumber());
+		}
+		return null;
+	}
+
+	@Override
+	public byte[] getStreamBytes() throws IOException {
+		if (wrapped instanceof PRStream) {
+			return PdfReader.getStreamBytes((PRStream) wrapped);
 		}
 		return null;
 	}

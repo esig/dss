@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -255,7 +256,8 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
 			if (modificationDetection != null) {
 				return modificationDetection.getAnnotationOverlap().size() != 0 ||
-						modificationDetection.getVisualDifference().size() != 0;
+						modificationDetection.getVisualDifference().size() != 0 ||
+						modificationDetection.getPageDifference().size() != 0;
 			}
 		}
 		return false;
@@ -318,6 +320,22 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			pages.add(modification.getPage());
 		}
 		return pages;
+	}
+
+	/**
+	 * Returns {@code XmlObjectModifications} for the given revision, when present
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return {@link XmlObjectModifications}
+	 */
+	protected XmlObjectModifications getPdfObjectModifications(XmlPDFRevision pdfRevision) {
+		if (pdfRevision != null) {
+			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
+			if (modificationDetection != null) {
+				return modificationDetection.getObjectModifications();
+			}
+		}
+		return null;
 	}
 	
 	@Override
