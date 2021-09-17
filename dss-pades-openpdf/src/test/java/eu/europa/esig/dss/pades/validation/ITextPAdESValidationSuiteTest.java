@@ -38,6 +38,8 @@ import eu.europa.esig.dss.pades.validation.suite.DSS2199Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2258Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2451Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2471Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS2513LTTest;
+import eu.europa.esig.dss.pades.validation.suite.DSS2513Test;
 import eu.europa.esig.dss.pades.validation.suite.PAdESEnvelopingOtherPdfTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESExtendedToTLevelTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
@@ -101,7 +103,7 @@ import org.junit.runner.RunWith;
 		PAdESExtendedToTLevelTest.class, DSS2199Test.class, PAdESSameBorderAnnotationsTest.class, PAdESMultiplePagesAnnotationsOverlapTest.class,
 		PAdESWithAddedPageTest.class, PAdESWithRemovedPagesTest.class, DSS2258Test.class, TimestampedAndSignedTest.class, DSS2155Test.class,
 		DSS2451Test.class, PAdESOverwrittenDSSDictTest.class, DSS2471Test.class, PAdESWithCrossCertificateOCSPsTest.class,
-		PAdESEnvelopingOtherPdfTest.class })
+		PAdESEnvelopingOtherPdfTest.class, DSS2513Test.class, DSS2513LTTest.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

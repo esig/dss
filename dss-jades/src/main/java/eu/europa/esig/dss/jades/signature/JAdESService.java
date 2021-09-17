@@ -176,13 +176,15 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
-
 		DSSDocument signedDocument = jadesBuilder.build(signatureValue);
-		SignatureExtension<JAdESSignatureParameters> signatureExtension = getExtensionProfile(parameters);
+
+		JAdESLevelBaselineExtension signatureExtension = getExtensionProfile(parameters);
 		if (signatureExtension != null) {
-			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
+			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) &&
+					Utils.isCollectionEmpty(parameters.getDetachedContents())) {
 				parameters.setDetachedContents(toSignDocuments);
 			}
+			signatureExtension.setOperationKind(SigningOperation.SIGN);
 			signedDocument = signatureExtension.extendSignatures(signedDocument, parameters);
 		}
 		signedDocument.setName(getFinalFileName(toSignDocuments.iterator().next(), SigningOperation.SIGN,
@@ -246,9 +248,10 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
 		assertExtensionPossible(parameters);
 
-		final SignatureExtension<JAdESSignatureParameters> extension = getExtensionProfile(parameters);
-		if (extension != null) {
-			final DSSDocument dssDocument = extension.extendSignatures(toExtendDocument, parameters);
+		final JAdESLevelBaselineExtension signatureExtension = getExtensionProfile(parameters);
+		if (signatureExtension != null) {
+			signatureExtension.setOperationKind(SigningOperation.EXTEND);
+			final DSSDocument dssDocument = signatureExtension.extendSignatures(toExtendDocument, parameters);
 			dssDocument.setName(
 					getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			dssDocument.setMimeType(MimeType.JOSE_JSON);
@@ -265,7 +268,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		}
 	}
 
-	private SignatureExtension<JAdESSignatureParameters> getExtensionProfile(JAdESSignatureParameters parameters) {
+	private JAdESLevelBaselineExtension getExtensionProfile(JAdESSignatureParameters parameters) {
 		switch (parameters.getSignatureLevel()) {
 		case JAdES_BASELINE_B:
 			return null;

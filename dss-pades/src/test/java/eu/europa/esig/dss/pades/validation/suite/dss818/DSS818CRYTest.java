@@ -35,7 +35,7 @@ public class DSS818CRYTest extends AbstractDSS818Test {
 	
 	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
-		assertEquals(1, diagnosticData.getAllOrphanCertificateObjects().size());
+		assertEquals(2, diagnosticData.getAllOrphanCertificateObjects().size());
 		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
 		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size());
 		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());

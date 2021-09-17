@@ -35,8 +35,9 @@ import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 
 /**
  * Processes the LOTL/TL validation job (download - parse - validate)
+ *
  */
-public abstract class AbstractAnalysis {
+public abstract class AbstractAnalysis  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractAnalysis.class);
 
@@ -45,7 +46,7 @@ public abstract class AbstractAnalysis {
 
 	/** The file loader */
 	private final DSSFileLoader dssFileLoader;
-
+	
 	/**
 	 * Default constructor
 	 *
@@ -55,15 +56,6 @@ public abstract class AbstractAnalysis {
 	protected AbstractAnalysis(final CacheAccessByKey cacheAccess, final DSSFileLoader dssFileLoader) {
 		this.cacheAccess = cacheAccess;
 		this.dssFileLoader = dssFileLoader;
-	}
-
-	/**
-	 * Gets the {@code CacheAccessByKey}
-	 *
-	 * @return {@link CacheAccessByKey}
-	 */
-	protected final CacheAccessByKey getCacheAccessByKey() {
-		return cacheAccess;
 	}
 
 	/**
@@ -93,6 +85,15 @@ public abstract class AbstractAnalysis {
 	}
 
 	/**
+	 * Gets the {@code CacheAccessByKey}
+	 *
+	 * @return {@link CacheAccessByKey}
+	 */
+	protected final CacheAccessByKey getCacheAccessByKey() {
+		return cacheAccess;
+	}
+
+	/**
 	 * Parses the document
 	 *
 	 * @param document {@link DSSDocument} to parse
@@ -111,7 +112,7 @@ public abstract class AbstractAnalysis {
 			}
 		}
 	}
-
+	
 	/**
 	 * Validates the document
 	 *

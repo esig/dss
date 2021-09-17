@@ -32,8 +32,9 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Runs the job for a TL analysis
+ *
  */
-public class TLAnalysis extends AbstractAnalysis implements Runnable {
+public class TLAnalysis extends AbstractRunnableAnalysis {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLAnalysis.class);
 
@@ -42,9 +43,6 @@ public class TLAnalysis extends AbstractAnalysis implements Runnable {
 
 	/** The cache access by the key */
 	private final CacheAccessByKey cacheAccess;
-
-	/** The tasks counter */
-	private final CountDownLatch latch;
 
 	/**
 	 * Default constructor
@@ -56,15 +54,13 @@ public class TLAnalysis extends AbstractAnalysis implements Runnable {
 	 */
 	public TLAnalysis(TLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
 					  CountDownLatch latch) {
-		super(cacheAccess, dssFileLoader);
+		super(cacheAccess, dssFileLoader, latch);
 		this.source = source;
 		this.cacheAccess = cacheAccess;
-		this.latch = latch;
 	}
 
 	@Override
-	public void run() {
-
+	protected void doAnalyze() {
 		DSSDocument document = download(source.getUrl());
 
 		if (document != null) {
@@ -72,13 +68,10 @@ public class TLAnalysis extends AbstractAnalysis implements Runnable {
 
 			validation(document, source.getCertificateSource());
 		}
-
-		latch.countDown();
-
 	}
 
 	private void trustedListParsing(DSSDocument document) {
-		// True if EMPTY / EXPIRED by TL/LOTL
+		// True if EMPTY/EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
 				LOG.debug("Parsing TL with cache key '{}'...", source.getCacheKey().getKey());

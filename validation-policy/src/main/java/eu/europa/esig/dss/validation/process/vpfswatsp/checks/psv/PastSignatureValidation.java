@@ -55,6 +55,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.POEExis
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.POENotAfterCARevocationTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastCertificateValidationAcceptableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationIssuerTrustedCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastRevocationDataValidationConclusiveCheck;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -311,7 +312,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * 6) The building block shall return the indication and sub-indication contained
 		 * in sig_cert_revocation_poe-status.
 		 */
-		result.setConclusion(sigCertRevocationPoeStatus);
+		item = item.setNextItem(pastRevocationDataValidationConclusive(sigCertRevocationPoeStatus));
 
 	}
 
@@ -349,6 +350,10 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 																	Date caRevocationTime) {
 		return new POENotAfterCARevocationTimeCheck(i18nProvider, result, certificateRevocations,
 				caRevocationTime, poe, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlPSV> pastRevocationDataValidationConclusive(XmlConclusion currentConclusion) {
+		return new PastRevocationDataValidationConclusiveCheck(i18nProvider, result, currentConclusion, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime, CertificateWrapper signingCertificate) {

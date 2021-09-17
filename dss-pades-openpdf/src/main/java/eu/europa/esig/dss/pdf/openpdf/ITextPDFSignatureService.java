@@ -150,8 +150,6 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 				if (fieldItem == null) {
 					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
-				} else {
-					signatureDrawer.setSignatureField(fieldItem);
 				}
 
 				signatureDrawer.draw();
@@ -451,6 +449,10 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
 				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
+
+			if (reader.getNumberOfPages() < parameters.getPage()) {
+				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
+			}
 
 			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
 			

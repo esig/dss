@@ -102,7 +102,6 @@ public class XAdESLevelLTAWithUserFriendlyIdProviderTest extends AbstractXAdESTe
         }
 
         assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getAllRevocationData()));
-        assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getAllRevocationData()));
         for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
             if (RevocationType.CRL.equals(revocationWrapper.getRevocationType())) {
                 assertTrue(revocationWrapper.getId().contains("CRL"));
@@ -124,7 +123,7 @@ public class XAdESLevelLTAWithUserFriendlyIdProviderTest extends AbstractXAdESTe
                     DSSUtils.formatDateWithCustomFormat(timestampWrapper.getProductionTime(), "yyyyMMdd-HHmm")));
         }
 
-        assertTrue(Utils.isCollectionNotEmpty(advancedSignature.getSignatureScopes()));
+        assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getOriginalSignerDocuments()));
         for (SignerDataWrapper signerDataWrapper: diagnosticData.getOriginalSignerDocuments()) {
             assertTrue(signerDataWrapper.getId().contains("DOCUMENT"));
             assertTrue(signerDataWrapper.getId().contains(signerDataWrapper.getReferencedName()));

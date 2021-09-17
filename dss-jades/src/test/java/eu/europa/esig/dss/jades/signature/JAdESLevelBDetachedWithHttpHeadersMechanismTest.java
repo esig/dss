@@ -107,7 +107,7 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 	protected DSSDocument sign() {
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
 		assertEquals("'http://uri.etsi.org/19182/HttpHeaders' SigD Mechanism can be used only with non-base64url encoded payload! "
-				+ "Set JAdESSignatureParameters.setBase64UrlEncodedPayload(true).", exception.getMessage());
+				+ "Set JAdESSignatureParameters.setBase64UrlEncodedPayload(false).", exception.getMessage());
 
 		signatureParameters.setBase64UrlEncodedPayload(false);
 		DSSDocument signedDocument = super.sign();

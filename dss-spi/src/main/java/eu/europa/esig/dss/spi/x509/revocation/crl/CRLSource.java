@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 
 /**
- * Typed sub-interface which allows to collect {@code CRLToken}. The validation
+ * Typed sub-interface which allows collection of {@code CRLToken}(s). The validation
  * of a certificate requires the access to some CRLs. This information can be
  * found online, in a cache or even in the signature itself. This interface
  * provides an abstraction of a CRL data source.

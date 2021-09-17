@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -51,7 +54,9 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoChec
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Checks if the revocation is acceptable and can be used
@@ -72,6 +77,9 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 
 	/** Internal list of processed tokens (avoids infinite loop) */
 	private final List<String> validatedTokens;
+
+	/** Defines the map between certificates in the chain and their latest valid revocation data */
+	private final Map<CertificateWrapper, CertificateRevocationWrapper> certificateRevocationMap;
 
 	/**
 	 * Default constructor
@@ -97,6 +105,7 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		this.controlTime = controlTime;
 		this.policy = policy;
 		this.validatedTokens = validatedTokens;
+		this.certificateRevocationMap = new HashMap<>();
 
 		result.setId(revocationData.getId());
 		result.setRevocationProductionDate(revocationData.getProductionDate());
@@ -185,6 +194,10 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 				}
 				
 				item = item.setNextItem(acceptableRevocationDataAvailable(latestRevocationData, revocationCertificate, subContext));
+
+				if (latestRevocationData != null) {
+					certificateRevocationMap.put(revocationCertificate, latestRevocationData);
+				}
 				
 			}
 			
@@ -261,6 +274,19 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 			CertificateWrapper certificateWrapper, SubContext subContext) {
 		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(Context.REVOCATION, subContext);
 		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, certificateWrapper, revocationData, constraint);
+	}
+
+	@Override
+	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+		if (XmlBlockType.RAC.equals(constraint.getBlockType())) {
+			if (ValidationProcessUtils.isMessageCollectingRequiredForRevocation(constraint.getId(),
+					revocationData.getCertificateChain(), certificateRevocationMap)) {
+				super.collectMessages(conclusion, constraint);
+			}
+
+		} else {
+			super.collectMessages(conclusion, constraint);
+		}
 	}
 
 }

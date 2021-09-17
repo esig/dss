@@ -180,7 +180,7 @@ This section explains the build and usage requirements for https://github.com/es
 
 The latest version of DSS framework has the following minimal requirements:
 
- * Java 11 and higher (tested up to Java 16) for the build is required. For usage Java 8 is a minimum requirement;
+ * Java 11 and higher (tested up to Java 17) for the build is required. For usage Java 8 is a minimum requirement;
  * Maven 3.6 and higher;
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
  * Operating system: no specific requirements (tested on Windows and Linux).
@@ -296,7 +296,7 @@ This section explains the build and usage requirements for https://github.com/es
 
 The minimal requirements to build/run DSS Demonstrations:
 
- * Java 8 and higher (tested up to Java 16) is required;
+ * Java 8 and higher (tested up to Java 17) is required;
  * Maven 3.6 and higher (if build required);
  * Tomcat 8.5+ for Java 8 and Tomcat 9+ for Java 9 and higher (for Web-application);
  * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
@@ -1364,8 +1364,6 @@ Since v5.8, DSS provides a set of own utils to detect the "shadow attack" on a s
 Since v5.8, DSS includes a possibility of creation and validation of JSON Advanced signatures.
 
 JSON format for AdES Signatures (cf. [R05]) represents an extension of JSON Web Signatures (JWS) as specified in https://tools.ietf.org/html/rfc7515[IETF RFC 7515].
-
-WARNING: The implementation is based on a draft of the standard ETSI TS 119 182-1. Some modifications can occur in future releases.
 
 A typical example of a JAdES signature creation is represented below:
 

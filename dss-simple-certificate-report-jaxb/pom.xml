@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.9.RC1</version>
+		<version>5.9</version>
 	</parent>
 	<artifactId>dss-simple-certificate-report-jaxb</artifactId>
 

@@ -1,0 +1,84 @@
+package eu.europa.esig.dss.xades.validation;
+
+import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class XAdESLTAWithOCSPBeforeCertValidityTest extends AbstractXAdESTestValidation {
+
+    @Override
+    protected DSSDocument getSignedDocument() {
+        return new FileDocument("src/test/resources/validation/xades-ocsp-before-cert-validity.xml");
+    }
+
+    @Override
+    protected CertificateSource getTrustedCertificateSource() {
+        CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
+        certificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString("MIID/zCCAuegAwIBAgICBLAwDQYJKoZIhvcNAQELBQAwUDETMBEGA1UEAwwKZWUtcm9vdC1jYTEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMB4XDTIwMDkxMTEzMzgyN1oXDTIyMDcxMTEzMzgyN1owUTEUMBIGA1UEAwwLZWUtZ29vZC10c2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL5m6K2f2zh7ZCyqCFHE6EVs5mz9eE7nS7mL/KkDxbByk83jNq0Dl+Lcfi962UoZ2JyJ0sh1dzS6r3MQm45Qyt7qSAOKZHZEc2uLJYikSEl5q+SlvRKVSOtdItESFzoyyjUccGhNKmFk6073ny6KmEY9VgYNAQLx3U4/GdDn8XGN9OWbNxGFlrfQS/0O2ScXeQsyRC7SGehGROK6vVaEJDS2sgsnAvpecgHxRcKSD3FB/YLZdILgShahUrK11/7YDS1rL/qUfoFezNu7iYrfOWkooso+nZXglLP9gZLGQA2I5wyIRV2yKodO110djd6WfIfdGjRSrrup38j+YycjVAECAwEAAaOB4TCB3jAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwRAYDVR0fBD0wOzA5oDegNYYzaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3RvcnkvY3JsL2VlLXJvb3QtY2EuY3JsME8GCCsGAQUFBwEBBEMwQTA/BggrBgEFBQcwAoYzaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3RvcnkvY3J0L2VlLXJvb3QtY2EuY3J0MB0GA1UdDgQWBBQ8vC+mcyr+mPirXCf0/Qci8MSvhzANBgkqhkiG9w0BAQsFAAOCAQEANeKxwuAm9ni69tkdz5/Bqgp1xdagK0SZJMWP5Qr69uTSPzzR/SpG2FF4VD2Jk41qTUL2XyAY8kKh1uwTW7GINbaNoFF4XvVZn0PISwGBlkRNo5fGeCc9DmkUqHEWn+OZ4psYkkS96Lzke8OZPnqu/2xV9Z8Rd4O7DMuMDLkq18okqJ5QloMcylmaeXWQl+T+S3DhEZ+UrZJihA9fyW4zOkKPmw2+c7Y0lsgVxZIGksQWxFGsk52exYw7YaSG3rm0Sg5stNzfrpMwhAPPfDi0ltkgSmAzmCnaokU9ZZfbBVJKD0lyLirnESs2AplX75sNG8aUMJU6AblMbQUndsigiQ=="));
+        certificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString("MIIDVzCCAj+gAwIBAgIBATANBgkqhkiG9w0BAQ0FADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMjAwODExMTMzODQ2WhcNMjIwODExMTMzODQ2WjBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCbPNNfnt/DLFBCITlbVs/p9zjEZnwMCxYA9XjGwY866otqZ9QPuDwV+gimlPdsZo41ph8tNNneLgwwm8Ju2eTY94uRneUZAkLK0FZA0kGg6uPtDKlUkVRzYcRkfAzUB6D3hgp3yI72EF3TfZ3KKEr6h7IBVmKI7fhF5DGBZ/kXcPVmx+2qgTAQQWjLFSxaAbAozWX0lqF6mb5FbMhI1nYsI3Dfri1ne6JB2FoiUUclQYbHO/AkVoCkQ7mjzkRz5Wg25CQIC9Ry40d9JPkT3s6BDzNB7QmOXuP1ebw3P13LOzvjOgP5pByePMylIHOHhxKx7nKNtQUDPefyLzk6Y5IhAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUeiKvMxpYImeWH2ooAIfMB0aWL9IwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQ0FAAOCAQEAYxuCQLquCbVG4Q+2IZjfpCf5sOGhrESLsoZrlXX+8P+3FJ0yqLxQwkLe2Q55CbvPg39kdjtW8V1/ZrMuV00YWDSwhSQCuUH9id/2gWZ+TA6J83nTnPmGcyAnLChhG5yuZZZxPy9fzhZRwA4O91VFrd/5aXZ0fBsfhOPc/t5J0vPbbv+wkCj+A/gQk5wmne9u53brZI39aoqZmYFC5JiprI5f8cgM7s94Z7LUg4k9vlNiw3Ovo5oHEui9j6skIu5yWqmC+7d60KIRhHgwxm/plbNr9Ed2O+xVn1G0tK7CuQDoKK/n16FnTBB3xHY2u/nwMKL0MGKg5+n+iwYi7aC6Yw=="));
+        return certificateSource;
+    }
+
+    @Override
+    protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+        SignedDocumentValidator validator = super.getValidator(signedDocument);
+        CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
+        certificateVerifier.setOcspSource(getOCSPSource());
+        validator.setCertificateVerifier(certificateVerifier);
+        return validator;
+    }
+
+    private RevocationSource<OCSP> getOCSPSource() {
+        DSSDocument ocspResponse = new InMemoryDocument(Utils.fromBase64("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"));
+        return new ExternalResourcesOCSPSource(ocspResponse);
+    }
+
+    @Override
+    protected void checkRevocationData(DiagnosticData diagnosticData) {
+        super.checkRevocationData(diagnosticData);
+
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        CertificateWrapper signingCertificate = signature.getSigningCertificate();
+        assertNotNull(signingCertificate);
+
+        List<CertificateRevocationWrapper> revocationData = signingCertificate.getCertificateRevocationData();
+        assertEquals(2, revocationData.size());
+
+        boolean embeddedOCSPFound = false;
+        boolean onlineOCSPFound = false;
+        for (RevocationWrapper revocationWrapper : revocationData) {
+            assertEquals(RevocationType.OCSP, revocationWrapper.getRevocationType());
+
+            if (RevocationOrigin.INPUT_DOCUMENT.equals(revocationWrapper.getOrigin())) {
+                embeddedOCSPFound = true;
+            } else if (RevocationOrigin.EXTERNAL.equals(revocationWrapper.getOrigin())) {
+                onlineOCSPFound = true;
+            }
+        }
+        assertTrue(embeddedOCSPFound);
+        assertTrue(onlineOCSPFound);
+    }
+
+}

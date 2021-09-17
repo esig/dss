@@ -99,10 +99,18 @@ public class XAdESTimestampCanonicalizationTest extends AbstractXAdESTestSignatu
 		super.signAndVerify();
 	}
 
-
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		if (SignatureLevel.XAdES_A.equals(signatureParameters.getSignatureLevel())) {
+			// skip (revocation data can be updated with respect to an incorporated reference)
+		} else {
+			super.checkOrphanTokens(diagnosticData);
+		}
 	}
 
 	@Override

@@ -29,14 +29,12 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Runs the job for a LOTL analysis
+ *
  */
-public class LOTLAnalysis extends AbstractAnalysis implements Runnable {
+public class LOTLAnalysis extends AbstractRunnableAnalysis {
 
 	/** The LOTL source */
 	private final LOTLSource source;
-
-	/** The tasks counter */
-	private final CountDownLatch latch;
 
 	/**
 	 * Default constructor
@@ -48,14 +46,12 @@ public class LOTLAnalysis extends AbstractAnalysis implements Runnable {
 	 */
 	public LOTLAnalysis(LOTLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
 						CountDownLatch latch) {
-		super(cacheAccess, dssFileLoader);
+		super(cacheAccess, dssFileLoader, latch);
 		this.source = source;
-		this.latch = latch;
 	}
 
 	@Override
-	public void run() {
-
+	protected void doAnalyze() {
 		DSSDocument document = download(source.getUrl());
 
 		if (document != null) {
@@ -63,8 +59,6 @@ public class LOTLAnalysis extends AbstractAnalysis implements Runnable {
 
 			validation(document, source.getCertificateSource());
 		}
-
-		latch.countDown();
 	}
 
 }

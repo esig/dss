@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
@@ -31,17 +33,18 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PDFBoxSignatureFieldTest {
+public class PDFBoxSignatureFieldTest extends PKIFactoryAccess {
 
 	private PAdESService padesService = new PAdESService(new CommonCertificateVerifier());
 
 	@Test
 	public void testGetSignatureFields() {
-		assertTrue(Utils
-				.isCollectionNotEmpty(padesService.getAvailableSignatureFields(new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf")))));
+		assertTrue(Utils.isCollectionNotEmpty(padesService.getAvailableSignatureFields(
+				new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf")))));
 	}
 
 	@Test
@@ -92,6 +95,47 @@ public class PDFBoxSignatureFieldTest {
 		Exception exception = assertThrows(IllegalArgumentException.class,
 				() -> padesService.addNewSignatureField(document, parameters));
 		assertEquals("The page number '10' does not exist in the file!", exception.getMessage());
+	}
+
+	@Test
+	public void addSignatureFieldToEncryptedPdfTest() {
+		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
+		List<String> availableSignatureFields = padesService.getAvailableSignatureFields(document);
+		assertFalse(Utils.isCollectionNotEmpty(availableSignatureFields));
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("signature-test");
+
+		DSSDocument docWithSignatureField = padesService.addNewSignatureField(document, parameters);
+		availableSignatureFields = padesService.getAvailableSignatureFields(docWithSignatureField);
+		assertTrue(Utils.isCollectionNotEmpty(availableSignatureFields));
+		assertEquals("signature-test", availableSignatureFields.get(0));
+	}
+
+	@Test
+	public void signNonSignatureFieldTest() {
+		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+
+		PAdESSignatureParameters padesSignatureParameters = new PAdESSignatureParameters();
+		padesSignatureParameters.setSigningCertificate(getSigningCert());
+		padesSignatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+
+		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setFieldId("First Name");
+
+		signatureImageParameters.setFieldParameters(fieldParameters);
+		padesSignatureParameters.setImageParameters(signatureImageParameters);
+
+		Exception exception = assertThrows(IllegalArgumentException.class,
+				() -> padesService.getDataToSign(document, padesSignatureParameters));
+		assertEquals("The field 'First Name' is not a signature field!", exception.getMessage());
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

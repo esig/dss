@@ -119,10 +119,10 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 		TimestampWrapper secondArchiveTst = diagnosticData.getTimestampList().get(2);
         
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        List<RelatedCertificateWrapper> timestampValidationDataCertificates = signature
-        		.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
-        assertEquals(0, timestampValidationDataCertificates.size());
-        
+        List<RelatedCertificateWrapper> timestampValidationDataCertificates = signature.foundCertificates()
+				.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+        assertTrue(Utils.isCollectionNotEmpty(timestampValidationDataCertificates));
+
 		List<TimestampWrapper> timestampedTimestamps = secondArchiveTst.getTimestampedTimestamps();
 		assertEquals(2, timestampedTimestamps.size());
 		assertEquals(signatureTst.getId(), timestampedTimestamps.get(0).getId());
@@ -143,7 +143,7 @@ public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 		assertEquals(0, firstArchiveTst.foundRevocations().getRelatedRevocationData().size());
         List<RelatedRevocationWrapper> timestampValidationDataRevocations = signature
 				.foundRevocations().getRelatedRevocationData();
-		assertEquals(3, timestampValidationDataRevocations.size());
+		assertTrue(Utils.isCollectionNotEmpty(timestampValidationDataRevocations));
         
 		List<RevocationWrapper> timestampedRevocations = secondArchiveTst.getTimestampedRevocations();
         assertEquals(timestampValidationDataRevocations.size(), timestampedRevocations.size());

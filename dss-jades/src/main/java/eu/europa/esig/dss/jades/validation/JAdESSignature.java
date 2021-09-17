@@ -562,7 +562,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		List<ReferenceValidation> referenceValidations = getReferenceValidations();
 		for (ReferenceValidation referenceValidation : referenceValidations) {
 			if (DigestMatcherType.JWS_SIGNING_INPUT_DIGEST.equals(referenceValidation.getType())) {
-				return referenceValidation.getDigest();
+				return referenceValidation.isFound() ? referenceValidation.getDigest() : null;
 			}
 		}
 		// shall not happen
@@ -644,36 +644,47 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				
 				String encodedHeader = jws.getEncodedHeader();
 				if (Utils.isStringNotEmpty(encodedHeader)) {
-					
-					SigDMechanism sigDMechanism = getSigDMechanism();
-					boolean detachedContentPresent = Utils.isCollectionNotEmpty(detachedContents);
-					if (!isDetachedSignature()) {
-						// not detached
-						signatureValueReferenceValidation.setFound(true);
-						
-					} else if (sigDMechanism == null && detachedContentPresent) {
-						// simple detached signature
-						signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
-						jws.setDetachedPayload(DSSUtils.toByteArray(detachedContents.get(0)));
-						
-					} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
-						// detached with HTTP_HEADERS mechanism
-						signatureValueReferenceValidation.setFound(detachedContentPresent);
-						jws.setDetachedPayload(getPayloadForHttpHeadersMechanism());
-						
-					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
-						// detached with OBJECT_ID_BY_URI mechanism
-						signatureValueReferenceValidation.setFound(detachedContentPresent);
-						jws.setDetachedPayload(getPayloadForObjectIdByUriMechanism());
-						
-					} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
-						// the sigD itself is signed with OBJECT_ID_BY_URI_HASH mechanism
-						signatureValueReferenceValidation.setFound(true);
-						
-					} else {
-						// otherwise original content is not found
-						LOG.warn("The payload is not found! The detached content must be provided!");
-						
+					// get payload for a detached signature
+					try {
+						SigDMechanism sigDMechanism = getSigDMechanism();
+						boolean detachedContentPresent = Utils.isCollectionNotEmpty(detachedContents);
+						if (!isDetachedSignature()) {
+							// not detached
+							signatureValueReferenceValidation.setFound(true);
+
+						} else if (sigDMechanism == null && detachedContentPresent) {
+							// simple detached signature
+							jws.setDetachedPayload(DSSUtils.toByteArray(detachedContents.get(0)));
+							signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
+
+						} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
+							// detached with HTTP_HEADERS mechanism
+							byte[] payload = getPayloadForHttpHeadersMechanism();
+							jws.setDetachedPayload(payload);
+							signatureValueReferenceValidation.setFound(payload != null);
+
+						} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
+							// detached with OBJECT_ID_BY_URI mechanism
+							byte[] payload = getPayloadForObjectIdByUriMechanism();
+							jws.setDetachedPayload(payload);
+							signatureValueReferenceValidation.setFound(payload != null);
+
+						} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
+							// the sigD itself is signed with OBJECT_ID_BY_URI_HASH mechanism
+							signatureValueReferenceValidation.setFound(true);
+
+						} else {
+							// otherwise original content is not found
+							LOG.warn("The payload is not found! The detached content must be provided!");
+						}
+
+					} catch (Exception e) {
+						String errorMessage = "Enable to determine a JWS payload. Reason : {}";
+						if (LOG.isDebugEnabled()) {
+							LOG.warn(errorMessage, e.getMessage(), e);
+						} else {
+							LOG.warn(errorMessage, e.getMessage());
+						}
 					}
 
 					byte[] dataToSign = DSSJsonUtils.getSigningInputBytes(jws);
@@ -758,10 +769,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		
 		/*
 		 * Case-insensitive, see TS 119 182-1 "5.2.8.2	Mechanism HttpHeaders":
-		 * 
-		 * For this referencing mechanism, the contents of the pars member shall be 
-		 * an array of lowercased names of HTTP header fields, each one with the semantics 
-		 * and syntax specified in clause 2.1.3 of draft-cavage-http-signatures-10: 
+		 *
+		 * For this referencing mechanism, the contents of the pars member shall be
+		 * an array of lowercased names of HTTP header fields, each one with the semantics
+		 * and syntax specified in clause 2.1.3 of draft-cavage-http-signatures-10:
 		 * "Signing HTTP Messages" [17].
 		 */
 		List<DSSDocument> documentsByUri = getSignedDocumentsByUri(false);
@@ -791,7 +802,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		List<String> signedDataUriList = getSignedDataUriList();
 		
 		if (Utils.isCollectionEmpty(detachedContents)) {
-			LOG.warn("Detached contents is not provided!");
+			LOG.warn("Detached content is not provided!");
 			return Collections.emptyList();
 		}
 		
@@ -803,15 +814,16 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		for (String signedDataName : signedDataUriList) {
 			boolean found = false;
 			for (DSSDocument document : detachedContents) {
-				if (Utils.areStringsEqual(signedDataName, document.getName()) || 
-						!caseSensitive && Utils.areStringsEqualIgnoreCase(signedDataName, document.getName())) {
+				if ((caseSensitive && Utils.areStringsEqual(signedDataName, document.getName())) ||
+						Utils.areStringsEqualIgnoreCase(signedDataName, document.getName())) {
 					found = true;
 					signedDocuments.add(document);
 					// do not break - same name docs possible
 				}
 			}
 			if (!found) {
-				LOG.warn("The detached content for a signed data with name '{}' has not been found!", signedDataName);
+				throw new IllegalArgumentException(String.format(
+						"The detached content for a signed data with name '%s' has not been found!", signedDataName));
 			}
 		}
 		
@@ -854,8 +866,14 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			if (digestAlgorithm != null) {
 				referenceValidation.setDigest(new Digest(digestAlgorithm, expectedDigest));
 			}
-			
-			DSSDocument detachedDocument = getDetachedDocumentByName(signedDataName, detachedDocuments);
+
+			DSSDocument detachedDocument;
+			if (Utils.collectionSize(signedDataHashMap.entrySet()) == 1 && Utils.collectionSize(detachedDocuments) == 1) {
+				detachedDocument = detachedDocuments.iterator().next();
+			} else {
+				detachedDocument = getDetachedDocumentByName(signedDataName, detachedDocuments);
+			}
+
 			if (detachedDocument != null) {
 				referenceValidation.setFound(true);
 				if (digestAlgorithm != null && isDocumentDigestMatch(detachedDocument, digestAlgorithm, expectedDigest)) {
@@ -899,15 +917,9 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private DSSDocument getDetachedDocumentByName(String documentName, List<DSSDocument> detachedContent) {
-		if (Utils.collectionSize(detachedContent) == 1) {
-			return detachedContent.iterator().next();
-
-		} else {
-			// if more than one document signed/provided
-			for (DSSDocument detachedDocument : detachedContent) {
-				if (documentName.equals(detachedDocument.getName())) {
-					return detachedDocument;
-				}
+		for (DSSDocument detachedDocument : detachedContent) {
+			if (documentName.equals(detachedDocument.getName())) {
+				return detachedDocument;
 			}
 		}
 		return null;

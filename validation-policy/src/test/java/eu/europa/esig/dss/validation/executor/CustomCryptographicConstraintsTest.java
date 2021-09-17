@@ -515,6 +515,72 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		simpleReport = createSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
+
+	@Test
+	public void dsaEncryptionAlgoTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = initializeExecutor("src/test/resources/diag_data_dsa_signature.xml");
+		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("1024");
+
+		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
+		setValidationPolicy(constraintsParameters);
+		CryptographicConstraint cryptographic = constraintsParameters.getSignatureConstraints()
+				.getBasicSignatureConstraints().getCryptographic();
+		cryptographic.setLevel(Level.FAIL);
+
+		ListAlgo acceptableDigestAlgos = new ListAlgo();
+		acceptableDigestAlgos.getAlgos().add(createAlgo("SHA256"));
+		cryptographic.setAcceptableDigestAlgo(acceptableDigestAlgos);
+
+		ListAlgo acceptableEncryptionAlgos = new ListAlgo();
+		acceptableEncryptionAlgos.getAlgos().add(createAlgo("DSA"));
+		cryptographic.setAcceptableEncryptionAlgo(acceptableEncryptionAlgos);
+
+		ListAlgo miniPublicKeySize = new ListAlgo();
+		miniPublicKeySize.getAlgos().add(createAlgo("DSA", 1024));
+		cryptographic.setMiniPublicKeySize(miniPublicKeySize);
+
+		SimpleReport simpleReport = createSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		AlgoExpirationDate algoExpirationDate = new AlgoExpirationDate();
+		algoExpirationDate.setFormat("yyyy-MM-dd");
+		algoExpirationDate.getAlgos().add(createAlgo("DSA", 1024, "2023-1-1"));
+		cryptographic.setAlgoExpirationDate(algoExpirationDate);
+
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		algoExpirationDate.getAlgos().clear();
+		algoExpirationDate.getAlgos().add(createAlgo("DSA", 1024, "2015-1-1"));
+
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		algoExpirationDate.getAlgos().clear();
+		algoExpirationDate.getAlgos().add(createAlgo("DSA", 256, "2025-1-1"));
+
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("2048");
+
+		algoExpirationDate.getAlgos().clear();
+		algoExpirationDate.getAlgos().add(createAlgo("DSA", 1024, "2017-1-1"));
+		algoExpirationDate.getAlgos().add(createAlgo("DSA", 2048, "2023-1-1"));
+
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		algoExpirationDate.getAlgos().clear();
+		algoExpirationDate.getAlgos().add(createAlgo("DSA", 1024, "2017-1-1"));
+		algoExpirationDate.getAlgos().add(createAlgo("DSA", 2048, "2020-1-1"));
+
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
 	
 	private Indication defaultConstraintValidationDateIsBeforeExpirationDateTest(String algorithm, Integer keySize) throws Exception {
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();

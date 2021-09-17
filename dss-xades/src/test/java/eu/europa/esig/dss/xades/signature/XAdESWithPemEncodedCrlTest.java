@@ -128,6 +128,8 @@ public class XAdESWithPemEncodedCrlTest extends AbstractXAdESTestSignature {
 			assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
 			assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
 			assertEquals(2, diagnosticData.getAllOrphanRevocationReferences().size());
+		} else if (SignatureLevel.XAdES_A.equals(signatureParameters.getSignatureLevel())) {
+			// skip (result is based on OCSP update in cache)
 		} else {
 			super.checkOrphanTokens(diagnosticData);
 		}
