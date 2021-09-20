@@ -10,7 +10,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -73,7 +73,7 @@ public class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSign
 
         XmlDocMDP docMDP = pdfSignatureDictionary.getDocMDP();
         assertNotNull(docMDP);
-        assertEquals(1, docMDP.getPermissions().intValue());
+        assertEquals(CertificationPermission.NO_CHANGE_PERMITTED, docMDP.getPermissions());
     }
 
     @Override

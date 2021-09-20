@@ -169,6 +169,12 @@
 						 parseMethod="eu.europa.esig.dss.jaxb.parsers.PdfLockActionParser.parse"
 						 printMethod="eu.europa.esig.dss.jaxb.parsers.PdfLockActionParser.print" />
 	  </jaxb:bindings>
+
+	  <jaxb:bindings node="//xs:simpleType[@name='CertificationPermission']">
+		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.CertificationPermission"
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificationPermissionParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.CertificationPermissionParser.print" />
+	  </jaxb:bindings>
 		
   	<jaxb:bindings node="//xs:complexType[@name='FoundCertificates']//xs:element[@name='RelatedCertificate']">
 		<jaxb:property name="RelatedCertificates" />
@@ -214,6 +220,12 @@
 	</jaxb:bindings>
 	<jaxb:bindings node="//xs:complexType[@name='PDFLockDictionary']//xs:element[@name='Field']">
 		<jaxb:property name="Fields" />
+	</jaxb:bindings>
+	<jaxb:bindings node="//xs:complexType[@name='ObjectModifications']//xs:element[@name='ExtensionChange']">
+		<jaxb:property name="ExtensionChanges" />
+	</jaxb:bindings>
+	<jaxb:bindings node="//xs:complexType[@name='ObjectModifications']//xs:element[@name='AnnotationChange']">
+		<jaxb:property name="AnnotationChanges" />
 	</jaxb:bindings>
 		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:attribute[@name='Parent']">

@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.enumerations.PdfLockAction;
-import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 
 import java.util.List;
 

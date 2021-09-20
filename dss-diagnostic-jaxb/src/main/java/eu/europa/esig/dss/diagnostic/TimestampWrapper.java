@@ -26,7 +26,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
@@ -436,14 +436,52 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return getPdfPageDifferenceConcernedPages(pdfRevision);
 	}
 
+	/**
+	 * Returns a list of changes occurred in a PDF after the current timestamp's revision associated
+	 * with a signature/document extension
+	 *
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	public List<XmlObjectModification> getPdfExtensionChanges() {
+		return getPdfExtensionChanges(timestamp.getPDFRevision());
+	}
 
 	/**
-	 * Returns a collection of modified objects in comparison between the current timestamp revision and final document
+	 * Returns a list of changes occurred in a PDF after the current timestamp's revision associated
+	 * with a signature creation, form filling
 	 *
-	 * @return {@link XmlObjectModifications}
+	 * @return a list of {@link XmlObjectModification}s
 	 */
-	public XmlObjectModifications getPdfObjectModifications() {
-		return getPdfObjectModifications(timestamp.getPDFRevision());
+	public List<XmlObjectModification> getPdfSignatureOrFormFillChanges() {
+		return getPdfSignatureOrFormFillChanges(timestamp.getPDFRevision());
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF after the current timestamp's revision associated
+	 * with annotation(s) modification
+	 *
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	public List<XmlObjectModification> getPdfAnnotationChanges() {
+		return getPdfAnnotationChanges(timestamp.getPDFRevision());
+	}
+
+	/**
+	 * Returns a list of undefined changes occurred in a PDF after the current timestamp's revision
+	 *
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	public List<XmlObjectModification> getPdfUndefinedChanges() {
+		return getPdfUndefinedChanges(timestamp.getPDFRevision());
+	}
+
+	/**
+	 * This method returns a list of field names modified after the current timestamp's revision
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getModifiedFieldNames() {
+		return getModifiedFieldNames(timestamp.getPDFRevision());
 	}
 	
 	/**

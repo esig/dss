@@ -24,7 +24,6 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -42,7 +41,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
@@ -120,18 +118,17 @@ public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
 		assertEquals(1, signatures.size());
 
 		SignatureWrapper signatureWrapper = signatures.get(0);
-		XmlObjectModifications pdfObjectModifications = signatureWrapper.getPdfObjectModifications();
-		assertNotNull(pdfObjectModifications);
+		assertTrue(signatureWrapper.arePdfObjectModificationsDetected());
 
-		assertTrue(Utils.isCollectionNotEmpty(pdfObjectModifications.getSecureChange()));
-		assertFalse(Utils.isCollectionNotEmpty(pdfObjectModifications.getFormFillOrSignatureCreation()));
-		assertFalse(Utils.isCollectionNotEmpty(pdfObjectModifications.getAnnotCreation()));
-		assertFalse(Utils.isCollectionNotEmpty(pdfObjectModifications.getUndefined()));
+		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getPdfExtensionChanges()));
+		assertFalse(Utils.isCollectionNotEmpty(signatureWrapper.getPdfSignatureOrFormFillChanges()));
+		assertFalse(Utils.isCollectionNotEmpty(signatureWrapper.getPdfAnnotationChanges()));
+		assertFalse(Utils.isCollectionNotEmpty(signatureWrapper.getPdfUndefinedChanges()));
 
 		boolean dssDictFound = false;
 		boolean docTimeStampFound = false;
 		boolean newFieldFound = false;
-		List<XmlObjectModification> secureChanges = pdfObjectModifications.getSecureChange();
+		List<XmlObjectModification> secureChanges = signatureWrapper.getPdfExtensionChanges();
 		assertTrue(secureChanges.stream().map(c -> c.getType()).collect(Collectors.toSet()).contains("DocTimeStamp"));
 		for (XmlObjectModification objectModification : secureChanges) {
 			assertEquals(PdfObjectModificationType.CREATION, objectModification.getAction());

@@ -441,6 +441,26 @@
 					<xsd:documentation>Checks if the signed revision have a visual difference(s) with the provided document</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="DocMDP" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies validity of a signature against the permission dictionary /DocMDP, when present</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="FieldMDP" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies validity of a signature against the permission dictionary /FieldMDP, when present</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SigFieldLock" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies validity of a signature against the lock dictionary /SigFieldLock, when present</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="UndefinedChanges" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies whether the document does not contain undefined changes after the signature revision</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="TrustedServiceTypeIdentifier" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the related trust service type identifier is in the acceptable values list</xsd:documentation>

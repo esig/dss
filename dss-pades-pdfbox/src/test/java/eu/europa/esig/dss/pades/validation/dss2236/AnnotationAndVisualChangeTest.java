@@ -72,21 +72,20 @@ public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 				assertEquals(1, visualDifferences.size());
 				assertEquals(2, visualDifferences.get(0).getPage().intValue());
 
-				XmlObjectModifications pdfObjectModifications = signature.getPdfObjectModifications();
-				assertNotNull(pdfObjectModifications);
+				assertNotNull(signature.arePdfObjectModificationsDetected());
 
-				assertFalse(Utils.isCollectionNotEmpty(objectModifications.getSecureChange()));
-				assertTrue(Utils.isCollectionNotEmpty(objectModifications.getFormFillOrSignatureCreation()));
-				assertTrue(Utils.isCollectionNotEmpty(objectModifications.getAnnotCreation()));
-				assertTrue(Utils.isCollectionNotEmpty(objectModifications.getUndefined()));
+				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
+				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
+				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
+				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges()));
 
 				firstSignatureFound = true;
 
 			} else if (objectModifications != null) {
-				assertFalse(Utils.isCollectionNotEmpty(objectModifications.getSecureChange()));
-				assertTrue(Utils.isCollectionNotEmpty(objectModifications.getFormFillOrSignatureCreation()));
-				assertFalse(Utils.isCollectionNotEmpty(objectModifications.getAnnotCreation()));
-				assertFalse(Utils.isCollectionNotEmpty(objectModifications.getUndefined()));
+				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
+				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
+				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
+				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges()));
 
 				secondSignatureFound = true;
 

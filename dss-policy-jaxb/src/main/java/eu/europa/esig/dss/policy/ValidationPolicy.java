@@ -748,6 +748,42 @@ public interface ValidationPolicy {
 	LevelConstraint getPdfVisualDifferenceConstraint(Context context);
 
 	/**
+	 * This constraint checks if a document contains changes after a signature,
+	 * against permission rules identified within a /DocMDP dictionary
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if DocMDP element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getDocMDPConstraint(Context context);
+
+	/**
+	 * This constraint checks if a document contains changes after a signature,
+	 * against permission rules identified within a /FieldMDP dictionary
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if FieldMDP element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getFieldMDPConstraint(Context context);
+
+	/**
+	 * This constraint checks if a document contains changes after a signature,
+	 * against permission rules identified within a /SigFieldLock dictionary
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if SigFieldLock element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getSigFieldLockConstraint(Context context);
+
+	/**
+	 * This constraint checks whether a PDF document contains undefined object modifications
+	 * after the current signature's revisions
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if UndefinedChanges element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getUndefinedChangesConstraint(Context context);
+
+	/**
 	 * This constraint checks if the certificate is not expired on best-signature-time
 	 *
 	 * @return {@code LevelConstraint} if BestSignatureTimeBeforeExpirationDateOfSigningCertificate element is present

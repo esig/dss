@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pades.signature.suite;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -191,11 +190,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 			assertNotNull(signature.getSignatureByteRange());
 			
 			assertFalse(signature.arePdfModificationsDetected());
-
-			XmlObjectModifications pdfObjectModifications = signature.getPdfObjectModifications();
-			if (pdfObjectModifications != null) {
-				assertTrue(Utils.isCollectionEmpty(pdfObjectModifications.getUndefined()));
-			}
+			assertTrue(Utils.isCollectionEmpty(signature.getPdfUndefinedChanges()));
 		}
 		
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
@@ -210,11 +205,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 				assertNotNull(timestamp.getSignatureByteRange());		
 				
 				assertFalse(timestamp.arePdfModificationsDetected());
-
-				XmlObjectModifications pdfObjectModifications = timestamp.getPdfObjectModifications();
-				if (pdfObjectModifications != null) {
-					assertTrue(Utils.isCollectionEmpty(pdfObjectModifications.getUndefined()));
-				}
+				assertTrue(Utils.isCollectionEmpty(timestamp.getPdfUndefinedChanges()));
 			}
 		}
 	}

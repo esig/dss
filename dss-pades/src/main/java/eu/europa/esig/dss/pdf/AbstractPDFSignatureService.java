@@ -26,7 +26,7 @@ import eu.europa.esig.dss.alert.status.Status;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -682,10 +682,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			pdfModificationDetection.setVisualDifferences(
 					getVisualDifferences(signedRevisionReader, finalRevisionReader));
 
-			Set<ObjectModification> modificationsList =
+			Set<ObjectModification> modificationsSet =
 					PdfModificationDetectionUtils.getModificationSet(signedRevisionReader, finalRevisionReader);
-			pdfModificationDetection.setObjectModifications(
-					PdfModificationDetectionUtils.categorizeObjectModifications(modificationsList));
+			pdfModificationDetection.setObjectModifications(new PdfObjectModificationsFilter(modificationsSet).filter());
 
 			return pdfModificationDetection;
 		}

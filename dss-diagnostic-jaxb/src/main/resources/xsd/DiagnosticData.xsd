@@ -276,7 +276,7 @@
 		<xs:sequence>
 			<xs:element name="Action" type="PDFLockAction" />
 			<xs:element name="Field" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Permissions" type="xs:integer" minOccurs="0" />
+			<xs:element name="Permissions" type="CertificationPermission" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -285,6 +285,14 @@
 			<xs:enumeration value="ALL" />
 			<xs:enumeration value="INCLUDE" />
 			<xs:enumeration value="EXCLUDE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CertificationPermission" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NO_CHANGE_PERMITTED" />
+			<xs:enumeration value="MINIMAL_CHANGES_PERMITTED" />
+			<xs:enumeration value="CHANGES_PERMITTED" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -305,7 +313,7 @@
 			<xs:element name="DocMDP" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Permissions" type="xs:integer" minOccurs="0" />
+						<xs:element name="Permissions" type="CertificationPermission" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -329,9 +337,9 @@
 
 	<xs:complexType name="ObjectModifications">
 		<xs:sequence>
-			<xs:element name="SecureChange" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="FormFillOrSignatureCreation" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="AnnotCreation" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ExtensionChange" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="SignatureOrFormFill" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="AnnotationChange" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="Undefined" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>

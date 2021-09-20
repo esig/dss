@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pades.validation.suite;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -112,11 +111,7 @@ public abstract class AbstractPAdESTestValidation extends AbstractDocumentTestVa
 			assertEquals(4, pdfSignatureDictionary.getSignatureByteRange().size());
 
 			assertFalse(signatureWrapper.arePdfModificationsDetected());
-
-			XmlObjectModifications pdfObjectModifications = signatureWrapper.getPdfObjectModifications();
-			if (pdfObjectModifications != null) {
-				assertTrue(Utils.isCollectionEmpty(pdfObjectModifications.getUndefined()));
-			}
+			assertTrue(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
 		}
 		
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
@@ -132,11 +127,7 @@ public abstract class AbstractPAdESTestValidation extends AbstractDocumentTestVa
 				assertEquals(4, pdfSignatureDictionary.getSignatureByteRange().size());
 
 				assertFalse(timestampWrapper.arePdfModificationsDetected());
-
-				XmlObjectModifications pdfObjectModifications = timestampWrapper.getPdfObjectModifications();
-				if (pdfObjectModifications != null) {
-					assertTrue(Utils.isCollectionEmpty(pdfObjectModifications.getUndefined()));
-				}
+				assertTrue(Utils.isCollectionEmpty(timestampWrapper.getPdfUndefinedChanges()));
 			}
 		}
 	}

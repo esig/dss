@@ -28,7 +28,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -114,7 +114,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 
 		XmlDocMDP docMDP = pdfSignatureDictionary.getDocMDP();
 		assertNotNull(docMDP);
-		assertEquals(2, docMDP.getPermissions().intValue());
+		assertEquals(CertificationPermission.MINIMAL_CHANGES_PERMITTED, docMDP.getPermissions());
 	}
 
 	@Override

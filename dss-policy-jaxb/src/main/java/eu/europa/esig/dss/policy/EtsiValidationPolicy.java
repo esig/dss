@@ -148,6 +148,42 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getDocMDPConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getDocMDP();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getFieldMDPConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getFieldMDP();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSigFieldLockConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getSigFieldLock();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getUndefinedChangesConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getUndefinedChanges();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getStructuralValidationConstraint(Context context) {
 		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
 		if (signatureConstraints != null) {
