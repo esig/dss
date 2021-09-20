@@ -96,7 +96,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		} else if (dssFont instanceof DSSFileFont) {
 			DSSFileFont fileFont = (DSSFileFont) dssFont;
 			try (InputStream is = fileFont.getInputStream()) {
-				return PDType0Font.load(document, is);
+				return PDType0Font.load(document, is, false);
 			}
 		} else {
 			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
