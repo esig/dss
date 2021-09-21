@@ -210,8 +210,14 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			parameters.setCertificateChain(RemoteCertificateConverter.toCertificateTokens(remoteCertificateChain));
 		}
 	}
-	
-	private BLevelParameters toBLevelParameters(RemoteBLevelParameters remoteBLevelParameters) {
+
+	/**
+	 * Converts {@code RemoteBLevelParameters} to {@code BLevelParameters}
+	 *
+	 * @param remoteBLevelParameters {@link RemoteBLevelParameters}
+	 * @return {@link BLevelParameters}
+	 */
+	protected BLevelParameters toBLevelParameters(RemoteBLevelParameters remoteBLevelParameters) {
 		BLevelParameters bLevelParameters = new BLevelParameters();
 		bLevelParameters.setClaimedSignerRoles(remoteBLevelParameters.getClaimedSignerRoles());
 		if (remoteBLevelParameters.getCommitmentTypeIndications() != null) {

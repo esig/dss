@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d9fc5d21-ff7b-422c-b097-db6afa873b8b",
+		"_postman_id": "fb49f7c3-4bc5-4dce-bc88-5789dc3ce774",
 		"name": "DSS REST services",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -95,10 +95,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"bytes\": \"wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro=\"}",
-					"options": {
-						"raw": {}
-					}
+					"raw": "{\"bytes\": \"wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro=\"}"
 				},
 				"url": {
 					"raw": "localhost:8080/services/rest/server-signing/sign/certificate/SHA256",
@@ -182,7 +179,71 @@
 			"response": []
 		},
 		{
-			"name": "localhost:8080/services/rest/signature/one-document/getDataToSign",
+			"name": "localhost:8080/services/rest/signature/trusted-list/signDocument",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"trustedList\" : {\r\n    \"bytes\" : \"77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+\",\r\n    \"digestAlgorithm\" : null,\r\n    \"name\" : \"eu-lotl-no-sig.xml\"\r\n  },\r\n  \"parameters\" : {\r\n    \"signingCertificate\" : {\r\n      \"encodedCertificate\" : \"MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO\"\r\n    },\r\n    \"referenceId\" : \"lotl\",\r\n    \"referenceDigestAlgorithm\" : \"SHA512\",\r\n    \"blevelParameters\" : {\r\n      \"trustAnchorBPPolicy\" : true,\r\n      \"signingDate\" : 1632150550179,\r\n      \"claimedSignerRoles\" : null,\r\n      \"policyId\" : null,\r\n      \"policyQualifier\" : null,\r\n      \"policyDescription\" : null,\r\n      \"policyDigestAlgorithm\" : null,\r\n      \"policyDigestValue\" : null,\r\n      \"policySpuri\" : null,\r\n      \"commitmentTypeIndications\" : null,\r\n      \"signerLocationPostalAddress\" : [ ],\r\n      \"signerLocationPostalCode\" : null,\r\n      \"signerLocationLocality\" : null,\r\n      \"signerLocationStateOrProvince\" : null,\r\n      \"signerLocationCountry\" : null,\r\n      \"signerLocationStreet\" : null\r\n    }\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/services/rest/signature/trusted-list/signDocument",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"rest",
+						"signature",
+						"trusted-list",
+						"signDocument"
+					]
+				},
+				"description": "Retrieves the data to be signed"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/services/rest/signature/trusted-list/getDataToSign Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"trustedList\" : {\r\n    \"bytes\" : \"77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+\",\r\n    \"digestAlgorithm\" : null,\r\n    \"name\" : \"eu-lotl-no-sig.xml\"\r\n  },\r\n  \"parameters\" : {\r\n    \"signingCertificate\" : {\r\n      \"encodedCertificate\" : \"MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO\"\r\n    },\r\n    \"referenceId\" : \"lotl\",\r\n    \"referenceDigestAlgorithm\" : \"SHA512\",\r\n    \"blevelParameters\" : {\r\n      \"trustAnchorBPPolicy\" : true,\r\n      \"signingDate\" : 1632150550179,\r\n      \"claimedSignerRoles\" : null,\r\n      \"policyId\" : null,\r\n      \"policyQualifier\" : null,\r\n      \"policyDescription\" : null,\r\n      \"policyDigestAlgorithm\" : null,\r\n      \"policyDigestValue\" : null,\r\n      \"policySpuri\" : null,\r\n      \"commitmentTypeIndications\" : null,\r\n      \"signerLocationPostalAddress\" : [ ],\r\n      \"signerLocationPostalCode\" : null,\r\n      \"signerLocationLocality\" : null,\r\n      \"signerLocationStateOrProvince\" : null,\r\n      \"signerLocationCountry\" : null,\r\n      \"signerLocationStreet\" : null\r\n    }\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/services/rest/signature/one-document/getDataToSign",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"rest",
+						"signature",
+						"one-document",
+						"getDataToSign"
+					]
+				},
+				"description": "Retrieves the data to be signed"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/services/rest/signature/one-document/getDataToSign Copy",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -501,6 +562,5 @@
 			},
 			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

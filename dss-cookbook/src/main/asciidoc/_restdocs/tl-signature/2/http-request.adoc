@@ -1,0 +1,45 @@
+[source,http,options="nowrap"]
+----
+POST /services/rest/signature/trusted-list/signDocument HTTP/1.1
+Accept: application/json, application/javascript, text/javascript, text/json
+Content-Type: application/json; charset=UTF-8
+Host: localhost:8080
+Content-Length: 2551
+
+{
+  "trustedList" : {
+    "bytes" : "77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+",
+    "digestAlgorithm" : null,
+    "name" : "tl.xml"
+  },
+  "parameters" : {
+    "signingCertificate" : {
+      "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
+    },
+    "referenceId" : "tl",
+    "referenceDigestAlgorithm" : "SHA512",
+    "blevelParameters" : {
+      "trustAnchorBPPolicy" : true,
+      "signingDate" : 1633219200000,
+      "claimedSignerRoles" : null,
+      "policyId" : null,
+      "policyQualifier" : null,
+      "policyDescription" : null,
+      "policyDigestAlgorithm" : null,
+      "policyDigestValue" : null,
+      "policySpuri" : null,
+      "commitmentTypeIndications" : null,
+      "signerLocationPostalAddress" : [ ],
+      "signerLocationPostalCode" : null,
+      "signerLocationLocality" : null,
+      "signerLocationStateOrProvince" : null,
+      "signerLocationCountry" : null,
+      "signerLocationStreet" : null
+    }
+  },
+  "signatureValue" : {
+    "algorithm" : "RSA_SHA256",
+    "value" : "vLaRpvBrWbBAwMTnvNCZVDEVfeib+Mt7/kuMrjL6ZCcB/4ATlKqvltvsD2xu7SfmwnZwaYXw590P5+JHla9F1KO+cdqNsJyhgI0/sYcweoRI4uKUgJWPUVBN9B5O8+wN49N0q44kO9bqGEe8oDr21+/oqJPgL8Axec5PdFfEUJv/EgB5PHUd0kdDSX34xN8hkplW5bslsmxUcLsSb4nk4KEjkQuWeB9Vdmo0KZkjhiNp1hkDxJmVyCtpBLrAN1hK6rF/rQnNjio4rGEld3eP//OLuFFTPDkQ7ZIkwQKIhY5tc+OiiVqyPjd1UtOBUIik3ymx3Vi3kfC6c6oxqd46gA=="
+  }
+}
+----

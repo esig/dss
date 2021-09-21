@@ -4876,4 +4876,324 @@
          </digest>\r
       </tim:getTimestampResponse>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.remote.timestamp.ws.dss.esig.europa.eu/SoapTimestampService/getTimestampResponse"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.remote.timestamp.ws.dss.esig.europa.eu/SoapTimestampService/getTimestampResponse"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="98aea10a-3fb1-4caa-9e1e-73f1f52c620c" wsaVersion="NONE" name="SoapTrustedListSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapTrustedListSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/trusted-list?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/trusted-list?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/trusted-list?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapTrustedListSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/services/soap/signature/trusted-list?wsdl=SoapTrustedListSignatureService.wsdl" namespace="http://signature.dss.esig.europa.eu/"></wsdl:import>
+  <wsdl:binding name="SoapTrustedListSignatureServiceImplServiceSoapBinding" type="ns1:SoapTrustedListSignatureService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getDataToSign">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDataToSign">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDataToSignResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SoapTrustedListSignatureServiceImplService">
+    <wsdl:port binding="tns:SoapTrustedListSignatureServiceImplServiceSoapBinding" name="SoapTrustedListSignatureServiceImplPort">
+      <soap:address location="http://localhost:8080/services/soap/signature/trusted-list"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/signature/trusted-list?wsdl=SoapTrustedListSignatureService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapTrustedListSignatureService" targetNamespace="http://signature.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://signature.dss.esig.europa.eu/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://signature.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://signature.dss.esig.europa.eu/">
+      <xs:element name="getDataToSign" type="tns:getDataToSign"/>
+      <xs:element name="getDataToSignResponse" type="tns:getDataToSignResponse"/>
+      <xs:element name="signDocument" type="tns:signDocument"/>
+      <xs:element name="signDocumentResponse" type="tns:signDocumentResponse"/>
+      <xs:complexType name="getDataToSign">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="dataToSignDTO" type="tns:dataToSignTrustedListDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="dataToSignTrustedListDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="parameters" type="tns:remoteTrustedListSignatureParameters"/>
+          <xs:element minOccurs="0" name="trustedList" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteTrustedListSignatureParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="BLevelParameters" type="tns:remoteBLevelParameters"/>
+          <xs:element minOccurs="0" name="referenceDigestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="referenceId" type="xs:string"/>
+          <xs:element minOccurs="0" name="signingCertificate" type="tns:remoteCertificate"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteBLevelParameters">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="claimedSignerRoles" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndications" nillable="true" type="tns:commitmentTypeEnum"/>
+          <xs:element minOccurs="0" name="policyDescription" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyDigestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="policyDigestValue" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="policyId" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyQualifier" type="tns:objectIdentifierQualifier"/>
+          <xs:element minOccurs="0" name="policySpuri" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationCountry" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationLocality" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="signerLocationPostalAddress" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationPostalCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationStateOrProvince" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationStreet" type="xs:string"/>
+          <xs:element minOccurs="0" name="signingDate" type="xs:dateTime"/>
+          <xs:element name="trustAnchorBPPolicy" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteCertificate">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="encodedCertificate" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteDocument">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getDataToSignResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:toBeSignedDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="toBeSignedDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signDocument">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="signDocumentDTO" type="tns:signTrustedListDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signTrustedListDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="parameters" type="tns:remoteTrustedListSignatureParameters"/>
+          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValueDTO"/>
+          <xs:element minOccurs="0" name="trustedList" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signatureValueDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="algorithm" type="tns:signatureAlgorithm"/>
+          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signDocumentResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="commitmentTypeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ProofOfOrigin"/>
+          <xs:enumeration value="ProofOfReceipt"/>
+          <xs:enumeration value="ProofOfDelivery"/>
+          <xs:enumeration value="ProofOfSender"/>
+          <xs:enumeration value="ProofOfApproval"/>
+          <xs:enumeration value="ProofOfCreation"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="digestAlgorithm">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="SHA1"/>
+          <xs:enumeration value="SHA224"/>
+          <xs:enumeration value="SHA256"/>
+          <xs:enumeration value="SHA384"/>
+          <xs:enumeration value="SHA512"/>
+          <xs:enumeration value="SHA3_224"/>
+          <xs:enumeration value="SHA3_256"/>
+          <xs:enumeration value="SHA3_384"/>
+          <xs:enumeration value="SHA3_512"/>
+          <xs:enumeration value="SHAKE128"/>
+          <xs:enumeration value="SHAKE256"/>
+          <xs:enumeration value="SHAKE256_512"/>
+          <xs:enumeration value="RIPEMD160"/>
+          <xs:enumeration value="MD2"/>
+          <xs:enumeration value="MD5"/>
+          <xs:enumeration value="WHIRLPOOL"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="objectIdentifierQualifier">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OID_AS_URI"/>
+          <xs:enumeration value="OID_AS_URN"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signatureAlgorithm">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="RSA_RAW"/>
+          <xs:enumeration value="RSA_SHA1"/>
+          <xs:enumeration value="RSA_SHA224"/>
+          <xs:enumeration value="RSA_SHA256"/>
+          <xs:enumeration value="RSA_SHA384"/>
+          <xs:enumeration value="RSA_SHA512"/>
+          <xs:enumeration value="RSA_SHA3_224"/>
+          <xs:enumeration value="RSA_SHA3_256"/>
+          <xs:enumeration value="RSA_SHA3_384"/>
+          <xs:enumeration value="RSA_SHA3_512"/>
+          <xs:enumeration value="RSA_SSA_PSS_RAW_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA1_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA512_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_512_MGF1"/>
+          <xs:enumeration value="RSA_RIPEMD160"/>
+          <xs:enumeration value="RSA_MD2"/>
+          <xs:enumeration value="RSA_MD5"/>
+          <xs:enumeration value="ECDSA_RAW"/>
+          <xs:enumeration value="ECDSA_SHA1"/>
+          <xs:enumeration value="ECDSA_SHA224"/>
+          <xs:enumeration value="ECDSA_SHA256"/>
+          <xs:enumeration value="ECDSA_SHA384"/>
+          <xs:enumeration value="ECDSA_SHA512"/>
+          <xs:enumeration value="ECDSA_SHA3_224"/>
+          <xs:enumeration value="ECDSA_SHA3_256"/>
+          <xs:enumeration value="ECDSA_SHA3_384"/>
+          <xs:enumeration value="ECDSA_SHA3_512"/>
+          <xs:enumeration value="ECDSA_RIPEMD160"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA1"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA512"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_512"/>
+          <xs:enumeration value="PLAIN_ECDSA_RIPEMD160"/>
+          <xs:enumeration value="DSA_RAW"/>
+          <xs:enumeration value="DSA_SHA1"/>
+          <xs:enumeration value="DSA_SHA224"/>
+          <xs:enumeration value="DSA_SHA256"/>
+          <xs:enumeration value="DSA_SHA384"/>
+          <xs:enumeration value="DSA_SHA512"/>
+          <xs:enumeration value="DSA_SHA3_224"/>
+          <xs:enumeration value="DSA_SHA3_256"/>
+          <xs:enumeration value="DSA_SHA3_384"/>
+          <xs:enumeration value="DSA_SHA3_512"/>
+          <xs:enumeration value="HMAC_SHA1"/>
+          <xs:enumeration value="HMAC_SHA224"/>
+          <xs:enumeration value="HMAC_SHA256"/>
+          <xs:enumeration value="HMAC_SHA384"/>
+          <xs:enumeration value="HMAC_SHA512"/>
+          <xs:enumeration value="HMAC_SHA3_224"/>
+          <xs:enumeration value="HMAC_SHA3_256"/>
+          <xs:enumeration value="HMAC_SHA3_384"/>
+          <xs:enumeration value="HMAC_SHA3_512"/>
+          <xs:enumeration value="HMAC_RIPEMD160"/>
+          <xs:enumeration value="ED25519"/>
+          <xs:enumeration value="ED448"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getDataToSignResponse">
+    <wsdl:part element="ns1:getDataToSignResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signDocument">
+    <wsdl:part element="ns1:signDocument" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDataToSign">
+    <wsdl:part element="ns1:getDataToSign" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signDocumentResponse">
+    <wsdl:part element="ns1:signDocumentResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SoapTrustedListSignatureService">
+    <wsdl:operation name="getDataToSign">
+      <wsdl:input message="ns1:getDataToSign" name="getDataToSign"></wsdl:input>
+      <wsdl:output message="ns1:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDocument">
+      <wsdl:input message="ns1:signDocument" name="signDocument"></wsdl:input>
+      <wsdl:output message="ns1:signDocumentResponse" name="signDocumentResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/signature/trusted-list</con:endpoint></con:endpoints><con:operation id="45bad980-e7a4-43fe-80b5-78b94560370e" isOneWay="false" action="" name="getDataToSign" bindingOperationName="getDataToSign" type="Request-Response" outputName="getDataToSignResponse" inputName="getDataToSign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="467a3fbe-6999-44fd-975d-53504678985e" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/trusted-list</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sig:getDataToSign>\r
+         <!--Optional:-->\r
+         <dataToSignDTO>\r
+            <!--Optional:-->\r
+            <parameters>\r
+               <!--Optional:-->\r
+               <BLevelParameters>\r<!--Optional:-->\r
+                  <signingDate>2021-10-03T00:00:00Z</signingDate>\r
+               </BLevelParameters>\r
+               <!--Optional:-->\r
+               <referenceDigestAlgorithm>SHA512</referenceDigestAlgorithm>\r
+               <!--Optional:-->\r
+               <referenceId>tl</referenceId>\r
+               <!--Optional:-->\r
+               <signingCertificate>\r
+                  <!--Optional:-->\r
+                  <encodedCertificate>MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO</encodedCertificate>\r
+               </signingCertificate>\r
+            </parameters>\r
+            <!--Optional:-->\r
+            <trustedList>\r
+               <!--Optional:-->\r
+               <bytes>77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+</bytes>\r
+               <!--Optional:-->\r
+               <name>tl.xml</name>\r
+            </trustedList>\r
+         </dataToSignDTO>\r
+      </sig:getDataToSign>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapTrustedListSignatureService/getDataToSign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="dae1e7bc-92af-421c-83fb-48b950f831d7" isOneWay="false" action="" name="signDocument" bindingOperationName="signDocument" type="Request-Response" outputName="signDocumentResponse" inputName="signDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="144d1c53-8fcd-4933-b8d0-cd4378fe7965" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/trusted-list</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sig:signDocument>\r
+         <!--Optional:-->\r
+         <signDocumentDTO>\r
+            <!--Optional:-->\r
+            <parameters>\r
+               <!--Optional:-->\r
+               <BLevelParameters>\r
+                  <signingDate>2021-10-03T00:00:00Z</signingDate>\r
+               </BLevelParameters>\r
+               <!--Optional:-->\r
+               <referenceDigestAlgorithm>SHA512</referenceDigestAlgorithm>\r
+               <!--Optional:-->\r
+               <referenceId>tl</referenceId>\r
+               <!--Optional:-->\r
+               <signingCertificate>\r
+                  <!--Optional:-->\r
+                  <encodedCertificate>MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO</encodedCertificate>
+               </signingCertificate>\r
+            </parameters>\r
+            <!--Optional:-->\r
+            <signatureValue>\r
+               <!--Optional:-->\r
+               <algorithm>RSA_SHA256</algorithm>\r
+               <!--Optional:-->\r
+               <value>vLaRpvBrWbBAwMTnvNCZVDEVfeib+Mt7/kuMrjL6ZCcB/4ATlKqvltvsD2xu7SfmwnZwaYXw590P5+JHla9F1KO+cdqNsJyhgI0/sYcweoRI4uKUgJWPUVBN9B5O8+wN49N0q44kO9bqGEe8oDr21+/oqJPgL8Axec5PdFfEUJv/EgB5PHUd0kdDSX34xN8hkplW5bslsmxUcLsSb4nk4KEjkQuWeB9Vdmo0KZkjhiNp1hkDxJmVyCtpBLrAN1hK6rF/rQnNjio4rGEld3eP//OLuFFTPDkQ7ZIkwQKIhY5tc+OiiVqyPjd1UtOBUIik3ymx3Vi3kfC6c6oxqd46gA==</value>\r
+            </signatureValue>\r
+            <!--Optional:-->\r
+            <trustedList>\r
+               <!--Optional:-->\r
+               <bytes>77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+0</bytes>\r
+               <!--Optional:-->\r
+               <name>tl.xml</name>\r
+            </trustedList>\r
+         </signDocumentDTO>\r
+      </sig:signDocument>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapTrustedListSignatureService/signDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
