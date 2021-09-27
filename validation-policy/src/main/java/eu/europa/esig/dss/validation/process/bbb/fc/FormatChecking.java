@@ -35,6 +35,8 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFil
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableZipCommentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AllFilesSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ContainerTypeCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.DocMDPCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.FieldMDPCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
@@ -43,9 +45,11 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapC
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfPageDifferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfVisualDifferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ReferencesNotAmbiguousCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SigFieldLockCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedFilesPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.UndefinedChangesCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentCheck;
 
 /**
@@ -111,7 +115,22 @@ public class FormatChecking extends Chain<XmlFC> {
 			
 			item = item.setNextItem(pdfAnnotationOverlapCheck());
 			
-			item = item.setNextItem(pdfVisualDifferenceCheck());
+			item = item.setNextItem(pdfVisualDifferenceCheck());;
+
+			// /DocMDP check
+			if (signature.getDocMDPPermissions() != null) {
+				item = item.setNextItem(docMDPCheck());
+			}
+			// /FieldMDP
+			if (signature.getFieldMDP() != null) {
+				item = item.setNextItem(fieldMDPCheck());
+			}
+			// /SigFieldLock
+			if (signature.getSigFieldLock() != null) {
+				item = item.setNextItem(sigFieldLockCheck());
+			}
+
+			item = item.setNextItem(undefinedChangesCheck());
 			
 		}
 
@@ -174,6 +193,26 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> pdfVisualDifferenceCheck() {
 		LevelConstraint constraint = policy.getPdfVisualDifferenceConstraint(context);
 		return new PdfVisualDifferenceCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> docMDPCheck() {
+		LevelConstraint constraint = policy.getDocMDPConstraint(context);
+		return new DocMDPCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> fieldMDPCheck() {
+		LevelConstraint constraint = policy.getFieldMDPConstraint(context);
+		return new FieldMDPCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> sigFieldLockCheck() {
+		LevelConstraint constraint = policy.getSigFieldLockConstraint(context);
+		return new SigFieldLockCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> undefinedChangesCheck() {
+		LevelConstraint constraint = policy.getUndefinedChangesConstraint(context);
+		return new UndefinedChangesCheck(i18nProvider, result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {

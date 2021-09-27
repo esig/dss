@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -36,6 +29,13 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1538Test extends AbstractPAdESTestValidation {
 
@@ -68,7 +68,7 @@ public class DSS1538Test extends AbstractPAdESTestValidation {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
 		assertNotNull(pdfRevision);
-		assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getSignatureFieldName()));
+		assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getFields()));
 		XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
 		assertNotNull(pdfSignatureDictionary);
 		assertNotNull(pdfSignatureDictionary.getSubFilter());

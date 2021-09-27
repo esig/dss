@@ -46,8 +46,6 @@ public class PAdESWithAddedPageTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
-		super.checkPdfRevision(diagnosticData);
-		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(1, signature.getPdfPageDifferenceConcernedPages().size());
 		assertEquals(2, signature.getPdfPageDifferenceConcernedPages().get(0).intValue());

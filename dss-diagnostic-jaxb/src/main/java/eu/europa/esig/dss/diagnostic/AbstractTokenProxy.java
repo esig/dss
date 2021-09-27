@@ -25,6 +25,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -255,7 +257,8 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
 			if (modificationDetection != null) {
 				return modificationDetection.getAnnotationOverlap().size() != 0 ||
-						modificationDetection.getVisualDifference().size() != 0;
+						modificationDetection.getVisualDifference().size() != 0 ||
+						modificationDetection.getPageDifference().size() != 0;
 			}
 		}
 		return false;
@@ -318,6 +321,107 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			pages.add(modification.getPage());
 		}
 		return pages;
+	}
+
+	/**
+	 * Returns {@code XmlObjectModifications} for the given revision, when present
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return {@link XmlObjectModifications}
+	 */
+	protected XmlObjectModifications getPdfObjectModifications(XmlPDFRevision pdfRevision) {
+		if (pdfRevision != null) {
+			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
+			if (modificationDetection != null) {
+				return modificationDetection.getObjectModifications();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF associated with a signature/document extension
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	protected List<XmlObjectModification> getPdfExtensionChanges(XmlPDFRevision pdfRevision) {
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			return pdfObjectModifications.getExtensionChanges();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF associated with a signature creation, form filling
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	protected List<XmlObjectModification> getPdfSignatureOrFormFillChanges(XmlPDFRevision pdfRevision) {
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			return pdfObjectModifications.getSignatureOrFormFill();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF associated with annotation(s) modification
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	protected List<XmlObjectModification> getPdfAnnotationChanges(XmlPDFRevision pdfRevision) {
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			return pdfObjectModifications.getAnnotationChanges();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of undefined changes occurred in a PDF
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	protected List<XmlObjectModification> getPdfUndefinedChanges(XmlPDFRevision pdfRevision) {
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			return pdfObjectModifications.getUndefined();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method returns a list of field names modified after the given revision
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link String}s
+	 */
+	protected List<String> getModifiedFieldNames(XmlPDFRevision pdfRevision) {
+		List<String> names = new ArrayList<>();
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			names.addAll(getModifiedFieldNames(pdfObjectModifications.getExtensionChanges()));
+			names.addAll(getModifiedFieldNames(pdfObjectModifications.getSignatureOrFormFill()));
+			names.addAll(getModifiedFieldNames(pdfObjectModifications.getAnnotationChanges()));
+			names.addAll(getModifiedFieldNames(pdfObjectModifications.getUndefined()));
+		}
+		return names;
+	}
+
+	private List<String> getModifiedFieldNames(List<XmlObjectModification> objectModifications) {
+		List<String> names = new ArrayList<>();
+		for (XmlObjectModification objectModification : objectModifications) {
+			String fieldName = objectModification.getFieldName();
+			if (fieldName != null) {
+				names.add(fieldName);
+			}
+		}
+		return names;
 	}
 	
 	@Override

@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -28,7 +30,11 @@ import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
+import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfCMSRevision;
+import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.SigFieldPermissions;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -40,6 +46,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -255,6 +262,41 @@ public final class PAdESUtils {
 	 */
 	public static boolean isPDFDocument(DSSDocument document) {
 		return DSSUtils.compareFirstBytes(document, PDF_PREAMBLE);
+	}
+
+	/**
+	 * This method extracts {@code SigFieldPermissions} (for instance /Lock dictionary) from a wrapping dictionary
+	 *
+	 * @param wrapper {@link PdfDict} wrapping the dictionary having permissions
+	 * @return {@link SigFieldPermissions}
+	 */
+	public static SigFieldPermissions extractPermissionsDictionary(PdfDict wrapper) {
+		final SigFieldPermissions sigFieldPermissions = new SigFieldPermissions();
+
+		String action = wrapper.getNameValue(PAdESConstants.ACTION_NAME);
+		sigFieldPermissions.setAction(PdfLockAction.ALL.forName(action));
+
+		List<String> fields = new ArrayList<>();
+		PdfArray fieldsArray = wrapper.getAsArray(PAdESConstants.FIELDS_NAME);
+		if (fieldsArray != null) {
+			for (int j = 0; j < fieldsArray.size(); j++) {
+				String field = fieldsArray.getString(j);
+				if (field != null) {
+					fields.add(field);
+				}
+			}
+		}
+		sigFieldPermissions.setFields(fields);
+
+		if (PAdESConstants.SIG_FIELD_LOCK_NAME.equals(wrapper.getNameValue(PAdESConstants.TYPE_NAME))) {
+			Number permissions = wrapper.getNumberValue(PAdESConstants.PERMISSIONS_NAME);
+			if (permissions != null) {
+				CertificationPermission certificationPermission = CertificationPermission.fromCode(permissions.intValue());
+				sigFieldPermissions.setCertificationPermission(certificationPermission);
+			}
+		}
+
+		return sigFieldPermissions;
 	}
 
 }

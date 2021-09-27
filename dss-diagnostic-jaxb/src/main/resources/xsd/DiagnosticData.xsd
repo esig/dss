@@ -259,11 +259,42 @@
 	
 	<xs:complexType name="PDFRevision">
 		<xs:sequence>
-			<xs:element name="SignatureFieldName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
+			<xs:element name="SignatureField" type="PDFSignatureField" maxOccurs="unbounded" />
+			<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" />
 			<xs:element name="ModificationDetection" type="ModificationDetection" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="PDFSignatureField">
+		<xs:sequence>
+			<xs:element name="SigFieldLock" type="PDFLockDictionary" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="PDFLockDictionary">
+		<xs:sequence>
+			<xs:element name="Action" type="PDFLockAction" />
+			<xs:element name="Field" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Permissions" type="CertificationPermission" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="PDFLockAction" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ALL" />
+			<xs:enumeration value="INCLUDE" />
+			<xs:enumeration value="EXCLUDE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CertificationPermission" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NO_CHANGE_PERMITTED" />
+			<xs:enumeration value="MINIMAL_CHANGES_PERMITTED" />
+			<xs:enumeration value="CHANGES_PERMITTED" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="PDFSignatureDictionary">
 		<xs:sequence>
@@ -279,6 +310,14 @@
 					<xs:list itemType="xs:integer"/>
 				</xs:simpleType>
 			</xs:element>
+			<xs:element name="DocMDP" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Permissions" type="CertificationPermission" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FieldMDP" type="PDFLockDictionary" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -287,12 +326,41 @@
 			<xs:element name="AnnotationOverlap" type="Modification" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="VisualDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="PageDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
+
+			<xs:element name="ObjectModifications" type="ObjectModifications" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
-	
+
 	<xs:complexType name="Modification">
 		<xs:attribute name="Page" type="xs:integer" use="required" />
 	</xs:complexType>
+
+	<xs:complexType name="ObjectModifications">
+		<xs:sequence>
+			<xs:element name="ExtensionChange" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="SignatureOrFormFill" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="AnnotationChange" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Undefined" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ObjectModification">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="action" type="ObjectModificationType" />
+				<xs:attribute name="fieldName" type="xs:string" use="optional" />
+				<xs:attribute name="type" type="xs:string" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="ObjectModificationType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CREATION" />
+			<xs:enumeration value="DELETION" />
+			<xs:enumeration value="MODIFICATION" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="Certificate">
 		<xs:complexContent>

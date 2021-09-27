@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pdf.PdfSignatureDictionaryComparator;
+import eu.europa.esig.dss.pdf.SigFieldPermissions;
 import org.bouncycastle.cms.CMSSignedData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -223,6 +225,16 @@ public class PdfSignatureDictionaryComparatorTest {
 
 		@Override
 		public String getSubFilter() {
+			return null;
+		}
+
+		@Override
+		public CertificationPermission getDocMDP() {
+			return null;
+		}
+
+		@Override
+		public SigFieldPermissions getFieldMDP() {
 			return null;
 		}
 

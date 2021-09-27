@@ -40,6 +40,9 @@ public class PdfModificationDetectionImpl implements PdfModificationDetection {
 	/** List of page amount differences between revisions */
 	private List<PdfModification> pageDifferences;
 
+	/** Filtered collection of {@code ObjectModification}s between a signed and final revisions */
+	private PdfObjectModifications objectModifications;
+
 	@Override
 	public List<PdfModification> getAnnotationOverlaps() {
 		return annotationOverlaps;
@@ -82,11 +85,30 @@ public class PdfModificationDetectionImpl implements PdfModificationDetection {
 		this.pageDifferences = pageDifferences;
 	}
 
+	/**
+	 * Returns a filtered collection of modified objects between signed and final document revisions
+	 *
+	 * @return {@link PdfObjectModifications}
+	 */
+	public PdfObjectModifications getObjectModifications() {
+		return objectModifications;
+	}
+
+	/**
+	 * Sets a collection of filtered object modifications
+	 *
+	 * @param objectModifications {@link PdfObjectModifications}
+	 */
+	public void setObjectModifications(PdfObjectModifications objectModifications) {
+		this.objectModifications = objectModifications;
+	}
+
 	@Override
 	public boolean areModificationsDetected() {
 		return Utils.isCollectionNotEmpty(annotationOverlaps) || 
 				Utils.isCollectionNotEmpty(visualDifferences) || 
-				Utils.isCollectionNotEmpty(pageDifferences);
+				Utils.isCollectionNotEmpty(pageDifferences) ||
+				!objectModifications.isEmpty();
 	}
 
 }

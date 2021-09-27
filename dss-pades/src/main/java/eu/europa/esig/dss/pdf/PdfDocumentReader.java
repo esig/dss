@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
@@ -44,10 +46,10 @@ public interface PdfDocumentReader extends Closeable {
 	/**
 	 * Extracts PdfSignatureDictionaries present in the signature
 	 * 
-	 * @return a map between {@link PdfSignatureDictionary} and related field names
+	 * @return a map between {@link PdfSignatureDictionary} and related {@link PdfSignatureField}s
 	 * @throws IOException if an exception occurs
 	 */
-	Map<PdfSignatureDictionary, List<String>> extractSigDictionaries() throws IOException;
+	Map<PdfSignatureDictionary, List<PdfSignatureField>> extractSigDictionaries() throws IOException;
 	
 	/**
 	 * Checks if a signature for the given PDF Signature Dictionary covers the whole document
@@ -99,5 +101,31 @@ public interface PdfDocumentReader extends Closeable {
 	 * @throws IOException if an exception occurs
 	 */
 	BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> addedAnnotations) throws IOException;
+
+	/**
+	 * This method checks if the document is not encrypted or with limited edition rights
+	 */
+	void checkDocumentPermissions();
+
+	/**
+	 * Returns value of /DocMDP dictionary defining the permitted modification in a PDF, when present
+	 *
+	 * @return {@link CertificationPermission}
+	 */
+	CertificationPermission getCertificationPermission();
+
+	/**
+	 * This method verifies whether a PDF contains a usage rights signature
+	 *
+	 * @return TRUE of a PDF contains a usage rights signature, FALSE otherwise
+	 */
+	boolean isUsageRightsSignaturePresent();
+
+	/**
+	 * Returns a document catalog as a dictionary
+	 *
+	 * @return {@link PdfDict}
+	 */
+	PdfDict getCatalogDictionary();
 
 }

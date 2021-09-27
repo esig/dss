@@ -26,6 +26,7 @@ import eu.europa.esig.dss.pades.validation.PdfDssDictOCSPSource;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 
 import java.util.List;
 import java.util.Objects;
@@ -76,7 +77,7 @@ public class PdfDocDssRevision implements PdfRevision {
 	}
 
 	@Override
-	public List<String> getFieldNames() {
+	public List<PdfSignatureField> getFields() {
 		// not applicable for DSS revision
 		return null;
 	}

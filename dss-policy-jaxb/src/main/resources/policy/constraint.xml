@@ -44,6 +44,10 @@
 			<PdfPageDifference Level="FAIL" />
 			<PdfAnnotationOverlap Level="WARN" />
 			<PdfVisualDifference Level="WARN" />
+			<DocMDP Level="WARN" />
+			<FieldMDP Level="WARN" />
+			<SigFieldLock Level="WARN" />
+			<UndefinedChanges Level="WARN" />
 <!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->
 <!-- 				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
 <!-- 			</TrustedServiceTypeIdentifier> -->

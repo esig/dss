@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.signature.visible.suite;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -198,6 +200,29 @@ public class PDFSignatureServiceTest {
 		service.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
 		signedDoc = service.addNewSignatureField(documentToSign, parameters);
 		assertNotNull(signedDoc);
+	}
+
+	@Test
+	public void alertOnForbiddenSignatureCreationTest() {
+		DSSDocument documentToSign = new InMemoryDocument(
+				getClass().getResourceAsStream("/validation/dss-2554/certified-no-change-permitted.pdf"));
+
+		List<String> availableSignatureFields = service.getAvailableSignatureFields(documentToSign);
+		assertEquals(0, availableSignatureFields.size());
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("Signature1");
+
+		service.setAlertOnForbiddenSignatureCreation(new ExceptionOnStatusAlert());
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parameters));
+		assertEquals("The creation of new signatures is not permitted in the current document.", exception.getMessage());
+
+		service.setAlertOnForbiddenSignatureCreation(new SilentOnStatusAlert());
+		DSSDocument dssDocumentWithAddedField = service.addNewSignatureField(documentToSign, parameters);
+
+		availableSignatureFields = service.getAvailableSignatureFields(dssDocumentWithAddedField);
+		assertEquals(1, availableSignatureFields.size());
+		assertEquals("Signature1", availableSignatureFields.get(0));
 	}
 
 }

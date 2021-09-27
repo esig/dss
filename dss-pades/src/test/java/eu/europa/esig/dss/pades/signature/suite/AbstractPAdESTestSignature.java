@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -176,6 +177,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		super.checkPdfRevision(diagnosticData);
+
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			assertNotNull(signature.getPDFRevision());
 			
@@ -187,10 +190,11 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 			assertNotNull(signature.getSignatureByteRange());
 			
 			assertFalse(signature.arePdfModificationsDetected());
+			assertTrue(Utils.isCollectionEmpty(signature.getPdfUndefinedChanges()));
 		}
 		
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
-			if (timestamp.getType().isArchivalTimestamp()) {
+			if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestamp.getType())) {
 				assertNotNull(timestamp.getPDFRevision());
 				
 				assertTrue(Utils.isCollectionNotEmpty(timestamp.getSignatureFieldNames()));
@@ -201,6 +205,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 				assertNotNull(timestamp.getSignatureByteRange());		
 				
 				assertFalse(timestamp.arePdfModificationsDetected());
+				assertTrue(Utils.isCollectionEmpty(timestamp.getPdfUndefinedChanges()));
 			}
 		}
 	}

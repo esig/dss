@@ -23,6 +23,8 @@ package eu.europa.esig.dss.pades.signature.suite;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
+import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -31,11 +33,14 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
@@ -103,6 +108,43 @@ public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
 			}
 		}
 		assertTrue(arcTstFound);
+	}
+
+	@Override
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		super.checkPdfRevision(diagnosticData);
+
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+
+		SignatureWrapper signatureWrapper = signatures.get(0);
+		assertTrue(signatureWrapper.arePdfObjectModificationsDetected());
+
+		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getPdfExtensionChanges()));
+		assertFalse(Utils.isCollectionNotEmpty(signatureWrapper.getPdfSignatureOrFormFillChanges()));
+		assertFalse(Utils.isCollectionNotEmpty(signatureWrapper.getPdfAnnotationChanges()));
+		assertFalse(Utils.isCollectionNotEmpty(signatureWrapper.getPdfUndefinedChanges()));
+
+		boolean dssDictFound = false;
+		boolean docTimeStampFound = false;
+		boolean newFieldFound = false;
+		List<XmlObjectModification> secureChanges = signatureWrapper.getPdfExtensionChanges();
+		assertTrue(secureChanges.stream().map(c -> c.getType()).collect(Collectors.toSet()).contains("DocTimeStamp"));
+		for (XmlObjectModification objectModification : secureChanges) {
+			assertEquals(PdfObjectModificationType.CREATION, objectModification.getAction());
+			if (objectModification.getValue().contains("/DSS")) {
+				dssDictFound = true;
+			}
+			if ("DocTimeStamp".equals(objectModification.getType())) {
+				docTimeStampFound = true;
+			}
+			if ("Signature2".equals(objectModification.getFieldName())) {
+				newFieldFound = true;
+			}
+		}
+		assertTrue(dssDictFound);
+		assertTrue(docTimeStampFound);
+		assertTrue(newFieldFound);
 	}
 
 	@Override

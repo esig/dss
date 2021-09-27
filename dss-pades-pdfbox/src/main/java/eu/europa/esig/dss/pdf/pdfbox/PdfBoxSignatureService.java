@@ -26,12 +26,11 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.pades.CertificationPermission;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
@@ -61,7 +60,6 @@ import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
@@ -124,48 +122,16 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected void checkDocumentPermissions(final DSSDocument document, final String pwd) {
-		try (InputStream is = document.openStream(); PDDocument pdDocument = PDDocument.load(is, pwd)) {
-
-			AccessPermission accessPermission = pdDocument.getCurrentAccessPermission();
-			if (accessPermission.isReadOnly()) {
-				throw new ProtectedDocumentException("The document cannot be modified (read-only)");
-			}
-
-			if (!accessPermission.canModify()) {
-				throw new ProtectedDocumentException("Cannot modify the document");
-			}
-
-			if (!accessPermission.canModifyAnnotations()) {
-				throw new ProtectedDocumentException("Cannot modify the annotation");
-			}
-
-			if (!accessPermission.canFillInForm()) {
-				throw new ProtectedDocumentException("Cannot fill in form");
-			}
-			
-		} catch (InvalidPasswordException e) {
-			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException("The document is encrypted (password is invalid)");
-			
-		} catch (DSSException e) {
-			throw e;
-			
-		} catch (Exception e) {
-			throw new DSSException("Unable to check document", e);
-			
-		}
-	}
-
-	@Override
 	public byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
-		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
-
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				InputStream is = toSignDocument.openStream();
-				PDDocument pdDocument = PDDocument.load(is, parameters.getPasswordProtection())) {
+			 	PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+			checkDocumentPermissions(documentReader);
+			if (parameters instanceof PAdESSignatureParameters) {
+				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
+			}
 
-			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument);
+			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, outputStream, documentReader.getPDDocument());
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
 			}
@@ -178,13 +144,14 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
 			final PAdESCommonParameters parameters) {
-		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
-
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				InputStream is = toSignDocument.openStream();
-				PDDocument pdDocument = PDDocument.load(is, parameters.getPasswordProtection())) {
+			 	PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+			checkDocumentPermissions(documentReader);
+			if (parameters instanceof PAdESSignatureParameters) {
+				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
+			}
 
-			signDocumentAndReturnDigest(parameters, signatureValue, baos, pdDocument);
+			signDocumentAndReturnDigest(parameters, signatureValue, baos, documentReader.getPDDocument());
 
 			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
 			signature.setMimeType(MimeType.PDF);
@@ -366,25 +333,25 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	 * @param signature         The signature object.
 	 * @param accessPermissions The permission value (1, 2 or 3).
 	 */
-	public void setMDPPermission(PDDocument doc, PDSignature signature, int accessPermissions) {
+	protected void setMDPPermission(PDDocument doc, PDSignature signature, int accessPermissions) {
 		COSDictionary sigDict = signature.getCOSObject();
 
 		// DocMDP specific stuff
 		COSDictionary transformParameters = new COSDictionary();
-		transformParameters.setItem(COSName.TYPE, COSName.getPDFName("TransformParams"));
+		transformParameters.setItem(COSName.TYPE, COSName.getPDFName(PAdESConstants.TRANSFORM_PARAMS_NAME));
 		transformParameters.setInt(COSName.P, accessPermissions);
-		transformParameters.setName(COSName.V, "1.2");
+		transformParameters.setName(COSName.V, PAdESConstants.VERSION_DEFAULT);
 		transformParameters.setNeedToBeUpdated(true);
 
 		COSDictionary referenceDict = new COSDictionary();
-		referenceDict.setItem(COSName.TYPE, COSName.getPDFName("SigRef"));
-		referenceDict.setItem("TransformMethod", COSName.DOCMDP);
-		referenceDict.setItem("TransformParams", transformParameters);
+		referenceDict.setItem(COSName.TYPE, COSName.getPDFName(PAdESConstants.SIG_REF_NAME));
+		referenceDict.setItem(PAdESConstants.TRANSFORM_METHOD_NAME, COSName.DOCMDP);
+		referenceDict.setItem(PAdESConstants.TRANSFORM_PARAMS_NAME, transformParameters);
 		referenceDict.setNeedToBeUpdated(true);
 
 		COSArray referenceArray = new COSArray();
 		referenceArray.add(referenceDict);
-		sigDict.setItem("Reference", referenceArray);
+		sigDict.setItem(PAdESConstants.REFERENCE_NAME, referenceArray);
 		referenceArray.setNeedToBeUpdated(true);
 
 		// Document Catalog
@@ -646,12 +613,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String pwd) {
-		checkDocumentPermissions(document, pwd);
-		
-		try (InputStream is = document.openStream();
-				PDDocument pdfDoc = PDDocument.load(is, pwd);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 	PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, pwd)) {
+			checkDocumentPermissions(documentReader);
+			checkNewSignatureIsPermitted(documentReader, parameters);
 
+			final PDDocument pdfDoc = documentReader.getPDDocument();
 			if (pdfDoc.getPages().getCount() < parameters.getPage()) {
 				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}

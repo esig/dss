@@ -24,8 +24,9 @@ import eu.europa.esig.dss.pades.validation.PdfModification;
 
 /**
  * The default PDF Modification object
+ *
  */
-public class PdfModificationImpl implements PdfModification {
+public class CommonPdfModification implements PdfModification {
 
 	/** Defines page of the found modification */
 	private final int page;
@@ -35,7 +36,7 @@ public class PdfModificationImpl implements PdfModification {
 	 *
 	 * @param page the modified page
 	 */
-	public PdfModificationImpl(int page) {
+	public CommonPdfModification(int page) {
 		this.page = page;
 	}
 

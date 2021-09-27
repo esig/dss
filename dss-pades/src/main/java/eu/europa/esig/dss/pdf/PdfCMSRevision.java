@@ -21,10 +21,11 @@
 package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.pades.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import org.bouncycastle.cms.CMSSignedData;
 
 import java.util.Date;
@@ -56,7 +57,7 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	/**
 	 * A list of signed fields by the corresponding signature
 	 */
-	private final List<String> signatureFieldNames;
+	private final List<PdfSignatureField> signatureFields;
 
 	/**
 	 * Detects the modification in the PDF content
@@ -68,20 +69,20 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	 *
 	 * @param signatureDictionary
 	 *                              The signature dictionary
-	 * @param signatureFieldNames
-	 *                              the list of signature field names
+	 * @param signatureFields
+	 *                              the list of {@link PdfSignatureField}s
 	 * @param signedContent
 	 *                              {@link DSSDocument} the signed content
 	 * @param coverAllOriginalBytes
 	 *                              true if the signature covers all original bytes
 	 */
-	protected PdfCMSRevision(PdfSignatureDictionary signatureDictionary, List<String> signatureFieldNames,
+	protected PdfCMSRevision(PdfSignatureDictionary signatureDictionary, List<PdfSignatureField> signatureFields,
 							 DSSDocument signedContent, boolean coverAllOriginalBytes) {
 		Objects.requireNonNull(signatureDictionary, "The signature dictionary cannot be null!");
-		Objects.requireNonNull(signatureFieldNames, "The signature field names must be defined!");
+		Objects.requireNonNull(signatureFields, "The signature fields must be defined!");
 		Objects.requireNonNull(signedContent, "The signed content cannot be null!");
 		this.signatureDictionary = signatureDictionary;
-		this.signatureFieldNames = signatureFieldNames;
+		this.signatureFields = signatureFields;
 		this.signedContent = signedContent;
 		this.coverAllOriginalBytes = coverAllOriginalBytes;
 	}
@@ -128,8 +129,8 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	}
 	
 	@Override
-	public List<String> getFieldNames() {
-		return signatureFieldNames;
+	public List<PdfSignatureField> getFields() {
+		return signatureFields;
 	}
 
 	/**

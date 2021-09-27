@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades;
+package eu.europa.esig.dss.enumerations;
 
 /**
  * This enumeration is used to set the allowed level of permission for PDF modifications.
@@ -47,17 +47,37 @@ public enum CertificationPermission {
 	/** The code of the DocMDP enumeration */
 	private final int code;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param code value
+	 */
 	CertificationPermission(int code) {
 		this.code = code;
 	}
 
 	/**
-	 * Gets code
+	 * Gets value of /DocMDP dictionary
 	 *
 	 * @return code
 	 */
 	public int getCode() {
 		return code;
+	}
+
+	/**
+	 * Returns a CertificationPermission corresponding to the given code value
+	 *
+	 * @param code value
+	 * @return {@link CertificationPermission}
+	 */
+	public static CertificationPermission fromCode(int code) {
+		for (CertificationPermission certificationPermission : values()) {
+			if (code == certificationPermission.getCode()) {
+				return certificationPermission;
+			}
+		}
+		throw new IllegalArgumentException(String.format("Not supported /DocMDP code value : %s", code));
 	}
 
 }

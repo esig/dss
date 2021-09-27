@@ -37,7 +37,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Cryptolog-846272363</SignatureFieldName>
+                <SignatureField name="Cryptolog-846272363" />
                 <PDFSignatureDictionary>
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
@@ -728,7 +728,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Cryptolog-1895426501</SignatureFieldName>
+                <SignatureField name="Cryptolog-1895426501" />
                 <PDFSignatureDictionary>
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
@@ -791,7 +791,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature1</SignatureFieldName>
+                <SignatureField name="Signature1" />
                 <PDFSignatureDictionary>
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>

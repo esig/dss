@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PdfBoxUtilsTest {
 
@@ -74,10 +73,10 @@ public class PdfBoxUtilsTest {
 
 		Exception exception = assertThrows(DSSException.class,
 				() -> PdfBoxUtils.generateScreenshot(protectedDocument, wrongProtectionPhrase, 1));
-		assertEquals("Cannot decrypt PDF, the password is incorrect", exception.getMessage());
+		assertEquals("Encrypted document : Cannot decrypt PDF, the password is incorrect", exception.getMessage());
 
 		exception = assertThrows(DSSException.class, () -> PdfBoxUtils.generateScreenshot(protectedDocument, 1));
-		assertEquals("Cannot decrypt PDF, the password is incorrect", exception.getMessage());
+		assertEquals("Encrypted document : Cannot decrypt PDF, the password is incorrect", exception.getMessage());
 	}
 
 	@Test

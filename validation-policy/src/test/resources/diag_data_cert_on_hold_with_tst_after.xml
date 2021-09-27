@@ -41,7 +41,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature4</SignatureFieldName>
+                <SignatureField name="Signature4" />
                 <PDFSignatureDictionary>
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
@@ -806,7 +806,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature5</SignatureFieldName>
+                <SignatureField name="Signature5" />
                 <PDFSignatureDictionary>
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>

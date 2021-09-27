@@ -25,8 +25,12 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureField;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSPDocSpecification;
@@ -41,6 +45,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlUserNotice;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -1010,6 +1015,63 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		return getPdfPageDifferenceConcernedPages(pdfRevision);
 	}
+
+	/**
+	 * This method checks whether object modifications are present after the current PDF revisions
+	 *
+	 * @return TRUE if PDF has been modified, FALSE otherwise
+	 */
+	public boolean arePdfObjectModificationsDetected() {
+		return getPdfObjectModifications(signature.getPDFRevision()) != null;
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF after the current signature's revision associated
+	 * with a signature/document extension
+	 *
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	public List<XmlObjectModification> getPdfExtensionChanges() {
+		return getPdfExtensionChanges(signature.getPDFRevision());
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF after the current signature's revision associated
+	 * with a signature creation, form filling
+	 *
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	public List<XmlObjectModification> getPdfSignatureOrFormFillChanges() {
+		return getPdfSignatureOrFormFillChanges(signature.getPDFRevision());
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF after the current signature's revision associated
+	 * with annotation(s) modification
+	 *
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	public List<XmlObjectModification> getPdfAnnotationChanges() {
+		return getPdfAnnotationChanges(signature.getPDFRevision());
+	}
+
+	/**
+	 * Returns a list of undefined changes occurred in a PDF after the current signature's revision
+	 *
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	public List<XmlObjectModification> getPdfUndefinedChanges() {
+		return getPdfUndefinedChanges(signature.getPDFRevision());
+	}
+
+	/**
+	 * This method returns a list of field names modified after the current signature's revision
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getModifiedFieldNames() {
+		return getModifiedFieldNames(signature.getPDFRevision());
+	}
 	
 	/**
 	 * Returns the first signature field name
@@ -1019,7 +1081,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public String getFirstFieldName() {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
-			return pdfRevision.getSignatureFieldName().get(0);
+			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
+			if (fields != null && fields.size() > 0) {
+				return fields.iterator().next().getName();
+			}
 		}
 		return null;
 	}
@@ -1030,11 +1095,17 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * @return a list of {@link String} signature field names
 	 */
 	public List<String> getSignatureFieldNames() {
+		List<String> names = new ArrayList<>();
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
-			return pdfRevision.getSignatureFieldName();
+			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
+			if (fields != null && fields.size() > 0) {
+				for (XmlPDFSignatureField signatureField : fields) {
+					names.add(signatureField.getName());
+				}
+			}
 		}
-		return Collections.emptyList();
+		return names;
 	}
 	
 	/**
@@ -1148,6 +1219,54 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			return pdfRevision.getPDFSignatureDictionary().getSignatureByteRange();
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a {@code CertificationPermission} value of a /DocMDP dictionary, when present
+	 *
+	 * @return {@link CertificationPermission}
+	 */
+	public CertificationPermission getDocMDPPermissions() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			XmlDocMDP docMDP = pdfRevision.getPDFSignatureDictionary().getDocMDP();
+			if (docMDP != null) {
+				return docMDP.getPermissions();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a /FieldMDP dictionary content, when present
+	 *
+	 * @return {@link XmlPDFLockDictionary}
+	 */
+	public XmlPDFLockDictionary getFieldMDP() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			return pdfRevision.getPDFSignatureDictionary().getFieldMDP();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a /SigFieldLock dictionary, when present
+	 *
+	 * @return {@link XmlPDFLockDictionary}
+	 */
+	public XmlPDFLockDictionary getSigFieldLock() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null) {
+			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
+			for (XmlPDFSignatureField field : fields) {
+				XmlPDFLockDictionary sigFieldLock = field.getSigFieldLock();
+				if (sigFieldLock != null) {
+					return sigFieldLock;
+				}
+			}
+		}
+		return null;
 	}
 
 	/**

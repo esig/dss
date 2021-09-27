@@ -56,8 +56,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
@@ -77,9 +80,12 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.PdfLockAction;
+import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -6630,6 +6636,183 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_AKSNR,
 						EncryptionAlgorithm.DSA.getName(), "1024", MessageTag.ACCM_POS_SIG_SIG)));
+	}
+
+	@Test
+	public void docMDPTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_with_object_modifications.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+		XmlPDFSignatureDictionary pdfSignatureDictionary = xmlSignature.getPDFRevision().getPDFSignatureDictionary();
+
+		XmlDocMDP xmlDocMDP = new XmlDocMDP();
+		xmlDocMDP.setPermissions(CertificationPermission.NO_CHANGE_PERMITTED);
+		pdfSignatureDictionary.setDocMDP(xmlDocMDP);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setDocMDP(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		boolean certificationSigFound = false;
+		boolean secondSigFound = false;
+		for (String sigId : simpleReport.getSignatureIdList()) {
+			if (Indication.TOTAL_FAILED.equals(simpleReport.getIndication(sigId))) {
+				assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(sigId));
+				assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(sigId),
+						i18nProvider.getMessage(MessageTag.BBB_FC_ISVADMDPD_ANS)));
+				certificationSigFound = true;
+
+			} else if (Indication.TOTAL_PASSED.equals(simpleReport.getIndication(sigId))) {
+				secondSigFound = true;
+			}
+
+		}
+		assertTrue(certificationSigFound);
+		assertTrue(secondSigFound);
+	}
+
+	@Test
+	public void fieldMDPTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_with_object_modifications.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+		XmlPDFSignatureDictionary pdfSignatureDictionary = xmlSignature.getPDFRevision().getPDFSignatureDictionary();
+
+		XmlPDFLockDictionary xmlPDFLockDictionary = new XmlPDFLockDictionary();
+		xmlPDFLockDictionary.setAction(PdfLockAction.ALL);
+		pdfSignatureDictionary.setFieldMDP(xmlPDFLockDictionary);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setFieldMDP(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		boolean certificationSigFound = false;
+		boolean secondSigFound = false;
+		for (String sigId : simpleReport.getSignatureIdList()) {
+			if (Indication.TOTAL_FAILED.equals(simpleReport.getIndication(sigId))) {
+				assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(sigId));
+				assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(sigId),
+						i18nProvider.getMessage(MessageTag.BBB_FC_ISVAFMDPD_ANS)));
+				certificationSigFound = true;
+
+			} else if (Indication.TOTAL_PASSED.equals(simpleReport.getIndication(sigId))) {
+				secondSigFound = true;
+			}
+
+		}
+		assertTrue(certificationSigFound);
+		assertTrue(secondSigFound);
+	}
+
+	@Test
+	public void sigFieldLockTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_with_object_modifications.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+
+		XmlPDFLockDictionary xmlPDFLockDictionary = new XmlPDFLockDictionary();
+		xmlPDFLockDictionary.setAction(PdfLockAction.ALL);
+		xmlPDFLockDictionary.setPermissions(CertificationPermission.NO_CHANGE_PERMITTED);
+		xmlSignature.getPDFRevision().getFields().get(0).setSigFieldLock(xmlPDFLockDictionary);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setSigFieldLock(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		boolean certificationSigFound = false;
+		boolean secondSigFound = false;
+		for (String sigId : simpleReport.getSignatureIdList()) {
+			if (Indication.TOTAL_FAILED.equals(simpleReport.getIndication(sigId))) {
+				assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(sigId));
+				assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(sigId),
+						i18nProvider.getMessage(MessageTag.BBB_FC_ISVASFLD_ANS)));
+				certificationSigFound = true;
+
+			} else if (Indication.TOTAL_PASSED.equals(simpleReport.getIndication(sigId))) {
+				secondSigFound = true;
+			}
+
+		}
+		assertTrue(certificationSigFound);
+		assertTrue(secondSigFound);
+	}
+
+	@Test
+	public void undefinedChangesTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_with_object_modifications.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+
+		XmlObjectModification undefinedChange = new XmlObjectModification();
+		undefinedChange.setAction(PdfObjectModificationType.CREATION);
+
+		xmlSignature.getPDFRevision().getModificationDetection()
+				.getObjectModifications().getUndefined().add(undefinedChange);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setUndefinedChanges(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		boolean certificationSigFound = false;
+		boolean secondSigFound = false;
+		for (String sigId : simpleReport.getSignatureIdList()) {
+			if (Indication.TOTAL_FAILED.equals(simpleReport.getIndication(sigId))) {
+				assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(sigId));
+				assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(sigId),
+						i18nProvider.getMessage(MessageTag.BBB_FC_DSCNUOM_ANS)));
+				certificationSigFound = true;
+
+			} else if (Indication.TOTAL_PASSED.equals(simpleReport.getIndication(sigId))) {
+				secondSigFound = true;
+			}
+
+		}
+		assertTrue(certificationSigFound);
+		assertTrue(secondSigFound);
 	}
 
 	@Test

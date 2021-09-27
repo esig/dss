@@ -85,7 +85,7 @@ public class PDFTimestampServiceTest extends AbstractPAdESTestValidation {
 		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
 		XmlPDFRevision pdfRevision = timestampWrapper.getPDFRevision();
 		assertNotNull(pdfRevision);
-		assertEquals(1, pdfRevision.getSignatureFieldName().size());
+		assertEquals(1, pdfRevision.getFields().size());
 		
 		XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
 		assertNotNull(pdfSignatureDictionary);

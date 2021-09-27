@@ -35,14 +35,14 @@ public interface PdfArray {
 	int size();
 
 	/**
-	 * Retrieves the byte array at the position i
+	 * Retrieves the stream byte array at the position i
 	 * 
 	 * @param i
 	 *          the position
-	 * @return the found byte array
+	 * @return the found stream byte array
 	 * @throws IOException if an exception occurs
 	 */
-	byte[] getBytes(int i) throws IOException;
+	byte[] getStreamBytes(int i) throws IOException;
 
 	/**
 	 * Retrieves the Object Number for the position i
@@ -51,16 +51,42 @@ public interface PdfArray {
 	 *          the position
 	 * @return the object number
 	 */
-	long getObjectNumber(int i);
+	Long getObjectNumber(int i);
 
 	/**
-	 * Retrieves the integer at the position i
+	 * Retrieves the number at the position i
 	 * 
 	 * @param i
 	 *          the position
-	 * @return the found integer
-	 * @throws IOException if an exception occurs\ASiCUtils.
+	 * @return the found number
 	 */
-	int getInt(int i) throws IOException;
+	Number getNumber(int i);
+
+	/**
+	 * Returns a String entry at the position i
+	 *
+	 * @param i
+	 *          the position
+	 * @return {@link String}
+	 */
+	String getString(int i);
+
+	/**
+	 * Returns a dictionary entry at the position i
+	 *
+	 * @param i
+	 *          the position
+	 * @return {@link PdfDict}
+	 */
+	PdfDict getAsDict(int i);
+
+	/**
+	 * Returns an object entry at the position i
+	 *
+	 * @param i
+	 *          the position
+	 * @return {@link Object}
+	 */
+	Object getObject(int i);
 
 }

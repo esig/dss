@@ -21,18 +21,27 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.cades.validation.CAdESDiagnosticDataBuilder;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanTokens;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureField;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
+import eu.europa.esig.dss.pdf.ObjectModification;
+import eu.europa.esig.dss.pdf.PdfObjectModifications;
+import eu.europa.esig.dss.pdf.SigFieldPermissions;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -69,11 +78,37 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 	private XmlPDFRevision getXmlPDFRevision(PdfRevision pdfRevision) {
 		if (pdfRevision != null) {
 			XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
-			xmlPDFRevision.getSignatureFieldName().addAll(pdfRevision.getFieldNames());
+			List<PdfSignatureField> fields = pdfRevision.getFields();
+			if (Utils.isCollectionNotEmpty(fields)) {
+				for (PdfSignatureField field : fields) {
+					xmlPDFRevision.getFields().add(getXmlPDFSignatureField(field));
+				}
+			}
 			xmlPDFRevision.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(pdfRevision.getPdfSigDictInfo()));
-			xmlPDFRevision
-					.setModificationDetection(getXmlModificationDetection(pdfRevision.getModificationDetection()));
+			xmlPDFRevision.setModificationDetection(getXmlModificationDetection(pdfRevision.getModificationDetection()));
 			return xmlPDFRevision;
+		}
+		return null;
+	}
+
+	private XmlPDFSignatureField getXmlPDFSignatureField(PdfSignatureField pdfSignatureField) {
+		XmlPDFSignatureField xmlPdfSignatureField = new XmlPDFSignatureField();
+		xmlPdfSignatureField.setName(pdfSignatureField.getFieldName());
+		xmlPdfSignatureField.setSigFieldLock(getXmlPDFLockDictionary(pdfSignatureField.getLockDictionary()));
+		return xmlPdfSignatureField;
+	}
+
+	private XmlPDFLockDictionary getXmlPDFLockDictionary(SigFieldPermissions lockDictionary) {
+		if (lockDictionary != null) {
+			XmlPDFLockDictionary xmlPDFLockDictionary = new XmlPDFLockDictionary();
+			xmlPDFLockDictionary.setAction(lockDictionary.getAction());
+			if (Utils.isCollectionNotEmpty(lockDictionary.getFields())) {
+				xmlPDFLockDictionary.getFields().addAll(lockDictionary.getFields());
+			}
+			if (lockDictionary.getCertificationPermission() != null) {
+				xmlPDFLockDictionary.setPermissions(lockDictionary.getCertificationPermission());
+			}
+			return xmlPDFLockDictionary;
 		}
 		return null;
 	}
@@ -89,7 +124,18 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 			pdfSignatureDictionary.setLocation(emptyToNull(pdfSigDict.getLocation()));
 			pdfSignatureDictionary.setReason(emptyToNull(pdfSigDict.getReason()));
 			pdfSignatureDictionary.getSignatureByteRange().addAll(pdfSigDict.getByteRange().toBigIntegerList());
+			pdfSignatureDictionary.setDocMDP(getXmlDocMDP(pdfSigDict.getDocMDP()));
+			pdfSignatureDictionary.setFieldMDP(getXmlPDFLockDictionary(pdfSigDict.getFieldMDP()));
 			return pdfSignatureDictionary;
+		}
+		return null;
+	}
+
+	private XmlDocMDP getXmlDocMDP(CertificationPermission certificationPermission) {
+		if (certificationPermission != null) {
+			XmlDocMDP xmlDocMDP = new XmlDocMDP();
+			xmlDocMDP.setPermissions(certificationPermission);
+			return xmlDocMDP;
 		}
 		return null;
 	}
@@ -113,6 +159,11 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 				xmlModificationDetection.getPageDifference().addAll(getXmlModifications(pageDifferences));
 			}
 
+			PdfObjectModifications objectModifications = modificationDetection.getObjectModifications();
+			if (!objectModifications.isEmpty()) {
+				xmlModificationDetection.setObjectModifications(getXmlObjectModifications(objectModifications));
+			}
+
 			return xmlModificationDetection;
 		}
 		return null;
@@ -132,6 +183,32 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 		XmlModification xmlModification = new XmlModification();
 		xmlModification.setPage(BigInteger.valueOf(pdfModification.getPage()));
 		return xmlModification;
+	}
+
+	private XmlObjectModifications getXmlObjectModifications(PdfObjectModifications objectModifications) {
+		XmlObjectModifications xmlObjectModifications = new XmlObjectModifications();
+		for (ObjectModification modification : objectModifications.getSecureChanges()) {
+			xmlObjectModifications.getExtensionChanges().add(getXmlObjectModification(modification));
+		}
+		for (ObjectModification modification : objectModifications.getFormFillInAndSignatureCreationChanges()) {
+			xmlObjectModifications.getSignatureOrFormFill().add(getXmlObjectModification(modification));
+		}
+		for (ObjectModification modification : objectModifications.getAnnotCreationChanges()) {
+			xmlObjectModifications.getAnnotationChanges().add(getXmlObjectModification(modification));
+		}
+		for (ObjectModification modification : objectModifications.getUndefinedChanges()) {
+			xmlObjectModifications.getUndefined().add(getXmlObjectModification(modification));
+		}
+		return xmlObjectModifications;
+	}
+
+	private XmlObjectModification getXmlObjectModification(ObjectModification objectModification) {
+		XmlObjectModification xmlObjectModification = new XmlObjectModification();
+		xmlObjectModification.setValue(objectModification.getObjectTree().toString());
+		xmlObjectModification.setAction(objectModification.getActionType());
+		xmlObjectModification.setFieldName(objectModification.getFieldName());
+		xmlObjectModification.setType(objectModification.getType());
+		return xmlObjectModification;
 	}
 
 	@Override

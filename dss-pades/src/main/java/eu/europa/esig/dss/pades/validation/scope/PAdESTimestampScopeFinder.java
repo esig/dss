@@ -9,6 +9,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Finds a scope for a PDF document timestamp
+ *
+ */
 public class PAdESTimestampScopeFinder extends PdfRevisionScopeFinder implements TimestampScopeFinder {
 
     @Override

@@ -48,6 +48,7 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithSelfSig
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToLTALevelTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToLTLevelTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToTLevelTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTANoChangesPermittedTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTASelfSignedTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTATest;
@@ -73,7 +74,7 @@ import org.junit.runner.RunWith;
 		PAdESExtensionTToLTANotTrustedTSPTest.class, PAdESExtensionNonPDFToTLevelTest.class, PAdESExtensionNonPDFToLTLevelTest.class,
 		PAdESExtensionNonPDFToLTALevelTest.class, PAdESExtensionBToLTWithRevokedCertificateTest.class,
 		PAdESExtensionBToLTWithRevokedSkipCheckTest.class, BuildKnownObjectsTest.class, PAdESExtensionBToTWithRevokedCertTest.class,
-		PAdESExtensionBToLTWithRevokedCertTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class })
+		PAdESExtensionBToLTWithRevokedCertTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class, PAdESExtensionTToLTANoChangesPermittedTest.class })
 public class PdfBoxPAdESExtensionSuiteTest {
 
 }

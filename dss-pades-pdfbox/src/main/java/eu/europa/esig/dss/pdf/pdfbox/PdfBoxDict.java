@@ -22,24 +22,36 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.utils.Utils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSBoolean;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNull;
+import org.apache.pdfbox.cos.COSNumber;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * The PDFBox implementation of {@code eu.europa.esig.dss.pdf.PdfDict}
  */
 class PdfBoxDict implements PdfDict {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxDict.class);
 
 	/** The PDFBox object */
 	private COSDictionary wrapped;
@@ -54,17 +66,29 @@ class PdfBoxDict implements PdfDict {
 	 * @param document {@link PDDocument}
 	 */
 	public PdfBoxDict(COSDictionary wrapped, PDDocument document) {
+		Objects.requireNonNull(wrapped, "Pdf dictionary shall be provided!");
+		Objects.requireNonNull(document, "Pdf document shall be provided!");
 		this.wrapped = wrapped;
 		this.document = document;
 	}
 
 	@Override
 	public PdfDict getAsDict(String name) {
-		COSDictionary dict = (COSDictionary) wrapped.getDictionaryObject(name);
-		if (dict == null) {
+		COSBase cosBaseObject = wrapped.getDictionaryObject(name);
+		if (cosBaseObject == null) {
 			return null;
 		}
-		return new PdfBoxDict(dict, document);
+		COSDictionary cosDictionary;
+		if (cosBaseObject instanceof COSDictionary) {
+			cosDictionary = (COSDictionary) cosBaseObject;
+		} else if (cosBaseObject instanceof COSObject) {
+			COSObject cosObject = (COSObject) cosBaseObject;
+			cosDictionary = (COSDictionary) cosObject.getObject();
+		} else {
+			LOG.warn("Unable to extract entry with name '{}' as dictionary!", name);
+			return null;
+		}
+		return new PdfBoxDict(cosDictionary, document);
 	}
 
 	@Override
@@ -97,11 +121,6 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	@Override
-	public String toString() {
-		return wrapped.toString();
-	}
-
-	@Override
 	public String getStringValue(String name) {
 		return wrapped.getString(name);
 	}
@@ -118,6 +137,65 @@ class PdfBoxDict implements PdfDict {
 			return cal.getTime();
 		}
 		return null;
+	}
+
+	@Override
+	public Number getNumberValue(String name) {
+		COSBase val = wrapped.getDictionaryObject(name);
+		if (val != null && val instanceof COSNumber) {
+			return ((COSNumber) val).floatValue();
+		}
+		return null;
+	}
+
+	@Override
+	public Object getObject(String name) {
+		COSBase dictionaryObject = wrapped.getDictionaryObject(name);
+		if (dictionaryObject == null) {
+			return null;
+		} else if (dictionaryObject instanceof COSDictionary ||
+				dictionaryObject instanceof COSObject) {
+			return getAsDict(name);
+		} else if (dictionaryObject instanceof COSArray) {
+			return getAsArray(name);
+		} else if (dictionaryObject instanceof COSString) {
+			return getStringValue(name);
+		} else if (dictionaryObject instanceof COSName) {
+			return getNameValue(name);
+		} else if (dictionaryObject instanceof COSNumber) {
+			return getNumberValue(name);
+		} else if (dictionaryObject instanceof COSBoolean) {
+			return ((COSBoolean) dictionaryObject).getValueAsObject();
+		} else if (dictionaryObject instanceof COSNull) {
+			return null;
+		} else {
+			LOG.warn("Unable to process an entry with name '{}' of type '{}'.", name, dictionaryObject.getClass());
+		}
+		return null;
+	}
+
+	@Override
+	public Long getObjectNumber(String name) {
+		COSBase dictionaryObject = wrapped.getItem(name);
+		if (dictionaryObject != null && dictionaryObject instanceof COSObject) {
+			return ((COSObject) dictionaryObject).getObjectNumber();
+		}
+		return null;
+	}
+
+	@Override
+	public byte[] getStreamBytes() throws IOException {
+		if (wrapped instanceof COSStream) {
+			try (InputStream is = ((COSStream) wrapped).createInputStream()) {
+				return Utils.toByteArray(is);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return wrapped.toString();
 	}
 
 }

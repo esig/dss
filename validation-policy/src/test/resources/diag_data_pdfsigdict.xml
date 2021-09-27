@@ -51,6 +51,7 @@
            		</SignerInfo>
            	</SignerInformationStore>
             <PDFRevision>
+                <SignatureField name="Signature1" />
 	            <PDFSignatureDictionary>
 	                <Filter>PBAD_PAdES</Filter>
 	                <SubFilter>PBAD.PAdES</SubFilter>
@@ -120,6 +121,7 @@
            		</SignerInfo>
            	</SignerInformationStore>
             <PDFRevision>
+                <SignatureField name="Signature2" />
 	            <PDFSignatureDictionary>
 	                <Filter>Adobe.PPKMS</Filter>
 	                <SubFilter>adbe.pkcs7.detached</SubFilter>

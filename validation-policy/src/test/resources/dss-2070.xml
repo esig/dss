@@ -38,7 +38,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Cryptolog-1909908338</SignatureFieldName>
+                <SignatureField name="Cryptolog-1909908338" />
                 <PDFSignatureDictionary>
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>

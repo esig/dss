@@ -41,7 +41,7 @@
             	</SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature-20191101-150121</SignatureFieldName>
+                <SignatureField name="Signature-20191101-150121" />
 	            <PDFSignatureDictionary>
 	                <SignerName>POLYSYS kft.</SignerName>
 	                <Filter>Adobe.PPKLite</Filter>

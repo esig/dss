@@ -41,7 +41,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature2</SignatureFieldName>
+                <SignatureField name="Signature2" />
                 <PDFSignatureDictionary>
                     <SignerName>Pečať NBÚ</SignerName>
                     <Type>Sig</Type>
