@@ -161,7 +161,8 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	}
 	
 	@Override
-	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateSource certificateSource) {
+	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(
+			CertificateSource signingCertificateSource) {
 		CandidatesForSigningCertificate candidatesForSigningCertificate = new CandidatesForSigningCertificate();
 		
 		/**
@@ -202,8 +203,8 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 					
 		}
 
-		if (certificateSource != null) {
-			resolveFromSource(certificateSource, candidatesForSigningCertificate);
+		if (signingCertificateSource != null) {
+			resolveFromSource(signingCertificateSource, candidatesForSigningCertificate);
 		}
 		
 		checkCandidatesAgainstSigningCertificateRef(candidatesForSigningCertificate);
