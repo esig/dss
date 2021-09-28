@@ -1119,8 +1119,6 @@
 	<xs:complexType name="OrphanToken" abstract="true">
 		<xs:complexContent>
             <xs:extension base="AbstractToken">
-				<xs:sequence>
-				</xs:sequence>
 				<xs:attribute name="EncapsulationType" type="EncapsulationType" use="required" />
 			</xs:extension>
 		</xs:complexContent>

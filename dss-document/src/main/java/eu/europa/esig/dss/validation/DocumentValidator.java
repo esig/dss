@@ -124,16 +124,6 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	void setManifestFile(final ManifestFile manifestFile);
 
 	/**
-	 * This method allows to define the signing certificate. It is useful in the
-	 * case of non AdES signatures.
-	 *
-	 * @param x509Certificate {@link CertificateToken}
-	 * @deprecated use {@link #setSigningCertificateSource(CertificateSource)}
-	 */
-	@Deprecated
-	void defineSigningCertificate(final CertificateToken x509Certificate);
-
-	/**
 	 * Set a certificate source which allows to find the signing certificate by kid
 	 * or certificate's digest
 	 * 

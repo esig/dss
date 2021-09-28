@@ -29,7 +29,6 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -38,7 +37,6 @@ import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -238,15 +236,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return TRUE if the document is supported, FALSE otherwise
 	 */
 	public abstract boolean isSupported(DSSDocument dssDocument);
-
-	@Override
-	@Deprecated
-	public void defineSigningCertificate(final CertificateToken token) {
-		Objects.requireNonNull(token, "Token is not defined");
-		CertificateSource signingCertificateResolver = new CommonCertificateSource();
-		signingCertificateResolver.addCertificate(token);
-		setSigningCertificateSource(signingCertificateResolver);
-	}
 
 	@Override
 	public void setSigningCertificateSource(CertificateSource signingCertificateSource) {

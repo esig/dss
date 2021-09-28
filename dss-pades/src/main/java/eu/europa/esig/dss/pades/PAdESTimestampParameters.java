@@ -159,18 +159,6 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 		return timestampDate;
 	}
 
-	/**
-	 * Sets signature field id where the timestamp will be placed on
-	 * 
-	 * Deprecated. Use {@code getImageParameters().getFieldParameters().setFieldId()}
-	 * 
-	 * @param timestampFieldId {@link String}
-	 */
-	@Deprecated
-	public void setFieldId(String timestampFieldId) {
-		getImageParameters().getFieldParameters().setFieldId(timestampFieldId);
-	}
-
 	@Override
 	public String getPasswordProtection() {
 		return passwordProtection;
