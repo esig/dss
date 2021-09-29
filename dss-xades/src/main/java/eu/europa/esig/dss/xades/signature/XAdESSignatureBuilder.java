@@ -371,7 +371,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 */
 	public void incorporateSignedInfo() {
 		if (Utils.isArrayNotEmpty(params.getSignedData())) {
-			LOG.debug("Using explict SignedInfo from parameter");
+			LOG.debug("Using explicit SignedInfo from parameter");
 			signedInfoDom = DomUtils.buildDOM(params.getSignedData()).getDocumentElement();
 			signedInfoDom = (Element) documentDom.importNode(signedInfoDom, true);
 			signatureDom.appendChild(signedInfoDom);
@@ -1434,7 +1434,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	}
 	
 	private void addAssertions(final List<String> signedAssertions, final Element rolesDom) {
-
 		for (final String signedAssertion : signedAssertions) {
 			final Element roleDom = DomUtils.addElement(documentDom, rolesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignedAssertion());			
 			Document samlAssertion = DomUtils.buildDOM(signedAssertion);

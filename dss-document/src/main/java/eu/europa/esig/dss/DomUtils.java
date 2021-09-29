@@ -163,18 +163,31 @@ public final class DomUtils {
 		transformer.setErrorListener(new DSSXmlErrorListener());
 		return transformer;
 	}
+
+	/**
+	 * Checks if the given {@code byteArray} content starts with an XML Preamble {@code '<'}
+	 * Processes values with or without BOM-encoding
+	 * NOTE: does not check XML-conformity of the whole file
+	 *       call isDOM(byteArray) for a deep check
+	 *
+	 * @param byteArray byte array to verify
+	 * @return TRUE if the provided byte array starts from xmlPreamble, FALSE otherwise
+	 */
+	public static boolean startsWithXmlPreamble(byte[] byteArray) {
+		return DSSUtils.startsWithBytes(byteArray, xmlPreamble) || DSSUtils.startsWithBytes(byteArray, xmlWithBomPreample);
+	}
 	
 	/**
 	 * Checks if the given document starts with an XML Preamble {@code '<'}
 	 * Processes values with or without BOM-encoding
 	 * NOTE: does not check XML-conformity of the whole file
-	 *       call isDOM(bytes) for a deep check
+	 *       call isDOM(DSSDocument) for a deep check
 	 * 
 	 * @param document {@link DSSDocument} to verify
 	 * @return TRUE if the provided document starts from xmlPreamble, FALSE otherwise
 	 */
 	public static boolean startsWithXmlPreamble(DSSDocument document) {
-		return DSSUtils.compareFirstBytes(document, xmlPreamble) || DSSUtils.compareFirstBytes(document, xmlWithBomPreample);
+		return DSSUtils.startsWithBytes(document, xmlPreamble) || DSSUtils.startsWithBytes(document, xmlWithBomPreample);
 	}
 
 	/**
@@ -214,6 +227,23 @@ public final class DomUtils {
 	}
 
 	/**
+	 * This method returns the {@link org.w3c.dom.Document} created based on the XML InputStream.
+	 *
+	 * @param inputStream The inputStream stream representing the dssDocument to be
+	 *                    created.
+	 * @return a new {@link org.w3c.dom.Document} from {@link java.io.InputStream} @
+	 */
+	public static Document buildDOM(final InputStream inputStream) {
+		try (InputStream is = inputStream) {
+			return getSecureDocumentBuilderFactory().newDocumentBuilder().parse(is);
+		} catch (ParserConfigurationException | SAXException e) {
+			throw new DSSException(String.format("Unable to parse content (XML expected) : %s", e.getMessage()), e);
+		} catch (IOException e) {
+			throw new DSSException(String.format("An error occurred while reading InputStream : %s", e.getMessage()), e);
+		}
+	}
+
+	/**
 	 * This method returns the {@link org.w3c.dom.Document} created based on the {@link eu.europa.esig.dss.model.DSSDocument}.
 	 *
 	 * @param dssDocument
@@ -234,8 +264,7 @@ public final class DomUtils {
 	 */
 	public static boolean isDOM(final byte[] bytes) {
 		try {
-			final Document dom = buildDOM(bytes);
-			return dom != null;
+			return startsWithXmlPreamble(bytes) && buildDOM(bytes) != null;
 		} catch (DSSException e) {
 			// NOT DOM
 			return false;
@@ -248,7 +277,10 @@ public final class DomUtils {
 	 * 
 	 * @param inputStream {@link InputStream} to be tested
 	 * @return true if the document is an XML
+	 * @deprecated since 5.10. Use isDOM(DSSDocument dssDocument) or isDOM(byte[] bytes)
+	 *                         for a fast failure in case of invalid XML document (this does not verify XML preamble).
 	 */
+	@Deprecated
 	public static boolean isDOM(final InputStream inputStream) {
 		try {
 			final Document dom = buildDOM(inputStream);
@@ -267,27 +299,9 @@ public final class DomUtils {
 	 */
 	public static boolean isDOM(final DSSDocument dssDocument) {
 		try {
-			return startsWithXmlPreamble(dssDocument) && isDOM(dssDocument.openStream());
+			return startsWithXmlPreamble(dssDocument) && buildDOM(dssDocument) != null;
 		} catch (Exception e) {
 			return false;
-		}
-	}
-
-	/**
-	 * This method returns the {@link org.w3c.dom.Document} created based on the XML
-	 * inputStream.
-	 *
-	 * @param inputStream The inputStream stream representing the dssDocument to be
-	 *                    created.
-	 * @return a new {@link org.w3c.dom.Document} from {@link java.io.InputStream} @
-	 */
-	public static Document buildDOM(final InputStream inputStream) {
-		try (InputStream is = inputStream) {
-			return getSecureDocumentBuilderFactory().newDocumentBuilder().parse(is);
-		} catch (ParserConfigurationException | SAXException e) {
-			throw new DSSException(String.format("Unable to parse content (XML expected) : %s", e.getMessage()), e);
-		} catch (IOException e) {
-			throw new DSSException(String.format("An error occurred while reading InputStream : %s", e.getMessage()), e);
 		}
 	}
 

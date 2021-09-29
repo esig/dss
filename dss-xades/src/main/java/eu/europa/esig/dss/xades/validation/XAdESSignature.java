@@ -1240,10 +1240,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	
 	private boolean isDetachedSignatureValueDocument(DSSDocument detachedContents) {
 		try {
-			Document document = DomUtils.buildDOM(detachedContents);
-			if (document != null) {
-				Node node = document.getChildNodes().item(0);
-				return XMLDSigElement.SIGNATURE_VALUE.getTagName().equals(node.getLocalName());
+			if (DomUtils.isDOM(detachedContents)) {
+				Document document = DomUtils.buildDOM(detachedContents);
+				if (document != null) {
+					Node node = document.getChildNodes().item(0);
+					return XMLDSigElement.SIGNATURE_VALUE.getTagName().equals(node.getLocalName());
+				}
 			}
 		} catch (Exception e) {
 			// continue

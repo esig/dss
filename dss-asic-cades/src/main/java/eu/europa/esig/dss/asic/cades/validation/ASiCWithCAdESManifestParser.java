@@ -42,7 +42,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,8 +104,12 @@ public class ASiCWithCAdESManifestParser {
 	}
 	
 	private static Element getManifestRootElement(DSSDocument manifestDocument) {
-		try (InputStream is = manifestDocument.openStream()) {
-			Document manifestDom = DomUtils.buildDOM(is);
+		if (!DomUtils.isDOM(manifestDocument)) {
+			LOG.warn("Unable to analyze manifest file '{}' : Not a valid XML file!", manifestDocument.getName());
+			return null;
+		}
+		try {
+			Document manifestDom = DomUtils.buildDOM(manifestDocument);
 			return DomUtils.getElement(manifestDom, ASiCPaths.ASIC_MANIFEST_PATH);
 		} catch (Exception e) {
 			LOG.warn("Unable to analyze manifest file '{}' : {}", manifestDocument.getName(), e.getMessage());

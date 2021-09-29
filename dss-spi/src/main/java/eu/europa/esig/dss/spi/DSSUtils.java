@@ -827,27 +827,53 @@ public final class DSSUtils {
 	}
 	
 	/**
-	 * Reads first {@code byteArray.length} bytes of the {@code dssDocument} and compares them with {@code byteArray}
+	 * Reads first {@code preamble.length} bytes of the {@code dssDocument} and compares them with {@code preamble}
 	 * 
 	 * @param dssDocument {@link DSSDocument} to read bytes from
-	 * @param byteArray {@code byte} array to compare the beginning string with
-	 * @return TRUE if the document starts from {@code byteArray}, FALSE otherwise
+	 * @param preamble {@code byte} array to compare the beginning string with
+	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
 	 */
-	public static boolean compareFirstBytes(final DSSDocument dssDocument, byte[] byteArray) {
-		try {
-			byte[] preamble = new byte[byteArray.length];
-			readAvailableBytes(dssDocument, preamble);
-			return Arrays.equals(byteArray, preamble);
+	public static boolean startsWithBytes(final DSSDocument dssDocument, byte[] preamble) {
+		return startsWithBytes(dssDocument.openStream(), preamble);
+	}
+
+	/**
+	 * Reads first {@code preamble.length} bytes of the {@code byteArray} and compares them with {@code preamble}
+	 *
+	 * @param byteArray {@link DSSDocument} to compare bytes from
+	 * @param preamble {@code byte} array to compare the beginning string with
+	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
+	 */
+	public static boolean startsWithBytes(final byte[] byteArray, byte[] preamble) {
+		byte[] subarray = Utils.subarray(byteArray, 0, preamble.length);
+		return Arrays.equals(preamble, subarray);
+	}
+
+	/**
+	 * Reads first {@code preamble.length} bytes of the {@code InputStream} and compares them with {@code preamble}
+	 *
+	 * @param inputStream {@link InputStream} to read bytes from
+	 * @param preamble {@code byte} array to compare the beginning string with
+	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
+	 */
+	public static boolean startsWithBytes(final InputStream inputStream, byte[] preamble) {
+		try (InputStream is = inputStream) {
+			byte[] byteArray = new byte[preamble.length];
+			readAvailableBytes(is, byteArray);
+			return Arrays.equals(preamble, byteArray);
+
 		} catch (IllegalStateException e) {
 			LOG.warn("Cannot compare first bytes of the document. Reason : {}", e.getMessage());
 			return false;
+
+		} catch (IOException e) {
+			throw new DSSException("Cannot read a sequence of bytes from the InputStream.", e);
 		}
 	}
 
 	/**
-	 * Concatenates all the arrays into a new array. The new array contains all of the element of each array followed by
-	 * all of the elements of the next array. When an array is
-	 * returned, it is always a new array.
+	 * Concatenates all the arrays into a new array. The new array contains all bytes of each array followed by
+	 * all bytes of the next array. When an array is returned, it is always a new array.
 	 *
 	 * @param arrays
 	 *            {@code byte} arrays to concatenate
@@ -1257,6 +1283,7 @@ public final class DSSUtils {
 	/**
 	 * Transforms the given array of integers to a list of {@code BigInteger}s
 	 *
+	 * @param integers array of integers
 	 * @return a list of {@link BigInteger}s
 	 */
 	public static List<BigInteger> toBigIntegerList(int[] integers) {

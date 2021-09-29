@@ -753,6 +753,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 					String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
 					if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
 						found = true;
+						break;
 					}
 				}
 
@@ -778,7 +779,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 
 	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
 		byte[] byteArray = DSSUtils.toByteArray(doc);
-		if (toBeCanonicalized) {
+		if (toBeCanonicalized && DomUtils.isDOM(doc)) {
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 				// we canonicalize to ignore the header (which is not covered by the signature)
 				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());

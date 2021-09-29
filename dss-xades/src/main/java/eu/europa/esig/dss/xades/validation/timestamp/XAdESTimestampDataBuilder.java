@@ -662,8 +662,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
          * Namespaces are not added to canonicalizer for new created elements.
          * The binaries need to be parsed at a new instance of Document
          */
-        final byte[] canonicalizedDoc = DSSXMLUtils.serializeNode(signature.getOwnerDocument());
-        Document recreatedDocument = DomUtils.buildDOM(canonicalizedDoc);
+        final byte[] serializedDoc = DSSXMLUtils.serializeNode(signature.getOwnerDocument());
+        Document recreatedDocument = DomUtils.buildDOM(serializedDoc);
         Element recreatedSignature = DomUtils.getElementById(recreatedDocument, DSSXMLUtils.getIDIdentifier(signature));
         return DomUtils.getElement(recreatedSignature, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}

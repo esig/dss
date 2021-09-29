@@ -261,7 +261,7 @@ public final class PAdESUtils {
 	 * @return TRUE if the document is a PDF, FALSE otherwise
 	 */
 	public static boolean isPDFDocument(DSSDocument document) {
-		return DSSUtils.compareFirstBytes(document, PDF_PREAMBLE);
+		return DSSUtils.startsWithBytes(document, PDF_PREAMBLE);
 	}
 
 	/**

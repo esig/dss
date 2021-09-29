@@ -221,6 +221,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Document rootDocument;
 		// If ASiC-S OR OpenDocument + already existing signature file, we re-use the same signature file
 		if (existingXAdESSignature != null) {
+			if (!DomUtils.isDOM(existingXAdESSignature)) {
+				throw new IllegalInputException(String.format("The provided signature file '%s' is not a valid XML! " +
+								"Unable to sign.", existingXAdESSignature.getName()));
+			}
 			rootDocument = DomUtils.buildDOM(existingXAdESSignature);
 		} else {
 			rootDocument = buildDomRoot(openDocument);
