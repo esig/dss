@@ -88,11 +88,10 @@ import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESFiveSignaturesD
 import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESMultiSignedDocRevocTest;
 import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESRevocationOriginTest;
 import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESSignatureDigestReferenceTest;
-import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(JUnitPlatform.class)
+@Suite
 @SelectClasses({ ASN1PolicyTest.class, DSS1188Test.class, DSS1376GetOriginalDocTest.class, DSS1420Test.class, DSS1420Sha224Test.class,
 		DSS818CRYTest.class, DSS818ADOTest.class, DSS818SKTest.class, DSS917Test.class, DSS917CorruptedTest.class, PadesWrongDigestAlgoTest.class,
 		PdfPkcs7Test.class, DSS1538Test.class, DSS1683Test.class, DSS1690Test.class, PAdESRevocationOriginTest.class, PAdESMultiSignedDocRevocTest.class,

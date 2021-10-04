@@ -20,11 +20,6 @@
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.surefire</groupId>
-						<artifactId>surefire-junit47</artifactId>
-						<version>3.0.0-M3</version>
-					</dependency>
-					<dependency>
-						<groupId>org.apache.maven.surefire</groupId>
 						<artifactId>surefire-junit-platform</artifactId>
 						<version>3.0.0-M3</version>
 					</dependency>
@@ -64,7 +59,7 @@
 		</dependency>
 		<dependency>
 		    <groupId>org.junit.platform</groupId>
-		    <artifactId>junit-platform-runner</artifactId>
+			<artifactId>junit-platform-suite-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

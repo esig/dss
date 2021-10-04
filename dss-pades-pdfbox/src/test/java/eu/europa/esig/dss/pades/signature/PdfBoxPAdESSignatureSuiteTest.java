@@ -72,11 +72,10 @@ import eu.europa.esig.dss.pades.signature.suite.PDFTimestampFiltersTest;
 import eu.europa.esig.dss.pades.signature.suite.ProtectedDocumentsSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSignaturesMustHaveDifferentIdTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESLevelBCertificationTest;
-import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(JUnitPlatform.class)
+@Suite
 @SelectClasses({ DigestStabilityTest.class, GetOriginalDocumentTest.class, PAdESDoubleSignatureTest.class, PAdESLevelBTest.class,
 		PAdESLevelBExternalSignatureTest.class, PAdESLevelBLoopTest.class, PAdESLevelBNotEnoughSpaceForSignatureTest.class,
 		PAdESLevelBOnlySigningCertTest.class, PAdESLevelBWithContentTimestampTest.class, PAdESLevelBWithDSATest.class,

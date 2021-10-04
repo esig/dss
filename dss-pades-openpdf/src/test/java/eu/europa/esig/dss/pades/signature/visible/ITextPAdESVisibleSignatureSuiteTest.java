@@ -37,11 +37,10 @@ import eu.europa.esig.dss.pades.signature.visible.suite.PAdESWithSignatureAndTim
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESWithSignatureInvisibleAndTimestampVisibleTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESWithSignatureVisibleAndTimestampInvisibleTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PDFSignatureServiceTest;
-import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(JUnitPlatform.class)
+@Suite
 @SelectClasses(value = { PAdESSignatureFieldTest.class, PAdESVisibleSignatureTest.class, PAdESFieldLevelBTest.class,
         PAdESWithSignatureAndTimestampVisibleTest.class, PAdESWithSignatureVisibleAndTimestampInvisibleTest.class,
         PAdESWithSignatureInvisibleAndTimestampVisibleTest.class, PAdESVisibleSignatureWithJavaFontTest.class,

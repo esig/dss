@@ -45,10 +45,10 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithError500TimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithFailTimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithSelfSignedTest;
-import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTANoChangesPermittedTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToLTALevelTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToLTLevelTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToTLevelTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTANoChangesPermittedTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTASelfSignedTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTATest;
@@ -58,11 +58,10 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTWithSelfSignedTest;
 import eu.europa.esig.dss.pades.extension.suite.PDFArchiveTimestampingTest;
 import eu.europa.esig.dss.pades.extension.suite.PDFTimestampingTest;
-import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(JUnitPlatform.class)
+@Suite
 @SelectClasses({ PAdESExtensionBToLTTest.class, PAdESExtensionBToLTATest.class, PAdESExtensionBToTTest.class, PAdESExtensionBToTWithCompositeTSATest.class,
 		PAdESExtensionBToTWithError500TimestampTest.class, PAdESExtensionBToTWithFailTimestampTest.class, PAdESExtensionLTAToLTATest.class,
 		PAdESExtensionLTToLTATest.class, PAdESExtensionLTToLTAWithError500TimestampTest.class, PAdESExtensionLTToLTAWithFailTimestampTest.class,
