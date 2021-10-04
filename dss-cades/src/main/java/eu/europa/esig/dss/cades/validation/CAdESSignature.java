@@ -732,7 +732,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			DSSDocument originalDocument = null;
 			try {
-				originalDocument = getOriginalDocument();
+				originalDocument = getSignerDocumentContent();
 			} catch (DSSException e) {
 				LOG.warn("Original document not found");
 			}
@@ -750,6 +750,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		}
 		return referenceValidations;
+	}
+
+	/**
+	 * This method extracts a document content that was signed
+	 *
+	 * NOTE: Some differences are possible with PAdES
+	 *
+	 * @return {@link DSSDocument}
+	 */
+	protected DSSDocument getSignerDocumentContent() {
+		return getOriginalDocument();
 	}
 
 	private boolean verifyDigestAlgorithm(DSSDocument originalDocument, Set<DigestAlgorithm> messageDigestAlgorithms,
@@ -797,6 +808,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return referenceValidations;
 	}
 	
+	/**
+	 * Verifies a message-digest of a CMSSignedData, when applicable
+	 *
+	 * @param originalDocument {@link DSSDocument} the signed original document
+	 * @param messageDigestValue message-digest byte array content
+	 * @return {@link ReferenceValidation}
+	 */
 	private ReferenceValidation getMessageDigestReferenceValidation(DSSDocument originalDocument, byte[] messageDigestValue) {
 		ReferenceValidation messageDigestValidation = new ReferenceValidation();
 		messageDigestValidation.setType(DigestMatcherType.MESSAGE_DIGEST);
@@ -833,6 +851,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return messageDigestValidation;
 	}
 	
+	/**
+	 * Verifies a content digest, when applicable
+	 *
+	 * @param originalDocument {@link DSSDocument} the signed original document
+	 * @param signerInformation {@link SignerInformation}
+	 * @return {@link ReferenceValidation}
+	 */
 	private ReferenceValidation getContentReferenceValidation(DSSDocument originalDocument, SignerInformation signerInformation) {
 		ReferenceValidation contentValidation = new ReferenceValidation();
 		contentValidation.setType(DigestMatcherType.CONTENT_DIGEST);

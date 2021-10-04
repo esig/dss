@@ -122,6 +122,10 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
                     "signature-policy-identifier is present in the CMS signature for PAdES-BASELINE-B signature! (requirement (m))");
             return false;
         }
+        if (!padesSignature.getCmsSignedData().isDetachedSignature()) {
+            LOG.warn("No data shall be encapsulated in the PKCS#7 SignedData field for PAdES-BASELINE-B signature!");
+            return false;
+        }
         return true;
     }
 

@@ -24,7 +24,9 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
@@ -200,6 +202,27 @@ public class PAdESSignature extends CAdESSignature {
 	public List<AdvancedSignature> getCounterSignatures() {
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
+	}
+
+	@Override
+	public DSSDocument getOriginalDocument() {
+		return pdfSignatureRevision.getSignedData();
+	}
+
+	@Override
+	protected DSSDocument getSignerDocumentContent() {
+		DSSDocument signerDocument = getOriginalDocument();
+		/*
+		 * ISO 32000-1:
+		 *
+		 * adbe.pkcs7.sha1: The SHA-1 digest of the document’s byte range shall be encapsulated in
+		 * the CMSSignedData field with ContentInfo of type Data.
+		 */
+		if (signerDocument != null && getPdfSignatureDictionary() != null &&
+				PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(getPdfSignatureDictionary().getSubFilter())) {
+			signerDocument = new InMemoryDocument(Utils.fromBase64(signerDocument.getDigest(DigestAlgorithm.SHA1)));
+		}
+		return signerDocument;
 	}
 
 	@Override
