@@ -72,7 +72,7 @@ public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 				assertEquals(1, visualDifferences.size());
 				assertEquals(2, visualDifferences.get(0).getPage().intValue());
 
-				assertNotNull(signature.arePdfObjectModificationsDetected());
+				assertTrue(signature.arePdfObjectModificationsDetected());
 
 				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
 				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
@@ -82,6 +82,8 @@ public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 				firstSignatureFound = true;
 
 			} else if (objectModifications != null) {
+				assertTrue(signature.arePdfObjectModificationsDetected());
+
 				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
 				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
 				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
