@@ -882,12 +882,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 							getXadesNamespace(), getCurrentXAdESElements().getElementSigPolicyHash());
 
 					final DigestAlgorithm digestAlgorithm = signaturePolicy.getDigestAlgorithm();
-					DSSXMLUtils.incorporateDigestMethod(sigPolicyHashDom, digestAlgorithm, getXmldsigNamespace());
+					incorporateDigestMethod(sigPolicyHashDom, digestAlgorithm);
 
 					final byte[] hashValue = signaturePolicy.getDigestValue();
-					final String bas64EncodedHashValue = Utils.toBase64(hashValue);
-					DomUtils.addTextElement(documentDom, sigPolicyHashDom, getXmldsigNamespace(),
-							XMLDSigElement.DIGEST_VALUE, bas64EncodedHashValue);
+					final String base64EncodedHashValue = Utils.toBase64(hashValue);
+					incorporateDigestValue(sigPolicyHashDom, base64EncodedHashValue);
 				}
 
 				if (signaturePolicy.isSPQualifierPresent()) {

@@ -336,23 +336,31 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 		List<CertificateRef> certRefs = new ArrayList<>();
 		boolean certificateRefV1 = isCertificateRefV1(unsignedAttribute);
 
-		NodeList certRefsNodeList;
+		NodeList certRefsNodeList = null;
 		if (certificateRefV1) {
-			certRefsNodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsCertChildren());
+			String currentCertRefsCertChildrenPath = xadesPaths.getCurrentCertRefsCertChildren();
+			if (Utils.isStringNotEmpty(currentCertRefsCertChildrenPath)) {
+				certRefsNodeList = unsignedAttribute.getNodeList(currentCertRefsCertChildrenPath);
+			}
 		} else {
-			certRefsNodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefs141CertChildren());
+			String currentCertRefs141CertChildrenPath = xadesPaths.getCurrentCertRefs141CertChildren();
+			if (Utils.isStringNotEmpty(currentCertRefs141CertChildrenPath)) {
+				certRefsNodeList = unsignedAttribute.getNodeList(currentCertRefs141CertChildrenPath);
+			}
 		}
 
-		for (int ii = 0; ii < certRefsNodeList.getLength(); ii++) {
-			Element certRefElement = (Element) certRefsNodeList.item(ii);
-			CertificateRef certificateRef;
-			if (certificateRefV1) {
-				certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV1(certRefElement, xadesPaths);
-			} else {
-				certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV2(certRefElement, xadesPaths);
-			}
-			if (certificateRef != null) {
-				certRefs.add(certificateRef);
+		if (certRefsNodeList != null) {
+			for (int ii = 0; ii < certRefsNodeList.getLength(); ii++) {
+				Element certRefElement = (Element) certRefsNodeList.item(ii);
+				CertificateRef certificateRef;
+				if (certificateRefV1) {
+					certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV1(certRefElement, xadesPaths);
+				} else {
+					certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV2(certRefElement, xadesPaths);
+				}
+				if (certificateRef != null) {
+					certRefs.add(certificateRef);
+				}
 			}
 		}
 		return certRefs;

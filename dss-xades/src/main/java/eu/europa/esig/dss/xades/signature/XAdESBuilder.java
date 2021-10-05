@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -149,17 +148,12 @@ public abstract class XAdESBuilder {
 	 *            the digest algorithm to use
 	 */
 	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
-		Element digestMethodDom;
-		if (XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
-			digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), XAdES111Element.DIGEST_METHOD);
-		} else {
-			digestMethodDom = DomUtils.addElement(documentDom, parentDom, getXmldsigNamespace(), XMLDSigElement.DIGEST_METHOD);
-		}
-		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
+		DSSNamespace namespace = getDigestAlgAndValueNamespace();
+		DSSXMLUtils.incorporateDigestMethod(parentDom, digestAlgorithm, namespace);
 	}
 
 	/**
-	 * This method creates the ds:DigestValue DOM object.
+	 * This method creates the ds:DigestValue DOM object for a given {@code Token}
 	 *
 	 * <pre>
 	 * {@code
@@ -175,14 +169,35 @@ public abstract class XAdESBuilder {
 	 *            {@link Token} to compute Digest from
 	 */
 	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, Token token) {
-		DSSNamespace namespace = XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri()) ?
-				getXadesNamespace() : getXmldsigNamespace();
 		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Digest value for the token with Id [{}] --> {}", token.getDSSIdAsString(), base64EncodedDigestBytes);
 		}
+		incorporateDigestValue(parentDom, base64EncodedDigestBytes);
+	}
+
+	/**
+	 * This method creates the ds:DigestValue DOM object.
+	 *
+	 * <pre>
+	 * {@code
+	 * 	   <ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom {@link Element} the parent element
+	 * @param base64EncodedDigestBytes {@link String} base64 encoded digest value
+	 */
+	protected void incorporateDigestValue(final Element parentDom, String base64EncodedDigestBytes) {
+		DSSNamespace namespace = getDigestAlgAndValueNamespace();
 		DSSXMLUtils.incorporateDigestValue(parentDom, base64EncodedDigestBytes, namespace);
 	}
+
+	private DSSNamespace getDigestAlgAndValueNamespace() {
+		return XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri()) ?
+				getXadesNamespace() : getXmldsigNamespace();
+	}
+
 
 	/**
 	 * Creates Cert DOM object:

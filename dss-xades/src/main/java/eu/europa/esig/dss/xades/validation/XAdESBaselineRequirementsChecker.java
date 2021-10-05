@@ -371,10 +371,10 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         Element signatureElement = signature.getSignatureElement();
         XAdESPaths xadesPaths = signature.getXAdESPaths();
 
-        final boolean refsOnlyTst = DomUtils.isNotEmpty(signatureElement, xadesPaths.getRefsOnlyTimestampPath());
-        final boolean refsOnlyTstV2 = DomUtils.isNotEmpty(signatureElement, xadesPaths.getRefsOnlyTimestampV2Path());
-        final boolean sigAndRefsTst = DomUtils.isNotEmpty(signatureElement, xadesPaths.getSigAndRefsTimestampPath());
-        final boolean sigAndRefsTstV2 = DomUtils.isNotEmpty(signatureElement, xadesPaths.getSigAndRefsTimestampV2Path());
+        final boolean refsOnlyTst = isElementPresent(signatureElement, xadesPaths.getRefsOnlyTimestampPath());
+        final boolean refsOnlyTstV2 = isElementPresent(signatureElement, xadesPaths.getRefsOnlyTimestampV2Path());
+        final boolean sigAndRefsTst = isElementPresent(signatureElement, xadesPaths.getSigAndRefsTimestampPath());
+        final boolean sigAndRefsTstV2 = isElementPresent(signatureElement, xadesPaths.getSigAndRefsTimestampV2Path());
         if (!refsOnlyTst && !refsOnlyTstV2 && !sigAndRefsTst && !sigAndRefsTstV2) {
             LOG.debug("Either RefsOnlyTimestamp(V2) or SigAndRefsTimestamp(V2) shall be present for XAdES-X signature)!");
             return false;
@@ -405,6 +405,13 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return DomUtils.getNodesAmount(element, xPath);
         }
         return 0;
+    }
+
+    private boolean isElementPresent(final Node xmlNode, final String xPathString) {
+        if (Utils.isStringEmpty(xPathString)) {
+            return false;
+        }
+        return DomUtils.isNotEmpty(xmlNode, xPathString);
     }
 
 }
