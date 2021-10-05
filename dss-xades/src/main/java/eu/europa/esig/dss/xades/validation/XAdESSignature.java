@@ -1458,7 +1458,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (references == null) {
 			XMLSignature santuarioSignature = getSantuarioSignature();
 			SignedInfo signedInfo = santuarioSignature.getSignedInfo();
-			return DSSXMLUtils.extractReferences(signedInfo);
+            references = DSSXMLUtils.extractReferences(signedInfo);
 		}
 		return references;
 	}

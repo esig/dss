@@ -59,7 +59,7 @@ public class JAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	}
 
 	@Override
-	protected Integer getSignatureFilePosition() {
+	protected Integer getSignaturePosition() {
 		JAdESSignature jadesSignature = (JAdESSignature) signature;
 		JWS currentJWS = jadesSignature.getJws();
 		JWSJsonSerializationObject jwsJsonSerializationObject = jadesSignature.getJws().getJwsJsonSerializationObject();

@@ -423,8 +423,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private boolean hasDuplicate(AdvancedSignature currentSignature) {
 		for (AdvancedSignature signature : signatures) {
 			if (currentSignature != signature
-					&& (currentSignature.getId().equals(signature.getId()) || currentSignature.getDAIdentifier() != null
-							&& currentSignature.getDAIdentifier().equals(signature.getDAIdentifier()))) {
+					&& (currentSignature.getId().equals(signature.getId()) ||
+					(currentSignature.getDAIdentifier() != null && currentSignature.getDAIdentifier().equals(signature.getDAIdentifier())
+							&& currentSignature.getSignatureFilename() != null && currentSignature.getSignatureFilename().equals(signature.getSignatureFilename())))) {
 				return true;
 			}
 		}

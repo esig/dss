@@ -138,7 +138,7 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 	}
 
 	/**
-	 * Returns Id repesenting a current signature position in a file,
+	 * Returns Id representing a current signature position in a file,
 	 * considering its pre-siblings, master signatures when present
 	 * 
 	 * @return {@link String} position id
@@ -151,6 +151,7 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 			stringBuilder.append(masterSignature.getId());
 			stringBuilder.append(getCounterSignaturePosition(masterSignature));
 		} else {
+			stringBuilder.append(getSignaturePosition());
 			stringBuilder.append(getSignatureFilePosition());
 		}
 		
@@ -170,6 +171,18 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 	 * 
 	 * @return signature position in a file
 	 */
-	protected abstract Object getSignatureFilePosition();
+	protected abstract Object getSignaturePosition();
+
+	/**
+	 * This method returns a position of a signature file
+	 *
+	 * NOTE: this method returns a signature filename for ASiC containers, empty string for others
+	 *
+	 * @return signature file position
+	 */
+	protected Object getSignatureFilePosition() {
+		// empty by default
+		return Utils.EMPTY_STRING;
+	}
 
 }

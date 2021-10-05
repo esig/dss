@@ -44,7 +44,7 @@ public class PAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	}
 
 	@Override
-	protected String getSignatureFilePosition() {
+	protected String getSignaturePosition() {
 		PAdESSignature padesSignature = (PAdESSignature) signature;
 		StringBuilder stringBuilder = new StringBuilder();
 		PdfSignatureRevision pdfRevision = padesSignature.getPdfRevision();

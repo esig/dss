@@ -458,6 +458,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkTrustedServices(diagnosticData);
 		checkContainerInfo(diagnosticData);
 
+		checkNoDuplicateSignatures(diagnosticData);
 		checkNoDuplicateCompleteCertificates(diagnosticData);
 		checkNoDuplicateCompleteRevocationData(diagnosticData);
 	}
@@ -1057,6 +1058,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	
 	protected void checkCounterSignatures(DiagnosticData diagnosticData) {
 		// not implemented by default
+	}
+
+	protected void checkNoDuplicateSignatures(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertFalse(signatureWrapper.isSignatureDuplicated());
+		}
 	}
 
 	protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
