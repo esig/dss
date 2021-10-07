@@ -36,7 +36,6 @@ import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -57,6 +56,7 @@ public class OnlineOCSPSourceTest {
 	private static CertificateToken rootToken;
 
 	private static CertificateToken goodUser;
+	private static CertificateToken goodUserOCSPWithReqCertId;
 	private static CertificateToken goodCa;
 	private static CertificateToken ed25519goodUser;
 	private static CertificateToken ed25519goodCa;
@@ -68,6 +68,7 @@ public class OnlineOCSPSourceTest {
 
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user.crt"));
+		goodUserOCSPWithReqCertId = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user-ocsp-certid-digest.crt"));
 		goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
 
 		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-user.crt"));
@@ -201,11 +202,7 @@ public class OnlineOCSPSourceTest {
 	}
 	
 	@Test
-	@Disabled
 	public void customCertIDDigestAlgorithmTest() {
-		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/cert.pem"));
-		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/cert_CA.pem"));
-		
 		OCSPDataLoader dataLoader = new OCSPDataLoader();
 		dataLoader.setTimeoutConnection(10000);
 		dataLoader.setTimeoutSocket(10000);
@@ -213,13 +210,25 @@ public class OnlineOCSPSourceTest {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource(dataLoader);
 		ocspSource.setDigestAlgorithmsForExclusion(Collections.emptyList());
 
-		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
+		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
 		assertNotNull(ocspToken);
 		assertEquals(SignatureAlgorithm.RSA_SHA1, ocspToken.getSignatureAlgorithm()); // default value
 		
 		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA256);
-		ocspToken = ocspSource.getRevocationToken(certificateToken, caToken);
+		ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
 		assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
+
+		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA512);
+		ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
+		assertEquals(SignatureAlgorithm.RSA_SHA512, ocspToken.getSignatureAlgorithm());
+
+		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA3_256);
+		ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
+		assertEquals(SignatureAlgorithm.RSA_SHA3_256, ocspToken.getSignatureAlgorithm());
+
+		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA3_512);
+		ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
+		assertEquals(SignatureAlgorithm.RSA_SHA3_512, ocspToken.getSignatureAlgorithm());
 	}
 	
 	@Test
