@@ -1638,18 +1638,19 @@ public abstract class DiagnosticDataBuilder {
 		Map<CertificateToken, List<TrustProperties>> result = new HashMap<>();
 		Set<CertificateToken> processedTokens = new HashSet<>();
 		for (CertificateSource trustedSource : allCertificateSources.getSources()) {
+			CertificateToken currectCertificate = certToken;
 			if (trustedSource instanceof TrustedListsCertificateSource) {
 				TrustedListsCertificateSource trustedCertSource = (TrustedListsCertificateSource) trustedSource;
-				while (certToken != null) {
+				while (currectCertificate != null) {
 					List<TrustProperties> trustServices = trustedCertSource.getTrustServices(certToken);
 					if (!trustServices.isEmpty()) {
-						result.put(certToken, trustServices);
+						result.put(currectCertificate, trustServices);
 					}
-					if (certToken.isSelfSigned() || processedTokens.contains(certToken)) {
+					if (currectCertificate.isSelfSigned() || processedTokens.contains(certToken)) {
 						break;
 					}
-					processedTokens.add(certToken);
-					certToken = getIssuerCertificate(certToken);
+					processedTokens.add(currectCertificate);
+					currectCertificate = getIssuerCertificate(currectCertificate);
 				}
 			}
 		}

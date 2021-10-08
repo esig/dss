@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
@@ -43,8 +44,7 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.RevocationAcceptanceChecker;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
@@ -89,8 +89,6 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SerialNumberChec
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SurnameCheck;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The sub X509 certificate validation
@@ -224,22 +222,15 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
 			
 			item = item.setNextItem(revocationDataPresent(currentCertificate, subContext));
-			
-			Map<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResultMap = getRevocationAcceptanceResult(currentCertificate);
-			for (Map.Entry<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResult : revocationAcceptanceResultMap.entrySet()) {
-				CertificateRevocationWrapper currentRevocation = revocationAcceptanceResult.getKey();
-				XmlRAC currentRAC = revocationAcceptanceResult.getValue();
-				
-				result.getRAC().add(currentRAC);
-				
-				item = item.setNextItem(revocationAcceptable(currentRAC));
-				
-				if (isValid(currentRAC) && 
-						(latestCertificateRevocation == null || currentRevocation.getProductionDate().after(latestCertificateRevocation.getProductionDate()))) {
-					latestCertificateRevocation = currentRevocation;
-				}
-				
-			}
+
+			CertificateRevocationSelector certificateRevocationSelector = new CertificateRevocationSelector(
+					i18nProvider, currentCertificate, currentTime, context, subContext, validationPolicy);
+			XmlCRS xmlCRS = certificateRevocationSelector.execute();
+			result.setCRS(xmlCRS);
+
+			// acceptable revocation data is found
+
+			latestCertificateRevocation = certificateRevocationSelector.getLatestAcceptableCertificateRevocation();
 			
 			if (latestCertificateRevocation != null && latestCertificateRevocation.isRevoked()) {
 				attachRevocationInformation(latestCertificateRevocation);
@@ -327,22 +318,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> revocationDataPresent(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getRevocationDataAvailableConstraint(context, subContext);
 		return new RevocationDataAvailableCheck<>(i18nProvider, result, certificate, constraint);
-	}
-	
-	private Map<CertificateRevocationWrapper, XmlRAC> getRevocationAcceptanceResult(CertificateWrapper certificate) {
-		Map<CertificateRevocationWrapper, XmlRAC> revocationAcceptanceResultMap = new HashMap<>();
-		
-		for (CertificateRevocationWrapper revocationWrapper : certificate.getCertificateRevocationData()) {
-			RevocationAcceptanceChecker rac = new RevocationAcceptanceChecker(i18nProvider, certificate, revocationWrapper, currentTime, validationPolicy);
-			XmlRAC racResult = rac.execute();
-			revocationAcceptanceResultMap.put(revocationWrapper, racResult);
-		}
-		
-		return revocationAcceptanceResultMap;
-	}
-	
-	private ChainItem<XmlSubXCV> revocationAcceptable(XmlRAC racResult) {
-		return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
 	}
 	
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {

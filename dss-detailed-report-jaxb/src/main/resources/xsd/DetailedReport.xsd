@@ -212,6 +212,17 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="CRS"> <!-- CertificateRevocationSelector -->
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="RAC" type="RAC" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+				<xs:attribute name="CertificateId" type="xs:string" />
+				<xs:attribute name="LatestAcceptableRevocationId" type="xs:string" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="RAC"> <!-- RevocationAcceptanceCheck -->
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
@@ -269,7 +280,7 @@
 							<xs:list itemType="xs:string"/>
 						</xs:simpleType>
 					</xs:element>
-					<xs:element name="RAC" type="RAC" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="CRS" type="CRS" minOccurs="0" />
 					<xs:element name="RFC" type="RFC" minOccurs="0" />
 					<xs:element name="RevocationInfo" type="RevocationInformation" minOccurs="0" />
 				</xs:sequence>
