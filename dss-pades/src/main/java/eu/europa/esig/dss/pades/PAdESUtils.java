@@ -152,7 +152,7 @@ public final class PAdESUtils {
 					baos.write(tempRevision.toByteArray());
 					tempRevision.close();
 					tempRevision = new ByteArrayOutputStream();
-				} else if (b == 0x0a || stringBytes.length > eof.length) {
+				} else if (b == 0x0a || b == 0x0d || stringBytes.length > eof.length) {
 					tempRevision.write(tempLine.toByteArray());
 					tempLine.close();
 					tempLine = new ByteArrayOutputStream();
