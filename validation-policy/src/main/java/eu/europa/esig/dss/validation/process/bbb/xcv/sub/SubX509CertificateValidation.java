@@ -20,11 +20,8 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -40,6 +37,7 @@ import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -67,6 +65,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcEuL
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcEuPDSLocationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcSSCDCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcTypeCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevocationSelectorResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSemanticsIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
@@ -223,29 +222,37 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			
 			item = item.setNextItem(revocationDataPresent(currentCertificate, subContext));
 
-			CertificateRevocationSelector certificateRevocationSelector = new CertificateRevocationSelector(
-					i18nProvider, currentCertificate, currentTime, context, subContext, validationPolicy);
-			XmlCRS xmlCRS = certificateRevocationSelector.execute();
-			result.setCRS(xmlCRS);
+			if (Utils.isCollectionNotEmpty(currentCertificate.getCertificateRevocationData())) {
 
-			// acceptable revocation data is found
+				CertificateRevocationSelector certificateRevocationSelector = new CertificateRevocationSelector(
+						i18nProvider, currentCertificate, currentTime, validationPolicy);
+				XmlCRS xmlCRS = certificateRevocationSelector.execute();
+				result.setCRS(xmlCRS);
 
-			latestCertificateRevocation = certificateRevocationSelector.getLatestAcceptableCertificateRevocation();
-			
-			if (latestCertificateRevocation != null && latestCertificateRevocation.isRevoked()) {
-				attachRevocationInformation(latestCertificateRevocation);
+				item = item.setNextItem(checkCertificateRevocationSelectorResult(xmlCRS));
+
+				latestCertificateRevocation = certificateRevocationSelector.getLatestAcceptableCertificateRevocation();
+
+				if (latestCertificateRevocation != null && latestCertificateRevocation.isRevoked()) {
+					attachRevocationInformation(latestCertificateRevocation);
+				}
+
+				if (isValid(xmlCRS)) {
+
+					item = item.setNextItem(certificateNotRevoked(latestCertificateRevocation, subContext));
+
+					item = item.setNextItem(certificateNotOnHold(latestCertificateRevocation, subContext));
+
+					RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, latestCertificateRevocation,
+							currentTime, context, subContext, validationPolicy);
+					XmlRFC rfcResult = rfc.execute();
+					result.setRFC(rfcResult);
+
+					item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfcResult));
+
+				}
+
 			}
-
-			item = item.setNextItem(certificateNotRevoked(latestCertificateRevocation, subContext));
-
-			item = item.setNextItem(certificateNotOnHold(latestCertificateRevocation, subContext));
-			
-			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, latestCertificateRevocation, 
-					currentTime, context, subContext, validationPolicy);
-			XmlRFC rfcResult = rfc.execute();
-			result.setRFC(rfcResult);
-
-			item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfcResult));
 			
 		}
 
@@ -318,6 +325,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> revocationDataPresent(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getRevocationDataAvailableConstraint(context, subContext);
 		return new RevocationDataAvailableCheck<>(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> checkCertificateRevocationSelectorResult(XmlCRS crsResult) {
+		LevelConstraint constraint = validationPolicy.getAcceptableRevocationDataFoundConstraint(context, subContext);
+		return new CertificateRevocationSelectorResultCheck<>(i18nProvider, result, crsResult, constraint);
 	}
 	
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
@@ -491,47 +503,16 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	}
 
 	@Override
-	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
-		// collect all messages from not RAC checks, collect from RAC only when all of them failed
-		if (!XmlBlockType.RAC.equals(constraint.getBlockType()) || !ValidationProcessUtils.isValidRACFound(result)) {
-			super.collectMessages(conclusion, constraint);
-		}
-		if (XmlBlockType.RFC.equals(constraint.getBlockType())) {
-			XmlRFC rfc = result.getRFC();
-			for (XmlConstraint rfcConstrain : rfc.getConstraint()) {
-				super.collectMessages(conclusion, rfcConstrain);
-			}
-		}
-	}
-
-	@Override
 	protected void collectAdditionalMessages(XmlConclusion conclusion) {
-		if (!ValidationProcessUtils.isValidRACFound(result)) {
-			for (XmlRAC rac : result.getRAC()) {
-				super.collectAllMessages(conclusion, rac.getConclusion());
-			}
-		} else {
-			// collect additional messages for the valid RAC
-			XmlRAC rac = getValidRAC();
-			if (rac != null) {
-				super.collectAllMessages(conclusion, rac.getConclusion());
-			}
+		super.collectAdditionalMessages(conclusion);
+		XmlCRS xmlCRS = result.getCRS();
+		if (xmlCRS != null && isValid(xmlCRS)) {
+			collectAllMessages(conclusion, xmlCRS.getConclusion());
 		}
-	}
-
-	private XmlRAC getValidRAC() {
-		XmlRFC rfc = result.getRFC();
-		if (rfc != null) {
-			String revocId = rfc.getId();
-			if (revocId != null) {
-				for (XmlRAC rac : result.getRAC()) {
-					if (revocId.equals(rac.getId())) {
-						return rac;
-					}
-				}
-			}
+		XmlRFC xmlRFC = result.getRFC();
+		if (xmlRFC != null && isValid(xmlRFC)) {
+			collectAllMessages(conclusion, xmlRFC.getConclusion());
 		}
-		return null;
 	}
 
 }

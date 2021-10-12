@@ -528,6 +528,8 @@ public enum MessageTag {
 	
 	/* Additional Info */
 
+	ACCEPTABLE_REVOCATION,
+
 	BASIC_SIGNATURE_VALIDATION_RESULT,
 
 	BEST_SIGNATURE_TIME_CERT_NOT_AFTER,
@@ -571,6 +573,8 @@ public enum MessageTag {
 	EXTENDED_KEY_USAGE,
 
 	KEY_USAGE,
+
+	LAST_ACCEPTABLE_REVOCATION,
 	
 	REFERENCE,
 
@@ -669,6 +673,10 @@ public enum MessageTag {
 	DAAV,
 	
 	CC,
+
+	CRS,
+
+	PSV_CRS,
 	
 	RAC,
 

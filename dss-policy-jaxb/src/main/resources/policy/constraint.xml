@@ -65,6 +65,7 @@
 				<AuthorityInfoAccessPresent Level="WARN" />
 				<RevocationInfoAccessPresent Level="WARN" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<KeyUsage Level="WARN">
@@ -87,6 +88,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
@@ -143,6 +145,7 @@
 				<AuthorityInfoAccessPresent Level="WARN" />
 				<RevocationInfoAccessPresent Level="WARN" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<KeyUsage Level="WARN">
@@ -163,6 +166,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
@@ -205,6 +209,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<ExtendedKeyUsage Level="WARN">
@@ -219,6 +224,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="WARN" />
+				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
@@ -250,6 +256,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
@@ -260,6 +267,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="WARN" />
+				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />

@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
@@ -43,19 +43,16 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDataAcceptableCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.PastCertificateValidation;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.BestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.CurrentTimeIndicationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.POEExistsCheck;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.POEExistsWithinCertificateValidityRangeCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.POENotAfterCARevocationTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastCertificateValidationAcceptableCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationIssuerTrustedCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastRevocationDataValidationConclusiveCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastSignatureValidationCertificateRevocationSelectorResultCheck;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -142,48 +139,19 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 */
 
 		final CertificateWrapper signingCertificate = token.getSigningCertificate();
-		List<CertificateRevocationWrapper> signingCertificateRevocations = new ArrayList<>();
 
-		for (CertificateRevocationWrapper revocationData : signingCertificate.getCertificateRevocationData()) {
+		PastSignatureValidationCertificateRevocationSelector certificateRevocationSelector =
+				new PastSignatureValidationCertificateRevocationSelector(
+						i18nProvider, signingCertificate, currentTime, bbbs, token.getId(), poe, policy);
 
-			XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationData.getId());
+		XmlCRS xmlCRS = certificateRevocationSelector.execute();
+		tokenBBB.setPSVCRS(xmlCRS);
 
-			if (item == null) {
-				item = firstItem = revocationBasicValidationAcceptable(revocationBBB);
-			} else {
-				item = item.setNextItem(revocationBasicValidationAcceptable(revocationBBB));
-			}
-
-			if (ValidationProcessUtils.isAllowedBasicRevocationDataValidation(revocationBBB.getConclusion())) {
-
-				XmlRAC xmlRAC = ValidationProcessUtils.getRevocationAcceptanceCheckerResult(tokenBBB, signingCertificate, revocationData);
-
-				item = item.setNextItem(revocationDataAcceptable(xmlRAC));
-
-				CertificateWrapper revocationIssuer = revocationData.getSigningCertificate();
-
-				if (xmlRAC != null && isValid(xmlRAC) && revocationIssuer != null) {
-
-					if (revocationIssuer.isTrusted()) {
-
-						item = item.setNextItem(revocationDataIssuerTrusted(revocationIssuer));
-
-						signingCertificateRevocations.add(revocationData);
-
-					} else {
-
-						item = item.setNextItem(poeForRevocationDataIssuerExists(revocationIssuer));
-
-						if (poe.isPOEExistInRange(revocationIssuer.getId(), revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter())) {
-							signingCertificateRevocations.add(revocationData);
-						}
-					}
-
-				}
-			}
-		}
+		item = firstItem = checkCertificateRevocationSelectorResult(xmlCRS);
 
 		XmlConclusion sigCertRevocationPoeStatus = new XmlConclusion();
+
+		List<CertificateRevocationWrapper> signingCertificateRevocations = certificateRevocationSelector.getAcceptableCertificateRevocations();
 		if (Utils.isCollectionNotEmpty(signingCertificateRevocations)) {
 			sigCertRevocationPoeStatus.setIndication(Indication.PASSED);
 		} else {
@@ -204,11 +172,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		XmlPCV pcvResult = pcv.execute();
 		tokenBBB.setPCV(pcvResult);
 
-		if (item == null) {
-			item = firstItem = pastCertificateValidationAcceptableCheck(pcvResult);
-		} else {
-			item = item.setNextItem(pastCertificateValidationAcceptableCheck(pcvResult));
-		}
+		item = item.setNextItem(pastCertificateValidationAcceptableCheck(pcvResult));
 
 		Date controlTime = pcvResult.getControlTime();
 		result.setControlTime(controlTime);
@@ -316,21 +280,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 	}
 
-	private ChainItem<XmlPSV> revocationBasicValidationAcceptable(XmlBasicBuildingBlocks revocationBBB) {
-		return new RevocationDataAcceptableCheck(i18nProvider, result, revocationBBB.getId(),
-				revocationBBB.getConclusion(), getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlPSV> revocationDataAcceptable(XmlRAC xmlRAC) {
-		return new RevocationAcceptanceCheckerResultCheck(i18nProvider, result, xmlRAC, getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlPSV> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {
-		return new RevocationIssuerTrustedCheck(i18nProvider, result, revocationIssuer, getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlPSV> poeForRevocationDataIssuerExists(CertificateWrapper revocationIssuer) {
-		return new POEExistsWithinCertificateValidityRangeCheck(i18nProvider, result, revocationIssuer, poe, getWarnLevelConstraint());
+	private ChainItem<XmlPSV> checkCertificateRevocationSelectorResult(XmlCRS crsResult) {
+		return new PastSignatureValidationCertificateRevocationSelectorResultCheck(i18nProvider, result, crsResult, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> currentTimeIndicationCheck() {

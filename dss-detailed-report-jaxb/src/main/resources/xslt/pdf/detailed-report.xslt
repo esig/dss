@@ -137,6 +137,7 @@
 		<xsl:apply-templates select="dss:SAV" />
 
 		<xsl:apply-templates select="dss:PSV" />
+		<xsl:apply-templates select="dss:PSV_CRS" />
 		<xsl:apply-templates select="dss:PCV" />
 		<xsl:apply-templates select="dss:VTS" />
 
@@ -391,7 +392,7 @@
 
     </xsl:template>
      
-    <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:RAC|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:SubXCV|dss:PSV|dss:PCV|dss:VTS">
+    <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:CRS|dss:RAC|dss:RFC|dss:CV|dss:SAV|dss:XCV|dss:SubXCV|dss:PSV|dss:PSV_CRS|dss:PCV|dss:VTS">
 		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication"/>
         <xsl:variable name="indicationColor">
         	<xsl:choose>

@@ -188,7 +188,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 					if (ValidationProcessUtils.isAllowedBasicRevocationDataValidation(revocationBBB.getConclusion())) {
 
-						XmlRAC xmlRAC = ValidationProcessUtils.getRevocationAcceptanceCheckerResult(tokenBBB, certificate, revocationData);
+						XmlRAC xmlRAC = ValidationProcessUtils.getRevocationAcceptanceCheckerResult(
+								tokenBBB, certificate.getId(), revocationData.getId());
 
 						item = item.setNextItem(revocationDataAcceptable(xmlRAC));
 

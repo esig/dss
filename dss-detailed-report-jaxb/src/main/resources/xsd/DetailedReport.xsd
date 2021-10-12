@@ -67,6 +67,7 @@
 			<xs:element name="CV"  type="CV"  minOccurs="0" /> <!-- 5.2.7 Cryptographic verification -->
 			<xs:element name="SAV" type="SAV" minOccurs="0" /> <!-- 5.2.8 Signature acceptance validation (SAV) -->
 			<xs:element name="PSV" type="PSV" minOccurs="0" />
+			<xs:element name="PSV_CRS" type="CRS" minOccurs="0" />
 			<xs:element name="PCV" type="PCV" minOccurs="0" />
 			<xs:element name="VTS" type="VTS" minOccurs="0" />
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
@@ -168,7 +169,11 @@
 
 	<xs:complexType name="ValidationProcessLongTermData">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
+			<xs:extension base="ConstraintsConclusionWithProofOfExistence">
+				<xs:sequence>
+					<xs:element name="CRS" type="CRS" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -217,8 +222,13 @@
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
 					<xs:element name="RAC" type="RAC" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="AcceptableRevocationId" minOccurs="0" >
+						<xs:simpleType>
+							<xs:list itemType="xs:string"/>
+						</xs:simpleType>
+					</xs:element>
 				</xs:sequence>
-				<xs:attribute name="CertificateId" type="xs:string" />
+				<xs:attribute name="Id" type="xs:string" />
 				<xs:attribute name="LatestAcceptableRevocationId" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
@@ -228,6 +238,7 @@
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
 					<xs:element name="RevocationProductionDate" type="xs:dateTime" />
+					<xs:element name="CRS" type="CRS" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="Id" type="xs:string" />
 			</xs:extension>
@@ -349,6 +360,8 @@
 			<xs:enumeration value="REV_BBB" />
 			<xs:enumeration value="TST_BBB" />
 			<xs:enumeration value="CNT_TST_BBB" />
+			<xs:enumeration value="CRS" />
+			<xs:enumeration value="PSV_CRS" />
 			<xs:enumeration value="RAC" />
 			<xs:enumeration value="RFC" />
 			<xs:enumeration value="SUB_XCV" />

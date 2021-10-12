@@ -158,6 +158,7 @@
 						<hr />
 					</xsl:if>
 					<xsl:apply-templates select="dss:PSV" />
+					<xsl:apply-templates select="dss:PSV_CRS" />
 					<xsl:apply-templates select="dss:PCV" />
 					<xsl:apply-templates select="dss:VTS" />
 
@@ -419,7 +420,7 @@
         </xsl:choose>
     </xsl:template>
 	
-    <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:CV|dss:SAV|dss:XCV|dss:PSV|dss:PCV|dss:VTS">
+    <xsl:template match="dss:FC|dss:ISC|dss:VCI|dss:CV|dss:SAV|dss:XCV|dss:PSV|dss:PSV_CRS|dss:PCV|dss:VTS">
 		<div>
        		<xsl:attribute name="id"><xsl:value-of select="../@Id"/>-<xsl:value-of select="name()"/></xsl:attribute>
 			<xsl:attribute name="class">row mt-1 pl-1 pl-sm-0 pt-1 pt-sm-0</xsl:attribute>
@@ -438,11 +439,13 @@
 		<xsl:apply-templates select="dss:Constraint" />
     </xsl:template>
 
-	<xsl:template match="dss:SubXCV|dss:RAC|dss:RFC">
+	<xsl:template match="dss:SubXCV|dss:CRS|dss:RAC|dss:RFC">
     	<div>
 	        <xsl:variable name="parentId">
 	        	<xsl:choose>
 					<xsl:when test="name()='SubXCV'" ><xsl:value-of select="../../@Id"/></xsl:when>
+					<xsl:when test="name()='RAC'" ><xsl:value-of select="concat(../@Id, '-', ../../../../@Id)"/></xsl:when>
+					<xsl:when test="name(..)='ValidationProcessLongTermData'" ><xsl:value-of select="../../@Id"/></xsl:when>
 					<xsl:otherwise><xsl:value-of select="concat(../@Id, '-', ../../../@Id)"/></xsl:otherwise>
 	        	</xsl:choose>
 	        </xsl:variable>
@@ -451,7 +454,7 @@
     		<div>
     			<xsl:attribute name="class">card mt-3</xsl:attribute>
 	    		<div>
-		    		<xsl:attribute name="data-target">#collapse-SubXCV-<xsl:value-of select="$currentId"/></xsl:attribute>
+		    		<xsl:attribute name="data-target"><xsl:value-of select="concat('#collapse-', name(..), '-', $currentId)"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 	    			<xsl:choose>
       					<xsl:when test="@TrustAnchor = 'true'">
@@ -566,7 +569,7 @@
 		       	<xsl:if test="name() != 'SubXCV' or @TrustAnchor != 'true'">
 		    		<div>
 		    			<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
-			        	<xsl:attribute name="id">collapse-SubXCV-<xsl:value-of select="$currentId"/></xsl:attribute>
+			        	<xsl:attribute name="id"><xsl:value-of select="concat('collapse-', name(..), '-', $currentId)"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
 	    		</xsl:if>
@@ -592,11 +595,32 @@
 								<xsl:when test="$BlockType='SUB_XCV'">
 									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
 								</xsl:when>
-								<xsl:when test="$BlockType='RAC' and name(..)='SubXCV'">
+								<xsl:when test="$BlockType='CRS' and name(..)='SubXCV'">
+									<xsl:attribute name="href">#CRS-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='CRS' and name(..)='RAC'">
+									<xsl:attribute name="href">#CRS-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='CRS' and name(..)='ValidationProcessLongTermData'">
+									<xsl:attribute name="href">#CRS-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='RAC' and name(..)='CRS' and name(../..)='ValidationProcessLongTermData'">
 									<xsl:attribute name="href">#RAC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='RAC' and name(..)='CRS'">
+									<xsl:attribute name="href">#RAC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='RAC' and name(..)='PSV_CRS'">
+									<xsl:attribute name="href">#RAC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='RAC' and name(..)='VTS'">
+									<xsl:attribute name="href">#RAC-<xsl:value-of select="concat(@Id, '-', ../../dss:PSV_CRS/@Id, '-', ../../@Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='RFC'">
 									<xsl:attribute name="href">#RFC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='PSV_CRS'">
+									<xsl:attribute name="href">#<xsl:value-of select="../../@Id"/>-PSV_CRS</xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='PCV'">
 									<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-PCV</xsl:attribute>

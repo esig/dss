@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.jaxb.Model;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implements basic test class for the model based certificate and signature
@@ -36,7 +36,7 @@ import eu.europa.esig.dss.policy.jaxb.Model;
  * @author akoepe
  * @version 1.0
  */
-public class ModelAbstractlValidation {
+public class ModelAbstractValidation {
 
 	/**
 	 * Defines the list of involved diagnostic data, policy and their associated

@@ -151,7 +151,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 	}
 
 	private ChainItem<XmlRFC> revocationDataAvailable(RevocationWrapper revocationData) {
-		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(context, subContext);
+		LevelConstraint constraint = policy.getAcceptableRevocationDataFoundConstraint(context, subContext);
 		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, revocationData, constraint);
 	}
 

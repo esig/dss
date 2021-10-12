@@ -295,8 +295,11 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				for (XmlSubXCV subXCV : bbb.getXCV().getSubXCV()) {
 					collectIndications(subXCV);
 					collectIndications(subXCV.getRFC());
-					for (XmlRAC rac : subXCV.getRAC()) {
-						collectIndications(rac);
+					collectIndications(subXCV.getCRS());
+					if (subXCV.getCRS() != null) {
+						for (XmlRAC rac : subXCV.getCRS().getRAC()) {
+							collectIndications(rac);
+						}
 					}
 				}
 			}

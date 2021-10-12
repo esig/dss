@@ -339,6 +339,16 @@ public interface ValidationPolicy {
 	LevelConstraint getRevocationDataAvailableConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns acceptable revocation data available constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if AcceptableRevocationDataFound for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getAcceptableRevocationDataFoundConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns CRL's nextUpdate present constraint
 	 *
 	 * @param context {@link Context}
