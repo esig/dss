@@ -66,7 +66,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	public enum X509SubjectNameFormat {
 
 		/**
-		 * RFC 1779 String format
+		 * RFC 2253 String format
 		 */
 		RFC2253 {
 			@Override

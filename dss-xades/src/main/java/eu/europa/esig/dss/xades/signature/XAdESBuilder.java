@@ -233,7 +233,7 @@ public abstract class XAdESBuilder {
 		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementIssuerSerial());
 		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, getXmldsigNamespace(), XMLDSigElement.X509_ISSUER_NAME);
 				
-		final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
+		final String issuerX500PrincipalName = params.getX509SubjectNameFormat().getValue(certificate.getIssuerX500Principal());
 		DomUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
 
 		final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, getXmldsigNamespace(), XMLDSigElement.X509_SERIAL_NUMBER);
