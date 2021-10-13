@@ -386,7 +386,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
 		final MaskGenerationFunction mgf = params.getMaskGenerationFunction();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
-		final String signatureAlgorithmXMLId = signatureAlgorithm.getUri();
+		final String signatureAlgorithmXMLId = signatureAlgorithm != null ? signatureAlgorithm.getUri() : "";
 		if (Utils.isStringBlank(signatureAlgorithmXMLId)) {
 			throw new UnsupportedOperationException("Unsupported signature algorithm " + signatureAlgorithm);
 		}
@@ -479,7 +479,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				// <ds:X509Data>
 				final Element x509DataDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.X509_DATA);
 				keyInfoDom.appendChild(x509DataDom);
-				addSubjectAndCertificate(x509DataDom, token);
+				addSubjectAndCertificate(x509DataDom, token, params.getX509SubjectNameFormat());
 			}
 		} else {
 			// <ds:X509Data>
@@ -508,9 +508,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *            the parent X509Data tag
 	 * @param token
 	 *            the certificate to add
+	 * @param subjectNameFormat
+	 *            the format of X509SubjectName
 	 */
-	private void addSubjectAndCertificate(final Element x509DataDom, final CertificateToken token) {
-		DomUtils.addTextElement(documentDom, x509DataDom, getXmldsigNamespace(), XMLDSigElement.X509_SUBJECT_NAME, token.getSubject().getRFC2253());
+	private void addSubjectAndCertificate(final Element x509DataDom, final CertificateToken token, XAdESSignatureParameters.X509SubjectNameFormat subjectNameFormat) {
+		String value = subjectNameFormat.getValue(token.getSubject().getPrincipal());
+		DomUtils.addTextElement(documentDom, x509DataDom, getXmldsigNamespace(), XMLDSigElement.X509_SUBJECT_NAME, value);
 		addCertificate(x509DataDom, token);
 	}
 

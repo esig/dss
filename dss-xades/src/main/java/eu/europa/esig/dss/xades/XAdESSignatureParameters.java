@@ -25,12 +25,16 @@ import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import org.w3c.dom.Document;
 
+import javax.security.auth.x500.X500Principal;
+import java.security.Principal;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,6 +61,47 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	}
 
 	/**
+	 * Enumeration defining how set value of X509SubjectName
+	 */
+	public enum X509SubjectNameFormat {
+
+		/**
+		 * RFC 1779 String format
+		 */
+		RFC2253 {
+			@Override
+			public String getValue(X500Principal x500Principal) {
+				return x500Principal.getName(X500Principal.RFC2253);
+			}
+		},
+		/**
+		 * RFC 1779 String format
+		 */
+		RFC1779 {
+			@Override
+			public String getValue(X500Principal x500Principal) {
+				return x500Principal.getName(X500Principal.RFC1779);
+			}
+		},
+		/**
+		 * Canonical String format
+		 */
+		CANONICAL {
+			@Override
+			public String getValue(X500Principal x500Principal) {
+				return x500Principal.getName(X500Principal.CANONICAL);
+			}
+		};
+
+		/**
+		 * Return X509SubjectName of certificate
+		 * @param x500Principal certificate
+		 * @return name value
+		 */
+		public abstract String getValue(X500Principal x500Principal);
+	}
+
+	/**
 	 * The internal signature processing variable
 	 */
 	private ProfileParameters context;
@@ -65,6 +110,11 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * This parameter allows to add optional X509SubjectName in the tag X509Data
 	 */
 	private boolean addX509SubjectName;
+
+	/**
+	 * In case of addX509SubjectName is true, this parameter allows choose the format value
+	 */
+	private X509SubjectNameFormat x509SubjectNameFormat = X509SubjectNameFormat.RFC2253;
 
 	/**
 	 * A list of references to incorporate
@@ -492,6 +542,26 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	public void setPrettyPrint(boolean prettyPrint) {
 		this.prettyPrint = prettyPrint;
+	}
+
+	/**
+	 * Gets format of X509SubjectName value
+	 *
+	 * @return {@link X509SubjectNameFormat}
+	 */
+	public X509SubjectNameFormat getX509SubjectNameFormat() {
+		return x509SubjectNameFormat;
+	}
+
+	/**
+	 * Sets format of X509SubjectName value
+	 *
+	 * Default: RFC2253
+	 *
+	 * @param x509SubjectNameFormat Format to X509SubjectName value
+	 */
+	public void setX509SubjectNameFormat(X509SubjectNameFormat x509SubjectNameFormat) {
+		this.x509SubjectNameFormat = x509SubjectNameFormat;
 	}
 
 	/**
