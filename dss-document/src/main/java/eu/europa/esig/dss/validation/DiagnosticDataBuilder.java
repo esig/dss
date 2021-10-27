@@ -1636,21 +1636,26 @@ public abstract class DiagnosticDataBuilder {
 
 	private Map<CertificateToken, List<TrustProperties>> getRelatedTrustServices(CertificateToken certToken) {
 		Map<CertificateToken, List<TrustProperties>> result = new HashMap<>();
-		Set<CertificateToken> processedTokens = new HashSet<>();
 		for (CertificateSource trustedSource : allCertificateSources.getSources()) {
-			CertificateToken currectCertificate = certToken;
 			if (trustedSource instanceof TrustedListsCertificateSource) {
 				TrustedListsCertificateSource trustedCertSource = (TrustedListsCertificateSource) trustedSource;
-				while (currectCertificate != null) {
-					List<TrustProperties> trustServices = trustedCertSource.getTrustServices(certToken);
+				Set<CertificateToken> processedTokens = new HashSet<>();
+				CertificateToken currentCertificate = certToken;
+				while (currentCertificate != null) {
+					List<TrustProperties> trustServices = trustedCertSource.getTrustServices(currentCertificate);
 					if (!trustServices.isEmpty()) {
-						result.put(currectCertificate, trustServices);
+						List<TrustProperties> certTrustServices = result.get(currentCertificate);
+						if (Utils.isCollectionEmpty(certTrustServices)) {
+							certTrustServices = new ArrayList<>();
+						}
+						certTrustServices.addAll(trustServices);
+						result.put(currentCertificate, certTrustServices);
 					}
-					if (currectCertificate.isSelfSigned() || processedTokens.contains(certToken)) {
+					if (currentCertificate.isSelfSigned() || processedTokens.contains(currentCertificate)) {
 						break;
 					}
-					processedTokens.add(currectCertificate);
-					currectCertificate = getIssuerCertificate(currectCertificate);
+					processedTokens.add(currentCertificate);
+					currentCertificate = getIssuerCertificate(currentCertificate);
 				}
 			}
 		}
