@@ -156,8 +156,7 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
     }
 
     protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
-        return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, certificate,
-                latestCertificateRevocation, getFailLevelConstraint());
+        return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, latestCertificateRevocation, getFailLevelConstraint());
     }
 
     @Override
