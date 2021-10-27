@@ -60,7 +60,6 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
         item = super.verifyRevocationData(item, revocationWrapper);
 
         Boolean validity = revocationDataValidityMap.get(revocationWrapper);
-
         if (validity) {
             CertificateWrapper revocationIssuer = revocationWrapper.getSigningCertificate();
 
@@ -73,14 +72,22 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
                     acceptableCertificateRevocations.add(revocationWrapper);
                     result.getAcceptableRevocationId().add(revocationWrapper.getId());
 
+                    revocationDataValidityMap.put(revocationWrapper, true);
+
                 } else {
 
                     item = item.setNextItem(poeForRevocationDataIssuerExists(revocationIssuer));
 
-                    if (poe.isPOEExistInRange(revocationIssuer.getId(), revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter())) {
+                    validity = poe.isPOEExistInRange(revocationIssuer.getId(),
+                            revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter());
+
+                    if (validity) {
                         acceptableCertificateRevocations.add(revocationWrapper);
                         result.getAcceptableRevocationId().add(revocationWrapper.getId());
                     }
+
+                    // update the validity map
+                    revocationDataValidityMap.put(revocationWrapper, validity);
 
                 }
 

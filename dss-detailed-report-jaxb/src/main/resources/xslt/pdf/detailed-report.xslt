@@ -447,6 +447,9 @@
 										</fo:block>
 									</xsl:if>
 								</xsl:when>
+								<xsl:when test="name(.) = 'CRS' and name(..) = 'VTS'">
+									<xsl:value-of select="@Title"/> (Certificate <xsl:value-of select="@Id"/>) :
+								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="@Title"/> :
 								</xsl:otherwise>

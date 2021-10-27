@@ -11,6 +11,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Checks if an acceptable revocation data is present for a Past Signature Validation process
@@ -64,7 +65,8 @@ public class PastValidationAcceptableRevocationDataAvailable<T extends XmlConstr
     @Override
     protected String buildAdditionalInfo() {
         if (Utils.isCollectionNotEmpty(revocationData)) {
-            return i18nProvider.getMessage(MessageTag.ACCEPTABLE_REVOCATION, revocationData);
+            List<String> revocationDataIds = revocationData.stream().map(r -> r.getId()).collect(Collectors.toList());
+            return i18nProvider.getMessage(MessageTag.ACCEPTABLE_REVOCATION, revocationDataIds);
         }
         return null;
     }

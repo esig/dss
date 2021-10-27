@@ -258,26 +258,41 @@
                 <Conclusion>
                     <Indication>PASSED</Indication>
                 </Conclusion>
-                <RAC Id="R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210" Title="Revocation Acceptance Validation">
-                    <Constraint>
-                        <Name Key="BBB_XCV_IRDC">Is the revocation data consistent?</Name>
+                <CRS Id="C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A" LatestAcceptableRevocationId="R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210" Title="Certificate Revocation Data Selector">
+                    <Constraint Id="R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210" BlockType="RAC">
+                        <Name Key="BBB_XCV_RAC">Is the revocation acceptance check conclusive?</Name>
                         <Status>OK</Status>
-                        <AdditionalInfo>Revocation R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210 thisUpdate 2020-02-10 12:49 is in the certificate validity range : 2019-05-02 08:55 - 2020-05-02 08:55</AdditionalInfo>
+                        <AdditionalInfo>Id = R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210, production time = 2013-07-01 06:00</AdditionalInfo>
                     </Constraint>
                     <Constraint>
-                        <Name Key="BBB_CV_ISIR">Is revocations signature intact?</Name>
+                        <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
                         <Status>OK</Status>
-                        <AdditionalInfo>Id = R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210</AdditionalInfo>
-                    </Constraint>
-                    <Constraint>
-                        <Name Key="BBB_XCV_CCCBB">Can the certificate chain be built till a trust anchor?</Name>
-                        <Status>OK</Status>
+                        <AdditionalInfo>Certificate Id = C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A</AdditionalInfo>
                     </Constraint>
                     <Conclusion>
                         <Indication>PASSED</Indication>
                     </Conclusion>
-                    <RevocationProductionDate>2020-02-10T12:49:19Z</RevocationProductionDate>
-                </RAC>
+                    <RAC Id="R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210" Title="Revocation Acceptance Validation">
+                        <Constraint>
+                            <Name Key="BBB_XCV_IRDC">Is the revocation data consistent?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>Revocation R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210 thisUpdate 2020-02-10 12:49 is in the certificate validity range : 2019-05-02 08:55 - 2020-05-02 08:55</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_CV_ISIR">Is revocations signature intact?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>Id = R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_XCV_CCCBB">Can the certificate chain be built till a trust anchor?</Name>
+                            <Status>OK</Status>
+                        </Constraint>
+                        <Conclusion>
+                            <Indication>PASSED</Indication>
+                        </Conclusion>
+                        <RevocationProductionDate>2020-02-10T12:49:19Z</RevocationProductionDate>
+                    </RAC>
+                </CRS>
                 <RFC Id="R-402E755E0596CB9896D5BDF24BBFD11F2DE2601A7A03C2A9F1D2874260A7E210" Title="Revocation Freshness Checker">
                     <Constraint>
                         <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
@@ -575,49 +590,64 @@
                 <Conclusion>
                     <Indication>PASSED</Indication>
                 </Conclusion>
-                <RAC Id="R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3" Title="Revocation Acceptance Validation">
-                    <Constraint>
-                        <Name Key="BBB_XCV_IRDC">Is the revocation data consistent?</Name>
-                        <Status>OK</Status>
-                        <AdditionalInfo>Revocation R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3 thisUpdate 2020-02-10 13:12 is in the certificate validity range : 2018-02-15 12:36 - 2021-02-15 12:36</AdditionalInfo>
-                    </Constraint>
-                    <Constraint>
-                        <Name Key="BBB_CV_ISIR">Is revocations signature intact?</Name>
-                        <Status>OK</Status>
-                        <AdditionalInfo>Id = R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3</AdditionalInfo>
-                    </Constraint>
-                    <Constraint>
-                        <Name Key="BBB_XCV_CCCBB">Can the certificate chain be built till a trust anchor?</Name>
-                        <Status>OK</Status>
-                    </Constraint>
-                    <Constraint>
-                        <Name Key="BBB_CV_ISIC">Is certificates signature intact?</Name>
-                        <Status>OK</Status>
-                        <AdditionalInfo>Id = C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A</AdditionalInfo>
-                    </Constraint>
-                    <Constraint>
-                        <Name Key="BBB_XCV_IRDPFRC">Is the revocation data present for the revocation issuer?</Name>
-                        <Status>OK</Status>
-                        <AdditionalInfo>Certificate Id = C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A</AdditionalInfo>
-                    </Constraint>
-                    <Constraint>
+                <CRS Id="C-0EC53B285E62AA6C9B3C1BF5346042BF4A53C35DF073E3034700420A5D3E30BA" LatestAcceptableRevocationId="R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3" Title="Certificate Revocation Data Selector">
+                    <Constraint Id="R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3" BlockType="RAC">
                         <Name Key="BBB_XCV_RAC">Is the revocation acceptance check conclusive?</Name>
                         <Status>OK</Status>
+                        <AdditionalInfo>Id = R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3, production time = 2013-07-01 06:00</AdditionalInfo>
                     </Constraint>
                     <Constraint>
                         <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
                         <Status>OK</Status>
-                        <AdditionalInfo>Certificate Id = C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A</AdditionalInfo>
-                    </Constraint>
-                    <Constraint>
-                        <Name Key="BBB_VTS_IRDPFC">Is there a satisfying revocation status information?</Name>
-                        <Status>OK</Status>
+                        <AdditionalInfo>Certificate Id = C-0EC53B285E62AA6C9B3C1BF5346042BF4A53C35DF073E3034700420A5D3E30BA</AdditionalInfo>
                     </Constraint>
                     <Conclusion>
                         <Indication>PASSED</Indication>
                     </Conclusion>
-                    <RevocationProductionDate>2020-02-10T13:14:22Z</RevocationProductionDate>
-                </RAC>
+                    <RAC Id="R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3" Title="Revocation Acceptance Validation">
+                        <Constraint>
+                            <Name Key="BBB_XCV_IRDC">Is the revocation data consistent?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>Revocation R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3 thisUpdate 2020-02-10 13:12 is in the certificate validity range : 2018-02-15 12:36 - 2021-02-15 12:36</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_CV_ISIR">Is revocations signature intact?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>Id = R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_XCV_CCCBB">Can the certificate chain be built till a trust anchor?</Name>
+                            <Status>OK</Status>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_CV_ISIC">Is certificates signature intact?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>Id = C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_XCV_IRDPFRC">Is the revocation data present for the revocation issuer?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>Certificate Id = C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_XCV_RAC">Is the revocation acceptance check conclusive?</Name>
+                            <Status>OK</Status>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>Certificate Id = C-D2D0BDD02645B9AE9FD95EF266A19A73E9D243C7CD8D9F8FF35ECD96A5D9A54A</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_VTS_IRDPFC">Is there a satisfying revocation status information?</Name>
+                            <Status>OK</Status>
+                        </Constraint>
+                        <Conclusion>
+                            <Indication>PASSED</Indication>
+                        </Conclusion>
+                        <RevocationProductionDate>2020-02-10T13:14:22Z</RevocationProductionDate>
+                    </RAC>
+                </CRS>
                 <RFC Id="R-53145250343A6AA12CA1A6CCD1AB58FFD487CD349F617351365F6A27F7B47AD3" Title="Revocation Freshness Checker">
                     <Constraint>
                         <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>

@@ -172,6 +172,7 @@
 			<xs:extension base="ConstraintsConclusionWithProofOfExistence">
 				<xs:sequence>
 					<xs:element name="CRS" type="CRS" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="RFC" type="RFC" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -303,7 +304,11 @@
 	</xs:complexType>
 	<xs:complexType name="VTS">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusionWithControlTime" />
+			<xs:extension base="ConstraintsConclusionWithControlTime">
+				<xs:sequence>
+					<xs:element name="CRS" type="CRS" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="PCV">

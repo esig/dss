@@ -676,6 +676,8 @@ public enum MessageTag {
 
 	CRS,
 
+	LOTL,
+
 	PSV_CRS,
 	
 	RAC,
@@ -685,8 +687,6 @@ public enum MessageTag {
 	SUB_XCV,
 
 	TL,
-
-	LOTL,
 
 	TST_QUALIFICATION,
 
@@ -699,6 +699,8 @@ public enum MessageTag {
 	VPFSWATSP,
 
 	VPFTSP,
+
+	VTS_CRS,
 	
 	/* Custom variables */
 

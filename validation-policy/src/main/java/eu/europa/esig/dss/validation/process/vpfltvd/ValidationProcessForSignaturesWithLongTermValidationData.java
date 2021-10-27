@@ -432,10 +432,18 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			if (RevocationReason.CERTIFICATE_HOLD.equals(revocationData.getReason())) {
 				item = item.setNextItem(checkCertificateSuspensionNotBeforeBestSignatureTime(revocationData,
 						bestSignatureTime, currentContext, subContext));
+
 			} else {
 				RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, revocationData,
 						bestSignatureTime, currentContext, subContext, policy);
-				item = item.setNextItem(checkRevocationFreshnessCheckerResult(rfc.execute(), currentContext, subContext));
+				XmlRFC xmlRFC = rfc.execute();
+				result.getRFC().add(xmlRFC);
+
+				item = item.setNextItem(checkRevocationFreshnessCheckerResult(xmlRFC, currentContext, subContext));
+
+				if (!isValid(xmlRFC)) {
+					break;
+				}
 			}
 
 		}

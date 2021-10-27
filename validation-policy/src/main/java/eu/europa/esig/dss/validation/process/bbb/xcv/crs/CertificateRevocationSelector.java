@@ -19,6 +19,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevoca
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +32,7 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
     protected final CertificateWrapper certificate;
 
     /** Validation time */
-    private final Date currentTime;
+    protected final Date currentTime;
 
     /** Validation policy */
     private final ValidationPolicy validationPolicy;
@@ -68,7 +69,7 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
     protected void initChain() {
         ChainItem<XmlCRS> item = null;
 
-        for (CertificateRevocationWrapper revocationWrapper : certificate.getCertificateRevocationData()) {
+        for (CertificateRevocationWrapper revocationWrapper : getCertificateRevocationData()) {
 
             item = verifyRevocationData(item, revocationWrapper);
 
@@ -88,6 +89,15 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
         } else {
             item = item.setNextItem(acceptableRevocationDataAvailable());
         }
+    }
+
+    /**
+     * Returns available certificate revocation data to be validated
+     *
+     * @return a list of {@link CertificateRevocationWrapper}s
+     */
+    protected List<CertificateRevocationWrapper> getCertificateRevocationData() {
+        return certificate.getCertificateRevocationData();
     }
 
     /**
