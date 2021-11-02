@@ -312,13 +312,43 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	public BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> annotations)
 			throws IOException {
 		List<PDAnnotation> pdAnnotations = getPageAnnotations(page);
+		pdAnnotations = getMatchingPDAnnotations(pdAnnotations, annotations);
+		List<PDAnnotation> hiddenList = changeVisibility(pdAnnotations, true);
+		try {
+			return generateImageScreenshot(page);
+		} finally {
+			// restore the original state
+			changeVisibility(hiddenList, false);
+		}
+	}
+
+	private List<PDAnnotation> getMatchingPDAnnotations(List<PDAnnotation> pdAnnotations, List<PdfAnnotation> annotationsToExtract) {
+		List<PDAnnotation> result = new ArrayList<>();
 		for (PDAnnotation pdAnnotation : pdAnnotations) {
 			PdfAnnotation pdfAnnotation = toPdfAnnotation(pdAnnotation);
-			if (annotations.contains(pdfAnnotation)) {
-				pdAnnotation.setHidden(true);
+			if (annotationsToExtract.contains(pdfAnnotation)) {
+				result.add(pdAnnotation);
 			}
 		}
-		return generateImageScreenshot(page);
+		return result;
+	}
+
+	/**
+	 * Changes a "Hidden" flag for provided {@code PDAnnotation}s according to the given boolean parameter
+	 *
+	 * @param pdAnnotations a list of {@link PDAnnotation}s
+	 * @param hide if true - hides an annotation, if false - show the annotation
+	 * @return a list of changed {@link PDAnnotation}s
+	 */
+	private List<PDAnnotation> changeVisibility(List<PDAnnotation> pdAnnotations, boolean hide) {
+		List<PDAnnotation> modifiedList = new ArrayList<>();
+		for (PDAnnotation pdAnnotation : pdAnnotations) {
+			if (hide != pdAnnotation.isHidden()) {
+				pdAnnotation.setHidden(hide);
+				modifiedList.add(pdAnnotation);
+			}
+		}
+		return modifiedList;
 	}
 
 	@Override
