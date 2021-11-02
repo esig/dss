@@ -101,6 +101,7 @@
 			<SigningCertificatePresent Level="WARN" />
 			<UnicitySigningCertificate Level="WARN" />
 			<SigningCertificateRefersCertificateChain Level="WARN" />
+			<SigningCertificateDigestAlgorithm Level="WARN" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
@@ -177,6 +178,9 @@
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="WARN" />
+			<UnicitySigningCertificate Level="WARN" />
+			<SigningCertificateRefersCertificateChain Level="WARN" />
+			<SigningCertificateDigestAlgorithm Level="WARN" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
@@ -237,6 +241,7 @@
 			<SigningCertificatePresent Level="WARN" />
 			<!-- <UnicitySigningCertificate Level="WARN" /> RFC 5816 -->
 			<SigningCertificateRefersCertificateChain Level="WARN" />
+			<!-- <SigningCertificateDigestAlgorithm Level="WARN" /> TODO : too strict to enforce now -->
 			<CertDigestPresent Level="WARN" />
 			<IssuerSerialMatch Level="WARN" />
 		</SignedAttributes>

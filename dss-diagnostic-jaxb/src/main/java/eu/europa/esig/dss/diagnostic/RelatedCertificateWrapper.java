@@ -63,7 +63,7 @@ public class RelatedCertificateWrapper extends CertificateWrapper {
 	public List<CertificateRefWrapper> getReferences() {
 		List<CertificateRefWrapper> references = new ArrayList<>();
 		for (XmlCertificateRef certificateRef : relatedCertificate.getCertificateRefs()) {
-			references.add(new CertificateRefWrapper(certificateRef));
+			references.add(new CertificateRefWrapper(certificateRef, getId()));
 		}
 		return references;
 	}

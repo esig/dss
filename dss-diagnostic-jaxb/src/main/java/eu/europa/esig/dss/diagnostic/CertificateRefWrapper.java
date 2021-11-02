@@ -23,6 +23,7 @@ package eu.europa.esig.dss.diagnostic;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * Represents a certificate reference wrapper
@@ -32,14 +33,19 @@ public class CertificateRefWrapper {
 	
 	/** The wrapped {@code XmlCertificateRef} */
 	private final XmlCertificateRef certificateRef;
+
+	/** The Id of the related certificate token */
+	private final String certificateId;
 	
 	/**
 	 * Default constructor
 	 *
 	 * @param certificateRef {@link XmlCertificateRef}
+	 * @param certificateId {@link String} Id of the related certificate
 	 */
-	public CertificateRefWrapper(final XmlCertificateRef certificateRef) {
+	public CertificateRefWrapper(final XmlCertificateRef certificateRef, final String certificateId) {
 		this.certificateRef = certificateRef;
+		this.certificateId = certificateId;
 	}
 	
 	/**
@@ -119,22 +125,44 @@ public class CertificateRefWrapper {
 	}
 
 	/**
-	 * Checks if the DigestAlgoAndValue of the reference present in the signing certificate reference
+	 * Checks if the DigestAlgoAndValue of the reference present in the certificate reference
 	 * 
-	 * @return TRUE if DigestAlgoAndValue present in the signing certificate reference, FALSE otherwise
+	 * @return TRUE if DigestAlgoAndValue present in the certificate reference, FALSE otherwise
 	 */
 	public boolean isDigestValuePresent() {
 		return getDigestAlgoAndValue() != null;
 	}
+
+	/**
+	 * Returns a used {@code DigestAlgorithm} for a certificate reference creation
+	 *
+	 * @return {@link DigestAlgorithm}
+	 */
+	public DigestAlgorithm getDigestMethod() {
+		XmlDigestAlgoAndValue digestAlgoAndValue = getDigestAlgoAndValue();
+		if (digestAlgoAndValue != null) {
+			return digestAlgoAndValue.getDigestMethod();
+		}
+		return null;
+	}
 	
 	/**
-	 * Checks if the DigestAlgoAndValue of the reference matches one of the signing certificate
+	 * Checks if the DigestAlgoAndValue of the reference matches one of the certificate
 	 * 
-	 * @return TRUE if DigestAlgoAndValue matches the signing certificate, FALSE otherwise
+	 * @return TRUE if DigestAlgoAndValue matches the certificate, FALSE otherwise
 	 */
 	public boolean isDigestValueMatch() {
 		XmlDigestAlgoAndValue digestAlgoAndValue = getDigestAlgoAndValue();
 		return digestAlgoAndValue != null && digestAlgoAndValue.isMatch() != null && digestAlgoAndValue.isMatch();
+	}
+
+	/**
+	 * Returns Id of the referenced certificate token (when available) or the reference id
+	 *
+	 * @return {@link String}
+	 */
+	public String getCertificateId() {
+		return certificateId;
 	}
 	
 	@Override

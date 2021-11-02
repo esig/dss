@@ -92,7 +92,8 @@ public interface ValidationPolicy {
 	 * If SigningCertificateRefersCertificateChain element is absent within the constraint file then null is returned.
 	 *
 	 * @param context {@link Context}
-	 * @return {@code LevelConstraint} if SigningCertificateRefersCertificateChain element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if SigningCertificateRefersCertificateChain element is present
+	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getSigningCertificateRefersCertificateChainConstraint(Context context);
 
@@ -101,9 +102,20 @@ public interface ValidationPolicy {
 	 * If ReferencesToAllCertificateChainPresent element is absent within the constraint file then null is returned.
 	 *
 	 * @param context {@link Context}
-	 * @return {@code LevelConstraint} if ReferencesToAllCertificateChainPresent element is present in the constraint file, null otherwise.
+	 * @return {@code LevelConstraint} if ReferencesToAllCertificateChainPresent element is present
+	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getReferencesToAllCertificateChainPresentConstraint(Context context);
+
+	/**
+	 * Checks if a used DigestAlgorithm in signing-certificate-reference creation matches
+	 * the corresponding cryptographic constraint
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if SigningCertificateDigestAlgorithm for a given context element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getSigningCertificateDigestAlgorithmConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: signing-time should be checked. If SigningTime element is absent within the

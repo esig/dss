@@ -211,6 +211,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getSigningCertificateDigestAlgorithmConstraint(Context context) {
+		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
+		if (signedAttributeConstraints != null) {
+			return signedAttributeConstraints.getSigningCertificateDigestAlgorithm();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getSigningTimeConstraint(Context context) {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
 		if (signedAttributeConstraints != null) {

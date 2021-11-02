@@ -34,6 +34,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -58,8 +59,9 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevocationSelectorResultCheck;
@@ -294,11 +296,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				item = item.setNextItem(digestMatcherIsSecureAtPoeTime(digestMatcher, bestSignatureTime.getTime(), signatureConstraint));
 			}
 
+			for (CertificateRefWrapper certificateRef : currentSignature.getSigningCertificateReferences()) {
+				item = item.setNextItem(signCertRefIsSecureAtPoeTime(certificateRef, bestSignatureTime.getTime(), currentContext));
+			}
+
 			// check validity of Cryptographic Constraints for the Signing Certificate and CA Certificates
-			item = certificateChainReliableAtBestSignatureTime(item, bestSignatureTime.getTime(), currentContext);
+			item = certificateChainReliableAtBestSignatureTime(item, getCurrentTime().getTime(), currentContext);
 			
 			// check validity of revocation data
-			item = revocationDataReliableAtBestSignatureTime(item, bestSignatureTime.getTime());
+			item = revocationDataReliableAtBestSignatureTime(item, getCurrentTime().getTime());
 			
 		}
 
@@ -533,7 +539,24 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> digestMatcherIsSecureAtPoeTime(XmlDigestMatcher digestMatcher, Date validationDate, 
 			CryptographicConstraint constraint) {
 		MessageTag position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatcher);
-		return new DigestCryptographicCheck<>(i18nProvider, digestMatcher.getDigestMethod(), result, validationDate, position, constraint);
+		return new DigestMatcherCryptographicCheck<>(i18nProvider, digestMatcher.getDigestMethod(), result, validationDate, position, constraint);
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> signCertRefIsSecureAtPoeTime(
+			CertificateRefWrapper signCertReference, Date validationDate, Context context) {
+		SubContext subContext;
+		if (currentSignature.getSigningCertificate() != null &&
+				currentSignature.getSigningCertificate().getId().equals(signCertReference.getCertificateId())) {
+			subContext = SubContext.SIGNING_CERT;
+		} else {
+			subContext = SubContext.CA_CERTIFICATE;
+		}
+
+		CryptographicConstraint cryptographicConstraint = policy.getCertificateCryptographicConstraint(context, subContext);
+
+		LevelConstraint constraint = policy.getSigningCertificateDigestAlgorithmConstraint(context);
+		return new SigningCertificateDigestAlgorithmCheck<>(i18nProvider, signCertReference, result, validationDate,
+				cryptographicConstraint, constraint);
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> signatureIsAcceptable(Date bestSignatureTime, Context context) {

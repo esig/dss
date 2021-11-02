@@ -200,6 +200,11 @@
 					<xsd:documentation>Checks if all certificates in the chain are referenced by the signingCertificate (V1/V2) attribute, when present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SigningCertificateDigestAlgorithm" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies a validity against cryptographic constraints for a DigestAlgorithm used on a signing-certificate-reference creation, when present</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="CertDigestPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the signing certificate digest</xsd:documentation>
