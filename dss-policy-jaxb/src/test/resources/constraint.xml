@@ -54,6 +54,7 @@
 				<AuthorityInfoAccessPresent Level="WARN" />
 				<RevocationInfoAccessPresent Level="WARN" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<KeyUsage Level="WARN">

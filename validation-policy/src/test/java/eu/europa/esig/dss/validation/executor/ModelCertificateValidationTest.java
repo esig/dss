@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author akoepe
  * @version 1.0
  */
-public class ModelCertificateValidationTest extends ModelAbstractlValidation {
+public class ModelCertificateValidationTest extends ModelAbstractValidation {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 	private static final Stream<Arguments> data() throws Exception {

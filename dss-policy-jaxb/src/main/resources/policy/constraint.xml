@@ -65,6 +65,7 @@
 				<AuthorityInfoAccessPresent Level="WARN" />
 				<RevocationInfoAccessPresent Level="WARN" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<KeyUsage Level="WARN">
@@ -87,6 +88,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
@@ -99,6 +101,7 @@
 			<SigningCertificatePresent Level="WARN" />
 			<UnicitySigningCertificate Level="WARN" />
 			<SigningCertificateRefersCertificateChain Level="WARN" />
+			<SigningCertificateDigestAlgorithm Level="WARN" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
@@ -143,6 +146,7 @@
 				<AuthorityInfoAccessPresent Level="WARN" />
 				<RevocationInfoAccessPresent Level="WARN" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<KeyUsage Level="WARN">
@@ -163,6 +167,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
@@ -173,6 +178,9 @@
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="WARN" />
+			<UnicitySigningCertificate Level="WARN" />
+			<SigningCertificateRefersCertificateChain Level="WARN" />
+			<SigningCertificateDigestAlgorithm Level="WARN" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<IssuerSerialMatch Level="WARN" />
@@ -205,6 +213,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<ExtendedKeyUsage Level="WARN">
@@ -219,6 +228,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="WARN" />
+				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
@@ -231,6 +241,7 @@
 			<SigningCertificatePresent Level="WARN" />
 			<!-- <UnicitySigningCertificate Level="WARN" /> RFC 5816 -->
 			<SigningCertificateRefersCertificateChain Level="WARN" />
+			<!-- <SigningCertificateDigestAlgorithm Level="WARN" /> TODO : too strict to enforce now -->
 			<CertDigestPresent Level="WARN" />
 			<IssuerSerialMatch Level="WARN" />
 		</SignedAttributes>
@@ -250,6 +261,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
+				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
@@ -260,6 +272,7 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="WARN" />
+				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />

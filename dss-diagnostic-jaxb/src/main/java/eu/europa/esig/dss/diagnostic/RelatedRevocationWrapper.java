@@ -63,7 +63,7 @@ public class RelatedRevocationWrapper extends RevocationWrapper {
 	public List<RevocationRefWrapper> getReferences() {
 		List<RevocationRefWrapper> references = new ArrayList<>();
 		for (XmlRevocationRef revocationRef : relatedRevocation.getRevocationRefs()) {
-			references.add(new RevocationRefWrapper(revocationRef));
+			references.add(new RevocationRefWrapper(revocationRef, relatedRevocation.getRevocation().getId()));
 		}
 		return references;
 	}

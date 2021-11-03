@@ -189,6 +189,9 @@ public enum MessageTag {
 	ASCCM_AR_ANS_AKSNR,
 	ASCCM_PKSK,
 	ASCCM_PKSK_ANS,
+
+	ACCM_DESC_WITH_ID,
+	ACCM_DESC_WITH_NAME,
 	
 	ACCM_POS_SIG_SIG,
 	ACCM_POS_TST_SIG,
@@ -211,6 +214,7 @@ public enum MessageTag {
 	ACCM_POS_CERT_CHAIN_TST,
 	ACCM_POS_CERT_CHAIN_REVOC,
 	ACCM_POS_CERT_CHAIN,
+	ACCM_POS_SIG_CERT_REF,
 
 	BBB_SAV_DSCACRCC,
 	BBB_SAV_DSCACRCC_ANS,
@@ -528,6 +532,8 @@ public enum MessageTag {
 	
 	/* Additional Info */
 
+	ACCEPTABLE_REVOCATION,
+
 	BASIC_SIGNATURE_VALIDATION_RESULT,
 
 	BEST_SIGNATURE_TIME_CERT_NOT_AFTER,
@@ -571,6 +577,8 @@ public enum MessageTag {
 	EXTENDED_KEY_USAGE,
 
 	KEY_USAGE,
+
+	LAST_ACCEPTABLE_REVOCATION,
 	
 	REFERENCE,
 
@@ -669,6 +677,12 @@ public enum MessageTag {
 	DAAV,
 	
 	CC,
+
+	CRS,
+
+	LOTL,
+
+	PSV_CRS,
 	
 	RAC,
 
@@ -677,8 +691,6 @@ public enum MessageTag {
 	SUB_XCV,
 
 	TL,
-
-	LOTL,
 
 	TST_QUALIFICATION,
 
@@ -691,6 +703,8 @@ public enum MessageTag {
 	VPFSWATSP,
 
 	VPFTSP,
+
+	VTS_CRS,
 	
 	/* Custom variables */
 

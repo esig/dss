@@ -84,10 +84,10 @@ public class MessageImprintDigestAlgorithmValidationCheck extends ChainItem<XmlV
         String dateTime = ValidationProcessUtils.getFormattedDate(currentTime);
         if (isValid(davResult)) {
             return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_SUCCESS_DM_WITH_ID,
-                    timestamp.getMessageImprint().getDigestMethod(), dateTime, timestamp.getId());
+                    timestamp.getMessageImprint().getDigestMethod(), dateTime, MessageTag.ACCM_POS_MESS_IMP, timestamp.getId());
         } else {
             return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID,
-                    timestamp.getMessageImprint().getDigestMethod(), dateTime, timestamp.getId());
+                    timestamp.getMessageImprint().getDigestMethod(), dateTime, MessageTag.ACCM_POS_MESS_IMP, timestamp.getId());
         }
     }
 

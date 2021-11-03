@@ -35,17 +35,21 @@ import java.util.Date;
  *
  * @param <T> {@code XmlConstraintsConclusion}
  */
-public class DigestCryptographicCheck<T extends XmlConstraintsConclusion> extends DigestCryptographicCheckerResultCheck<T> {
+public class DigestMatcherCryptographicCheck<T extends XmlConstraintsConclusion> extends DigestCryptographicCheckerResultCheck<T> {
 
-	public DigestCryptographicCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm, T result, Date validationDate, MessageTag position,
-			CryptographicConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param result the result
+	 * @param validationDate {@link Date}
+	 * @param position {@link MessageTag}
+	 * @param constraint {@link CryptographicConstraint}
+	 */
+	public DigestMatcherCryptographicCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm, T result,
+										   Date validationDate, MessageTag position, CryptographicConstraint constraint) {
 		super(i18nProvider, result, validationDate, position, 
-				execute(i18nProvider, digestAlgorithm, validationDate, position, constraint), constraint);
-	}
-
-	public DigestCryptographicCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm, T result, Date validationDate, MessageTag position,
-			String referenceName, CryptographicConstraint constraint) {
-		super(i18nProvider, result, validationDate, position, referenceName, 
 				execute(i18nProvider, digestAlgorithm, validationDate, position, constraint), constraint);
 	}
 	

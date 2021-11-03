@@ -65,7 +65,7 @@ public class OrphanCertificateWrapper extends OrphanCertificateTokenWrapper {
 		
 		List<XmlCertificateRef> certificateRefs = orphanCertificate.getCertificateRefs();
 		for (XmlCertificateRef certificateRef : certificateRefs) {
-			certificateRefWrappers.add(new CertificateRefWrapper(certificateRef));
+			certificateRefWrappers.add(new CertificateRefWrapper(certificateRef, getId()));
 		}
 		return certificateRefWrappers;
 	}

@@ -75,7 +75,7 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	}
 
 	/**
-	 * This method allows to initialize and execute the complete chain until the first failure.
+	 * This method allows initialization and execution of complete chain until the first failure.
 	 * 
 	 * @return the complete result with constraints and final conclusion for the chain
 	 */

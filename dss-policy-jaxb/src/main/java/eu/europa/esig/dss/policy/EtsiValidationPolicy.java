@@ -211,6 +211,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getSigningCertificateDigestAlgorithmConstraint(Context context) {
+		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
+		if (signedAttributeConstraints != null) {
+			return signedAttributeConstraints.getSigningCertificateDigestAlgorithm();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getSigningTimeConstraint(Context context) {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
 		if (signedAttributeConstraints != null) {
@@ -556,6 +565,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getRevocationDataAvailable();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getAcceptableRevocationDataFoundConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getAcceptableRevocationDataFound();
 		}
 		return null;
 	}
