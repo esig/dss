@@ -89,7 +89,9 @@ import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessE
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.AttributeBaseType;
+import eu.europa.esig.validationreport.jaxb.CertificateChainType;
 import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
 import eu.europa.esig.validationreport.jaxb.POEType;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
@@ -305,6 +307,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
 		for (AdvancedSignature advancedSignature : advancedSignatures) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(advancedSignature.getId());
+
+			if (advancedSignature.getSigningCertificateToken() != null && advancedSignature.getSignatureCryptographicVerification().isSignatureIntact()) {
+				assertNotNull(signatureWrapper.getSigningCertificate());
+				assertEquals(advancedSignature.getSigningCertificateToken().getDSSIdAsString(), signatureWrapper.getSigningCertificate().getId());
+			}
 
 			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
 			FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
@@ -616,6 +623,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertFalse(Utils.isCollectionNotEmpty(certificateChain));
 		} else {
 			assertTrue(Utils.isCollectionNotEmpty(certificateChain));
+			assertEquals(signingCertificate.getId(), certificateChain.get(0).getId());
 
 			List<CertificateWrapper> signingCertificateChain = signingCertificate.getCertificateChain();
 			if (Utils.isCollectionNotEmpty(signingCertificateChain)) {
@@ -1305,6 +1313,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						assertTrue(expired.before(validationTimeInfo.getValidationTime()));
 					}
 				}
+				CertificateChainType certificateChain = validationReportDataType.getCertificateChain();
+				if (certificateChain != null) {
+					assertNotNull(certificateChain.getSigningCertificate());
+					assertEquals(1, certificateChain.getSigningCertificate().getVOReference().size());
+				}
 			}
 		}
 	}
@@ -1623,6 +1636,27 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					}
 				} else {
 					assertNull(signersDocument);
+				}
+
+				ValidationStatusType signatureValidationStatus = signatureValidationReport.getSignatureValidationStatus();
+				assertNotNull(signatureValidationStatus);
+
+				List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+				assertNotNull(associatedValidationReportData);
+
+				if (signature.getSigningCertificate() != null) {
+					for (ValidationReportDataType validationReportDataType : associatedValidationReportData) {
+						CertificateChainType certificateChain = validationReportDataType.getCertificateChain();
+						assertNotNull(certificateChain);
+						assertNotNull(certificateChain.getSigningCertificate());
+						assertEquals(1, certificateChain.getSigningCertificate().getVOReference().size());
+
+						Object signingCertificate = certificateChain.getSigningCertificate().getVOReference().get(0);
+						assertTrue(signingCertificate instanceof ValidationObjectType);
+						ValidationObjectType validationObjectType = (ValidationObjectType) signingCertificate;
+						assertEquals(ObjectType.CERTIFICATE, validationObjectType.getObjectType());
+						assertEquals(signature.getSigningCertificate().getId(), validationObjectType.getId());
+					}
 				}
 			}
 		}
