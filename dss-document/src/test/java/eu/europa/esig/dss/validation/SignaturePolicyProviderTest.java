@@ -20,26 +20,26 @@
  */
 package eu.europa.esig.dss.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SignaturePolicyProviderTest {
 
 	private static final String POLICY_ID = "1.2.3";
 	private static final String POLICY_URL = "http://localhost/my-policy.pdf";
 
-	private DSSDocument policy = new InMemoryDocument(new byte[] { 1, 2, 3 });
+	private static final DSSDocument POLICY_DOC = new InMemoryDocument(new byte[] { 1, 2, 3 });
 
 	@Test
 	public void noPolicies() {
@@ -53,22 +53,22 @@ public class SignaturePolicyProviderTest {
 	public void policyById() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesById = new HashMap<>();
-		signaturePoliciesById.put(POLICY_ID, policy);
+		signaturePoliciesById.put(POLICY_ID, POLICY_DOC);
 		spp.setSignaturePoliciesById(signaturePoliciesById);
 
-		assertEquals(policy, spp.getSignaturePolicyById(POLICY_ID));
-		assertEquals(policy, spp.getSignaturePolicy(POLICY_ID, null));
+		assertEquals(POLICY_DOC, spp.getSignaturePolicyById(POLICY_ID));
+		assertEquals(POLICY_DOC, spp.getSignaturePolicy(POLICY_ID, null));
 	}
 
 	@Test
 	public void policyByUrl() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
-		signaturePoliciesByUrl.put(POLICY_URL, policy);
+		signaturePoliciesByUrl.put(POLICY_URL, POLICY_DOC);
 		spp.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 
-		assertEquals(policy, spp.getSignaturePolicyByUrl(POLICY_URL));
-		assertEquals(policy, spp.getSignaturePolicy(POLICY_ID, POLICY_URL));
+		assertEquals(POLICY_DOC, spp.getSignaturePolicyByUrl(POLICY_URL));
+		assertEquals(POLICY_DOC, spp.getSignaturePolicy(POLICY_ID, POLICY_URL));
 	}
 
 	@Test
@@ -77,6 +77,32 @@ public class SignaturePolicyProviderTest {
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(POLICY_URL, new byte[] { 1, 2, 3 });
 		DataLoader dataLoader = new MemoryDataLoader(dataMap);
+		spp.setDataLoader(dataLoader);
+
+		assertEquals(POLICY_DOC.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigest(DigestAlgorithm.SHA256));
+		assertEquals(POLICY_DOC.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigest(DigestAlgorithm.SHA256));
+	}
+
+	@Test
+	public void policyUpdateTest() {
+		SignaturePolicyProvider spp = new SignaturePolicyProvider();
+
+		Map<String, byte[]> dataMap = new HashMap<>();
+		byte[] policyContent = "Hello World!".getBytes(StandardCharsets.UTF_8);
+		DSSDocument policy = new InMemoryDocument(policyContent);
+		dataMap.put(POLICY_URL, policyContent);
+
+		DataLoader dataLoader = new MemoryDataLoader(dataMap);
+		spp.setDataLoader(dataLoader);
+
+		assertEquals(policy.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigest(DigestAlgorithm.SHA256));
+		assertEquals(policy.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigest(DigestAlgorithm.SHA256));
+
+		policyContent = "Bye World!".getBytes(StandardCharsets.UTF_8);
+		policy = new InMemoryDocument(policyContent);
+		dataMap.put(POLICY_URL, policyContent);
+
+		dataLoader = new MemoryDataLoader(dataMap);
 		spp.setDataLoader(dataLoader);
 
 		assertEquals(policy.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigest(DigestAlgorithm.SHA256));
