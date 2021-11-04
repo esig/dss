@@ -159,7 +159,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @param parameters {@link PAdESSignatureParameters}
 	 * @return bytes to be signed
 	 */
-	protected byte[] computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
+	public byte[] computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
 		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
 		return pdfSignatureService.digest(toSignDocument, parameters);
 	}
@@ -173,12 +173,21 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		assertSigningCertificateValid(parameters);
 		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
-		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		final byte[] encodedData = generateCMSSignedData(toSignDocument, parameters, signatureValue);
+		return signDocumentWithCms(toSignDocument, parameters, encodedData);
+	}
+
+	public DSSDocument signDocumentWithCms(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final byte[] encodedData)
+			throws DSSException {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+
+		assertSigningCertificateValid(parameters);
 
 		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
 		DSSDocument signature = pdfSignatureService.sign(toSignDocument, encodedData, parameters);
 
+		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(signatureLevel);
 		if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {
 			signature = extension.extendSignatures(signature, parameters);
@@ -203,10 +212,28 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm cannot be null!");
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
-		
-		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
 		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters);
+		return generateCMSSignedData(messageDigest, parameters, signatureValue);
+	}
+
+	/**
+	 * Generates the CMSSignedData
+	 *
+	 * @param messageDigest {@link DSSDocument} digest to sign
+	 * @param parameters {@link PAdESSignatureParameters}
+	 * @param signatureValue {@link SignatureValue}
+	 * @return byte array representing the CMSSignedData
+	 */
+	public byte[] generateCMSSignedData(final byte[] messageDigest, final PAdESSignatureParameters parameters,
+																			final SignatureValue signatureValue) {
+		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
+		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
+		Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm cannot be null!");
+		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
+
+		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
+
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
 		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,

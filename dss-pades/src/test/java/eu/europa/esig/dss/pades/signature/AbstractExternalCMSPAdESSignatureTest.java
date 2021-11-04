@@ -62,7 +62,7 @@ public abstract class AbstractExternalCMSPAdESSignatureTest extends AbstractPAdE
 
 	@Override
 	protected DSSDocument sign() {
-		ExternalCMSPAdESService service = new ExternalCMSPAdESService(getOfflineCertificateVerifier());
+		PAdESService service = new PAdESService(getOfflineCertificateVerifier());
 		byte[] documentDigest = service.computeDocumentDigest(documentToSign, signatureParameters);
 		assertNotNull(documentDigest);
 
@@ -70,10 +70,7 @@ public abstract class AbstractExternalCMSPAdESSignatureTest extends AbstractPAdE
 		byte[] cmsSignedData = getSignedCMSignedData(documentDigest);
 		assertNotNull(cmsSignedData);
 
-		// Stateless
-		service = new ExternalCMSPAdESService(getOfflineCertificateVerifier());
-		service.setCmsSignedData(cmsSignedData);
-		return service.signDocument(documentToSign, signatureParameters, null);
+		return service.signDocumentWithCms(documentToSign, signatureParameters, cmsSignedData);
 	}
 
 	/**
@@ -96,11 +93,7 @@ public abstract class AbstractExternalCMSPAdESSignatureTest extends AbstractPAdE
 		SignatureValue signatureValue = getToken().sign(new ToBeSigned(customContentSigner.getOutputStream().toByteArray()),
 				signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 
-		customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
-		generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(signatureParameters, customContentSigner, signerInfoGeneratorBuilder, null);
-
-		CMSSignedData cmsSignedData = CMSUtils.generateDetachedCMSSignedData(generator, content);
-		return DSSASN1Utils.getDEREncoded(cmsSignedData);
+		return new PAdESService(getOfflineCertificateVerifier()).generateCMSSignedData(documentDigest, signatureParameters, signatureValue);
 	}
 
 	@Override
@@ -121,31 +114,6 @@ public abstract class AbstractExternalCMSPAdESSignatureTest extends AbstractPAdE
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
-	}
-
-	private static class ExternalCMSPAdESService extends PAdESService {
-
-		private static final long serialVersionUID = -2003453716888412577L;
-
-		private byte[] cmsSignedData;
-
-		public ExternalCMSPAdESService(CertificateVerifier certificateVerifier) {
-			super(certificateVerifier);
-		}
-
-		@Override
-		protected byte[] generateCMSSignedData(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters,
-				final SignatureValue signatureValue) {
-			if (this.cmsSignedData == null) {
-				throw new NullPointerException("A CMS signed data must be provided");
-			}
-			return this.cmsSignedData;
-		}
-
-		public void setCmsSignedData(final byte[] cmsSignedData) {
-			this.cmsSignedData = cmsSignedData;
-		}
-
 	}
 
 }
