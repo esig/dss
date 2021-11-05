@@ -1203,8 +1203,8 @@ public class TLValidationJobTest {
 			assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
 			assertFalse(lotlInfo.getValidationCacheInfo().isError());
 		}
-		
 	}
+
 	@Test
 	public void ecdsaTLTest() {
 		DSSDocument ecdsaTLDoc = new FileDocument("src/test/resources/tl-ecdsa-brainpool.xml");
@@ -1219,8 +1219,11 @@ public class TLValidationJobTest {
 		tlSource.setUrl("ecdsa-tl.xml");
 		tlSource.setCertificateSource(certificateSource);
 
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader(mockDataLoader);
+		fileCacheDataLoader.setCacheExpirationTime(0);
+
 		TLValidationJob tlValidationJob = new TLValidationJob();
-		tlValidationJob.setOfflineDataLoader(new FileCacheDataLoader(mockDataLoader));
+		tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(tlSource);
 		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
