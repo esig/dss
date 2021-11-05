@@ -4,7 +4,9 @@
 
 # These files are binary and should be left untouched (carriage returns windows/linux)
 # (binary is a macro for -text -diff)
-dss-xades/src/test/resources/validation/dss1334/simple-test.xml         binary
-dss-xades/src/test/resources/sample.xml         binary
+dss-tsl-validation/src/test/resources/tl-ecdsa-brainpool.xml         binary
 dss-utils/src/test/resources/sample-cr-lf.xml         binary
 dss-utils/src/test/resources/sample-lf.xml         binary
+dss-xades/src/test/resources/validation/dss1334/simple-test.xml         binary
+dss-xades/src/test/resources/validation/xades-ecc-brainpool.xml         binary
+dss-xades/src/test/resources/sample.xml         binary
