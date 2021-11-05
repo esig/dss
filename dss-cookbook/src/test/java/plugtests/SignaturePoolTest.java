@@ -306,6 +306,11 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	}
 	
 	@Override
+	protected void checkNoDuplicateSignatures(DiagnosticData diagnosticData) {
+		// skip
+	}
+
+	@Override
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
 		for (AdvancedSignature advancedSignature : advancedSignatures) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(advancedSignature.getId());
