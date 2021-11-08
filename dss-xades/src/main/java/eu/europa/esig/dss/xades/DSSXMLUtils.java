@@ -47,7 +47,6 @@ import eu.europa.esig.xmldsig.XSDAbstractUtils;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
@@ -723,7 +722,7 @@ public final class DSSXMLUtils {
 				}
 			}
 			
-		} catch (XMLSecurityException | XMLSecurityRuntimeException e) {
+		} catch (XMLSecurityException e) {
 			// if exception occurs during the transformations
 			LOG.warn("Signature reference with id [{}] is corrupted or has an invalid format. "
 					+ "Original data cannot be obtained. Reason: [{}]", reference.getId(), e.getMessage());

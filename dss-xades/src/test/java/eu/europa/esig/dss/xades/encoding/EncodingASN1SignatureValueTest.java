@@ -49,7 +49,7 @@ public class EncodingASN1SignatureValueTest {
 		byte[] convertToXmlDSig = DSSASN1Utils.ensurePlainSignatureValue(EncryptionAlgorithm.ECDSA, signatureValue);
 		assertTrue(Utils.isArrayNotEmpty(convertToXmlDSig));
 
-		byte[] xmlsec = SignatureECDSA.convertASN1toXMLDSIG(signatureValue);
+		byte[] xmlsec = SignatureECDSA.convertASN1toXMLDSIG(signatureValue, -1);
         assertArrayEquals(convertToXmlDSig, xmlsec);
 	}
 
@@ -159,7 +159,7 @@ public class EncodingASN1SignatureValueTest {
 		byte[] asn1Value = SignatureECDSA.convertXMLDSIGtoASN1(signatureValue);
 		assertArrayEquals(asn1Value, DSSASN1Utils.toStandardDSASignatureValue(signatureValue));
 
-		byte[] plainSignatureValue = SignatureECDSA.convertASN1toXMLDSIG(asn1Value);
+		byte[] plainSignatureValue = SignatureECDSA.convertASN1toXMLDSIG(asn1Value, -1);
 		assertArrayEquals(plainSignatureValue, DSSASN1Utils.toPlainDSASignatureValue(asn1Value));
 	}
 
