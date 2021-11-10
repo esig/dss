@@ -224,6 +224,9 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			try {
 				final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
 				if (!Utils.isArrayEmpty(ocspRespBytes)) {
+					if (LOG.isTraceEnabled()) {
+						LOG.trace(String.format("Obtained OCSPResponse binaries from URL '%s' : %s", ocspAccessLocation, Utils.toBase64(ocspRespBytes)));
+					}
 					final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
 					verifyNonce(ocspResp, nonce);
 

@@ -303,7 +303,7 @@ public class JAdESLevelBaselineB {
 		// incorporate only with FALSE value
 		if (!parameters.isBase64UrlEncodedPayload()) {
 			assertPayloadEncodingValid();
-			addHeader(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, false);
+			addHeader(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, parameters.isBase64UrlEncodedPayload());
 		}
 	}
 
@@ -474,10 +474,9 @@ public class JAdESLevelBaselineB {
 		
 		/*
 		 * a) The mediaType member, which shall contain a string identifying the type of
-		 * the signed assertions or the claimed attributes present in vals member, and
-		 * shall meet the requirements specified in clause 8.4 of
-		 * draft-handrews-json-schema-validation-02: "JSON Schema Validation: A
-		 * Vocabulary for Structural Validation of JSON" [21].
+		 * the signed assertions or the claimed attributes present in qVals member,
+		 * and shall meet the requirements specified in clause 8.4 of
+		 * draft-handrews-json-schema-validation-01 [20].
 		 */
 
 		/*
@@ -494,10 +493,9 @@ public class JAdESLevelBaselineB {
 
 		/*
 		 * b) The encoding member, which shall contain a string identifying the encoding
-		 * of the signed assertions or the claimed attributes present in vals member,
+		 * of the signed assertions or the claimed attributes present in qVals member,
 		 * and shall meet the requirements specified in clause 8.3 of
-		 * draft-handrews-json-schema-validation-02: "JSON Schema Validation: A
-		 * Vocabulary for Structural Validation of JSON" [21].
+		 * draft-handrews-json-schema-validation-01 [20].
 		 */
 
 		/*
