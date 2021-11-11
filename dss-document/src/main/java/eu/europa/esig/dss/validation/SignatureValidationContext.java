@@ -105,6 +105,9 @@ public class SignatureValidationContext implements ValidationContext {
 	/** Map of tokens defining if they have been processed yet */
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<>();
 
+	/** The best-signature-time for b-level certificate chain */
+	private final Map<CertificateToken, Date> bestSignatureTimeCertChainDates = new HashMap<>();
+
 	/** The last usage of a timestamp's certificate tokens */
 	private final Map<CertificateToken, Date> lastTimestampCertChainDates = new HashMap<>();
 
@@ -195,8 +198,12 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 
-		prepareTimestamps(signature.getAllTimestamps());
-		prepareCounterSignatures(signature.getCounterSignatures());
+		List<TimestampToken> timestamps = signature.getAllTimestamps();
+		prepareTimestamps(timestamps);
+		registerBestSignatureTime(signature, timestamps);
+
+		List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
+		prepareCounterSignatures(counterSignatures);
 	}
 
 	@Override
@@ -256,6 +263,35 @@ public class SignatureValidationContext implements ValidationContext {
 		for (final TimestampToken timestampToken : timestampTokens) {
 			addTimestampTokenForVerification(timestampToken);
 		}
+	}
+
+	private void registerBestSignatureTime(AdvancedSignature signature, List<TimestampToken> timestamps) {
+		CertificateToken signingCertificate = signature.getSigningCertificateToken();
+		if (signingCertificate != null) {
+			// shall not return null
+			Date bestSignatureTime = getBestSignatureTime(signature);
+			if (bestSignatureTime == null) {
+				bestSignatureTime = currentTime;
+			}
+			List<CertificateToken> certificateChain = toCertificateTokenChain(getCertChain(signingCertificate));
+			for (CertificateToken cert : certificateChain) {
+				Date certBestSignatureTime = bestSignatureTimeCertChainDates.get(cert);
+				// use the latest obtained best-signature-time, in order to be able to validate the newly created signatures
+				if (certBestSignatureTime == null || bestSignatureTime.after(certBestSignatureTime)) {
+					bestSignatureTimeCertChainDates.put(cert, bestSignatureTime);
+				}
+			}
+		}
+	}
+
+	private Date getBestSignatureTime(AdvancedSignature signature) {
+		Date bestSignatureTime = null;
+		for (POE poe : poeTimes.get(signature.getId())) {
+			if (bestSignatureTime == null || bestSignatureTime.after(poe.getTime())) {
+				bestSignatureTime = poe.getTime();
+			}
+		}
+		return bestSignatureTime;
 	}
 
 	private void prepareCounterSignatures(final List<AdvancedSignature> counterSignatures) {
@@ -600,6 +636,8 @@ public class SignatureValidationContext implements ValidationContext {
 				}
 			}
 
+			registerTimestampUsageDate(timestampToken);
+
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
@@ -611,7 +649,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 	}
 
-	private void registerUsageDate(TimestampToken timestampToken) {
+	private void registerTimestampUsageDate(TimestampToken timestampToken) {
 		CertificateToken tsaCertificate = getTSACertificate(timestampToken, getAllCertificateSources());
 		if (tsaCertificate == null) {
 			LOG.warn("No Timestamp Certificate found. Chain is skipped.");
@@ -621,9 +659,6 @@ public class SignatureValidationContext implements ValidationContext {
 		List<CertificateToken> tsaCertificateChain = toCertificateTokenChain(getCertChain(tsaCertificate));
 		Date usageDate = timestampToken.getCreationDate();
 		for (CertificateToken cert : tsaCertificateChain) {
-			if (isSelfSignedOrTrusted(cert)) {
-				break;
-			}
 			Date lastUsage = lastTimestampCertChainDates.get(cert);
 			if (lastUsage == null || lastUsage.before(usageDate)) {
 				lastTimestampCertChainDates.put(cert, usageDate);
@@ -667,7 +702,6 @@ public class SignatureValidationContext implements ValidationContext {
 		TimestampToken timestampToken = getNotYetVerifiedTimestamp();
 		while (timestampToken != null) {
 			getCertChain(timestampToken);
-			registerUsageDate(timestampToken);
 			timestampToken = getNotYetVerifiedTimestamp();
 		}
 		
@@ -1005,10 +1039,15 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, Collection<RevocationToken> revocations) {
+		// get best-signature-time for b-level certificate chain
+		Date refreshNeededAfterTime = bestSignatureTimeCertChainDates.get(certToken);
 		// get last usage dates for the same timestamp certificate chain
-		Date refreshNeededAfterTime = lastTimestampCertChainDates.get(certToken);
+		Date lastTimestampUsageTime = lastTimestampCertChainDates.get(certToken);
+		if (lastTimestampUsageTime != null && (refreshNeededAfterTime == null || lastTimestampUsageTime.after(refreshNeededAfterTime))) {
+			refreshNeededAfterTime = lastTimestampUsageTime;
+		}
+		// return best POE for other cases
 		if (refreshNeededAfterTime == null) {
-			// the best signature time for other tokens (i.e. B-level and revocation data)
 			// shall not return null
 			refreshNeededAfterTime = getLowestPOETime(certToken);
 		}
