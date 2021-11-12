@@ -223,6 +223,7 @@
                         <Conclusion>
                             <Indication>PASSED</Indication>
                         </Conclusion>
+                        <RevocationThisUpdate>2018-02-09T07:03:45Z</RevocationThisUpdate>
                         <RevocationProductionDate>2018-02-09T07:03:45Z</RevocationProductionDate>
                     </RAC>
                 </CRS>

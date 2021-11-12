@@ -117,6 +117,8 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignedAttributesConstraints;
+import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.policy.jaxb.TimeUnit;
 import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -7049,6 +7051,153 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 		}
 		assertTrue(signRefDACheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void thisUpdateBeforeBestSignatureTimeNoRevocationFreshnessCheckTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_thisUpdate_before_sigTst.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+		TimeConstraint timeConstraint = new TimeConstraint();
+		timeConstraint.setUnit(TimeUnit.SECONDS);
+		timeConstraint.setValue(0);
+		timeConstraint.setLevel(Level.IGNORE);
+		revocationConstraints.setRevocationFreshness(timeConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void thisUpdateBeforeBestSignatureTimeWithRevocationFreshnessCheckTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_thisUpdate_before_sigTst.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+		TimeConstraint timeConstraint = new TimeConstraint();
+		timeConstraint.setUnit(TimeUnit.SECONDS);
+		timeConstraint.setValue(0);
+		timeConstraint.setLevel(Level.FAIL);
+		revocationConstraints.setRevocationFreshness(timeConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_RFC_IRIF_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		List<XmlSubXCV> subXCV = xcv.getSubXCV();
+		assertEquals(2, subXCV.size());
+
+		XmlSubXCV xmlSubXCV = subXCV.get(0);
+		assertEquals(Indication.INDETERMINATE, xmlSubXCV.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, xmlSubXCV.getConclusion().getSubIndication());
+
+		XmlCRS crs = xmlSubXCV.getCRS();
+		assertNotNull(crs);
+		assertEquals(1, crs.getRAC().size());
+
+		XmlRFC rfc = xmlSubXCV.getRFC();
+		assertNotNull(rfc);
+		assertEquals(Indication.INDETERMINATE, rfc.getConclusion().getIndication());
+		assertEquals(SubIndication.TRY_LATER, rfc.getConclusion().getSubIndication());
+
+		boolean revocationFreshCheckFound = false;
+		for (XmlConstraint constraint : rfc.getConstraint()) {
+			if (MessageTag.BBB_RFC_IRIF.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				revocationFreshCheckFound = true;
+			}
+		}
+		assertTrue(revocationFreshCheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void oldAndFreshOCSPsRevocationFreshnessCheckTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_with_old_and_fresh_ocsp.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+		TimeConstraint timeConstraint = new TimeConstraint();
+		timeConstraint.setUnit(TimeUnit.SECONDS);
+		timeConstraint.setValue(0);
+		timeConstraint.setLevel(Level.FAIL);
+		revocationConstraints.setRevocationFreshness(timeConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		List<XmlSubXCV> subXCV = xcv.getSubXCV();
+		assertEquals(2, subXCV.size());
+
+		XmlSubXCV xmlSubXCV = subXCV.get(0);
+		assertEquals(Indication.PASSED, xmlSubXCV.getConclusion().getIndication());
+
+		XmlCRS crs = xmlSubXCV.getCRS();
+		assertNotNull(crs);
+		assertEquals(2, crs.getRAC().size());
+
+		XmlRFC rfc = xmlSubXCV.getRFC();
+		assertNotNull(rfc);
+		assertEquals(Indication.PASSED, rfc.getConclusion().getIndication());
+
+		boolean revocationFreshCheckFound = false;
+		for (XmlConstraint constraint : rfc.getConstraint()) {
+			if (MessageTag.BBB_RFC_IRIF.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				revocationFreshCheckFound = true;
+			}
+		}
+		assertTrue(revocationFreshCheckFound);
 
 		checkReports(reports);
 	}

@@ -238,6 +238,7 @@
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
+					<xs:element name="RevocationThisUpdate" type="xs:dateTime" />
 					<xs:element name="RevocationProductionDate" type="xs:dateTime" />
 					<xs:element name="CRS" type="CRS" minOccurs="0" />
 				</xs:sequence>

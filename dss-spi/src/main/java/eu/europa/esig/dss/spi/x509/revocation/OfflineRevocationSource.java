@@ -209,7 +209,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 		if (Utils.isCollectionNotEmpty(revocationTokens)) {
 			for (RevocationToken<R> revocationToken : revocationTokens) {
 				if (latestRevocationToken == null || (revocationToken.getProductionDate() != null
-						&& revocationToken.getProductionDate().after(latestRevocationToken.getProductionDate()))) {
+						&& latestRevocationToken.getProductionDate().before(revocationToken.getProductionDate()))) {
 					latestRevocationToken = revocationToken;
 				}
 			}

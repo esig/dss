@@ -223,7 +223,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 							i18nProvider, latestCompliantRevocation, controlTime, context, subContext, policy);
 					XmlRFC execute = rfc.execute();
 					if (execute.getConclusion() != null && Indication.FAILED.equals(execute.getConclusion().getIndication())) {
-						controlTime = latestCompliantRevocation.getProductionDate();
+						controlTime = latestCompliantRevocation.getThisUpdate();
 					}
 				}
 

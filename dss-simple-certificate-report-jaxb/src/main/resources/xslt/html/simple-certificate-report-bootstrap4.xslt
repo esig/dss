@@ -342,7 +342,7 @@
 					<xsl:with-param name="DateTimeStr" select="dss:revocationDate"/>
 				</xsl:call-template>)
 			</xsl:when>    	
-			<xsl:when test="dss:productionDate">
+			<xsl:when test="dss:thisUpdate">
       			<i>
 					<xsl:attribute name="class">fa fa-check-circle text-success</xsl:attribute>
 					<xsl:attribute name="title">Not Revoked</xsl:attribute>

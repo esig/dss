@@ -54,7 +54,7 @@ public class RevocationDataFreshCheck extends AbstractRevocationFreshCheck {
 	@Override
 	protected boolean process() {
 		if (revocationData != null) {
-			return isProductionDateAfterValidationTime();
+			return isThisUpdateTimeAfterValidationTime();
 		}
 		return false;
 	}

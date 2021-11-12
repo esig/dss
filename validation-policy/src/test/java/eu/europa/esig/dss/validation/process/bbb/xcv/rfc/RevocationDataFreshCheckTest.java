@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -37,6 +30,12 @@ import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeUnit;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RevocationDataFreshCheckTest extends AbstractTestCheck {
 
@@ -50,7 +49,7 @@ public class RevocationDataFreshCheckTest extends AbstractTestCheck {
 		XmlRevocation xr = new XmlRevocation();
 		Date now = new Date();
 		long nowMil = now.getTime();
-		xr.setProductionDate(new Date(nowMil - 43200000)); // 12 hours ago
+		xr.setThisUpdate(new Date(nowMil - 43200000)); // 12 hours ago
 
 		XmlRFC result = new XmlRFC();
 		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(i18nProvider, result, new RevocationWrapper(xr), now, tc);
@@ -71,7 +70,29 @@ public class RevocationDataFreshCheckTest extends AbstractTestCheck {
 		XmlRevocation xr = new XmlRevocation();
 		Date now = new Date();
 		long nowMil = now.getTime();
-		xr.setProductionDate(new Date(nowMil - 172800000)); // 48 hours ago
+		xr.setThisUpdate(new Date(nowMil - 172800000)); // 48 hours ago
+
+		XmlRFC result = new XmlRFC();
+		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(i18nProvider, result, new RevocationWrapper(xr), now, tc);
+		rdec.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void failedRevocationWithFreshProductionTimeDataFreshCheck() throws Exception {
+		TimeConstraint tc = new TimeConstraint();
+		tc.setUnit(TimeUnit.DAYS);
+		tc.setValue(1);
+		tc.setLevel(Level.FAIL);
+
+		XmlRevocation xr = new XmlRevocation();
+		Date now = new Date();
+		long nowMil = now.getTime();
+		xr.setThisUpdate(new Date(nowMil - 172800000)); // 48 hours ago
+		xr.setProductionDate(new Date(nowMil - 43200000)); // 12 hours ago
 
 		XmlRFC result = new XmlRFC();
 		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(i18nProvider, result, new RevocationWrapper(xr), now, tc);

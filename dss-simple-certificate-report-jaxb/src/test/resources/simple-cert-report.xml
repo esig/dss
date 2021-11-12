@@ -26,7 +26,7 @@
             <qualificationAtIssuance>QC for eSig with QSCD</qualificationAtIssuance>
             <qualificationAtValidation>QC for eSig with QSCD</qualificationAtValidation>
             <revocation>
-                <productionDate>2018-02-09T07:03:45</productionDate>
+                <thisUpdate>2018-02-09T07:03:45</thisUpdate>
                 <revocationDate>2014-12-30T13:28:24</revocationDate>
                 <revocationReason>unspecified</revocationReason>
             </revocation>

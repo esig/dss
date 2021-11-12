@@ -1020,7 +1020,7 @@ public class DiagnosticData {
 		List<CertificateRevocationWrapper> certificateRevocationData = certificate.getCertificateRevocationData();
 		for (CertificateRevocationWrapper certRevoc : certificateRevocationData) {
 			if (latest == null || (latest.getProductionDate() != null && certRevoc != null && certRevoc.getProductionDate() != null
-					&& certRevoc.getProductionDate().after(latest.getProductionDate()))) {
+					&& latest.getProductionDate().before(certRevoc.getProductionDate()))) {
 				latest = certRevoc;
 			}
 		}

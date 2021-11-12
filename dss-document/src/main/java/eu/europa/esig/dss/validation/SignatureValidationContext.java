@@ -903,12 +903,12 @@ public class SignatureValidationContext implements ValidationContext {
 
 			List<RevocationToken> relatedRevocationTokens = getRelatedRevocationTokens(certificateToken);
 			for (RevocationToken<Revocation> revocationToken : relatedRevocationTokens) {
-				if (bestSignatureTime == null || revocationToken.getThisUpdate().after(bestSignatureTime)) {
+				if (bestSignatureTime == null || bestSignatureTime.before(revocationToken.getThisUpdate())) {
 					found = true;
 					break;
 				} else {
 					if (revocationToken.getNextUpdate() != null &&
-							(earliestNextUpdate == null || revocationToken.getNextUpdate().before(earliestNextUpdate))) {
+							(earliestNextUpdate == null || earliestNextUpdate.after(revocationToken.getNextUpdate()))) {
 						earliestNextUpdate = revocationToken.getNextUpdate();
 					}
 				}
@@ -947,8 +947,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 				List<RevocationToken> relatedRevocationTokens = getRelatedRevocationTokens(certificateToken);
 				for (RevocationToken<Revocation> revocationToken : relatedRevocationTokens) {
-					Date productionDate = revocationToken.getProductionDate();
-					if (productionDate.after(lastUsage)) {
+					Date thisUpdate = revocationToken.getThisUpdate();
+					if (thisUpdate.after(lastUsage)) {
 						foundValidRevocationDataAfterLastUsage = true;
 						break;
 					}
@@ -1053,7 +1053,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		boolean freshRevocationDataFound = false;
 		for (RevocationToken<Revocation> revocationToken : revocations) {
-			if (refreshNeededAfterTime != null && (refreshNeededAfterTime.before(revocationToken.getProductionDate()))
+			if (refreshNeededAfterTime != null && (refreshNeededAfterTime.before(revocationToken.getThisUpdate()))
 					&& (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason()
 					&& isConsistent(revocationToken, certToken))) {
 				freshRevocationDataFound = true;

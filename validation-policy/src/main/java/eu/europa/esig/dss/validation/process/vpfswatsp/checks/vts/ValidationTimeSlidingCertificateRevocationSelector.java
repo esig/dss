@@ -70,7 +70,7 @@ public class ValidationTimeSlidingCertificateRevocationSelector extends LongTerm
         if (validity) {
             item = item.setNextItem(revocationIssuedBeforeControlTime(revocationWrapper, currentTime));
 
-            validity = revocationWrapper.getProductionDate() != null && revocationWrapper.getProductionDate().before(currentTime);
+            validity = revocationWrapper.getThisUpdate() != null && revocationWrapper.getThisUpdate().before(currentTime);
 
             if (validity) {
 

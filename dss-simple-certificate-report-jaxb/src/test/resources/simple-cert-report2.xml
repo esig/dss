@@ -27,7 +27,7 @@
             <qualificationAtIssuance>N/A</qualificationAtIssuance>
             <qualificationAtValidation>N/A</qualificationAtValidation>
             <revocation>
-                <productionDate>2018-01-01T11:00:00</productionDate>
+                <thisUpdate>2018-01-01T11:00:00</thisUpdate>
             </revocation>
             <Indication>INDETERMINATE</Indication>
             <SubIndication>CRYPTO_CONSTRAINTS_FAILURE_NO_POE</SubIndication>

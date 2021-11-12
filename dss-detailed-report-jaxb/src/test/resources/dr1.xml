@@ -430,6 +430,7 @@
                         <Conclusion>
                             <Indication>PASSED</Indication>
                         </Conclusion>
+                        <RevocationThisUpdate>2020-02-10T06:49:19Z</RevocationThisUpdate>
                         <RevocationProductionDate>2020-02-10T06:49:19Z</RevocationProductionDate>
                     </RAC>
                 </CRS>
@@ -708,6 +709,7 @@
                         <Conclusion>
                             <Indication>PASSED</Indication>
                         </Conclusion>
+                        <RevocationThisUpdate>2020-02-10T06:05:30Z</RevocationThisUpdate>
                         <RevocationProductionDate>2020-02-10T06:05:30Z</RevocationProductionDate>
                     </RAC>
                 </CRS>
@@ -995,6 +997,7 @@
                         <Conclusion>
                             <Indication>PASSED</Indication>
                         </Conclusion>
+                        <RevocationThisUpdate>2020-02-10T06:53:57Z</RevocationThisUpdate>
                         <RevocationProductionDate>2020-02-10T06:53:57Z</RevocationProductionDate>
                     </RAC>
                 </CRS>

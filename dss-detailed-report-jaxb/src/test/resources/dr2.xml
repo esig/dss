@@ -290,6 +290,7 @@
                         <Conclusion>
                             <Indication>PASSED</Indication>
                         </Conclusion>
+                        <RevocationThisUpdate>2020-02-10T12:49:19Z</RevocationThisUpdate>
                         <RevocationProductionDate>2020-02-10T12:49:19Z</RevocationProductionDate>
                     </RAC>
                 </CRS>
@@ -645,6 +646,7 @@
                         <Conclusion>
                             <Indication>PASSED</Indication>
                         </Conclusion>
+                        <RevocationThisUpdate>2020-02-10T13:14:22Z</RevocationThisUpdate>
                         <RevocationProductionDate>2020-02-10T13:14:22Z</RevocationProductionDate>
                     </RAC>
                 </CRS>

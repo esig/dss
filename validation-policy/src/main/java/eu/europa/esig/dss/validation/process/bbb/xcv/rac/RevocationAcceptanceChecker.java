@@ -107,6 +107,7 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		this.certificateRevocationMap = new HashMap<>();
 
 		result.setId(revocationData.getId());
+		result.setRevocationThisUpdate(revocationData.getThisUpdate());
 		result.setRevocationProductionDate(revocationData.getProductionDate());
 		validatedTokens.add(certificate.getId());
 	}

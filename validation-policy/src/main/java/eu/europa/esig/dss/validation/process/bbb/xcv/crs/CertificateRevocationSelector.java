@@ -73,9 +73,9 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
 
             item = verifyRevocationData(item, revocationWrapper);
 
-            if (revocationDataValidityMap.get(revocationWrapper) &&
-                    (latestCertificateRevocation == null || revocationWrapper.getProductionDate()
-                            .after(latestCertificateRevocation.getProductionDate()))) {
+            if (revocationDataValidityMap.get(revocationWrapper) && (latestCertificateRevocation == null ||
+                    (revocationWrapper.getProductionDate() != null &&
+                            latestCertificateRevocation.getProductionDate().before(revocationWrapper.getProductionDate())))) {
                 latestCertificateRevocation = revocationWrapper;
             }
         }

@@ -160,9 +160,10 @@ public class ValidationProcessUtils {
 				XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationWrapper.getId());
 				if (isAllowedBasicRevocationDataValidation(revocationBBB.getConclusion())
 						&& isRevocationDataAcceptable(bbbs.get(token.getId()), certificate, revocationWrapper)
-						&& revocationWrapper.getProductionDate() != null && revocationWrapper.getProductionDate().before(controlTime)
+						&& revocationWrapper.getThisUpdate() != null && revocationWrapper.getThisUpdate().before(controlTime)
 						&& poe.isPOEExists(revocationWrapper.getId(), controlTime)
-						&& (latestRevocationData == null || revocationWrapper.getProductionDate().after(latestRevocationData.getProductionDate()))) {
+						&& (latestRevocationData == null || (revocationWrapper.getProductionDate() != null
+								&& latestRevocationData.getProductionDate().before(revocationWrapper.getProductionDate())))) {
 					latestRevocationData = revocationWrapper;
 				}
 			}

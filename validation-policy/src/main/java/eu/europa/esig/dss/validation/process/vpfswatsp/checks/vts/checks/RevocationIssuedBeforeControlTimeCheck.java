@@ -62,13 +62,13 @@ public class RevocationIssuedBeforeControlTimeCheck<T extends XmlConstraintsConc
 
     @Override
     protected boolean process() {
-        return revocation.getProductionDate() != null && revocation.getProductionDate().before(controlTime);
+        return revocation.getThisUpdate() != null && revocation.getThisUpdate().before(controlTime);
     }
 
     @Override
     protected String buildAdditionalInfo() {
-        return i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCTION_CONTROL_TIME, revocation.getId(),
-                revocation.getProductionDate() != null ? ValidationProcessUtils.getFormattedDate(revocation.getProductionDate()) : null,
+        return i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_CONTROL_TIME, revocation.getId(),
+                revocation.getThisUpdate() != null ? ValidationProcessUtils.getFormattedDate(revocation.getThisUpdate()) : null,
                 ValidationProcessUtils.getFormattedDate(controlTime));
     }
 

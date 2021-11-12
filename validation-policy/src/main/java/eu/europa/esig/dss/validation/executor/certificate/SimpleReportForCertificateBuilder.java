@@ -120,7 +120,7 @@ public class SimpleReportForCertificateBuilder {
 		XmlRevocation revocation = new XmlRevocation();
 		CertificateRevocationWrapper revocationData = diagnosticData.getLatestRevocationDataForCertificate(certificate);
 		if (revocationData != null) {
-			revocation.setProductionDate(revocationData.getProductionDate());
+			revocation.setThisUpdate(revocationData.getThisUpdate());
 			revocation.setRevocationDate(revocationData.getRevocationDate());
 			revocation.setRevocationReason(revocationData.getReason());
 		}
