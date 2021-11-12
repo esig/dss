@@ -88,7 +88,9 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
 		if (certificateChain != null) {
 			for (XmlChainItem xmlChainCertificate : certificateChain) {
-				result.add(new CertificateWrapper(xmlChainCertificate.getCertificate()));
+				if (xmlChainCertificate.getCertificate() != null) {
+					result.add(new CertificateWrapper(xmlChainCertificate.getCertificate()));
+				}
 			}
 		}
 		return result;

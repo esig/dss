@@ -348,11 +348,11 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		xmlTimestamp.setCertificateChain(getCertChain(timestampId));
 		xmlTimestamp.setFilename(timestampWrapper.getFilename());
 
-		Indication indication = detailedReport.getBasicBuildingBlocksIndication(timestampId);
+		Indication indication = detailedReport.getFinalIndication(timestampId);
 		xmlTimestamp.setIndication(indication);
 		finalIndications.add(indication);
 
-		SubIndication subIndication = detailedReport.getBasicBuildingBlocksSubIndication(timestampId);
+		SubIndication subIndication = detailedReport.getFinalSubIndication(timestampId);
 		if (subIndication != null) {
 			xmlTimestamp.setSubIndication(subIndication);
 			finalSubIndications.add(subIndication);

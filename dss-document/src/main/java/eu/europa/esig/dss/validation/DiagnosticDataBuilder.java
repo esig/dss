@@ -654,12 +654,15 @@ public abstract class DiagnosticDataBuilder {
 
 			CertificateToken issuerToken = getIssuerCertificate(token, certificateSource);
 			while (issuerToken != null) {
-				certChainTokens.add(getXmlChainItem(issuerToken));
-				if (issuerToken.isSelfSigned() || processedTokens.contains(issuerToken)) {
-					break;
+				XmlChainItem xmlChainItem = getXmlChainItem(issuerToken);
+				if (xmlChainItem != null) {
+					certChainTokens.add(xmlChainItem);
+					if (issuerToken.isSelfSigned() || processedTokens.contains(issuerToken)) {
+						break;
+					}
+					processedTokens.add(issuerToken);
+					issuerToken = getIssuerCertificate(issuerToken, certificateSource);
 				}
-				processedTokens.add(issuerToken);
-				issuerToken = getIssuerCertificate(issuerToken, certificateSource);
 			}
 
 			ensureCertificateChain(certChainTokens);
@@ -709,28 +712,36 @@ public abstract class DiagnosticDataBuilder {
 		if (certificateValidity != null) {
 			CertificateToken signingCertificate = getSigningCertificate(certificateValidity);
 			if (signingCertificate != null) {
-				final List<XmlChainItem> certChainTokens = new ArrayList<>();
-				certChainTokens.add(getXmlChainItem(signingCertificate));
-				List<XmlChainItem> certChain = getXmlForCertificateChain(signingCertificate, certificateSource);
-				if (Utils.isCollectionNotEmpty(certChain)) {
-					for (XmlChainItem chainItem : certChain) {
-						if (signingCertificate.getDSSIdAsString().equals(chainItem.getCertificate().getId())) {
-							break;
+				XmlChainItem signCertChainItem = getXmlChainItem(signingCertificate);
+				if (signCertChainItem != null) {
+					final List<XmlChainItem> certChainTokens = new ArrayList<>();
+					certChainTokens.add(signCertChainItem);
+					List<XmlChainItem> certChain = getXmlForCertificateChain(signingCertificate, certificateSource);
+					if (Utils.isCollectionNotEmpty(certChain)) {
+						for (XmlChainItem chainItem : certChain) {
+							if (chainItem.getCertificate() != null &&
+									signingCertificate.getDSSIdAsString().equals(chainItem.getCertificate().getId())) {
+								break;
+							}
+							certChainTokens.add(chainItem);
 						}
-						certChainTokens.add(chainItem);
 					}
+					ensureCertificateChain(certChainTokens);
+					return certChainTokens;
 				}
-				ensureCertificateChain(certChainTokens);
-				return certChainTokens;
 			}
 		}
 		return null;
 	}
 
 	private XmlChainItem getXmlChainItem(final CertificateToken token) {
-		final XmlChainItem chainItem = new XmlChainItem();
-		chainItem.setCertificate(xmlCertsMap.get(token.getDSSIdAsString()));
-		return chainItem;
+		XmlCertificate xmlCertificate = xmlCertsMap.get(token.getDSSIdAsString());
+		if (xmlCertificate != null) {
+			final XmlChainItem chainItem = new XmlChainItem();
+			chainItem.setCertificate(xmlCertificate);
+			return chainItem;
+		}
+		return null;
 	}
 
 	private XmlSigningCertificate getXmlSigningCertificate(final Token token) {

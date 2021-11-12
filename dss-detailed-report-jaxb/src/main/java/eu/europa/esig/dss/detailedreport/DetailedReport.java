@@ -26,6 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -638,23 +639,53 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Gets the validation indication to a signature with id corresponding to the highest validation level
+	 * Gets the validation indication to a token with id (signature or timestamp supported only)
+	 * corresponding to the highest validation level
 	 *
-	 * @param signatureId {@link String}
+	 * @param tokenId {@link String}
 	 * @return {@link Indication}
 	 */
-	public Indication getFinalIndication(String signatureId) {
-		return getXmlSignatureById(signatureId).getConclusion().getIndication();
+	public Indication getFinalIndication(String tokenId) {
+		XmlSignature signatureById = getXmlSignatureById(tokenId);
+		if (signatureById != null) {
+			return signatureById.getConclusion().getIndication();
+		}
+		XmlTimestamp timestampById = getXmlTimestampById(tokenId);
+		if (timestampById != null) {
+			XmlBasicBuildingBlocks tstBBB = getBasicBuildingBlockById(tokenId);
+			XmlPSV psv = tstBBB.getPSV();
+			if (psv != null) {
+				return psv.getConclusion().getIndication();
+			} else {
+				return timestampById.getValidationProcessTimestamp().getConclusion().getIndication();
+			}
+		}
+		return null;
 	}
 
 	/**
-	 * Gets the validation subIndication to a signature with id corresponding to the highest validation level
+	 * Gets the validation subIndication to a token with id (signature or timestamp supported only)
+	 * corresponding to the highest validation level
 	 *
-	 * @param signatureId {@link String}
+	 * @param tokenId {@link String}
 	 * @return {@link Indication}
 	 */
-	public SubIndication getFinalSubIndication(String signatureId) {
-		return getXmlSignatureById(signatureId).getConclusion().getSubIndication();
+	public SubIndication getFinalSubIndication(String tokenId) {
+		XmlSignature signatureById = getXmlSignatureById(tokenId);
+		if (signatureById != null) {
+			return signatureById.getConclusion().getSubIndication();
+		}
+		XmlTimestamp timestampById = getXmlTimestampById(tokenId);
+		if (timestampById != null) {
+			XmlBasicBuildingBlocks tstBBB = getBasicBuildingBlockById(tokenId);
+			XmlPSV psv = tstBBB.getPSV();
+			if (psv != null) {
+				return psv.getConclusion().getSubIndication();
+			} else {
+				return timestampById.getValidationProcessTimestamp().getConclusion().getSubIndication();
+			}
+		}
+		return null;
 	}
 
 	/**
