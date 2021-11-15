@@ -38,6 +38,12 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 	/** Past Certificate Validation */
 	private final XmlPCV pcv;
 
+	/** Current indication */
+	private final Indication currentIndication;
+
+	/** Current subIndication */
+	private final SubIndication currentSubIndication;
+
 	/**
 	 * Default constructor
 	 *
@@ -48,9 +54,12 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public PastCertificateValidationAcceptableCheck(I18nProvider i18nProvider, XmlPSV result, XmlPCV pcv, String tokenId,
+													Indication currentIndication, SubIndication currentSubIndication,
 													LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, tokenId);
 		this.pcv = pcv;
+		this.currentIndication = currentIndication;
+		this.currentSubIndication = currentSubIndication;
 	}
 
 	@Override
@@ -60,15 +69,15 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 
 	@Override
 	protected boolean process() {
-		if ((pcv != null) && (pcv.getConclusion() != null)) {
+		if (pcv != null && pcv.getConclusion() != null) {
 			Indication pcvIndication = pcv.getConclusion().getIndication();
-			SubIndication pcvSubindication = pcv.getConclusion().getSubIndication();
+			SubIndication pcvSubIndication = pcv.getConclusion().getSubIndication();
 
-			// INDETERMINATE cases are treated in following steps depending of POE
+			// INDETERMINATE cases are treated in following steps depending on POE
 			return Indication.PASSED.equals(pcvIndication)
-					|| (Indication.INDETERMINATE.equals(pcvIndication) && (SubIndication.REVOKED_NO_POE.equals(pcvSubindication)
-							|| SubIndication.REVOKED_CA_NO_POE.equals(pcvSubindication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(pcvSubindication)
-							|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(pcvSubindication)));
+					|| (Indication.INDETERMINATE.equals(pcvIndication) && (SubIndication.REVOKED_NO_POE.equals(pcvSubIndication)
+							|| SubIndication.REVOKED_CA_NO_POE.equals(pcvSubIndication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(pcvSubIndication)
+							|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(pcvSubIndication)));
 
 		}
 		return false;
@@ -87,12 +96,12 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return pcv.getConclusion().getIndication();
+		return currentIndication;
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return pcv.getConclusion().getSubIndication();
+		return currentSubIndication;
 	}
 
 }

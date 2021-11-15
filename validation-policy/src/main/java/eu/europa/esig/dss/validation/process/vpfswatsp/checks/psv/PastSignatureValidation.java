@@ -297,7 +297,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	}
 
 	private ChainItem<XmlPSV> pastCertificateValidationAcceptableCheck(XmlPCV pcvResult) {
-		return new PastCertificateValidationAcceptableCheck(i18nProvider, result, pcvResult, token.getId(), getFailLevelConstraint());
+		return new PastCertificateValidationAcceptableCheck(i18nProvider, result, pcvResult, token.getId(),
+				currentConclusion.getIndication(), currentConclusion.getSubIndication(), getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> poeExist() {
