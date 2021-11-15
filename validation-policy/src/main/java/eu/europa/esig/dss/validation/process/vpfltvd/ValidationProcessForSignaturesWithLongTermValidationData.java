@@ -267,14 +267,18 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		}
 
 		/*
-		 * b) If step 2) returned the indication INDETERMINATE with the sub-indication
+		 * b) If step 2) returned the indication PASSED or the indication INDETERMINATE with the sub-indication
 		 * OUT_OF_BOUNDS_NO_POE: If best-signature-time is before the issuance date of the signing
 		 * certificate, the process shall return the indication FAILED with the sub-indication NOT_YET_VALID.
 		 * Otherwise, the process shall return the indication and sub-indication which was returned by step 2).
 		 */
-		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(
-					bestSignatureTime.getTime(), bsConclusion.getIndication(), bsConclusion.getSubIndication()));
+		if (Indication.PASSED.equals(bsConclusion.getIndication()) ||
+				(Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication()))) {
+			// verify signing certificate presence for the check
+			if (currentSignature.getSigningCertificate() != null) {
+				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(
+						bestSignatureTime.getTime(), bsConclusion.getIndication(), bsConclusion.getSubIndication()));
+			}
 		}
 
 		/*

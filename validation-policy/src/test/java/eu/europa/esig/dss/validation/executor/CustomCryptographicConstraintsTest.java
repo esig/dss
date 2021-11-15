@@ -256,19 +256,6 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		Indication result = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		assertEquals(Indication.TOTAL_PASSED, result);
 	}
-	
-	@Test
-	public void failTimestampDelayTest() throws Exception {
-		initializeExecutor("src/test/resources/universign.xml");
-		validationPolicyFile = new File("src/test/resources/policy/no-crypto-constraint-policy.xml");
-		
-		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
-		constraintsParameters.getTimestamp().getTimestampDelay().setLevel(Level.FAIL);
-		setValidationPolicy(constraintsParameters);
-		SimpleReport simpleReport = createSimpleReport();
-		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
-	}
 
 	@Test
 	public void pastSignatureValidationTest() throws Exception {
