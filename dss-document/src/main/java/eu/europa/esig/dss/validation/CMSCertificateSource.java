@@ -173,7 +173,6 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 				}
 			}
 			certRef.setCertificateIdentifier(DSSASN1Utils.toSignerIdentifier(essCertID.getIssuerSerial()));
-			certRef.setOrigin(origin);
 			addCertificateRef(certRef, origin);
 		}
 	}
@@ -205,8 +204,6 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 				LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm);
 			}
 			certRef.setCertificateIdentifier(DSSASN1Utils.toSignerIdentifier(essCertIDv2.getIssuerSerial()));
-			certRef.setOrigin(origin);
-
 			addCertificateRef(certRef, origin);
 		}
 	}
@@ -239,7 +236,6 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 					try {
 						OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
 						CertificateRef certRef = DSSASN1Utils.getCertificateRef(otherCertId);
-						certRef.setOrigin(origin);
 						addCertificateRef(certRef, origin);
 					} catch (Exception e) {
 						LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());

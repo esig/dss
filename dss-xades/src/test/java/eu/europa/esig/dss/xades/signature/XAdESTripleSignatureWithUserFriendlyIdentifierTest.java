@@ -1,16 +1,11 @@
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
@@ -25,11 +20,9 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends AbstractXAdESTestSignature {
+public class XAdESTripleSignatureWithUserFriendlyIdentifierTest extends AbstractXAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -75,8 +68,13 @@ public class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends Abstract
 
         DSSDocument doubleSigned = super.sign();
 
+        documentToSign = doubleSigned;
+        signatureParameters = initSignatureParameters();
+
+        DSSDocument tripleSigned = super.sign();
+
         documentToSign = originalDocument;
-        return doubleSigned;
+        return tripleSigned;
     }
 
     @Override
@@ -88,7 +86,7 @@ public class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends Abstract
 
     @Override
     protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
-        assertEquals(2, diagnosticData.getSignatures().size());
+        assertEquals(3, diagnosticData.getSignatures().size());
     }
 
     @Override
@@ -97,42 +95,29 @@ public class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends Abstract
     }
 
     @Override
-    protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
-        boolean duplicatedSigIdFound = false;
-        UserFriendlyIdentifierProvider userFriendlyIdentifierProvider = new UserFriendlyIdentifierProvider();
-        assertEquals(2, advancedSignatures.size());
-        for (AdvancedSignature advancedSignature : advancedSignatures) {
-            SignatureWrapper signature = diagnosticData.getSignatureById(advancedSignature.getId());
-            assertNull(signature);
+    protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
+        super.checkSignatureIdentifier(diagnosticData);
 
-            signature = diagnosticData.getSignatureById(userFriendlyIdentifierProvider.getIdAsString(advancedSignature));
-            assertNotNull(signature);
-
-            assertTrue(signature.getId().contains("SIGNATURE"));
-            assertTrue(signature.getId().contains(signature.getSigningCertificate().getCommonName()));
-            assertTrue(signature.getId().contains(
-                    DSSUtils.formatDateWithCustomFormat(signature.getClaimedSigningTime(), "yyyyMMdd-HHmm")));
-
-            if (signature.getId().endsWith("_2")) {
-                duplicatedSigIdFound = true;
+        boolean firstSigFound = false;
+        boolean secondSigFound = false;
+        boolean thirdSigFound = false;
+        for (String sigId : diagnosticData.getSignatureIdList()) {
+            if (sigId.endsWith("_2")) {
+                secondSigFound = true;
+            } else if (sigId.endsWith("_3")) {
+                thirdSigFound = true;
+            } else {
+                firstSigFound = true;
             }
         }
-        assertTrue(duplicatedSigIdFound);
+        assertTrue(firstSigFound);
+        assertTrue(secondSigFound);
+        assertTrue(thirdSigFound);
+    }
 
-        assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getUsedCertificates()));
-        for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
-            assertTrue(certificateWrapper.getId().contains("CERTIFICATE"));
-            assertTrue(certificateWrapper.getId().contains(certificateWrapper.getCommonName()));
-            assertTrue(certificateWrapper.getId().contains(
-                    DSSUtils.formatDateWithCustomFormat(certificateWrapper.getNotBefore(), "yyyyMMdd-HHmm")));
-        }
-
-        assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getOriginalSignerDocuments()));
-        for (SignerDataWrapper signerDataWrapper: diagnosticData.getOriginalSignerDocuments()) {
-            assertTrue(signerDataWrapper.getId().contains("DOCUMENT"));
-            assertTrue(signerDataWrapper.getId().contains(
-                    DSSUtils.replaceAllNonAlphanumericCharacters(signerDataWrapper.getReferencedName(), "-")));
-        }
+    @Override
+    protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+        // skip
     }
 
     @Override

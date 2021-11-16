@@ -102,7 +102,6 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		String base64UrlSHA256Certificate = jws.getHeaders().getStringHeaderValue(HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT);
 		if (Utils.isStringNotEmpty(base64UrlSHA256Certificate)) {
 			CertificateRef certRef = new CertificateRef();
-			certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 			certRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, DSSJsonUtils.fromBase64Url(base64UrlSHA256Certificate)));
 			addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
 		}
@@ -119,9 +118,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 			Digest digest = DSSJsonUtils.getDigest(x5TO);
 			if (digest != null) {
 				CertificateRef certRef = new CertificateRef();
-				certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 				certRef.setCertDigest(digest);
-
 				addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
 			}
 		}

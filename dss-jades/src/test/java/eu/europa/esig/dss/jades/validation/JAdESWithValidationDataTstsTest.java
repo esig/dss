@@ -47,6 +47,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
@@ -77,6 +78,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
+		validator.setTokenIdentifierProvider(new UserFriendlyIdentifierProvider());
 		return validator;
 	}
 	

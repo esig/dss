@@ -81,7 +81,6 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 		final ResponderId responderId = DSSRevocationUtils.getDSSResponderId(basicOCSPResp.getResponderId());
 		CertificateRef signingCertificateRef = new CertificateRef();
 		signingCertificateRef.setResponderId(responderId);
-		signingCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		addCertificateRef(signingCertificateRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
 	}
 	

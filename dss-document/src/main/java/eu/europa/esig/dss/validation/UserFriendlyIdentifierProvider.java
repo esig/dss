@@ -56,11 +56,11 @@ import java.util.stream.Collectors;
 /**
  * Creates an identifier for a given token by the template:
  *
- * TOKEN-CommonCertName-CreationDate-id
+ * TOKEN-CommonCertName-CreationDate-id(optional)
  *
  * Examples:
- * SIGNATURE-JohnConner-20201015-2045-1
- * CERTIFICATE-CryptoSign-20151014-1425-1
+ * SIGNATURE-JohnConner-20201015-2045
+ * CERTIFICATE-CryptoSign-20151014-1425
  */
 public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
@@ -72,6 +72,12 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     /** String to be used to replace non-alphanumeric characters in a certificate's common name */
     private static final String NAME_REPLACEMENT = "-";
 
+    /** To be used to define an issuer name */
+    private static final String ISSUER = "ISSUER-";
+
+    /** To be used to define a serial number */
+    private static final String SERIAL = "SERIAL-";
+
     /** String used when token's signing certificate is not identified */
     private static final String UNKNOWN_SIGNER = "UNKNOWN-SIGNER";
 
@@ -79,10 +85,16 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     private static final String UNNAMED_SIGNER = "UNNAMED-SIGNER";
 
     /**
-     * Represents a map for processed tokens between the original DSS hash-based Id
-     * and the one computed by the class
+     * Represents a cached values map for processed tokens between the original DSS hash-based Id
+     * and the one computed by the class (including preservation from duplicates)
      */
-    private final Map<String, String> tokenIdsMap = new HashMap<>();
+    private final Map<String, String> uniqueTokenIdsMap = new HashMap<>();
+
+    /**
+     * Map between DSS identifiers of processed tokens and the computed ids by the provider.
+     * The map can contain duplicates. Used to identify duplicates.
+     */
+    private final Map<String, String> generatedTokenIdsMap = new HashMap<>();
 
     /** The prefix to be used for a signature identifier creation */
     private String signaturePrefix = "SIGNATURE";
@@ -272,7 +284,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
                     "The returned Identifier cannot be null for the object of class '%s'!", object.getClass()));
         }
         String originalIdentifier = identifier.asXmlId();
-        String value = tokenIdsMap.get(originalIdentifier);
+        String value = uniqueTokenIdsMap.get(originalIdentifier);
         if (value != null) {
             LOG.trace("The identifier for the token with Id '{}' has been found in the map. Returning the value...",
                     originalIdentifier);
@@ -352,17 +364,26 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
      */
     protected String getIdAsStringForCertRef(CertificateRef certificateRef) {
         StringBuilder stringBuilder = new StringBuilder(certificatePrefix);
-        stringBuilder.append(STRING_DELIMITER);
-        stringBuilder.append(certificateRef.getOrigin().toString());
         if (certificateRef.getResponderId() != null) {
             stringBuilder.append(STRING_DELIMITER);
             X500PrincipalHelper x500PrincipalHelper = new X500PrincipalHelper(
                     certificateRef.getResponderId().getX500Principal());
             stringBuilder.append(getHumanReadableName(x500PrincipalHelper));
-        } else if (certificateRef.getCertificateIdentifier() != null &&
-                certificateRef.getCertificateIdentifier().getSerialNumber() != null) {
-            stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(certificateRef.getCertificateIdentifier().getSerialNumber());
+
+        } else if (certificateRef.getCertificateIdentifier() != null) {
+            if (certificateRef.getCertificateIdentifier().getIssuerName() != null) {
+                stringBuilder.append(STRING_DELIMITER);
+                stringBuilder.append(ISSUER);
+                X500PrincipalHelper x500PrincipalHelper = new X500PrincipalHelper(
+                        certificateRef.getCertificateIdentifier().getIssuerName());
+                stringBuilder.append(getHumanReadableName(x500PrincipalHelper));
+            }
+            if (certificateRef.getCertificateIdentifier().getSerialNumber() != null) {
+                stringBuilder.append(STRING_DELIMITER);
+                stringBuilder.append(SERIAL);
+                stringBuilder.append(certificateRef.getCertificateIdentifier().getSerialNumber());
+            }
+
         } else if (certificateRef.getCertDigest() != null) {
             stringBuilder.append(STRING_DELIMITER);
             stringBuilder.append(certificateRef.getCertDigest().getHexValue());
@@ -420,19 +441,22 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     }
 
     private String generateId(StringBuilder stringBuilder, String dssId) {
-        Long duplicatesNumber = getDuplicatesNumber(stringBuilder.toString(), dssId);
+        String generatedId = stringBuilder.toString();
+        Long duplicatesNumber = getDuplicatesNumber(generatedId, dssId);
         if (duplicatesNumber != 0) {
             stringBuilder.append(STRING_DELIMITER);
             stringBuilder.append(++duplicatesNumber);
         }
-        String generatedId = stringBuilder.toString();
-        tokenIdsMap.put(dssId, generatedId);
-        return generatedId;
+        generatedTokenIdsMap.put(dssId, generatedId);
+
+        String uniqueId = stringBuilder.toString();
+        uniqueTokenIdsMap.put(dssId, uniqueId);
+        return uniqueId;
     }
 
     private Long getDuplicatesNumber(String builtId, String dssId) {
-        return tokenIdsMap.entrySet().stream()
-                .filter(e -> !e.getKey().contains(dssId) && e.getValue().contains(builtId))
+        return generatedTokenIdsMap.entrySet().stream()
+                .filter(e -> !dssId.equals(e.getKey()) && builtId.equals(e.getValue()))
                 .collect(Collectors.counting());
     }
 

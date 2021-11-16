@@ -143,7 +143,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			final Element certRefElement = (Element) certNodeList.item(i);
 			final CertificateRef certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV1(certRefElement, xadesPaths);
 			if (certificateRef != null) {
-				certificateRef.setOrigin(origin);
 				addCertificateRef(certificateRef, origin);
 			}
 		}
@@ -154,7 +153,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			final Element certRefElement = (Element) certNodeList.item(i);
 			final CertificateRef certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV2(certRefElement, xadesPaths);
 			if (certificateRef != null) {
-				certificateRef.setOrigin(origin);
 				addCertificateRef(certificateRef, origin);
 			}
 		}
