@@ -1458,7 +1458,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		for (SACertIDType saCertIDType : certIds) {
 			assertNotNull(saCertIDType.getDigestMethod());
 			assertNotNull(saCertIDType.getDigestValue());
-			assertNotNull(saCertIDType.getX509IssuerSerial());
 		}
 	}
 

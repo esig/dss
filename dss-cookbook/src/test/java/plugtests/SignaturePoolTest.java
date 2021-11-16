@@ -152,7 +152,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		String signaturePoolFolder = System.getProperty("signature.pool.folder", "src/test/resources/signature-pool");
 		File folder = new File(signaturePoolFolder);
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "asice", "asics", "bdoc", "csig", "ddoc",
-				"es3", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "xml", "xsig" }, true);
+				"es3", "json", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "xml", "xsig" }, true);
 		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(Arguments.of(file));
@@ -500,6 +500,11 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	@Override
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		// skip
+	}
+
+	@Override
+	protected void checkDTBSR(DiagnosticData diagnosticData) {
+		// can be null
 	}
 
 	@Override
