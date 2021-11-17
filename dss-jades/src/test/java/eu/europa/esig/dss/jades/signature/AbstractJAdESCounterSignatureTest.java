@@ -86,7 +86,7 @@ public abstract class AbstractJAdESCounterSignatureTest extends AbstractCounterS
 				Set<String> keySet = signedHeaders.keySet();
 				assertTrue(Utils.isCollectionNotEmpty(keySet));
 				for (String signedPropertyName : keySet) {
-					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(signedPropertyName) || 
+					assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(signedPropertyName) ||
 							DSSJsonUtils.isCriticalHeaderException(signedPropertyName));
 				}
 				
@@ -96,7 +96,7 @@ public abstract class AbstractJAdESCounterSignatureTest extends AbstractCounterS
 				List<String> critArray = (List<String>) crit;
 				assertTrue(Utils.isCollectionNotEmpty(critArray));
 				for (String critItem : critArray) {
-					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(critItem));
+					assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critItem));
 					assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
 				}
 				

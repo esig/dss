@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
@@ -42,10 +43,8 @@ import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
-import org.jose4j.json.JsonUtil;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.jwx.Headers;
-import org.jose4j.lang.JoseException;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +56,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJAdESTestSignature
 		extends AbstractPkiFactoryTestDocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> {
@@ -97,32 +95,25 @@ public abstract class AbstractJAdESTestSignature
 				}
 
 			}
-			
-			try {
-				Headers headers = jws.getHeaders();
-				Map<String, Object> signedHeaders = JsonUtil.parseJson(headers.getFullHeaderAsJsonString());
-				
-				Set<String> keySet = signedHeaders.keySet();
-				assertTrue(Utils.isCollectionNotEmpty(keySet));
-				for (String signedPropertyName : keySet) {
-					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(signedPropertyName) ||
-							DSSJsonUtils.isCriticalHeaderException(signedPropertyName));
-				}
-				
-				Object crit = signedHeaders.get(HeaderParameterNames.CRITICAL);
-				assertTrue(crit instanceof List<?>);
-				
-				List<String> critArray = (List<String>) crit;
-				assertTrue(Utils.isCollectionNotEmpty(critArray));
-				for (String critItem : critArray) {
-					assertTrue(DSSJsonUtils.getSupportedCriticalHeaders().contains(critItem));
-					assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
-				}
-				
-			} catch (JoseException e) {
-				fail(e);
+
+			Headers headers = jws.getHeaders();
+			Set<String> keySet = DSSJsonUtils.extractJOSEHeaderMembersSet(jws);
+			assertTrue(Utils.isCollectionNotEmpty(keySet));
+			for (String signedPropertyName : keySet) {
+				assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(signedPropertyName) ||
+						DSSJsonUtils.isCriticalHeaderException(signedPropertyName) ||
+						JAdESHeaderParameterNames.ETSI_U.equals(signedPropertyName));
 			}
-			
+
+			Object crit = headers.getObjectHeaderValue(HeaderParameterNames.CRITICAL);
+			assertTrue(crit instanceof List<?>);
+
+			List<String> critArray = (List<String>) crit;
+			assertTrue(Utils.isCollectionNotEmpty(critArray));
+			for (String critItem : critArray) {
+				assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critItem));
+				assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
+			}
 		}
 	}
 

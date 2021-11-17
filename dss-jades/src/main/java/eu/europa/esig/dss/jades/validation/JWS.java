@@ -183,4 +183,10 @@ public class JWS extends JsonWebSignature implements Serializable {
 		super.setKnownCriticalHeaders(headersArray);
 	}
 
+	@Override
+	protected void checkCrit() throws JoseException {
+		// separate structure validation and cryptographic check
+		// (see eu.europa.esig.dss.jades.validation.JAdESBaselineRequirementsChecker)
+	}
+
 }

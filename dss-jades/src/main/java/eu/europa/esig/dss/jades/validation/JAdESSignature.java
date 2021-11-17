@@ -672,8 +672,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 					Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));
 					signatureValueReferenceValidation.setDigest(digest);
-	
-					jws.setKnownCriticalHeaders(DSSJsonUtils.getSupportedCriticalHeaders());
+
 					jws.setDoKeyValidation(false); // restrict on key size,...
 	
 					CandidatesForSigningCertificate candidatesForSigningCertificate = getCandidatesForSigningCertificate();
@@ -691,7 +690,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			}
 			
 		} catch (Exception e) {
-			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage());
+			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage(), e);
 		}
 		
 		return signatureValueReferenceValidation;

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
 import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
@@ -65,6 +66,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -145,9 +147,9 @@ public class DSSJsonUtils {
     };
 	
 	/**
-	 * Contains header names that are supported to be present in the critical attribute
+	 * Contains protected header names that are supported and can be present in the critical ('crit') attribute
 	 */
-	private static final Set<String> criticalHeaders;
+	private static final Set<String> protectedCriticalHeaders;
 	
 	/**
 	 * Contains a list of headers that MUST NOT be incorporated into a 'crit' header (includes RFC 7515, RFC 7518) 
@@ -155,7 +157,7 @@ public class DSSJsonUtils {
 	private static final Set<String> criticalHeaderExceptions;
 	
 	static {
-		criticalHeaders = Stream.of(
+		protectedCriticalHeaders = Stream.of(
 				/* JAdES EN 119-812 constraints */
 				SIG_T, X5T_O, SIG_X5T_S, SR_CMS, SIG_PL, SR_ATS, ADO_TST, SIG_PID, SIG_D,
 				/* RFC7797 'b64' */
@@ -323,12 +325,12 @@ public class DSSJsonUtils {
 	}
 	
 	/**
-	 * Returns set of supported critical headers
+	 * Returns set of supported protected critical headers
 	 * 
-	 * @return set of supported critical header strings
+	 * @return set of supported protected critical header strings
 	 */
-	public static Set<String> getSupportedCriticalHeaders() {
-		return criticalHeaders;
+	public static Set<String> getSupportedProtectedCriticalHeaders() {
+		return protectedCriticalHeaders;
 	}
 
 	/**
@@ -918,6 +920,27 @@ public class DSSJsonUtils {
 		}
 
 		return dataToSign;
+	}
+
+	/**
+	 * This method extracts a key set used within a JOSE Header (protected + unprotected)
+	 *
+	 * @param jws {@link JWS} to extract keys from
+	 * @return a set of {@link String} keys
+	 */
+	public static Set<String> extractJOSEHeaderMembersSet(JWS jws) {
+		try {
+			Set<String> joseHeaderMemberKeys = new HashSet<>();
+			Map<String, Object> signedHeaders = JsonUtil.parseJson(jws.getHeaders().getFullHeaderAsJsonString());
+			joseHeaderMemberKeys.addAll(signedHeaders.keySet());
+			if (jws.getUnprotected() != null) {
+				joseHeaderMemberKeys.addAll(jws.getUnprotected().keySet());
+			}
+			return joseHeaderMemberKeys;
+		} catch (JoseException e) {
+			throw new IllegalInputException(String.format(
+					"Unable to extract key set from a JOSE header! Reason : %s", e.getMessage()), e);
+		}
 	}
 
 }
