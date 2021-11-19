@@ -38,6 +38,7 @@ import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -70,6 +71,17 @@ public abstract class AbstractJAdESTestSignature
 		return Collections.singletonList(getDocumentToSign());
 	}
 	
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		if (JWSSerializationType.COMPACT_SERIALIZATION.equals(getSignatureParameters().getJwsSerializationType())) {
+			for (byte b : byteArray) {
+				assertFalse(DSSUtils.isLineBreakByte(b));
+			}
+		}
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {

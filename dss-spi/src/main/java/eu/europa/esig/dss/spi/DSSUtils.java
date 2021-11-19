@@ -109,6 +109,9 @@ public final class DSSUtils {
 	/** Default DateTime format */
 	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
+	/** This array contains character bytes, representing a line break (new line, carriage return) */
+	private static final byte[] LINE_BREAK_CHARS = { '\n', '\r' };
+
 	/**
 	 * This class is an utility class and cannot be instantiated.
 	 */
@@ -1292,6 +1295,21 @@ public final class DSSUtils {
 			bi.add(BigInteger.valueOf(i));
 		}
 		return bi;
+	}
+
+	/**
+	 * This method verifies if the given byte represents a line break character (new line or a carriage return)
+	 *
+	 * @param b byte to verify
+	 * @return TRUE if the byte represents a line break char, FALSE otherwise
+	 */
+	public static boolean isLineBreakByte(byte b) {
+		for (byte m : LINE_BREAK_CHARS) {
+			if (b == m) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -527,4 +527,17 @@ public class DSSUtilsTest {
 		assertArrayEquals(originalBinaries, convertedSignatureValue.getValue());
 	}
 
+	@Test
+	public void isLineBreakByteTest() {
+		assertTrue(DSSUtils.isLineBreakByte((byte) '\n'));
+		assertTrue(DSSUtils.isLineBreakByte((byte) '\r'));
+		assertTrue(DSSUtils.isLineBreakByte((byte) 0x0D));
+		assertTrue(DSSUtils.isLineBreakByte((byte) 0x0A));
+		assertFalse(DSSUtils.isLineBreakByte((byte) 'n'));
+		assertFalse(DSSUtils.isLineBreakByte((byte) 'r'));
+		assertFalse(DSSUtils.isLineBreakByte((byte) 0x20));
+		assertFalse(DSSUtils.isLineBreakByte((byte) 0x6E));
+		assertFalse(DSSUtils.isLineBreakByte((byte) 0x72));
+	}
+
 }

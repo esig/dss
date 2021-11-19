@@ -23,7 +23,10 @@ package eu.europa.esig.dss.jades;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSUtils;
 import org.jose4j.jwx.CompactSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +39,13 @@ import java.util.Scanner;
  */
 public class JWSCompactSerializationParser {
 
+	private static final Logger LOG = LoggerFactory.getLogger(JWSCompactSerializationParser.class);
+
 	/** Defines the maximum number of '.' character inside a JWS signature */
 	private final static int NUMBER_DOTS = 2;
+
+	/** Dot character, used as a separator of parts within a JWS Compact signature */
+	private final static byte DOT_CHARACTER = '.';
 
 	/** The document to be parsed */
 	private final DSSDocument document;
@@ -75,16 +83,21 @@ public class JWSCompactSerializationParser {
 		}
 
 		int separatorCounter = 0;
+		boolean ending = false; // used to detect and "trim" line breaks in the end of JWS string
 		try (InputStream is = document.openStream()) {
-			int b = -1;
+			int b;
 			while ((b = is.read()) != -1) {
 				byte currentByte = (byte) b;
 				
-				if (currentByte == '.') {
-					separatorCounter++;
-					if (separatorCounter > NUMBER_DOTS) {
-						return false;
-					}
+				if (DSSUtils.isLineBreakByte(currentByte)) {
+					ending = true;
+				} else if (ending) {
+					return false;
+				} else if (currentByte == DOT_CHARACTER) {
+					 separatorCounter++;
+					 if (separatorCounter > NUMBER_DOTS) {
+						 return false;
+					 }
 				} else if (DSSJsonUtils.isBase64UrlEncoded(currentByte)) {
 					// continue
 				} else if (separatorCounter == 1 && DSSJsonUtils.isUrlSafe(currentByte)) {
@@ -100,6 +113,9 @@ public class JWSCompactSerializationParser {
 
 		} catch (IOException e) {
 			throw new DSSException(String.format("Cannot read the document. Reason : %s", e.getMessage()), e);
+		}
+		if (ending) {
+			LOG.warn("Line break characters found within the JWS Compact Serialization signature document!");
 		}
 		return true;
 	}
