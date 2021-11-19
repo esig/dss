@@ -20,8 +20,12 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -55,6 +59,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractJAdESTestSignature
@@ -148,6 +153,45 @@ public abstract class AbstractJAdESTestSignature
 		}
 	}
 	
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		super.checkSigningCertificateValue(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
+			List<RelatedCertificateWrapper> signingCertificates = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+			assertEquals(1, signingCertificates.size());
+
+			List<CertificateRefWrapper> references = signingCertificates.get(0).getReferences();
+			List<RelatedCertificateWrapper> kidCerts = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER);
+
+			if (getSignatureParameters().isIncludeKeyIdentifier()) {
+				assertEquals(2, references.size());
+				assertEquals(1, kidCerts.size());
+			} else {
+				assertEquals(1, references.size());
+				assertEquals(0, kidCerts.size());
+			}
+
+			for (CertificateRefWrapper certificateRef : references) {
+				if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(certificateRef.getOrigin())) {
+					assertNotNull(certificateRef.getDigestAlgoAndValue());
+					assertNotNull(certificateRef.getDigestMethod());
+					assertTrue(certificateRef.isDigestValuePresent());
+					assertTrue(certificateRef.isDigestValueMatch());
+					assertNull(certificateRef.getIssuerSerial());
+
+				} else if (CertificateRefOrigin.KEY_IDENTIFIER.equals(certificateRef.getOrigin())) {
+					assertNotNull(certificateRef.getCertificateId());
+					assertNotNull(certificateRef.getIssuerSerial());
+					assertTrue(certificateRef.isIssuerSerialPresent());
+					assertTrue(certificateRef.isIssuerSerialMatch());
+					assertNull(certificateRef.getDigestAlgoAndValue());
+				}
+			}
+		}
+	}
+
 	@Override
 	protected void checkReportsSignatureIdentifier(Reports reports) {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

@@ -45,6 +45,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlUserNotice;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
@@ -713,6 +714,22 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * This method returns a reference extracted from a 'kid' (key identifier) header (used in JAdES)
+	 *
+	 * @return {@link CertificateRefWrapper}
+	 */
+	public CertificateRefWrapper getKeyIdentifierReference() {
+		List<CertificateRefWrapper> certificateRefs = new ArrayList<>();
+		certificateRefs.addAll(foundCertificates().getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER));
+		certificateRefs.addAll(foundCertificates().getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER));
+		if (certificateRefs.size() > 0) {
+			// only one shall be present
+			return certificateRefs.iterator().next();
+		}
+		return null;
 	}
 
 	/**

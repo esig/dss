@@ -217,7 +217,17 @@
 			</xsd:element>
 			<xsd:element name="IssuerSerialMatch" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the serial number of the issuer certificate match</xsd:documentation>
+					<xsd:documentation>Checks if the serial number of the issuer certificate present within a signing-certificate reference matches</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="KeyIdentifierPresent" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if 'kid' (key identifier) header parameter is present within a protected header of the signature (JAdES only)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="KeyIdentifierMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the value of 'kid' (key identifier) header parameter matches the signing-certificate (JAdES only)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SigningTime" type="LevelConstraint" minOccurs="0">

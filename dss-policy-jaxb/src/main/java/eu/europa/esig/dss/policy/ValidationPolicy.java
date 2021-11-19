@@ -685,6 +685,25 @@ public interface ValidationPolicy {
 	LevelConstraint getSigningCertificateIssuerSerialMatchConstraint(Context context);
 
 	/**
+	 * Indicates if the 'kid' (key identifier) header parameter is present within the protected header of the signature
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if KeyIdentifierPresent for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	LevelConstraint getKeyIdentifierPresent(Context context);
+
+	/**
+	 * Indicates if the value of 'kid' (key identifier) header parameter matches the signing-certificate
+	 * used to create the signature
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if KeyIdentifierMatch for a given context element is present
+	 *         in the constraint file, null otherwise.
+	 */
+	LevelConstraint getKeyIdentifierMatch(Context context);
+
+	/**
 	 * Indicates if the referenced data is found
 	 *
 	 * @param context {@link Context}

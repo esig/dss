@@ -178,10 +178,9 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.1.4 The kid (key identifier) header parameter
 	 */
 	protected void incorporateKeyIdentifier() {
-		if (parameters.getSigningCertificate() == null) {
-			return;
+		if (parameters.isIncludeKeyIdentifier() && parameters.getSigningCertificate() != null) {
+			addHeader(HeaderParameterNames.KEY_ID, DSSJsonUtils.generateKid(parameters.getSigningCertificate()));
 		}
-		addHeader(HeaderParameterNames.KEY_ID, DSSJsonUtils.generateKid(parameters.getSigningCertificate()));
 	}
 
 	/**

@@ -876,6 +876,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getKeyIdentifierPresent(Context context) {
+		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
+		if (signedAttributeConstraints != null) {
+			return signedAttributeConstraints.getKeyIdentifierPresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getKeyIdentifierMatch(Context context) {
+		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
+		if (signedAttributeConstraints != null) {
+			return signedAttributeConstraints.getKeyIdentifierMatch();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getReferenceDataExistenceConstraint(Context context) {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {

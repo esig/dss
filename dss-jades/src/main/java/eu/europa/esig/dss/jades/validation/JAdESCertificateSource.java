@@ -33,6 +33,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
@@ -43,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.PublicKey;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -82,12 +82,32 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		extractX5TS256();
 		extractX5TO();
 		extractSigX5Ts();
+		extractKid();
 
 		// certificate chain
 		extractX5C();
 
 		// unsigned properties
 		extractEtsiU();
+	}
+
+	/**
+	 * Retrieves the list of {@link CertificateRef}s referenced within a 'kid' (key identifier) header
+	 *
+	 * @return the list of references to the signing certificate (from key identifier)
+	 */
+	public List<CertificateRef> getKeyIdentifierCertificateRefs() {
+		return getCertificateRefsByOrigin(CertificateRefOrigin.KEY_IDENTIFIER);
+	}
+
+	/**
+	 * Retrieves the Set of {@link CertificateToken}s according to a reference present
+	 * within a 'kid' (key identifier) header
+	 *
+	 * @return Set of {@link CertificateToken}s
+	 */
+	public Set<CertificateToken> getKeyIdentifierCertificates() {
+		return findTokensFromRefs(getCompleteCertificateRefs());
 	}
 
 	private void extractX5T() {
@@ -135,6 +155,15 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 					LOG.warn("Unsupported type for {} : {}", JAdESHeaderParameterNames.SIG_X5T_S, item.getClass());
 				}
 			}
+		}
+	}
+
+	private void extractKid() {
+		IssuerSerial kidIssuerSerial = getKidIssuerSerial();
+		if (kidIssuerSerial != null) {
+			CertificateRef certificateRef = new CertificateRef();
+			certificateRef.setCertificateIdentifier(DSSASN1Utils.toSignerIdentifier(kidIssuerSerial));
+			addCertificateRef(certificateRef, CertificateRefOrigin.KEY_IDENTIFIER);
 		}
 	}
 
@@ -238,8 +267,6 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
-	// ------------- Not supported
-
 	@Override
 	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(
 			CertificateSource signingCertificateSource) {
@@ -313,43 +340,49 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 	private void checkSigningCertificateRef(CandidatesForSigningCertificate candidates) {
 
-		IssuerSerial issuerSerial = getCurrentIssuerSerial();
-		Digest signingCertificateDigest = getSigningCertificateDigest();
+		CertificateRef signingCertRef = null;
+		final List<CertificateRef> potentialSigningCertificates = getSigningCertificateRefs();
+		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
+			// first reference shall be a reference to a signing certificate
+			signingCertRef = potentialSigningCertificates.get(0);
+		}
 
-		CertificateValidity bestCertificateValidity = null;
-		for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
-			CertificateToken candidate = certificateValidity.getCertificateToken();
+		CertificateRef kidCertRef = null;
+		final List<CertificateRef> keyIdentifierCertificateRefs = getKeyIdentifierCertificateRefs();
+		if (Utils.isCollectionNotEmpty(keyIdentifierCertificateRefs)) {
+			kidCertRef = keyIdentifierCertificateRefs.get(0);
+		}
 
-			if (signingCertificateDigest != null) {
-				certificateValidity.setDigestPresent(true);
+		if (signingCertRef != null) {
+			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
 
-				byte[] candidateDigest = candidate.getDigest(signingCertificateDigest.getAlgorithm());
-				if (Arrays.equals(signingCertificateDigest.getValue(), candidateDigest)) {
-					certificateValidity.setDigestEqual(true);
+			CertificateValidity bestCertificateValidity = null;
+			// check all certificates against the signingCert ref and find the best one
+			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
+			for (final CertificateValidity certificateValidity : certificateValidityList) {
+				certificateValidity.setDigestPresent(signingCertRef != null && signingCertRef.getCertDigest() != null);
+				certificateValidity.setIssuerSerialPresent(kidCertRef != null && kidCertRef.getCertificateIdentifier() != null);
+
+				CertificateToken certificateToken = certificateValidity.getCertificateToken();
+				if (certificateToken != null) {
+					if (signingCertRef != null) {
+						certificateValidity.setDigestEqual(matcher.matchByDigest(certificateToken, signingCertRef));
+					}
+					if (kidCertRef != null) {
+						certificateValidity.setSerialNumberEqual(matcher.matchBySerialNumber(certificateToken, kidCertRef));
+						certificateValidity.setDistinguishedNameEqual(matcher.matchByIssuerName(certificateToken, kidCertRef));
+					}
+				}
+				if (certificateValidity.isValid()) {
+					bestCertificateValidity = certificateValidity;
 				}
 			}
 
-			if (issuerSerial != null) {
-				certificateValidity.setIssuerSerialPresent(true);
-
-				IssuerSerial candidateIssuerSerial = DSSASN1Utils.getIssuerSerial(candidate);
-				if (Objects.equals(issuerSerial.getIssuer(), candidateIssuerSerial.getIssuer())) {
-					certificateValidity.setDistinguishedNameEqual(true);
-				}
-
-				if (Objects.equals(issuerSerial.getSerial(), candidateIssuerSerial.getSerial())) {
-					certificateValidity.setSerialNumberEqual(true);
-				}
-			}
-
-			if (certificateValidity.isValid()) {
-				bestCertificateValidity = certificateValidity;
+			if (bestCertificateValidity != null) {
+				candidates.setTheCertificateValidity(bestCertificateValidity);
 			}
 		}
 
-		if (bestCertificateValidity != null) {
-			candidates.setTheCertificateValidity(bestCertificateValidity);
-		}
 	}
 
 	private Digest getSigningCertificateDigest() {
@@ -362,7 +395,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		return null;
 	}
 
-	private IssuerSerial getCurrentIssuerSerial() {
+	private IssuerSerial getKidIssuerSerial() {
 		return DSSJsonUtils.getIssuerSerial(jws.getKeyIdHeaderValue());
 	}
 

@@ -62,7 +62,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	private ProfileParameters context;
 
 	/**
-	 * This parameter allows to add optional X509SubjectName in the tag X509Data
+	 * This parameter allows adding an optional X509SubjectName in the tag X509Data
 	 */
 	private boolean addX509SubjectName;
 
@@ -79,7 +79,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	private boolean embedXML;
 
 	/**
-	 * Defines if the signature shall be creates according to ETSI EN 319 132
+	 * Defines if the signature shall be created according to ETSI EN 319 132
 	 *
 	 * Default: true
 	 */

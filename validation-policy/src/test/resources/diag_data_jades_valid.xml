@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>sample-signed-jades-baseline-b.json</DocumentName>
+    <ValidationDate>2021-11-18T14:00:28Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-D7E40B9C362A550247B86209D2E818D1D88DE2225C086F8E39CB59945C1A867E">
+            <SignatureFilename>sample-signed-jades-baseline-b.json</SignatureFilename>
+            <ClaimedSigningTime>2021-11-18T14:00:22Z</ClaimedSigningTime>
+            <SignatureFormat>JAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="JWS_SIGNING_INPUT_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>/Ap0X58mzzLSkDRmOZF0oDFBr7Hl+yH2gz9K51UG74Q=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BBC106F1D17D733421060262F4AE0566B056C99BFAECEAA058A67ADB5B19F409"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BBC106F1D17D733421060262F4AE0566B056C99BFAECEAA058A67ADB5B19F409"/>
+                <ChainItem Certificate="C-3DB7CECC65FF29DEFE92600DA9052366FE7CA55A041AA50BCB5CA1205F35E724"/>
+                <ChainItem Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D"/>
+            </CertificateChain>
+            <ContentType>json</ContentType>
+            <MimeType>application/jose</MimeType>
+            <SignatureProductionPlace>
+                <City>Kehlen</City>
+                <PostOfficeBoxNumber>2C</PostOfficeBoxNumber>
+                <PostalCode>L-8287</PostalCode>
+            </SignatureProductionPlace>
+            <CommitmentTypeIndications>
+                <CommitmentTypeIndication>
+                    <Identifier>http://uri.etsi.org/01903/v1.2.2#ProofOfCreation</Identifier>
+                    <Description>ProofOfCreation</Description>
+                </CommitmentTypeIndication>
+            </CommitmentTypeIndications>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-BBC106F1D17D733421060262F4AE0566B056C99BFAECEAA058A67ADB5B19F409">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>u8EG8dF9czQhBgJi9K4FZrBWyZv67OqgWKZ621sZ9Ak=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                    <CertificateRef>
+                        <Origin>KEY_IDENTIFIER</Origin>
+                        <IssuerSerial match="true">MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==</IssuerSerial>
+                        <SerialInfo>
+                            <IssuerName>C=LU, OU=PKI-TEST, O=Nowina Solutions, CN=good-ca</IssuerName>
+                            <SerialNumber>10</SerialNumber>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-3DB7CECC65FF29DEFE92600DA9052366FE7CA55A041AA50BCB5CA1205F35E724">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-DD21FE6449DF6B84C59617301E55F88F9E2D195EC344D5076A0406AB567E6E6F">
+                    <Scope>FULL</Scope>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>6lGCH5AT7BAwigQwY95mc05lYWuHWMzVzsOcrTuqjbQ=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/Ap0X58mzzLSkDRmOZF0oDFBr7Hl+yH2gz9K51UG74Q=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>ODgE3vMLMmsYQEjWADdC3uw7Q0L8DECZiey3+kTjiMQomoRdkyc6Ahrb4Z/1eeXXwgGweSKXGQ6gsv2af2hPps/cN5+l4iprkHPz5C9ALkHlpdDsEc/yGR35DIolaTfq1IBxDAI8oj6etjIvpGJA7WPV+/V7Y4myBbb2SVNqPuMRAPpGg1iKh7HDI1ZnWOalC+Lp1UmGNQOE+K/v7YZngjsMwHm9IMIFsURAf10ZELL9VkGoTTtJ/+6AquWeMzZC9gxPUI25bEQldmhwZvc02TxOQZ0+fmMOvzZPlnn3GBdpL6cKXUrP0LuyjJ1Qb/PGJH31EMQRVli1A6F0TlolvA==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-3DB7CECC65FF29DEFE92600DA9052366FE7CA55A041AA50BCB5CA1205F35E724">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>4</SerialNumber>
+            <CommonName>good-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2022-09-07T09:04:04Z</NotAfter>
+            <NotBefore>2020-11-07T10:04:04Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-A7EEB80C5F9F25B229E574B076988B934E2A771B78C3C7427206E7C0831C998D</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-BCE9F5FE8EEB272DABF5FAA18D417698F4FB6700FA24500ADCB3311F0B54E967">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PbfOzGX/Kd7+kmANqQUjZv58pVoEGqULy1yhIF815yQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <CommonName>root-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2022-10-07T09:04:03Z</NotAfter>
+            <NotBefore>2020-10-07T09:04:03Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-65AED6AF3201598698D8EFB5088158B81823BC12F48CB7D130BDA009E8B46EE4</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>akRjdjbYO5gGzhyMbX0HDlH2Y2TCV4FO9ltUJQI4/00=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-791B5C380ADC228776D532E4307F7CB6D05E4392BEC582FD5595FF863972A02E">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-responder</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-responder</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>2</SerialNumber>
+            <CommonName>ocsp-responder</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2022-10-07T09:04:04Z</NotAfter>
+            <NotBefore>2020-10-07T09:04:04Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-47105985F5BF05D65922F64DE89B61DA52C314740A1A72F00FBEC0C7B56CB589</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>eRtcOArcIod21TLkMH98ttBeQ5K+xYL9VZX/hjlyoC4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-BBC106F1D17D733421060262F4AE0566B056C99BFAECEAA058A67ADB5B19F409">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-user</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-user</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-ca</IssuerDistinguishedName>
+            <SerialNumber>10</SerialNumber>
+            <CommonName>good-user</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/good-ca.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2022-09-07T09:04:05Z</NotAfter>
+            <NotBefore>2020-11-07T10:04:05Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-636956EB293A4146839BF5B791F8BDBEA75F3EC7372F8D23DC89790B637C28C3</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3DB7CECC65FF29DEFE92600DA9052366FE7CA55A041AA50BCB5CA1205F35E724"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3DB7CECC65FF29DEFE92600DA9052366FE7CA55A041AA50BCB5CA1205F35E724"/>
+                <ChainItem Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-A31066FA220B928245AD6C1325106BC345F3D9DE30ECB795DFA87B91C8DE77D9">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>u8EG8dF9czQhBgJi9K4FZrBWyZv67OqgWKZ621sZ9Ak=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-A31066FA220B928245AD6C1325106BC345F3D9DE30ECB795DFA87B91C8DE77D9">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://dss.nowina.lu/pki-factory/ocsp/good-ca</SourceAddress>
+            <ProductionDate>2021-11-18T14:00:27Z</ProductionDate>
+            <ThisUpdate>2021-11-18T14:00:27Z</ThisUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-791B5C380ADC228776D532E4307F7CB6D05E4392BEC582FD5595FF863972A02E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-791B5C380ADC228776D532E4307F7CB6D05E4392BEC582FD5595FF863972A02E"/>
+                <ChainItem Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-791B5C380ADC228776D532E4307F7CB6D05E4392BEC582FD5595FF863972A02E">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>wiNkJdf95yviZaKZIHVzr1NhtLo=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>oxBm+iILkoJFrWwTJRBrw0Xz2d4w7LeV36h7kcjed9k=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-BCE9F5FE8EEB272DABF5FAA18D417698F4FB6700FA24500ADCB3311F0B54E967">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</SourceAddress>
+            <ProductionDate>2021-11-18T14:00:27Z</ProductionDate>
+            <ThisUpdate>2021-11-18T14:00:27Z</ThisUpdate>
+            <NextUpdate>2022-05-18T13:00:27Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6A44637636D83B9806CE1C8C6D7D070E51F66364C257814EF65B54250238FF4D"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vOn1/o7rJy2r9fqhjUF2mPT7ZwD6JFAK3LMxHwtU6Wc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps/>
+    <OriginalDocuments>
+        <SignerData Id="D-DD21FE6449DF6B84C59617301E55F88F9E2D195EC344D5076A0406AB567E6E6F">
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>HXMUbFc9ZLxITlHHG8NsIM8z2PqF3e0zF81bDOxkGSI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

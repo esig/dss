@@ -66,16 +66,16 @@ public class SigningCertificateReferencesValidityCheck extends ChainItem<XmlSAV>
 		FoundCertificatesProxy foundCertificates = token.foundCertificates();
 		
 		// 1) Check orphan references presence
-		List<CertificateRefWrapper> orphanSigningCertificateRefs = foundCertificates.getOrphanCertificateRefsByRefOrigin(
-				CertificateRefOrigin.SIGNING_CERTIFICATE);
+		List<CertificateRefWrapper> orphanSigningCertificateRefs = foundCertificates
+				.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		if (Utils.isCollectionNotEmpty(orphanSigningCertificateRefs)) {
 			// the provided reference does not match the provided certificate chain
 			return false;
 		}
 		
 		// 2) Check found references against the certificate chain
-		List<RelatedCertificateWrapper> relatedSigningCertificates = foundCertificates.getRelatedCertificatesByRefOrigin(
-				CertificateRefOrigin.SIGNING_CERTIFICATE);
+		List<RelatedCertificateWrapper> relatedSigningCertificates = foundCertificates
+				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
 		List<String> certificateChainIds = token.getCertificateChain().stream().map(c -> c.getId()).collect(Collectors.toList());
 		

@@ -61,6 +61,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
@@ -152,6 +153,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -7340,7 +7342,152 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 		}
 		assertTrue(signTimeNotBeforeCertNotBeforeCheckFound);
+	}
 
+	@Test
+	public void checkJAdESKidValidSigTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_jades_valid.xml"));
+		assertNotNull(diagnosticData);
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignedAttributesConstraints signedAttributes = validationPolicy.getSignatureConstraints().getSignedAttributes();
+		signedAttributes.setKeyIdentifierPresent(levelConstraint);
+		signedAttributes.setKeyIdentifierMatch(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void checkJAdESNoKidTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_jades_valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		XmlFoundCertificates foundCertificates = xmlSignature.getFoundCertificates();
+		for (XmlRelatedCertificate relatedCertificate : foundCertificates.getRelatedCertificates()) {
+			Iterator<XmlCertificateRef> iterator = relatedCertificate.getCertificateRefs().iterator();
+			while (iterator.hasNext()) {
+				XmlCertificateRef certificateRef = iterator.next();
+				if (CertificateRefOrigin.KEY_IDENTIFIER.equals(certificateRef.getOrigin())) {
+					iterator.remove();
+				}
+			}
+		}
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignedAttributesConstraints signedAttributes = validationPolicy.getSignatureConstraints().getSignedAttributes();
+		signedAttributes.setKeyIdentifierPresent(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_ICS_ISAKIDP_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+
+		XmlSAV sav = signatureBBB.getSAV();
+		assertNotNull(sav);
+		assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+
+		boolean kidPresentCheckFound = false;
+		for (XmlConstraint constraint : sav.getConstraint()) {
+			if (MessageTag.BBB_ICS_ISAKIDP.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertNotNull(constraint.getError());
+				assertEquals(MessageTag.BBB_ICS_ISAKIDP_ANS.getId(), constraint.getError().getKey());
+				kidPresentCheckFound = true;
+			}
+		}
+		assertTrue(kidPresentCheckFound);
+	}
+
+	@Test
+	public void checkJAdESKidDoesNotMatchTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_jades_valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		XmlFoundCertificates foundCertificates = xmlSignature.getFoundCertificates();
+		for (XmlRelatedCertificate relatedCertificate : foundCertificates.getRelatedCertificates()) {
+			Iterator<XmlCertificateRef> iterator = relatedCertificate.getCertificateRefs().iterator();
+			while (iterator.hasNext()) {
+				XmlCertificateRef certificateRef = iterator.next();
+				if (CertificateRefOrigin.KEY_IDENTIFIER.equals(certificateRef.getOrigin())) {
+					certificateRef.getIssuerSerial().setMatch(false);
+				}
+			}
+		}
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignedAttributesConstraints signedAttributes = validationPolicy.getSignatureConstraints().getSignedAttributes();
+		signedAttributes.setKeyIdentifierMatch(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_ICS_DKIDVM_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+
+		XmlSAV sav = signatureBBB.getSAV();
+		assertNotNull(sav);
+		assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+
+		boolean kidPresentCheckFound = false;
+		for (XmlConstraint constraint : sav.getConstraint()) {
+			if (MessageTag.BBB_ICS_DKIDVM.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertNotNull(constraint.getError());
+				assertEquals(MessageTag.BBB_ICS_DKIDVM_ANS.getId(), constraint.getError().getKey());
+				kidPresentCheckFound = true;
+			}
+		}
+		assertTrue(kidPresentCheckFound);
 	}
 
 	@Test

@@ -189,8 +189,13 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			CertificateWrapper signingCertificate = getSigningCertificate();
 			if (signingCertificate != null) {
 				for (RelatedCertificateWrapper relatedCertificate : foundCertificates().getRelatedCertificates()) {
-					if (signingCertificate.getId().equals(relatedCertificate.getId()) && relatedCertificate.getReferences().size() > 0) {
-						return relatedCertificate.getReferences().iterator().next();
+					List<CertificateRefWrapper> signCertRefs = relatedCertificate.getReferences();
+					if (signingCertificate.getId().equals(relatedCertificate.getId()) && signCertRefs.size() > 0) {
+						for (CertificateRefWrapper signCertRef : signCertRefs) {
+							if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(signCertRef.getOrigin())) {
+								return signCertRef;
+							}
+						}
 					}
 				}
 			}

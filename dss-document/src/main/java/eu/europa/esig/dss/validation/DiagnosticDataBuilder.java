@@ -1034,9 +1034,7 @@ public abstract class DiagnosticDataBuilder {
 		for (CertificateRef certificateRef : referencesForCertificateToken) {
 			for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
 				XmlCertificateRef xmlCertificateRef = getXmlCertificateRef(certificateRef, refOrigin);
-				if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refOrigin)) {
-					verifyAgainstCertificateToken(xmlCertificateRef, certificateRef, cert);
-				}
+				verifyAgainstCertificateToken(xmlCertificateRef, certificateRef, cert);
 				xrc.getCertificateRefs().add(xmlCertificateRef);
 			}
 			referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
@@ -1058,9 +1056,7 @@ public abstract class DiagnosticDataBuilder {
 		xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
 		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
 			XmlCertificateRef xmlCertificateRef = getXmlCertificateRef(certificateRef, refOrigin);
-			if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refOrigin)) {
-				verifyAgainstCertificateToken(xmlCertificateRef, certificateRef, cert);
-			}
+			verifyAgainstCertificateToken(xmlCertificateRef, certificateRef, cert);
 			xrc.getCertificateRefs().add(xmlCertificateRef);
 		}
 		referenceMap.put(certificateRef.getDSSIdAsString(), cert.getDSSIdAsString());
@@ -1170,9 +1166,7 @@ public abstract class DiagnosticDataBuilder {
 		for (CertificateRef certificateRef : referencesForCertificateToken) {
 			for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
 				XmlCertificateRef xmlCertificateRef = getXmlCertificateRef(certificateRef, refOrigin);
-				if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refOrigin)) {
-					verifyAgainstCertificateToken(xmlCertificateRef, certificateRef, signingCertificate);
-				}
+				verifyAgainstCertificateToken(xmlCertificateRef, certificateRef, signingCertificate);
 				xoc.getCertificateRefs().add(xmlCertificateRef);
 			}
 			referenceMap.put(certificateRef.getDSSIdAsString(), certificateToken.getDSSIdAsString());
@@ -1244,9 +1238,7 @@ public abstract class DiagnosticDataBuilder {
 		orphanCertificate.setToken(getXmlOrphanCertificateTokenFromRef(orphanCertificateRef));
 		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(orphanCertificateRef)) {
 			XmlCertificateRef xmlCertificateRef = getXmlCertificateRef(orphanCertificateRef, refOrigin);
-			if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refOrigin)) {
-				verifyAgainstCertificateToken(xmlCertificateRef, orphanCertificateRef, signingCertificate);
-			}
+			verifyAgainstCertificateToken(xmlCertificateRef, orphanCertificateRef, signingCertificate);
 			orphanCertificate.getCertificateRefs().add(xmlCertificateRef);
 		}
 		return orphanCertificate;

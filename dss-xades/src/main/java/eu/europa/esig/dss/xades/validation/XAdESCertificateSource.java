@@ -257,7 +257,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		final List<CertificateRef> potentialSigningCertificates = getSigningCertificateRefs();
 		
 		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
-			// must contain only one reference
+			// first reference shall be a reference to a signing certificate
 			final CertificateRef signingCert = potentialSigningCertificates.get(0);
 			
 			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
@@ -271,7 +271,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 				certificateValidity.setIssuerSerialPresent(signingCert.getCertificateIdentifier() != null);
 
 				CertificateToken certificateToken = certificateValidity.getCertificateToken();
-				
 				if (certificateToken != null) {
 					certificateValidity.setDigestEqual(matcher.matchByDigest(certificateToken, signingCert));
 					certificateValidity.setSerialNumberEqual(matcher.matchBySerialNumber(certificateToken, signingCert));

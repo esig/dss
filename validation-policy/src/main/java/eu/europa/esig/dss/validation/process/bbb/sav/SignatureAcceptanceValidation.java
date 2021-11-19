@@ -41,6 +41,8 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierChe
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.KeyIdentifierMatchCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.KeyIdentifierPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
@@ -112,6 +114,17 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 			item = item.setNextItem(allCertificatesInPathReferenced());
 		}
 
+		// 'kid' (key identifier) verification for JAdES
+		if (SignatureForm.JAdES.equals(token.getSignatureFormat().getSignatureForm())) {
+
+			item = item.setNextItem(keyIdentifierPresent());
+
+			if (token.getKeyIdentifierReference() != null) {
+				item = item.setNextItem(keyIdentifierMatch());
+			}
+
+		}
+
 		// signing-time
 		item = item.setNextItem(signingTime());
 
@@ -163,6 +176,16 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	private ChainItem<XmlSAV> structuralValidation() {
 		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint(context);
 		return new StructuralValidationCheck(i18nProvider, result, token, constraint);
+	}
+
+	protected ChainItem<XmlSAV> keyIdentifierPresent() {
+		LevelConstraint constraint = validationPolicy.getKeyIdentifierPresent(context);
+		return new KeyIdentifierPresentCheck(i18nProvider, result, token, constraint);
+	}
+
+	protected ChainItem<XmlSAV> keyIdentifierMatch() {
+		LevelConstraint constraint = validationPolicy.getKeyIdentifierMatch(context);
+		return new KeyIdentifierMatchCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signingTime() {

@@ -901,6 +901,7 @@
 			<xs:enumeration value="SIGNING_CERTIFICATE" />
 			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
 			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
+			<xs:enumeration value="KEY_IDENTIFIER" />
 		</xs:restriction>
 	</xs:simpleType>
 	
