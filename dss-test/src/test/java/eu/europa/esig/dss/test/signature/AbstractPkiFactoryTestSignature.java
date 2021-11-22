@@ -86,7 +86,6 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -237,9 +236,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		Date originalSigningDate = getSignatureParameters().bLevel().getSigningDate();
 
 		// Date in signed documents is truncated
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-
-		assertEquals(dateFormat.format(originalSigningDate), dateFormat.format(signatureDate));
+		assertEquals(DSSUtils.formatDateToRFC(originalSigningDate), DSSUtils.formatDateToRFC(signatureDate));
 	}
 	
 	@Override

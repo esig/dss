@@ -216,7 +216,7 @@ public class TimestampToken extends Token {
 
 	@Override
 	public String getAbbreviation() {
-		return timeStampType.name() + ": " + getDSSIdAsString() + ": " + DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime());
+		return timeStampType.name() + ": " + getDSSIdAsString() + ": " + DSSUtils.formatDateToRFC(timeStamp.getTimeStampInfo().getGenTime());
 	}
 	
 	/**
@@ -733,7 +733,7 @@ public class TimestampToken extends Token {
 		try {
 			final StringBuilder out = new StringBuilder();
 			out.append(indentStr).append("TimestampToken[signedBy=").append(getIssuerX500Principal());
-			out.append(", generated: ").append(DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime()));
+			out.append(", generated: ").append(DSSUtils.formatDateToRFC(timeStamp.getTimeStampInfo().getGenTime()));
 			out.append(" / ").append(timeStampType).append('\n');
 			if (isSignatureIntact()) {
 

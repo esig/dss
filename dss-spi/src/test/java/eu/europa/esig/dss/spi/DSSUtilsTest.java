@@ -79,7 +79,44 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void digest() {
+	public void formatDateTest() {
+		Calendar calendar = Calendar.getInstance(DSSUtils.UTC_TIMEZONE);
+		calendar.set(2021, 0, 01, 0, 0, 0);
+		assertEquals("2021-01-01T00:00:00Z", DSSUtils.formatDateToRFC(calendar.getTime()));
+		assertEquals("2021-01-01T00:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT));
+		assertEquals("2021-01-01T03:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT, "GMT+3"));
+		assertEquals("2021-01-01T03:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT, TimeZone.getTimeZone("GMT+3")));
+		assertEquals("2020-12-31T21:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT, "GMT-3"));
+
+		final String customDateFormat = "yyyy-MM-dd HH:mm";
+		assertEquals("2021-01-01 00:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat));
+		assertEquals("2021-01-01 03:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, "GMT+3"));
+		assertEquals("2021-01-01 03:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, TimeZone.getTimeZone("GMT+3")));
+		assertEquals("2020-12-31 21:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, "GMT-3"));
+
+		calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+3"));
+		calendar.set(2021, 0, 01, 0, 0, 0);
+		assertEquals("2020-12-31T21:00:00Z", DSSUtils.formatDateToRFC(calendar.getTime()));
+		assertEquals("2020-12-31T21:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT));
+		assertEquals("2021-01-01T00:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT, "GMT+3"));
+		assertEquals("2021-01-01T00:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT, TimeZone.getTimeZone("GMT+3")));
+		assertEquals("2020-12-31T18:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT, "GMT-3"));
+
+		assertEquals("2020-12-31 21:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat));
+		assertEquals("2021-01-01 00:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, "GMT+3"));
+		assertEquals("2021-01-01 00:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, TimeZone.getTimeZone("GMT+3")));
+		assertEquals("2020-12-31 18:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, "GMT-3"));
+
+		calendar = Calendar.getInstance();
+		calendar.set(2021, 0, 01, 0, 0, 0);
+		assertEquals(DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, Calendar.getInstance().getTimeZone()),
+				DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, ""));
+		assertEquals(DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, Calendar.getInstance().getTimeZone()),
+				DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, (TimeZone) null));
+	}
+
+	@Test
+	public void digestTest() {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 
 		byte[] data = "Hello world!".getBytes(StandardCharsets.UTF_8);

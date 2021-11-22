@@ -109,12 +109,14 @@ public final class DSSUtils {
 	/** Represents a new line '\n' character */
 	public static final byte LINE_FEED = '\n';
 
+	/** RFC 3339 DateTime format used by default */
+	public static final String RFC3339_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+	/** The UTC timezone (GMT+0), used by default */
+	public static final TimeZone UTC_TIMEZONE = TimeZone.getTimeZone("UTC");
+
 	/** The UTF-8 encoding name string */
 	public static final String UTF8_ENCODING = "UTF-8";
-
-	/** Default DateTime format */
-	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
 
 	/** This array contains character bytes, representing a line break (new line, carriage return) */
 	private static final byte[] LINE_BREAK_CHARS = { CARRIAGE_RETURN, LINE_FEED };
@@ -126,15 +128,15 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Formats a date to use for internal purposes (logging, toString)
+	 * Formats a date to use according to RFC 3339. The date is aligned to UTC TimeZone
 	 * Example: "2019-11-19T17:28:15Z"
 	 *
 	 * @param date
 	 *            the date to be converted
 	 * @return the textual representation (a null date will result in "N/A")
 	 */
-	public static String formatInternal(final Date date) {
-		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT);
+	public static String formatDateToRFC(final Date date) {
+		return formatDateWithCustomFormat(date, RFC3339_TIME_FORMAT);
 	}
 
 	/**
@@ -145,23 +147,13 @@ public final class DSSUtils {
 	 * @return {@link String} formatted date
 	 */
 	public static String formatDateWithCustomFormat(final Date date, final String format) {
-		return formatDateWithCustomFormat(date, format, null);
-	}
-
-	/**
-	 * Formats a date to use according to RFC 3339. The date is aligned to UTC TimeZone
-	 * Example: "2019-11-19T17:28:15Z"
-	 *
-	 * @param date
-	 *            the date to be converted
-	 * @return the textual representation (a null date will result in "N/A")
-	 */
-	public static String formatDateToRFC(final Date date) {
-		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT, "UTC");
+		return formatDateWithCustomFormat(date, format, UTC_TIMEZONE);
 	}
 	
 	/**
-	 * Formats the date according to the given format and timeZone
+	 * Formats the date according to the given format and timeZone as {@code String}.
+	 *
+	 * NOTE : When null or empty string is provided, the system default timezone is used!
 	 * 
 	 * @param date {@link Date} to transform to a String
 	 * @param format {@link String} representing a Date format to be used
@@ -169,9 +161,23 @@ public final class DSSUtils {
 	 * @return {@link String} formatted date
 	 */
 	public static String formatDateWithCustomFormat(final Date date, final String format, final String timeZone) {
+		return formatDateWithCustomFormat(date, format, Utils.isStringNotEmpty(timeZone) ? TimeZone.getTimeZone(timeZone) : (TimeZone) null);
+	}
+
+	/**
+	 * Formats the date according to the given format and {@code TimeZone}
+	 *
+	 * NOTE : When null TimeZone is provided, the system default timezone is used!
+	 *
+	 * @param date {@link Date} to transform to a String
+	 * @param format {@link String} representing a Date format to be used
+	 * @param timeZone {@link TimeZone} specifying a TimeZone
+	 * @return {@link String} formatted date
+	 */
+	public static String formatDateWithCustomFormat(final Date date, final String format, final TimeZone timeZone) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
-		if (Utils.isStringNotEmpty(timeZone)) {
-			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		if (timeZone != null) {
+			simpleDateFormat.setTimeZone(timeZone);
 		}
 		return (date == null) ? "N/A" : simpleDateFormat.format(date);
 	}
