@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.suite.revocation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -32,6 +28,11 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PAdESRevocationOriginTest extends AbstractPAdESTestValidation {
 
@@ -55,6 +56,18 @@ public class PAdESRevocationOriginTest extends AbstractPAdESTestValidation {
 		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.REVOCATION_VALUES).size());
 		assertEquals(0, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
 		assertEquals(4, signature.foundRevocations().getRelatedRevocationsByTypeAndOrigin(RevocationType.OCSP, RevocationOrigin.DSS_DICTIONARY).size());
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+
+		AdvancedSignature firstSig = signatures.get(0);
+
+		// Signature has been generated in the very first version of the PDF
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(firstSig.getId());
+		assertEquals(0, originalDocuments.size());
 	}
 
 }

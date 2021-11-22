@@ -20,12 +20,16 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DSS1188Test extends AbstractPAdESTestValidation {
 
@@ -38,6 +42,18 @@ public class DSS1188Test extends AbstractPAdESTestValidation {
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals("C-A5518784E8001EF099F4BAEC5573BC965830079EDDED92752EA94B6548DFFC06", signature.getSigningCertificate().getId());
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+
+		AdvancedSignature firstSig = signatures.get(0);
+
+		// Signature has been generated in the very first version of the PDF
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(firstSig.getId());
+		assertEquals(0, originalDocuments.size());
 	}
 
 }

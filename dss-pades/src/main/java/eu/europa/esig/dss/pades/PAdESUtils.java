@@ -61,7 +61,9 @@ public final class PAdESUtils {
 	public static final int DEFAULT_FIRST_PAGE = 1;
 
 	/** The starting bytes of a PDF document */
-	private static final byte[] PDF_PREAMBLE = new byte[]{'%', 'P', 'D', 'F', '-'};
+	private static final byte[] PDF_PREAMBLE = new byte[]{ '%', 'P', 'D', 'F', '-' };
+
+	private static final byte[] PDF_EOF_STRING = new byte[] { '%', '%', 'E', 'O', 'F' };
 
 	/**
 	 * Empty constructor (singleton)
@@ -120,7 +122,6 @@ public final class PAdESUtils {
 	 * @return {@link InMemoryDocument}
 	 */
 	private static InMemoryDocument retrieveCompletePDFRevision(DSSDocument firstByteRangePart) {
-		final byte[] eof = new byte[] { '%', '%', 'E', 'O', 'F' };
 		try (InputStream is = firstByteRangePart.openStream();
 				BufferedInputStream bis = new BufferedInputStream(is);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -133,21 +134,21 @@ public final class PAdESUtils {
 				tempLine.write(b);
 				byte[] stringBytes = tempLine.toByteArray();
 
-				if (Arrays.equals(stringBytes, eof)) {
+				if (Arrays.equals(PDF_EOF_STRING, stringBytes)) {
 					tempLine.close();
 					tempLine = new ByteArrayOutputStream();
 
 					tempRevision.write(stringBytes);
 					int c = bis.read();
 					// if \n
-					if (c == 0x0a) {
+					if (c == DSSUtils.LINE_FEED) {
 						tempRevision.write(c);
 					}
 					// if \r
-					else if (c == 0x0d) {
+					else if (c == DSSUtils.CARRIAGE_RETURN) {
 						int d = bis.read();
 						// if \r\n
-						if (d == 0x0a) {
+						if (d == DSSUtils.LINE_FEED) {
 							tempRevision.write(c);
 							tempRevision.write(d);
 						} else {
@@ -160,7 +161,7 @@ public final class PAdESUtils {
 					baos.write(tempRevision.toByteArray());
 					tempRevision.close();
 					tempRevision = new ByteArrayOutputStream();
-				} else if (b == 0x0a || b == 0x0d || stringBytes.length > eof.length) {
+				} else if (DSSUtils.isLineBreakByte((byte) b) || stringBytes.length > PDF_EOF_STRING.length) {
 					tempRevision.write(tempLine.toByteArray());
 					tempLine.close();
 					tempLine = new ByteArrayOutputStream();
@@ -274,7 +275,7 @@ public final class PAdESUtils {
 		final SigFieldPermissions sigFieldPermissions = new SigFieldPermissions();
 
 		String action = wrapper.getNameValue(PAdESConstants.ACTION_NAME);
-		sigFieldPermissions.setAction(PdfLockAction.ALL.forName(action));
+		sigFieldPermissions.setAction(PdfLockAction.forName(action));
 
 		List<String> fields = new ArrayList<>();
 		PdfArray fieldsArray = wrapper.getAsArray(PAdESConstants.FIELDS_NAME);

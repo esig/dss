@@ -10,6 +10,8 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
 
@@ -106,6 +108,25 @@ public class PdfPkcs7WithSha1SubFilterTest extends AbstractPAdESTestValidation {
     @Override
     protected void checkOrphanTokens(DiagnosticData diagnosticData) {
         // skip
+    }
+
+    @Override
+    protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+        List<AdvancedSignature> signatures = validator.getSignatures();
+        assertEquals(2, signatures.size());
+
+        boolean emptySigDocFound = false;
+        boolean signPdfFound = false;
+        for (AdvancedSignature signature : signatures) {
+            List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signature.getId());
+            if (originalDocuments.size() == 0) {
+                emptySigDocFound = true;
+            } else {
+                signPdfFound = true;
+            }
+        }
+        assertTrue(emptySigDocFound);
+        assertTrue(signPdfFound);
     }
 
 }

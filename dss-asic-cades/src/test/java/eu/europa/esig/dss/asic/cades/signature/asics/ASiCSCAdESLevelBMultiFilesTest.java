@@ -36,6 +36,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
@@ -48,6 +49,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipleDocumentsTestSignature {
 
@@ -112,6 +114,20 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertEquals(MimeType.ZIP, MimeType.fromMimeTypeString(signatureWrapper.getMimeType())); // package.zip signed
+		}
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<DSSDocument> retrievedDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
+		for (DSSDocument document : documentsToSign) {
+			boolean found = false;
+			for (DSSDocument retrievedDoc : retrievedDocuments) {
+				if (Arrays.equals(DSSUtils.toByteArray(document), DSSUtils.toByteArray(retrievedDoc))) {
+					found = true;
+				}
+			}
+			assertTrue(found);
 		}
 	}
 

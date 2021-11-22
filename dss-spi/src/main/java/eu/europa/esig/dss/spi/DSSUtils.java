@@ -103,14 +103,21 @@ public final class DSSUtils {
 	/** Empty byte array */
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
+	/** Represents a carriage return '\r' character */
+	public static final byte CARRIAGE_RETURN = '\r';
+
+	/** Represents a new line '\n' character */
+	public static final byte LINE_FEED = '\n';
+
 	/** The UTF-8 encoding name string */
 	public static final String UTF8_ENCODING = "UTF-8";
 
 	/** Default DateTime format */
 	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
+
 	/** This array contains character bytes, representing a line break (new line, carriage return) */
-	private static final byte[] LINE_BREAK_CHARS = { '\n', '\r' };
+	private static final byte[] LINE_BREAK_CHARS = { CARRIAGE_RETURN, LINE_FEED };
 
 	/**
 	 * This class is an utility class and cannot be instantiated.

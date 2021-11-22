@@ -24,7 +24,6 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.slf4j.Logger;
@@ -55,8 +54,6 @@ public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-		super.verifyOriginalDocuments(validator, diagnosticData);
-		
 		List<AdvancedSignature> signatures = validator.getSignatures();
 
 		AdvancedSignature firstSig = signatures.get(1);
@@ -69,13 +66,9 @@ public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 
 		AdvancedSignature secondSig = signatures.get(0);
 
-		originalDocuments = validator.getOriginalDocuments(secondSig.getId());
-		assertEquals(1, originalDocuments.size());
-		retrievedDoc = originalDocuments.get(0);
-
 		// Signature has been generated in the very first version of the PDF
-		byte[] byteArray = DSSUtils.toByteArray(retrievedDoc);
-		assertEquals(0, byteArray.length);
+		originalDocuments = validator.getOriginalDocuments(secondSig.getId());
+		assertEquals(0, originalDocuments.size());
 	}
 
 	@Override

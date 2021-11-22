@@ -29,6 +29,8 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
 
@@ -74,6 +76,18 @@ public class DSS1538Test extends AbstractPAdESTestValidation {
 		assertNotNull(pdfSignatureDictionary.getSubFilter());
 		assertNotNull(pdfSignatureDictionary.getSignatureByteRange());
 		assertEquals(4, pdfSignatureDictionary.getSignatureByteRange().size());
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+
+		AdvancedSignature firstSig = signatures.get(0);
+
+		// Signature has been generated in the very first version of the PDF
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(firstSig.getId());
+		assertEquals(0, originalDocuments.size());
 	}
 
 }

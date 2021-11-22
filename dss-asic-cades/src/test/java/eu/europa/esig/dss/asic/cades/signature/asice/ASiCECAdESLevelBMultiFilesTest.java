@@ -42,6 +42,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
@@ -177,6 +178,20 @@ public class ASiCECAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertEquals(MimeType.XML, MimeType.fromMimeTypeString(signatureWrapper.getMimeType()));
+		}
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<DSSDocument> retrievedDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
+		for (DSSDocument document : documentsToSign) {
+			boolean found = false;
+			for (DSSDocument retrievedDoc : retrievedDocuments) {
+				if (Arrays.equals(DSSUtils.toByteArray(document), DSSUtils.toByteArray(retrievedDoc))) {
+					found = true;
+				}
+			}
+			assertTrue(found);
 		}
 	}
 

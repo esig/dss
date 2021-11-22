@@ -148,4 +148,23 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 		}
 	}
 
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(2, signatures.size());
+
+		boolean emptySigDocFound = false;
+		boolean signPdfFound = false;
+		for (AdvancedSignature signature : signatures) {
+			List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signature.getId());
+			if (originalDocuments.size() == 0) {
+				emptySigDocFound = true;
+			} else {
+				signPdfFound = true;
+			}
+		}
+		assertTrue(emptySigDocFound);
+		assertTrue(signPdfFound);
+	}
+
 }

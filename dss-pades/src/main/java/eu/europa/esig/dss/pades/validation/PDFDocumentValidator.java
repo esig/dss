@@ -347,7 +347,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
         PAdESSignature padesSignature = (PAdESSignature) advancedSignature;
         List<DSSDocument> result = new ArrayList<>();
         InMemoryDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
-        if (originalPDF != null) {
+        if (originalPDF != null && originalPDF.getBytes().length != 0) {
             result.add(originalPDF);
         }
         return result;

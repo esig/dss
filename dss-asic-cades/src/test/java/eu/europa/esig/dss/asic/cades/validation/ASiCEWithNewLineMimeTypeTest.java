@@ -20,15 +20,18 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEWithNewLineMimeTypeTest extends AbstractASiCWithCAdESTestValidation {
 
@@ -47,6 +50,12 @@ public class ASiCEWithNewLineMimeTypeTest extends AbstractASiCWithCAdESTestValid
 		assertEquals("mimetype=application/vnd.etsi.asic-e+zip\n", containerInfo.getZipComment());
 		assertTrue(containerInfo.isMimeTypeFilePresent());
 		assertEquals("application/vnd.etsi.asic-e+zip\r\n", containerInfo.getMimeTypeContent());
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<DSSDocument> retrievedDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
+		assertEquals(3, retrievedDocuments.size());
 	}
 
 }

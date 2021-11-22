@@ -81,7 +81,7 @@ public class PerformanceManySignaturesTest {
 
     @Test
     void retrievePreviousPDFRevisionFirst() {
-        String expectedSHA256 = "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
+        String expectedSHA256 = "zr24pCby+v9AN0effpTLOahaEBsynz/Ap0EoARhvpsI=";
         InMemoryDocument inMemoryDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
         ByteRange byteRange = new ByteRange(new int[]{0, 4883, 23829, 70196});
         InMemoryDocument previousRevision = PAdESUtils.retrievePreviousPDFRevision(inMemoryDocument, byteRange);

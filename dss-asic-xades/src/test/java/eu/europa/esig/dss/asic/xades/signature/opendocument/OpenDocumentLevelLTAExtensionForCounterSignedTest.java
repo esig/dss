@@ -266,6 +266,21 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 	}
 
 	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		for (String signatureId : signatureIdList) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
+			if (diagnosticData.isBLevelTechnicallyValid(signatureId) && !signatureWrapper.isCounterSignature()) {
+				List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
+				assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
+				for (DSSDocument document : retrievedOriginalDocuments) {
+					assertNotNull(document);
+				}
+			}
+		}
+	}
+
+	@Override
 	protected String getSigningAlias() {
 		return signingAlias;
 	}

@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -97,6 +98,25 @@ public class PAdESOverwrittenDSSDictTest extends AbstractPAdESTestValidation {
         assertEquals(0, Utils.collectionSize(diagnosticData.getAllOrphanCertificateReferences()));
         assertEquals(5, Utils.collectionSize(diagnosticData.getAllOrphanRevocationObjects()));
         assertEquals(0, Utils.collectionSize(diagnosticData.getAllOrphanRevocationReferences()));
+    }
+
+    @Override
+    protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+        List<AdvancedSignature> signatures = validator.getSignatures();
+        assertEquals(2, signatures.size());
+
+        boolean emptySigDocFound = false;
+        boolean signPdfFound = false;
+        for (AdvancedSignature signature : signatures) {
+            List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signature.getId());
+            if (originalDocuments.size() == 0) {
+                emptySigDocFound = true;
+            } else {
+                signPdfFound = true;
+            }
+        }
+        assertTrue(emptySigDocFound);
+        assertTrue(signPdfFound);
     }
 
 }

@@ -67,6 +67,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
@@ -75,6 +76,7 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -1875,6 +1877,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			if (diagnosticData.isBLevelTechnicallyValid(signatureId) && !signatureWrapper.isCounterSignature()) {
 				List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 				assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
+				for (DSSDocument document : retrievedOriginalDocuments) {
+					assertNotNull(document);
+					if (!(document instanceof DigestDocument)) {
+						assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(document)));
+					}
+				}
 			}
 		}
 	}
