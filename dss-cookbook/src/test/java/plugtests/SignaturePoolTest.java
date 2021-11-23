@@ -35,6 +35,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -513,7 +514,11 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		for (String signatureId : signatureIdList) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
 			if (diagnosticData.isBLevelTechnicallyValid(signatureId) && isNotInvalidManifest(validator)
-					&& signsDocuments(diagnosticData) && !signatureWrapper.isCounterSignature()) {
+					&& signsDocuments(diagnosticData) && !signatureWrapper.isCounterSignature()
+					// a PDF signature can be incorporated within the first PDF's revision (no original content can be extracted)
+					&& !((SignatureForm.PAdES.equals(diagnosticData.getSignatureFormat(signatureId).getSignatureForm())
+									|| SignatureForm.PKCS7.equals(diagnosticData.getSignatureFormat(signatureId).getSignatureForm()))
+			 				&& diagnosticData.getFirstSignatureId().equals(signatureId))) {
 				List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 				assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
 			}
