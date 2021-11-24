@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * iText drawer used for visual signatures creation with text data only
+ * iText drawer used for visual signature creation with text data only
  *
  */
 public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
@@ -91,6 +91,11 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			try (InputStream iStream = fileFont.getInputStream()) {
 				byte[] fontBytes = DSSUtils.toByteArray(iStream);
 				BaseFont baseFont = BaseFont.createFont(fileFont.getName(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontBytes, null);
+				// TODO : add support of subset
+				/*
+				 * NOTE: OpenPDF does not support yet the deterministic PDF generation when subsets are used
+				 * see https://github.com/LibrePDF/OpenPDF/issues/623
+				 */
 				baseFont.setSubset(false);
 				return baseFont;
 			} catch (IOException e) {

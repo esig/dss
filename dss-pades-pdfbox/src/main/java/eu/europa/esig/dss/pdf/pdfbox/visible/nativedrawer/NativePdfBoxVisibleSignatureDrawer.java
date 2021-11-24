@@ -76,6 +76,28 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	/** Defines the default value for a non-transparent alpha layer */
 	private static final float OPAQUE_VALUE = 0xff;
 
+	/**
+	 * Defines whether only a subset of used glyphs should be embedded to a PDF,
+	 * when a font file is used with a text information defined within a signature field
+	 *
+	 * DEFAULT : FALSE (all glyphs from a font file are embedded to a PDF document)
+	 */
+	private boolean embedFontSubset = false;
+
+	/**
+	 * Sets whether only a subset of used glyphs should be embedded to a PDF, when a {@code DSSFileFont} is used.
+	 *
+	 * When set to TRUE, only the used glyphs will be embedded to a font.
+	 * When set to FALSE, all glyphs from a font will be embedded to a PDF.
+	 *
+	 * DEFAULT : FALSE (the whole font file is embedded to a PDF)
+	 *
+	 * @param embedFontSubset whether only a subset of used glyphs should be embedded to a PDF
+	 */
+	public void setEmbedFontSubset(boolean embedFontSubset) {
+		this.embedFontSubset = embedFontSubset;
+	}
+
 	@Override
 	public void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions)
 			throws IOException {
@@ -96,7 +118,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		} else if (dssFont instanceof DSSFileFont) {
 			DSSFileFont fileFont = (DSSFileFont) dssFont;
 			try (InputStream is = fileFont.getInputStream()) {
-				return PDType0Font.load(document, is);
+				return PDType0Font.load(document, is, embedFontSubset);
 			}
 		} else {
 			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
