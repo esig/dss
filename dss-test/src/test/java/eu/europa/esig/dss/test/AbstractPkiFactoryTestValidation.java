@@ -466,6 +466,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkCounterSignatures(diagnosticData);
 		checkTrustedServices(diagnosticData);
 		checkContainerInfo(diagnosticData);
+		checkPDFAInfo(diagnosticData);
 
 		checkNoDuplicateSignatures(diagnosticData);
 		checkNoDuplicateCompleteCertificates(diagnosticData);
@@ -1097,6 +1098,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNull(diagnosticData.getContainerType());
 		assertNull(diagnosticData.getZipComment());
 		assertNull(diagnosticData.getMimetypeFileContent());
+	}
+
+	protected void checkPDFAInfo(DiagnosticData diagnosticData) {
+		if (diagnosticData.isPDFAValidationPerformed()) {
+			assertNotNull(diagnosticData.getPDFAProfileId());
+		}
 	}
 	
 	protected void checkNoDuplicateCompleteCertificates(FoundCertificatesProxy foundCertificates) {

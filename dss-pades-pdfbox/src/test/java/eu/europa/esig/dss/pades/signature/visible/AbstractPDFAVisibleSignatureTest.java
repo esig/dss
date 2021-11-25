@@ -29,14 +29,15 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PDFAUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdfa.validation.PDFADocumentValidator;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.test.UnmarshallingTester;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,7 +85,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate(true);
+		signAndValidate("PDF/A-1B", true);
 	}
 
 	@Test
@@ -96,7 +97,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate(false);
+		signAndValidate("PDF/A-1B", false);
 	}
 
 	@Test
@@ -111,7 +112,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		
 		signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate(true);
+		signAndValidate("PDF/A-1B", true);
 	}
 
 	@Test
@@ -127,29 +128,33 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		
 		signatureParameters.setImageParameters(imageParameters);
 
-		Exception exception = assertThrows(AlertException.class, () -> signAndValidate(false));
+		Exception exception = assertThrows(AlertException.class, () ->
+				signAndValidate("PDF/A-1B", false));
 		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 
 		fieldParameters.setWidth(400);
 		fieldParameters.setHeight(200);
-		signAndValidate(false);
+		signAndValidate("PDF/A-1B", false);
 	}
 
-	private void signAndValidate(boolean expectedValidPDFA) throws IOException {
+	private void signAndValidate(String expectedPdfAProfile, boolean expectedValidPDFA) {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		// signedDocument.save("target/test.pdf");
 
-		assertEquals(expectedValidPDFA, PDFAUtils.validatePDFAStructure(signedDocument));
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		SignedDocumentValidator validator = new PDFADocumentValidator(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+
+		assertTrue(diagnosticData.isPDFAValidationPerformed());
+		assertEquals(expectedPdfAProfile, diagnosticData.getPDFAProfileId());
+		assertEquals(expectedValidPDFA, diagnosticData.isPDFACompliant());
+		assertEquals(expectedValidPDFA, Utils.isCollectionEmpty(diagnosticData.getPDFAValidationErrors()));
 
 		UnmarshallingTester.unmarshallXmlReports(reports);
 	}

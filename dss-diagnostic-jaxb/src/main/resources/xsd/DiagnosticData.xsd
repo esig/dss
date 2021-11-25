@@ -11,6 +11,7 @@
 			<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 			<xs:element name="ValidationDate" type="xs:dateTime" />
 			<xs:element name="ContainerInfo" type="ContainerInfo" minOccurs="0" />
+			<xs:element name="PDFAInfo" type="PDFAInfo" minOccurs="0" />
 			<xs:element name="Signatures" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -110,6 +111,20 @@
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="PDFAInfo">
+		<xs:sequence>
+			<xs:element name="ProfileId" type="xs:string" />
+			<xs:element name="ValidationMessages" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Error" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="compliant" type="xs:boolean" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="AbstractToken" abstract="true">
