@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.pades.signature.visible.nativedrawer;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -16,23 +16,24 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxSignatureService;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.NativePdfBoxVisibleSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.PdfBoxNativeSignatureDrawerFactory;
+import eu.europa.esig.dss.pdfa.validation.PDFADocumentValidator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PdfBoxNativeDrawerFontSubsetTest extends AbstractPAdESTestSignature {
 
     private static final String FONT_NAME = "PTSerif-Regular";
 
-    private DSSFileFont font;
     private boolean embedSubset;
 
     private PAdESService service;
@@ -41,15 +42,13 @@ public class PdfBoxNativeDrawerFontSubsetTest extends AbstractPAdESTestSignature
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
+        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-
-        font = DSSFileFont.initializeDefault(); // PTSerif-Regular by default
 
         SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
         SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
@@ -66,7 +65,6 @@ public class PdfBoxNativeDrawerFontSubsetTest extends AbstractPAdESTestSignature
         embedSubset = false;
 
         DSSDocument signedDocument = sign();
-        signedDocument.save("target/test.pdf");
         assertContainsSubset(signedDocument, false);
         verify(signedDocument);
     }
@@ -76,19 +74,34 @@ public class PdfBoxNativeDrawerFontSubsetTest extends AbstractPAdESTestSignature
         embedSubset = true;
 
         DSSDocument signedDocument = sign();
-        signedDocument.save("target/embed_subset_test.pdf");
         assertContainsSubset(signedDocument, true);
         verify(signedDocument);
     }
 
-    private void assertContainsSubset(DSSDocument document, boolean embedSubset) throws IOException {
-        try (InputStream docIs = document.openStream(); InputStream fontIs = font.getInputStream()) {
-            assertNotEquals(Utils.getInputStreamSize(docIs) > Utils.getInputStreamSize(fontIs), embedSubset);
-        }
+    private void assertContainsSubset(DSSDocument document, boolean embedSubset) {
         byte[] docBytes = DSSUtils.toByteArray(document);
         String pdfString = new String(docBytes);
         assertNotEquals(pdfString.contains("/" + FONT_NAME), embedSubset);
         assertEquals(pdfString.contains("+" + FONT_NAME), embedSubset);
+    }
+
+    @Override
+    protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+        PDFADocumentValidator validator = new PDFADocumentValidator(signedDocument);
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+        return validator;
+    }
+
+    @Override
+    protected void checkPDFAInfo(DiagnosticData diagnosticData) {
+        super.checkPDFAInfo(diagnosticData);
+
+        assertEquals(1, diagnosticData.getSignatures().size());
+
+        assertTrue(diagnosticData.isPDFAValidationPerformed());
+        assertEquals("PDF/A-1B", diagnosticData.getPDFAProfileId());
+        assertTrue(diagnosticData.isPDFACompliant());
+        assertTrue(Utils.isCollectionEmpty(diagnosticData.getPDFAValidationErrors()));
     }
 
     @Override
