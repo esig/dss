@@ -39,7 +39,7 @@ public interface DocumentValidatorFactory {
 	boolean isSupported(DSSDocument document);
 
 	/**
-	 * This methods instantiates a {@link DocumentValidator} with the given document
+	 * This method instantiates a {@link DocumentValidator} with the given document
 	 * 
 	 * @param document
 	 *                 the document to be used for the {@link DocumentValidator}
