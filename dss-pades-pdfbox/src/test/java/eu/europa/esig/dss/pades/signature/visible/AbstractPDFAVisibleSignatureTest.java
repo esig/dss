@@ -54,13 +54,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess {
 
 	protected PAdESService service;
-	private PAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+	protected PAdESSignatureParameters signatureParameters;
+	protected DSSDocument documentToSign;
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
-
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -78,6 +76,8 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 
 	@Test
 	public void testGeneratedTextOnly() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
+
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -90,6 +90,8 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 
 	@Test
 	public void testGeneratedTextWithOnlyAlpha() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
+
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -102,6 +104,8 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 
 	@Test
 	public void testGeneratedImageOnly() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
+
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
 		
@@ -117,6 +121,8 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 
 	@Test
 	public void testGeneratedImageOnlyPNG() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
+
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		// PNG with ALPHA
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
@@ -137,7 +143,101 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		signAndValidate("PDF/A-1B", false);
 	}
 
-	private void signAndValidate(String expectedPdfAProfile, boolean expectedValidPDFA) {
+	@Test
+	public void testGeneratedTextToDocWithoutColorSpaceWithColor() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setBackgroundColor(Color.YELLOW);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.GREEN);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate("PDF/A-2U", true);
+	}
+
+	@Test
+	public void testGeneratedTextToDocWithoutColorSpaceWithoutColor() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setBackgroundColor(null);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(null);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate("PDF/A-2U", true);
+	}
+
+	@Test
+	public void testGeneratedTextToRGBDocWithColor() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-rgb.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setBackgroundColor(Color.YELLOW);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.GREEN);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate("PDF/A-2A", true);
+	}
+
+	@Test
+	public void testGeneratedTextToGrayDocWithColor() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2u-gray.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setBackgroundColor(Color.YELLOW);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.GREEN);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate("PDF/A-2U", false);
+	}
+
+	@Test
+	public void testAddGrayscaleImageToRGBDoc() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-rgb.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/grayscale_image.png"), "grayscale_image.png", MimeType.PNG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate("PDF/A-2A", true);
+	}
+
+	@Test
+	public void testAddGrayscaleImageToNonProfileDoc() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/grayscale_image.png"), "grayscale_image.png", MimeType.PNG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate("PDF/A-2U", true);
+	}
+
+	protected void signAndValidate(String expectedPdfAProfile, boolean expectedValidPDFA) throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
@@ -153,7 +253,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 
 		assertTrue(diagnosticData.isPDFAValidationPerformed());
 		assertEquals(expectedPdfAProfile, diagnosticData.getPDFAProfileId());
-		assertEquals(expectedValidPDFA, diagnosticData.isPDFACompliant());
+		assertEquals(expectedValidPDFA, diagnosticData.isPDFACompliant(), diagnosticData.getPDFAValidationErrors().toString());
 		assertEquals(expectedValidPDFA, Utils.isCollectionEmpty(diagnosticData.getPDFAValidationErrors()));
 
 		UnmarshallingTester.unmarshallXmlReports(reports);
