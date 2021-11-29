@@ -63,7 +63,9 @@ import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -133,15 +135,51 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			String signatureId = params.getDeterministicId();
 
 			for (AdvancedSignature signature : signatures) {
-				if (!signatureId.equals(signature.getId())) {
+				if (signatureId.equals(signature.getDAIdentifier())) {
 					signaturesToExtend = Arrays.asList(signature);
+					break;
 				}
 			}
 		}
 
+		signaturesToExtend = assertNoEmbeddedSignaturesPresent(signaturesToExtend);
+
 		extendSignatures(signaturesToExtend);
 
 		return createXmlDocument();
+	}
+
+	/**
+	 * This method is used to exclude signatures embedded within other signatures for consecutive extension
+	 *
+	 * @param signatures a list of {@link AdvancedSignature} to process
+	 * @return a list of {@link AdvancedSignature}s excluding wrapped signatures
+	 */
+	private List<AdvancedSignature> assertNoEmbeddedSignaturesPresent(List<AdvancedSignature> signatures) {
+		List<AdvancedSignature> result = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			XAdESSignature xadesSignature = (XAdESSignature) signature;
+			Element signatureElement = xadesSignature.getSignatureElement();
+			if (!hasSignatureAsParent(signatureElement)) {
+				result.add(signature);
+			} else {
+				LOG.warn("The signature with Id '{}' has a ds:Signature parent within its XML tree! " +
+						"The signature will not be extended.", signature.getId());
+			}
+		}
+		return result;
+	}
+
+	private boolean hasSignatureAsParent(Element element) {
+		Node parent = element.getParentNode();
+		while (parent != null) {
+			if (XMLDSigElement.SIGNATURE.isSameTagName(parent.getLocalName()) &&
+					XMLDSigElement.SIGNATURE.getURI().equals(parent.getNamespaceURI())) {
+				return true;
+			}
+			parent = parent.getParentNode();
+		}
+		return false;
 	}
 
 	/**
