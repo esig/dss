@@ -1,0 +1,37 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+[[RequestingTimestampToken]]
+== Requesting a timestamp token in DSS
+=== Configuring timestamp sources
+
+The Time Stamp Authority by creating time-stamp tokens provides independent and irrefutable proof of time for business transactions, e-documents and digital signatures. The TSA must comply with the IETF RFC 3161 specifications (cf. <<R08>>). A time-stamp is obtained by sending the digest value of the given data and digest algorithm to the Time Stamp Authority. The returned time-stamp is a signed data that contains the digest value, the identity of the TSA, and the time of stamping. This proves that the given data existed before the time of stamping.
+
+The DSS framework proposes TSPSource interface to implement the communication with TSA. The class OnlineTSPSource is the default implementation of TSP using HTTP(S) communication layer.
+
+The following bit of Java code illustrates how you might use this class:
+
+[source,java,indent=0]
+.OnlineTSPSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSourceTest.java[tags=demo]
+----
+
+==== Timestamp policy
+
+A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. A time-stamp policy may be defined by the user of times-stamp services.
+
+!!! example of a timestamp policy? !!!!
+
+==== Composite TSP sources
+
+Sometimes, timestamping servers may encounter interruptions (restart,...). To avoid failing signature extension, DSS allows a user to configure several TSP Sources. DSS will try source by source until getting an usable timestamp token.
+
+[source,java,indent=0]
+.Configuration of a CompositeTSPSource
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/CompositeTSPSourceTest.java[tags=demo]
+----

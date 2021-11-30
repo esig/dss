@@ -1,0 +1,210 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+outlinelist:
+    itemspacing
+
+[[DSSUpgrades]]
+== DSS upgrades / change history
+
+.Change history
+|===
+|Version        |Release date                |Features
+
+|v5.9           |September 2021             a|Main new features / improvements :
+
+                                              * Many improvements in the validation reports
+                                              * AIASource introduction : more customizations
+                                              * Customization of revocation collection strategy (OCSP/CRL first)
+                                              * DocumentBuilderFactory securities
+                                              * ECDSA / ECDSA-PLAIN support
+                                              * JAdES (JSON AdES) consolidations
+                                              * PAdES visual signature refactorings / improvements :
+                                              ** Image scaling : STRETCH / ZOOM_AND_CENTER / CENTER
+                                              ** Text wrapping : BOX_FILL / FILL_BOX_AND_LINEBREAK / FONT_BASIC
+                                              * Dependency upgrades (Santuario, BouncyCastle, PDFBox,…)
+                                              * Java 16 support
+
+                                              Bug fixes :
+
+                                              * Short term OCSP response
+                                              * On hold certificate
+                                              * Qualification conflict (issuance time / best signing time)
+                                              * ASiC-S can’t be timestamped twice
+                                              * PAdES revision extraction
+                                              * PAdES wrong level detection (files with multiple signatures/timestamps)
+                                              * ETSI Validation report : multiple files / references
+
+|v5.9.RC1       |July 2021                  a| Many improvements in the validation reports
+
+                                               * AIASource introduction : more customizations
+                                               * Customization of revocation collection strategy (OCSP/CRL first)
+                                               * DocumentBuilderFactory securities
+                                               * ECDSA / ECDSA-PLAIN support
+                                               * JAdES (JSON AdES) consolidations
+                                               * PAdES visual signature refactorings / improvements :
+                                               * Image scaling : STRETCH / ZOOM_AND_CENTER / CENTER
+                                               * Text wrapping : BOX_FILL / FILL_BOX_AND_LINEBREAK / FONT_BASIC
+                                               * Dependency upgrades (Santuario, BouncyCastle, PDFBox,…)
+                                               * Java 16 support
+
+                                               Bug fixes :
+
+                                               * Short term OCSP response
+                                               * On hold certificate
+                                               * Qualification conflict (issuance time / best signing time)
+                                               * ASiC-S can’t be timestamped twice
+                                               * PAdES revision extraction
+                                               * PAdES wrong level detection (files with multiple signatures/timestamps)
+                                               * ETSI Validation report : multiple files / references
+
+|v5.8           |February 2021                  a| * JAdES implementation (ETSI TS 119 182 v0.0.6) : signature creation, extension and validation (advanced electronic signatures based on JWS)
+                                               * PDF Shadow attacks : prevention and detection
+                                               * Counter Signature creation (CAdES, XAdES, JAdES and ASiC containers)
+                                               * Support of the unsigned attribute SignaturePolicyStore (CAdES, XAdES, JAdES and ASiC containers)
+                                               * Support of the QCLimitValue attribute
+                                               * Support of Java 8 up to 15
+
+|v5.8.RC1     |December 2020                  a| * JAdES implementation (ETSI TS 119 182 v0.0.6) : signature creation, extension and validation (advanced electronic signatures based on JWS)
+                                               * PDF Shadow attacks : prevention and detection
+                                               * Counter Signature creation (CAdES, XAdES, JAdES and ASiC containers)
+                                               * Support of the unsigned attribute SignaturePolicyStore (CAdES, XAdES, JAdES and ASiC containers)
+                                               * Support of the QCLimitValue attribute
+                                               * Support of Java 8 up to 15
+
+|v5.7        |August 2020                     a| * CertificatePool removal and performance ameliorations
+                                               * QWAC validator
+                                               * New design of PDF reports
+                                               * Support of PSD2 attributes
+                                               * Support of EdDSA
+                                               * Signature representation with a timeline
+                                               * Visual signature creation with REST/SOAP webservices
+
+|v5.7.RC1     |June 2020                     a| * CertificatePool removal and performance ameliorations
+                                               * QWAC validator
+                                               * New design of PDF reports
+                                               * Support of PSD2 attributes
+                                               * Support of EdDSA
+                                               * Signature representation with a timeline
+                                               * Visual signature creation with REST/SOAP webservices
+
+|v5.6        |March 2020                     a| * Complete rewriting of the TL/LOTL loading with:
+                                               ** online / offline refresh
+                                               ** 3 caches (download / parse / validate)
+                                               ** multiple LOTL support
+                                               ** multiple TL support (not linked to a LOTL)
+                                               ** Pivot LOTL support
+                                               ** Synchronization strategy (eg : expired TL/LOTL are rejected/accepted)
+                                               ** multi-lingual support (trust service matching)
+                                               ** alerting (eg : LOTL/OJ location desynchronization,...)
+                                               ** complete reporting (summary of download / parsing / validation)
+                                               * Independant timestamp creation and validation (not linked to a signature, with ASiC and PDF)
+                                               * Timestamp qualification
+                                               * Internationalization of the validation reports
+                                               * Multiple Trusted Sources support
+                                               * XAdES support of different prefixes / versions
+
+|v5.6.RC1        |January 2020                 |
+
+|v5.5            |October 2019                a| * The implementation of the ETSI Validation Report
+                                               * The support of Java 12 (multi-release jars)
+                                               * Webservice which allows to validate certificates.
+
+|v5.5.RC1        |August 2019                 |
+
+|v5.4.3          |August 2019                 |
+
+|v5.4            |January 2019                |
+
+|v5.4.RC1        |October 2018                a| * Augmentation of signatures with invalid time-stamps, archive-time-stamps and revoked certificates
+                                               * Upgrade to Java 8 or 9
+                                               * Certify documents
+                                               * Add support of KeyHash in OCSP Responses
+
+|v5.3.2        |October 2018                a| * Following a security assessment from the Ruhr-Universität Bochum, we are delivering security patches for DSS versions 5.2 and 5.3
+
+|v5.3.1        |July 2018                   a| * Certificate validation
+                                               * content-timestamps generation
+                                               * SHA-3 support
+                                               * non-EU trusted list(s) support
+                                               * integration of the last version of MOCCA
+
+|v5.3          |May 2018                    a| * Certificate validation
+                                               * content-timestamps generation
+                                               * SHA-3 support
+                                               * non-EU trusted list(s) support
+                                               * integration of the last version of MOCCA
+
+|v5.3.RC1      |April 2018                    a| * Certificate validation
+                                               * content-timestamps generation
+                                               * SHA-3 support
+                                               * non-EU trusted list(s) support
+                                               * integration of the last version of MOCCA
+
+|v5.2.1        |October 2018                   | Following a security assessment from the Ruhr-Universität Bochum, we are delivering security patches for DSS versions 5.2 and 5.3
+
+|v5.2          |December 2017                  a| * Qualification matrix guidelines and documentation
+                                               * Improvements regarding visual representation of a signature
+                                               * Alternative packaging: Image docker / spring-boot
+
+|v5.2.RC2      |December 2017                   |
+
+|v5.2.RC1      |September 2017                 a|This release candidate comes with 2 main improvements:
+
+                                               * CRL streaming, the demo won’t use the X509CRL java object by default (it can be changed). With some signatures, we had large CRLs (+60Mo in Estonia) and that could cause memory issues.
+                                               * RSASSA-PSS support, I received some requests to support these algorithms :
+                                               ** SHA1withRSAandMGF1
+                                               ** SHA224withRSAandMGF1
+                                               ** SHA256withRSAandMGF1
+                                               ** SHA384withRSAandMGF1
+                                               ** SHA512withRSAandMGF1
+
+|v5.1               |September 2017           |
+
+|v5.1.RC1           |June 2017                 |
+
+|v5.0               |April 2017               a| * Refactoring of ASiC format handling, following the ETSI ASiC Plugtest
+                                               * Signature of multiple files (ASiC and XAdES)
+                                               * Integration of the Qualification matrix as described in draft ETSI 119 172-4, for supporting signatures before and after 01/07/2016 (eIDAS entry into force)
+                                               * Migration to PDFBox 2 for handling PDFs
+
+|v5.0.RC1           |January 2017               a| * Complete refactoring of the ASiC part (creation, extension and validation)
+                                               * Compliance to eIDAS regulation.
+
+|v4.7               |October 2016               |
+
+|v4.7.RC2           |September 2016               |
+
+|v4.7.RC1           |June 2016                a|A XAdES PlugTest is planned in October / November 2015. Remaining changes resulting from this PlugTest and not included in v4.6 may be included in this release.
+An eSignature Validation PlugTest is planned in April 2016. Depending on the actual timeframe, impacts from this PlugTest may be included in this release, and the release of DSS 4.7 will be postponed accordingly.
+
+Other potential improvements and features:
+
+                                               * Extension of signature validation policy support
+                                               * CAdES attribute certificates
+                                               * CRL in multiple parts
+                                               * Distributed timestamps method
+                                               * Support of cross-certification in path building
+
+|v4.6*           |March 2016                a| Based on standards:
+
+                                               * Signature formats when creating a signature: baseline profiles ETSI TS 103 171, 103 172, 103 173, and 103 174
+                                               * Signature formats when validating a signature: baseline profiles, and core specs ETSI TS 101 903, 101 733, 102 778 and 102 918
+                                               * Signature validation process ETSI TS 102 853
+
+Improvements in packaging and core functionalities:
+
+                                               * CAdES optimisation, CAdES multiple Signer Information. A CAdES PlugTest is occurring in June and July 2015. Changes resulting from this PlugTest will be included in this release. CAdES countersignature will not be supported.
+                                               * Impacts from XAdES PlugTest of October 2015
+                                               * Processing of large files
+                                               * Further refactoring of demo applet (size, validation policy editor)
+                                               * SOAP and REST Web Services
+                                               * Standalone demo application
+
+| ...           |                             |
+
+
+|===
+pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)

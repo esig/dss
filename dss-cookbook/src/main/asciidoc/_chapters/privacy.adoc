@@ -1,0 +1,17 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+== Privacy
+=== Use of digested documents
+Digested documents allow users to avoid sending the full document (detached signatures). Pre-computed digest values for a given document are used instead.
+
+See section <<DSSDocuments>> for more information on digested documents.
+
+=== Anonymous certificate references in logs
+
+
+=== Client-side signature creation with server-side remote key activation
+For more information see the <<Topology>> section in the <<Annex>>.

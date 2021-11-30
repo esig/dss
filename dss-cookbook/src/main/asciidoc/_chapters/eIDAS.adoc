@@ -1,0 +1,51 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+== eIDAS
+=== Verifying the type and qualified status of a certificate.
+
+==== Type of a certificate
+A certificate can be for electronic signature, for electronic seal or for website authentication.
+
+Below is an example the verification of the type of a certificate:
+
+
+==== Qualified status of a certificate
+
+Explanations as well as an example on the determination of the qualified status of a certificate are presented in section <<CertificateValidation>>.
+
+===== Qualified certificate for WebSite Authentication (QWAC)
+
+With DSS, it is possible to validate SSL certificate against the EUMS TL and the ETSI TS 119 615 to determine if it is a Qualified certificate for WebSite Authentication (QWAC).
+
+[source,java,indent=0]
+.Validate an SSL certificate and retrieve its qualification level
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/QWACValidationTest.java[tags=demo]
+----
+
+
+
+
+=== Verifying the type (eSig, eSeal) and qualified status of an AdES signature.
+==== Type of an AdES signature
+
+==== Qualified status of an AdES signature
+
+
+=== Verifying the qualified status of a timestamp
+
+DSS is able to determine a qualification level of a timestamp, if a relative information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>) (cf. <<R14>>).
+
+Three qualification levels are supported by DSS and can be obtained :
+
+* `QTSA` (issued from a granted trust service with TSA/QTST type at the timestamp production time);
+* `TSA` any other from a known trust anchor;
+* `N/A` for others.
+
+The following example verifies the qualification level of a timestamp
+
+!!! example !!!!

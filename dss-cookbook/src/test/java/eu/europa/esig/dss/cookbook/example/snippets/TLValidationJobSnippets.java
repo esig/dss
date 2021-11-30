@@ -110,7 +110,7 @@ public class TLValidationJobSnippets {
 	public void jobConfig() {
 		// tag::job-config-sources[]
 		TLValidationJob validationJob = new TLValidationJob();
-		// Specify where is the TL/LOTL is hosted and which are the signing certificate(s) for these TL/LOTL. 
+		// Specify where the TL/LOTL is hosted and which are the signing certificate(s) for these TL/LOTL.
 		validationJob.setTrustedListSources(boliviaTLSource(), costaRicaTLSource());
 		validationJob.setListOfTrustedListSources(europeanLOTLSource(), unitedStatesLOTLSource());
 		// end::job-config-sources[]
@@ -391,7 +391,7 @@ public class TLValidationJobSnippets {
 		// Default : not defined
 		//
 		// OfficialJournalSchemeInformationURI allows to specify the Official Journal
-		// URL where are published the signing certificates
+		// URL where the signing certificates are published
 		lotlSource.setSigningCertificatesAnnouncementPredicate(
 				new OfficialJournalSchemeInformationURI("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG"));
 

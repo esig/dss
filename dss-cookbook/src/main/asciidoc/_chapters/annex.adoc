@@ -1,0 +1,972 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+[[Annex]]
+== Annex
+
+=== Use of ServiceLoader throughout the framework
+
+DSS incorporates modules that are loaded in the run time based on the chosen configuration and the input data via a https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]. This provides a flexibility for an end-user to work only with selected modules and a possibility to expand DSS with custom implementations.
+
+The following modules are provided with independent implementations:
+
+* <<dssUtils>>;
+* <<dssCrlParser>>;
+* <<dssPades>>.
+
+See the chapter on <<AdvancedConcepts>> (section <<ServiceLoaderAdvanced>>) for more information on the use of a ServiceLoader for these three modules.
+
+
+Additionally, DSS is able to choose the required implementation for the following interfaces:
+
+* `DocumentValidationFactory` - checks a provided signed file's format and loads a relevant validator;
+* `SignaturePolicyValidator` - checks a signature policy file and loads a relevant validator to be able to process the detected format.
+
+See the chapter on <<SignatureValidation>> (<<ServiceLoaderValidation>>) for more information on the use of a ServiceLoader in the case of signature validation.
+
+
+[[Alerts]]
+=== Use of Alerts throughout the framework
+
+Since DSS 5.7 the framework includes an extended possibility to execute custom processes in case of arbitrary defined events.
+
+The `Alert` is a basic interface used to trigger a process on a passed object.
+DSS provides an `AbstractAlert` implementation of the interface with a clearly defined structure. The class must be instantiated with two attributes:
+
+* `AlertDetector` - used to detect an event/state of the object and trigger a process;
+* `AlertHandler` - defines a process to be executed on an object.
+
+In its basic module, framework provides a few alerts based on a `Status`:
+
+* `ExceptionOnStatusAlert` - throws an `AlertException` (RuntimeException) when the status reports an issue;
+* `LogOnStatusAlert` - logs a message with the defined log level;
+* `SilentOnStatusAlert` - ignores the reported issue and does nothing.
+
+The usage of alerts is available in the following classes:
+
+* XML securities configurators from `dss-jaxb-parsers` module : `TransformerFactoryBuilder`, `SchemaFactoryBuilder`, `ValidatorConfigurator`; (see chapter <<xmlSecurities>> for more information)
+* CertificateVerifier - to handle the unexpected situation(s) in a custom way (introduced `AlertException` to re-throw exceptions, see section <<certificateVerifier>> for more information);
+* TLValidationJob - to process custom actions on change/state on loading of LOTL/TLs (see `LOTLAlert` and `TLAlert` in the <<AlertingTL>> section).
+
+
+
+=== Configuration of validation policy in different use cases
+==== General
+!!! Explain how it works, and every constraint. Per constraint what error/subindication it can lead to. !!!
+
+.Validation policy constraints
+[%header,cols="6*^.^"]
+|===
+   |Constraint                  |Element/Sub-constraint             |Element/Sub-constraint         |Element/Sub-constraint         |Level          |Error/subindication
+.32+|ContainerConstraints    .4+|AcceptableContainerTypes        .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|ZipCommentPresent               .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|AcceptableZipComment            .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|MimeTypeFilePresent             .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|AcceptableMimeTypeFileContent   .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|ManifestFilePresent             .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|SignedFilesPresent              .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|AllFilesSigned                  .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+.235+|SignatureConstraints   .4+|StructuralValidation            .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|AcceptablePolicies              .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|PolicyAvailable                 .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|PolicyHashMatch                 .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|AcceptableFormats               .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .159+|BasicSignatureConstraints     .4+|ReferenceDataExistence      .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ReferenceDataIntact         .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ManifestEntryObjectExistence .4+|                              |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SignatureIntact             .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SignatureDuplicated         .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ProspectiveCertificateChain .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SignerInformationStore      .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|PdfPageDifference           .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|PdfAnnotationOverlap        .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|PdfVisualDifference         .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|TrustedServiceTypeIdentifier .4+|                              |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|TrustedServiceStatus        .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .81+|SigningCertificate         .4+|Recognition                    |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|Signature                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotExpired                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|AuthorityInfoAccessPresent     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationInfoAccessPresent    |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataAvailable        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|CRLNextUpdatePresent           |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataFreshness        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|KeyUsage                       |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|SerialNumberPresent            |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotRevoked                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotOnHold                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationIssuerNotExpired     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotSelfSigned                  |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|Qualification                  |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|SupportedByQSCD                |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|QcLegislationCountryCodes      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|IssuedToNaturalPerson          |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|IssuedToLegalPerson            |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|UsePseudonym                   |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 |Cryptographic                     |/              |
+                                                                 .29+|CACertificate               .4+|Signature                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotExpired                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataAvailable        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|CRLNextUpdatePresent           |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataFreshness        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotRevoked                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotOnHold                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 |Cryptographic                     |/              |
+                                                                    |Cryptographic               |Signature                         |/              |
+                             .52+|SignedAttributes               .4+|SigningCertificatePresent   .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|UnicitySigningCertificate   .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SigningCertificateRefersCertificateChain  .4+|                 |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|CertDigestPresent           .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|CertDigestMatch             .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|IssuerSerialMatch           .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SigningTime                 .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|MessageDigestOrSignedPropertiesPresent  .4+|                   |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ContentType                 .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ContentHints                .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|CommitmentTypeIndication    .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SignerLocation              .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ContentTimeStamp            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                             .4+|UnsignedAttributes              .4+|CounterSignature            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+.175+|CounterSignatureConstraints  .131+|BasicSignatureConstraints  .4+|ReferenceDataExistence   .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ReferenceDataIntact         .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SignatureIntact             .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SignatureDuplicated         .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ProspectiveCertificateChain .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|TrustedServiceTypeIdentifier .4+|                              |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|TrustedServiceStatus        .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .73+|SigningCertificate         .4+|Recognition                    |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|Signature                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotExpired                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|AuthorityInfoAccessPresent     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationInfoAccessPresent    |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataAvailable        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|CRLNextUpdatePresent           |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataFreshness        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|KeyUsage                       |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|SerialNumberPresent            |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotRevoked                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotOnHold                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotSelfSigned                  |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|Qualification                  |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|SupportedByQSCD                |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|IssuedToNaturalPerson          |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|IssuedToLegalPerson            |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|UsePseudonym                   |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 |Cryptographic                     |/              |
+                                                                 .29+|CACertificate              .4+|Signature                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotExpired                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataAvailable        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|CRLNextUpdatePresent           |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataFreshness        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotRevoked                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotOnHold                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 |Cryptographic                     |/              |
+                                                                    |Cryptographic               |Signature                         |/              |
+                             .44+|SignedAttributes               .4+|SigningCertificatePresent   .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|CertDigestPresent           .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|CertDigestMatch             .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|IssuerSerialMatch           .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SigningTime                 .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|MessageDigestOrSignedPropertiesPresent  .4+|                   |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ContentType                 .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ContentHints                .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|CommitmentTypeIndication    .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|SignerLocation              .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                 .4+|ContentTimeStamp            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+.127+|Timestamp          .4+|TimestampDelay                      .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                         .4+|RevocationTimeAgainstBestSignatureTime	 .4+|                        .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                         .4+|BestSignatureTimeBeforeExpirationDateOfSigningCertificate  .4+|     .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                         .4+|Coherence                           .4+|                            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                         .87+|BasicSignatureConstraints         .4+|ReferenceDataExistence       .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|ReferenceDataIntact          .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|SignatureIntact              .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|ProspectiveCertificateChain  .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .41+|SigningCertificate          .4+|Recognition                    |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|Signature                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotExpired                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataAvailable        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|CRLNextUpdatePresent           |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataFreshness        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|ExtendedKeyUsage               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotRevoked                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotOnHold                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotSelfSigned                  |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                    |Cryptographic                  |/              |
+                                                                .29+|CACertificate               .4+|Signature                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotExpired                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataAvailable        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|CRLNextUpdatePresent           |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|RevocationDataFreshness        |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotRevoked                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                 .4+|NotOnHold                      |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                    |Cryptographic                  |/              |
+                                                                |Cryptographic                      |                               |/              |
+                         .20+|SignedAttributes                  .4+|SigningCertificatePresent    .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|UnicitySigningCertificate    .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|SigningCertificateRefersCertificateChain  .4+|                  |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|CertDigestPresent            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|IssuerSerialMatch            .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                         .4+|TSAGeneralNameContentMatch         .4+|                             .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+.91+|Revocation          .4+|RevocationFreshness                .4+|                             .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                        .4+|UnknownStatus                       .4+|                             .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                        .4+|SelfIssuedOCSP                      .4+|                             .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                        .79+|BasicSignatureConstraints          .4+|ReferenceDataExistence       .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|ReferenceDataIntact          .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|SignatureIntact              .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .4+|ProspectiveCertificateChain  .4+|                               |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                .33+|SigningCertificate           .4+|Recognition                   |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|Signature                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|NotExpired                    |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|RevocationDataAvailable       |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|CRLNextUpdatePresent          |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|RevocationDataFreshness       |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|NotRevoked                    |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|NotOnHold                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                     |Cryptographic                 |/           |
+                                                                .29+|CACertificate                .4+|Signature                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|NotExpired                    |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|RevocationDataAvailable       |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|CRLNextUpdatePresent          |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|RevocationDataFreshness       |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|NotRevoked                    |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                  .4+|NotOnHold                     |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                                                                                                     |Cryptographic                 |/              |
+                                                                |Cryptographic                       |                              |/              |
+.8+|Cryptographic       .4+|                                    .4+|                              .4+|                              |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                        |AcceptableEncryptionAlgo               |                                 |                                 |/              |
+                        |MiniPublicKeySize                      |                                 |                                 |/              |
+                        |AcceptableDigestAlgo                   |                                 |                                 |/              |
+                        |AlgoExpirationDate                     |                                 |                                 |/              |
+.16+|eIDAS              .4+|TLFreshness                         .4+|                              .4+|                              |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                        .4+|TLNotExpired                        .4+|                               .4+|                             |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                        .4+|TLWellSigned                        .4+|                               .4+|                             |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+                        .4+|TLVersion                           .4+|                               .4+|                             |FAIL           |
+                                                                                                                                    |WARN           |
+                                                                                                                                    |INFORM         |
+                                                                                                                                    |IGNORE         |
+
+|===
+
+[.landscape]
+<<<
+
+
+==== AdES validation
+===== B-level AdES validation
+===== T-Level and above AdES validation
+
+==== Trusted list validation
+==== QES validation
+
+
+[[CachingUseCases]]
+=== Caching use cases
+==== Caching revocation data (CRL, OCSP)
+
+===== CRL
+An example for JdbcCacheCRLSource :
+
+[source,java,indent=0]
+.JdbcCacheCRLSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-cached]
+----
+
+===== OCSP
+An example for JdbcCacheOCSPSource :
+
+[source,java,indent=0]
+.JdbcCacheOCSPSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo-cached]
+----
+
+
+==== Caching certificates (AIA certificates)
+==== Caching trusted lists
+
+
+=== Complete examples of Signature creation
+
+[[XAdES]]
+==== XAdES
+This is a complete code that allows you to sign an XML document.
+
+[source,java,indent=0]
+.Create a XAdES-BASELINE-B signature
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBTest.java[tags=demo]
+----
+
+[[CAdES]]
+==== CAdES
+Below is an example of the CAdES-Baseline-B signature:
+
+[source,java,indent=0]
+.Signing a file with CAdES
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlCadesBTest.java[tags=demo]
+----
+
+[[PAdES]]
+==== PAdES
+Below is an example of code to perform a PAdES-BASELINE-B type signature:
+
+[source,java,indent=0]
+.Signing a PDF file with PAdES
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=demo]
+----
+
+===== Signature Policy
+The following example illustrates the creation of a PAdES-BASELINE-B level with a signature policy identifier.
+[source,java,indent=0]
+.Defining a Signature Policy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=policy]
+----
+
+[[PAdESVisibleSignature]]
+===== PAdES Visible Signature
+Below there is an example of code to perform a PADES-BASELINE-B type signature with a visible signature:
+
+[source,java,indent=0]
+.Add a visible signature to a PDF document
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=parameters-configuration;sign]
+----
+
+Additionally, DSS also allows you to insert a visible signature to an existing field :
+
+[source,java,indent=0]
+.Add a visible signature to an existing field
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=select-pdf-signature-field]
+----
+
+The following sections present examples of existing parameters for creation of visible signatures with DSS.
+
+
+[[Positioning]]
+====== Positioning
+
+DSS provides a set of functions allowing to place the signature field on a specific place in the PDF page :
+
+[source,java,indent=0]
+.Visible signature positioning
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=positioning]
+----
+
+[[Dimensions]]
+====== Dimensions
+
+DSS framework provides a set of functions to manage the signature field size :
+
+
+!!! This code is exactly the same as the previous one on positioning !!!!
+[source,java,indent=0]
+.Visible signature dimensions
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=positioning]
+----
+
+[[TextParameters]]
+====== Text Parameters
+
+The available implementations allow placing of a visible text to a signature field :
+
+[source,java,indent=0]
+.List of available visible text parameters
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=text]
+----
+
+[[TextImageCombi]]
+====== Text and image combination
+
+DSS provides a set of functions to align a text respectively to an image. The parameters must be applied to a 'SignatureImageTextParameters' object :
+
+[source,java,indent=0]
+.Combination of text and image parameters
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=textImageCombination]
+----
+
+The result of applying the foregoing transformations is provided on the image below:
+
+image::visual-sig-text-parameters.jpg[]
+
+[[Fonts]]
+====== Fonts usage
+
+You can create a custom font as following, for a physical font:
+
+[source,java,indent=0]
+.Add a custom font as a file
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=font]
+----
+
+For a logical font:
+
+[source,java,indent=0]
+.Java font usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleExistingTest.java[tags=font]
+----
+
+For a native font:
+
+[source,java,indent=0]
+.Native font usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=nativeFont]
+----
+
+[[JAdES]]
+==== JAdES
+A typical example of a JAdES signature creation is represented below:
+
+[source,java,indent=0]
+.Signing a file with JAdES
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlJadesBTest.java[tags=demo]
+----
+
+
+[[ASiC]]
+==== ASiC
+
+[[ASiC-S]]
+===== ASiC-S
+This is an example of the source code for signing a document using ASiC-S based on XAdES-B:
+
+[source,java,indent=0]
+.Sign a file within an ASiC-S container
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignOneFileWithASiCSBTest.java[tags=demo]
+----
+
+[[ASiC-E]]
+===== ASiC-E
+This is another example of the source code for signing multiple documents using ASiC-E based on CAdES:
+
+[source,java,indent=0]
+.Sign multiple files within an ASiC-E container
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDocumentsWithASiCSEWithCAdESTest.java[tags=demo]
+----
+
+[[ASiCTimestamp]]
+===== ASiC time assertion
+Below are two examples of timestamp generation for ASiC-S and for ASiC-E:
+!!! add 2 codes !!!
+
+
+[[Topology]]
+=== Examples of SCA and SCDev Topology and Workflows.
+==== Hash encryption
+==== Detached signature based on digested document
+==== Creating the signature envelope on client side and signature value on server side

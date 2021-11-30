@@ -1,0 +1,199 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+:restdocsdir: ../_restdocs
+
+
+== Webservices
+!!! Move request and responses example out of the cookbook, and give a link to the github.!!! +
+!!! Give links to POSTMAN and SOAPUI. !!!
+
+DSS offers REST and SOAP web services. Additionally, we also provide a SOAP-UI project and Postman samples in the `dss-cookbook` module.
+
+The different webservices are :
+
+* Signature webservices (`dss-signature-soap` / `dss-signature-rest`) and their clients : they expose methods to allow signing and extending or counter-signing a signature from a client.
+* Server-signing webservice (`dss-server-signing-soap` / `dss-server-signing-rest`) and their clients : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
+* Signature validation webservices (`dss-validation-soap` / `dss-validation-rest`) and their clients : they expose methods to allow signature validation, with an optional detached file and an optional validation policy.
+* Certificate validation webservices (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients : they expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
+* Timestamp webservices (`dss-timestamp-remote-soap` / `dss-timestamp-remote-rest`) and their clients : they expose methos to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digets calculation.
+
+The data structure in webservices is similar in both REST and SOAP modules.
+
+The documentation will cover the REST calls. All the REST services present in DSS are compliant with https://www.openapis.org/[OpenAPI Specification].
+
+[[REST]]
+=== REST
+
+==== REST signature service
+
+
+This service exposes 4 methods for one or more document(s) :
+
+[source,java,indent=0]
+.Rest signature service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/RestSignatureServiceSnippet.java[tags=demo]
+----
+
+===== Get data to sign
+
+The method allows retrieving the data to be signed. The user sends the document to be signed, the parameters (signature level,...) and the certificate chain.
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+.Request
+include::{restdocsdir}/sign-and-extend-one-document/1/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/sign-and-extend-one-document/1/http-response.adoc[]
+
+===== Sign document
+
+The method allows generation of the signed document with the received signature value.
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+.Request
+include::{restdocsdir}/sign-and-extend-one-document/2/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/sign-and-extend-one-document/2/http-response.adoc[]
+
+===== Extend document
+
+The method allows extension of an existing signature to a stronger level.
+
+.Request
+include::{restdocsdir}/sign-and-extend-one-document/3/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/sign-and-extend-one-document/3/http-response.adoc[]
+
+===== Timestamp document
+
+The method allows timestamping of a provided document.
+Available for PDF, ASiC-E and ASiC-S container formats.
+
+.Request
+include::{restdocsdir}/timestamp-one-document/1/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/timestamp-one-document/1/http-response.adoc[]
+
+===== Get data to be counter signed
+
+This method returns the data to be signed in order to create a counter signature. The user should provide a document containing a signature to be counter signed, id of the signature, and other parameters similarly to the method 'getDataToSign()'.
+
+WARNING: The parameters in getDataToBeCounterSigned and counterSignSignature MUST be the same (especially the signing date).
+
+.Request
+include::{restdocsdir}/counter-sign-signature/1/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/counter-sign-signature/1/http-response.adoc[]
+
+===== Counter Sign Signature
+
+This method incorporates a created counter signature to unsigned properties of the master signature with this specified id.
+
+WARNING: The parameters in getDataToBeCounterSigned and counterSignSignature MUST be the same (especially the signing date).
+
+.Request
+include::{restdocsdir}/counter-sign-signature/2/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/counter-sign-signature/2/http-response.adoc[]
+
+==== REST server signature service
+
+This service also exposed 4 methods :
+
+[source,java,indent=0]
+.Rest server signing service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/RestServerSigningSnippet.java[tags=demo]
+----
+
+===== Get keys
+
+This method allows retrieving of all available keys on the server side (PKCS#11, PKCS#12, HSM,...). All keys will have an alias, a signing certificate and its chain. The alias will be used in following steps.
+
+.Request
+include::{restdocsdir}/get-keys/1/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/get-keys/1/http-response.adoc[]
+
+===== Get key
+
+This method allows retrieving a key information for a given alias.
+
+.Request
+include::{restdocsdir}/get-key/1/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/get-key/1/http-response.adoc[]
+
+===== Sign
+
+This method allows signing of given digests with a server side certificate.
+
+.Request
+include::{restdocsdir}/sign-digest-document-remotely/3/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/sign-digest-document-remotely/3/http-response.adoc[]
+
+==== REST validation service
+
+DSS provides also a module for documents validation.
+
+===== Validate a document
+
+This service allows a signature validation (all formats/types) against a validation policy.
+
+.Request
+include::{restdocsdir}/validate-doc/1/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/validate-doc/1/http-response.adoc[]
+
+===== Retrieve original document(s)
+
+This service returns the signed data for a given signature.
+
+.Request
+include::{restdocsdir}/get-original-documents/1/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/get-original-documents/1/http-response.adoc[]
+
+==== REST certificate validation service
+
+===== Validate a certificate
+
+This service allows a certificate validation (provided in a binary format).
+
+.Request
+include::{restdocsdir}/validate-cert/1/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/validate-cert/1/http-response.adoc[]
+
+==== REST remote timestamp service
+
+===== Get Timestamp Response
+
+This service allows a remote timestamp creation. The method takes as an input the digest to be timestamped and digest algorithm that has been used for the digest value computation. The output of the method is the generated timestamp's binaries.
+
+.Request
+include::{restdocsdir}/get-timestamp-response/1/http-request.adoc[]
+
+.Response
+include::{restdocsdir}/get-timestamp-response/1/http-response.adoc[]
+
+[[SOAP]]
+=== SOAP

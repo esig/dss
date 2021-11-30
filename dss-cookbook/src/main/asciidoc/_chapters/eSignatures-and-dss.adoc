@@ -1,0 +1,260 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+== Electronic signatures and DSS
+
+=== Introduction to electronic and digital signatures
+
+An "‘electronic signature’ means data in electronic form which is attached to or logically associated with other data
+in electronic form and which is used by the signatory to sign". (<<R12>> Article 3.10)
+
+A digital signature is "data appended to, or a cryptographic transformation of a data unit that allows a recipient
+of the data unit to prove the source and integrity of the data unit and protect against forgery e.g. by the recipient".
+(https://www.etsi.org/deliver/etsi_tr/119100_119199/119100/01.01.01_60/tr_119100v010101p.pdf[ETSI TR 119 100])
+
+==== EU legislation
+In the European Union the following legislation have had a considerable impact on the topic of electronic and digital signatures:
+
+* the Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures (cf. <<R07>>);
+* Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC (cf. <<R12>>).
+
+In the following sections, differences between the eIDAS Regulation and Directive 1999/93/EC are presented.
+
+
+===== Trust services
+Directive 1999/93/EC established the framework for only one trust service, which is the provision of certificates for electronic signatures. Other trust services like electronic timestamps services were not regulated at EU-level.
+
+Under the eiDAS Regulation there are nine qualified trust services:
+
+1. Provision of qualified certificates for electronic signatures
+2. Provision of qualified certificates for electronic seals
+3. Provision of qualified certificates for website authentication
+4. Qualified electronic time stamps services
+5. Qualified validation service for qualified electronic signatures
+6. Qualified validation service for qualified electronic seals
+7. Qualified preservation service for qualified electronic signatures
+8. Qualified preservation service for qualified electronic seals
+9. Qualified electronic registered delivery services
+
+===== Cross-border recognition
+Under Directive 1999/93/EC there was no interoperability between the different EU Member States in terms of qualified electronic signature.
+
+Cross-border recognition of trust services is guaranteed under the eIDAS Regulation.
+
+===== Remote signature creation
+Under Directive 1999/93/EC, an advanced electronic signature "is created using means that the signatory can maintain under his sole control".
+
+Under eIDAS, an advanced electronic signature "is created using electronic signature creation data that the signatory can, with a high level of confidence, use under his sole control".
+
+Thus, the creation of remote qualified signatures was not possible under Directive 1999/93/EC because the private key needed to be under the sole control of the user, while for a remote signature creation the private key is managed by a trust service provider.
+Remote signature creation is possible under eIDAS, where a trust service provider holds the private key but only the user of that key can activate it. This is further explained in section <<SignatureCreation>>.
+
+
+===== Electronic seals
+Under Directive 1999/93/EC certificates for electronic signatures could be issued to both natural and legal persons.
+
+Under eIDAS, certificates for natural and legal persons have been separated. Indeed, the concepts of seals and certificates for electronic seals were introduced so that the latter are issued to legal persons, while certificates for electronic signatures are issued to natural persons.
+
+eIDAS gives the following definitions:
+
+* "‘electronic seal’ means data in electronic form, which is attached to or logically associated with other data in electronic form to ensure the latter’s origin and integrity;"
+* "‘certificate for electronic seal’ means an electronic attestation that links electronic seal validation data to a legal person and confirms the name of that person".
+
+===== Trusted Lists
+Under eIDAS, each EU Member State maintains a Trusted List, which was not the case under Directive 1999/93/EC.
+
+==== Resources
+Certain resources have been developed to improve the adoption of the eIDAS Regulation as well as improve information sharing about the eIDAS Regulation and related concepts.
+
+The https://esignature.ec.europa.eu/efda/home/#/screen/home[EU Trust Services Dashboard] (EU TSD) is such a resource. It "proposes a centralized platform that enables interested parties and Digital Single Market players to easily and transparently access information and tools related to the trust services chapter of eIDAS".
+It contains among others a Trusted List Browser to browse through the trusted lists of the different EU Member States.
+
+https://ec.europa.eu/futurium/en/content/eidas-implementing-acts.html[eIDAS implementing acts] have been issued and adopted by the Commission:
+
+* Commission Implementing Decision (EU) 2015/296: procedural arrangements for cooperation between Member States on electronic identification
+* Commission Implementing Decision (EU) 2015/1501: on the interoperability framework
+* Commission Implementing Decision (EU) 2015/1502: on setting out minimum technical specifications and procedures for assurance levels for electronic identification means
+* Commission Implementing Decision (EU) 2015/1984: circumstances, formats and procedures of notification
+* Commission Implementing Regulation (EU) 2015/806: specifications relating to the form of the EU trust mark for qualified trust services
+* Commission Implementing Decision (EU) 2015/1505: technical specifications and formats relating to trusted lists
+* Commission Implementing Decision (EU) 2015/1506: specifications relating to formats of advanced electronic signatures and advanced seals to be recognised by public sector bodies
+* Commission Implementing Decision (EU) 2016/650: standards for the security assessment of qualified signature and seal creation devices
+
+ETSI has developed standards that can be followed to be compliant with the eIDAS Regulation.
+
+
+[[DigitalSignatureConcepts]]
+=== Digital signatures – concepts
+==== Certificates
+The issuance of certificates for electronic signatures, for electronic seals and for website authentication are three trust services provided according to the eIDAS Regulation.
+
+* A "‘certificate for electronic signature’ means an electronic attestation which links electronic signature validation data to a natural person and confirms at least the name or the pseudonym of that person". (cf. eIDAS Article 3.14)
+* A "‘certificate for electronic seal’ means an electronic attestation that links electronic seal validation data to a legal person and confirms the name of that person". (cf. eIDAS Article 3.29)
+* A "‘certificate for website authentication’ means an attestation that makes it possible to authenticate a website and links the website to the natural or legal person to whom the certificate is issued". (cf. eIDAS Article 3.38)
+
+Moreover, certificates can have a qualified status.
+
+* A "‘qualified certificate for electronic signature’ means a certificate for electronic signatures, that is issued by a qualified trust service provider and meets the requirements laid down in Annex I". (cf. eIDAS Article 3.15)
+QES are based on a QCert
+* A "‘qualified certificate for electronic seal’ means a certificate for an electronic seal, that is issued by a qualified trust service provider and meets the requirements laid down in Annex III". (cf. eIDAS Article 3.30)
+* A "‘qualified certificate for website authentication’ means a certificate for website authentication, which is issued by a qualified trust service provider and meets the requirements laid down in Annex IV". (cf. eIDAS Article 3.39)
+
+Use cases:
+
+* To electronically sign a document, a signing certificate (that proves the signer's identity) and the access to its associated private key is needed.
+* To electronically validate a signed document the signer's certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key used to create the signature must also be provided.
+
+
+==== Certificate Revocation Lists (CRLs) / Online Certificate Status Protocol (OCSPs)
+CRLs and OCSPs are used during the signature validation process.
+
+===== CRL
+
+A Certificate Revocation List (CRL) is a "signed list indicating a set of certificates that are no longer considered valid by the certificate issuer". (cf. ETSI EN 319 102-1)
+
+
+===== OCSP
+
+"The Online Certificate Status Protocol (OCSP) enables applications to determine the (revocation) state of identified certificates. OCSP may be used to satisfy some of the operational requirements of providing more timely revocation information than is possible with CRLs and may also be used to obtain additional status information. An OCSP client issues a status request to an OCSP responder and suspends acceptance of the certificates in question until the responder provides a response.
+
+This protocol specifies the data that needs to be exchanged between an application checking the status of one or more certificates and the server providing the corresponding status." (cf. RFC 6960)
+
+[[Timestamps]]
+==== Timestamps
+
+"Time-stamping is critical for digital signatures in order to know whether the digital signature was affixed during the validity period of the certificate. One method of assuring the signing time is to affix a time-stamp bound to the signature." (cf. ETSI EN 319 422)
+
+As defined by the ETSI EN 319 422 standard:
+
+* time-stamp: data in electronic form which binds other electronic data to a particular time establishing evidence that these data existed at that time
+* time-stamp token: data object defined in IETF RFC 3161 [1], representing a time-stamp
+* Time-Stamping Authority (TSA): Trust Service Provider which issues time-stamp using one or more time-stamping units
+* Time-Stamping Unit (TSU): set of hardware and software which is managed as a unit and has a single time-stamp signing key active at a time
+
+A timestamp can have a qualified status if it follows stricter requirements. In that case, it "shall enjoy the presumption of the accuracy of the date and the time it indicates and the integrity of the data to which the date and time are bound." (cf. eIDAS Article 41)
+
+
+==== Trust Anchors
+
+A Trust Anchor is an "entity that is trusted by a relying party and used for validating certificates in certification paths". (cf. ETSI EN 319 411-1)
+
+RFC 520 defines a Trust anchor as being the end point of a certificate validation process. (I did not find it in this RFC but cf. https://ec.europa.eu/cefdigital/wiki/display/ESIGKB/When+validating+a+qualified+certificate+what+is+the+related+Trust+Anchor[CEF eSignatures Knowledge Base]) !!!
+
+A Trust Anchor can be a Root CA but not necessarily.
+
+In the context of Trusted Lists, the ETSI TS 119 612 standard states that: "When "Service digital identifiers" are used as trust anchors in the context of validating electronic signatures for which signer's certificate is to be validated against TL information, only the public key and the associated subject name are needed as trust anchor information. When more than one certificate are representing the public key identifying the service, they are considered as trust anchor certificates conveying identical information with regards to the information strictly required as trust anchor information."
+
+
+[[TrustedLists]]
+==== Trusted lists (TLs)
+===== European Union Member State Trusted Lists (EU MS TLs)
+
+A Trusted List is a "list that provides information about the status and the status history of the trust services from trust service providers regarding compliance with the applicable requirements and the relevant provisions of the applicable legislation" (cf. ETSI TS 119 612)
+
+“Trusted […] lists enable in practice any interested party to determine whether a trust service is or was operating in compliance with relevant requirements, currently or at a given time in the past (e.g. at the time the service was provided, or at the time at which a transaction reliant on that service took place). In order to fulfil this requirement, [...] trusted lists have four major components, in a structured relationship. These components:
+
+* provide information on the issuing scheme, i.e. the relevant scheme underlying the issuance and maintenance of the TL;
+* identify the TSPs recognized by the scheme;
+* indicate the service(s) provided by these TSPs, their type and the current status of the service(s);
+* indicate for each service the status history of that service." (cf. ETSI TS 119 612)
+
+The Trusted Lists can potentially provide "additional relevant information helping the relying party to validate the trust service or its outputs like certificates, signatures or seals, time-stamps" (ETSI TS 119 612)
+
+There is one Trusted List per EU Member State.
+
+===== List Of Trusted Lists (LOTL)
+The List Of Trusted Lists (LOTL) is "a central list with links to the locations where the national trusted lists are published as notified by Member States." (ETSI TS 119 612)
+
+The "LOTL also plays an important role in authenticating EU MS trusted lists. Each national trusted list is electronically signed/or sealed by its MS scheme operator and the certificate to be used to verify such a signature/seal is included in the LOTL after notification to the European Commission. The authenticity and integrity of the machine processable version of the LOTL is ensured through a qualified electronic signature or seal supported by a qualified certificate which can be authenticated and directly trusted through one of the digests published in the Official Journal of the European Union." (ETSI TS 119 612)
+
+
+==== Certificate path validation
+
+A certificate path (chain) validation is a "process of verifying and confirming that a certificate path (chain) is valid". (cf. ETSI EN 319 102-1)
+
+"Certificate path validation based upon X.509 (see IETF RFC 5280 [12]) or ETSI TS 102 853 [i.1] on signature verification requires information on CA certificates that can be used as trust anchors for an application  requiring a particular trust service." (cf. ETSI TS 119 612)
+
+As defined by the RFC 5280: "Certification path validation procedures for the Internet PKI are based on the algorithm supplied in [X.509]. Certification path processing verifies the binding between the subject distinguished name and/or subject alternative name and subject public key. The binding is limited by constraints that are specified in the certificates that comprise the path and inputs that are specified by the relying party."
+
+the following image illustrates the Certification Path Processing Flowchart (RFC 5280 Figure 2).
+
+image::Certification-Path-Processing-Flowchart.PNG[]
+
+
+[[SignatureCreation]]
+==== Signature creation
+===== Signature Creation Device (SCDev)
+A Signature Creation Device (SCDev) is hardware that generates the cryptographic element of an electronic signature.
+This device can be local, for example a secure smartcard or USB token, or remote, for example an HSM managed by a QTSP.
+
+When the SCDev meets certain strict requirements it can get the qualified status. It is then referred to as a QSCD. A QSCD is necessary to generate a QES.
+
+===== Hardware Security Module (HSM)
+A Hardware Security Module (HSM) is tamper resistant hardware used to generate, store, manage and protect signing keys and to perform remote signing.
+
+It is an essential component of a Qualified Signature Creation Device (QSCD).
+Indeed, when a Signature Activation Module (SAM) is used to run code on the HSM that will sign documents, the combination of the two can be considered as a QSCD.
+
+
+==== Signature validation
+Following the ETSI EN 319 102-1 standard:
+
+“A signature validation application (SVA) receives an AdES digital signature and other input from the driving application (DA). The SVA shall validate the signature against a signature validation policy, consisting of a set of validation constraints, and shall output a status indication and validation report providing the details of the technical validation of each of the applicable constraints, which can be relevant for the DA in interpreting the results.
+
+[…] Several validation building blocks are applied: signature format, signing certificate validity, cryptographic verification, etc. The status indication of each single validation building block shall be one of the following values: PASSED, FAILED or INDETERMINATE.
+
+*TOTAL-PASSED*: when the cryptographic checks of the signature (including checks of hashes of individual data objects that have been signed indirectly) succeeded as well as all checks prescribed by the signature validation policy have been passed. +
+*TOTAL-FAILED*: the cryptographic checks of the signature failed (including checks of hashes of individual data objects that have been signed indirectly), or it is proven that the generation of the signature was after the revocation of the signing certificate, or because the signature is not conformant to one of the base standards to the extent that the cryptographic verification building block is unable to process it. +
+*INDETERMINATE*: the results of the performed checks do not allow to ascertain the signature to be TOTAL-PASSED or TOTAL-FAILED.”
+
+
+
+
+
+=== Digital signatures in DSS.
+==== Tokens in DSS
+The Token class is the base class for the different types of tokens used in the process of signature validation which are certificates, OCSPs, CRLs and timestamps. These tokens can be described as follows
+
+* *CertificateToken:* Whenever the signature validation process encounters an X509Certificate a certificateToken is created. This class encapsulates some frequently used information: a certificate comes from a certain context (Trusted List, CertStore, Signature), has revocation data, etc. To expedite the processing of such information, they are kept in cache.
+* *RevocationToken:* Represents a revocation data token. It can be a CRLToken or an OCSPToken.
+    ** *CRLToken:* Represents a CRL and provides the information about its validity.
+    ** *OCSPToken:* OCSP Signed Token which encapsulate BasicOCSPResp (BC).
+* *TimestampToken:* SignedToken containing a TimeStamp.
+    ** *PdfTimestampToken:* Specific class for a PDF TimestampToken
+
+
+
+
+
+
+
+==== Compliance to ETSI standards
+XAdES digital signatures are compliant with ETSI EN 319 132 part 1-2 (<<R01>>).
+
+CAdES digital signatures are compliant with ETSI EN 319 122 part 1-2 (<<R02>>).
+
+PAdES digital signatures are compliant with ETSI EN 319 142 part 1-2 (<<R03>>).
+
+JAdES digital signatures are compliant with ETSI TS 119 182 part 1 (<<R05>>).
+
+ASiC signature containers are compliant with ETSI EN 319 162 part 1-2 (<<R04>>).
+
+Creation and validation of AdES digital signatures are compliant with ETSI EN 319 102-1 (<<R09>>) and ETSI TS 119 102-2 (<<R13>>).
+
+The determination of the certificate qualification is compliant with ETSI TS 119 172-4 (<<R10>>).
+
+Trusted lists processes are compliant with ETSI TS 119 612 (<<R11>>).
+
+Procedures for using and interpreting EU Member States national trusted lists, such as determining the qualified status of a timestamp or of an SSL certificate, are compliant with ETSI TS 119 615 (<<R14>>).
+
+
+==== Out of the EU context
+DSS is not limited to EU contexts. It can be used in non-EU contexts with all its basic functions, i.e. signature, extension, validation, ...
+
+An example would be the configuration of trust anchors (see section <<TrustAnchorConfiguration>>). The certificate sources can be configured from a TrustStore (kind of keystore which only contains certificates), a trusted list and/or a list of trusted lists.
+In case of an EU context you could use any of these three trust anchors.
+For a non-EU context you could use a trust store or a non-EU trusted list.
+However, non-EU TLs are supported by DSS only if they have the same XML structure as EU TLs, i.e. if they are compliant with the XSD schema. Another constraint is that there is no guarantee for a proper qualification determination as the non-EU TL shall also be compliant with EU regulations.

@@ -53,7 +53,7 @@ public class OCSPSourceSnippet {
 		// Instantiates a new OnlineOCSPSource object
 		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
 		
-		// Allows setting an implementation of `DataLoader` interface, 
+		// Allows setting an implementation of the `DataLoader` interface,
 		// processing a querying of a remote revocation server. 
 		// `CommonsDataLoader` instance is used by default.
 		onlineOCSPSource.setDataLoader(new OCSPDataLoader());
