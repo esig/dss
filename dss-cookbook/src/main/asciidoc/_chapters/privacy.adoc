@@ -10,8 +10,28 @@ Digested documents allow users to avoid sending the full document (detached sign
 
 See section <<DSSDocuments>> for more information on digested documents.
 
-=== Anonymous certificate references in logs
+=== Private information in logs
+Five log levels are defined in DSS:
+
+* ERROR;
+* WARN;
+* INFO;
+* DEBUG;
+* TRACE.
+
+ERROR, WARN and INFO should not contain any private information. However, DEBUG and TRACE might potentially contain private information. These two levels display more information, including the source binaries of tokens.
+
+Since the logs are hardcoded it is not possible to modify the behavior.
+Therefore, to avoid disclosing private information, users should not use the DEBUG and TRACE levels. It is also not recommended to use these two levels in the production.
+
+For example, when an error occurs on a certificate reading, DSS only WARN users that an error occurred. However, if the log level is set to DEBUG on the user's side, the binaries of the failed certificate are printed.
+
 
 
 === Client-side signature creation with server-side remote key activation
-For more information see the <<Topology>> section in the <<Annex>>.
+With DSS it is possible to sign a document without needing to send it to the signing server. This is useful for users who do not want signing servers to have access to the information contained in their documents. Such a process is possible because DSS decomposes the signature of a document in three atomic steps.
+See section <<SignatureCreationThreeSteps>> for an extensive description of these steps.
+
+The first step is performed by the client and consists in the computation of the digest to be signed (hash of the document and of the signed attributes). The client sends the hash to the server. As a second step the server encrypts the hash using the private key and sends the signature value back to the client. The third step takes place at the client-side. The client adds the signature value to the appropriate field.
+
+For code illustrations of the different steps, see the <<Topology>> section in the <<Annex>>.

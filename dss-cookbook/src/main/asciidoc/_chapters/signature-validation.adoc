@@ -392,9 +392,37 @@ include::{samplesdir}/diagnostic-data-example.xml[]
 ==== Stylesheets for validation report
 See section <<ReportStylesheets>> for more information on the stylesheets used for final report generation.
 
+
+=== Various DSS validation options
+
+==== Validation level
+As an additional option, DSS supports the choice of the validation level of the signature. The validation process can be for basic signatures, signatures with long-term validation data or signatures with archival data.
+
+==== Signing Certificate
+The "Signing Certificate" option allows adding the certificate, that was used to sign the document, to the inputs for the validation process. This might be useful if the signing certificate was not included as a signed attribute. Technically, the signing certificate being a signed attribute, it should already be present in the signature.
+
+==== Adjunct Certificates
+The "Adjunct Certificates" option allows adding any certificate that was used to sign such as the timestamp certificate, CA certificate, and so on.
+
+==== Certificates
+If the "Certificates" box is checked the certificates will be available for download at the end of the validation process. In the DSS demonstration, these downloadable files can be found under the "diagnostic tree" tab.
+
+==== Timestamps
+If the "Timestamps" box is checked, the timestamps will be available for download at the end of the validation process. In the DSS demonstration, these downloadable files can be found under the "diagnostic tree" tab.
+
+==== Revocation data
+If the "Revocation data" box is checked, the revocation data (CRLs, OCSPs) will be available for download  at the end of the validation process. In the DSS demonstration, these downloadable files can be found under the "diagnostic tree" tab.
+
+==== User-friendly identifiers
+If the "User-friendly identifiers" box is checked, user-friendly identifiers will be used for signatures and tokens instead of hash-based values. If the box is not checked, a header might contain for example "S-651B6527872B53437C7B9A8696BD9F7A6C311CE6EE418EFE34A4A994C05D08C8". If the box is checked, the header contains the same information but presented in a user-friendly way. For example, it would be a string composed of "SIGNATURE" to indicate that it is a signature, the name in the certificate chain, the signature claimed time and so on.
+
+==== Semantics
+When a report is downloaded, a "Semantics" section is added at the end explaining the meaning of the result indications, i.e. TOTAL_PASSED, PASSED, INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND.
+
+
 [[ServiceLoaderValidation]]
 === Validation interface implementation management with ServiceLoader
-!!! change title !!!
+!!! TODO: change title !!!
 
 DSS incorporates modules that are loaded in the run time based on the chosen configuration and the input data via a https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]. This provides a flexibility for an end-user to work only with selected modules and a possibility to expand DSS with custom implementations.
 
@@ -447,7 +475,7 @@ Since v5.8, DSS provides a set of own utils to detect the "shadow attack" on a s
 * `Visual difference` - DSS verifies the visual difference between the provided document and signed revision, excluding the newly created annotations (between the validating revisions). The validation level can be configured with the constraint `<PdfVisualDifference>`.
 
 ===== Password-protected documents
-
+PDF files can be protected using a password. However, DSS does not support the validation of PAdES signatures on PDF documents protected by a password. DSS has no functionality allowing the user to enter the password when submitting a PDF for validation. Thus, the validation of such documents fails.
 
 
 

@@ -220,11 +220,13 @@ NOTE: 'Native PDFBox Drawer' implementation supports only one of the following f
 
 
 === ISO 32000-1 PDF signature (PKCS#7)
+The ISO 32000-1 standard gives a specification for the creation of electronic signatures in the PDF format. However, these signatures are not in the AdES format defined by ETSI.
+
 The Public Key Cryptographic Standard Number 7 (PKCS#7) is a common format of a PDF signature which has been created by Adobe PDF Reader. The PKCS#7 signature format is described in the ISO 32000-1 standard (cf. <<R06>>) and must conform to the RFC 2315 (cf. <<R15>>). To familiarize yourself with this type of signature you can read these documents.
 
 DSS only supports AdES formats (e.g. PAdES for PDF) and thus does not support signature creation for PKCS#7. DSS only provides a limited support (because not completed according to PKCS#7 rules) for the augmentation and validation of PKCS#7 signatures.
 
-There is a very limited specification of PKCS#7 in the ISO 32000-1 standard in contrast to ETSI PAdES standard. There is no specific validation standard for PKCS#7 nor any extension formats in the ISO 32000-1 standard. Thus, DSS validates and extends PKCS#7 according to rules defined in ETSI standards. It validates PKCS#7 signatures according to the AdES validation algorithm and it uses the AdES extension formats (-T, -LT, -LTA).
+There is no specific validation standard for PKCS#7 nor any extension formats in the ISO 32000-1 standard. Thus, DSS validates and extends PKCS#7 according to rules defined in ETSI standards. It validates PKCS#7 signatures according to the AdES validation algorithm, and it uses the AdES extension formats (-T, -LT, -LTA).
 
 
 === JAdES signature (JWS)

@@ -70,16 +70,16 @@ The vertical column specifies available signature profiles and their extensions.
 
 
 ==== Signature levels
-The new ETSI standard defines four conformance levels to address the growing need to protect the validity of the signature in time. Henceforth to denote the level of the signature the word "level" will be used. Follows the list of levels defined in the standard:
+The new ETSI standard defines four conformance levels to address the growing need to protect the validity of the signature in time. Henceforth, to denote the level of the signature the word "level" will be used. Follows the list of levels defined in the standard:
 
-* XAdES-BASELINE-*B*: _Basic Electronic Signature_
+* XAdES-BASELINE-*B*: _Basic Electronic Signature_ +
 The lowest and simplest version just containing the SignedInfo, SignatureValue, KeyInfo and SignedProperties. This level combines the old -BES and -EPES levels.
 This form extends the definition of an electronic signature to conform to the identified signature policy.
-* XAdES-BASELINE-*T*: _Signature with a timestamp_
+* XAdES-BASELINE-*T*: _Signature with a timestamp_ +
 A timestamp regarding the time of signing is added to protect against repudiation.
-* XAdES-BASELINE-*LT*: _Signature with Long Term Data_
+* XAdES-BASELINE-*LT*: _Signature with Long Term Data_ +
 Certificates and revocation data are embedded to allow verification in future even if their original source is not available. This level is equivalent to the old -XL level.
-* XAdES-BASELINE-*LTA*: _Signature with Long Term Data and Archive timestamp_
+* XAdES-BASELINE-*LTA*: _Signature with Long Term Data and Archive timestamp_ +
 By using periodical timestamping (e.g. each year) compromising is prevented which could be caused by weakening previous signatures during a long-time storage period. This level is equivalent to the old -A level.
 
 NOTE: Old levels: -BES, -EPES, -C, -X, -XL, -A are not supported any more when signing.
@@ -197,7 +197,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/MSCAPISnip
 ===== Java Key Store
 The JKSSignatureToken class allows signing with a Java Key Store (.jks file).
 
-!!! create example !!!
+!!! TODO: create JKSSnippet example !!!
 [source,java,indent=0]
 .JKSSignatureToken usage
 ----
@@ -227,7 +227,7 @@ DSS allows creation of different kinds of DSSDocument :
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DigestDocumentTest.java[tags=demo]
 ----
 
-
+[[SignatureCreationThreeSteps]]
 === Signature creation in 3 stateless methods
 The DSS framework uses 3 atomic steps to sign a document :
 

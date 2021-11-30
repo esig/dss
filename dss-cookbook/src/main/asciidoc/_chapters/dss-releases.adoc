@@ -7,9 +7,30 @@ outlinelist:
     itemspacing
 
 [[DSSUpgrades]]
-== DSS upgrades / change history
+== DSS upgrades and change history
 
-.Change history
+=== DSS upgrades
+==== Code adaptations
+!!! TODO: explain what parts of the code need to be changed and how to change them to indicate that a new version of DSS is used !!!
+
+
+==== Possible problems and solutions
+
+.Possible problems and solutions
+|===
+|Version                 |Release date       |Problem                                      |Solution
+.1+|v5.8 to v5.9      .1+|September 2021     |                                             |
+
+|===
+
+[.landscape]
+<<<
+
+
+
+==== DSS change history for added features fixed bugs
+
+.Change history for features and bugs
 |===
 |Version        |Release date                |Features
 
@@ -27,7 +48,7 @@ outlinelist:
                                               * Dependency upgrades (Santuario, BouncyCastle, PDFBox,…)
                                               * Java 16 support
 
-                                              Bug fixes :
+Bug fixes :
 
                                               * Short term OCSP response
                                               * On hold certificate
@@ -50,7 +71,7 @@ outlinelist:
                                                * Dependency upgrades (Santuario, BouncyCastle, PDFBox,…)
                                                * Java 16 support
 
-                                               Bug fixes :
+Bug fixes :
 
                                                * Short term OCSP response
                                                * On hold certificate
@@ -208,3 +229,18 @@ Improvements in packaging and core functionalities:
 
 |===
 pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)
+
+==== DSS change history for validation policy
+
+.Change history for validation policy
+|===
+|Version        |Release date       |Change
+|v5.9           |September 2021     |
+
+|===
+
+[.landscape]
+<<<
+
+
+

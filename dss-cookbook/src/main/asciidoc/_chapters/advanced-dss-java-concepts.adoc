@@ -147,7 +147,29 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 ----
 
 ==== Creating a trusted list
+Below is an example of how to use JAXB modules to create a trusted list
+
+!!! TODO: create and add example
+
+[source,java,indent=0]
+.Creation of a trusted list
+----
+include::
+----
+
+
 ==== Validating XSD conformity
+Below is an example of how to use JAXB modules to validate the XSD conformity
+
+!!! TODO: create and add example
+
+[source,java,indent=0]
+.Validating XSD conformity
+----
+include::
+----
+
+
 
 [[ReportStylesheets]]
 ==== Report stylesheets
