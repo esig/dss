@@ -9,7 +9,7 @@
         <version>5.10-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-pades-pdfa</artifactId>
+    <artifactId>dss-pdfa</artifactId>
     <name>DSS PDF/A</name>
     <description>DSS PDF/A contains the code for PDF document validation against PDF/A specification.</description>
 

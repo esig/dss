@@ -119,7 +119,7 @@
 		<module>dss-cades</module>
 		<module>dss-jades</module>
 		<module>dss-pades</module>
-		<module>dss-pades-pdfa</module>
+		<module>dss-pdfa</module>
 		<module>dss-pades-pdfbox</module>
 		<module>dss-pades-openpdf</module>
 		<module>dss-asic-common</module>
@@ -589,7 +589,7 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-pades-pdfa</artifactId>
+				<artifactId>dss-pdfa</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
