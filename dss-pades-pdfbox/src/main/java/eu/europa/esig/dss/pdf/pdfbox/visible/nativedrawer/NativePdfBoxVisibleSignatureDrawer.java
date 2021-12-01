@@ -42,7 +42,6 @@ import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
-import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
@@ -58,13 +57,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
-import java.awt.color.ColorSpace;
-import java.awt.color.ICC_Profile;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -80,9 +76,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	/** Defines the default value for a non-transparent alpha layer */
 	private static final float OPAQUE_VALUE = 0xff;
-
-	/** Defines the sRGB ICC profile name used in OutputIntent */
-	private static final String OUTPUT_INTENT_SRGB_PROFILE = "sRGB";
 
 	/**
 	 * Defines whether only a subset of used glyphs should be embedded to a PDF,
@@ -112,10 +105,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		super.init(parameters, document, signatureOptions);
 		if (!parameters.getTextParameters().isEmpty()) {
 			this.pdFont = initFont();
-			if (document.getDocumentCatalog().getOutputIntents().isEmpty()) {
-				PDOutputIntent outputIntent = initOutputIntent(document);
-				document.getDocumentCatalog().setOutputIntents(Collections.singletonList(outputIntent));
-			}
 		}
 	}
 
@@ -135,17 +124,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		} else {
 			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
 		}
-	}
-
-	/**
-	 * Method to initialize the sRGB ICC profile for PdfBox {@link PDOutputIntent}
-	 */
-	private PDOutputIntent initOutputIntent(PDDocument document) throws IOException {
-		ICC_Profile iccProfile = ICC_Profile.getInstance(ColorSpace.CS_sRGB);
-		PDOutputIntent outputIntent = new PDOutputIntent(document, new ByteArrayInputStream(iccProfile.getData()));
-		outputIntent.setOutputCondition(OUTPUT_INTENT_SRGB_PROFILE);
-		outputIntent.setOutputConditionIdentifier(OUTPUT_INTENT_SRGB_PROFILE);
-		return outputIntent;
 	}
 
 	@Override

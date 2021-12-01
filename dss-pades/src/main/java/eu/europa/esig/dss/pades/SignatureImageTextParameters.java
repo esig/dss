@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -84,7 +84,7 @@ public class SignatureImageTextParameters implements Serializable {
 	 * Default : TextWrapping.FONT_BASED - the text is computed based on the {@code dssFont} configuration
 	 */
 	private TextWrapping textWrapping = TextWrapping.FONT_BASED;
-
+	
 	/**
 	 * This variable defines a padding in pixels to bound text around
 	 * (default is 5)
@@ -92,7 +92,7 @@ public class SignatureImageTextParameters implements Serializable {
 	private float padding = DEFAULT_PADDING;
 
 	/**
-	 * This variable defines the text color to use
+	 * This variable defines the text color to use 
      * (default is BLACK)
 	 * (PAdES visual appearance: allow null as text color, preventing graphic operators)
 	 */
@@ -105,7 +105,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns a signer text position respectively to an image
-	 *
+	 * 
 	 * @return {@link SignerTextPosition}
 	 */
 	public SignerTextPosition getSignerTextPosition() {
@@ -115,7 +115,7 @@ public class SignatureImageTextParameters implements Serializable {
 	/**
 	 * Specifies a text position respectively to an image inside the signature field
 	 * area
-	 *
+	 * 
 	 * @param signerTextPosition {@link SignerTextPosition} (TOP, BOTTOM, RIGHT,
 	 *                           LEFT)
 	 */
@@ -125,7 +125,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns a signer text vertical alignment value
-	 *
+	 * 
 	 * @return {@link SignerTextVerticalAlignment}
 	 */
 	public SignerTextVerticalAlignment getSignerTextVerticalAlignment() {
@@ -135,7 +135,7 @@ public class SignatureImageTextParameters implements Serializable {
 	/**
 	 * Defines a vertical alignment (positioning) of signer text inside the
 	 * signature field
-	 *
+	 * 
 	 * @param signerTextVerticalAlignment {@link SignerTextVerticalAlignment} (TOP,
 	 *                                    MIDDLE, BOTTOM)
 	 */
@@ -145,7 +145,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns a signer text horizontal alignment value
-	 *
+	 * 
 	 * @return {@link SignerTextHorizontalAlignment}
 	 */
     public SignerTextHorizontalAlignment getSignerTextHorizontalAlignment() {
@@ -154,7 +154,7 @@ public class SignatureImageTextParameters implements Serializable {
 
     /**
 	 * Allows a horizontal alignment of a text with respect to its area
-	 *
+	 * 
 	 * @param signerTextHorizontalAlignment {@link SignerTextHorizontalAlignment}
 	 *                                      (LEFT, CENTER, RIGHT)
 	 */
@@ -165,7 +165,7 @@ public class SignatureImageTextParameters implements Serializable {
     /**
      * Returns specified text font
      * If not defined, returns a Default Font instance (PTSerifRegular)
-     *
+     * 
      * @return {@link DSSFont}
      */
 	public DSSFont getFont() {
@@ -174,16 +174,16 @@ public class SignatureImageTextParameters implements Serializable {
 		}
 		return dssFont;
 	}
-
+	
 	/**
 	 * Sets a text font
-	 *
+	 * 
 	 * @param dssFont {@link DSSFont}
 	 */
 	public void setFont(DSSFont dssFont) {
 		this.dssFont = dssFont;
 	}
-
+	
 	/**
 	 * Gets {@code TextWrapping}
 	 *
@@ -207,16 +207,16 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns padding between text and its area
-	 *
+	 * 
 	 * @return {@code float} padding value
 	 */
 	public float getPadding() {
 		return padding;
 	}
-
+	
 	/**
 	 * Sets a padding between text and its area
-	 *
+	 * 
 	 * @param padding {@code float} padding value
 	 */
 	public void setPadding(float padding) {
@@ -225,7 +225,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns text color parameter
-	 *
+	 * 
 	 * @return {@link Color}
 	 */
 	public Color getTextColor() {
@@ -234,7 +234,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Sets color for the text
-	 *
+	 * 
 	 * NOTE: use NULL for the default text color (if supported by a selected implementation)
 	 * DEFAULT: Color.BLACK
 	 * (PAdES visual appearance: allow null as text color, preventing graphic operators)
@@ -247,7 +247,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns background color for the text's area
-	 *
+	 * 
 	 * @return {@link Color} of the text area background
 	 */
 	public Color getBackgroundColor() {
@@ -256,10 +256,10 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Sets the provided background color for a test's area
-	 *
+	 * 
 	 * NOTE: use NULL for a transparent background (if supported by a selected implementation)
-	 * DEFAULT: Color.WHITE
-	 *(PAdES visual appearance: allow null as text color, preventing graphic operators)
+	 * DEFAULT: Color.WHITE 
+	 * (PAdES visual appearance: allow null as text color, preventing graphic operators)
 	 * 
 	 * @param backgroundColor {@link Color} to set
 	 */
@@ -269,7 +269,7 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Returns defines text content
-	 *
+	 * 
 	 * @return {@link String} text
 	 */
 	public String getText() {
@@ -278,16 +278,16 @@ public class SignatureImageTextParameters implements Serializable {
 
 	/**
 	 * Sets a text content parameter
-	 *
+	 * 
 	 * @param text {@link String} text to display
 	 */
 	public void setText(String text) {
 		this.text = text;
 	}
-
+	
 	/**
 	 * Checks if the text property is set for the parameters
-	 *
+	 * 
 	 * @return TRUE if the text is defined, FALSE otherwise
 	 */
 	public boolean isEmpty() {
