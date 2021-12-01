@@ -141,6 +141,8 @@ public class PdfObjectModificationsFilter {
             return true;
         } else if (isCatalogNamesChange(objectModification)) {
             return true;
+        } else if (isCatalogOutputIntentsChange(objectModification)) {
+            return true;
         } else if (isAcroFormDictionaryChange(objectModification)) {
             return true;
         } else if (isFontCreationChange(objectModification)) {
@@ -252,6 +254,15 @@ public class PdfObjectModificationsFilter {
             if (PAdESConstants.NAMES_NAME.equals(key)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    private static boolean isCatalogOutputIntentsChange(ObjectModification objectModification) {
+        String key = objectModification.getObjectTree().getLastKey();
+        if (PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
+                PAdESConstants.OUTPUT_INTENTS_NAME.equals(key)) {
+            return true;
         }
         return false;
     }

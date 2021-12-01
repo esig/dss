@@ -31,6 +31,7 @@ import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -393,7 +394,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 */
 	private void cleanTransparency(PDPageContentStream cs, Color color) throws IOException {
 		if (color != null) {
-			// if alpha value is less then 255 (is transparent)
+			// if alpha value is less than 255 (is transparent)
 			float alpha = color.getAlpha();
 			if (alpha < OPAQUE_VALUE) {
 				setAlpha(cs, OPAQUE_VALUE);
@@ -403,7 +404,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	/**
 	 * Returns {@link PDRectangle} of the widget to place on page
-	 * 
+	 *
 	 * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition}
 	 *                             specifies widget size and position
 	 * @param page                 {@link PDPage} to place the widget on
@@ -422,12 +423,17 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 
 	@Override
-	protected String getColorSpaceName(DSSDocument image) throws IOException {
-		try (InputStream is = image.openStream()) {
-			byte[] bytes = IOUtils.toByteArray(is);
-			PDImageXObject imageXObject = PDImageXObject.createFromByteArray(document, bytes, image.getName());
-			PDColorSpace colorSpace = imageXObject.getColorSpace();
-			return colorSpace.getName();
+	protected String getExpectedColorSpaceName() throws IOException {
+		if (parameters.getImage() != null) {
+			try (InputStream is = parameters.getImage().openStream()) {
+				byte[] bytes = IOUtils.toByteArray(is);
+				PDImageXObject imageXObject = PDImageXObject.createFromByteArray(document, bytes, parameters.getImage().getName());
+				PDColorSpace colorSpace = imageXObject.getColorSpace();
+				return colorSpace.getName();
+			}
+		} else {
+			// RGB is default for text
+			return COSName.DEVICERGB.getName();
 		}
 	}
 
