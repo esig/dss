@@ -92,13 +92,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 */
 	protected DSSDocument document;
 
-	/** The canonicalication method used for KeyInfo signing */
+	/** The canonicalization method used for KeyInfo signing */
 	protected String keyInfoCanonicalizationMethod;
 
-	/** The canonicalication method used for SignedInfo signing */
+	/** The canonicalization method used for SignedInfo signing */
 	protected String signedInfoCanonicalizationMethod;
 
-	/** The canonicalication method used for SignedProperties signing */
+	/** The canonicalization method used for SignedProperties signing */
 	protected String signedPropertiesCanonicalizationMethod;
 
 	/** The deterministic Id used for elements creation */

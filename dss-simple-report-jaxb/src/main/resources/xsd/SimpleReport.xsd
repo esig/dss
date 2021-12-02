@@ -22,6 +22,7 @@
 			<xs:element name="ValidSignaturesCount" type="xs:int" />
 			<xs:element name="SignaturesCount" type="xs:int" />
 			<xs:element name="ContainerType" type="ContainerType" minOccurs="0" />
+			<xs:element name="PDFAProfile" type="xs:string" minOccurs="0" />
 			
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="Signature" type="Signature" />

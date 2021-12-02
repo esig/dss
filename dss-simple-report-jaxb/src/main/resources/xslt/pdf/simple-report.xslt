@@ -724,6 +724,30 @@
 									</fo:table-cell>
 								</fo:table-row>
 					        </xsl:if>
+
+							<xsl:if test="dss:PDFAProfile">
+								<fo:table-row>
+									<xsl:attribute name="margin-top">1px</xsl:attribute>
+									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:attribute name="margin-top">1px</xsl:attribute>
+											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+											<xsl:attribute name="font-weight">bold</xsl:attribute>
+											PDF/A Profile:
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:attribute name="margin-top">1px</xsl:attribute>
+											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+											<xsl:value-of select="dss:PDFAProfile"/>
+										</fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</xsl:if>
 						
 							<fo:table-row>
 								<xsl:attribute name="margin-top">1px</xsl:attribute>
