@@ -68,6 +68,8 @@ include::{samplesdir}/xades-extend-t-to-t.adoc[]
 
 This level has to prove that the certification path was valid, at the time of the validation of the signature, up to a trust point according to the naming constraints and the certificate policy constraints from the "Signature Validation Policy". It will add to the signature the CertificateValues and RevocationValues unsigned properties. The CertificateValues element contains the full set of certificates that have been used to validate the electronic signature, including the signer's certificate. However, it is not necessary to include one of those certificates, if it is already present in the ds:KeyInfo element of the signature. This is like DSS framework behaves. In order to find a list of all the certificates and the list of all revocation data, an automatic process of signature validation is executed. To carry out this process an object called CertificateVerifier must be passed to the service. The implementer must set some of its properties (e.g. a source of trusted certificates). The code below shows how to use the default parameters with this object. Please refer to <<SignatureValidation>> chapter to have further information. It also includes an example of how to implement this level of signature:
 
+!!! TODO: I have the impression that the current example creates a new LT signature (because signDocument method used) instead of extending a T signature to LT (because extendDocument method not used) -> change example !!!
+
 [[SignXmlXadesLTTest.java]]
 [source,java,indent=0]
 .SignXmlXadesLTTest.java
@@ -92,7 +94,7 @@ When the cryptographic data becomes weak and the cryptographic functions become 
 
 Below is an example of the implementation of this level of signature (but in practice, we will rather extend the signature to this level when there is a risk that the cryptographic functions become vulnerable or when one of certificates arrives to its expiration date):
 
-!!! replace by a more complete example !!!
+!!! TODO: replace example by a more complete one based on the extension of an LT XAdES!!!
 [source,java,indent=0]
 .Signature level setting
 ----

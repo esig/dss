@@ -17,9 +17,15 @@ DSS also provides a validation service for timestamped documents.
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampPDFTest.java[tags=creation]
 ----
-=== Timestamping with a container (ASiC)
-!!! add an example !!!
 
+=== Timestamping with a container (ASiC)
+!!! TODO: add an example TimestampContainerTest.java !!!
+
+[source,java,indent=0]
+.Timestamping with a container
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampContainerTest.java[tags=creation]
+----
 
 === Standalone timestamp validation
 

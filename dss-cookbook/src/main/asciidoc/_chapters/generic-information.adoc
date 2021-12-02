@@ -44,7 +44,7 @@ This is not an exhaustive list of all the possibilities offered by the framework
 Please note that the DSS framework is still under maintenance and new features will be released in the future.
 
 === Available demonstrations
-!!! Info that we (CEF) don’t collect documents. !!!
+!!! TODO: Info that we (CEF) don’t collect documents. !!!
 
 With the framework, some demonstrations are provided.
 

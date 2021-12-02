@@ -10,8 +10,14 @@
 ==== Type of a certificate
 A certificate can be for electronic signature, for electronic seal or for website authentication.
 
-Below is an example the verification of the type of a certificate:
+Below is an example of the verification of the type of a certificate:
 
+!!! TODO: create CertificateTypeTest.java !!!
+[source,java,indent=0]
+.Determination of the type of certificate
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/CertificateTypeTest.java[tags=demo]
+----
 
 ==== Qualified status of a certificate
 
@@ -31,10 +37,31 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/QWACValida
 
 
 === Verifying the type (eSig, eSeal) and qualified status of an AdES signature.
-==== Type of an AdES signature
+==== Type of an AdES
+Under eIDAS, there exist advanced electronic signatures and seals.
+
+Below is an example of the verification of the type:
+
+!!! TODO: create AdESTypeTest.java !!!
+
+[source,java,indent=0]
+.Determination of the type of an AdES
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/AdESTypeTest.java[tags=demo]
+----
+
+
 
 ==== Qualified status of an AdES signature
+Below is an example of the validation and verification of the qualified status of an AdES signature:
 
+!!! TODO: create AdESTypeTest.java !!!
+
+[source,java,indent=0]
+.Validate an AdES signature and retrieve its qualification level
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/AdESValidationTest.java[tags=demo]
+----
 
 === Verifying the qualified status of a timestamp
 
@@ -48,4 +75,10 @@ Three qualification levels are supported by DSS and can be obtained :
 
 The following example verifies the qualification level of a timestamp
 
-!!! example !!!!
+!!! TODO: create TimestampValidationTest.java !!!
+
+[source,java,indent=0]
+.Validate an timestamp and retrieve its qualification level
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/TimestampValidationTest.java[tags=demo]
+----

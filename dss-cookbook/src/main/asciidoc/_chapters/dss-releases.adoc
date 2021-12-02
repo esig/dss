@@ -3,23 +3,27 @@
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
 :imagesdir: images/
-outlinelist:
-    itemspacing
 
 [[DSSUpgrades]]
 == DSS upgrades and change history
 
 === DSS upgrades
 ==== Code adaptations
-!!! TODO: explain what parts of the code need to be changed and how to change them to indicate that a new version of DSS is used !!!
+!!! TODO: explain which parts of the code need to be changed and how to change them to move to a new version of DSS !!!
 
 
 ==== Possible problems and solutions
+!!! TODO: fill the “Problem” and “Solution” columns with possible problems that can occur for someone moving from version v5.8 to v5.9 of DSS and name solutions for each problem !!!
 
 .Possible problems and solutions
 |===
 |Version                 |Release date       |Problem                                      |Solution
-.1+|v5.8 to v5.9      .1+|September 2021     |                                             |
+.6+|v5.8 to v5.9      .6+|September 2021     |                                             |
+                                             |                                             |
+                                             |                                             |
+                                             |                                             |
+                                             |                                             |
+                                             |                                             |
 
 |===
 
@@ -231,6 +235,7 @@ Improvements in packaging and core functionalities:
 pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)
 
 ==== DSS change history for validation policy
+!!! TODO: fill the “Change” column with changes that have occurred for the validation policy when moving to v5.9 of DSS !!!
 
 .Change history for validation policy
 |===

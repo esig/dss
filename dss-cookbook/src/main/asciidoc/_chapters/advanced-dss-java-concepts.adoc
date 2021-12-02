@@ -34,6 +34,16 @@ The module dss-utils offers an interface with utility methods to operate on Stri
 
 If your integration include dss-utils, you will need to select an implementation.
 
+Below is an example of the use of DSS Utils:
+
+!!! TODO: add example !!!
+
+[source,java,indent=0]
+.DSS Utils
+----
+include::
+----
+
 [[dssCrlParser]]
 ==== DSS CRL Parser
 
@@ -43,6 +53,16 @@ DSS contains two ways to parse/validate a CRL and to retrieve revocation data. A
 * dss-crl-parser-streams : this module offers an alternative with a CRL streaming (experimental).
 
 If your integration require dss-crl-parser, you will need to choose your implementation.
+
+Below is an example of the use of DSS CRL Parser:
+
+!!! TODO: add example !!!
+
+[source,java,indent=0]
+.DSS CRL Parser
+----
+include::
+----
 
 [[dssPades]]
 ==== DSS PAdES
@@ -75,8 +95,8 @@ By default, DSS uses "Default Drawer" as the PDFBox implementation. In order to 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=custom-factory]
 ----
 
-
-
+===== DSS OpenPDF
+!!! TODO: add explanation and an example !!!
 
 
 
@@ -149,7 +169,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 ==== Creating a trusted list
 Below is an example of how to use JAXB modules to create a trusted list
 
-!!! TODO: create and add example
+!!! TODO: create and add example !!!
 
 [source,java,indent=0]
 .Creation of a trusted list
@@ -161,7 +181,7 @@ include::
 ==== Validating XSD conformity
 Below is an example of how to use JAXB modules to validate the XSD conformity
 
-!!! TODO: create and add example
+!!! TODO: create and add example !!!
 
 [source,java,indent=0]
 .Validating XSD conformity

@@ -7,8 +7,7 @@
 
 
 == Webservices
-!!! Move request and responses example out of the cookbook, and give a link to the github.!!! +
-!!! Give links to POSTMAN and SOAPUI. !!!
+!!! TODO: Give links to POSTMAN and SOAPUI. !!!
 
 DSS offers REST and SOAP web services. Additionally, we also provide a SOAP-UI project and Postman samples in the `dss-cookbook` module.
 
@@ -26,6 +25,8 @@ The documentation will cover the REST calls. All the REST services present in DS
 
 [[REST]]
 === REST
+!!! TODO: remove requests and responses from the cookbook because it takes too much space. Instead turn them into downloadable files or links to the github !!!
+
 
 ==== REST signature service
 
@@ -197,3 +198,4 @@ include::{restdocsdir}/get-timestamp-response/1/http-response.adoc[]
 
 [[SOAP]]
 === SOAP
+!!! TODO: similar examples to the ones on REST to be created !!!

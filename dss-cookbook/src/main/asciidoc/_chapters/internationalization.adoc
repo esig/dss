@@ -5,7 +5,6 @@
 :imagesdir: images/
 
 == Internationalization (i18n)
-!!! Currently: Only questions “Is the XXX…” and error messages. !!!
 
 [[i18nLanguage]]
 === Language of reports

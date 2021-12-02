@@ -141,7 +141,7 @@ A timestamp can have a qualified status if it follows stricter requirements. In 
 
 A Trust Anchor is an "entity that is trusted by a relying party and used for validating certificates in certification paths". (cf. ETSI EN 319 411-1)
 
-RFC 520 defines a Trust anchor as being the end point of a certificate validation process. (I did not find it in this RFC but cf. https://ec.europa.eu/cefdigital/wiki/display/ESIGKB/When+validating+a+qualified+certificate+what+is+the+related+Trust+Anchor[CEF eSignatures Knowledge Base]) !!!
+RFC 520 defines a Trust anchor as being the end point of a certificate validation process. (I did not find it in this RFC but cf. https://ec.europa.eu/cefdigital/wiki/display/ESIGKB/When+validating+a+qualified+certificate+what+is+the+related+Trust+Anchor[CEF eSignatures Knowledge Base]) TODO: Remove this sentence? !!!
 
 A Trust Anchor can be a Root CA but not necessarily.
 

@@ -369,7 +369,6 @@ include::{samplesdir}/etsi-validation-report-example.xml[]
 
 
 ==== Diagnostic data
-Notes: Constructed before and used for validation. Possibility to replay the diagnostic data.!!!
 
 Diagnostic data is a data set constructed from the information contained in the signature itself, but also from information retrieved dynamically as revocation data and information extrapolated as the mathematical validity of a signature. The diagnostic data is constructed before the validation is completed, and it is used by DSS to validate the signature and create a validation report.
 
@@ -394,6 +393,8 @@ See section <<ReportStylesheets>> for more information on the stylesheets used f
 
 
 === Various DSS validation options
+
+!!! TODO: add code for each subsection !!!
 
 ==== Validation level
 As an additional option, DSS supports the choice of the validation level of the signature. The validation process can be for basic signatures, signatures with long-term validation data or signatures with archival data.

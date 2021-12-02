@@ -24,7 +24,14 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSo
 
 A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. A time-stamp policy may be defined by the user of times-stamp services.
 
-!!! example of a timestamp policy? !!!!
+!!! TODO: add an example TimestampPolicyTest.java!!!
+
+[source,java,indent=0]
+.Timestamp policy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/TimestampPolicyTest.java[tags=demo]
+----
+
 
 ==== Composite TSP sources
 

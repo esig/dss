@@ -219,7 +219,19 @@ DSS allows creation of different kinds of DSSDocument :
 * `FileDocument` : refers an existing File
 * `DigestDocument` : only contains pre-computed digest values for a given document. That allows a user to avoid sending the full document (detached signatures).
 
-!!! an example for InMemoryDocument and  FileDocument!!!
+!!! TODO: 2 examples to be created (InMemoryDocumentTest.java and FileDocumentTest.java) and addition of more information to describe the three types of documents if possible!!!
+
+[source,java,indent=0]
+.InMemoryDocument
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/InMemoryDocumentTest.java[tags=demo]
+----
+
+[source,java,indent=0]
+.FileDocument
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/FileDocumentTest.java[tags=demo]
+----
 
 [source,java,indent=0]
 .DigestDocument
@@ -238,11 +250,17 @@ The DSS framework uses 3 atomic steps to sign a document :
 The DSS fully manages the steps 1 and 3. We need to specify how to do the signature operation. DSS offers some implementations in the dss-token module.
 Moreover, for steps 1 and 3 the same signature parameters shall be used.
 
-!!! need more details for each of the 3 steps !!!
+!!! TODO: more details for each of the three steps needed. Stress importance of same parameters !!!
 
 === Cryptographic signature value creation
+!!! TODO: text !!!
+
 ==== One step (hash + encrypt in one go)
+!!! TODO: text !!!
+
 ==== Two steps (hash on client/server side + encrypt on HSM side)
+!!! TODO: text !!!
+
 
 
 === Creating a XAdES baseline B signature
@@ -511,6 +529,8 @@ This rule applies as follows: when -B level is constructed the trust anchor is n
 NOTE: When trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when -B level is constructed.
 
 ==== [Other parameters]
+!!! TODO: there are only a few parameters mentioned for the moment. Some more need to be added. !!!
+
 ===== XAdES
 For XAdES the following parameters shall also be present from BASELINE-B level on:
 
@@ -527,7 +547,7 @@ For more information on the possible parameters see section <<PAdESVisibleSignat
 
 In everyday life, there are many examples where it is necessary to have multiple signatures covering the same document, such as a contract to purchase a vehicle. Independent signatures are parallel signatures where the ordering of the signatures is not important. The computation of these signatures is performed on exactly the same input but using different private keys.
 
-!!! create the example !!!
+!!! TODO: create the example MultipleSignXadesBTest.java !!!
 [source,java,indent=0]
 .Multiple signatures creation
 ----

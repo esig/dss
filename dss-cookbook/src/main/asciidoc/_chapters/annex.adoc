@@ -55,7 +55,7 @@ The usage of alerts is available in the following classes:
 
 === Configuration of validation policy in different use cases
 ==== General
-!!! Explain how it works, and every constraint. Per constraint what error/subindication it can lead to. !!!
+!!! TODO: Explain how the validation policy works and then fill the “Error/subindication” column of the table to indicate what errors/subindications each constraint can lead to.!!!
 
 .Validation policy constraints
 [%header,cols="6*^.^"]
@@ -754,11 +754,40 @@ The usage of alerts is available in the following classes:
 
 ==== AdES validation
 ===== B-level AdES validation
+!!! TODO: create an example !!!
+
+[source,java,indent=0]
+.B-level AdES validation
+----
+include::
+----
+
 ===== T-Level and above AdES validation
+!!! TODO: create an example !!!
+
+[source,java,indent=0]
+.T-Level and above AdES validation
+----
+include::
+----
 
 ==== Trusted list validation
-==== QES validation
+!!! TODO: create an example !!!
 
+[source,java,indent=0]
+.Validation of a trusted list
+----
+include::
+----
+
+==== QES validation
+!!! TODO: create an example !!!
+
+[source,java,indent=0]
+.Validation of a QES
+----
+include::
+----
 
 [[CachingUseCases]]
 === Caching use cases
@@ -784,8 +813,23 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSource
 
 
 ==== Caching certificates (AIA certificates)
-==== Caching trusted lists
+!!! TODO: create an example !!!
 
+[source,java,indent=0]
+.Caching of a certificate
+----
+include::
+----
+
+
+==== Caching trusted lists
+!!! TODO: create an example !!!
+
+[source,java,indent=0]
+.Caching of a trusted list
+----
+include::
+----
 
 === Complete examples of Signature creation
 
@@ -864,12 +908,10 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisib
 
 DSS framework provides a set of functions to manage the signature field size :
 
-
-!!! This code is exactly the same as the previous one on positioning !!!!
 [source,java,indent=0]
 .Visible signature dimensions
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=positioning]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=dimensions]
 ----
 
 [[TextParameters]]
@@ -962,11 +1004,46 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDo
 [[ASiCTimestamp]]
 ===== ASiC time assertion
 Below are two examples of timestamp generation for ASiC-S and for ASiC-E:
-!!! add 2 codes !!!
+!!! TODO: add one example for ASIC-S and one example for ASIC-E !!!
+
+[source,java,indent=0]
+.ASIC-S time assertion
+----
+include::
+----
+
+[source,java,indent=0]
+.ASIC-E time assertion
+----
+include::
+----
 
 
 [[Topology]]
 === Examples of SCA and SCDev Topology and Workflows.
 ==== Hash encryption
+!!! TODO: create an example!!!
+
+[source,java,indent=0]
+.Hash encryption
+----
+include::
+----
+
 ==== Detached signature based on digested document
+!!! TODO: create an example!!!
+
+[source,java,indent=0]
+.Detached signature based on digested document
+----
+include::
+----
+
 ==== Creating the signature envelope on client side and signature value on server side
+!!! TODO: create an example!!!
+
+[source,java,indent=0]
+.Creation of the signature envelope on client side and signature value on server side
+----
+include::
+----

@@ -11,6 +11,8 @@ Digested documents allow users to avoid sending the full document (detached sign
 See section <<DSSDocuments>> for more information on digested documents.
 
 === Private information in logs
+!!! TODO: give a small description of the 5 log levels (in the bullet point list), similar to the descriptions given on the signature validation levels (fail, warn, inform, ignore) !!!
+
 Five log levels are defined in DSS:
 
 * ERROR;

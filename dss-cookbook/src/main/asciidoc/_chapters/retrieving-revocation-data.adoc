@@ -72,7 +72,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSource
 
 
 === Online fetching
-Disclaimer: by default revocation data are not fetched from untrusted sources. !!!
+WARNING: By default, revocation data are not fetched from untrusted sources.
 
 
 ==== CRL
