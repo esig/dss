@@ -129,7 +129,9 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		textRectangle.setBackgroundColor(textParameters.getBackgroundColor());
 		layer.rectangle(textRectangle);
 
-		layer.setColorFill(textParameters.getTextColor());
+		if (textParameters.getTextColor() != null) {
+			layer.setColorFill(textParameters.getTextColor());
+		}
 		
 		String[] lines = iTextFontMetrics.getLines(text);
 		

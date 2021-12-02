@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
@@ -42,7 +41,12 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.color.ColorSpace;
+import java.awt.color.ICC_Profile;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -59,6 +63,9 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	/** The RGB color profile */
 	private static final String RGB_PROFILE_NAME = "rgb";
 
+	/** Defines the sRGB ICC profile name used in OutputIntent */
+	private static final String OUTPUT_INTENT_SRGB_PROFILE = "sRGB";
+
 	/** Visual signature parameters */
 	protected SignatureImageParameters parameters;
 
@@ -74,7 +81,7 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 		this.parameters = parameters;
 		this.document = document;
 		this.signatureOptions = signatureOptions;
-		checkColorSpace(document, parameters.getImage());
+		checkColorSpace(document);
 	}
 	
 	private void assertSignatureParametersAreValid(SignatureImageParameters parameters) {
@@ -108,35 +115,67 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	 * Method to check if the target image's color space is present in the document's catalog
 	 * 
 	 * @param pdDocument {@link PDDocument} to check color profiles in
-	 * @param image {@link DSSDocument} image
 	 * @throws IOException in case of image reading error
 	 */
-	protected void checkColorSpace(PDDocument pdDocument, DSSDocument image) throws IOException {
-		if (image != null) {
+	protected void checkColorSpace(PDDocument pdDocument) throws IOException {
+		if (!parameters.isEmpty()) {
 	        PDDocumentCatalog catalog = pdDocument.getDocumentCatalog();
 	        List<PDOutputIntent> profiles = catalog.getOutputIntents();
+			String colorSpaceName = getExpectedColorSpaceName();
 	        if (Utils.isCollectionEmpty(profiles)) {
-	        	LOG.warn("No color profile is present in the document. Not compatible with PDF/A");
-	        	return;
-	        }
-				
-			String colorSpaceName = getColorSpaceName(image);
-    		if (COSName.DEVICECMYK.getName().equals(colorSpaceName) && isProfilePresent(profiles, RGB_PROFILE_NAME)) {
-    			LOG.warn("A CMYK image will be added to an RGB color space PDF. Be aware: not compatible with PDF/A.");
-    		} else if (COSName.DEVICERGB.getName().equals(colorSpaceName) && isProfilePresent(profiles, CMYK_PROFILE_NAME)) {
-    			LOG.warn("An RGB image will be added to a CMYK color space PDF. Be aware: not compatible with PDF/A.");
-    		}
+				addColorSpace(catalog, colorSpaceName);
+
+	        } else if (profiles.size() > 1) {
+				LOG.warn("PDF contains multiple color spaces. Be aware: not compatible with PDF/A.");
+
+			} else {
+				if (COSName.DEVICECMYK.getName().equals(colorSpaceName) && !isProfilePresent(profiles, CMYK_PROFILE_NAME)) {
+					LOG.warn("PDF does not contain a CMYK profile! Be aware: not compatible with PDF/A.");
+				} else if (COSName.DEVICERGB.getName().equals(colorSpaceName) && !isProfilePresent(profiles, RGB_PROFILE_NAME)) {
+					LOG.warn("PDF does not contain an RGB profile! Be aware: not compatible with PDF/A.");
+				}
+				// GRAY profile is supported by RGB and CMYK
+			}
+
 		}
 	}
 	
 	/**
 	 * Returns color space name for the provided image
-	 * 
-	 * @param image {@link DSSDocument} to get color space name for
+	 *
 	 * @return {@link String} color space name
 	 * @throws IOException in case of image reading error
 	 */
-	protected abstract String getColorSpaceName(DSSDocument image) throws IOException;
+	protected abstract String getExpectedColorSpaceName() throws IOException;
+
+	/**
+	 * This method is used to add a new required color space to a document
+	 *
+	 * @param catalog {@link PDDocumentCatalog} from a PDF document to add a new color space into
+	 * @param colorSpaceName {@link String} a color space name to add
+	 * @throws IOException if an exception occurs
+	 */
+	protected void addColorSpace(PDDocumentCatalog catalog, String colorSpaceName) throws IOException {
+		// sRGB supports both RGB and Grayscale color spaces
+		if (COSName.DEVICERGB.getName().equals(colorSpaceName) || COSName.DEVICEGRAY.getName().equals(colorSpaceName)) {
+			int colorSpace = ColorSpace.CS_sRGB;
+			String outputCondition = OUTPUT_INTENT_SRGB_PROFILE;
+
+			ICC_Profile iccProfile = ICC_Profile.getInstance(colorSpace);
+			try (InputStream is = new ByteArrayInputStream(iccProfile.getData())) {
+				PDOutputIntent outputIntent = new PDOutputIntent(document, is);
+				outputIntent.setOutputCondition(outputCondition);
+				outputIntent.setOutputConditionIdentifier(outputCondition);
+				catalog.setOutputIntents(Collections.singletonList(outputIntent));
+			}
+			LOG.info("No color profile is present in the provided document. " +
+					"A new color profile '{}' has been added.", outputCondition);
+
+		} else {
+			LOG.warn("Color space '{}' is not supported. Be aware: the produced PDF may be not compatible with PDF/A.");
+			return;
+		}
+	}
 	
 	private boolean isProfilePresent(List<PDOutputIntent> profiles, String profileName) {
         for (PDOutputIntent profile : profiles) {

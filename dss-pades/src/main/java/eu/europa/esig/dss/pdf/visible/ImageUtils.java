@@ -218,11 +218,13 @@ public class ImageUtils {
 	 * @return {@link AnnotationBox}
 	 */
 	public static AnnotationBox getImageBoundaryBox(DSSDocument imageDocument) {
-		try {
-			BufferedImage bufferedImage = readImage(imageDocument);
-			float width = bufferedImage.getWidth();
-			float height = bufferedImage.getHeight();
+		try (InputStream is = imageDocument.openStream(); ImageInputStream iis = ImageIO.createImageInputStream(is)) {
+			ImageReader imageReader = getImageReader(iis);
+			imageReader.setInput(iis, true, true);
+			float width = imageReader.getWidth(0);
+			float height = imageReader.getHeight(0);
 			return new AnnotationBox(0, 0, width, height);
+
 		} catch (IOException e) {
 			throw new IllegalInputException(String.format("Cannot read the given image. Reason : %s", e.getMessage()), e);
 		}
@@ -245,9 +247,9 @@ public class ImageUtils {
 	 * @return {@link BufferedImage}
 	 * @throws IOException - in case of InputStream reading error
 	 */
-	public static BufferedImage readImage(DSSDocument imageDocument) throws IOException {
+	public static BufferedImage toBufferedImage(DSSDocument imageDocument) throws IOException {
 		try (InputStream is = imageDocument.openStream()) {
-			return readImageInputStream(is);
+			return toBufferedImage(is);
 		}
 	}
 
@@ -259,7 +261,7 @@ public class ImageUtils {
 	 * @return {@link BufferedImage}
 	 * @throws IOException - in case of InputStream reading error
 	 */
-	public static BufferedImage readImageInputStream(InputStream is) throws IOException {
+	public static BufferedImage toBufferedImage(InputStream is) throws IOException {
 		try (ImageInputStream iis = ImageIO.createImageInputStream(is)) {
 			ImageReader imageReader = getImageReader(iis);
 			imageReader.setInput(iis, true, true);
