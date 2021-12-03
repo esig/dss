@@ -261,6 +261,7 @@ JAdES signatures allow two types of JWS Payload (signed data) inclusion: `ENVELO
 
 With `ENVELOPING` packaging the JWS Payload is enveloped into the JAdES Signature. The type only allows signing one document.
 
+[[JAdESDetachedPackaging]]
 ===== Detached packaging
 
 A simple JWS signature allows a `DETACHED` packaging by omitting the JWS Payload in the created signature. For the validation process the detached content shall be provided and it is treated in the same way as attached.

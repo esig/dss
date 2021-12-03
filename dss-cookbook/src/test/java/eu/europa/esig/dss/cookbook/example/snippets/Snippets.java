@@ -121,4 +121,27 @@ public class Snippets {
 		// end::select-pdf-signature-field[]
 	}
 
+	public void threeAtomicSteps() {
+		XAdESService service = new XAdESService(new CommonCertificateVerifier());
+		DSSDocument toSignDocument = new InMemoryDocument("Hello world".getBytes());
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		DigestAlgorithm digestAlgorithm = signatureParameters.getDigestAlgorithm();
+
+		JKSSignatureToken signingToken = null;
+		DSSPrivateKeyEntry privateKey = null;
+
+		// tag::threeStepsSign[]
+
+		// 1 step: generate ToBeSigned data (hash of an original document + signed attributes)
+		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
+
+		// 2 step : sign ToBeSigned data using a private key
+		SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
+
+		// 3 step : sign document using a SignatureValue obtained on the previous step
+		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
+
+		// tag::threeStepsSign[]
+	}
+
 }
