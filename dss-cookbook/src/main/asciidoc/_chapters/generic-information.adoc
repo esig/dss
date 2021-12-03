@@ -48,13 +48,9 @@ NOTE: The DSS framework is actively maintained and new features will be released
 
 With the framework, some demonstrations are provided:
 
-[horizontal]
-dss-mock-tsa:: Timestamping source which generates fake timestamps from a self-signed certificate.
-sscd-mocca-adapter:: Adapter for the MOCCA connection.
-dss-standalone-app:: Standalone application which allows signing a document with different formats and tokens (JavaFX).
-dss-standalone-app-package:: Packaging module for dss-standalone-app.
-dss-demo-webapp:: Demonstration web application which presents basic DSS functionalities.
-dss-demo-bundle:: Packaging module for dss-demo-webapp.
+* https://ec.europa.eu/cefdigital/DSS/webapp-demo/home[DSS online demo web application];
+* <<DSSWebApp, Ready to use demo web application build>>;
+* <<DSSStandaloneApp, JavaFX Standalone Application>>.
 
 WARNING: The demonstrations use a fake timestamp service (Mock) so that is not recommended for a production usage.
 
