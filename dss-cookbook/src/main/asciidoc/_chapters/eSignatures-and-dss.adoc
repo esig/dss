@@ -6,6 +6,8 @@
 
 == Electronic signatures and DSS
 
+DSS (Digital Signature Services) is an open-source software library for electronic signature creation and validation. DSS supports the creation and verification of interoperable and secure electronic signatures in line with European legislation. In particular, DSS aims to follow the eIDAS Regulation and related standards closely.
+
 === Introduction to electronic and digital signatures
 
 An "‘electronic signature’ means data in electronic form which is attached to or logically associated with other data
@@ -85,7 +87,6 @@ https://ec.europa.eu/futurium/en/content/eidas-implementing-acts.html[eIDAS impl
 
 ETSI has developed standards that can be followed to be compliant with the eIDAS Regulation.
 
-
 [[DigitalSignatureConcepts]]
 === Digital signatures – concepts
 ==== Certificates
@@ -109,7 +110,7 @@ Use cases:
 
 
 ==== Certificate Revocation Lists (CRLs) / Online Certificate Status Protocol (OCSPs)
-CRLs and OCSPs are used during the signature validation process.
+CRLs and OCSPs contain a revocation information about a certificate verifying during the signature validation process.
 
 ===== CRL
 
@@ -210,11 +211,7 @@ Following the ETSI EN 319 102-1 standard:
 *TOTAL-FAILED*: the cryptographic checks of the signature failed (including checks of hashes of individual data objects that have been signed indirectly), or it is proven that the generation of the signature was after the revocation of the signing certificate, or because the signature is not conformant to one of the base standards to the extent that the cryptographic verification building block is unable to process it. +
 *INDETERMINATE*: the results of the performed checks do not allow to ascertain the signature to be TOTAL-PASSED or TOTAL-FAILED.”
 
-
-
-
-
-=== Digital signatures in DSS.
+=== Digital signatures in DSS
 ==== Tokens in DSS
 The Token class is the base class for the different types of tokens used in the process of signature validation which are certificates, OCSPs, CRLs and timestamps. These tokens can be described as follows
 
@@ -224,12 +221,6 @@ The Token class is the base class for the different types of tokens used in the 
     ** *OCSPToken:* OCSP Signed Token which encapsulate BasicOCSPResp (BC).
 * *TimestampToken:* SignedToken containing a TimeStamp.
     ** *PdfTimestampToken:* Specific class for a PDF TimestampToken
-
-
-
-
-
-
 
 ==== Compliance to ETSI standards
 XAdES digital signatures are compliant with ETSI EN 319 132 part 1-2 (<<R01>>).
@@ -250,9 +241,8 @@ Trusted lists processes are compliant with ETSI TS 119 612 (<<R11>>).
 
 Procedures for using and interpreting EU Member States national trusted lists, such as determining the qualified status of a timestamp or of an SSL certificate, are compliant with ETSI TS 119 615 (<<R14>>).
 
-
 ==== Out of the EU context
-DSS is not limited to EU contexts. It can be used in non-EU contexts with all its basic functions, i.e. signature, extension, validation, ...
+DSS is not limited to EU contexts. It can be used in non-EU contexts with all its basic functions, i.e. signature, extension, validation, etc.
 
 An example would be the configuration of trust anchors (see section <<TrustAnchorConfiguration>>). The certificate sources can be configured from a TrustStore (kind of keystore which only contains certificates), a trusted list and/or a list of trusted lists.
 In case of an EU context you could use any of these three trust anchors.
