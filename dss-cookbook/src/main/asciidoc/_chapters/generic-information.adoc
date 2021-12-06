@@ -155,6 +155,8 @@ For the DSS demo: https://joinup.ec.europa.eu/licence/european-union-public-lice
 
 === References
 
+// TODO : add links to the standards
+
 [%header,cols=4]
 .References
 |=======================

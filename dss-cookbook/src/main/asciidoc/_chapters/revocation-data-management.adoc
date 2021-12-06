@@ -4,8 +4,8 @@
 :samplesdir: ../_samples
 :imagesdir: images/
 
-[[RetrievingRevocationData]]
-== Retrieving revocation data in DSS
+[[RevocationDataManagement]]
+== Revocation data management
 
 === Tokens and sources
 

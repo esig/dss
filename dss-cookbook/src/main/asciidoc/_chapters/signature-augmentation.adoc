@@ -20,9 +20,7 @@ The BASELINE-T level includes a timestamp regarding the time of signing to prote
 
 ===== Revocation sources
 To augment a signature you need to access revocation sources.
-See chapter <<RetrievingRevocationData>> for more information.
-
-
+See chapter <<RevocationDataManagement>> for more information.
 
 ===== TSA
 To augment a signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R08>>)) containing tokens.

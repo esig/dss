@@ -21,7 +21,7 @@ include::_chapters/signature-creation.adoc[]
 
 include::_chapters/signature-creation-different-formats.adoc[]
 
-include::_chapters/retrieving-revocation-data.adoc[]
+include::_chapters/revocation-data-management.adoc[]
 
 include::_chapters/signature-validation.adoc[]
 
