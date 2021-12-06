@@ -206,7 +206,7 @@ WARNING: The API does not retrieve keys from a smartcard, as opposite to MS CAPI
 [source,java,indent=0]
 .AppleSignatureToken usage
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AppleSignatureToken.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AppleKeychainSnippet.java[tags=demo]
 ----
 
 ===== Java Key Store
@@ -241,25 +241,25 @@ DSS allows creation of different kinds of DSSDocument :
 [source,java,indent=0]
 .InMemoryDocument
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java.java[tags=inMemoryDocument]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=inMemoryDocument]
 ----
 
 [source,java,indent=0]
 .FileDocument
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java.java[tags=fileDocument]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=fileDocument]
 ----
 
 [source,java,indent=0]
 .DigestDocument
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java.java[tags=digestDocument]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=digestDocument]
 ----
 
 [source,java,indent=0]
 .HTTPHeader
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java.java[tags=httpHeader]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=httpHeader]
 ----
 
 [[SignatureCreationThreeSteps]]
@@ -278,7 +278,7 @@ Moreover, for steps 1 and 3 the same signature parameters shall be used.
 [source,java,indent=0]
 .Three stateless steps
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java.java[tags=threeStepsSign]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=threeStepsSign]
 ----
 
 === Cryptographic signature value creation

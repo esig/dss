@@ -4,7 +4,7 @@
 :samplesdir: ../_samples
 :imagesdir: images/
 == Standalone timestamping
-Since DSS 5.6 the framework allows an independent document timestamping (without a signature). The following Document Signature Services support the timestamping :
+The DSS framework allows an independent document timestamping (without a signature). The following Document Signature Services support the timestamping :
 
 * `PAdESService` - adds a timestamp to a PDF document;
 * `ASiCWithCAdESService` - creates a timestamped ASiC container with provided documents.
@@ -12,6 +12,9 @@ Since DSS 5.6 the framework allows an independent document timestamping (without
 DSS also provides a validation service for timestamped documents.
 
 === Timestamping a PDF
+
+The code below illustartes a time-stamping process for a PDF document.
+
 [source,java,indent=0]
 .PDF timestamping
 ----
@@ -19,23 +22,24 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/Timestamp
 ----
 
 === Timestamping with a container (ASiC)
-!!! TODO: add an example TimestampContainerTest.java !!!
+
+The code below illustrates a time-stamping process encapsulating the provided documents and the generated time-stamp to an ASiC container.
 
 [source,java,indent=0]
 .Timestamping with a container
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampContainerTest.java[tags=creation]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampWithContainerTest.java[tags=creation]
 ----
 
 === Standalone timestamp validation
 
-As well as a single timestamp creation, DSS provides a validation service for timestamped documents. The timestamp validation process represents the one described in section "5.4 Time-stamp validation building block" of <<R09>>. The validation process is identical to the <<signatureValidation>> process. An appropriate validator will be selected automatically. In total, DSS supports timestamp-alone validation for the following file formats:
+As well as a single timestamp creation, DSS provides a validation service for timestamped documents. The timestamp validation process represents the one described in section "5.4 Time-stamp validation building block" of <<R09>>. The validation process is similar to the <<signatureValidation, signature validation>> process. An appropriate validator will be selected automatically. In total, DSS supports timestamp-alone validation for the following file formats:
 
 * Detached CMS timestamp (`DetachedTimestampValidator`) - a detached signed content must be provided (or its digest);
 * PDF document (`PDFDocumentValidator`);
 * ASiC CAdES container with a timestamp (`ASiCWithCAdESTimestampValidator`).
 
-The validation process can be run with the following inputs :
+The validation process can be run with the following inputs:
 
 [source,java,indent=0]
 .Timestamped document validation

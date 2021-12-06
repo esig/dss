@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.cookbook.example.sources;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * How to initialize online TSP source.
@@ -61,4 +60,18 @@ public class OnlineTSPSourceTest {
 
 		assertNotNull(tsBinary);
 	}
+
+	@Test
+	public void policyTest() {
+		final String tspServer = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
+
+		// tag::policy[]
+
+		OnlineTSPSource tspSource = new OnlineTSPSource(tspServer);
+		tspSource.setPolicyOid("0.4.0.2023.1.1"); // provide a policy OID
+
+		// end::policy[]
+
+	}
+
 }
