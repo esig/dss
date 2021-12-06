@@ -412,8 +412,13 @@ The code above produces the following signature :
 include::{samplesdir}/xades-b-properties.adoc[]
 
 === Configuration of attributes in DSS
+
 ==== Signed and unsigned attributes
+
 ===== Table with all attributes per formats
+
+// TODO: review the table's representation (columns size should be aligned)
+
 .File formats and Signature types conformance
 [%header,cols="7*<.<"]
 |===
@@ -572,12 +577,10 @@ For XAdES the following parameters shall also be present from BASELINE-B level o
 The framework allows creation of PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>) and allows the insertion of a visible signature to an existing field.
 For more information on the possible parameters see section <<PAdESVisibleSignature>>.
 
-
 === Multiple signatures
 
 In everyday life, there are many examples where it is necessary to have multiple signatures covering the same document, such as a contract to purchase a vehicle. Independent signatures are parallel signatures where the ordering of the signatures is not important. The computation of these signatures is performed on exactly the same input but using different private keys.
 
-!!! TODO: create the example MultipleSignXadesBTest.java !!!
 [source,java,indent=0]
 .Multiple signatures creation
 ----
