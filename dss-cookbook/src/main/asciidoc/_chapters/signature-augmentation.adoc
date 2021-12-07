@@ -6,108 +6,104 @@
 
 == Signature augmentation
 
-
-=== Best practices regarding baseline levels
-
-For signature creation, BASELINE-B or BASELINE-T levels should be used. If the BASELINE-LT level were to be used, a list of all revocation data used to validate the electronic signature would be added to the signature. This could be a problem if the revocation freshness constraint is set to 0 because in that case the revocation data used for the validation needs to have been issued after the best signing time of the signature. This is not possible with a BASELINE-LT level. Since the lower levels are also added when the signature is extended to a certain level, the BASELINE-LTA level cannot be used for signature creation either as it would add BASELINE-LT too.
-
-The BASELINE-B level should not be used for signatures that need to be valid over a longer period of time because it does not contain a timestamp regarding the time of signing. Higher levels should be used.
-The BASELINE-T level includes a timestamp regarding the time of signing to protect against repudiation of the signature. The BASELINE-LT level includes certification data and revocation data. The BASELINE-LTA level includes a timestamp to protect against repudiation of the certification and revocation data.
+Signature augmentation is a process of extending of a signature validity in order to allow its long-term validation.
 
 === Configuration of the augmentation process
 
 ==== What are the external resources needed
 
-===== Revocation sources
-To augment a signature you need to access revocation sources.
-See chapter <<RevocationDataManagement>> for more information.
-
 ===== TSA
-To augment a signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R08>>)) containing tokens.
+
+To augment a signature to levels `BASELINE-T` and `BASELINE-LTA` you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R08>>)) containing tokens.
 See chapter <<RequestingTimestampToken>> for more details.
 
+===== Revocation sources
+
+To augment a signature to level `BASELINE-LT` you need to configure revocation sources.
+See chapter <<RevocationDataManagement>> for more information.
+
 ==== CertificateVerifier properties
-The CertificateVerifier and its implementation CommonCertificateVerifier determines how DSS accesses the external resources and how it should react in some occasions. This configuration is used in both extension and validation mode.
+
+The `CertificateVerifier` and its implementation `CommonCertificateVerifier` determines how DSS accesses the external resources and how it should react in some occasions. This configuration is used in both extension and validation mode.
 
 See the corresponding section in chapter <<SignatureValidation>> for more information.
 
+=== Augmenting an AdES baseline B signature
 
-=== Augmenting a XAdES baseline B signature
+The `-B` level contains immutable signed properties. Once this level is created, these properties cannot be changed.
 
-The -B level contains immutable signed properties. Once this level is created, these properties cannot be changed.
-
-The levels -T/-LT/-LTA add unsigned properties to the signature. This means that the properties of these levels could be added afterwards to any AdES signature. This addition helps to make the signature more resistant to cryptographic attacks on a longer period of time. The extension of the signature is incremental, i.e. when you want to extend the signature to the level -LT the lower level (-T) will also be added.
+The levels `-T/-LT/-LTA` add unsigned properties to the signature. This means that the properties of these levels could be added afterwards to any AdES signature. This addition helps to make the signature more resistant to cryptographic attacks on a longer period of time. The extension of the signature is incremental, i.e. when you want to extend the signature to the level `-LT` the lower level (`-T`) will also be added.
 
 The whole extension process is implemented by reusing components from signature production. To extend a signature we proceed in the same way as in the case of a signature, except that you have to call the function "extendDocument" instead of the "sign" function. Note that when the document is signed with several signatures then they are all extended.
 
 ==== To baseline T
 
-AdES-BASELINE-T is a signature for which there exists a trusted time associated to the signature. It provides the initial steps towards providing long term validity and more specifically it provides a protection against repudiation. This extension of the signature can be created as well during the generation process as during the validation process. However, the case when these validation data are not added during the generation process should no longer occur. The AdES-BASELINE-T trusted time indications must be created before the signing certificate has been revoked or expired and close to the time that the AdES signature was produced.
+`AdES-BASELINE-T` is a signature for which there exists a trusted time associated to the signature. It provides the initial steps towards providing long term validity and more specifically it provides a protection against repudiation. This extension of the signature can be created as well during the generation process as during the validation process. However, the case when these validation data are not added during the generation process should no longer occur. The `AdES-BASELINE-T` trusted time indications must be created before the signing certificate has been revoked or expired and close to the time that the AdES signature was produced.
 
-The AdES-BASELINE-T form must be built on an AdES-BASELINE-B form. The DSS framework allows extending the old -BES and -EPES profiles to the new BASELINE-T profile, indeed there is no difference in the structure of the signature.
+The `AdES-BASELINE-T` form must be built on an `AdES-BASELINE-B` form. The DSS framework allows extending the old `-BES` and `-EPES` profiles to the new `BASELINE-T` profile, indeed there is no difference in the structure of the signature.
 
-The framework adds the timestamp only if there is no timestamp or there is one but the creation of a new extension of the level-T is deliberate (using another TSA). It is not possible to extend a signature which already incorporates higher level as -LT or -LTA. In the theory it would be possible to add another -T level when the signature has already reached level -LT but the framework prevents this operation. Note that if the signed document contains multiple signatures, then all the signatures will be extended to level -T.
+The framework adds the timestamp only if there is no timestamp or there is one but the creation of a new extension of the level `-T` is deliberate (using another TSA). It is not possible to extend a signature to `-T` level which already incorporates higher level as `-LT` or `-LTA`. In the theory it would be possible to add another `-T` level when the signature has already reached level `-LT` but the framework prevents this operation. Note that if the signed document contains multiple signatures, then all the signatures will be extended to level `-T`.
 
-Below is the source code that creates a XAdES-BASELINE-T signature. For our example, we will use the Belgian provider and an instance of OnlineTSPSource.
+Below is the source code that creates a `XAdES-BASELINE-T` signature. For our example, we will use the Belgian provider and an instance of `OnlineTSPSource`.
 
 [source,java,indent=0]
 .Extend a XAdES signature
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendSignXmlXadesBToTTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendXAdESTest.java[tags=demoTExtend]
 ----
 
-Here is the result of adding a new extension of type-T to an already existing -T level signature:
+Here is the result of adding a new extension of type `-T` to an already existing `-T` level signature (for XAdES):
 
 .XAdES Unsigned Signature Properties
 include::{samplesdir}/xades-extend-t-to-t.adoc[]
 
-
 ==== To baseline LT
 
-This level has to prove that the certification path was valid, at the time of the validation of the signature, up to a trust point according to the naming constraints and the certificate policy constraints from the "Signature Validation Policy". It will add to the signature the CertificateValues and RevocationValues unsigned properties. The CertificateValues element contains the full set of certificates that have been used to validate the electronic signature, including the signer's certificate. However, it is not necessary to include one of those certificates, if it is already present in the ds:KeyInfo element of the signature. This is like DSS framework behaves. In order to find a list of all the certificates and the list of all revocation data, an automatic process of signature validation is executed. To carry out this process an object called CertificateVerifier must be passed to the service. The implementer must set some of its properties (e.g. a source of trusted certificates). The code below shows how to use the default parameters with this object. Please refer to <<SignatureValidation>> chapter to have further information. It also includes an example of how to implement this level of signature:
-
-!!! TODO: I have the impression that the current example creates a new LT signature (because signDocument method used) instead of extending a T signature to LT (because extendDocument method not used) -> change example !!!
+This level has to prove that the certification path was valid, at the time of the validation of the signature, up to a trust point according to the naming constraints and the certificate policy constraints from the "Signature Validation Policy". It will add to the signature the CertificateValues and RevocationValues unsigned properties. The CertificateValues element contains the full set of certificates that have been used to validate the electronic signature, including the signer's certificate. However, it is not necessary to include one of those certificates, if it is already present in the `ds:KeyInfo` element (in case of XAdES, or within an alternative element for another format) of the signature. In order to find a list of all the certificates and the list of all revocation data, an automatic process of signature validation is executed. To carry out this process an object called `CertificateVerifier` must be passed to the service. The implementer must set some of its properties (e.g. a source of trusted certificates). The code below shows how to use the default parameters with this object. Please refer to <<SignatureValidation>> chapter to have further information. It also includes an example of how to implement this level of signature:
 
 [[SignXmlXadesLTTest.java]]
 [source,java,indent=0]
 .SignXmlXadesLTTest.java
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesLTTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendXAdESTest.java[tags=demoLTExtend]
 ----
 
-The following XML segment will be added to the signature qualified and unsigned properties:
+The following XML segment will be added to the signature qualified and unsigned properties (for XAdES):
 
 .Validation data values
 include::{samplesdir}/xades-revocation-data.adoc[]
 
 NOTE: The use of online sources can significantly increase the execution time of the signing process. For testing purpose you can create your own source of data.
 
-In last example the CommonsHttpDataLoader is used to provide the communication layer for HTTP protocol. Each source which need to go through the network to retrieve data need to have this component set.
-
-
+In last example the `CommonsDataLoader` is used to provide the communication layer for HTTP protocol. Each source which need to go through the network to retrieve data need to have this component set.
 
 ==== To baseline LTA.
 
-When the cryptographic data becomes weak and the cryptographic functions become vulnerable the auditor should take steps to maintain the validity of the signature. The XAdES-BASELINE-A form uses a simple approach called "archive validation data". It adds additional time-stamps for archiving signatures in a way that they are still protected, but also to be able to prove that the signatures were validated at the time when the used cryptographic algorithms were considered safe. The time-stamping process may be repeated every time the protection used becomes weak. Each time-stamp needs to be affixed before either the signing key or the algorithms used by the TSA are no longer secure. XAdES-LTA form adds the ArchiveTimestamp element within the UnsignedSignatureProperties and may contain several ArchiveTimestamp elements.
+When the cryptographic data becomes weak and the cryptographic functions become vulnerable the auditor should take steps to maintain the validity of the signature. The `-LTA` extension adds additional time-stamps for archiving signatures in a way that they are still protected, but also to be able to prove that the signatures were validated at the time when the used cryptographic algorithms were considered safe. The time-stamping process may be repeated every time the protection used becomes weak. Each time-stamp needs to be affixed before either the signing key or the algorithms used by the TSA are no longer secure.
 
-Below is an example of the implementation of this level of signature (but in practice, we will rather extend the signature to this level when there is a risk that the cryptographic functions become vulnerable or when one of certificates arrives to its expiration date):
+E.g. `XAdES-BASELINE-LTA` level adds the `ArchiveTimeStamp` element within the `UnsignedSignatureProperties` and may contain several `EncapsulatedTimeStamp` elements.
 
-!!! TODO: replace example by a more complete one based on the extension of an LT XAdES!!!
+In practice, the augmentation to `BASELINE-LTA` level is made to protect the revocation data incorporated on `-LT` level, when one of certificates arrives to its expiration date or when there is a risk that the cryptographic functions become vulnerable.
+
+Below is an example of the implementation of this level of signature:
+
 [source,java,indent=0]
 .Signature level setting
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSignatureLevel]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendXAdESTest.java[tags=demoLTAExtend]
 ----
 
-The following XML segment will be added to the signature qualified and unsigned properties:
+The following XML segment will be added to the signature qualified and unsigned properties (for XAdES):
 
 .XAdES Archive Timestamp
 include::{samplesdir}/xades-archive-timestamp.adoc[]
 
+=== Creating a baseline T signature
 
-=== Creating a XAdES baseline T signature
-The normal process of signing wants to sign first with the level -B or level-T, and then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level.
-Let's see an example of signing with the level-T.
+The normal process of signing wants to sign first with the level `-B` and then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level.
+As a direct signature creation to `-T` level can be useful in order to provide the _best-signature-time_ (and a proof of existence of the signature, respectively) as close as possible to the claimed signing time.
+
+Let's see an example of signing with the level `-T`.
 
 [source,java,indent=0]
 .Create a XAdES-Baseline-T with an OnlineTSPSource
@@ -115,9 +111,18 @@ Let's see an example of signing with the level-T.
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesTWithOnlineSourceTest.java[tags=demo]
 ----
 
-If the timestamp source is not set a NullPointerException is thrown.
+WARNING: The timestamp source shall be defined for `-T` and `-LTA` levels creation.
 
-The SignatureTimeStamp mandated by the XAdES-T form appears as an unsigned property within the QualifyingProperties:
+The `SignatureTimeStamp` mandated by the `XAdES-BASELINE-T` form appears as an unsigned property within the `QualifyingProperties`:
 
 .XAdES Signature Timestamp
 include::{samplesdir}/xades-signature-timestamp.adoc[]
+
+=== Best practices regarding baseline levels
+
+For signature creation, it is recommended to use a `BASELINE-T` level in order to provide the proof of existence (POE) to the signature with a signature time-stamp. This will ensure that the signature has been made during the validity period of the signing-certificate. The `BASELINE-B` level should not be used for signatures that need to be valid over a longer period of time because it does not contain a timestamp to prove the time of signing.
+
+The `BASELINE-LT` level should be added to a signature only after a revocation data update, so that revocation's `thisUpdate` parameter value will be after the _best-signing-time_ provided by the signature time-stamp on `BASELINE-T` level. This is a requirement of a revocation freshness constraint defined in ETSI EN 319 102-1 (cf. <<R09>>) and enforced by TS 119 172-4 (cf. <<R10>>) with a value '0'.
+Therefore, it is not recommended extending a signature to `BASELINE-LT` level and higher on signature creation. Since the lower levels are also added when the signature is extended to a certain level, the `BASELINE-LTA` level cannot be used for signature creation either as it would add `BASELINE-LT` too.
+
+After the revocation data update, satisfying the revocation freshness constraint, the `BASELINE-LT` level can be incorporated to the signature, providing the information about validity of the used certificate chains. In order to prove the existence of the revocation data, the `BASELINE-LTA` level should be added after. The `-LTA` level will prove the existence of the incorporated revocation data, so it can be trusted by the validators even after its expiration, as well as will provide a POE for cryptographic constraints and all the previous certificate chains, including the ones used for timestamp creation.

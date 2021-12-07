@@ -27,6 +27,9 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -35,12 +38,13 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
 
 /**
- * How to extend with XAdES-BASELINE-T
+ * How to extend with XAdES-BASELINE signature
+ *
  */
-public class ExtendSignXmlXadesBToTTest extends CookbookTools {
+public class ExtendXAdESTest extends CookbookTools {
 
 	@Test
-	public void extendXAdESBToT() throws Exception {
+	public void test() throws Exception {
 		prepareXmlDoc();
 
 		DSSDocument signedDocument = null;
@@ -60,19 +64,57 @@ public class ExtendSignXmlXadesBToTTest extends CookbookTools {
 			signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 		}
 
-		// tag::demo[]
+		// tag::demoTExtend[]
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		XAdESService xadesService = new XAdESService(certificateVerifier);
+
+		// init TSP source for timestamp requesting
 		xadesService.setTspSource(getOnlineTSPSource());
 
 		DSSDocument extendedDocument = xadesService.extendDocument(signedDocument, parameters);
 
-		// end::demo[]
+		// end::demoTExtend[]
+
+		// tag::demoLTExtend[]
+
+		parameters = new XAdESSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+
+		certificateVerifier = new CommonCertificateVerifier();
+
+		CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
+
+		// init revocation sources for CRL/OCSP requesting
+		certificateVerifier.setCrlSource(new OnlineCRLSource(commonsDataLoader));
+		certificateVerifier.setOcspSource(new OnlineOCSPSource());
+
+		xadesService = new XAdESService(certificateVerifier);
+
+		extendedDocument = xadesService.extendDocument(signedDocument, parameters);
+
+		// end::demoLTExtend[]
+
+		// tag::demoLTAExtend[]
+
+		parameters = new XAdESSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+
+		certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setCrlSource(new OnlineCRLSource());
+		certificateVerifier.setOcspSource(new OnlineOCSPSource());
+
+		xadesService = new XAdESService(certificateVerifier);
+		xadesService.setTspSource(getOnlineTSPSource());
+
+		extendedDocument = xadesService.extendDocument(signedDocument, parameters);
+
+		// end::demoLTAExtend[]
 
 		testFinalDocument(extendedDocument);
 	}
+
 }

@@ -149,7 +149,7 @@ A Trust Anchor can be a Root CA but not necessarily.
 In the context of Trusted Lists, the ETSI TS 119 612 standard states that: "When "Service digital identifiers" are used as trust anchors in the context of validating electronic signatures for which signer's certificate is to be validated against TL information, only the public key and the associated subject name are needed as trust anchor information. When more than one certificate are representing the public key identifying the service, they are considered as trust anchor certificates conveying identical information with regard to the information strictly required as trust anchor information."
 
 
-[[TrustedLists]]
+[[EUTrustedLists]]
 ==== Trusted lists (TLs)
 ===== European Union Member State Trusted Lists (EU MS TLs)
 
