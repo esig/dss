@@ -10,7 +10,7 @@
 [[tlValidationJob]]
 === Configuration of TL validation job
 
-The TLValidationJob allows to download, parse, validate the Trusted List(s) and Lists Of Trusted Lists (LOTL). Once the task is done, its result is stored in the TrustedListsCertificateSource. The job uses 3 different caches (download, parsing and validation) and a state-machine to be efficient.
+The `TLValidationJob` allows downloading, parsing and validating the Trusted List(s) (TL) and List(s) Of Trusted Lists (LOTL). Once the task is done, its result is stored in the `TrustedListsCertificateSource`. The job uses 3 different caches (download, parsing and validation) and a state-machine to be efficient.
 
 Trusted lists are stored on the file system. That offers the possibility to run in offline mode with the stored trusted lists. Trusted Lists can be loaded from the file system and/or from Internet.
 
@@ -18,7 +18,7 @@ In the next sections the different configurations will be covered.
 
 ==== TLSource and LOTLSource
 
-Several TLSources and several LOTLSources can be injected in a TLValidationJob. The only constraint is the uniqueness of the Trusted List URLs.
+Several TLSources and several LOTLSources can be injected in a `TLValidationJob`. The only constraint is the uniqueness of the Trusted List URLs.
 
 [source,java,indent=0]
 .Multiple TLSources and multiple LOTLSources configuration
@@ -28,7 +28,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ===== Trusted List Source (TLSource)
 
-A TLSource allows to quickly setup a trusted list configuration. The URL and the signing certificates for this TL are mandatory. Optionally, predicates / filters can be configured to retrieve only a part of the trust service providers or trust services.
+A `TLSource` allows quickly setting up a trusted list configuration. The URL and the signing certificates for this TL are mandatory. Optionally, predicates or/and filters can be configured to retrieve only a part of the trust service providers or trust services.
 
 [source,java,indent=0]
 .TLSource configuration
@@ -38,7 +38,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ===== List Of Trusted Lists Source (LOTLSource)
 
-A similar configuration is possible for Lists Of Trusted Lists (LOTL). That requires an URL and the possible LOTL signers. Some other parameters are possible. By default, all listed trusted lists are loaded.
+A similar configuration is possible for Lists Of Trusted Lists (LOTL) with a `LOTLSource`. That requires an URL and a list of potential LOTL signers. Some other parameters are also possible. By default, all listed trusted lists are loaded.
 
 [source,java,indent=0]
 .LOTLSource configuration
@@ -48,10 +48,10 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ==== DSSFileLoader
 
-The FileCacheDataLoader is used to download the trusted list contents on the file-system. Two different configurations are needed. Both of them share the same folder :
+The `FileCacheDataLoader` is used to download the trusted list contents on the file-system. Two different configurations are needed. Both of them share the same folder :
 
-* offline refresh : disabled download from Internet and unlimited cache expiration
-* online refresh : enabled download from Internet and limited cache expiration
+* *offline refresh* : disabled download from Internet and unlimited cache expiration
+* *online refresh* : enabled download from Internet and limited cache expiration
 
 [source,java,indent=0]
 .Offline and Online refresh configuration
@@ -61,9 +61,14 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ==== The SynchronizationStrategy
 
-The SynchronizationStrategy defines which are the trusted lists or list of trusted lists to be synchronized. By default, DSS synchronizes all of them. DSS don't reject any expired / invalid /... trusted lists. The content is trusted and a warning is added in a signature / certificate validation.
+The `SynchronizationStrategy` defines which are the trusted lists or list of trusted lists to be synchronized. By default, DSS synchronizes all of them. By default, DSS does not reject any trusted lists (e.g. expired, invalid,  etc.). The content is trusted and a warning is added in a signature / certificate validation.
 
-The strategy is configurable via the interface SynchronizationStrategy :
+DSS provides two implementations:
+
+* `ExpirationAndSignatureCheckStrategy` - rejects Trusted Lists with invalid signature or expired. The certificates from a such Trusted List are not loaded to the `TrustedListsCertificateSource`.
+* `AcceptAllStrategy` (default) - accepts all Trusted List, whatever the validation status is.
+
+The default behaviour is configurable via a strategy with the interface `SynchronizationStrategy` :
 
 [source,java,indent=0]
 .Example of a custom  SynchronizationStrategy
@@ -71,11 +76,9 @@ The strategy is configurable via the interface SynchronizationStrategy :
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=custom-strategy]
 ----
 
-DSS provides two implementations : ExpirationAndSignatureCheckStrategy and AcceptAllStrategy (default).
-
 ==== The CacheCleaner
 
-The CacheCleaner specifies how DSS clears the cache in case of expired URL,... 2 options are available : memory and file-system.
+The `CacheCleaner` specifies how DSS clears the cache (e.g. in case of expired URL, etc.). Two cleaning options are available : memory and file-system.
 
 [source,java,indent=0]
 .CacheCleaner Configuration
@@ -86,7 +89,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 [[AlertingTL]]
 ==== Alerting from TL Loading
 
-DSS allows running of custom alerts in some situations (eg : invalid TL signature, LOTL location change,...). Alert works with two concepts : detection and alert handler. After the download/parsing/validation and before the synchronization, the results are tested to detect events and launch alert(s).
+DSS allows running of custom alerts in some situations (e.g.: invalid TL signature, LOTL location change, etc.). Alert works with two concepts: detection and alert handler. After the download/parsing/validation and before the synchronization, the results are tested to detect events and launch alert(s).
 
 [source,java,indent=0]
 .Examples of Alerting
@@ -94,8 +97,7 @@ DSS allows running of custom alerts in some situations (eg : invalid TL signatur
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=alerting]
 ----
 
-See section <<Alerts>> in the <<Annex>> for more information on related alerts.
-
+See section <<Alerts>> in the Annex for more information on related alerts.
 
 ==== LOTL/TL filter predicates
 
@@ -140,16 +142,16 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLO
 
 The TL / LOTL loading in DSS works as below :
 
-* Download / parse / validate all LOTLSources from the configuration with/without pivot support (multi-threaded)
-* Analyze introduced changes and expired cache entries (new TL URLs, new signing certificates for a TL,...)
-* Create TLSources from the retrieved LOTLs
-* Combine these TLSources with independent TLSources (from the configuration)
-* Download / parse / validate all TLs (multi-threaded)
-* If alerts are configured, test if an alert needs to be launched
-* If the debug is enabled, print in the log the cache status
-* Synchronize the TrustedListCertificateSource
-* If the cache cleaner is configured, execute it
-* If the debug is enabled, print in the log the cache status
+* Download / parse / validate all LOTLSources from the configuration with/without pivot support (multi-threaded);
+* Analyze introduced changes and expired cache entries (new TL URLs, new signing certificates for a TL,...);
+* Create TLSources from the retrieved LOTLs;
+* Combine these TLSources with independent TLSources (from the configuration);
+* Download / parse / validate all TLs (multi-threaded);
+* If alerts are configured, test if an alert needs to be launched;
+* If the debug is enabled, print in the log the cache status;
+* Synchronize the `TrustedListCertificateSource`;
+* If the cache cleaner is configured, execute it;
+* If the debug is enabled, print in the log the cache status.
 
 The refresh can be called with the offline or the online loader and run exactly the same code
 
@@ -162,7 +164,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 [[KeyStore]]
 ===== Java Keystore Management
 
-Generally (like in case of European LOTL) DSS downloads Trusted Lists by using the SSL protocol (for resources using HTTPS extension), that requires to have a certificate of a remote source in the Java trust store. The certificates have their own validity period and can expire. If a certificate is expired, it will be replaced on a server by a new one in order to support a secure SSL connection. The easiest way to know if your Java trust store is outdated and new certificates need to be added is to check your logs during a TLValidationJob update :
+Generally (like in case of European LOTL) DSS downloads Trusted Lists by using the SSL protocol (for resources using HTTPS extension), that requires to have a certificate of a remote source in the Java trust store. The certificates have their own validity period and can expire. If a certificate is expired, it will be replaced on a server by a new one in order to support a secure SSL connection. The easiest way to know if your Java trust store is outdated and new certificates need to be added is to check your logs during a `TLValidationJob` update :
 
 [source]
 --
@@ -185,7 +187,7 @@ The `SunCertPathBuilderException` means that the certificate establishing the se
 keytool -import -alias newCert -file pathToCert\ee.cer -keystore pathToJavaDirectory\lib\security\cacerts -storepass changeit
 ----
 
-The default password for a Java keystore is "changeit". Ensure that you have a default configuration, or use another password you have configured.
+The default password for a Java keystore is `changeit`. Ensure that you have a default configuration, or use another password you have configured.
 
 NOTE: In order to apply changes, the application using Java must be rebooted.
 
@@ -195,7 +197,7 @@ NOTE: This described algorithm is not only one available solution, if you have d
 
 ==== TLValidationJobSummary
 
-The class TLValidationJobSummary contains all processed data about the download (time, error,...), the parsing (extracted information, parsing error,...) and the signature validation (signing certificate, signing time,...).
+The class `TLValidationJobSummary` contains all processed data about the download (time, error,...), the parsing (extracted information, parsing error,...) and the signature validation (signing certificate, signing time,...).
 
 [source,java,indent=0]
 .How to retrieve the information about the TLValidationJob process
@@ -203,20 +205,14 @@ The class TLValidationJobSummary contains all processed data about the download 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=tl-summary]
 ----
 
-
-
-
 === Validation policy for trusted lists
 
-An eIDAS XML node linked to the status of the Trusted List is included in the DSS validation policy. The following elements are contained in that node:
+An eIDAS XML node linked to the status of the Trusted List is included in the DSS validation policy (see <<validationPolicy>> for more information). The following elements are contained in that node:
 
-* TLFreshness: Given that TLs are too heavy to be downloaded at each validation, TLs are downloaded every few hours. However, it can happen that a download is not possible because the TL is not available or because there is a problem with the downloader on the signature validation algorithm side. For such situations, it is useful to display a message to indicate that the TL is not “fresh”. To achieve this, the TL freshness indicates that TLs were downloaded no later than the validation time minus the TL freshness time interval.
-* TLNotExpired: The TL might be expired in case of an attack consisting in replacing the current TL by an older one. Using an old TL might bring problems. The expired TL could for example contain Certificate Authorities that are not present in the current TL. Thus, an expired TL should lead to a warning during the validation.
-* TLWellSigned: If the signature of the TL is not valid, the TL should be discarded. A non-valid TL signature might indicate that the content of that TL is "fake" and should not be trusted.
-* TLVersion: If the version of the trusted list does not correspond to the version indicated in the validation policy, the validation process fails.
-
-
-
+* *TLFreshness*: Given that TLs are too heavy to be downloaded at each validation, TLs are downloaded every few hours. However, it can happen that a download is not possible because the TL is not available or because there is a problem with the downloader on the signature validation algorithm side. For such situations, it is useful to display a message to indicate that the TL is not “fresh”. To achieve this, the TL freshness indicates that TLs were downloaded no later than the validation time minus the TL freshness time interval.
+* *TLNotExpired*: The TL might be expired in case of an attack consisting in replacing the current TL by an older one. Using an old TL might bring problems. The expired TL could for example contain Certificate Authorities that are not present in the current TL. Thus, an expired TL should lead to a warning during the validation.
+* *TLWellSigned*: If the signature of the TL is not valid, the TL should be discarded. A non-valid TL signature might indicate that the content of that TL is "fake" and should not be trusted.
+* *TLVersion*: If the version of the trusted list does not correspond to the version indicated in the validation policy, the validation process fails.
 
 === Using non-EU trusted lists
 
@@ -224,7 +220,7 @@ Non-EU trusted lists are supported by DSS. However, there are a few constraints.
 
 === Signing a trusted list
 
-The standard ETSI TS 119 612 specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization, etc.). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
+The standard ETSI TS 119 612 (cf. <<R11>>) specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization, etc.). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
 
 [source,java,indent=0]
 .Sign a Trusted List with the TrustedListSignatureParametersBuilder

@@ -5,27 +5,36 @@
 :imagesdir: images/
 
 == eIDAS
-=== Verifying the type and qualified status of a certificate.
+=== Verifying the type and qualified status of certificate.
 
-==== Type of a certificate
+==== Type of certificate
+
 A certificate can be for electronic signature, for electronic seal or for website authentication.
+// TODO: add information how it is determined
 
-Below is an example of the verification of the type of a certificate:
+==== Qualified status of certificate
 
-!!! TODO: create CertificateTypeTest.java !!!
-[source,java,indent=0]
-.Determination of the type of certificate
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/CertificateTypeTest.java[tags=demo]
-----
-
-==== Qualified status of a certificate
-
+// TODO: add info what qualification statuses do we have
 Explanations as well as an example on the determination of the qualified status of a certificate are presented in section <<CertificateValidation>>.
 
-===== Qualified certificate for WebSite Authentication (QWAC)
+[[CertificateQualificationDetermination]]
+==== Certificate Qualification determination
 
-With DSS, it is possible to validate SSL certificate against the EUMS TL and the ETSI TS 119 615 to determine if it is a Qualified certificate for WebSite Authentication (QWAC).
+In order to determine a type and qualification of certificate, the `CertificateVerifier` can be used, provided the relevant information extracted from a Trusted List(s).
+
+An example of a qualification data extraction for a certificate, can be found below:
+
+[source,java,indent=0]
+.Certificate qualification validation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/CertificateQualificationTest.java[tags=demo]
+----
+
+==== Qualified certificate for WebSite Authentication (QWAC)
+
+With DSS, it is possible to validate SSL certificate against the EUMS TL and the ETSI TS 119 615 (cf. <<R14>>) to determine if it is a Qualified certificate for WebSite Authentication (QWAC).
+
+DSS provides a special class `SSLCertificateLoader` allowing to extract the SSL certificate chain from the given URL. The qualification verification is similar to the example defined in chapter <<CertificateQualificationDetermination>>.
 
 [source,java,indent=0]
 .Validate an SSL certificate and retrieve its qualification level
@@ -33,37 +42,32 @@ With DSS, it is possible to validate SSL certificate against the EUMS TL and the
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/QWACValidationTest.java[tags=demo]
 ----
 
+=== Verifying the type (eSig, eSeal) and qualified status of AdES signature.
 
+==== Type of AdES
 
-
-=== Verifying the type (eSig, eSeal) and qualified status of an AdES signature.
-==== Type of an AdES
 Under eIDAS, there exist advanced electronic signatures and seals.
+// TODO : more info
 
-Below is an example of the verification of the type:
+==== Qualified status of AdES signature
 
-!!! TODO: create AdESTypeTest.java !!!
-
-[source,java,indent=0]
-.Determination of the type of an AdES
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/AdESTypeTest.java[tags=demo]
-----
-
-
-
-==== Qualified status of an AdES signature
 Below is an example of the validation and verification of the qualified status of an AdES signature:
+// TODO : more info
 
-!!! TODO: create AdESTypeTest.java !!!
+[[SignatureQualificationDetermination]]
+==== Signature Qualification determination
+
+In order to determine a type and qualification of signature, an instance of `SignedDocumentValidator` can be used, provided the relevant information extracted from a Trusted List(s).
+
+An example of a qualification data extraction for a signature, can be found below:
 
 [source,java,indent=0]
-.Validate an AdES signature and retrieve its qualification level
+.Signature qualification validation
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/AdESValidationTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/SignatureQualificationTest.java[tags=demo]
 ----
 
-=== Verifying the qualified status of a timestamp
+=== Verifying the qualified status of timestamp
 
 DSS is able to determine a qualification level of a timestamp, if a relative information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>) (cf. <<R14>>).
 
@@ -73,12 +77,14 @@ Three qualification levels are supported by DSS and can be obtained :
 * `TSA` any other from a known trust anchor;
 * `N/A` for others.
 
-The following example verifies the qualification level of a timestamp
+In order to determine a type and qualification of signature, an instance of `DetachedTimestampValidator` can be used for a detached CMS time-stamp verification, provided the relevant information extracted from a Trusted List(s).
 
-!!! TODO: create TimestampValidationTest.java !!!
+NOTE: For standalone time-stamps within different containers (e.g. PDF or ASiC) a corresponding instance of a `TimestampValidator` shall be used.
+
+The following example verifies the qualification level of a timestamp:
 
 [source,java,indent=0]
-.Validate an timestamp and retrieve its qualification level
+.Validate a timestamp and retrieve its qualification level
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/TimestampValidationTest.java[tags=demo]
 ----
