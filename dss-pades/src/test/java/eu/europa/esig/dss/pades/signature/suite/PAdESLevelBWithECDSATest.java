@@ -20,8 +20,11 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -29,29 +32,65 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import org.junit.jupiter.api.BeforeEach;
+import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@Tag("slow")
 public class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	@BeforeEach
-	public void init() throws Exception {
+	private static Stream<Arguments> data() {
+		List<Arguments> args = new ArrayList<>();
+
+		for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
+			SignatureAlgorithm sa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
+			if (sa != null && Utils.isStringNotBlank(sa.getOid())) {
+				args.add(Arguments.of(digestAlgo));
+			}
+		}
+		return args.stream();
+	}
+
+	@ParameterizedTest(name = "Combination {index} of ECDSA with {0}")
+	@MethodSource("data")
+	public void init(DigestAlgorithm digestAlgo) throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		signatureParameters.setDigestAlgorithm(digestAlgo);
 		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.ECDSA);
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");
 
 		service = new PAdESService(getOfflineCertificateVerifier());
+	}
+
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(EncryptionAlgorithm.ECDSA, signature.getEncryptionAlgorithm());
+	}
+
+	@Override
+	public void signAndVerify() {
 	}
 
 	@Override

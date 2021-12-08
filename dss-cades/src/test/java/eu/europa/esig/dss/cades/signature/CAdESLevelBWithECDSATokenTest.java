@@ -59,24 +59,11 @@ public class CAdESLevelBWithECDSATokenTest extends AbstractCAdESTestSignature {
         for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
             SignatureAlgorithm ecCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
             SignatureAlgorithm plainEcCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, digestAlgo);
-            if (ecCa != null && Utils.isStringNotBlank(ecCa.getOid()) && plainEcCa != null && Utils.isStringNotBlank(plainEcCa.getOid()) && !isSha3Family(digestAlgo)) {
+            if (ecCa != null && Utils.isStringNotBlank(ecCa.getOid()) && plainEcCa != null && Utils.isStringNotBlank(plainEcCa.getOid())) {
                 args.add(digestAlgo);
             }
         }
         return args.stream();
-    }
-
-    private static boolean isSha3Family(DigestAlgorithm digestAlgo) {
-        // TODO : temporary fix while SHA3 is not supported for PLAIN-ECDSA in BC
-        switch (digestAlgo) {
-            case SHA3_224:
-            case SHA3_256:
-            case SHA3_384:
-            case SHA3_512:
-                return true;
-            default:
-                return false;
-        }
     }
 
     @ParameterizedTest(name = "Combination {index} of PLAIN_ECDSA with {0}")
