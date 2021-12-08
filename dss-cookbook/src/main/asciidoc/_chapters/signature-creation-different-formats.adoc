@@ -158,9 +158,9 @@ The extension of a signature of the level `PAdES-BASELINE-B` up to `PAdES-BASELI
 The framework also allows creation of PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>).
 In the `PAdESSignatureParameters` object, there is a special attribute named `SignatureImageParameters`.
 This parameter allows you to customize the visual signature (with text, with image or with image and text).
-An example of code to perform a PAdES-BASELINE-B type signature with a visible signature can be found in section <<PAdESVisibleSignature>> of the Annex.
+An example of code to perform a PAdES-BASELINE-B type signature with a visible signature can be found in section <<PAdESVisibleSignatureAnnex>> of the Annex.
 
-Additionally, DSS also allows you to insert a visible signature to an existing field. This is illustrated in section <<PAdESVisibleSignature>> of the Annex.
+Additionally, DSS also allows you to insert a visible signature to an existing field. This is illustrated in section <<PAdESVisibleSignatureAnnex>> of the Annex.
 
 In case of placing an image or text to an existing field, the visible signature will fill out the whole available area of the field.
 

@@ -120,8 +120,10 @@ public class TLValidationJobSnippets {
 		// tag::refresh[]
 		TLValidationJob validationJob = new TLValidationJob();
 
+		// tag::offline-refresh[]
 		// call with the Offline Loader (application initialization)
 		validationJob.offlineRefresh();
+		// end::offline-refresh[]
 
 		// call with the Online Loader (callable every day/hour in a cron)
 		validationJob.onlineRefresh();

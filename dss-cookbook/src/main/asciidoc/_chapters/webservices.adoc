@@ -5,31 +5,28 @@
 :imagesdir: images/
 :restdocsdir: ../_restdocs
 
-
 == Webservices
-!!! TODO: Give links to POSTMAN and SOAPUI. !!!
 
-DSS offers REST and SOAP web services. Additionally, we also provide a SOAP-UI project and Postman samples in the `dss-cookbook` module.
+DSS offers REST and SOAP web services.
 
 The different webservices are :
 
-* Signature webservices (`dss-signature-soap` / `dss-signature-rest`) and their clients : they expose methods to allow signing and extending or counter-signing a signature from a client.
-* Server-signing webservice (`dss-server-signing-soap` / `dss-server-signing-rest`) and their clients : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
-* Signature validation webservices (`dss-validation-soap` / `dss-validation-rest`) and their clients : they expose methods to allow signature validation, with an optional detached file and an optional validation policy.
-* Certificate validation webservices (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients : they expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
-* Timestamp webservices (`dss-timestamp-remote-soap` / `dss-timestamp-remote-rest`) and their clients : they expose methos to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digets calculation.
+* *Signature webservices* (`dss-signature-soap` / `dss-signature-rest`) and their clients: expose methods to allow signing and extending or counter-signing a signature from a client.
+* *Server-signing webservice* (`dss-server-signing-soap` / `dss-server-signing-rest`) and their clients: expose methods to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
+* *Signature validation webservices* (`dss-validation-soap` / `dss-validation-rest`) and their clients: expose methods to allow signature validation, with an optional detached file and an optional validation policy.
+* *Certificate validation webservices* (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients: expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
+* *Timestamp webservices* (`dss-timestamp-remote-soap` / `dss-timestamp-remote-rest`) and their clients: expose methods to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digest calculation.
 
 The data structure in webservices is similar in both REST and SOAP modules.
 
 The documentation will cover the REST calls. All the REST services present in DSS are compliant with https://www.openapis.org/[OpenAPI Specification].
 
+Additionally, we also provide a https://github.com/esig/dss/tree/master/dss-cookbook/src/main/soapui[SOAP-UI] and https://github.com/esig/dss/tree/master/dss-cookbook/src/main/postman[Postman] samples in the `dss-cookbook` module for simplicity.
+
 [[REST]]
 === REST
-!!! TODO: remove requests and responses from the cookbook because it takes too much space. Instead turn them into downloadable files or links to the github !!!
-
 
 ==== REST signature service
-
 
 This service exposes 4 methods for one or more document(s) :
 
@@ -45,11 +42,12 @@ The method allows retrieving the data to be signed. The user sends the document 
 
 WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
 
-.Request
-include::{restdocsdir}/sign-and-extend-one-document/1/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/sign-and-extend-one-document/1/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/1/curl-request.adoc[Request]
 
 ===== Sign document
 
@@ -57,56 +55,61 @@ The method allows generation of the signed document with the received signature 
 
 WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
 
-.Request
-include::{restdocsdir}/sign-and-extend-one-document/2/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/sign-and-extend-one-document/2/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/curl-request.adoc[Request]
 
 ===== Extend document
 
 The method allows extension of an existing signature to a stronger level.
 
-.Request
-include::{restdocsdir}/sign-and-extend-one-document/3/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/sign-and-extend-one-document/3/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/3/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/3/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/3/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/3/curl-request.adoc[Request]
 
 ===== Timestamp document
 
 The method allows timestamping of a provided document.
 Available for PDF, ASiC-E and ASiC-S container formats.
 
-.Request
-include::{restdocsdir}/timestamp-one-document/1/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/timestamp-one-document/1/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/timestamp-one-document/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/timestamp-one-document/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/timestamp-one-document/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/timestamp-one-document/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/timestamp-one-document/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/timestamp-one-document/1/curl-request.adoc[Request]
 
-===== Get data to be counter signed
+===== Get data to be counter-signed
 
-This method returns the data to be signed in order to create a counter signature. The user should provide a document containing a signature to be counter signed, id of the signature, and other parameters similarly to the method 'getDataToSign()'.
+This method returns the data to be signed in order to create a counter signature. The user should provide a document containing a signature to be counter-signed, id of the signature, and other parameters similarly to the method 'getDataToSign()'.
 
 WARNING: The parameters in getDataToBeCounterSigned and counterSignSignature MUST be the same (especially the signing date).
 
-.Request
-include::{restdocsdir}/counter-sign-signature/1/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/counter-sign-signature/1/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/1/curl-request.adoc[Request]
 
-===== Counter Sign Signature
+===== Counter-Sign Signature
 
 This method incorporates a created counter signature to unsigned properties of the master signature with this specified id.
 
 WARNING: The parameters in getDataToBeCounterSigned and counterSignSignature MUST be the same (especially the signing date).
 
-.Request
-include::{restdocsdir}/counter-sign-signature/2/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/counter-sign-signature/2/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/curl-request.adoc[Request]
 
 ==== REST server signature service
 
@@ -122,31 +125,34 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/RestServer
 
 This method allows retrieving of all available keys on the server side (PKCS#11, PKCS#12, HSM,...). All keys will have an alias, a signing certificate and its chain. The alias will be used in following steps.
 
-.Request
-include::{restdocsdir}/get-keys/1/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/get-keys/1/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-keys/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-keys/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-keys/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-keys/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-keys/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-keys/1/curl-request.adoc[Request]
 
 ===== Get key
 
 This method allows retrieving a key information for a given alias.
 
-.Request
-include::{restdocsdir}/get-key/1/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/get-key/1/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-key/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-key/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-key/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-key/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-key/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-key/1/curl-request.adoc[Request]
 
 ===== Sign
 
 This method allows signing of given digests with a server side certificate.
 
-.Request
-include::{restdocsdir}/sign-digest-document-remotely/3/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/sign-digest-document-remotely/3/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/curl-request.adoc[Request]
 
 ==== REST validation service
 
@@ -156,21 +162,23 @@ DSS provides also a module for documents validation.
 
 This service allows a signature validation (all formats/types) against a validation policy.
 
-.Request
-include::{restdocsdir}/validate-doc/1/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/validate-doc/1/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-doc/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-doc/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-doc/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-doc/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-doc/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-doc/1/curl-request.adoc[Request]
 
 ===== Retrieve original document(s)
 
 This service returns the signed data for a given signature.
 
-.Request
-include::{restdocsdir}/get-original-documents/1/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/get-original-documents/1/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-original-documents/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-original-documents/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-original-documents/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-original-documents/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-original-documents/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-original-documents/1/curl-request.adoc[Request]
 
 ==== REST certificate validation service
 
@@ -178,11 +186,12 @@ include::{restdocsdir}/get-original-documents/1/http-response.adoc[]
 
 This service allows a certificate validation (provided in a binary format).
 
-.Request
-include::{restdocsdir}/validate-cert/1/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/validate-cert/1/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-cert/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-cert/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-cert/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-cert/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-cert/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-cert/1/curl-request.adoc[Request]
 
 ==== REST remote timestamp service
 
@@ -190,11 +199,12 @@ include::{restdocsdir}/validate-cert/1/http-response.adoc[]
 
 This service allows a remote timestamp creation. The method takes as an input the digest to be timestamped and digest algorithm that has been used for the digest value computation. The output of the method is the generated timestamp's binaries.
 
-.Request
-include::{restdocsdir}/get-timestamp-response/1/http-request.adoc[]
+Samples:
 
-.Response
-include::{restdocsdir}/get-timestamp-response/1/http-response.adoc[]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-timestamp-response/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-timestamp-response/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-timestamp-response/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-timestamp-response/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-timestamp-response/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-timestamp-response/1/curl-request.adoc[Request]
 
 [[SOAP]]
 === SOAP

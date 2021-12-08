@@ -28,20 +28,25 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.JKSSignatureToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Snippets {
 
@@ -141,7 +146,23 @@ public class Snippets {
 		// 3 step : sign document using a SignatureValue obtained on the previous step
 		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
-		// tag::threeStepsSign[]
+		// end::threeStepsSign[]
+	}
+
+	@Test
+	public void hashComputation() {
+		// tag::hashComputation[]
+		// Compute hash on a DSSDocument
+		DSSDocument document = new InMemoryDocument("Hello World!".getBytes());
+		String base64Sha256HashOfDocument = document.getDigest(DigestAlgorithm.SHA256);
+
+		// Compute hash on a byte array
+		byte[] binaries = "Hello World".getBytes();
+		byte[] sha256HashOfBinaries = DSSUtils.digest(DigestAlgorithm.SHA256, binaries);
+		String base64Sha256HashOfBinaries = Utils.toBase64(sha256HashOfBinaries);
+		// end::hashComputation[]
+
+		assertEquals(base64Sha256HashOfDocument, base64Sha256HashOfDocument);
 	}
 
 }

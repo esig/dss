@@ -107,6 +107,23 @@ Certificates coming from the list of Trusted Lists. This class inherits of `Comm
 
 This class follows the composite design pattern with a list of CertificateSources. That is used in the validation to retrieve all sources from the signatures / timestamps / revocation data / trusted lists / etc. It contains some methods which check over all sources to retrieve certificates or verify if a certificate is trusted.
 
+===== Retrieving certificates by AIA
+
+In case when intermediate certificates are not present within a signature document, nor in trusted/adjunct sources, a certificate chain still can be built using AIA URL obtained from a certificate.
+
+To use AIA URLs DSS provides the interface `AIASource` with the following implementations:
+
+* `DefaultAIASource` - the default implementation used in DSS, allowing retrieving of certificates by AIA URL from online sources. The class allows configuring a list of accepted protocols to be used for remote requests.
+* `JdbcCacheAIASource` - a cache AIA Source, allowing storing and accessing of certificates from a JDBC database.
+
+An example of `DefaultAIASource` configuration can be found below:
+
+[source,java,indent=0]
+.DefaultAIASource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AIASourceSnippet.java[tags=demo]
+----
+
 ==== Revocation data handling
 For information on how revocation of data is handled, see chapter <<RevocationDataManagement>>.
 
@@ -421,17 +438,13 @@ If the "Revocation data" box is checked, the revocation data (CRLs, OCSPs) will 
 If the "User-friendly identifiers" box is checked, user-friendly identifiers will be used for signatures and tokens instead of hash-based values. If the box is not checked, a header might contain for example "S-651B6527872B53437C7B9A8696BD9F7A6C311CE6EE418EFE34A4A994C05D08C8". If the box is checked, the header contains the same information but presented in a user-friendly way. For example, it would be a string composed of "SIGNATURE" to indicate that it is a signature, the name in the certificate chain, the signature claimed time and so on.
 
 ==== Semantics
-When a report is downloaded, a "Semantics" section is added at the end explaining the meaning of the result indications, i.e. TOTAL_PASSED, PASSED, INDETERMINATE, NO_CERTIFICATE_CHAIN_FOUND.
+When a report is downloaded, a "Semantics" section is added at the end explaining the meaning of the result indications, i.e. `TOTAL_PASSED`, `PASSED`, `INDETERMINATE`, `NO_CERTIFICATE_CHAIN_FOUND`.
 
 [[ServiceLoaderValidation]]
-=== Implementation management with ServiceLoader
+=== DocumentValidator implementation management
 !!! TODO: change title !!!
 
-DSS incorporates modules that are loaded in the run time based on the chosen configuration and the input data via a https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]. This provides a flexibility for an end-user to work only with selected modules and a possibility to expand DSS with custom implementations.
-
-In order to provide a chosen implementation(s) to ServiceLoader, a file listing all the desired implementations should be created in the resource directory `META-INF/services` with a name matching the implemented interface. When merging sources (e.g. creating a Fat JAR module), the files can be lost/overwritten, and should be configured manually (all the required implementations shall be listed).
-
-NOTE: If a DSS module(s) implementing a required interface(s) is added to your project's dependency list, the implementation shall be loaded automatically.
+For signature document or a signature policy validation DSS is able to load a corresponding implementation of validator for the given document format in runtime using a `ServiceLoader` (e.g. `XMLDocumentValidator` for XAdES signature).
 
 DSS is able to choose the required implementation for the following interfaces:
 
@@ -439,6 +452,8 @@ DSS is able to choose the required implementation for the following interfaces:
 * `SignaturePolicyValidator` - checks a signature policy file and loads a relevant validator to be able to process the detected format.
 
 WARNING: If no appropriate available implementation is found, an exception will be thrown.
+
+For more information about `ServiceLoader` usage please refer to the chapter <<ServiceLoaderAdvanced>>.
 
 ==== Document Validation Factory
 

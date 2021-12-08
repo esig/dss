@@ -46,6 +46,7 @@ A similar configuration is possible for Lists Of Trusted Lists (LOTL) with a `LO
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=european-lotl-source]
 ----
 
+[[DSSFileLoader]]
 ==== DSSFileLoader
 
 The `FileCacheDataLoader` is used to download the trusted list contents on the file-system. Two different configurations are needed. Both of them share the same folder :

@@ -33,6 +33,8 @@ public class TimestampWithContainerTest extends CookbookTools {
 
         // Initialize parameters and define target container type
         ASiCWithCAdESTimestampParameters timestampingParameters = new ASiCWithCAdESTimestampParameters();
+
+        // Specify the target container level
         timestampingParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
         // Execute the timestamp method
@@ -53,6 +55,10 @@ public class TimestampWithContainerTest extends CookbookTools {
         DiagnosticData diagnosticData = reports.getDiagnosticData();
         assertEquals(0, diagnosticData.getSignatures().size());
         assertEquals(1, diagnosticData.getTimestampList().size());
+
+        // tag::asics[]
+        timestampingParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+        // end::asics[]
 
     }
 

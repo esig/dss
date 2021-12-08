@@ -7,31 +7,10 @@
 [[Annex]]
 == Annex
 
-=== Use of ServiceLoader throughout the framework
-
-DSS incorporates modules that are loaded in the run time based on the chosen configuration and the input data via a https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]. This provides a flexibility for an end-user to work only with selected modules and a possibility to expand DSS with custom implementations.
-
-The following modules are provided with independent implementations:
-
-* <<dssUtils>>;
-* <<dssCrlParser>>;
-* <<dssPades>>.
-
-See the chapter on <<AdvancedConcepts>> (section <<ServiceLoaderAdvanced>>) for more information on the use of a ServiceLoader for these three modules.
-
-
-Additionally, DSS is able to choose the required implementation for the following interfaces:
-
-* `DocumentValidationFactory` - checks a provided signed file's format and loads a relevant validator;
-* `SignaturePolicyValidator` - checks a signature policy file and loads a relevant validator to be able to process the detected format.
-
-See the chapter on <<SignatureValidation>> (<<ServiceLoaderValidation>>) for more information on the use of a ServiceLoader in the case of signature validation.
-
-
 [[Alerts]]
 === Use of Alerts throughout the framework
 
-Since DSS 5.7 the framework includes an extended possibility to execute custom processes in case of arbitrary defined events.
+The framework includes an extended possibility to execute custom processes in case of arbitrary defined events.
 
 The `Alert` is a basic interface used to trigger a process on a passed object.
 DSS provides an `AbstractAlert` implementation of the interface with a clearly defined structure. The class must be instantiated with two attributes:
@@ -47,11 +26,9 @@ In its basic module, framework provides a few alerts based on a `Status`:
 
 The usage of alerts is available in the following classes:
 
-* XML securities configurators from `dss-jaxb-parsers` module : `TransformerFactoryBuilder`, `SchemaFactoryBuilder`, `ValidatorConfigurator`; (see chapter <<xmlSecurities>> for more information)
+* XML securities configurators from `dss-jaxb-parsers` module : `TransformerFactoryBuilder`, `SchemaFactoryBuilder`, `ValidatorConfigurator` (see chapter <<xmlSecurities>> for more information);
 * CertificateVerifier - to handle the unexpected situation(s) in a custom way (introduced `AlertException` to re-throw exceptions, see section <<certificateVerifier>> for more information);
 * TLValidationJob - to process custom actions on change/state on loading of LOTL/TLs (see `LOTLAlert` and `TLAlert` in the <<AlertingTL>> section).
-
-
 
 === Configuration of validation policy in different use cases
 ==== General
@@ -751,42 +728,52 @@ The usage of alerts is available in the following classes:
 [.landscape]
 <<<
 
-
 ==== AdES validation
-===== B-level AdES validation
-!!! TODO: create an example !!!
+
+According to ETSI EN 319 102-1 (cf. <<R09>>), the signature validation process can be separated to different levels:
+
+* Validation process for basic signatures - validates the signature at the validation (current) time;
+* Validation process for Signatures with Time and Signatures with Long-Term Validation Material - verifies the signature against its _best-signature-time_ (i.e. against the signature time-stamp's production time);
+* Validation process for Signatures providing Long Term Availability and Integrity of Validation Material - verifies the signature with all available Long-Term Availability material (i.e. including the validation of archive time-stamps).
+
+DSS allows the user to choose the validation level when performing a signature validation. By default, the highest level (with LTA enabled) is used.
+
+===== Basic AdES validation
+
+Below you can find a signature validation example with a basic signature validation level:
 
 [source,java,indent=0]
 .B-level AdES validation
 ----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/SignatureLevelValidationTest.java[tags=demo]
 ----
 
-===== T-Level and above AdES validation
-!!! TODO: create an example !!!
+===== Long Term AdES validation
 
 [source,java,indent=0]
-.T-Level and above AdES validation
+.LTV-level AdES validation
 ----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/SignatureLevelValidationTest.java[tags=demo-ltv]
+----
+
+===== Long Term Availability AdES validation
+
+[source,java,indent=0]
+.LTA-level AdES validation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/SignatureLevelValidationTest.java[tags=demo-lta]
 ----
 
 ==== Trusted list validation
-!!! TODO: create an example !!!
+
+A validation of a Trusted List is similar to a signature validation, with the only difference that the validation of a Trusted List can be done in offline mode.
+
+Additionally, a validation against the XSD schema should be performed.
 
 [source,java,indent=0]
 .Validation of a trusted list
 ----
-include::
-----
-
-==== QES validation
-!!! TODO: create an example !!!
-
-[source,java,indent=0]
-.Validation of a QES
-----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignTrustedListTest.java[tags=validate]
 ----
 
 [[CachingUseCases]]
@@ -794,7 +781,7 @@ include::
 ==== Caching revocation data (CRL, OCSP)
 
 ===== CRL
-An example for JdbcCacheCRLSource :
+An example for JdbcCacheCRLSource:
 
 [source,java,indent=0]
 .JdbcCacheCRLSource usage
@@ -803,7 +790,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceS
 ----
 
 ===== OCSP
-An example for JdbcCacheOCSPSource :
+An example for JdbcCacheOCSPSource:
 
 [source,java,indent=0]
 .JdbcCacheOCSPSource usage
@@ -811,31 +798,32 @@ An example for JdbcCacheOCSPSource :
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo-cached]
 ----
 
-
 ==== Caching certificates (AIA certificates)
-!!! TODO: create an example !!!
+An example for JdbcCacheOCSPSource:
 
 [source,java,indent=0]
-.Caching of a certificate
+.Caching of certificates
 ----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AIASourceSnippet.java[tags=demo-cached]
 ----
-
 
 ==== Caching trusted lists
-!!! TODO: create an example !!!
+
+Trusted Lists and List(s) of Trusted Lists are cached automatically as a part if `TLValidationJob` (see <<tlValidationJob>>). To configure it you may use `FileCacheDataLoader` (see <<DSSFileLoader>>).
+
+To load Trusted Lists from a cache, the offline loader shall be configured, and the action can be performed with the method:
 
 [source,java,indent=0]
-.Caching of a trusted list
+.Trusted Lists update from a cache
 ----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=offline-refresh]
 ----
 
 === Complete examples of Signature creation
 
 [[XAdES]]
 ==== XAdES
-This is a complete code that allows you to sign an XML document.
+Below is an example of the `XAdES-Baseline-B` signature signing an XML document:
 
 [source,java,indent=0]
 .Create a XAdES-BASELINE-B signature
@@ -845,7 +833,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBT
 
 [[CAdES]]
 ==== CAdES
-Below is an example of the CAdES-Baseline-B signature:
+Below is an example of the `CAdES-Baseline-B` signature:
 
 [source,java,indent=0]
 .Signing a file with CAdES
@@ -855,7 +843,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlCadesBT
 
 [[PAdES]]
 ==== PAdES
-Below is an example of code to perform a PAdES-BASELINE-B type signature:
+Below is an example of code to perform a `PAdES-BASELINE-B` type signature:
 
 [source,java,indent=0]
 .Signing a PDF file with PAdES
@@ -864,16 +852,19 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBT
 ----
 
 ===== Signature Policy
-The following example illustrates the creation of a PAdES-BASELINE-B level with a signature policy identifier.
+The following example illustrates creation of an AdES-BASELINE-B level with a signature policy identifier.
 [source,java,indent=0]
 .Defining a Signature Policy
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=policy]
 ----
 
-[[PAdESVisibleSignature]]
+[[PAdESVisibleSignatureAnnex]]
 ===== PAdES Visible Signature
-Below there is an example of code to perform a PADES-BASELINE-B type signature with a visible signature:
+
+DSS provides a large set of utilities for PDF visible signature creation (see <<PAdESVisibleSignature>> for more information).
+
+Below there is an example of code to perform a `PAdES-BASELINE-B` type signature with a visible signature:
 
 [source,java,indent=0]
 .Add a visible signature to a PDF document
@@ -890,7 +881,6 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.j
 ----
 
 The following sections present examples of existing parameters for creation of visible signatures with DSS.
-
 
 [[Positioning]]
 ====== Positioning
@@ -928,7 +918,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBV
 [[TextImageCombi]]
 ====== Text and image combination
 
-DSS provides a set of functions to align a text respectively to an image. The parameters must be applied to a 'SignatureImageTextParameters' object :
+DSS provides a set of functions to align a text respectively to an image. The parameters must be applied to a `SignatureImageTextParameters` object :
 
 [source,java,indent=0]
 .Combination of text and image parameters
@@ -969,7 +959,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisib
 
 [[JAdES]]
 ==== JAdES
-A typical example of a JAdES signature creation is represented below:
+A typical example of a `JAdES-BASELINE-B` signature creation is represented below:
 
 [source,java,indent=0]
 .Signing a file with JAdES
@@ -977,13 +967,12 @@ A typical example of a JAdES signature creation is represented below:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlJadesBTest.java[tags=demo]
 ----
 
-
 [[ASiC]]
 ==== ASiC
 
 [[ASiC-S]]
 ===== ASiC-S
-This is an example of the source code for signing a document using ASiC-S based on XAdES-B:
+This is an example of the source code for signing a document using `ASiC-S` based on `XAdES-BASELINE-B` profile:
 
 [source,java,indent=0]
 .Sign a file within an ASiC-S container
@@ -993,7 +982,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignOneFileWit
 
 [[ASiC-E]]
 ===== ASiC-E
-This is another example of the source code for signing multiple documents using ASiC-E based on CAdES:
+This is another example of the source code for signing multiple documents using `ASiC-E` based on `CAdES-BASELINE-B`:
 
 [source,java,indent=0]
 .Sign multiple files within an ASiC-E container
@@ -1003,47 +992,51 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDo
 
 [[ASiCTimestamp]]
 ===== ASiC time assertion
-Below are two examples of timestamp generation for ASiC-S and for ASiC-E:
-!!! TODO: add one example for ASIC-S and one example for ASIC-E !!!
 
-[source,java,indent=0]
-.ASIC-S time assertion
-----
-include::
-----
+Below are two examples of timestamp generation for ASiC-S and for ASiC-E:
 
 [source,java,indent=0]
 .ASIC-E time assertion
 ----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampWithContainerTest.java[tags=creation]
 ----
 
+In order to create an `ASiC-S`, just change the expected container property in the example above:
+
+[source,java,indent=0]
+.ASIC-S time assertion
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampWithContainerTest.java[tags=asics]
+----
 
 [[Topology]]
 === Examples of SCA and SCDev Topology and Workflows.
+
 ==== Hash encryption
-!!! TODO: create an example!!!
+In order to avoid transferring of original or sensitive information, but also reduce an amount of data by online protocols, a hash of document or a data to be signed can be computed for various purposes.
 
 [source,java,indent=0]
 .Hash encryption
 ----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=hashComputation]
 ----
 
 ==== Detached signature based on digested document
-!!! TODO: create an example!!!
+
+When you want to provide a privacy for original documents, a signature can be created in a detached way, by providing the digest of an original document only. An example of the use case you can find below:
 
 [source,java,indent=0]
 .Detached signature based on digested document
 ----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignDetachedDocumentTest.java[tags=demo]
 ----
 
 ==== Creating the signature envelope on client side and signature value on server side
-!!! TODO: create an example!!!
+
+When a private key signing is operated remotely, i.e. on an external server, then the document preparation and the actual signing can be made on different servers. An example of such signature creation, when the signature document is created on client's side and the actual signature is made remotely, you can find below:
 
 [source,java,indent=0]
 .Creation of the signature envelope on client side and signature value on server side
 ----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ServerSignTest.java[tags=demo]
 ----

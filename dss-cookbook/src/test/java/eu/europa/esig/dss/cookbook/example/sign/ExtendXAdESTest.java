@@ -70,12 +70,14 @@ public class ExtendXAdESTest extends CookbookTools {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+
+		// Init service for signature augmentation
 		XAdESService xadesService = new XAdESService(certificateVerifier);
 
 		// init TSP source for timestamp requesting
 		xadesService.setTspSource(getOnlineTSPSource());
 
-		DSSDocument extendedDocument = xadesService.extendDocument(signedDocument, parameters);
+		DSSDocument tLevelSignature = xadesService.extendDocument(signedDocument, parameters);
 
 		// end::demoTExtend[]
 
@@ -92,9 +94,12 @@ public class ExtendXAdESTest extends CookbookTools {
 		certificateVerifier.setCrlSource(new OnlineCRLSource(commonsDataLoader));
 		certificateVerifier.setOcspSource(new OnlineOCSPSource());
 
-		xadesService = new XAdESService(certificateVerifier);
+		// Trust anchors should be defined for revocation data requesting
+		certificateVerifier.setTrustedCertSources(getTrustedCertificateSource());
 
-		extendedDocument = xadesService.extendDocument(signedDocument, parameters);
+		xadesService = new XAdESService(certificateVerifier);
+		xadesService.setTspSource(getOnlineTSPSource());
+		DSSDocument ltLevelDocument = xadesService.extendDocument(tLevelSignature, parameters);
 
 		// end::demoLTExtend[]
 
@@ -103,18 +108,23 @@ public class ExtendXAdESTest extends CookbookTools {
 		parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
+		// Initialize CertificateVerifier with data revocation data requesting
 		certificateVerifier = new CommonCertificateVerifier();
+
 		certificateVerifier.setCrlSource(new OnlineCRLSource());
 		certificateVerifier.setOcspSource(new OnlineOCSPSource());
 
+		certificateVerifier.setTrustedCertSources(getTrustedCertificateSource());
+
+		// Initialize signature service with TSP Source for time-stamp requesting
 		xadesService = new XAdESService(certificateVerifier);
 		xadesService.setTspSource(getOnlineTSPSource());
 
-		extendedDocument = xadesService.extendDocument(signedDocument, parameters);
+		DSSDocument ltaLevelDocument = xadesService.extendDocument(ltLevelDocument, parameters);
 
 		// end::demoLTAExtend[]
 
-		testFinalDocument(extendedDocument);
+		testFinalDocument(ltaLevelDocument);
 	}
 
 }

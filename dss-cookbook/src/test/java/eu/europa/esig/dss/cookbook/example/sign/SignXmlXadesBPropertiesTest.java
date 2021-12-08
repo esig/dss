@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
@@ -33,15 +34,21 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.xades.XAdES319132Utils;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
 
+import javax.xml.transform.dom.DOMSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * How to add signed properties to the signature.
@@ -62,7 +69,7 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 
 			// Basic signature configuration
-			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 			parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 			parameters.setSigningCertificate(privateKey.getCertificate());
@@ -125,6 +132,15 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			// end::requirements[]
 
 			testFinalDocument(signedDocument);
+
+			DSSDocument xadesSignatureDocument = signedDocument;
+			// tag::validateStructure[]
+			Document signatureDocDom = DomUtils.buildDOM(xadesSignatureDocument);
+			List<String> errors = XAdES319132Utils.getInstance().validateAgainstXSD(new DOMSource(signatureDocDom));
+			// end::validateStructure[]
+			assertTrue(Utils.isCollectionEmpty(errors));
+
 		}
 	}
+
 }
