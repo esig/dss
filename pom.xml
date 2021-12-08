@@ -40,7 +40,7 @@
 		<slf4j.version>1.7.32</slf4j.version>
 		<logback-classic.version>1.2.6</logback-classic.version>
 
-		<bouncycastle.version>1.69</bouncycastle.version>
+		<bouncycastle.version>1.70</bouncycastle.version>
 		<xmlsec.version>2.3.0</xmlsec.version>
 		<jose4j.version>0.7.9</jose4j.version>
 		<pdfbox.version>2.0.24</pdfbox.version>
