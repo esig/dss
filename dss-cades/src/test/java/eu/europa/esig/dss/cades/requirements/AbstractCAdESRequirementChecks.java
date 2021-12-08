@@ -20,10 +20,17 @@
  */
 package eu.europa.esig.dss.cades.requirements;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.AbstractCAdESTestSignature;
+import eu.europa.esig.dss.cades.signature.CAdESService;
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -37,17 +44,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.signature.AbstractCAdESTestSignature;
-import eu.europa.esig.dss.cades.signature.CAdESService;
-import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractCAdESRequirementChecks extends AbstractCAdESTestSignature {
 
@@ -82,7 +81,7 @@ public abstract class AbstractCAdESRequirementChecks extends AbstractCAdESTestSi
 			assertEquals(PKCSObjectIdentifiers.signedData, oid);
 
 			ASN1TaggedObject taggedObj = ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1));
-			SignedData signedData = SignedData.getInstance(taggedObj.getObject());
+			SignedData signedData = SignedData.getInstance(taggedObj.getBaseObject());
 
 			ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
 			assertEquals(1, signerInfosAsn1.size());

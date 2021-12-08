@@ -805,7 +805,7 @@ public final class DSSASN1Utils {
 	private static String parseGn(GeneralName gn) {
 		try {
 			if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
-				ASN1String str = (ASN1String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
+				ASN1String str = (ASN1String) ((DERTaggedObject) gn.toASN1Primitive()).getBaseObject();
 				return str.getString();
 			}
 		} catch (Exception e) {
@@ -1144,11 +1144,10 @@ public final class DSSASN1Utils {
 	 * @return {@link AttributeTable}
 	 */
 	public static AttributeTable emptyIfNull(AttributeTable originalAttributeTable) {
-		if (originalAttributeTable == null) {
-			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
-		} else {
+		if (originalAttributeTable != null) {
 			return originalAttributeTable;
 		}
+		return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
 	}
 
 	/**
@@ -1293,7 +1292,7 @@ public final class DSSASN1Utils {
 			 * The field unsignedAttrsHashIndex shall be a sequence of octet strings. Each one shall contain the hash value of
 			 * one instance of Attribute within the unsignedAttrs field of the SignerInfo.
 			 */
-			return Arrays.asList(getDEREncoded(attribute));
+			return Collections.singletonList(getDEREncoded(attribute));
 		}
 	}
 
