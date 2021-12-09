@@ -745,7 +745,7 @@ public class JAdESLevelBaselineB {
 	private JSONArray getSignedDataReferences(List<DSSDocument> detachedContents) {
 		List<String> references = new ArrayList<>();
 		for (DSSDocument document : detachedContents) {
-			references.add(DSSUtils.encodeURI(document.getName()));
+			references.add(document.getName());
 		}
 		return new JSONArray(references);
 	}

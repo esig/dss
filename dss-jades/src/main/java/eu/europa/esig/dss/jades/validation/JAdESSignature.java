@@ -755,30 +755,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		 * and syntax specified in clause 2.1.3 of draft-cavage-http-signatures-10:
 		 * "Signing HTTP Messages" [17].
 		 */
-		List<DSSDocument> documentsByUri = getSignedDocumentsByUri(false);
+		List<DSSDocument> documentsByUri = getSignedDocumentsByHTTPHeaderName();
 		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentsByUri, false);
 		
 		return httpHeadersPayloadBuilder.build();
 	}
 	
-	private byte[] getPayloadForObjectIdByUriMechanism() {
-		if (Utils.isCollectionEmpty(detachedContents)) {
-			throw new IllegalArgumentException("The detached contents shall be provided for validating a detached signature!");
-		}
-		
-		List<DSSDocument> signedDocumentsByUri = getSignedDocumentsByUri(true);
-		return DSSJsonUtils.concatenateDSSDocuments(signedDocumentsByUri);
-	}
-	
 	/**
 	 * Returns a list of signed documents by the list of URIs present in 'sigD'
 	 * Keeps the original order according to 'pars' dictionary content
-	 * Used in ObjectByUri detached signature mechanism
-	 * 
-	 * @param caseSensitive defines if the name value is case-sensitive
+	 * Used in HTTPHeaders detached signature mechanism
+	 *
 	 * @return a list of {@link DSSDocument}s
 	 */
-	public List<DSSDocument> getSignedDocumentsByUri(boolean caseSensitive) {
+	public List<DSSDocument> getSignedDocumentsByHTTPHeaderName() {
 		List<String> signedDataUriList = getSignedDataUriList();
 		
 		if (Utils.isCollectionEmpty(detachedContents)) {
@@ -794,8 +784,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		for (String signedDataName : signedDataUriList) {
 			boolean found = false;
 			for (DSSDocument document : detachedContents) {
-				if ((caseSensitive && Utils.areStringsEqual(signedDataName, document.getName())) ||
-						Utils.areStringsEqualIgnoreCase(signedDataName, document.getName())) {
+				if (Utils.areStringsEqualIgnoreCase(signedDataName, document.getName())) {
 					found = true;
 					signedDocuments.add(document);
 					// do not break - same name docs possible
@@ -808,6 +797,42 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 		
 		return signedDocuments;
+	}
+	
+	private byte[] getPayloadForObjectIdByUriMechanism() {
+		if (Utils.isCollectionEmpty(detachedContents)) {
+			throw new IllegalArgumentException("The detached contents shall be provided for validating a detached signature!");
+		}
+
+		List<DSSDocument> signedDocumentsByUri = getSignedDocumentsForObjectIdByUriMechanism();
+		return DSSJsonUtils.concatenateDSSDocuments(signedDocumentsByUri);
+	}
+
+	/**
+	 * This method returns a list of documents for ObjectIdByUrl or ObjectIdByUriHash mechanisms
+	 * Keeps the original order according to 'pars' dictionary content
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getSignedDocumentsForObjectIdByUriMechanism() {
+		List<String> signedDataUriList = getSignedDataUriList();
+		List<DSSDocument> signedDocumentsByUri = Collections.emptyList();
+		if (Utils.collectionSize(signedDataUriList) == 1 && Utils.collectionSize(detachedContents) == 1) {
+			signedDocumentsByUri = Collections.singletonList(detachedContents.iterator().next());
+
+		} else if (Utils.isCollectionNotEmpty(signedDataUriList)) {
+			signedDocumentsByUri = new ArrayList<>();
+			for (String signedDataName : signedDataUriList) {
+				DSSDocument detachedDocumentByName = getDetachedDocumentByName(signedDataName, detachedContents);
+				if (detachedDocumentByName != null) {
+					signedDocumentsByUri.add(detachedDocumentByName);
+				} else {
+					throw new IllegalArgumentException(String.format(
+							"The detached content for a signed data with name '%s' has not been found!", signedDataName));
+				}
+			}
+		}
+		return signedDocumentsByUri;
 	}
 	
 	private List<JAdESReferenceValidation> getReferenceValidationsByUriHashMechanism() {
@@ -897,6 +922,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private DSSDocument getDetachedDocumentByName(String documentName, List<DSSDocument> detachedContent) {
+		documentName = DSSUtils.decodeURI(documentName);
 		for (DSSDocument detachedDocument : detachedContent) {
 			if (documentName.equals(detachedDocument.getName())) {
 				return detachedDocument;
@@ -1013,11 +1039,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			List<ReferenceValidation> referenceValidations = getReferenceValidations();
 			for (ReferenceValidation referenceValidation : referenceValidations) {
 				if (DigestMatcherType.SIG_D_ENTRY.equals(referenceValidation.getType()) && referenceValidation.isIntact()) {
-					for (DSSDocument detachedDocument : detachedContents) {
-						if (referenceValidation.getName().equals(detachedDocument.getName())) {
-							originalDocuments.add(detachedDocument);
-						}
-					} 
+					String signedDataName = DSSUtils.decodeURI(referenceValidation.getName());
+					DSSDocument detachedDocument = getDetachedDocumentByName(signedDataName, detachedContents);
+					if (detachedDocument != null) {
+						originalDocuments.add(detachedDocument);
+					}
 				}
 			}
 			
@@ -1029,10 +1055,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 						return Collections.singletonList(detachedContents.get(0));
 						
 					} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
-						return getSignedDocumentsByUri(false);
+						return getSignedDocumentsByHTTPHeaderName();
 								
 					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
-						return getSignedDocumentsByUri(true);
+						return getSignedDocumentsForObjectIdByUriMechanism();
 								
 					}
 				} 
