@@ -73,6 +73,7 @@ import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POE;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.validationreport.enums.ConstraintStatus;
@@ -476,10 +477,18 @@ public class ETSIValidationReportBuilder {
 	private DigestAlgAndValueType getDigestAlgAndValueType(DigestAlgorithm digestAlgo, byte[] digestValue) {
 		DigestAlgAndValueType digestAlgAndValueType = new DigestAlgAndValueType();
 		DigestMethodType digestMethodType = new DigestMethodType();
-		digestMethodType.setAlgorithm(digestAlgo.getUri());
+		digestMethodType.setAlgorithm(getUrn(digestAlgo));
 		digestAlgAndValueType.setDigestMethod(digestMethodType);
 		digestAlgAndValueType.setDigestValue(digestValue);
 		return digestAlgAndValueType;
+	}
+
+	private String getUrn(DigestAlgorithm digestAlgorithm) {
+		String urn = digestAlgorithm.getUri();
+		if (Utils.isStringEmpty(urn)) {
+			urn = ValidationProcessUtils.toUrnOid(digestAlgorithm.getOid());
+		}
+		return urn;
 	}
 	
 	private POEType getPOE(String tokenId, POEExtraction poeExtraction) {

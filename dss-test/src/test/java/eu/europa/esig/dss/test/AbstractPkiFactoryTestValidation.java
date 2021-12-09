@@ -130,6 +130,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import eu.europa.esig.xmldsig.jaxb.DigestMethodType;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
@@ -1278,7 +1279,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNotNull(signatureIdentifier);
 		assertNotNull(signatureIdentifier.getId());
 		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
-		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestMethod());
+		DigestMethodType digestMethod = signatureIdentifier.getDigestAlgAndValue().getDigestMethod();
+		assertNotNull(digestMethod);
+		assertNotNull(digestMethod.getAlgorithm());
+		assertNotNull(DigestAlgorithm.forXML(digestMethod.getAlgorithm()));
 		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestValue());
 		assertNotNull(signatureIdentifier.getSignatureValue());
 	}
