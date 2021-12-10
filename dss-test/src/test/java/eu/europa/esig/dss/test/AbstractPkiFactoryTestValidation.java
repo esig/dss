@@ -1036,6 +1036,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			assertTrue(signature.isStructuralValidationValid());
 			if (Utils.isCollectionNotEmpty(signature.getStructuralValidationMessages())) {
 				fail("Structural validation failure: " + signature.getStructuralValidationMessages().toString());
 			}

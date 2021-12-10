@@ -381,7 +381,7 @@ public final class Utils {
 	 * Checks if the string is base64-encoded
 	 *
 	 * @param base64String {@link String}
-	 * @return TRUE if he string is base64-encoded, FALSE otherwise
+	 * @return TRUE if the string is base64-encoded, FALSE otherwise
 	 */
 	public static boolean isBase64Encoded(String base64String) {
 		return impl.isBase64Encoded(base64String);

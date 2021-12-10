@@ -109,16 +109,14 @@ public class DSS2095WithBrokenPolicyFileTest extends AbstractXAdESTestValidation
 		}
 		assertEquals(2, references);
 		assertEquals(1, signedProperties);
-	};
-	
+	}
+
 	@Override
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		super.checkSigningCertificateValue(diagnosticData);
+
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 
-		assertFalse(signature.isSigningCertificateIdentified());
-		assertTrue(signature.isSigningCertificateReferencePresent());
-		assertTrue(signature.isSigningCertificateReferenceUnique());
-		
 		CertificateRefWrapper signingCertificateReference = signature.getSigningCertificateReference();
 		assertNotNull(signingCertificateReference);
 		assertTrue(signingCertificateReference.isDigestValuePresent());
@@ -126,8 +124,8 @@ public class DSS2095WithBrokenPolicyFileTest extends AbstractXAdESTestValidation
 		
 		assertNull(signingCertificateReference.getIssuerName());
 		assertNull(signingCertificateReference.getIssuerSerial());
-		assertTrue(signingCertificateReference.isIssuerSerialPresent());
-		assertFalse(signingCertificateReference.isIssuerSerialMatch()); // non-conformant X509IssuerName
+		assertFalse(signingCertificateReference.isIssuerSerialPresent());
+		assertFalse(signingCertificateReference.isIssuerSerialMatch()); // not conformant X509IssuerName
 	}
 	
 	@Override

@@ -790,9 +790,10 @@ public final class DSSXMLUtils {
 		final DigestAlgorithm digestAlgorithm = getDigestAlgorithm(digestAlgorithmUri);
 		final byte[] digestValue = getDigestValue(digestValueBase64);
 
-		if (digestAlgorithm == null || digestValue == null) {
+		if (digestAlgorithm == null || Utils.isArrayEmpty(digestValue)) {
 			LOG.warn("Unable to read object DigestAlgAndValueType (XMLDSig or XAdES 1.1.1)");
 			return null;
+
 		} else {
 			return new Digest(digestAlgorithm, digestValue);
 		}
@@ -801,7 +802,13 @@ public final class DSSXMLUtils {
 
 	private static byte[] getDigestValue(String digestValueBase64) {
 		byte[] result = null;
-		if (Utils.isStringNotEmpty(digestValueBase64)) {
+		if (Utils.isStringEmpty(digestValueBase64)) {
+			LOG.error("An empty DigestValue obtained!");
+
+		} else if (!Utils.isBase64Encoded(digestValueBase64)) {
+			LOG.error("The DigestValue is not base64 encoded! Obtained string : {}", digestValueBase64);
+
+		} else {
 			result = Utils.fromBase64(digestValueBase64);
 		}
 		return result;

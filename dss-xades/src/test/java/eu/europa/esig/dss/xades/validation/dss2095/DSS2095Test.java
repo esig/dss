@@ -106,15 +106,13 @@ public class DSS2095Test extends AbstractXAdESTestValidation {
 		}
 		assertEquals(2, references);
 		assertEquals(1, signedProperties);
-	};
+	}
 	
 	@Override
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		super.checkSigningCertificateValue(diagnosticData);
 
-		assertFalse(signature.isSigningCertificateIdentified());
-		assertTrue(signature.isSigningCertificateReferencePresent());
-		assertTrue(signature.isSigningCertificateReferenceUnique());
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		
 		CertificateRefWrapper signingCertificateReference = signature.getSigningCertificateReference();
 		assertNotNull(signingCertificateReference);
@@ -123,7 +121,7 @@ public class DSS2095Test extends AbstractXAdESTestValidation {
 		
 		assertNull(signingCertificateReference.getIssuerName());
 		assertNull(signingCertificateReference.getIssuerSerial());
-		assertTrue(signingCertificateReference.isIssuerSerialPresent());
+		assertFalse(signingCertificateReference.isIssuerSerialPresent());
 		assertFalse(signingCertificateReference.isIssuerSerialMatch()); // not conformant X509IssuerName
 	}
 	
