@@ -17,7 +17,7 @@ This document provides examples of code which allow easy handling of digital sig
 
 Three main features can be distinguished within the framework :
 
-* The digital signature;
+* The creation of a digital signature;
 * The extension of a digital signature and;
 * The validation of a digital signature.
 

@@ -163,7 +163,7 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 [[SignatureTokens]]
 ==== Signature tokens
 
-The DSS framework is able to create signatures from PKCS#11, PKCS#12, MS CAPI and Apple Keystore. To be independent of the signing media, DSS framework uses an interface named SignatureTokenConnection to manage different implementations of the signing process. The base implementation is able to sign a stream of the data in one step. That means that all the data to be signed needs to be sent to the SSCD. This is the case for MS CAPI. As to the PKCS#11 and PKCS#12, which give to the developer a finer control in the signature operation, the DSS framework implements the `AsyncSignatureTokenConnection` abstract class that permits to execute the digest operation and signature operation in two different threads or even in two different hardwares.
+The DSS framework is able to create signatures from PKCS#11, PKCS#12, MS CAPI and Apple Keystore. To be independent of the signing media, DSS framework uses an interface named SignatureTokenConnection to manage different implementations of the signing process. The base implementation is able to sign a stream of the data in one step. That means that all the data to be signed needs to be sent to the SCDev. This is the case for MS CAPI. As to the PKCS#11 and PKCS#12, which give to the developer a finer control in the signature operation, the DSS framework implements the `AsyncSignatureTokenConnection` abstract class that permits to execute the digest operation and signature operation in two different threads or even in two different hardwares.
 
 This design permits also other card providers/adopters to create own implementations. For example, this can be used for a direct connection to the Smartcard through Java PC/SC.
 
@@ -178,7 +178,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS11Snip
 
 ===== PKCS#12
 
-This standard defines a file format commonly used to store the private key and corresponding public key certificate protecting them by password. It allows signing with a PKC#12 keystore (.p12 file).
+This standard defines a file format commonly used to store the private key and corresponding public key certificate protecting them by password. It allows signing with a PKCS#12 keystore (.p12 file).
 In order to use this format with the DSS framework you have to go through the class `Pkcs12SignatureToken`.
 
 [source,java,indent=0]
@@ -189,7 +189,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS12Snip
 
 ===== MS CAPI
 
-If the middleware for communicating with an SSDC provides a CSP based on MS CAPI (the Microsoft interface to communicate with SmartCards) specification, then to sign the documents you can use MSCAPISignatureToken class.
+If the middleware for communicating with an SCDev provides a CSP based on MS CAPI (the Microsoft interface to communicate with SmartCards) specification, then to sign the documents you can use MSCAPISignatureToken class.
 [source,java,indent=0]
 .MSCAPISignatureToken usage
 ----
@@ -297,8 +297,8 @@ The simplest way to address the digital signature passes through the XAdES forma
 
 The referenced specifications define the following:
 
-* To electronically sign a document, a signing certificate (that proves the signer's identity) and the access to its associated private key is needed.
-* To electronically validate a signed document the signer's certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key used to create the signature must also be provided.
+* To digitally sign a document, a signing certificate (that proves the signer's identity) and the access to its associated private key is needed.
+* To digitally validate a signed document the signer's certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key used to create the signature must also be provided.
 
 
 To start, let's take a simple XML document:

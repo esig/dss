@@ -6,7 +6,7 @@
 
 == Electronic signatures and DSS
 
-DSS (Digital Signature Services) is an open-source software library for electronic signature creation and validation. DSS supports the creation and verification of interoperable and secure electronic signatures in line with European legislation. In particular, DSS aims to follow the eIDAS Regulation and related standards closely.
+DSS (Digital Signature Services) is an open-source software library for electronic signature creation, augmentation and validation. DSS supports the creation, augmentation and verification of interoperable and secure electronic signatures in line with European legislation. In particular, DSS aims to follow the eIDAS Regulation and related standards closely.
 
 === Introduction to electronic and digital signatures
 
