@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf.visible;
 
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 
 /**
  * Contains utils for the image rotation
@@ -100,6 +101,61 @@ public class ImageRotationUtils {
      */
     public static boolean isSwapOfDimensionsRequired(int rotation) {
     	return ImageRotationUtils.ANGLE_90 == rotation || ImageRotationUtils.ANGLE_270 == rotation;
+    }
+
+    /**
+     * Verifies if swap of dimensions is required with the current rotation
+     *
+     * @param rotation {@code VisualSignatureRotation}
+     * @return TRUE is swap of dimensions is required, FALSE otherwise
+     */
+    public static boolean isSwapOfDimensionsRequired(VisualSignatureRotation rotation) {
+        return VisualSignatureRotation.ROTATE_90 == rotation || VisualSignatureRotation.ROTATE_270 == rotation;
+    }
+
+    /**
+     * This method swaps dimensions of the given {@code AnnotationBox}
+     *
+     * @param annotationBox {@link AnnotationBox}
+     * @return {@link AnnotationBox}
+     */
+    public static AnnotationBox swapDimensions(AnnotationBox annotationBox) {
+        return new AnnotationBox(annotationBox.getMinY(), annotationBox.getMinX(), annotationBox.getMaxY(), annotationBox.getMaxX());
+    }
+
+    /**
+     * This method rotates the given {@code annotationBox} relatively the {@code wrappingBox}
+     * according to the given {@code rotation}
+     *
+     * @param annotationBox {@link AnnotationBox} to rotate
+     * @param wrappingBox {@link AnnotationBox} representing wrapping box
+     * @param rotation rotation degree
+     * @return {@link AnnotationBox}
+     */
+    public static AnnotationBox rotateRelativelyWrappingBox(AnnotationBox annotationBox, AnnotationBox wrappingBox, int rotation) {
+        switch (rotation) {
+            case ImageRotationUtils.ANGLE_90:
+                return new AnnotationBox(annotationBox.getMinY(),
+                        wrappingBox.getWidth() - annotationBox.getMaxX(),
+                        annotationBox.getMaxY(),
+                        wrappingBox.getWidth() - annotationBox.getMinX());
+            case ImageRotationUtils.ANGLE_180:
+                return new AnnotationBox(wrappingBox.getWidth() - annotationBox.getMaxX(),
+                        wrappingBox.getHeight() - annotationBox.getMaxY(),
+                        wrappingBox.getWidth() - annotationBox.getMinX(),
+                        wrappingBox.getHeight() - annotationBox.getMinY());
+            case ImageRotationUtils.ANGLE_270:
+                return new AnnotationBox(wrappingBox.getHeight() - annotationBox.getMaxY(),
+                        annotationBox.getMinX(),
+                        wrappingBox.getHeight() - annotationBox.getMinY(),
+                        annotationBox.getMaxX());
+            case ImageRotationUtils.ANGLE_0:
+            case ImageRotationUtils.ANGLE_360:
+                // do nothing
+                return annotationBox;
+            default:
+                throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
+        }
     }
     
 }

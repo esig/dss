@@ -254,6 +254,12 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
+	public int getPageRotation(int page) {
+		PDPage pdPage = getPDPage(page);
+		return pdPage.getRotation();
+	}
+
+	@Override
 	public List<PdfAnnotation> getPdfAnnotations(int page) throws IOException {
 		List<PdfAnnotation> annotations = new ArrayList<>();
 		List<PDAnnotation> pdAnnotations = getPageAnnotations(page);

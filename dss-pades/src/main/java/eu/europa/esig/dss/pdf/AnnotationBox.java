@@ -41,7 +41,7 @@ public class AnnotationBox {
 	private final float maxY;
 	
 	/**
-	 * Default constructor
+	 * Default constructor (normalizes the provided properties)
 	 * 
 	 * @param minX
 	 * 			 the lower left X coordinate
@@ -53,10 +53,10 @@ public class AnnotationBox {
 	 * 			 the upper right Y coordinate
 	 */
 	public AnnotationBox(float minX, float minY, float maxX, float maxY) {
-		this.minX = minX;
-		this.minY = minY;
-		this.maxX = maxX;
-		this.maxY = maxY;
+		this.minX = minX < maxX ? minX : maxX;
+		this.minY = minY < maxY ? minY : maxY;
+		this.maxX = minX < maxX ? maxX : minX;
+		this.maxY = minY < maxY ? maxY : minY;
 	}
 	
 	/**

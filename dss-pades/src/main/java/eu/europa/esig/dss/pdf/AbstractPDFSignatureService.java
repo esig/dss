@@ -23,10 +23,10 @@ package eu.europa.esig.dss.pdf;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.alert.status.Status;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -111,7 +111,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Constructor for the PDFSignatureService
 	 * 
 	 * @param serviceMode            current instance is used to generate
-	 *                               DocumentTypestamp or Signature signature layer
+	 *                               Signature or DocumentTimeStamp revision
 	 * @param signatureDrawerFactory the factory of {@code SignatureDrawer}
 	 */
 	protected AbstractPDFSignatureService(PDFServiceMode serviceMode, SignatureDrawerFactory signatureDrawerFactory) {
@@ -562,7 +562,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		AnnotationBox signatureFieldAnnotation = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldAnnotation != null) {
 			AnnotationBox pageBox = documentReader.getPageBox(fieldParameters.getPage());
-			signatureFieldAnnotation = signatureFieldAnnotation.toPdfPageCoordinates(pageBox.getHeight());
+			int pageRotation = documentReader.getPageRotation(fieldParameters.getPage());
+			signatureFieldAnnotation = toPdfPageCoordinates(signatureFieldAnnotation, pageBox, pageRotation);
 
 			assertSignatureFieldPositionValid(signatureFieldAnnotation, documentReader, fieldParameters);
 		}
@@ -604,23 +605,42 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 																SignatureFieldParameters parameters) throws IOException {
 		AnnotationBox annotationBox = new AnnotationBox(parameters);
 		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
-		annotationBox = annotationBox.toPdfPageCoordinates(pageBox.getHeight());
+		int pageRotation = reader.getPageRotation(parameters.getPage());
+		annotationBox = toPdfPageCoordinates(annotationBox, pageBox, pageRotation);
 
 		assertSignatureFieldPositionValid(annotationBox, reader, parameters);
 		return annotationBox;
 	}
 
-	private void assertSignatureFieldPositionValid(final AnnotationBox annotationBox, final PdfDocumentReader reader,
-												  SignatureFieldParameters parameters) throws IOException {
-		checkSignatureFieldBoxOverlap(reader, annotationBox, parameters.getPage());
-
-		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
-		checkSignatureFieldAgainstPageDimensions(annotationBox, pageBox);
+	/**
+	 * This method transforms a {@code fieldAnnotationBox}'s positions and dimensions according to the given page
+	 *
+	 * @param fieldAnnotationBox {@link AnnotationBox} computed field of a signature
+	 * @param pageBox {@link AnnotationBox} page's box
+	 * @param pageRotation defines the page's rotation
+	 * @return {@link AnnotationBox}
+	 */
+	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox, int pageRotation) {
+		return fieldAnnotationBox.toPdfPageCoordinates(pageBox.getHeight());
 	}
 
-	private void checkSignatureFieldBoxOverlap(final PdfDocumentReader reader, final AnnotationBox signatureFieldBox,
-			int page) throws IOException {
-		List<PdfAnnotation> pdfAnnotations = reader.getPdfAnnotations(page);
+	private void assertSignatureFieldPositionValid(AnnotationBox annotationBox, final PdfDocumentReader reader,
+												  SignatureFieldParameters parameters) throws IOException {
+		int pageRotation = reader.getPageRotation(parameters.getPage());
+		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
+		checkSignatureFieldAgainstPageDimensions(annotationBox, pageBox, pageRotation);
+		List<PdfAnnotation> pdfAnnotations = reader.getPdfAnnotations(parameters.getPage());
+		checkSignatureFieldBoxOverlap(annotationBox, pdfAnnotations);
+	}
+
+	/**
+	 * This method verifies whether the {@code signatureFieldBox} overlaps
+	 * with one of the extracted {@code pdfAnnotations}
+	 *
+	 * @param signatureFieldBox {@link AnnotationBox} to verify
+	 * @param pdfAnnotations a list of {@link AnnotationBox} to verify against
+	 */
+	protected void checkSignatureFieldBoxOverlap(final AnnotationBox signatureFieldBox, List<PdfAnnotation> pdfAnnotations) {
 		if (PdfModificationDetectionUtils.isAnnotationBoxOverlapping(signatureFieldBox, pdfAnnotations)) {
 			alertOnSignatureFieldOverlap();
 		}
@@ -634,7 +654,15 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		alertOnSignatureFieldOverlap.alert(new Status(alertMessage));
 	}
 
-	private void checkSignatureFieldAgainstPageDimensions(final AnnotationBox signatureFieldBox, final AnnotationBox pageBox) {
+	/**
+	 * This method verifies whether the {@code signatureFieldBox} is within {@code pageBox}
+	 *
+	 * @param signatureFieldBox {@link AnnotationBox} to check
+	 * @param pageBox {@link AnnotationBox} representing the page's box
+	 * @param pageRotation defines the page's rotation
+	 */
+	protected void checkSignatureFieldAgainstPageDimensions(final AnnotationBox signatureFieldBox, AnnotationBox pageBox,
+															int pageRotation) {
 		if (signatureFieldBox.getMinX() < pageBox.getMinX() || signatureFieldBox.getMaxX() > pageBox.getMaxX() ||
 				signatureFieldBox.getMinY() < pageBox.getMinY() || signatureFieldBox.getMaxY() > pageBox.getMaxY()) {
 			alertOnSignatureFieldOutsidePageDimensions(signatureFieldBox, pageBox);

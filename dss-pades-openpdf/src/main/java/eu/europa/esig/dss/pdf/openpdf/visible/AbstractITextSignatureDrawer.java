@@ -30,6 +30,7 @@ import com.lowagie.text.pdf.PdfSignatureAppearance;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPositionBuilder;
@@ -65,7 +66,7 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	 */
 	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() {
 		AnnotationBox pageBox = getPageAnnotationBox();
-		int pageRotation = reader.getPageRotation(parameters.getFieldParameters().getPage());
+		int pageRotation = getPageRotation();
 		return new SignatureFieldDimensionAndPositionBuilder(parameters, getDSSFontMetrics(), pageBox, pageRotation)
 				.setSignatureFieldAnnotationBox(getSignatureFieldAnnotationBox()).build();
 	}
@@ -88,20 +89,19 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 		return new AnnotationBox(0, 0, rectangle.getWidth(), rectangle.getHeight());
 	}
 
+	protected int getPageRotation() {
+		return reader.getPageRotation(parameters.getFieldParameters().getPage());
+	}
+
 	/**
-	 * Transforms the given {@code dimensionAndPosition} to a {@code com.lowagie.text.Rectangle}
-	 * with the given page size
+	 * Transforms the given {@code dimensionAndPosition} to a {@code AnnotationBox} according to the given page size
 	 *
 	 * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition}
-	 * @return {@link com.lowagie.text.Rectangle}
+	 * @return {@link AnnotationBox}
 	 */
-	protected Rectangle toITextRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition) {
-		AnnotationBox pageBox = getPageAnnotationBox();
-		return new Rectangle(dimensionAndPosition.getBoxX(),
-				pageBox.getHeight() - dimensionAndPosition.getBoxY() - dimensionAndPosition.getBoxHeight(),
-				dimensionAndPosition.getBoxX() + dimensionAndPosition.getBoxWidth(),
-				pageBox.getHeight() - dimensionAndPosition.getBoxY(),
-				dimensionAndPosition.getGlobalRotation());
+	protected AnnotationBox toAnnotationBox(SignatureFieldDimensionAndPosition dimensionAndPosition) {
+		AnnotationBox annotationBox = dimensionAndPosition.getAnnotationBox();
+		return annotationBox.toPdfPageCoordinates(getPageAnnotationBox().getHeight());
 	}
 
 	private AnnotationBox getSignatureFieldAnnotationBox() {
@@ -129,6 +129,46 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * As OpenPDF does not automatically rotate the provided signature field relatively to the page's rotation,
+	 * we need to rotate it manually
+	 *
+	 * @param annotationBox {@link AnnotationBox} to be rotated
+	 * @return {@link AnnotationBox}
+	 */
+	protected AnnotationBox getRotatedAnnotationRelativelyPageRotation(AnnotationBox annotationBox) {
+		AnnotationBox pageAnnotationBox = getPageAnnotationBox();
+		int pageRotation = getPageRotation();
+		return ImageRotationUtils.rotateRelativelyWrappingBox(annotationBox, pageAnnotationBox, pageRotation);
+	}
+
+	/**
+	 * Transforms {@code AnnotationBox} to the {@code com.lowagie.text.Rectangle}
+	 *
+	 * @param annotationBox {@link AnnotationBox}
+	 * @return {@link Rectangle}
+	 */
+	protected Rectangle toITextRectangle(AnnotationBox annotationBox) {
+		return new Rectangle(annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());
+	}
+
+	/**
+	 * Because OpenPDF does not rotate signature field automatically accordingly the page's rotation, we need to rotate manually
+	 *
+	 * @param globalRotation calculated global rotation
+	 * @param pageRotation page's rotation
+	 * @return final rotation value
+	 */
+	protected int getFinalRotation(int globalRotation, int pageRotation) {
+		int finalRotation = globalRotation + pageRotation;
+		if (finalRotation > 360) {
+			finalRotation -= 360;
+		} else if (finalRotation < 0) {
+			finalRotation = 360 - finalRotation;
+		}
+		return finalRotation;
 	}
 
 }
