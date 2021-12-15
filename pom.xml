@@ -38,7 +38,7 @@
 		<module-name />
 
 		<slf4j.version>1.7.32</slf4j.version>
-		<logback-classic.version>1.2.6</logback-classic.version>
+		<logback-classic.version>1.2.8</logback-classic.version>
 
 		<bouncycastle.version>1.70</bouncycastle.version>
 		<xmlsec.version>2.3.0</xmlsec.version>
