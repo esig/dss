@@ -3,7 +3,6 @@ package eu.europa.esig.dss.pades.signature.visible.suite;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
@@ -20,8 +19,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.awt.Color;
-import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -50,18 +47,18 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
         service = new PAdESService(getOfflineCertificateVerifier());
     }
 
-    private static Stream<Arguments> data() throws URISyntaxException {
-        List<File> signable = new ArrayList<>();
-        signable.add(new File(PAdESVisibleSignRotatedDocumentTest.class.getResource("/visualSignature/test.pdf").toURI()));
-        signable.add(new File(PAdESVisibleSignRotatedDocumentTest.class.getResource("/visualSignature/test_90.pdf").toURI()));
-        signable.add(new File(PAdESVisibleSignRotatedDocumentTest.class.getResource("/visualSignature/test_180.pdf").toURI()));
-        signable.add(new File(PAdESVisibleSignRotatedDocumentTest.class.getResource("/visualSignature/test_270.pdf").toURI()));
-        signable.add(new File(PAdESVisibleSignRotatedDocumentTest.class.getResource("/visualSignature/test_-90.pdf").toURI()));
-        signable.add(new File(PAdESVisibleSignRotatedDocumentTest.class.getResource("/visualSignature/test_-180.pdf").toURI()));
-        signable.add(new File(PAdESVisibleSignRotatedDocumentTest.class.getResource("/visualSignature/test_-270.pdf").toURI()));
+    private static Stream<Arguments> data() {
+        List<DSSDocument> signable = new ArrayList<>();
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test.pdf"), "test"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test_90.pdf"), "test_90"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test_180.pdf"), "test_180"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test_270.pdf"), "test_270"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test_-90.pdf"), "test_-90"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test_-180.pdf"), "test_-180"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test_-270.pdf"), "test_-270"));
 
         Collection<Arguments> dataToRun = new ArrayList<>();
-        for (File document : signable) {
+        for (DSSDocument document : signable) {
             for (VisualSignatureRotation rotation : VisualSignatureRotation.values()) {
                 dataToRun.add(Arguments.of(document, rotation));
             }
@@ -71,9 +68,11 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
 
     @ParameterizedTest(name = "Text visual signature for document and rotation {index} : {0} : {1}")
     @MethodSource("data")
-    public void textTest(File file, VisualSignatureRotation rotation) {
-        this.documentToSign = new FileDocument(file);
-        this.documentToSign.setName("text_" + file.getName() + "_" + rotation.name() + ".pdf");
+    public void textTest(DSSDocument document, VisualSignatureRotation rotation) {
+        this.documentToSign = document;
+        String originalDocName = documentToSign.getName();
+
+        this.documentToSign.setName("text_" + originalDocName + "_" + rotation.name() + ".pdf");
 
         SignatureImageParameters imageParameters = new SignatureImageParameters();
         imageParameters.setRotation(rotation);
@@ -93,13 +92,17 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
         signatureParameters.setImageParameters(imageParameters);
 
         super.signAndVerify();
+
+        this.documentToSign.setName(originalDocName);
     }
 
     @ParameterizedTest(name = "Image visual signature for document and rotation {index} : {0} : {1}")
     @MethodSource("data")
-    public void imageTest(File file, VisualSignatureRotation rotation) {
-        this.documentToSign = new FileDocument(file);
-        this.documentToSign.setName("image_" + file.getName() + "_" + rotation.name() + ".pdf");
+    public void imageTest(DSSDocument document, VisualSignatureRotation rotation) {
+        this.documentToSign = document;
+        String originalDocName = documentToSign.getName();
+
+        this.documentToSign.setName("image_" + originalDocName + "_" + rotation.name() + ".pdf");
 
         SignatureImageParameters imageParameters = new SignatureImageParameters();
         imageParameters.setBackgroundColor(Color.PINK);
@@ -115,8 +118,9 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
 
         signatureParameters.setImageParameters(imageParameters);
 
-
         super.signAndVerify();
+
+        this.documentToSign.setName(originalDocName);
     }
 
     @Override
