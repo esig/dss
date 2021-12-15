@@ -252,23 +252,20 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	private PDSignatureField findExistingSignatureField(final PDDocument pdDocument, final SignatureFieldParameters fieldParameters) {
 		String targetFieldId = fieldParameters.getFieldId();
 		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(targetFieldId)) {
-			PDAcroForm acroForm = pdDocument.getDocumentCatalog().getAcroForm();
-			if (acroForm != null) {
-				PDField field = acroForm.getField(targetFieldId);
-				if (field != null) {
-					if (field instanceof PDSignatureField) {
-						PDSignatureField signatureField = (PDSignatureField) field;
+			try {
+				List<PDSignatureField> signatureFields = pdDocument.getSignatureFields();
+				for (PDSignatureField signatureField : signatureFields) {
+					if (signatureField.getPartialName().equals(targetFieldId)) {
 						PDSignature signature = signatureField.getSignature();
 						if (signature != null) {
-							throw new IllegalArgumentException(String.format(
-									"The signature field '%s' can not be signed since its already signed.", targetFieldId));
+							throw new IllegalArgumentException(
+									String.format("The signature field '%s' can not be signed since its already signed.", targetFieldId));
 						}
 						return signatureField;
-					} else {
-						throw new IllegalArgumentException(String.format("The field '%s' is not a signature field!",
-								targetFieldId));
 					}
 				}
+			} catch (IOException e) {
+				throw new DSSException(String.format("Unable to retrieve signature fields. Reason : %s", e.getMessage()), e);
 			}
 			throw new IllegalArgumentException(String.format("The signature field '%s' does not exist.", targetFieldId));
 		}
