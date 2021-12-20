@@ -89,6 +89,11 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 		return new AnnotationBox(0, 0, rectangle.getWidth(), rectangle.getHeight());
 	}
 
+	/**
+	 * Returns the page's rotation where the signature field will be placed in
+	 *
+	 * @return rotation degree
+	 */
 	protected int getPageRotation() {
 		return reader.getPageRotation(parameters.getFieldParameters().getPage());
 	}
