@@ -20,17 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -49,6 +39,15 @@ import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
 	
@@ -102,7 +101,7 @@ public class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation
 		validateSignatures(diagnosticData.getSignatures());
 		
 		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(doubleSignedDocument);
-        ASiCExtractResult result = extractor.extract();
+        ASiCContent result = extractor.extract();
         
         assertEquals(6, result.getAllDocuments().size());
         assertEquals(0, result.getContainerDocuments().size());
@@ -111,7 +110,7 @@ public class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation
         assertEquals(1, result.getManifestDocuments().size());
         assertNotNull(result.getMimeTypeDocument());
         assertEquals(2, result.getSignedDocuments().size());
-        assertNotNull(result.getRootContainer());
+        assertNotNull(result.getAsicContainer());
         assertEquals(2, result.getSignatureDocuments().size());
         assertEquals(0, result.getTimestampDocuments().size());
         assertEquals(0, result.getUnsupportedDocuments().size());

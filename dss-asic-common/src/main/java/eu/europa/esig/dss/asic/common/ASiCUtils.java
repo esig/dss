@@ -110,18 +110,8 @@ public final class ASiCUtils {
 	 * @return {@link String} MimeType
 	 */
 	public static String getMimeTypeString(final ASiCParameters asicParameters) {
-		final String asicParameterMimeType = asicParameters.getMimeType();
-		String mimeTypeString;
-		if (Utils.isStringBlank(asicParameterMimeType)) {
-			if (isASiCE(asicParameters)) {
-				mimeTypeString = MimeType.ASICE.getMimeTypeString();
-			} else {
-				mimeTypeString = MimeType.ASICS.getMimeTypeString();
-			}
-		} else {
-			mimeTypeString = asicParameterMimeType;
-		}
-		return mimeTypeString;
+		final MimeType mimeType = getMimeType(asicParameters);
+		return mimeType.getMimeTypeString();
 	}
 
 	/**
@@ -135,6 +125,16 @@ public final class ASiCUtils {
 			return getZipComment(ASiCUtils.getMimeTypeString(asicParameters));
 		}
 		return Utils.EMPTY_STRING;
+	}
+
+	/**
+	 * Returns a ZIP Comment String from the provided {@code MimeType}
+	 *
+	 * @param mimeType {@link MimeType}
+	 * @return {@link String} zip comment
+	 */
+	public static String getZipComment(final MimeType mimeType) {
+		return getZipComment(mimeType.getMimeTypeString());
 	}
 
 	/**
@@ -212,6 +212,9 @@ public final class ASiCUtils {
 	 * @return {@link MimeType}
 	 */
 	public static MimeType getMimeType(ASiCParameters asicParameters) {
+		if (Utils.isStringNotBlank(asicParameters.getMimeType())) {
+			return MimeType.fromMimeTypeString(asicParameters.getMimeType());
+		}
 		return isASiCE(asicParameters) ? MimeType.ASICE : MimeType.ASICS;
 	}
 	
@@ -239,7 +242,7 @@ public final class ASiCUtils {
 	 * @param filenames a list of file names
 	 * @return TRUE if the list of filename contains a signature file(s)
 	 */
-	public static boolean areFilesContainSignatures(List<String> filenames) {
+	public static boolean filesContainSignatures(List<String> filenames) {
 		for (String filename : filenames) {
 			if (isSignature(filename)) {
 				return true;
@@ -566,6 +569,24 @@ public final class ASiCUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * This method searches for a document in a {@code documentList} with
+	 * a name of {@code newDocumentVersion} and  replaces the found entry with the updated version
+	 * or adds the document to the given list if no such entry has been found
+	 *
+	 * @param documentList a list of {@link DSSDocument}s
+	 * @param newDocument {@link DSSDocument} to add
+	 */
+	public static void addOrReplaceDocument(List<DSSDocument> documentList, DSSDocument newDocument) {
+		for (int i = 0; i < documentList.size(); i++) {
+			if (newDocument.getName().equals(documentList.get(i).getName())) {
+				documentList.set(i, newDocument);
+				return;
+			}
+		}
+		documentList.add(newDocument);
 	}
 
 }

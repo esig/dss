@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.cades.validation;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.validation.scope.ASiCWithCAdESSignatureScopeFinder;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
@@ -61,7 +62,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	 * The empty constructor
 	 */
 	ASiCContainerWithCAdESValidator() {
-		super(null);
+		super();
 	}
 
 	/**
@@ -71,7 +72,15 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	 */
 	public ASiCContainerWithCAdESValidator(final DSSDocument asicContainer) {
 		super(asicContainer, new ASiCWithCAdESSignatureScopeFinder());
-		extractEntries();
+	}
+
+	/**
+	 * The constructor with {@link ASiCContent}
+	 *
+	 * @param asicContent {@link ASiCContent} to be validated
+	 */
+	public ASiCContainerWithCAdESValidator(final ASiCContent asicContent) {
+		super(asicContent, new ASiCWithCAdESSignatureScopeFinder());
 	}
 
 	@Override
@@ -104,7 +113,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				cadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 				cadesValidator.setContainerContents(getArchiveDocuments());
 				
-				DSSDocument signedDocument = ASiCWithCAdESExtractResultUtils.getSignedDocument(extractResult, signature.getName());
+				DSSDocument signedDocument = ASiCWithCAdESUtils.getSignedDocument(asicContent, signature.getName());
 				if (signedDocument != null) {
 					cadesValidator.setDetachedContents(Collections.singletonList(signedDocument));
 				}

@@ -258,7 +258,7 @@ public class CAdESService extends
 	 *
 	 * @param parameters
 	 *            set of driving signing parameters
-	 * @return {@code CAdESSignatureExtension} related to the predefine profile
+	 * @return {@code CAdESSignatureExtension} related to the pre-defined profile
 	 */
 	private CAdESSignatureExtension getExtensionProfile(final CAdESSignatureParameters parameters) {
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();

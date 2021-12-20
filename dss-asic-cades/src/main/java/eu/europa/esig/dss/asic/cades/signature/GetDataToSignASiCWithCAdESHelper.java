@@ -31,13 +31,6 @@ import java.util.List;
 public interface GetDataToSignASiCWithCAdESHelper extends GetDataToSignHelper {
 
 	/**
-	 * Returns the original ASiC container document
-	 *
-	 * @return {@link DSSDocument}
-	 */
-	DSSDocument getAsicContainer();
-
-	/**
 	 * Returns a signed file document
 	 *
 	 * NOTE: In CMS/CAdES, only one file can be signed
@@ -54,19 +47,5 @@ public interface GetDataToSignASiCWithCAdESHelper extends GetDataToSignHelper {
 	 * @return a list of detached {@link DSSDocument}s
 	 */
 	List<DSSDocument> getDetachedContents();
-
-	/**
-	 * Returns an Archive Manifest files (ASiC-E)
-	 *
-	 * @return a list of archive manifest {@link DSSDocument}s
-	 */
-	List<DSSDocument> getArchiveManifestFiles();
-
-	/**
-	 * Returns a list of detached timestamps (ASiC-E)
-	 *
-	 * @return a list of timestamp {@link DSSDocument}s
-	 */
-	List<DSSDocument> getTimestamps();
 
 }

@@ -104,8 +104,7 @@ public class ASiCECAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 
 		Exception exception = assertThrows(IllegalInputException.class,
 				() -> service.addSignaturePolicyStore(doubleSignedDocument, signaturePolicyStore));
-		assertEquals("Not possible to add a signature policy store! " +
-				"Reason : a signature with a filename 'META-INF/signature002.p7s' is covered by another manifest.", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Not possible to add a signature policy store!"));
 
 		return service.addSignaturePolicyStore(signedDocument, signaturePolicyStore);
 	}

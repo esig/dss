@@ -24,7 +24,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
@@ -129,7 +129,7 @@ public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExt
 
 	protected void onCreatedContainer(DSSDocument container) {
 		ASiCWithCAdESContainerExtractor containerExtractor = new ASiCWithCAdESContainerExtractor(container);
-		ASiCExtractResult result = containerExtractor.extract();
+		ASiCContent result = containerExtractor.extract();
 
 		List<DSSDocument> signatureDocuments = result.getSignatureDocuments();
 		assertTrue(Utils.isCollectionNotEmpty(signatureDocuments));

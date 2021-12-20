@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.cades.signature;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCTestSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -73,7 +73,7 @@ public abstract class AbstractASiCWithCAdESTestSignature
         super.onDocumentSigned(byteArray);
 
         ASiCWithCAdESContainerExtractor containerExtractor = new ASiCWithCAdESContainerExtractor(new InMemoryDocument(byteArray));
-        ASiCExtractResult result = containerExtractor.extract();
+        ASiCContent result = containerExtractor.extract();
 
         List<DSSDocument> signatureDocuments = result.getSignatureDocuments();
         assertTrue(Utils.isCollectionNotEmpty(signatureDocuments));
@@ -88,7 +88,7 @@ public abstract class AbstractASiCWithCAdESTestSignature
         assertNull(cmsSignedData.getSignedContent());
     }
 
-    protected abstract DSSDocument getSignedData(ASiCExtractResult extractResult);
+    protected abstract DSSDocument getSignedData(ASiCContent extractResult);
 
     @Override
     protected void checkContainerInfo(DiagnosticData diagnosticData) {

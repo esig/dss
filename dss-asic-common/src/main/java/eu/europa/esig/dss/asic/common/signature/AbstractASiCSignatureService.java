@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.common.signature;
 
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -37,16 +37,13 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -57,9 +54,6 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 					implements MultipleDocumentsSignatureService<SP, TP>, CounterSignatureService<CSP> {
 
 	private static final long serialVersionUID = 243114076381526665L;
-
-	/** The extracted content (documents) of the ASiC container */
-	protected ASiCExtractResult archiveContent = new ASiCExtractResult();
 
 	/**
 	 * The default constructor
@@ -104,10 +98,11 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	 * Extracts the content (documents) of the ASiC container
 	 *
 	 * @param archive {@link DSSDocument} representing an ASiC container
+	 * @return {@link ASiCContent}
 	 */
-	protected void extractCurrentArchive(DSSDocument archive) {
+	protected ASiCContent extractCurrentArchive(DSSDocument archive) {
 		AbstractASiCContainerExtractor extractor = getArchiveExtractor(archive);
-		archiveContent = extractor.extract();
+		return extractor.extract();
 	}
 
 	/**
@@ -119,129 +114,57 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	protected abstract AbstractASiCContainerExtractor getArchiveExtractor(DSSDocument archive);
 
 	/**
-	 * Returns a list of signature documents embedded into the ASiC container
-	 *
-	 * @return a list of {@link DSSDocument}s
-	 */
-	protected List<DSSDocument> getEmbeddedSignatures() {
-		return archiveContent.getSignatureDocuments();
-	}
-
-	/**
-	 * Returns a list of manifest documents embedded into the ASiC container
-	 *
-	 * @return a list of {@link DSSDocument}s
-	 */
-	protected List<DSSDocument> getEmbeddedManifests() {
-		return archiveContent.getManifestDocuments();
-	}
-
-	/**
-	 * Returns a list of archive manifest documents embedded into the ASiC container
-	 *
-	 * @return a list of {@link DSSDocument}s
-	 */
-	protected List<DSSDocument> getEmbeddedArchiveManifests() {
-		return archiveContent.getArchiveManifestDocuments();
-	}
-
-	/**
-	 * Returns a list of timestamp documents embedded into the ASiC container
-	 *
-	 * @return a list of {@link DSSDocument}s
-	 */
-	protected List<DSSDocument> getEmbeddedTimestamps() {
-		return archiveContent.getTimestampDocuments();
-	}
-
-	/**
-	 * Returns a list of signed documents embedded into the ASiC container
-	 *
-	 * @return a list of {@link DSSDocument}s
-	 */
-	protected List<DSSDocument> getEmbeddedSignedDocuments() {
-		return archiveContent.getSignedDocuments();
-	}
-
-	/**
-	 * Returns a mimetype document embedded into the ASiC container
-	 *
-	 * @return {@link DSSDocument}
-	 */
-	protected DSSDocument getEmbeddedMimetype() {
-		return archiveContent.getMimeTypeDocument();
-	}
-
-	/**
-	 * Creates a ZIP-Archive by copying the existing {@code archiveDocument} entries
-	 * and overwriting matching ones with {@code filesToAdd}
-	 * 
-	 * @param archiveDocument {@link DSSDocument} the original ASiC container to
-	 *                        extend
-	 * @param filesToAdd      a list of {@link DSSDocument} signatures to embed
-	 * @param creationTime    {@link Date} of the archive creation
-	 * @param zipComment      {@link String}
-	 * @return {@link DSSDocument} the merged ASiC Container
-	 */
-	protected DSSDocument mergeArchiveAndExtendedSignatures(DSSDocument archiveDocument, List<DSSDocument> filesToAdd,
-			Date creationTime, String zipComment) {
-		List<DSSDocument> containerEntriesList = getListOfArchiveDocumentToAdd(archiveDocument, filesToAdd);
-		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(containerEntriesList, creationTime,
-				zipComment);
-		zipArchive.setMimeType(archiveDocument.getMimeType());
-		return zipArchive;
-	}
-
-	private List<DSSDocument> getListOfArchiveDocumentToAdd(DSSDocument archiveDocument, List<DSSDocument> filesToAdd) {
-		List<DSSDocument> result = new ArrayList<>();
-		List<String> filesToAddNames = DSSUtils.getDocumentNames(filesToAdd);
-		List<DSSDocument> containerContent = ZipUtils.getInstance().extractContainerContent(archiveDocument);
-		for (DSSDocument entry : containerContent) {
-			if (!filesToAddNames.contains(entry.getName())) {
-				result.add(entry);
-			}
-		}
-		result.addAll(filesToAdd);
-		return result;
-	}
-
-	/**
 	 * Creates a ZIP-Archive by copying the provided documents to the new container
 	 * 
-	 * @param documentsToBeSigned    a list of {@link DSSDocument}s to be originally
-	 *                               signed
-	 * @param signatures             a list of {@link DSSDocument} representing
-	 *                               signature
-	 * @param metaInfFolderDocuments a list of {@link DSSDocument} representing a
-	 *                               META-INF directory content
-	 * @param asicParameters         {@link ASiCParameters}
-	 * @param creationTime           {@link Date} of the archive creation
+	 * @param asicContent            {@link ASiCContent} to create a new ZIP archive from
+	 * @param creationTime           {@link Date} of the archive creation (optional)
+	 * @param asicParameters         {@link ASiCParameters} (optional)
 	 * @return {@link DSSDocument} the created ASiC Container
 	 */
-	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures,
-			List<DSSDocument> metaInfFolderDocuments, ASiCParameters asicParameters, Date creationTime) {
-		List<DSSDocument> containerEntriesList = getListOfArchiveDocumentToAdd(documentsToBeSigned, signatures,
-				metaInfFolderDocuments, asicParameters);
-		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(containerEntriesList, creationTime,
-				ASiCUtils.getZipComment(asicParameters));
-		zipArchive.setMimeType(ASiCUtils.getMimeType(asicParameters));
+	protected DSSDocument buildASiCContainer(ASiCContent asicContent, Date creationTime,
+											 ASiCParameters asicParameters) {
+		MimeType mimeType = getMimeType(asicContent, asicParameters);
+		if (asicContent.getMimeTypeDocument() == null) {
+			DSSDocument mimetypeDocument = createMimetypeDocument(mimeType);
+			asicContent.setMimeTypeDocument(mimetypeDocument);
+		}
+
+		String zipComment = getZipComment(asicContent, asicParameters, mimeType);
+		if (Utils.isStringEmpty(asicContent.getZipComment())) {
+			asicContent.setZipComment(zipComment);
+		}
+
+		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContent, creationTime);
+		zipArchive.setMimeType(mimeType);
 		return zipArchive;
 	}
 
-	private List<DSSDocument> getListOfArchiveDocumentToAdd(List<DSSDocument> documentsToBeSigned,
-			List<DSSDocument> signatures, List<DSSDocument> metaInfFolderDocuments, ASiCParameters asicParameters) {
-		List<DSSDocument> result = new ArrayList<>();
-		result.add(getMimetypeDocument(asicParameters));
-		result.addAll(documentsToBeSigned);
-		if (ASiCUtils.isASiCE(asicParameters)) {
-			result.addAll(metaInfFolderDocuments);
+	private MimeType getMimeType(ASiCContent asicContent, ASiCParameters asicParameters) {
+		MimeType mimeType = null;
+		DSSDocument mimeTypeDocument = asicContent.getMimeTypeDocument();
+		if (mimeTypeDocument != null) {
+			// re-use the same mime-type when extending a container
+			mimeType = ASiCUtils.getMimeType(mimeTypeDocument);
 		}
-		result.addAll(signatures);
-		return result;
+		if (mimeType == null) {
+			Objects.requireNonNull(asicParameters, "ASiCParameters shall be present for the requested operation!");
+			mimeType = ASiCUtils.getMimeType(asicParameters);
+		}
+		return mimeType;
 	}
 
-	private DSSDocument getMimetypeDocument(final ASiCParameters asicParameters) {
-		final byte[] mimeTypeBytes = ASiCUtils.getMimeTypeString(asicParameters).getBytes(StandardCharsets.UTF_8);
+	private String getZipComment(ASiCContent asicContent, ASiCParameters asicParameters, MimeType mimeType) {
+		String zipComment = asicContent.getZipComment();
+		if (Utils.isStringNotEmpty(zipComment)) {
+			return zipComment;
+		} else if (asicParameters != null && asicParameters.isZipComment()) {
+			return ASiCUtils.getZipComment(mimeType);
+		}
+		return Utils.EMPTY_STRING;
+	}
+
+	private DSSDocument createMimetypeDocument(final MimeType mimeType) {
+		final byte[] mimeTypeBytes = mimeType.getMimeTypeString().getBytes(StandardCharsets.UTF_8);
 		return new InMemoryDocument(mimeTypeBytes, ASiCUtils.MIME_TYPE);
 	}
 
@@ -257,9 +180,11 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 
 	/**
 	 * Verifies if incorporation of a SignaturePolicyStore is possible
+	 *
+	 * @param asicContent {@link ASiCContent}
 	 */
-	protected void assertAddSignaturePolicyStorePossible() {
-		if (Utils.isCollectionEmpty(getEmbeddedSignatures())) {
+	protected void assertAddSignaturePolicyStorePossible(ASiCContent asicContent) {
+		if (Utils.isCollectionEmpty(asicContent.getSignatureDocuments())) {
 			throw new UnsupportedOperationException(
 					"Signature documents of the expected format are not found in the provided ASiC Container! "
 					+ "Add a SignaturePolicyStore is not possible!");
