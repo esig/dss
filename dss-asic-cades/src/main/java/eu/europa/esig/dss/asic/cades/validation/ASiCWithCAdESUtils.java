@@ -107,6 +107,7 @@ public class ASiCWithCAdESUtils {
 	 * Generates and returns a signature filename
 	 *
 	 * @param existingSignatures a list of {@link DSSDocument} signatures from the container
+	 * @param expectedSignatureFileName {@link String} the desired signature filename (optional)
 	 * @return {@link String} signature filename
 	 */
 	public static String getSignatureFileName(List<DSSDocument> existingSignatures, String expectedSignatureFileName) {

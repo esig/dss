@@ -46,6 +46,7 @@ public class DataToSignASiCEWithCAdESHelper extends AbstractGetDataToSignHelper 
 	 *
 	 * @param asicContent {@link ASiCContent}
 	 * @param toBeSigned {@link DSSDocument}
+	 * @param asicParameters {@link ASiCParameters}
 	 */
 	public DataToSignASiCEWithCAdESHelper(final ASiCContent asicContent, final DSSDocument toBeSigned,
 										  final ASiCParameters asicParameters) {

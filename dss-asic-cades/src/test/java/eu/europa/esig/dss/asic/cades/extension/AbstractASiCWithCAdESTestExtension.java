@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -38,6 +39,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -53,8 +56,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExtension<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
 
@@ -118,23 +121,53 @@ public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExt
 	@Override
 	protected void onDocumentSigned(DSSDocument signedDocument) {
 		super.onDocumentSigned(signedDocument);
+
 		onCreatedContainer(signedDocument);
 	}
 
 	@Override
 	protected void onDocumentExtended(DSSDocument extendedDocument) {
 		super.onDocumentExtended(extendedDocument);
+
 		onCreatedContainer(extendedDocument);
 	}
 
 	protected void onCreatedContainer(DSSDocument container) {
 		ASiCWithCAdESContainerExtractor containerExtractor = new ASiCWithCAdESContainerExtractor(container);
-		ASiCContent result = containerExtractor.extract();
+		ASiCContent asicContent = containerExtractor.extract();
+		checkExtractedContent(asicContent);
 
-		List<DSSDocument> signatureDocuments = result.getSignatureDocuments();
+		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
 		assertTrue(Utils.isCollectionNotEmpty(signatureDocuments));
 		for (DSSDocument signatureDocument : signatureDocuments) {
 			checkSignaturePackaging(signatureDocument);
+		}
+		checkManifests(asicContent.getAllManifestDocuments());
+	}
+
+	protected void checkExtractedContent(ASiCContent asicContent) {
+		assertNotNull(asicContent);
+		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()));
+		assertNotNull(asicContent.getMimeTypeDocument());
+		if (getSignatureParameters().aSiC().isZipComment()) {
+			assertTrue(Utils.isStringNotBlank(asicContent.getZipComment()));
+		}
+	}
+
+	protected void checkManifests(List<DSSDocument> manifestDocuments) {
+		for (DSSDocument document : manifestDocuments) {
+			ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(document);
+			assertNotNull(manifestFile);
+
+			assertNotNull(manifestFile.getFilename());
+			assertNotNull(manifestFile.getSignatureFilename());
+			assertTrue(Utils.isCollectionNotEmpty(manifestFile.getEntries()));
+			for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+				assertNotNull(manifestEntry.getFileName());
+				assertNotNull(manifestEntry.getDigest());
+				assertNotNull(manifestEntry.getMimeType());
+				assertTrue(Utils.isStringNotEmpty(manifestEntry.getMimeType().getMimeTypeString()));
+			}
 		}
 	}
 
