@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampDataToSignHelperBuilder;
+import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
@@ -38,19 +39,14 @@ import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -156,7 +152,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
-		final DSSDocument asicContainer = buildASiCContainer(asicContent, parameters.getZipCreationDate(), asicParameters);
+		final DSSDocument asicContainer = buildASiCContainer(asicContent, parameters.getZipCreationDate());
 		asicContainer.setName(getFinalDocumentName(asicContainer, SigningOperation.SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		parameters.reinitDeterministicId();
 		return asicContainer;
@@ -187,25 +183,15 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			ASiCWithCAdESLevelBaselineLTA extensionProfile = new ASiCWithCAdESLevelBaselineLTA(certificateVerifier, tspSource);
 			asicContent = extensionProfile.extend(asicContent, parameters.getDigestAlgorithm());
 
-			final DSSDocument extensionResult = buildASiCContainer(asicContent, parameters.getZipCreationDate(), asicParameters);
+			final DSSDocument extensionResult = buildASiCContainer(asicContent, parameters.getZipCreationDate());
 			extensionResult.setName(getFinalDocumentName(toTimestampDocument, SigningOperation.TIMESTAMP, null, toTimestampDocument.getMimeType()));
 			return extensionResult;
 
 		} else {
-			DSSDocument toBeTimestamped = dataToSignHelper.getToBeSigned();
-			if (ASiCContainerType.ASiC_E == asicParameters.getContainerType()) {
-				asicContent.getManifestDocuments().add(toBeTimestamped); // XML Document in case of ASiC-E container
-			}
+			ASiCWithCAdESTimestampService timestampService = new ASiCWithCAdESTimestampService(tspSource);
+			asicContent = timestampService.createTimestampFromHelper(dataToSignHelper, parameters);
 
-			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-			TimestampBinary timestampBinary = tspSource.getTimeStampResponse(
-					digestAlgorithm, Utils.fromBase64(toBeTimestamped.getDigest(digestAlgorithm)));
-
-			DSSDocument timestampToken = new InMemoryDocument(
-					DSSASN1Utils.getDEREncoded(timestampBinary), dataToSignHelper.getTimestampFilename(), MimeType.TST);
-			ASiCUtils.addOrReplaceDocument(asicContent.getTimestampDocuments(), timestampToken);
-
-			final DSSDocument asicContainer = buildASiCContainer(asicContent, parameters.getZipCreationDate(), asicParameters);
+			final DSSDocument asicContainer = buildASiCContainer(asicContent, parameters.getZipCreationDate());
 			asicContainer.setName(getFinalDocumentName(asicContainer, SigningOperation.TIMESTAMP, null, asicContainer.getMimeType()));
 			return asicContainer;
 		}
@@ -263,7 +249,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
-		final DSSDocument extensionResult = buildASiCContainer(asicContent, parameters.getZipCreationDate(), parameters.aSiC());
+		final DSSDocument extensionResult = buildASiCContainer(asicContent, parameters.getZipCreationDate());
 		extensionResult.setName(getFinalDocumentName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(),
 				toExtendDocument.getMimeType()));
 		return extensionResult;
@@ -286,13 +272,24 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return new ASiCWithCAdESContainerExtractor(archive);
 	}
 
-	private CAdESService getCAdESService() {
+	/**
+	 * Returns the {@code CAdESService} to be used for signature/timestamp creation
+	 *
+	 * @return {@link CAdESService}
+	 */
+	protected CAdESService getCAdESService() {
 		CAdESService cadesService = new CAdESService(certificateVerifier);
 		cadesService.setTspSource(tspSource);
 		return cadesService;
 	}
 
-	private CAdESSignatureParameters getCAdESParameters(ASiCWithCAdESSignatureParameters parameters) {
+	/**
+	 * Returns {@code CAdESSignatureParameters} from the given {@code ASiCWithCAdESSignatureParameters}
+	 *
+	 * @param parameters {@link ASiCWithCAdESSignatureParameters}
+	 * @return {@link CAdESSignatureParameters}
+	 */
+	protected CAdESSignatureParameters getCAdESParameters(ASiCWithCAdESSignatureParameters parameters) {
 		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		parameters.setDetachedContents(null);
 		return parameters;
@@ -333,7 +330,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			ASiCUtils.addOrReplaceDocument(signatureDocuments, signatureWithPolicyStore);
 		}
 
-		final DSSDocument resultArchive = buildASiCContainer(asicContent, null, null);
+		final DSSDocument resultArchive = buildASiCContainer(asicContent, null);
 		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.ADD_SIG_POLICY_STORE, asicContainer.getMimeType()));
 		return resultArchive;
 	}
@@ -391,12 +388,18 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		counterSignedSignature.setName(signatureDocument.getName());
 		ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), counterSignedSignature);
 
-		final DSSDocument resultArchive = buildASiCContainer(asicContent, parameters.bLevel().getSigningDate(), null);
+		final DSSDocument resultArchive = buildASiCContainer(asicContent, parameters.bLevel().getSigningDate());
 		resultArchive.setName(getFinalDocumentName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		return resultArchive;
 	}
 
-	private ASiCWithCAdESSignatureExtension getExtensionProfile(boolean isAddArchiveManifest) {
+	/**
+	 * Returns the extension profile to be used for the current signature
+	 *
+	 * @param isAddArchiveManifest defines whether the ArchiveManifest shall be created
+	 * @return {@link ASiCWithCAdESSignatureExtension}
+	 */
+	protected ASiCWithCAdESSignatureExtension getExtensionProfile(boolean isAddArchiveManifest) {
 		if (isAddArchiveManifest) {
 			return new ASiCWithCAdESLevelBaselineLTA(certificateVerifier, tspSource);
 		} else {

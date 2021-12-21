@@ -21,12 +21,10 @@
 package eu.europa.esig.dss.asic.common.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -41,7 +39,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
@@ -118,54 +115,12 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	 * 
 	 * @param asicContent            {@link ASiCContent} to create a new ZIP archive from
 	 * @param creationTime           {@link Date} of the archive creation (optional)
-	 * @param asicParameters         {@link ASiCParameters} (optional)
 	 * @return {@link DSSDocument} the created ASiC Container
 	 */
-	protected DSSDocument buildASiCContainer(ASiCContent asicContent, Date creationTime,
-											 ASiCParameters asicParameters) {
-		MimeType mimeType = getMimeType(asicContent, asicParameters);
-		if (asicContent.getMimeTypeDocument() == null) {
-			DSSDocument mimetypeDocument = createMimetypeDocument(mimeType);
-			asicContent.setMimeTypeDocument(mimetypeDocument);
-		}
-
-		String zipComment = getZipComment(asicContent, asicParameters, mimeType);
-		if (Utils.isStringEmpty(asicContent.getZipComment())) {
-			asicContent.setZipComment(zipComment);
-		}
-
+	protected DSSDocument buildASiCContainer(ASiCContent asicContent, Date creationTime) {
 		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContent, creationTime);
-		zipArchive.setMimeType(mimeType);
+		zipArchive.setMimeType(ASiCUtils.getMimeType(asicContent.getMimeTypeDocument()));
 		return zipArchive;
-	}
-
-	private MimeType getMimeType(ASiCContent asicContent, ASiCParameters asicParameters) {
-		MimeType mimeType = null;
-		DSSDocument mimeTypeDocument = asicContent.getMimeTypeDocument();
-		if (mimeTypeDocument != null) {
-			// re-use the same mime-type when extending a container
-			mimeType = ASiCUtils.getMimeType(mimeTypeDocument);
-		}
-		if (mimeType == null) {
-			Objects.requireNonNull(asicParameters, "ASiCParameters shall be present for the requested operation!");
-			mimeType = ASiCUtils.getMimeType(asicParameters);
-		}
-		return mimeType;
-	}
-
-	private String getZipComment(ASiCContent asicContent, ASiCParameters asicParameters, MimeType mimeType) {
-		String zipComment = asicContent.getZipComment();
-		if (Utils.isStringNotEmpty(zipComment)) {
-			return zipComment;
-		} else if (asicParameters != null && asicParameters.isZipComment()) {
-			return ASiCUtils.getZipComment(mimeType);
-		}
-		return Utils.EMPTY_STRING;
-	}
-
-	private DSSDocument createMimetypeDocument(final MimeType mimeType) {
-		final byte[] mimeTypeBytes = mimeType.getMimeTypeString().getBytes(StandardCharsets.UTF_8);
-		return new InMemoryDocument(mimeTypeBytes, ASiCUtils.MIME_TYPE);
 	}
 
 	/**

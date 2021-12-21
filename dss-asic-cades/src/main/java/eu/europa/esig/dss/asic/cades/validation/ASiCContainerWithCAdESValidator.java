@@ -156,13 +156,15 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 								archiveManifest.getName());
 					}
 
-				} else if (Utils.collectionSize(getSignedDocuments()) == 1) {
-					timestampedDocument = getSignedDocuments().get(0);
-
 				} else {
-					LOG.warn("Timestamp {} is skipped (no linked archive manifest found / unique file)",
-							timestamp.getName());
-					continue;
+					List<DSSDocument> rootLevelSignedDocuments = ASiCUtils.getRootLevelSignedDocuments(asicContent);
+					if (Utils.collectionSize(rootLevelSignedDocuments) == 1) {
+						timestampedDocument = rootLevelSignedDocuments.get(0);
+					} else {
+						LOG.warn("Timestamp {} is skipped (no linked archive manifest found / unique file)",
+								timestamp.getName());
+						continue;
+					}
 				}
 
 				ASiCWithCAdESTimestampValidator timestampValidator = new ASiCWithCAdESTimestampValidator(
