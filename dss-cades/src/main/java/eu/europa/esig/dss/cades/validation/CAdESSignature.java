@@ -934,8 +934,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 
 		final SignerId signerId = getSignerId();
-		final SignerInformation signerInformationToCheck = cmsSignedDataParser.getSignerInfos().get(signerId);
-		return signerInformationToCheck;
+		return cmsSignedDataParser.getSignerInfos().get(signerId);
 	}
 
 	/**
@@ -1011,8 +1010,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		final ASN1Encodable asn1Encodable = contentIdentifierAttribute.getAttrValues().getObjectAt(0);
 		final ContentIdentifier contentIdentifier = ContentIdentifier.getInstance(asn1Encodable);
-		final String contentIdentifierString = DSSASN1Utils.toString(contentIdentifier.getValue());
-		return contentIdentifierString;
+		return DSSASN1Utils.toString(contentIdentifier.getValue());
 	}
 
 	/**
@@ -1033,8 +1031,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				// content-type is mandatory
 				contentHint = contentHints.getContentType().toString();
 				// content-description is optional
-				if (contentHints.getContentDescription() != null) {
-					contentHint += " [" + contentHints.getContentDescription().toString() + "]";
+				if (contentHints.getContentDescriptionUTF8() != null) {
+					contentHint += " [" + contentHints.getContentDescriptionUTF8().toString() + "]";
 				}
 			}
 		} catch (Exception e) {

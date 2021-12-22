@@ -89,7 +89,7 @@ public class RevocationInfoArchival
             switch (o.getTagNo())
             {
                 case 0:
-                    ASN1Sequence crlValsSeq = (ASN1Sequence)o.getObject();
+                    ASN1Sequence crlValsSeq = (ASN1Sequence)o.getBaseObject();
                     Enumeration crlValsEnum = crlValsSeq.getObjects();
                     while (crlValsEnum.hasMoreElements())
                     {
@@ -98,7 +98,7 @@ public class RevocationInfoArchival
                     this.crlVals = crlValsSeq;
                     break;
                 case 1:
-                    ASN1Sequence ocspValsSeq = (ASN1Sequence)o.getObject();
+                    ASN1Sequence ocspValsSeq = (ASN1Sequence)o.getBaseObject();
                     Enumeration ocspValsEnum = ocspValsSeq.getObjects();
                     while (ocspValsEnum.hasMoreElements())
                     {
@@ -107,7 +107,7 @@ public class RevocationInfoArchival
                     this.ocspVals = ocspValsSeq;
                     break;
                 case 2:
-                    this.otherRevVals = OtherRevVals.getInstance(o.getObject());
+                    this.otherRevVals = OtherRevVals.getInstance(o.getBaseObject());
                     break;
                 default:
                     throw new IllegalArgumentException("invalid tag: "
