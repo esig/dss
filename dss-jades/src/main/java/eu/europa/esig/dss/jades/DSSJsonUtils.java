@@ -560,7 +560,12 @@ public class DSSJsonUtils {
 		if (unprotected == null) {
 			return Collections.emptyList();
 		}
-		return (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+		Object etsiU = unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+		if (!(etsiU instanceof List)) {
+			LOG.warn("Unable to extract 'etsiU' header : the obtained entry is not an array!");
+			return Collections.emptyList();
+		}
+		return (List<Object>) etsiU;
 	}
 	
 	/**
