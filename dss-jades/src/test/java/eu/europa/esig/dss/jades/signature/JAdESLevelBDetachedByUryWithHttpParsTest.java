@@ -27,7 +27,7 @@ public class JAdESLevelBDetachedByUryWithHttpParsTest extends AbstractJAdESMulti
         DSSDocument documentOne = new FileDocument("src/test/resources/ObjectIdByURI-1.html");
         documentOne.setName(DOC_ONE_NAME);
         DSSDocument documentTwo = new FileDocument("src/test/resources/ObjectIdByURI-2.html");
-        documentOne.setName(DOC_TWO_NAME);
+        documentTwo.setName(DOC_TWO_NAME);
         documentToSigns = Arrays.asList(documentOne, documentTwo);
 
         jadesService = new JAdESService(getOfflineCertificateVerifier());

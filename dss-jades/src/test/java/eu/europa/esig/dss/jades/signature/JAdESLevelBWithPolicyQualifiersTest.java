@@ -17,7 +17,6 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
@@ -72,11 +71,6 @@ public class JAdESLevelBWithPolicyQualifiersTest extends AbstractJAdESTestSignat
         signaturePolicy.setSpDocSpecification(spDocSpecification);
 
         signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
-    }
-
-    @Override
-    protected SignaturePolicyProvider getSignaturePolicyProvider() {
-        return new SignaturePolicyProvider();
     }
 
     @Override

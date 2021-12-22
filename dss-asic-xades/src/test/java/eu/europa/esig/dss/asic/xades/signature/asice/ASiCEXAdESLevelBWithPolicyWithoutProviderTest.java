@@ -66,11 +66,6 @@ public class ASiCEXAdESLevelBWithPolicyWithoutProviderTest extends AbstractASiCE
 	}
 
 	@Override
-	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return null;
-	}
-
-	@Override
 	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
 		return service;
 	}

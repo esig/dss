@@ -268,7 +268,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return null;
+		return new SignaturePolicyProvider();
 	}
 
 	protected List<DSSDocument> getDetachedContents() {

@@ -75,11 +75,6 @@ public class XAdESLevelBWithSPQualifiersTest extends AbstractXAdESTestSignature 
     }
 
     @Override
-    protected SignaturePolicyProvider getSignaturePolicyProvider() {
-        return new SignaturePolicyProvider();
-    }
-
-    @Override
     protected void onDocumentSigned(byte[] byteArray) {
         super.onDocumentSigned(byteArray);
         String xmlContent = new String(byteArray);

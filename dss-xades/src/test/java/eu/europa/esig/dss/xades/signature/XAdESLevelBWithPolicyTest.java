@@ -30,7 +30,6 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,11 +73,6 @@ public class XAdESLevelBWithPolicyTest extends AbstractXAdESTestSignature {
 
 		service = new XAdESService(getOfflineCertificateVerifier());
 
-	}
-
-	@Override
-	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return new SignaturePolicyProvider();
 	}
 
 	@Override

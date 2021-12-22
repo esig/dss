@@ -10,7 +10,6 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
@@ -61,11 +60,6 @@ public class XAdES111LevelBWithSigPolicyTest extends AbstractXAdESTestSignature 
 
         service = new XAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
-    }
-
-    @Override
-    protected SignaturePolicyProvider getSignaturePolicyProvider() {
-        return new SignaturePolicyProvider();
     }
 
     @Override
