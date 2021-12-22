@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.exception.IllegalInputException;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
@@ -76,16 +75,16 @@ public class JWS extends JsonWebSignature implements Serializable {
 	}
 	
 	/**
-	 * Sets a detached payload binaries
+	 * Sets payload binaries depending on the 'b64' header's value
 	 * 
-	 * @param payload a byte array representing a payload
+	 * @param payload a byte array representing a payload (unencoded or encoded)
 	 */
-	public void setDetachedPayload(byte[] payload) {
+	public void setPayloadOctets(byte[] payload) {
 		// see JsonWebSignature.setCompactSerializationParts(parts)
 		if (isRfc7797UnencodedPayload()) {
             setPayloadBytes(payload);
         } else {
-            setEncodedPayload(DSSJsonUtils.toBase64Url(payload));
+            setEncodedPayload(new String(payload));
         }
 	}
 	

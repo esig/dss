@@ -851,7 +851,7 @@ public class JAdESLevelBaselineB {
 	public byte[] getPayloadBytes() {
 		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) ||
 				SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
-			return DSSUtils.toByteArray(documentsToSign.get(0));
+			return getIncorporatedPayload();
 
 		} else if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
 			return getPayloadForHttpHeadersMechanism();
@@ -870,6 +870,10 @@ public class JAdESLevelBaselineB {
 		}
 		throw new IllegalArgumentException("The configured signature format is not supported!");
 	}
+
+	private byte[] getIncorporatedPayload() {
+		return DSSJsonUtils.getDocumentOctets(documentsToSign.get(0), parameters.isBase64UrlEncodedPayload());
+	}
 	
 	private byte[] getPayloadForHttpHeadersMechanism() {
 		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentsToSign, false);
@@ -878,7 +882,7 @@ public class JAdESLevelBaselineB {
 	
 	private byte[] getPayloadForObjectIdByUriMechanism() {
 		// NOTE: base64url encoding is processed by JWS
-		return DSSJsonUtils.concatenateDSSDocuments(documentsToSign);
+		return DSSJsonUtils.concatenateDSSDocuments(documentsToSign, parameters.isBase64UrlEncodedPayload());
 	}
 
 }

@@ -8,8 +8,8 @@ import java.util.List;
 
 public class JAdESDetachedByUriWithURLEncodedParsTest extends AbstractJAdESTestValidation {
 
-    private static final String DOC_ONE_NAME = "https://signature-plugtests.etsi.org/pub/JAdES/ObjectIdByURI-1.html";
-    private static final String DOC_TWO_NAME = "https://signature-plugtests.etsi.org/pub/JAdES/ObjectIdByURI-2.html";
+    private static final String DOC_ONE_NAME = "https://nowina.lu/pub/JAdES/ObjectIdByURI-1.html";
+    private static final String DOC_TWO_NAME = "https://nowina.lu/pub/JAdES/ObjectIdByURI-2.html";
 
     @Override
     protected DSSDocument getSignedDocument() {

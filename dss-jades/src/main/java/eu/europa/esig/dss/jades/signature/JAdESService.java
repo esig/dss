@@ -42,7 +42,6 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
-import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -108,10 +107,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(toSignDocuments, true);
 			messageImprint = httpHeadersPayloadBuilder.build();
 		} else {
-			messageImprint = DSSJsonUtils.concatenateDSSDocuments(toSignDocuments);
-			if (parameters.isBase64UrlEncodedPayload()) {
-				messageImprint = DSSJsonUtils.toBase64Url(messageImprint).getBytes();
-			}
+			messageImprint = DSSJsonUtils.concatenateDSSDocuments(toSignDocuments, parameters.isBase64UrlEncodedPayload());
 		}
 
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();

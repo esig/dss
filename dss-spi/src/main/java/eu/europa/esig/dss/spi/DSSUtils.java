@@ -1015,7 +1015,7 @@ public final class DSSUtils {
 	}
 	
 	/**
-	 * This method encodes an URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 * This method encodes a URI to be compliant with the RFC 3986 (see DSS-1475 for details)
 	 *
 	 * @param fileURI the uri to be encoded
 	 * @return the encoded result

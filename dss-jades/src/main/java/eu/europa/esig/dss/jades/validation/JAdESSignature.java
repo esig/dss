@@ -635,19 +635,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 						} else if (sigDMechanism == null && detachedContentPresent) {
 							// simple detached signature
-							jws.setDetachedPayload(DSSUtils.toByteArray(detachedContents.get(0)));
+							byte[] payload = getIncorporatedPayload();
+							jws.setPayloadOctets(payload);
 							signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
 
 						} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
 							// detached with HTTP_HEADERS mechanism
 							byte[] payload = getPayloadForHttpHeadersMechanism();
-							jws.setDetachedPayload(payload);
+							jws.setPayloadOctets(payload);
 							signatureValueReferenceValidation.setFound(payload != null);
 
 						} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
 							// detached with OBJECT_ID_BY_URI mechanism
 							byte[] payload = getPayloadForObjectIdByUriMechanism();
-							jws.setDetachedPayload(payload);
+							jws.setPayloadOctets(payload);
 							signatureValueReferenceValidation.setFound(payload != null);
 
 						} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
@@ -741,6 +742,10 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 		return null;
 	}
+
+	private byte[] getIncorporatedPayload() {
+		return DSSJsonUtils.getDocumentOctets(detachedContents.get(0), !jws.isRfc7797UnencodedPayload());
+	}
 	
 	private byte[] getPayloadForHttpHeadersMechanism() {
 		if (Utils.isCollectionEmpty(detachedContents)) {
@@ -805,7 +810,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 
 		List<DSSDocument> signedDocumentsByUri = getSignedDocumentsForObjectIdByUriMechanism();
-		return DSSJsonUtils.concatenateDSSDocuments(signedDocumentsByUri);
+		return DSSJsonUtils.concatenateDSSDocuments(signedDocumentsByUri, !jws.isRfc7797UnencodedPayload());
 	}
 
 	/**

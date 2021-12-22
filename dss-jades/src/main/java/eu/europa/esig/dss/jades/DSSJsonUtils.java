@@ -220,7 +220,7 @@ public class DSSJsonUtils {
 	/**
 	 * Returns the decoded binary for a base64url encoded string
 	 * 
-	 * @param base64UrlEncoded the tring to decoded
+	 * @param base64UrlEncoded the String to be decoded
 	 * @return the decoded binary
 	 */
 	public static byte[] fromBase64Url(String base64UrlEncoded) {
@@ -482,25 +482,44 @@ public class DSSJsonUtils {
 	 * Concatenates document octets to a single byte array
 	 * 
 	 * @param documents a list of {@link DSSDocument}s to concatenate
+	 * @param isBase64UrlEncoded defines whether the document octets shall be base64url-encoded
 	 * @return a byte array of document octets
 	 */
-	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents) {
+	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents, boolean isBase64UrlEncoded) {
 		if (Utils.isCollectionEmpty(documents)) {
 			throw new IllegalArgumentException("Unable to build a JWS Payload. Reason : the detached content is not provided!");
 		}
 		if (documents.size() == 1) {
-			return DSSUtils.toByteArray(documents.get(0));
+			return getDocumentOctets(documents.get(0), isBase64UrlEncoded);
 		}
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			for (DSSDocument document : documents) {
-				baos.write(DSSUtils.toByteArray(document));
+				baos.write(getDocumentOctets(document, isBase64UrlEncoded));
 			}
 			return baos.toByteArray();
 
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to build a JWS Payload. Reason : %s", e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * This method returns binaries of the {@code document} to be used for payload computation,
+	 * depending on the {@code isBase64UrlEncoded} parameter.
+	 * When {@code isBase64UrlEncoded} is set to TRUE, returns base64url-encoded binaries of the {@code document}.
+	 * When {@code isBase64UrlEncoded} is set to FALSE, returns original octets of the document.
+	 *
+	 * @param document {@link DSSDocument} to get octets from
+	 * @param isBase64UrlEncoded defines whether return base64url-encoded octets
+	 * @return octets of the provided {@link DSSDocument}
+	 */
+	public static byte[] getDocumentOctets(DSSDocument document, boolean isBase64UrlEncoded) {
+		byte[] octets = DSSUtils.toByteArray(document);
+		if (isBase64UrlEncoded) {
+			octets = DSSJsonUtils.toBase64Url(octets).getBytes();
+		}
+		return octets;
 	}
 	
 	/**
