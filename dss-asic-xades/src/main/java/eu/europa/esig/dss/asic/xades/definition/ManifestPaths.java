@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.xades.definition;
 
 import eu.europa.esig.dss.definition.AbstractPaths;
+import eu.europa.esig.dss.definition.DSSNamespace;
 
 /**
  * Path expressions for a Manifest
@@ -32,10 +33,24 @@ public class ManifestPaths extends AbstractPaths {
 	/** {@code "//manifest/file-entry"} */
 	public static final String FILE_ENTRY_PATH = fromCurrentPosition(ManifestElement.MANIFEST, ManifestElement.FILE_ENTRY);
 
-	/** {@code "manifest:full-path"} */
-	public static final String FULL_PATH_ATTRIBUTE = ManifestNamespace.NS.getPrefix() + ':' + ManifestAttribute.FULL_PATH.getAttributeName();
+	/**
+	 * Returns {@code "manifest:full-path"} with the given {@code manifestNamespace}'s prefix
+	 *
+	 * @param manifestNamespace {@link DSSNamespace}
+	 * @return {@link String}
+	 */
+	public static String getFullPathAttribute(DSSNamespace manifestNamespace) {
+		return manifestNamespace.getPrefix() + ':' + ManifestAttribute.FULL_PATH.getAttributeName();
+	}
 
-	/** {@code "manifest:media-type"} */
-	public static final String MEDIA_TYPE_ATTRIBUTE = ManifestNamespace.NS.getPrefix() + ':' + ManifestAttribute.MEDIA_TYPE.getAttributeName();
+	/**
+	 * Returns {@code "manifest:media-type"} with the given {@code manifestNamespace}'s prefix
+	 *
+	 * @param manifestNamespace {@link DSSNamespace}
+	 * @return {@link String}
+	 */
+	public static String getMediaTypeAttribute(DSSNamespace manifestNamespace) {
+		return manifestNamespace.getPrefix() + ':' + ManifestAttribute.MEDIA_TYPE.getAttributeName();
+	}
 
 }
