@@ -54,12 +54,12 @@ public class DataToSignASiCEWithXAdESHelper extends AbstractGetDataToSignHelper 
 
     @Override
     public List<DSSDocument> getToBeSigned() {
-        return getASiCContent().getSignedDocuments();
+        return asicContent.getSignedDocuments();
     }
 
     @Override
     public String getSignatureFilename() {
-        return getSignatureFileName(asicParameters, getASiCContent().getSignatureDocuments());
+        return getSignatureFileName(asicParameters, asicContent.getSignatureDocuments());
     }
 
     @Override

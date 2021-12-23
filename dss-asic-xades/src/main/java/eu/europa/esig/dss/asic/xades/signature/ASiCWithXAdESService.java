@@ -81,9 +81,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters) {
+		ASiCContent asicContent = new ASiCWithXAdESASiCContentBuilder()
+				.build(toSignDocuments, parameters.aSiC().getContainerType());
 		GetDataToSignASiCWithXAdESHelper getDataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
-				.build(toSignDocuments, parameters);
-		ASiCContent asicContent = getDataToSignHelper.getASiCContent();
+				.build(asicContent, parameters);
 		XAdESSignatureParameters xadesParameters = getXAdESParameters(
 				parameters, asicContent.getSignatureDocuments(), getDataToSignHelper.isOpenDocument());
 		return getXAdESService().getContentTimestamp(getDataToSignHelper.getToBeSigned(), xadesParameters);
@@ -97,9 +98,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		}
 		assertSigningCertificateValid(parameters);
 
+		ASiCContent asicContent = new ASiCWithXAdESASiCContentBuilder()
+				.build(toSignDocuments, parameters.aSiC().getContainerType());
 		GetDataToSignASiCWithXAdESHelper dataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
-				.build(toSignDocuments, parameters);
-		ASiCContent asicContent = dataToSignHelper.getASiCContent();
+				.build(asicContent, parameters);
 		XAdESSignatureParameters xadesParameters = getXAdESParameters(
 				parameters, asicContent.getSignatureDocuments(), dataToSignHelper.isOpenDocument());
 		return getXAdESService().getDataToSign(dataToSignHelper.getToBeSigned(), xadesParameters);
@@ -115,9 +117,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		}
 		assertSigningCertificateValid(parameters);
 
+		ASiCContent asicContent = new ASiCWithXAdESASiCContentBuilder()
+				.build(toSignDocuments, parameters.aSiC().getContainerType());
 		GetDataToSignASiCWithXAdESHelper dataToSignHelper = new ASiCWithXAdESDataToSignHelperBuilder()
-				.build(toSignDocuments, parameters);
-		ASiCContent asicContent = dataToSignHelper.getASiCContent();
+				.build(asicContent, parameters);
 
 		XAdESSignatureParameters xadesParameters = getXAdESParameters(
 				parameters, asicContent.getSignatureDocuments(), dataToSignHelper.isOpenDocument());

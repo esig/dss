@@ -154,7 +154,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
 
         private ToBeSigned getDataToSign(ASiCContent asicContent, ASiCWithCAdESSignatureParameters parameters) {
             GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
-                    .buildFromASiCContent(asicContent, parameters);
+                    .build(asicContent, parameters);
 
             CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
             cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
@@ -166,7 +166,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
         private DSSDocument signDocument(ASiCContent asicContent, ASiCWithCAdESSignatureParameters parameters,
                                         SignatureValue signatureValue) {
             GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
-                    .buildFromASiCContent(asicContent, parameters);
+                    .build(asicContent, parameters);
 
             ASiCParameters asicParameters = parameters.aSiC();
 

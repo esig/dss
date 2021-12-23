@@ -48,7 +48,7 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 	public DSSDocument getToBeSigned() {
 		// NOTE : in ASiC-S signatures are added within the same signature file,
 		// and handling of detached document signing is delegated to CAdES service
-		List<DSSDocument> embeddedSignatures = getASiCContent().getSignatureDocuments();
+		List<DSSDocument> embeddedSignatures = asicContent.getSignatureDocuments();
 		int nbEmbeddedSignatures = Utils.collectionSize(embeddedSignatures);
 		if (nbEmbeddedSignatures != 1) {
 			throw new DSSException("Unable to select the embedded signature (nb found:" + nbEmbeddedSignatures + ")");
@@ -58,7 +58,7 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 
 	@Override
 	public List<DSSDocument> getDetachedContents() {
-		List<DSSDocument> embeddedSignedFiles = getASiCContent().getSignedDocuments();
+		List<DSSDocument> embeddedSignedFiles = asicContent.getSignedDocuments();
 		int nbSignedFiles = Utils.collectionSize(embeddedSignedFiles);
 		if (nbSignedFiles != 1) {
 			throw new DSSException("Unable to select the document to be signed (nb found:" + nbSignedFiles + ")");

@@ -45,7 +45,7 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 
 	@Override
 	public DSSDocument getToBeSigned() {
-		return getASiCContent().getSignedDocuments().get(0);
+		return asicContent.getSignedDocuments().get(0);
 	}
 
 	@Override

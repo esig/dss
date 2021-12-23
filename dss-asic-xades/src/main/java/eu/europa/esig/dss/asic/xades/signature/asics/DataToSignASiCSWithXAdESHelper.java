@@ -61,7 +61,7 @@ public class DataToSignASiCSWithXAdESHelper extends AbstractGetDataToSignASiCS i
 
 	@Override
 	public List<DSSDocument> getToBeSigned() {
-		return getASiCContent().getSignedDocuments();
+		return asicContent.getSignedDocuments();
 	}
 
 	/**

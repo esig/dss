@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESASiCContentBuilder;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESDataToSignHelperBuilder;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -33,8 +35,10 @@ public class ASiCWithXAdESDataToSignHelperBuilderTest {
         ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
+        ASiCContent asicContent = new ASiCWithXAdESASiCContentBuilder().build(filesToBeSigned, ASiCContainerType.ASiC_S);
+
         ASiCWithXAdESDataToSignHelperBuilder builder = new ASiCWithXAdESDataToSignHelperBuilder();
-        GetDataToSignASiCWithXAdESHelper getDataToSignHelper = builder.build(filesToBeSigned, signatureParameters);
+        GetDataToSignASiCWithXAdESHelper getDataToSignHelper = builder.build(asicContent, signatureParameters);
         assertNotNull(getDataToSignHelper);
 
         List<DSSDocument> toBeSigned = getDataToSignHelper.getToBeSigned();
@@ -51,7 +55,7 @@ public class ASiCWithXAdESDataToSignHelperBuilderTest {
 
         LOG.info(digest);
 
-        GetDataToSignASiCWithXAdESHelper getDataToSignHelperTwo = builder.build(filesToBeSigned, signatureParameters);
+        GetDataToSignASiCWithXAdESHelper getDataToSignHelperTwo = builder.build(asicContent, signatureParameters);
         assertNotNull(getDataToSignHelper);
         DSSDocument twice = getDataToSignHelperTwo.getToBeSigned().get(0);
 

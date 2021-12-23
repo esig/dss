@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.asic.common.signature;
 
-import eu.europa.esig.dss.asic.common.ASiCContent;
-
 /**
  * The interface defining a helper to create a {@code ToBeSigned} data
  */
@@ -40,12 +38,5 @@ public interface GetDataToSignHelper {
 	 * @return {@link String} timestamp filename
 	 */
 	String getTimestampFilename();
-
-	/**
-	 * Returns the representation of an ASiC Container
-	 *
-	 * @return {@link ASiCContent}
-	 */
-	ASiCContent getASiCContent();
 
 }

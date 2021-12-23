@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.asic.cades.timestamp;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
+import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESASiCContentBuilder;
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -43,10 +44,9 @@ public class ASiCWithCAdESTimestampService {
      * @return {@link DSSDocument} timestamped archive
      */
     public DSSDocument timestamp(List<DSSDocument> documents, ASiCWithCAdESTimestampParameters parameters) {
-        GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESTimestampDataToSignHelperBuilder()
-                .build(documents, parameters);
-
-        ASiCContent asicContent = createTimestampFromHelper(dataToSignHelper, parameters);
+        ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
+                .build(documents, parameters.aSiC().getContainerType());
+        asicContent = timestamp(asicContent, parameters);
         return ZipUtils.getInstance().createZipArchive(asicContent, parameters.getZipCreationDate());
     }
 
@@ -57,22 +57,10 @@ public class ASiCWithCAdESTimestampService {
      * @param parameters {@link ASiCWithCAdESTimestampParameters}
      * @return {@link ASiCContent} containing the timestamp and the related XML Manifest for ASiC-E container
      */
-    public ASiCContent timestampASiCContent(ASiCContent asicContent, ASiCWithCAdESTimestampParameters parameters) {
+    public ASiCContent timestamp(ASiCContent asicContent, ASiCWithCAdESTimestampParameters parameters) {
         GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESTimestampDataToSignHelperBuilder()
-                .buildFromASiCContent(asicContent, parameters);
-        return createTimestampFromHelper(dataToSignHelper, parameters);
-    }
+                .build(asicContent, parameters);
 
-    /**
-     * This method creates a timestamp using {@code GetDataToSignASiCWithCAdESHelper}
-     *
-     * @param dataToSignHelper {@link GetDataToSignASiCWithCAdESHelper}
-     * @param parameters {@link ASiCWithCAdESTimestampParameters}
-     * @return {@link ASiCContent}
-     */
-    public ASiCContent createTimestampFromHelper(GetDataToSignASiCWithCAdESHelper dataToSignHelper,
-                                                 ASiCWithCAdESTimestampParameters parameters) {
-        ASiCContent asicContent = dataToSignHelper.getASiCContent();
         DSSDocument toBeTimestamped = dataToSignHelper.getToBeSigned();
         if (ASiCContainerType.ASiC_E == parameters.aSiC().getContainerType()) {
             asicContent.getManifestDocuments().add(toBeTimestamped); // XML Document in case of ASiC-E container

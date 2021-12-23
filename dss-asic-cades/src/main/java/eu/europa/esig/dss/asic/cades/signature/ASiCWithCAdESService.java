@@ -23,7 +23,6 @@ package eu.europa.esig.dss.asic.cades.signature;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
-import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampDataToSignHelperBuilder;
 import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
@@ -82,8 +81,10 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) {
+		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
+				.build(toSignDocuments, parameters.aSiC().getContainerType());
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
-				.build(toSignDocuments, parameters);
+				.build(asicContent, parameters);
 		DSSDocument toBeSigned = dataToSignHelper.getToBeSigned();
 		return getCAdESService().getContentTimestamp(toBeSigned, parameters);
 	}
@@ -96,9 +97,10 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 		assertSigningCertificateValid(parameters);
 
+		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
+				.build(toSignDocuments, parameters.aSiC().getContainerType());
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
-				.build(toSignDocuments, parameters);
-		ASiCContent asicContent = dataToSignHelper.getASiCContent();
+				.build(asicContent, parameters);
 		assertSignaturePossible(asicContent.getTimestampDocuments(), parameters.aSiC());
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
@@ -119,9 +121,10 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 		assertSigningCertificateValid(parameters);
 
+		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
+				.build(toSignDocuments, parameters.aSiC().getContainerType());
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
-				.build(toSignDocuments, parameters);
-		ASiCContent asicContent = dataToSignHelper.getASiCContent();
+				.build(asicContent, parameters);
 		ASiCParameters asicParameters = parameters.aSiC();
 		assertSignaturePossible(asicContent.getTimestampDocuments(), asicParameters);
 
@@ -165,9 +168,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			throw new IllegalArgumentException("List of documents to be timestamped cannot be empty!");
 		}
 
-		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESTimestampDataToSignHelperBuilder()
-				.build(toTimestampDocuments, parameters);
-		ASiCContent asicContent = dataToSignHelper.getASiCContent();
+		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
+				.build(toTimestampDocuments, parameters.aSiC().getContainerType());
 
 		ASiCParameters asicParameters = parameters.aSiC();
 		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
@@ -184,12 +186,13 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			asicContent = extensionProfile.extend(asicContent, parameters.getDigestAlgorithm());
 
 			final DSSDocument extensionResult = buildASiCContainer(asicContent, parameters.getZipCreationDate());
-			extensionResult.setName(getFinalDocumentName(toTimestampDocument, SigningOperation.TIMESTAMP, null, toTimestampDocument.getMimeType()));
+			extensionResult.setName(getFinalDocumentName(
+					toTimestampDocument, SigningOperation.TIMESTAMP, null, toTimestampDocument.getMimeType()));
 			return extensionResult;
 
 		} else {
 			ASiCWithCAdESTimestampService timestampService = new ASiCWithCAdESTimestampService(tspSource);
-			asicContent = timestampService.createTimestampFromHelper(dataToSignHelper, parameters);
+			asicContent = timestampService.timestamp(asicContent, parameters);
 
 			final DSSDocument asicContainer = buildASiCContainer(asicContent, parameters.getZipCreationDate());
 			asicContainer.setName(getFinalDocumentName(asicContainer, SigningOperation.TIMESTAMP, null, asicContainer.getMimeType()));

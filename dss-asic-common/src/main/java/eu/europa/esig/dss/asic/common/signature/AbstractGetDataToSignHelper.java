@@ -9,7 +9,7 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 public abstract class AbstractGetDataToSignHelper {
 
     /** The content of the ASiC container */
-    private final ASiCContent asicContent;
+    protected final ASiCContent asicContent;
 
 
     /**
@@ -19,15 +19,6 @@ public abstract class AbstractGetDataToSignHelper {
      */
     protected AbstractGetDataToSignHelper(final ASiCContent asicContent) {
         this.asicContent = asicContent;
-    }
-
-    /**
-     * This method returns {@link ASiCContent}
-     *
-     * @return {@link ASiCContent}
-     */
-    public ASiCContent getASiCContent() {
-        return asicContent;
     }
 
 }

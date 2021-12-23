@@ -23,9 +23,7 @@ package eu.europa.esig.dss.asic.xades.signature;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.asic.xades.signature.asice.ASiCEWithXAdESManifestBuilder;
@@ -34,7 +32,6 @@ import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignOpenDocumentHelpe
 import eu.europa.esig.dss.asic.xades.signature.asics.DataToSignASiCSWithXAdESHelper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
@@ -50,45 +47,14 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 	private static final String ZIP_ENTRY_ASICE_METAINF_MANIFEST = ASiCUtils.META_INF_FOLDER + "manifest.xml";
 
 	/**
-	 * Builds a {@code GetDataToSignASiCWithXAdESHelper} from the given list of
-	 * documents and defined parameters
-	 * 
-	 * @param documents  a list of {@link DSSDocument}s to get a helper from
-	 * @param parameters {@link ASiCWithXAdESSignatureParameters}
-	 * @return {@link GetDataToSignASiCWithXAdESHelper}
-	 */
-	public GetDataToSignASiCWithXAdESHelper build(List<DSSDocument> documents, ASiCWithXAdESSignatureParameters parameters) {
-		if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
-			DSSDocument archiveDocument = documents.get(0);
-			if (ASiCUtils.isZip(archiveDocument) && isASiCWithXAdESContainer(archiveDocument)) {
-				return fromZipArchive(archiveDocument, parameters);
-			}
-		}
-		return fromFiles(documents, parameters);
-	}
-	
-	private GetDataToSignASiCWithXAdESHelper fromZipArchive(DSSDocument archiveDocument, ASiCWithXAdESSignatureParameters parameters) {
-		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(archiveDocument);
-		ASiCContent asicContent = extractor.extract();
-		assertContainerTypeValid(asicContent);
-		
-		return buildFromASiCContent(asicContent, parameters);
-	}
-
-	private boolean isASiCWithXAdESContainer(DSSDocument archiveDocument) {
-		List<String> filenames = ZipUtils.getInstance().extractEntryNames(archiveDocument);
-		return ASiCUtils.isAsicFileContent(filenames) ||
-				(ASiCUtils.areFilesContainMimetype(filenames) && ASiCUtils.isContainerOpenDocument(archiveDocument));
-	}
-
-	/**
 	 * This method is used to create a {@code GetDataToSignASiCWithXAdESHelper} from an {@code ASiCContent}
 	 * ]
 	 * @param asicContent {@link ASiCContent}
 	 * @param parameters {@link ASiCWithXAdESSignatureParameters}
 	 * @return {@link GetDataToSignASiCWithXAdESHelper}
 	 */
-	public GetDataToSignASiCWithXAdESHelper buildFromASiCContent(ASiCContent asicContent, ASiCWithXAdESSignatureParameters parameters) {
+	public GetDataToSignASiCWithXAdESHelper build(ASiCContent asicContent,
+												  ASiCWithXAdESSignatureParameters parameters) {
 		asicContent = ASiCUtils.ensureMimeTypeAndZipComment(asicContent, parameters.aSiC());
 
 		if (ASiCUtils.isOpenDocument(asicContent.getMimeTypeDocument())) {
@@ -117,18 +83,6 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 		return fromFiles(asicContent, parameters);
 	}
 
-	private GetDataToSignASiCWithXAdESHelper fromFiles(List<DSSDocument> documents,
-			ASiCWithXAdESSignatureParameters parameters) {
-		assertDocumentNamesDefined(documents);
-
-		ASiCContent asicContent = new ASiCContent();
-		asicContent.setContainerType(parameters.aSiC().getContainerType());
-		asicContent.setSignedDocuments(documents);
-		asicContent = ASiCUtils.ensureMimeTypeAndZipComment(asicContent, parameters.aSiC());
-
-		return fromFiles(asicContent, parameters);
-	}
-
 	private GetDataToSignASiCWithXAdESHelper fromFiles(ASiCContent asicContent, ASiCWithXAdESSignatureParameters parameters) {
 		if (ASiCUtils.isASiCE(parameters.aSiC())) {
 			DSSDocument asicManifest = createASiCManifest(asicContent.getSignedDocuments());
@@ -140,13 +94,6 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 					parameters.bLevel().getSigningDate(), parameters.aSiC());
 			asicContent.setSignedDocuments(Collections.singletonList(asicsSignedDocument));
 			return new DataToSignASiCSWithXAdESHelper(asicContent, parameters.aSiC());
-		}
-	}
-
-	private void assertContainerTypeValid(ASiCContent result) {
-		if (ASiCUtils.filesContainSignatures(DSSUtils.getDocumentNames(result.getAllDocuments()))
-				&& Utils.isCollectionEmpty(result.getSignatureDocuments())) {
-			throw new UnsupportedOperationException("Container type doesn't match");
 		}
 	}
 

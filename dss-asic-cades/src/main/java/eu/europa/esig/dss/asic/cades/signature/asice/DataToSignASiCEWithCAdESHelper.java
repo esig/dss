@@ -67,12 +67,12 @@ public class DataToSignASiCEWithCAdESHelper extends AbstractGetDataToSignHelper 
 
 	@Override
 	public String getSignatureFilename() {
-		return ASiCWithCAdESUtils.getSignatureFileName(getASiCContent().getSignatureDocuments(), asicParameters.getSignatureFileName());
+		return ASiCWithCAdESUtils.getSignatureFileName(asicContent.getSignatureDocuments(), asicParameters.getSignatureFileName());
 	}
 
 	@Override
 	public String getTimestampFilename() {
-		return ASiCWithCAdESUtils.getTimestampFileName(getASiCContent().getTimestampDocuments());
+		return ASiCWithCAdESUtils.getTimestampFileName(asicContent.getTimestampDocuments());
 	}
 
 }

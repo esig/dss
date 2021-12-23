@@ -199,7 +199,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
         timestampParameters.setZipCreationDate(new Date());
         timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-        asicContent = timestampService.timestampASiCContent(asicContent, timestampParameters);
+        asicContent = timestampService.timestamp(asicContent, timestampParameters);
         DSSDocument asicContainer = ZipUtils.getInstance().createZipArchive(asicContent, new Date());
 
         ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(asicContainer);
@@ -245,7 +245,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
         timestampParameters.setZipCreationDate(new Date());
         timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-        asicContent = timestampService.timestampASiCContent(asicContent, timestampParameters);
+        asicContent = timestampService.timestamp(asicContent, timestampParameters);
         DSSDocument asicContainer = ZipUtils.getInstance().createZipArchive(asicContent, new Date());
 
         ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(asicContainer);

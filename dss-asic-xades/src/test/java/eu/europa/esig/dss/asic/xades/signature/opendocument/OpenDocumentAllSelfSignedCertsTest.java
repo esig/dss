@@ -70,7 +70,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
 		parameters.setSigningCertificate(getSigningCert());
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		parameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		parameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getSelfSignedTsa());
