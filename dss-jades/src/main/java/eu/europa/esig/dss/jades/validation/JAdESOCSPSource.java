@@ -23,6 +23,7 @@ package eu.europa.esig.dss.jades.validation;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
@@ -77,53 +78,63 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 	
 	private void extractRevocationValues(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.R_VALS.equals(attribute.getHeaderName())) {
-			extractOCSPValues((Map<?, ?>) attribute.getValue(), RevocationOrigin.REVOCATION_VALUES);
+			extractOCSPValues(DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.R_VALS),
+					RevocationOrigin.REVOCATION_VALUES);
 		}
 	}
 	
 	private void extractAttributeRevocationValues(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.AR_VALS.equals(attribute.getHeaderName())) {
-			extractOCSPValues((Map<?, ?>) attribute.getValue(), RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+			extractOCSPValues(DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.AR_VALS),
+					RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 		}
 	}
 	
 	private void extractTimestampValidationData(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
-			Map<?, ?> tstVd = (Map<?, ?>) attribute.getValue();
-			Map<?, ?> revVals = (Map<?, ?>) tstVd.get(JAdESHeaderParameterNames.R_VALS);
-			if (Utils.isMapNotEmpty(revVals)) {
-				extractOCSPValues(revVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+			Map<?, ?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.TST_VD);
+			if (Utils.isMapNotEmpty(tstVd)) {
+				Map<?, ?> rVals = DSSJsonUtils.toMap(tstVd.get(JAdESHeaderParameterNames.R_VALS), JAdESHeaderParameterNames.R_VALS);
+				if (Utils.isMapNotEmpty(rVals)) {
+					extractOCSPValues(rVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+				}
 			}
 		}
 	}
 	
 	private void extractCompleteRevocationRefs(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.R_REFS.equals(attribute.getHeaderName())) {
-			extractOCSPReferences((Map<?, ?>) attribute.getValue(), RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+			extractOCSPReferences(DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.R_REFS),
+					RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		}
 	}
 	
 	private void extractAttributeRevocationRefs(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.AR_REFS.equals(attribute.getHeaderName())) {
-			extractOCSPReferences((Map<?, ?>) attribute.getValue(), RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
+			extractOCSPReferences(DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.AR_REFS),
+					RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 		}
 	}
 
 	private void extractOCSPValues(Map<?, ?> rVals, RevocationOrigin origin) {
-		List<?> ocspValues = (List<?>) rVals.get(JAdESHeaderParameterNames.OCSP_VALS);
-		if (Utils.isCollectionNotEmpty(ocspValues)) {
-			for (Object item : ocspValues) {
-				if (item instanceof Map) {
-					Map<?, ?> pkiOb = (Map<?, ?>) item;
-					String encoding = (String) pkiOb.get(JAdESHeaderParameterNames.ENCODING);
-					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-						String ocspValueDerB64 = (String) pkiOb.get(JAdESHeaderParameterNames.VAL);
-						add(ocspValueDerB64, origin);
-					} else {
-						LOG.warn("Unsupported encoding '{}'", encoding);
+		List<?> ocspVals = DSSJsonUtils.toList(rVals.get(JAdESHeaderParameterNames.OCSP_VALS), JAdESHeaderParameterNames.OCSP_VALS);
+		if (ocspVals instanceof List) {
+			if (Utils.isCollectionNotEmpty(ocspVals)) {
+				for (Object item : ocspVals) {
+					Map<?, ?> pkiOb = DSSJsonUtils.toMap(item, JAdESHeaderParameterNames.PKI_OB);
+					if (Utils.isMapNotEmpty(pkiOb)) {
+						String encoding = DSSJsonUtils.toString(pkiOb.get(JAdESHeaderParameterNames.ENCODING),
+								JAdESHeaderParameterNames.ENCODING);
+						if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+							String val = DSSJsonUtils.toString(pkiOb.get(JAdESHeaderParameterNames.VAL), JAdESHeaderParameterNames.VAL);
+							if (Utils.isStringNotEmpty(val)) {
+								add(val, origin);
+							}
+
+						} else {
+							LOG.warn("Unsupported encoding '{}'", encoding);
+						}
 					}
-				} else {
-					LOG.warn("Unsupported type for {} : {}", JAdESHeaderParameterNames.OCSP_VALS, item.getClass());
 				}
 			}
 		}
@@ -138,11 +149,12 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	private void extractOCSPReferences(Map<?, ?> rRefs, RevocationRefOrigin origin) {
-		List<?> ocspRefs = (List<?>) rRefs.get(JAdESHeaderParameterNames.OCSP_REFS);
+		List<?> ocspRefs = DSSJsonUtils.toList(rRefs.get(JAdESHeaderParameterNames.OCSP_REFS), JAdESHeaderParameterNames.OCSP_REFS);
 		if (Utils.isCollectionNotEmpty(ocspRefs)) {
 			for (Object item : ocspRefs) {
-				if (item instanceof Map) {
-					OCSPRef ocspRef = JAdESRevocationRefExtractionUtils.createOCSPRef((Map<?, ?>) item);
+				Map<?, ?> ocspRefMap = DSSJsonUtils.toMap(item);
+				if (Utils.isMapNotEmpty(ocspRefMap)) {
+					OCSPRef ocspRef = JAdESRevocationRefExtractionUtils.createOCSPRef(ocspRefMap);
 					if (ocspRef != null) {
 						addRevocationReference(ocspRef, origin);
 					}

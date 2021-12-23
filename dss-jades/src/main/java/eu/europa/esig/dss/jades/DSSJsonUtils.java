@@ -353,13 +353,16 @@ public class DSSJsonUtils {
 	public static Digest getDigest(Map<?, ?> digestValueAndAlgo) {
 		try {
 			if (Utils.isMapNotEmpty(digestValueAndAlgo)) {
-				String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
-				String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
+				String digestAlgoURI = toString(digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG),
+						JAdESHeaderParameterNames.DIG_ALG);
+				String digestValueBase64 = toString(digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL),
+						JAdESHeaderParameterNames.DIG_VAL);
 				if (Utils.isStringNotEmpty(digestAlgoURI) && Utils.isStringNotEmpty(digestValueBase64)) {
 					return new Digest(DigestAlgorithm.forJAdES(digestAlgoURI),
 							DSSJsonUtils.fromBase64Url(digestValueBase64));
 				}
 			}
+
 		} catch (Exception e) {
 			LOG.warn("Unable to extract Digest Algorithm and Value. Reason : {}", e.getMessage(), e);
 		}
@@ -965,6 +968,138 @@ public class DSSJsonUtils {
 			throw new IllegalInputException(String.format(
 					"Unable to extract key set from a JOSE header! Reason : %s", e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code String} if possible
+	 *
+	 * @param object {@link Object} to convert
+	 * @return {@link String} if able to convert, empty string otherwise
+	 */
+	public static String toString(Object object) {
+		return toString(object, null);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code String} if possible.
+	 * The method also provides a user-friendly message explaining the origin of the unexpected variable.
+	 *
+	 * @param object {@link Object} to convert
+	 * @param headerName {@link String} name of the header attribute with the extracted value
+	 * @return {@link String} if able to convert, empty string otherwise
+	 */
+	public static String toString(Object object, String headerName) {
+		if (object == null) {
+			// continue
+
+		} else if (object instanceof String) {
+			return (String) object;
+
+		} else if (Utils.isStringNotEmpty(headerName)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process '{}' header parameter with value : '{}'. The String type is expected!",
+						headerName, object);
+			} else {
+				LOG.warn("Unable to process '{}' header parameter. The String type is expected!", headerName);
+			}
+
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process an obtained item with value : '{}'. The String type is expected!", object);
+			} else {
+				LOG.warn("Unable to process an obtained item. The String type is expected!");
+			}
+		}
+
+		return Utils.EMPTY_STRING;
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code Map} if possible.
+	 *
+	 * @param object {@link Object} to convert
+	 * @return {@link Map} if able to convert, empty map otherwise
+	 */
+	public static Map<?, ?> toMap(Object object) {
+		return toMap(object, null);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code Map} if possible.
+	 * The method also provides a user-friendly message explaining the origin of the unexpected variable.
+	 *
+	 * @param object {@link Object} to convert
+	 * @param headerName {@link String} name of the header attribute with the extracted value
+	 * @return {@link Map} if able to convert, empty map otherwise
+	 */
+	public static Map<?, ?> toMap(Object object, String headerName) {
+		if (object == null) {
+			// continue
+
+		} else if (object instanceof Map) {
+			return (Map<?, ?>) object;
+
+		} else if (Utils.isStringNotEmpty(headerName)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process '{}' header parameter with value : '{}'. The JSON Object type is expected!",
+						headerName, object);
+			} else {
+				LOG.warn("Unable to process '{}' header parameter. The JSON Object type is expected!", headerName);
+			}
+
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process an obtained item with value : '{}'. The JSON Object type is expected!",object);
+			} else {
+				LOG.warn("Unable to process an obtained item. The JSON Object type is expected!");
+			}
+		}
+
+		return Collections.emptyMap();
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code List} if possible.
+	 *
+	 * @param object {@link Object} to convert
+	 * @return {@link List} if able to convert, empty map otherwise
+	 */
+	public static List<?> toList(Object object) {
+		return toList(object, null);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code List} if possible.
+	 * The method also provides a user-friendly message explaining the origin of the unexpected variable.
+	 *
+	 * @param object {@link Object} to convert
+	 * @param headerName {@link String} name of the header attribute with the extracted value
+	 * @return {@link List} if able to convert, empty map otherwise
+	 */
+	public static List<?> toList(Object object, String headerName) {
+		if (object == null) {
+			// continue
+
+		} else if (object instanceof List) {
+			return (List<?>) object;
+
+		} else if (Utils.isStringNotEmpty(headerName)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process '{}' header parameter with value : '{}'. The JSON Array type is expected!",
+						headerName, object);
+			} else {
+				LOG.warn("Unable to process '{}' header parameter. The JSON Array type is expected!", headerName);
+			}
+
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process an obtained item with value : '{}'. The JSON Array type is expected!", object);
+			} else {
+				LOG.warn("Unable to process an obtained item. The JSON Array type is expected!");
+			}
+		}
+
+		return Collections.emptyList();
 	}
 
 }

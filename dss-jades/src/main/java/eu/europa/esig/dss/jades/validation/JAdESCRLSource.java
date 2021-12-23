@@ -24,6 +24,7 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
@@ -76,54 +77,63 @@ public class JAdESCRLSource extends OfflineCRLSource {
 	
 	private void extractRevocationValues(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.R_VALS.equals(attribute.getHeaderName())) {
-			extractCRLValues((Map<?, ?>) attribute.getValue(), RevocationOrigin.REVOCATION_VALUES);
+			extractCRLValues(DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.R_VALS),
+					RevocationOrigin.REVOCATION_VALUES);
 		}
 	}
 	
 	private void extractAttributeRevocationValues(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.AR_VALS.equals(attribute.getHeaderName())) {
-			extractCRLValues((Map<?, ?>) attribute.getValue(), RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
+			extractCRLValues(DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.AR_VALS),
+					RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 		}
 	}
 	
 	private void extractTimestampValidationData(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
-			Map<?, ?> tstVd = (Map<?, ?>) attribute.getValue();
-			Map<?, ?> revVals = (Map<?, ?>) tstVd.get(JAdESHeaderParameterNames.R_VALS);
-			if (Utils.isMapNotEmpty(revVals)) {
-				extractCRLValues(revVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+			Map<?, ?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.TST_VD);
+			if (Utils.isMapNotEmpty(tstVd)) {
+				Map<?, ?> rVals = DSSJsonUtils.toMap(tstVd.get(JAdESHeaderParameterNames.R_VALS), JAdESHeaderParameterNames.R_VALS);
+				if (Utils.isMapNotEmpty(rVals)) {
+					extractCRLValues(rVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+				}
 			}
 		}
 	}
 	
 	private void extractCompleteRevocationRefs(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.R_REFS.equals(attribute.getHeaderName())) {
-			extractCRLReferences((Map<?, ?>) attribute.getValue(), RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
+			extractCRLReferences(DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.R_REFS),
+					RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
 		}
 	}
 	
 	private void extractAttributeRevocationRefs(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.AR_REFS.equals(attribute.getHeaderName())) {
-			extractCRLReferences((Map<?, ?>) attribute.getValue(), RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
+			extractCRLReferences(DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.AR_REFS),
+					RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 		}
 	}
 
 	private void extractCRLValues(Map<?, ?> rVals, RevocationOrigin origin) {
-		List<?> crlValues = (List<?>) rVals.get(JAdESHeaderParameterNames.CRL_VALS);
-		if (Utils.isCollectionNotEmpty(crlValues)) {
-			for (Object item : crlValues) {
-				if (item instanceof Map) {
-					Map<?, ?> pkiOb = (Map<?, ?>) item;
-					String encoding = (String) pkiOb.get(JAdESHeaderParameterNames.ENCODING);
-					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-						String crlValueDerB64 = (String) pkiOb.get(JAdESHeaderParameterNames.VAL);
-						add(crlValueDerB64, origin);
+		List<?> crlVals = DSSJsonUtils.toList(rVals.get(JAdESHeaderParameterNames.CRL_VALS), JAdESHeaderParameterNames.CRL_VALS);
+		if (Utils.isCollectionNotEmpty(crlVals)) {
+			for (Object item : crlVals) {
+				Map<?, ?> pkiOb = DSSJsonUtils.toMap(item, JAdESHeaderParameterNames.PKI_OB);
+				if (Utils.isMapNotEmpty(pkiOb)) {
+					String encoding = DSSJsonUtils.toString(pkiOb.get(JAdESHeaderParameterNames.ENCODING),
+							JAdESHeaderParameterNames.ENCODING);
+					if (Utils.isStringNotEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+						String val = DSSJsonUtils.toString(pkiOb.get(JAdESHeaderParameterNames.VAL), JAdESHeaderParameterNames.VAL);
+						if (Utils.isStringNotEmpty(val)) {
+							add(val, origin);
+						}
+
 					} else {
 						LOG.warn("Unsupported encoding '{}'", encoding);
 					}
-				} else {
-					LOG.warn("Unsupported type for {} : {}", JAdESHeaderParameterNames.CRL_VALS, item.getClass());
 				}
+
 			}
 		}
 	}
@@ -137,11 +147,12 @@ public class JAdESCRLSource extends OfflineCRLSource {
 	}
 
 	private void extractCRLReferences(Map<?, ?> rRefs, RevocationRefOrigin origin) {
-		List<?> crlRefs = (List<?>) rRefs.get(JAdESHeaderParameterNames.CRL_REFS);
+		List<?> crlRefs = DSSJsonUtils.toList(rRefs.get(JAdESHeaderParameterNames.CRL_REFS), JAdESHeaderParameterNames.CRL_REFS);
 		if (Utils.isCollectionNotEmpty(crlRefs)) {
 			for (Object item : crlRefs) {
-				if (item instanceof Map) {
-					CRLRef crlRef = JAdESRevocationRefExtractionUtils.createCRLRef((Map<?, ?>) item);
+				Map<?, ?> crlRefMap = DSSJsonUtils.toMap(item);
+				if (Utils.isMapNotEmpty(crlRefMap)) {
+					CRLRef crlRef = JAdESRevocationRefExtractionUtils.createCRLRef(crlRefMap);
 					if (crlRef != null) {
 						addRevocationReference(crlRef, origin);
 					}
