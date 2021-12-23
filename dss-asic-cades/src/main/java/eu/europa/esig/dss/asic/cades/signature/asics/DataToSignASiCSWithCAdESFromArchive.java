@@ -21,13 +21,12 @@
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,49 +34,21 @@ import java.util.List;
  */
 public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignASiCSWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
-	/** The original ASiC container */
-	private final DSSDocument asicContainer;
-
-	/** The list of signed documents */
-	private final List<DSSDocument> embeddedSignedFiles;
-
-	/** The list of signature documents */
-	private final List<DSSDocument> embeddedSignatures;
-
-	/** The list of timestamp documents */
-	private final List<DSSDocument> embeddedTimestamps;
-
 	/**
 	 * Default constructor
 	 *
-	 * @param result {@link ASiCExtractResult}
+	 * @param asicContent {@link ASiCContent}
 	 * @param asicParameters {@link ASiCParameters}
 	 */
-	public DataToSignASiCSWithCAdESFromArchive(final ASiCExtractResult result, final ASiCParameters asicParameters) {
-		super(asicParameters);
-		this.asicContainer = result.getAsicContainer();
-		this.embeddedSignedFiles = result.getSignedDocuments();
-		this.embeddedSignatures = result.getSignatureDocuments();
-		this.embeddedTimestamps = result.getTimestampDocuments();
-	}
-
-	@Override
-	public DSSDocument getAsicContainer() {
-		return asicContainer;
-	}
-
-	@Override
-	public String getSignatureFilename() {
-		return getSignatureFileName();
-	}
-
-	@Override
-	public String getTimestampFilename() {
-		return getTimestampFileName();
+	public DataToSignASiCSWithCAdESFromArchive(final ASiCContent asicContent, final ASiCParameters asicParameters) {
+		super(asicContent, asicParameters);
 	}
 
 	@Override
 	public DSSDocument getToBeSigned() {
+		// NOTE : in ASiC-S signatures are added within the same signature file,
+		// and handling of detached document signing is delegated to CAdES service
+		List<DSSDocument> embeddedSignatures = asicContent.getSignatureDocuments();
 		int nbEmbeddedSignatures = Utils.collectionSize(embeddedSignatures);
 		if (nbEmbeddedSignatures != 1) {
 			throw new DSSException("Unable to select the embedded signature (nb found:" + nbEmbeddedSignatures + ")");
@@ -87,38 +58,12 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 
 	@Override
 	public List<DSSDocument> getDetachedContents() {
-		return getSignedDocuments();
-	}
-
-	@Override
-	public List<DSSDocument> getSignedDocuments() {
+		List<DSSDocument> embeddedSignedFiles = asicContent.getSignedDocuments();
 		int nbSignedFiles = Utils.collectionSize(embeddedSignedFiles);
 		if (nbSignedFiles != 1) {
 			throw new DSSException("Unable to select the document to be signed (nb found:" + nbSignedFiles + ")");
 		}
 		return embeddedSignedFiles;
-	}
-
-	@Override
-	public List<DSSDocument> getManifestFiles() {
-		// No manifest file in ASiC-S
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<DSSDocument> getSignatures() {
-		return embeddedSignatures;
-	}
-
-	@Override
-	public List<DSSDocument> getArchiveManifestFiles() {
-		// not supported
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<DSSDocument> getTimestamps() {
-		return embeddedTimestamps;
 	}
 
 }

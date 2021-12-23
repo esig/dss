@@ -24,7 +24,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -72,7 +72,7 @@ public class ASiCSCAdESLevelLTTest extends AbstractASiCSCAdESTestSignature {
 		super.onDocumentSigned(byteArray);
 
 		ASiCWithCAdESContainerExtractor containerExtractor = new ASiCWithCAdESContainerExtractor(new InMemoryDocument(byteArray));
-		ASiCExtractResult result = containerExtractor.extract();
+		ASiCContent result = containerExtractor.extract();
 
 		List<DSSDocument> signatureDocuments = result.getSignatureDocuments();
 		assertTrue(Utils.isCollectionNotEmpty(signatureDocuments));

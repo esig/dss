@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -34,22 +36,32 @@ import java.util.List;
  * Class containing utils methods for dealing with ASiC with CAdES container
  *
  */
-public class ASiCWithCAdESExtractResultUtils {
+public class ASiCWithCAdESUtils {
+
+	/** The default Archive Manifest filename */
+	public static final String DEFAULT_ARCHIVE_MANIFEST_FILENAME = ASiCUtils.META_INF_FOLDER +
+			ASiCUtils.ASIC_ARCHIVE_MANIFEST_FILENAME + ASiCUtils.XML_EXTENSION;
+
+	/** The default signature filename */
+	public static final String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signature001.p7s";
+
+	/** The default timestamp filename */
+	public static final String ZIP_ENTRY_ASICE_METAINF_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
 
 	/**
 	 * Utils class
 	 */
-	private ASiCWithCAdESExtractResultUtils() {
+	private ASiCWithCAdESUtils() {
 	}
 	
 	/**
 	 * Returns a list of signed documents by a signature with a given {@code signatureFilename}
 	 * 
-	 * @param extractResult {@link ASiCExtractResult} representing an ASiC container extraction result
+	 * @param extractResult {@link ASiCContent} representing an ASiC container extraction result
 	 * @param signatureFilename {@link String} a filename of a signature to get extracted document for
 	 * @return a list of {@link DSSDocument}s
 	 */
-	public static DSSDocument getSignedDocument(ASiCExtractResult extractResult, String signatureFilename) {
+	public static DSSDocument getSignedDocument(ASiCContent extractResult, String signatureFilename) {
 		ASiCContainerType type = extractResult.getContainerType();
 		if (ASiCContainerType.ASiC_S.equals(type) && extractResult.getSignedDocuments().size() == 1) {
 			return extractResult.getSignedDocuments().iterator().next(); // Collection size should be equal 1
@@ -73,14 +85,13 @@ public class ASiCWithCAdESExtractResultUtils {
 	/**
 	 * Checks if a signature with the given filename is covered by a manifest
 	 * 
-	 * @param extractResult {@link ASiCExtractResult} the ASiC container extraction result
+	 * @param manifestDocuments a list of manifest {@link DSSDocument}s extracted from the archive
 	 * @param signatureFilename {@link String} a filename of a signature to check
 	 * @return TRUE if the signature is covered by a manifest, FALSE otherwise
 	 */
-	public static boolean isCoveredByManifest(ASiCExtractResult extractResult, String signatureFilename) {
-		List<DSSDocument> manifests = extractResult.getAllManifestDocuments();
-		if (Utils.isCollectionNotEmpty(manifests)) {
-			for (DSSDocument archiveManifest : manifests) {
+	public static boolean isCoveredByManifest(List<DSSDocument> manifestDocuments, String signatureFilename) {
+		if (Utils.isCollectionNotEmpty(manifestDocuments)) {
+			for (DSSDocument archiveManifest : manifestDocuments) {
 				ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
 				for (ManifestEntry entry : manifestFile.getEntries()) {
 					if (signatureFilename != null && signatureFilename.equals(entry.getFileName())) {
@@ -90,6 +101,42 @@ public class ASiCWithCAdESExtractResultUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Generates and returns a signature filename
+	 *
+	 * @param existingSignatures a list of {@link DSSDocument} signatures from the container
+	 * @param expectedSignatureFileName {@link String} the desired signature filename (optional)
+	 * @return {@link String} signature filename
+	 */
+	public static String getSignatureFileName(List<DSSDocument> existingSignatures, String expectedSignatureFileName) {
+		if (Utils.isStringNotBlank(expectedSignatureFileName)) {
+			assertSignatureNameIsValid(existingSignatures, expectedSignatureFileName);
+			return ASiCUtils.META_INF_FOLDER + expectedSignatureFileName;
+
+		} else {
+			int num = Utils.collectionSize(existingSignatures) + 1;
+			return ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.replace("001", ASiCUtils.getPadNumber(num));
+		}
+	}
+
+	private static void assertSignatureNameIsValid(List<DSSDocument> existingSignatures, String signatureFileName) {
+		if (DSSUtils.getDocumentNames(existingSignatures).contains(signatureFileName)) {
+			throw new IllegalArgumentException(String.format("The signature file with name '%s' already exists " +
+					"within the ASiC Container!", signatureFileName));
+		}
+	}
+
+	/**
+	 * Generates and returns a timestamp filename
+	 *
+	 * @param existingTimestamps a list of {@link DSSDocument} timestamps from the container
+	 * @return {@link String} timestamp filename
+	 */
+	public static String getTimestampFileName(List<DSSDocument> existingTimestamps) {
+		int num = Utils.collectionSize(existingTimestamps) + 1;
+		return ZIP_ENTRY_ASICE_METAINF_TIMESTAMP.replace("001", ASiCUtils.getPadNumber(num));
 	}
 
 }

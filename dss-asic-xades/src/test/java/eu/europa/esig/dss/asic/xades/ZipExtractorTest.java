@@ -20,21 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -48,6 +34,19 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ZipExtractorTest extends PKIFactoryAccess {
 	
@@ -64,7 +63,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	@Test
 	public void extractUnsignedOpenDocument() {
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(openDocument);
-		ASiCExtractResult extract = extractor.extract();
+		ASiCContent extract = extractor.extract();
 		
 		assertNotNull(extract);
 		
@@ -73,7 +72,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 
 		assertFalse(Utils.isCollectionNotEmpty(extract.getContainerDocuments()));
 		assertNotNull(extract.getMimeTypeDocument());
-		assertNotNull(extract.getRootContainer());
+		assertNotNull(extract.getAsicContainer());
 
 		assertFalse(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertTrue(Utils.isCollectionNotEmpty(extract.getSignedDocuments()));
@@ -83,7 +82,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	@Test
 	public void extractUnsignedZip() {
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(zipArchive);
-		ASiCExtractResult extract = extractor.extract();
+		ASiCContent extract = extractor.extract();
 		
 		assertNotNull(extract);
 		
@@ -92,7 +91,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 
 		assertFalse(Utils.isCollectionNotEmpty(extract.getContainerDocuments()));
 		assertNull(extract.getMimeTypeDocument());
-		assertNotNull(extract.getRootContainer());
+		assertNotNull(extract.getAsicContainer());
 
 		assertFalse(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertEquals(0, extract.getSignatureDocuments().size());
@@ -104,7 +103,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	public void extractSignedZip() {
 		DSSDocument document = signDocument(zipArchive);
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
-		ASiCExtractResult extract = extractor.extract();
+		ASiCContent extract = extractor.extract();
 		
 		assertNotNull(extract);
 		
@@ -116,8 +115,8 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 		assertNotNull(extract.getMimeTypeDocument());
 		MimeType mimeType = ASiCUtils.getMimeType(extract.getMimeTypeDocument());
 		assertEquals("application/vnd.etsi.asic-e+zip",  mimeType.getMimeTypeString());
-		
-		assertNotNull(extract.getRootContainer());
+
+		assertNotNull(extract.getAsicContainer());
 		
 		assertTrue(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertEquals(1, extract.getSignatureDocuments().size());
@@ -131,7 +130,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	public void extractSignedOpenDocument() {
 		DSSDocument document = signDocument(openDocument);
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
-		ASiCExtractResult extract = extractor.extract();
+		ASiCContent extract = extractor.extract();
 		
 		assertNotNull(extract);
 		
@@ -143,8 +142,8 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 		assertNotNull(extract.getMimeTypeDocument());
 		MimeType mimeType = ASiCUtils.getMimeType(extract.getMimeTypeDocument());
 		assertEquals("application/vnd.oasis.opendocument.text",  mimeType.getMimeTypeString());
-		
-		assertNotNull(extract.getRootContainer());
+
+		assertNotNull(extract.getAsicContainer());
 		
 		assertTrue(Utils.isCollectionNotEmpty(extract.getSignatureDocuments()));
 		assertEquals(1, extract.getSignatureDocuments().size());
@@ -178,10 +177,10 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	
 	private void checkDocuments(DSSDocument original, DSSDocument signed) {		
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(original);
-		ASiCExtractResult extractOriginal = extractor.extract();
+		ASiCContent extractOriginal = extractor.extract();
 		
 		extractor = new ASiCWithXAdESContainerExtractor(signed);
-		ASiCExtractResult extractSigned = extractor.extract();
+		ASiCContent extractSigned = extractor.extract();
 		
 		assertEquals(0, extractOriginal.getContainerDocuments().size());
 		assertEquals(0, extractSigned.getContainerDocuments().size());

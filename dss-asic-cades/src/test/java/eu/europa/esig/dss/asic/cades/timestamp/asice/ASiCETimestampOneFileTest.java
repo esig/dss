@@ -72,7 +72,7 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		DSSDocument archiveWithTimestamp = service.timestamp(documentToSign, timestampParameters);
 		assertNotNull(archiveWithTimestamp);
 
-//		archiveWithTimestamp.save("target/test-one-file.asice");
+		// archiveWithTimestamp.save("target/test-one-file.asice");
 
 		final DSSDocument docToExtend = archiveWithTimestamp;
 		ASiCWithCAdESSignatureParameters extendParameters = new ASiCWithCAdESSignatureParameters();
@@ -108,7 +108,7 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument timestampedAndSigned = service.signDocument(archiveWithTimestamp, signatureParameters, signatureValue);
 
-//		timestampedAndSigned.save("target/test-one-file-2-times-signed.asice");
+		// timestampedAndSigned.save("target/test-one-file-signed.asice");
 
 		validator = SignedDocumentValidator.fromDocument(timestampedAndSigned);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -126,7 +126,7 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 
 		archiveWithTimestamp = service.timestamp(timestampedAndSigned, timestampParameters);
 
-//		archiveWithTimestamp.save("target/test-one-file-2-times.asice");
+		// archiveWithTimestamp.save("target/test-one-file-2-timestamps.asice");
 
 		validator = SignedDocumentValidator.fromDocument(archiveWithTimestamp);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -149,7 +149,7 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		timestampedAndSigned = service.signDocument(archiveWithTimestamp, signatureParameters, signatureValue);
 
-//		timestampedAndSigned.save("target/test-one-file-2-times-signed.asice");
+		// timestampedAndSigned.save("target/test-one-file-2-times-signed.asice");
 
 		validator = SignedDocumentValidator.fromDocument(timestampedAndSigned);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -167,26 +167,21 @@ public class ASiCETimestampOneFileTest extends PKIFactoryAccess {
 			assertTrue(signature.isSignatureValid());
 		}
 
-		boolean firstTstFound = false;
-		boolean secondTstFound = false;
+		int detachedTstCounter = 0;
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 			assertTrue(timestamp.isMessageImprintDataFound());
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureIntact());
 			assertTrue(timestamp.isSignatureValid());
 
-			if (timestamp.getDigestMatchers().size() == 2) {
+			if (timestamp.getDigestMatchers().size() == 2) { // original file + manifest
 				assertEquals(2, timestamp.getTimestampedSignedData().size());
-				firstTstFound = true;
-			} else if (timestamp.getDigestMatchers().size() == 5) {
-				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getName());
-				assertEquals(4, timestamp.getTimestampedSignedData().size());
-				assertEquals(1, timestamp.getTimestampedTimestamps().size());
-				secondTstFound = true;
+				assertEquals(0, timestamp.getTimestampedTimestamps().size());
+				assertEquals(0, timestamp.getTimestampedSignatures().size());
+				++detachedTstCounter;
 			}
 		}
-		assertTrue(firstTstFound);
-		assertTrue(secondTstFound);
+		assertEquals(2, detachedTstCounter);
 
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReportJaxb);

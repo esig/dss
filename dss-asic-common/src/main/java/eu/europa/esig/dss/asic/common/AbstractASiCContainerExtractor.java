@@ -53,21 +53,20 @@ public abstract class AbstractASiCContainerExtractor {
 	/**
 	 * Extracts a content (documents) embedded into the {@code asicContainer}
 	 *
-	 * @return {@link ASiCExtractResult}
+	 * @return {@link ASiCContent}
 	 */
-	public ASiCExtractResult extract() {
-		ASiCExtractResult result = zipParsing(asicContainer);
-		result.setRootContainer(asicContainer);
+	public ASiCContent extract() {
+		ASiCContent result = zipParsing(asicContainer);
+		result.setZipComment(getZipComment());
 		result.setContainerType(getContainerType(result));
 		if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
 			LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
 		}
-		result.setZipComment(getZipComment());
 		return result;
 	}
 
-	private ASiCExtractResult zipParsing(DSSDocument asicContainer) {
-		ASiCExtractResult result = new ASiCExtractResult();
+	private ASiCContent zipParsing(DSSDocument asicContainer) {
+		ASiCContent result = new ASiCContent();
 		result.setAsicContainer(asicContainer);
 
 		List<DSSDocument> documents = ZipUtils.getInstance().extractContainerContent(asicContainer);
@@ -94,6 +93,7 @@ public abstract class AbstractASiCContainerExtractor {
 				} else if (!isFolder(entryName)) {
 					result.getUnsupportedDocuments().add(currentDocument);
 				}
+
 			} else if (!isFolder(entryName)) { 
 				if (ASiCUtils.isMimetype(entryName)) {
 					result.setMimeTypeDocument(currentDocument);
@@ -103,9 +103,9 @@ public abstract class AbstractASiCContainerExtractor {
 						result.setContainerDocuments(ZipUtils.getInstance().extractContainerContent(currentDocument));
 					}
 				}
-			}
-			if (!isFolder(entryName)) {
-				result.getAllDocuments().add(currentDocument);
+
+			} else {
+				result.getFolders().add(currentDocument);
 			}
 		}
 		
@@ -157,7 +157,7 @@ public abstract class AbstractASiCContainerExtractor {
 		return entryName.endsWith("/");
 	}
 
-	private ASiCContainerType getContainerType(ASiCExtractResult result) {
+	private ASiCContainerType getContainerType(ASiCContent result) {
 		return ASiCUtils.getContainerType(asicContainer, result.getMimeTypeDocument(), result.getZipComment(),
 				result.getSignedDocuments());
 	}

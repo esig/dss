@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.signature.AbstractGetDataToSignHelper;
+import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -31,24 +33,39 @@ import java.util.List;
 /**
  * An abstract class to generate a DataToSign with ASiC-E with XAdES
  */
-public abstract class AbstractDataToSignASiCEWithXAdES {
+public class DataToSignASiCEWithXAdESHelper extends AbstractGetDataToSignHelper implements GetDataToSignASiCWithXAdESHelper {
 
     /** The default signature filename */
     private static final String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signatures001.xml";
 
-    /** The default manifest filename */
-	private static final String ZIP_ENTRY_ASICE_METAINF_MANIFEST = ASiCUtils.META_INF_FOLDER + "manifest.xml";
+    /** ASiC Container creation parameters */
+    private final ASiCParameters asicParameters;
 
     /**
-     * Returns the ASiC Manifest
+     * The default constructor
      *
-     * @param documents a list of {@link DSSDocument}s to cover by the manifest
-     * @return {@link DSSDocument} manifest
+     * @param asicContent {@link ASiCContent}
+     * @param asicParameters {@link ASiCParameters}
      */
-	protected DSSDocument getASiCManifest(List<DSSDocument> documents) {
-		ASiCEWithXAdESManifestBuilder manifestBuilder = new ASiCEWithXAdESManifestBuilder(documents);
-		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), ZIP_ENTRY_ASICE_METAINF_MANIFEST);
-	}
+    public DataToSignASiCEWithXAdESHelper(final ASiCContent asicContent, final ASiCParameters asicParameters) {
+        super(asicContent);
+        this.asicParameters = asicParameters;
+    }
+
+    @Override
+    public List<DSSDocument> getToBeSigned() {
+        return asicContent.getSignedDocuments();
+    }
+
+    @Override
+    public String getSignatureFilename() {
+        return getSignatureFileName(asicParameters, asicContent.getSignatureDocuments());
+    }
+
+    @Override
+    public String getTimestampFilename() {
+        throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-E + XAdES");
+    }
 
     /**
      * Returns the signature filename
@@ -75,4 +92,10 @@ public abstract class AbstractDataToSignASiCEWithXAdES {
         String zeroPad = "000";
         return zeroPad.substring(sigNumberStr.length()) + sigNumberStr; // 2 -> 002
 	}
+
+    @Override
+    public boolean isOpenDocument() {
+        return false;
+    }
+
 }

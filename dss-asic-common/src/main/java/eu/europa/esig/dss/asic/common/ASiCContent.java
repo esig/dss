@@ -22,15 +22,17 @@ package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Contains grouped documents representing an ASiC container extraction result
+ * Contains grouped documents representing an ASiC container's content
+ *
  */
-public class ASiCExtractResult implements Serializable {
+public class ASiCContent implements Serializable {
 
 	private static final long serialVersionUID = -6871206656998856916L;
 
@@ -45,9 +47,6 @@ public class ASiCExtractResult implements Serializable {
 
 	/** The mimetype document */
 	private DSSDocument mimeTypeDocument;
-
-	/** The list of all documents embedded into the container */
-	private List<DSSDocument> allDocuments = new ArrayList<>();
 
 	/** The list of originally signed documents embedded into the container */
 	private List<DSSDocument> signedDocuments = new ArrayList<>();
@@ -67,11 +66,11 @@ public class ASiCExtractResult implements Serializable {
 	/** The list of unsupported documents embedded into the container */
 	private List<DSSDocument> unsupportedDocuments = new ArrayList<>();
 
+	/** The list of folders embedded into the container */
+	private List<DSSDocument> folders = new ArrayList<>();
+
 	/** The list of "package.zip" documents (ASiC-S) */
 	private List<DSSDocument> containerDocuments = new ArrayList<>();
-
-	/** The root container document (for OpenDocument) */
-	private DSSDocument rootContainer;
 
 	/**
 	 * Gets the original ASiC container
@@ -218,24 +217,6 @@ public class ASiCExtractResult implements Serializable {
 	}
 
 	/**
-	 * Gets all documents
-	 *
-	 * @return a list of {@link DSSDocument}s
-	 */
-	public List<DSSDocument> getAllDocuments() {
-		return allDocuments;
-	}
-
-	/**
-	 * Sets all documents
-	 *
-	 * @param allDocuments a list of {@link DSSDocument}s
-	 */
-	public void setAllDocuments(List<DSSDocument> allDocuments) {
-		this.allDocuments = allDocuments;
-	}
-
-	/**
 	 * Gets signed documents
 	 *
 	 * @return a list of {@link DSSDocument}s
@@ -272,6 +253,24 @@ public class ASiCExtractResult implements Serializable {
 	}
 
 	/**
+	 * Returns a list of folders present within the container
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getFolders() {
+		return folders;
+	}
+
+	/**
+	 * Sets a list of folders present within an archive
+	 *
+	 * @param folders a list of {@link DSSDocument}s
+	 */
+	public void setFolders(List<DSSDocument> folders) {
+		this.folders = folders;
+	}
+
+	/**
 	 * Gets "package.zip" documents
 	 *
 	 * @return a list of {@link DSSDocument}s
@@ -288,24 +287,6 @@ public class ASiCExtractResult implements Serializable {
 	public void setContainerDocuments(List<DSSDocument> containerDocuments) {
 		this.containerDocuments = containerDocuments;
 	}
-
-	/**
-	 * Gets the root container (OpenDocument)
-	 *
-	 * @return {@link DSSDocument}
-	 */
-	public DSSDocument getRootContainer() {
-		return rootContainer;
-	}
-
-	/**
-	 * Sets the root container (OpenDocument)
-	 *
-	 * @param rootContainer {@link DSSDocument}
-	 */
-	public void setRootContainer(DSSDocument rootContainer) {
-		this.rootContainer = rootContainer;
-	}
 	
 	/**
 	 * Returns a list of all found manifest documents
@@ -317,6 +298,41 @@ public class ASiCExtractResult implements Serializable {
 		allManifestsList.addAll(getManifestDocuments());
 		allManifestsList.addAll(getArchiveManifestDocuments());
 		return allManifestsList;
+	}
+
+	/**
+	 * Gets all documents
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getAllDocuments() {
+		List<DSSDocument> allDocuments = new ArrayList<>();
+		if (mimeTypeDocument != null) {
+			allDocuments.add(mimeTypeDocument);
+		}
+		if (Utils.isCollectionNotEmpty(signedDocuments)) {
+			allDocuments.addAll(signedDocuments);
+		}
+		if (Utils.isCollectionNotEmpty(signatureDocuments)) {
+			allDocuments.addAll(signatureDocuments);
+		}
+		if (Utils.isCollectionNotEmpty(manifestDocuments)) {
+			allDocuments.addAll(manifestDocuments);
+		}
+		if (Utils.isCollectionNotEmpty(archiveManifestDocuments)) {
+			allDocuments.addAll(archiveManifestDocuments);
+		}
+		if (Utils.isCollectionNotEmpty(timestampDocuments)) {
+			allDocuments.addAll(timestampDocuments);
+		}
+		if (Utils.isCollectionNotEmpty(unsupportedDocuments)) {
+			allDocuments.addAll(unsupportedDocuments);
+		}
+		if (Utils.isCollectionNotEmpty(folders)) {
+			allDocuments.addAll(folders);
+		}
+
+		return allDocuments;
 	}
 
 }

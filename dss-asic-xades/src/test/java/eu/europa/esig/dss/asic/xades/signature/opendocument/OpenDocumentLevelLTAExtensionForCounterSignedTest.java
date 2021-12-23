@@ -98,7 +98,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		
 		signingAlias = GOOD_USER;
 		

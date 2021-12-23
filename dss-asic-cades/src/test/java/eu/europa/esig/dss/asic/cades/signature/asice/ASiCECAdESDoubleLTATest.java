@@ -3,6 +3,7 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -13,9 +14,12 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -40,7 +44,7 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
 
     @BeforeEach
     public void init() throws Exception {
-        originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+        originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeType.TEXT);
         signingAlias = EE_GOOD_USER;
 
         signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -77,6 +81,40 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
 
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA); // enforce LTA level for validation
         return extendedDocument;
+    }
+
+    @Override
+    protected void checkManifests(List<DSSDocument> manifestDocuments) {
+        super.checkManifests(manifestDocuments);
+
+        int archiveTstCounter = 0;
+        boolean secondArchiveTstFound = false;
+        assertEquals(4, manifestDocuments.size());
+        for (DSSDocument document : manifestDocuments) {
+            boolean signedFileFound = false;
+            boolean timestampedSignatureFound = false;
+            ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(document);
+            for (ManifestEntry entry : manifestFile.getEntries()) {
+                if (originalDocument.getName().equals(entry.getFileName())) {
+                    assertEquals(MimeType.TEXT, entry.getMimeType());
+                    signedFileFound = true;
+                }
+                if (entry.getFileName().contains("signature")) {
+                    assertEquals(MimeType.PKCS7, entry.getMimeType());
+                    timestampedSignatureFound = true;
+                }
+                if (entry.getFileName().contains("timestamp")) {
+                    assertEquals(MimeType.TST, entry.getMimeType());
+                    secondArchiveTstFound = true;
+                }
+            }
+            if (timestampedSignatureFound) {
+                ++archiveTstCounter;
+            }
+            assertTrue(signedFileFound);
+        }
+        assertEquals(2, archiveTstCounter);
+        assertTrue(secondArchiveTstFound);
     }
 
     @Override

@@ -21,94 +21,86 @@
 package eu.europa.esig.dss.asic.cades.signature;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESCommonParameters;
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
-import eu.europa.esig.dss.asic.cades.signature.asice.DataToSignASiCEWithCAdESFromArchive;
-import eu.europa.esig.dss.asic.cades.signature.asice.DataToSignASiCEWithCAdESFromFiles;
+import eu.europa.esig.dss.asic.cades.signature.asice.DataToSignASiCEWithCAdESHelper;
 import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFromArchive;
 import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFromFiles;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESManifestBuilder;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 
 /**
  * Builds a relevant {@code GetDataToSignASiCWithCAdESHelper} for ASiC with CAdES dataToSign creation
+ *
  */
-public class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
+public abstract class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
 
 	/**
-	 * Builds a {@code GetDataToSignASiCWithCAdESHelper} from the given list of documents and defined parameters
-	 * 
-	 * @param operation {@link SigningOperation}
-	 * @param documents a list of {@link DSSDocument}s to get a helper from
+	 * This method is used to create a {@code GetDataToSignASiCWithCAdESHelper} from an {@code ASiCContent}
+	 *
+	 * @param asicContent {@link ASiCContent}
 	 * @param parameters {@link ASiCWithCAdESCommonParameters}
 	 * @return {@link GetDataToSignASiCWithCAdESHelper}
 	 */
-	public GetDataToSignASiCWithCAdESHelper build(SigningOperation operation, List<DSSDocument> documents,
-			ASiCWithCAdESCommonParameters parameters) {
-		if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
-			DSSDocument archiveDocument = documents.get(0);
-			if (ASiCUtils.isZip(archiveDocument)) {
-				List<String> filenames = ZipUtils.getInstance().extractEntryNames(archiveDocument);
-				if (ASiCUtils.isAsicFileContent(filenames)) {
-					return fromZipArchive(operation, archiveDocument, parameters);
-				}
-			}
-		}
-		return fromFiles(operation, documents, parameters);
-	}
-	
-	private GetDataToSignASiCWithCAdESHelper fromZipArchive(SigningOperation operation, DSSDocument archiveDoc, 
-			ASiCWithCAdESCommonParameters parameters) {
-		ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(archiveDoc);
-		ASiCExtractResult result = extractor.extract();
-		assertContainerTypeValid(result);
+	public GetDataToSignASiCWithCAdESHelper build(ASiCContent asicContent, ASiCWithCAdESCommonParameters parameters) {
+		asicContent = ASiCUtils.ensureMimeTypeAndZipComment(asicContent, parameters.aSiC());
 
-		if (Utils.isCollectionNotEmpty(result.getSignatureDocuments())
-				|| Utils.isCollectionNotEmpty(result.getTimestampDocuments())) {
-
-			ASiCContainerType currentContainerType = ASiCUtils.getContainerType(archiveDoc,
-					result.getMimeTypeDocument(), result.getZipComment(), result.getSignedDocuments());
+		if (Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())
+				|| Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments())) {
+			ASiCContainerType currentContainerType = asicContent.getContainerType();
 
 			boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
-
 			if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
-				return new DataToSignASiCEWithCAdESFromArchive(operation, result, parameters);
+				DSSDocument manifestDocument = createManifestDocument(asicContent, parameters);
+				return new DataToSignASiCEWithCAdESHelper(asicContent, manifestDocument, parameters.aSiC());
+
 			} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
-				return new DataToSignASiCSWithCAdESFromArchive(result, parameters.aSiC());
+				if (Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()) ||
+						Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments())) {
+					return new DataToSignASiCSWithCAdESFromArchive(asicContent, parameters.aSiC());
+				} else {
+					return new DataToSignASiCSWithCAdESFromFiles(asicContent, parameters.aSiC());
+				}
+
 			} else {
 				throw new UnsupportedOperationException(
 						String.format("Original container type '%s' vs parameter : '%s'", currentContainerType,
 								parameters.aSiC().getContainerType()));
 			}
 		}
-
-		return fromFiles(operation, Arrays.asList(archiveDoc), parameters);
+		return fromFiles(asicContent, parameters);
 	}
-	
-	private GetDataToSignASiCWithCAdESHelper fromFiles(SigningOperation operation, List<DSSDocument> documents, 
-			ASiCWithCAdESCommonParameters parameters) {
-		assertDocumentNamesDefined(documents);
+
+	private GetDataToSignASiCWithCAdESHelper fromFiles(ASiCContent asicContent, ASiCWithCAdESCommonParameters parameters) {
 		if (ASiCUtils.isASiCE(parameters.aSiC())) {
-			return new DataToSignASiCEWithCAdESFromFiles(operation, documents, parameters);
+			DSSDocument manifestDocument = createManifestDocument(asicContent, parameters);
+			return new DataToSignASiCEWithCAdESHelper(asicContent, manifestDocument, parameters.aSiC());
+
 		} else {
-			return new DataToSignASiCSWithCAdESFromFiles(documents, parameters.getZipCreationDate(), parameters.aSiC());
+			DSSDocument asicsSignedDocument = getASiCSSignedDocument(asicContent.getSignedDocuments(),
+					parameters.getZipCreationDate(), parameters.aSiC());
+			asicContent.setSignedDocuments(Collections.singletonList(asicsSignedDocument));
+			return new DataToSignASiCSWithCAdESFromFiles(asicContent, parameters.aSiC());
 		}
 	}
 
-	private static void assertContainerTypeValid(ASiCExtractResult result) {
-		if (ASiCUtils.areFilesContainSignatures(DSSUtils.getDocumentNames(result.getAllDocuments()))
-				&& Utils.isCollectionEmpty(result.getSignatureDocuments())) {
-			throw new UnsupportedOperationException("Container type doesn't match");
-		}
+	private DSSDocument createManifestDocument(ASiCContent asicContent, ASiCWithCAdESCommonParameters parameters) {
+		return getManifestBuilder(asicContent, parameters).build();
 	}
+
+	/**
+	 * This method returns a {@code ASiCEWithCAdESManifestBuilder} to be used for a signed/timestamped manifest creation
+	 *
+	 * @param asicContent {@link ASiCContent}
+	 * @param parameters {@link ASiCWithCAdESCommonParameters}
+	 * @return {@link ASiCEWithCAdESManifestBuilder}
+	 */
+	protected abstract ASiCEWithCAdESManifestBuilder getManifestBuilder(ASiCContent asicContent,
+																		ASiCWithCAdESCommonParameters parameters);
 
 }

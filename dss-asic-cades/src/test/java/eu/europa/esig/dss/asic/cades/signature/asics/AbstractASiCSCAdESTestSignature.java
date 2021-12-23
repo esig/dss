@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
 import eu.europa.esig.dss.asic.cades.signature.AbstractASiCWithCAdESTestSignature;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -47,7 +47,7 @@ public abstract class AbstractASiCSCAdESTestSignature extends AbstractASiCWithCA
 	}
 
 	@Override
-	protected DSSDocument getSignedData(ASiCExtractResult extractResult) {
+	protected DSSDocument getSignedData(ASiCContent extractResult) {
 		List<DSSDocument> signedDocuments = extractResult.getSignedDocuments();
 		assertEquals(1, signedDocuments.size());
 		return signedDocuments.get(0);
