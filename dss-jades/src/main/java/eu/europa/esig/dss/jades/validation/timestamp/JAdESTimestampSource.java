@@ -211,8 +211,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		List<CRLRef> result = new ArrayList<>();
 		Map<?,?> refsValueMap = DSSJsonUtils.toMap(unsignedAttribute.getValue());
 		if (Utils.isMapNotEmpty(refsValueMap)) {
-			List<?> crlRefs = DSSJsonUtils.toList(refsValueMap.get(JAdESHeaderParameterNames.CRL_REFS),
-					JAdESHeaderParameterNames.CRL_REFS);
+			List<?> crlRefs = DSSJsonUtils.getAsList(refsValueMap, JAdESHeaderParameterNames.CRL_REFS);
 			if (Utils.isCollectionNotEmpty(crlRefs)) {
 				for (Object item : crlRefs) {
 					Map<?, ?> crlRefMap = DSSJsonUtils.toMap(item);
@@ -233,8 +232,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		List<OCSPRef> result = new ArrayList<>();
 		Map<?,?> refsValueMap = DSSJsonUtils.toMap(unsignedAttribute.getValue());
 		if (Utils.isMapNotEmpty(refsValueMap)) {
-			List<?> ocsp = DSSJsonUtils.toList(refsValueMap.get(JAdESHeaderParameterNames.OCSP_REFS),
-					JAdESHeaderParameterNames.OCSP_REFS);
+			List<?> ocsp = DSSJsonUtils.getAsList(refsValueMap, JAdESHeaderParameterNames.OCSP_REFS);
 			if (Utils.isCollectionNotEmpty(ocsp)) {
 				for (Object item : ocsp) {
 					Map<?, ?> ocspRefMap = DSSJsonUtils.toMap(item);
@@ -257,7 +255,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.TST_VD);
 			if (Utils.isMapNotEmpty(tstVd)) {
-				xVals = DSSJsonUtils.toList(tstVd.get(JAdESHeaderParameterNames.X_VALS), JAdESHeaderParameterNames.X_VALS);
+				xVals = DSSJsonUtils.getAsList(tstVd, JAdESHeaderParameterNames.X_VALS);
 			}
 		} else {
 			xVals = DSSJsonUtils.toList(unsignedAttribute.getValue(), JAdESHeaderParameterNames.X_VALS);
@@ -269,13 +267,10 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 				try {
 					Map<?, ?> map = DSSJsonUtils.toMap(encapsulatedCert);
 					if (Utils.isMapNotEmpty(map)) {
-						Map<?, ?> x509Cert = DSSJsonUtils.toMap(map.get(JAdESHeaderParameterNames.X509_CERT),
-								JAdESHeaderParameterNames.X509_CERT);
-						Map<?, ?> otherCert = DSSJsonUtils.toMap(map.get(JAdESHeaderParameterNames.OTHER_CERT),
-								JAdESHeaderParameterNames.OTHER_CERT);
+						Map<?, ?> x509Cert = DSSJsonUtils.getAsMap(map, JAdESHeaderParameterNames.X509_CERT);
+						Map<?, ?> otherCert = DSSJsonUtils.getAsMap(map, JAdESHeaderParameterNames.OTHER_CERT);
 						if (Utils.isMapNotEmpty(x509Cert)) {
-							String base64Cert = DSSJsonUtils.toString(x509Cert.get(JAdESHeaderParameterNames.VAL),
-									JAdESHeaderParameterNames.VAL);
+							String base64Cert = DSSJsonUtils.getAsString(x509Cert, JAdESHeaderParameterNames.VAL);
 							if (Utils.isStringNotBlank(base64Cert)) {
 								byte[] binaries = Utils.fromBase64(base64Cert);
 								CertificateToken certificateToken = DSSUtils.loadCertificate(binaries);
@@ -309,7 +304,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
 			if (Utils.isMapNotEmpty(tstVd)) {
-				rVals = DSSJsonUtils.toMap(tstVd.get(JAdESHeaderParameterNames.R_VALS), JAdESHeaderParameterNames.R_VALS);
+				rVals = DSSJsonUtils.getAsMap(tstVd, JAdESHeaderParameterNames.R_VALS);
 			}
 		} else {
 			rVals = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
@@ -317,15 +312,13 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		if (rVals != null) {
 			List<CRLBinary> crlIdentifiers = new ArrayList<>();
 
-			List<?> crlVals = DSSJsonUtils.toList(rVals.get(JAdESHeaderParameterNames.CRL_VALS),
-					JAdESHeaderParameterNames.CRL_VALS);
+			List<?> crlVals = DSSJsonUtils.getAsList(rVals, JAdESHeaderParameterNames.CRL_VALS);
 			if (Utils.isCollectionNotEmpty(crlVals)) {
 				for (Object item : crlVals) {
 					try {
 						Map<?, ?> encapsulatedCrl = DSSJsonUtils.toMap(item);
 						if (Utils.isMapNotEmpty(encapsulatedCrl)) {
-							String base64Crl = DSSJsonUtils.toString(encapsulatedCrl.get(JAdESHeaderParameterNames.VAL),
-									JAdESHeaderParameterNames.VAL);
+							String base64Crl = DSSJsonUtils.getAsString(encapsulatedCrl, JAdESHeaderParameterNames.VAL);
 							if (Utils.isStringNotBlank(base64Crl)) {
 								byte[] binaries = Utils.fromBase64(base64Crl);
 								crlIdentifiers.add(CRLUtils.buildCRLBinary(binaries));
@@ -349,7 +342,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
 			if (Utils.isMapNotEmpty(tstVd)) {
-				rVals = DSSJsonUtils.toMap(tstVd.get(JAdESHeaderParameterNames.R_VALS), JAdESHeaderParameterNames.R_VALS);
+				rVals = DSSJsonUtils.getAsMap(tstVd, JAdESHeaderParameterNames.R_VALS);
 			}
 		} else {
 			rVals = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
@@ -357,15 +350,13 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		if (rVals != null) {
 			List<OCSPResponseBinary> ocspIdentifiers = new ArrayList<>();
 
-			List<?> ocspVals = DSSJsonUtils.toList(rVals.get(JAdESHeaderParameterNames.OCSP_VALS),
-					JAdESHeaderParameterNames.OCSP_VALS);
+			List<?> ocspVals = DSSJsonUtils.getAsList(rVals, JAdESHeaderParameterNames.OCSP_VALS);
 			if (Utils.isCollectionNotEmpty(ocspVals)) {
 				for (Object item : ocspVals) {
 					try {
 						Map<?, ?> encapsulatedOcsp = DSSJsonUtils.toMap(item);
 						if (Utils.isMapNotEmpty(encapsulatedOcsp)) {
-							String base64Ocps = DSSJsonUtils.toString(encapsulatedOcsp.get(JAdESHeaderParameterNames.VAL),
-									JAdESHeaderParameterNames.VAL);
+							String base64Ocps = DSSJsonUtils.getAsString(encapsulatedOcsp, JAdESHeaderParameterNames.VAL);
 							if (Utils.isStringNotBlank(base64Ocps)) {
 								byte[] binaries = Utils.fromBase64(base64Ocps);
 								BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPFromBinaries(binaries);
@@ -442,17 +433,14 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		List<TimestampToken> result = new LinkedList<>();
 
 		if (Utils.isMapNotEmpty(tstContainer)) {
-			List<?> tstTokens = DSSJsonUtils.toList(tstContainer.get(JAdESHeaderParameterNames.TST_TOKENS),
-					JAdESHeaderParameterNames.TST_TOKENS);
+			List<?> tstTokens = DSSJsonUtils.getAsList(tstContainer, JAdESHeaderParameterNames.TST_TOKENS);
 			if (Utils.isCollectionNotEmpty(tstTokens)) {
 				for (Object item : tstTokens) {
 					Map<?, ?> tstToken = DSSJsonUtils.toMap(item);
 					if (Utils.isMapNotEmpty(tstToken)) {
-						String encoding = DSSJsonUtils.toString(tstToken.get(JAdESHeaderParameterNames.ENCODING),
-								JAdESHeaderParameterNames.ENCODING);
+						String encoding = DSSJsonUtils.getAsString(tstToken, JAdESHeaderParameterNames.ENCODING);
 						if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-							String tstBase64 = DSSJsonUtils.toString(tstToken.get(JAdESHeaderParameterNames.VAL),
-									JAdESHeaderParameterNames.VAL);
+							String tstBase64 = DSSJsonUtils.getAsString(tstToken, JAdESHeaderParameterNames.VAL);
 							if (Utils.isStringNotEmpty(tstBase64)) {
 								try {
 									TimestampToken timestampToken = new TimestampToken(

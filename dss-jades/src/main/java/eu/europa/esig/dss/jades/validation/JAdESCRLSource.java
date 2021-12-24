@@ -93,7 +93,7 @@ public class JAdESCRLSource extends OfflineCRLSource {
 		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
 			Map<?, ?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.TST_VD);
 			if (Utils.isMapNotEmpty(tstVd)) {
-				Map<?, ?> rVals = DSSJsonUtils.toMap(tstVd.get(JAdESHeaderParameterNames.R_VALS), JAdESHeaderParameterNames.R_VALS);
+				Map<?, ?> rVals = DSSJsonUtils.getAsMap(tstVd, JAdESHeaderParameterNames.R_VALS);
 				if (Utils.isMapNotEmpty(rVals)) {
 					extractCRLValues(rVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
 				}
@@ -116,15 +116,14 @@ public class JAdESCRLSource extends OfflineCRLSource {
 	}
 
 	private void extractCRLValues(Map<?, ?> rVals, RevocationOrigin origin) {
-		List<?> crlVals = DSSJsonUtils.toList(rVals.get(JAdESHeaderParameterNames.CRL_VALS), JAdESHeaderParameterNames.CRL_VALS);
+		List<?> crlVals = DSSJsonUtils.getAsList(rVals, JAdESHeaderParameterNames.CRL_VALS);
 		if (Utils.isCollectionNotEmpty(crlVals)) {
 			for (Object item : crlVals) {
 				Map<?, ?> pkiOb = DSSJsonUtils.toMap(item, JAdESHeaderParameterNames.PKI_OB);
 				if (Utils.isMapNotEmpty(pkiOb)) {
-					String encoding = DSSJsonUtils.toString(pkiOb.get(JAdESHeaderParameterNames.ENCODING),
-							JAdESHeaderParameterNames.ENCODING);
-					if (Utils.isStringNotEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-						String val = DSSJsonUtils.toString(pkiOb.get(JAdESHeaderParameterNames.VAL), JAdESHeaderParameterNames.VAL);
+					String encoding = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.ENCODING);
+					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+						String val = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.VAL);
 						if (Utils.isStringNotEmpty(val)) {
 							add(val, origin);
 						}
@@ -147,7 +146,7 @@ public class JAdESCRLSource extends OfflineCRLSource {
 	}
 
 	private void extractCRLReferences(Map<?, ?> rRefs, RevocationRefOrigin origin) {
-		List<?> crlRefs = DSSJsonUtils.toList(rRefs.get(JAdESHeaderParameterNames.CRL_REFS), JAdESHeaderParameterNames.CRL_REFS);
+		List<?> crlRefs = DSSJsonUtils.getAsList(rRefs, JAdESHeaderParameterNames.CRL_REFS);
 		if (Utils.isCollectionNotEmpty(crlRefs)) {
 			for (Object item : crlRefs) {
 				Map<?, ?> crlRefMap = DSSJsonUtils.toMap(item);

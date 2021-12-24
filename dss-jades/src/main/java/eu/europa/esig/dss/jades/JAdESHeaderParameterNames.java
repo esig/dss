@@ -129,6 +129,11 @@ public final class JAdESHeaderParameterNames {
 	public static final String CERTIFIED = "certified";
 
 	/**
+	 * Certified attributes
+	 */
+	public static final String CERTIFIED_ATTRS = "certifiedAttrs";
+
+	/**
 	 * X509 Attribute certificate
 	 */
 	public static final String X509_ATTR_CERT = "x509AttrCert";
@@ -171,7 +176,12 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Signature policy qualifiers
 	 */
-	public static final String SIG_PQUALS = "sigPQuals";
+	public static final String SIG_P_QUALS = "sigPQuals";
+
+	/**
+	 * Signature policy qualifier
+	 */
+	public static final String SIG_P_QUAL = "sigPQual";
 	
 	/**
 	 * Signature policy URL qualifier

@@ -111,17 +111,18 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractX5T() {
-		Object x5t = jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT);
-		String base64UrlSHA1Certificate = DSSJsonUtils.toString(x5t, HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT);
+		String base64UrlSHA1Certificate = jws.getProtectedHeaderValueAsString(
+				HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT);
 		if (Utils.isStringNotEmpty(base64UrlSHA1Certificate)) {
 			Digest digest = new Digest(DigestAlgorithm.SHA1, DSSJsonUtils.fromBase64Url(base64UrlSHA1Certificate));
-			LOG.warn("Found {} with value {} but not supported by the JAdES standard", HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT, digest);
+			LOG.warn("Found {} with value {} but not supported by the JAdES standard",
+					HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT, digest);
 		}
 	}
 
 	private void extractX5TS256() {
-		Object x5t256 = jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT);
-		String base64UrlSHA256Certificate = DSSJsonUtils.toString(x5t256, HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT);
+		String base64UrlSHA256Certificate = jws.getProtectedHeaderValueAsString(
+				HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT);
 		if (Utils.isStringNotEmpty(base64UrlSHA256Certificate)) {
 			CertificateRef certRef = new CertificateRef();
 			certRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, DSSJsonUtils.fromBase64Url(base64UrlSHA256Certificate)));
@@ -130,8 +131,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractX5TO() {
-		Object x5TO = jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.X5T_O);
-		extractX5TO(DSSJsonUtils.toMap(x5TO, JAdESHeaderParameterNames.X5T_O));
+		extractX5TO(jws.getProtectedHeaderValueAsMap(JAdESHeaderParameterNames.X5T_O));
 	}
 
 	private void extractX5TO(Map<?, ?> x5TO) {
@@ -146,8 +146,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractSigX5Ts() {
-		Object sigX5ts = jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SIG_X5T_S);
-		List<?> sigX5tsList = DSSJsonUtils.toList(sigX5ts, JAdESHeaderParameterNames.SIG_X5T_S);
+		List<?> sigX5tsList = jws.getProtectedHeaderValueAsList(JAdESHeaderParameterNames.SIG_X5T_S);
 		if (Utils.isCollectionNotEmpty(sigX5tsList)) {
 			for (Object item : sigX5tsList) {
 				extractX5TO(DSSJsonUtils.toMap(item, JAdESHeaderParameterNames.X5T_O));
@@ -165,8 +164,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractX5C() {
-		Object x5c = jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.X509_CERTIFICATE_CHAIN);
-		List<?> x509CertChain = DSSJsonUtils.toList(x5c, HeaderParameterNames.X509_CERTIFICATE_CHAIN);
+		List<?> x509CertChain = jws.getProtectedHeaderValueAsList(HeaderParameterNames.X509_CERTIFICATE_CHAIN);
 		if (Utils.isCollectionNotEmpty(x509CertChain)) {
 			for (Object item : x509CertChain) {
 				String certificateBase64 = DSSJsonUtils.toString(item);
@@ -208,8 +206,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	private void extractTimestampValidationData(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
 			Map<?,?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.TST_VD);
-			List<?> xVals = DSSJsonUtils.toList(tstVd.get(JAdESHeaderParameterNames.X_VALS),
-					JAdESHeaderParameterNames.X_VALS);
+			List<?> xVals = DSSJsonUtils.getAsList(tstVd, JAdESHeaderParameterNames.X_VALS);
 			if (Utils.isCollectionNotEmpty(xVals)) {
 				extractCertificateValues(xVals, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
 			}
@@ -233,12 +230,10 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	private void extractCertificateValues(List<?> xVals, CertificateOrigin origin) {
 		for (Object item : xVals) {
 			Map<?, ?> xVal = DSSJsonUtils.toMap(item);
-			Map<?, ?> x509Cert = DSSJsonUtils.toMap(xVal.get(JAdESHeaderParameterNames.X509_CERT),
-					JAdESHeaderParameterNames.X509_CERT);
-			Map<?, ?> otherCert = DSSJsonUtils.toMap(xVal.get(JAdESHeaderParameterNames.OTHER_CERT),
-					JAdESHeaderParameterNames.OTHER_CERT);
+			Map<?, ?> x509Cert = DSSJsonUtils.getAsMap(xVal, JAdESHeaderParameterNames.X509_CERT);
+			Map<?, ?> otherCert = DSSJsonUtils.getAsMap(xVal, JAdESHeaderParameterNames.OTHER_CERT);
 			if (Utils.isMapNotEmpty(x509Cert)) {
-				extractX509Cert( x509Cert, origin);
+				extractX509Cert(x509Cert, origin);
 			} else if (Utils.isMapNotEmpty(otherCert)) {
 				LOG.warn("The header '{}' is not supported! The entry is skipped.", JAdESHeaderParameterNames.OTHER_CERT);
 			}
@@ -256,9 +251,9 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractX509Cert(Map<?, ?> x509Cert, CertificateOrigin origin) {
-		String encoding = DSSJsonUtils.toString(x509Cert.get(JAdESHeaderParameterNames.ENCODING), JAdESHeaderParameterNames.ENCODING);
+		String encoding = DSSJsonUtils.getAsString(x509Cert, JAdESHeaderParameterNames.ENCODING);
 		if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-			String val = DSSJsonUtils.toString(x509Cert.get(JAdESHeaderParameterNames.VAL), JAdESHeaderParameterNames.VAL);
+			String val = DSSJsonUtils.getAsString(x509Cert, JAdESHeaderParameterNames.VAL);
 			if (Utils.isStringNotBlank(val)) {
 				addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(val), origin);
 			}

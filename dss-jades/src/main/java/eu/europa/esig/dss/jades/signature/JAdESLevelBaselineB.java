@@ -577,7 +577,7 @@ public class JAdESLevelBaselineB {
 
 			if (signaturePolicy.isSPQualifierPresent()) {
 				List<JsonObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
-				sigPIdParams.put(JAdESHeaderParameterNames.SIG_PQUALS, signaturePolicyQualifiers);
+				sigPIdParams.put(JAdESHeaderParameterNames.SIG_P_QUALS, signaturePolicyQualifiers);
 			}
 			
 			addHeader(JAdESHeaderParameterNames.SIG_PID, new JsonObject(sigPIdParams));

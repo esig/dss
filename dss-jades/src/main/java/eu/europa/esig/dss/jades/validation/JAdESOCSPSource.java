@@ -94,7 +94,7 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
 			Map<?, ?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.TST_VD);
 			if (Utils.isMapNotEmpty(tstVd)) {
-				Map<?, ?> rVals = DSSJsonUtils.toMap(tstVd.get(JAdESHeaderParameterNames.R_VALS), JAdESHeaderParameterNames.R_VALS);
+				Map<?, ?> rVals = DSSJsonUtils.getAsMap(tstVd, JAdESHeaderParameterNames.R_VALS);
 				if (Utils.isMapNotEmpty(rVals)) {
 					extractOCSPValues(rVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
 				}
@@ -117,16 +117,15 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	private void extractOCSPValues(Map<?, ?> rVals, RevocationOrigin origin) {
-		List<?> ocspVals = DSSJsonUtils.toList(rVals.get(JAdESHeaderParameterNames.OCSP_VALS), JAdESHeaderParameterNames.OCSP_VALS);
+		List<?> ocspVals = DSSJsonUtils.getAsList(rVals, JAdESHeaderParameterNames.OCSP_VALS);
 		if (ocspVals instanceof List) {
 			if (Utils.isCollectionNotEmpty(ocspVals)) {
 				for (Object item : ocspVals) {
 					Map<?, ?> pkiOb = DSSJsonUtils.toMap(item, JAdESHeaderParameterNames.PKI_OB);
 					if (Utils.isMapNotEmpty(pkiOb)) {
-						String encoding = DSSJsonUtils.toString(pkiOb.get(JAdESHeaderParameterNames.ENCODING),
-								JAdESHeaderParameterNames.ENCODING);
+						String encoding = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.ENCODING);
 						if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-							String val = DSSJsonUtils.toString(pkiOb.get(JAdESHeaderParameterNames.VAL), JAdESHeaderParameterNames.VAL);
+							String val = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.VAL);
 							if (Utils.isStringNotEmpty(val)) {
 								add(val, origin);
 							}
@@ -149,7 +148,7 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	private void extractOCSPReferences(Map<?, ?> rRefs, RevocationRefOrigin origin) {
-		List<?> ocspRefs = DSSJsonUtils.toList(rRefs.get(JAdESHeaderParameterNames.OCSP_REFS), JAdESHeaderParameterNames.OCSP_REFS);
+		List<?> ocspRefs = DSSJsonUtils.getAsList(rRefs, JAdESHeaderParameterNames.OCSP_REFS);
 		if (Utils.isCollectionNotEmpty(ocspRefs)) {
 			for (Object item : ocspRefs) {
 				Map<?, ?> ocspRefMap = DSSJsonUtils.toMap(item);
