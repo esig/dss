@@ -32,12 +32,13 @@ The usage of alerts is available in the following classes:
 
 === Configuration of validation policy in different use cases
 ==== General
-!!! TODO: Explain how the validation policy works and then fill the “Error/subindication” column of the table to indicate what errors/subindications each constraint can lead to.!!!
+A Signature validation policy is a set of rules/constraints that need to be fulfilled to validate a signature (cf. <<SignaturePolicy>>). When a constraint is not validated it leads to a sub-indication in the validation report (cf. <<SignatureValidationInputsOutputs, Signature validation output>>)
+//TODO: Fill the “subindication” column of the table to indicate what subindications each constraint can lead to.
 
 .Validation policy constraints
-[%header,cols="6*^.^"]
+[%header,cols="^.^1,^.^1,^.^1,^.^1,^.^1,^.^1"]
 |===
-   |Constraint                  |Element/Sub-constraint             |Element/Sub-constraint         |Element/Sub-constraint         |Level          |Error/subindication
+   |Constraint                  |Sub-constraint             |Sub-constraint         |Sub-constraint         |Level          |Sub-indication
 .32+|ContainerConstraints    .4+|AcceptableContainerTypes        .4+|                            .4+|                               |FAIL           |
                                                                                                                                     |WARN           |
                                                                                                                                     |INFORM         |
@@ -725,8 +726,6 @@ The usage of alerts is available in the following classes:
 
 |===
 
-[.landscape]
-<<<
 
 ==== AdES validation
 
@@ -736,7 +735,7 @@ According to ETSI EN 319 102-1 (cf. <<R09>>), the signature validation process c
 * Validation process for Signatures with Time and Signatures with Long-Term Validation Material - verifies the signature against its _best-signature-time_ (i.e. against the signature time-stamp's production time);
 * Validation process for Signatures providing Long Term Availability and Integrity of Validation Material - verifies the signature with all available Long-Term Availability material (i.e. including the validation of archive time-stamps).
 
-DSS allows the user to choose the validation level when performing a signature validation. By default, the highest level (with LTA enabled) is used.
+DSS allows the user to choose the validation level when performing a signature validation, i.e. to specify the validation process to be used for validation (cf. <<R09>>). By default, the highest level (with LTA enabled) is used.
 
 ===== Basic AdES validation
 
@@ -849,14 +848,6 @@ Below is an example of code to perform a `PAdES-BASELINE-B` type signature:
 .Signing a PDF file with PAdES
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=demo]
-----
-
-===== Signature Policy
-The following example illustrates creation of an AdES-BASELINE-B level with a signature policy identifier.
-[source,java,indent=0]
-.Defining a Signature Policy
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=policy]
 ----
 
 [[PAdESVisibleSignatureAnnex]]
@@ -990,30 +981,13 @@ This is another example of the source code for signing multiple documents using 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDocumentsWithASiCSEWithCAdESTest.java[tags=demo]
 ----
 
-[[ASiCTimestamp]]
-===== ASiC time assertion
-
-Below are two examples of timestamp generation for ASiC-S and for ASiC-E:
-
-[source,java,indent=0]
-.ASIC-E time assertion
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampWithContainerTest.java[tags=creation]
-----
-
-In order to create an `ASiC-S`, just change the expected container property in the example above:
-
-[source,java,indent=0]
-.ASIC-S time assertion
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampWithContainerTest.java[tags=asics]
-----
 
 [[Topology]]
 === Examples of SCA and SCDev Topology and Workflows.
 
 ==== Hash encryption
-In order to avoid transferring of original or sensitive information, but also reduce an amount of data by online protocols, a hash of document or a data to be signed can be computed for various purposes.
+In order to avoid transfer of original or sensitive information, and also to reduce the amount of data by online protocols, a hash of a document or data to be signed can be computed.
+Refer to section <<Hashing>> for more information on the hash encryption.
 
 [source,java,indent=0]
 .Hash encryption
@@ -1021,9 +995,10 @@ In order to avoid transferring of original or sensitive information, but also re
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=hashComputation]
 ----
 
+[[DetachedSignatureDigest]]
 ==== Detached signature based on digested document
 
-When you want to provide a privacy for original documents, a signature can be created in a detached way, by providing the digest of an original document only. An example of the use case you can find below:
+When you want to keep your original documents private, a signature can be created in a detached way, by providing the digest of an original document only. You can find an example of a use case below:
 
 [source,java,indent=0]
 .Detached signature based on digested document
@@ -1031,9 +1006,10 @@ When you want to provide a privacy for original documents, a signature can be cr
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignDetachedDocumentTest.java[tags=demo]
 ----
 
-==== Creating the signature envelope on client side and signature value on server side
+[[ClientServerAnnex]]
+==== Client-side signature creation with server-side remote key activation
 
-When a private key signing is operated remotely, i.e. on an external server, then the document preparation and the actual signing can be made on different servers. An example of such signature creation, when the signature document is created on client's side and the actual signature is made remotely, you can find below:
+When a private key signing is operated remotely, i.e. on an external server, then the document preparation and the actual signing can be separated. The signature document is created on client's side and the actual signature is made remotely. Refer to section <<ClientServerSeparation>> for a detailed description and visual illustration of the steps that take place in such a situation. See the code below for a code illustration:
 
 [source,java,indent=0]
 .Creation of the signature envelope on client side and signature value on server side

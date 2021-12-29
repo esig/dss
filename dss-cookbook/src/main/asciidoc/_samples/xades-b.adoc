@@ -1,0 +1,22 @@
+[source,xml]
+----
+<xades:SignedProperties Id="xades-id-152907ac00f4167b928485aa66105e32">
+    <xades:SignedSignatureProperties>
+        <xades:SigningTime>2021-12-21T13:01:14Z</xades:SigningTime>
+        <xades:SigningCertificateV2>
+            <xades:Cert>
+                <xades:CertDigest>
+                    <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/>
+                    <ds:DigestValue>14wMjDFzfsqkdZUsnPH0/h+Zo8rz8DEwiMq2YO1wNTfplL3wkQ7E0l2yZPYdeqGK9SxCTlzp11RNEUeLKMsCeQ==</ds:DigestValue>
+                </xades:CertDigest>
+                <xades:IssuerSerialV2>MD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw==</xades:IssuerSerialV2>
+            </xades:Cert>
+        </xades:SigningCertificateV2>
+    </xades:SignedSignatureProperties>
+    <xades:SignedDataObjectProperties>
+        <xades:DataObjectFormat ObjectReference="#r-id-152907ac00f4167b928485aa66105e32-1">
+            <xades:MimeType>text/xml</xades:MimeType>
+        </xades:DataObjectFormat>
+    </xades:SignedDataObjectProperties>
+</xades:SignedProperties>
+----

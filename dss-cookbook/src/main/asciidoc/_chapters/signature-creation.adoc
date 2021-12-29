@@ -3,6 +3,7 @@
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
 :imagesdir: images/
+:icons: font
 
 == Signature creation
 
@@ -16,53 +17,76 @@ The different formats of the digital signature make possible to cover a wide ran
 * *JAdES* - for JSON Advanced Electronic Signatures (cf. <<R05>>);
 * *ASIC* - for Associated Signature Containers (cf. <<R04>>). XAdES and CAdES combinations are possible.
 
-==== Signature's profile simplification
+==== Signature profiles
 
-To each signature format a specific standard is dedicated. The wide variety of options, settings and versions of the standards makes their interoperability very difficult. This is the main reason why new standards commonly called "baseline profiles" were published. Their goal is to limit the number of options and variants thereby making possible a better interoperability between different actors.
+To ensure interoperability of electronic signatures in the EU, the eIDAS Regulation has declared through the Commission Implementing Decision (EU) 2015/1506 (cf. <<R16>>) that the advanced electronic signatures in the EU shall comply with the baseline standards defined by the following ETSI technical specifications:
 
-In general, it can be said that for each format of the digital signature the number of security levels defined in the new standards has been reduced. Below is a comparative table of old and new levels for each format of the signature:
+* XAdES Baseline Profile: ETSI TS 103171 v.2.1.1
+* CAdES Baseline Profile: ETSI TS 103173 v.2.2.1
+* PAdES Baseline Profile: ETSI TS 103172 v.2.2.2
+* ASiC Baseline Profile: ETSI TS 103174 v.2.2.1
+
+The baseline profile for a certain signature format provides the basic features required to assure interoperability in the EU for that format. Each baseline profile defines four different levels that correspond to the four signature classes described in the ETSI standard EN 319 102-1 (cf. <<R09>>) and which are described in the following section.
+
+Before the introduction of the baseline profiles, old extended profiles were used.
+Below is a comparative table of old extended profiles and new baseline profiles for each signature format:
 
 [%header,cols=7*^.^]
 .Signature supported profiles
 |=======================
 2+|XAdES				       2+|CAdES				             2+|PAdES                           |JAdES
-|*STANDARD* 	   |*BASELINE*	 |*STANDARD*       |*BASELINE* 	   |*STANDARD*	    |*BASELINE*     |*BASELINE*
-|XAdES-BES 		.2+|XAdES-B	     |CAdES-BES 	.2+|CAdES-B 	   |PAdES-BES    .2+|PAdES-B     .2+|JAdES-B
-|XAdES-EPES					     |CAdES-EPES	 			       |PAdES-EPES
-|XAdES-T 		   |XAdES-T      |CAdES-T 	       |CAdES-T   	   |PAdES-T 	    |PAdES-T        |JAdES-T
-|XAdES-XL 		   |XAdES-LT  	 |CAdES-XL         |CAdES-LT 	   |PAdES-XL 	    |PAdES-LT       |JAdES-LT
-|XAdES-A 		   |XAdES-LTA	 |CAdES-A 	       |CAdES-LTA 	   |PAdES-LTV 	    |PAdES-LTA      |JAdES-LTA
+|*EXTENDED* 	   |*BASELINE*	 |*EXTENDED*       |*BASELINE* 	   |*EXTENDED*	    |*BASELINE*     |*BASELINE*
+|XAdES-E-BES 	.2+|XAdES-B-B	 |CAdES-E-BES 	.2+|CAdES-B-B 	   |PAdES-E-BES    .2+|PAdES-B-B .2+|JAdES-B-B
+|XAdES-E-EPES					 |CAdES-E-EPES	 			       |PAdES-E-EPES
+
+|XAdES-E-T 		.3+|XAdES-B-T    |CAdES-E-T 	    .3+|CAdES-B-T   .3+| 	         .3+|PAdES-B-T   .3+|JAdES-B-T
+|XAdES-E-C 		                 |CAdES-E-C
+|XAdES-E-X 		                 |CAdES-E-X
+
+|XAdES-E-X-L 	   |XAdES-B-LT   |CAdES-E-X-L      |CAdES-B-LT 	   |        	    |PAdES-B-LT       |JAdES-B-LT
+|XAdES-E-A 		   |XAdES-B-LTA	 |CAdES-E-A 	       |CAdES-B-LTA    |PAdES-E-LTV 	    |PAdES-B-LTA      |JAdES-B-LTA
+
 |=======================
 
-NOTE: DSS framework is compatible with the baseline profiles, and it is not possible to use the standard profiles for signing purpose. The validation of the signature has a basic support of old profiles.
+The DSS framework is compatible with the baseline profiles. However, it is not possible to use the extended profiles for signing purpose except for XAdES-E-A/C/X/XL. The validation of the signature has a basic support of old profiles.
 
-[.landscape]
-<<<
+[[SignatureClasses]]
+==== Signature classes/levels
+The ETSI standard EN 319 102-1 (cf. <<R09>>) defines four conformance classes to address the need to protect the validity of the signature in time. Henceforth, to denote the class of the signature the word "level" will be used. Follows the list of profiles implementing the four classes defined in the standard:
 
-==== Signature levels
-The new ETSI standard defines four conformance levels to address the growing need to protect the validity of the signature in time. Henceforth, to denote the level of the signature the word "level" will be used. Follows the list of levels defined in the standard:
-
-* AdES-BASELINE-*B*: _Basic Electronic Signature_ +
-The lowest and simplest version containing the SignedInfo, SignatureValue, KeyInfo and SignedProperties. This level combines the old -BES and -EPES levels.
+* AdES-BASELINE-*B*: Profile implementing the signature class _Basic Signature_ +
+The lowest and simplest version containing the SignedInfo, SignatureValue, KeyInfo and SignedProperties.
 This form extends the definition of an electronic signature to conform to the identified signature policy.
-* AdES-BASELINE-*T*: _Signature with a timestamp_ +
+* AdES-BASELINE-*T*: Profile implementing the signature class _Signature with time_ +
 A timestamp regarding the time of signing is added to protect against repudiation.
-* AdES-BASELINE-*LT*: _Signature with Long Term Data_ +
-Certificates and revocation data are embedded to allow verification in future even if their original source is not available. This level is equivalent to the old -XL level.
-* AdES-BASELINE-*LTA*: _Signature with Long Term Data and Archive timestamp_ +
-By using periodical timestamping (e.g. each year) compromising is prevented which could be caused by weakening previous signatures during a long-time storage period. This level is equivalent to the old -A level.
+* AdES-BASELINE-*LT*: Profile implementing the signature class _Signature with Long-Term Validation Material_ +
+All the material or references to material required for validating the signature are embedded to allow verification in future even if their original source is not available. For example, this level has to prove that the certification path was valid, at the time of the validation of the signature, up to a trust point according to the naming constraints and the certificate policy constraints from the "Signature Validation Policy".
+* AdES-BASELINE-*LTA*: Profile implementing the signature class _Signature providing Long Term Availability and Integrity of Validation Material_ +
+By using periodical timestamping (e.g. each year), the availability or integrity of the validation data is maintained. The validity could be limited due to cryptographic obsolescence of the algorithms, keys and parameters used, or due to expiration or revocation of the validation material. The `AdES-BASELINE-LTA` augmentation adds additional time-stamps for archiving signatures in a way that they are still protected, but also to be able to prove that the signatures were valid at the time when the used cryptographic algorithms were considered safe. Additional validation data can be included too.
 
-NOTE: Old levels: -BES, -EPES, -C, -X, -XL, -A are not supported any more when signing.
+NOTE: The old levels -E-BES and -E-EPES are not supported anymore when signing. The old levels -E-C, -E-X, -E-XL, -E-A are supported only for XAdES.
 
+The following schema from the ETSI standard EN 319 102-1 (cf. <<R09>>) illustrates the different classes.
+
+image::signature-classes.jpg[classes, width="100%", height="100%"]
+
+
+[[Packaging]]
 ==== Signature packaging
-When signing data, the resulting signature needs to be linked with the data to which it applies. This can be done either by creating a data set which combines the signature and the data (e.g. by enveloping the data with the signature or including a signature element in the data set) or placing the signature in a separate resource and having some external means for associating the signature with the data. The following packagings can be defined for various signature formats:
+When signing data, the resulting signature needs to be linked with the data to which it applies. This can be done either by creating a data set which combines the signature and the data (e.g. by enveloping the data with the signature or including a signature element in the data set) or placing the signature in a separate resource and having some external means for associating the signature with the data.
+
+The choice is not obvious, because in one case the signature will alter the signed document and in the other case it is possible to lose the association between the signed document and its signature.
+
+The following types of packaging can be defined for various signature formats:
 
 * *ENVELOPED :* when the signature applies to data that surround the rest of the document;
 * *ENVELOPING :* when the signed data form a sub-element of the signature itself;
 * *DETACHED :* when the signature relates to the external resource(s) separated from it;
 * *INTERNALLY-DETACHED :* when the signature and the related signed data are both included in a parent element (only XML).
 
-More information about packaging usage <<SignatureProfileGuide>> in combination with available formats can be found in <<SignatureProfileGuide>>.
+image::sig-creation-packaging.jpg[packaging, width="100%", height="100%"]
+
+More information about packaging use in combination with available formats can be found in <<SignatureProfileGuide>>.
 
 [[SignatureProfileGuide]]
 ===== Signature profile guide
@@ -70,8 +94,11 @@ More information about packaging usage <<SignatureProfileGuide>> in combination 
 Below you can find a table specifying various signature possibilities with available in DSS signature's profiles/formats.
 The vertical column specifies available signature profiles and their extensions. The horizontal row specifies types of documents to be signed with the formats.
 
+[.landscape]
+<<<
+
 .File formats and Signature types conformance
-[%header,cols="12*^.^"]
+[%header,cols="12*^.^", orientation=landscape]
 |===
   3+|Signature profiles                                        |XML                            |JSON                           |PDF                            |Binary                         |Digest                         |Multiple files                 |Multiple signatures            |Counter signature              |Stand-alone timestamp
 .10+|XAdES   .4+|Enveloping  |Base64 encoded                   |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]  |icon:check-circle[role="lime"] |icon:times-circle[role="red"]
@@ -160,68 +187,7 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 | JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 |=====
 
-[[SignatureTokens]]
-==== Signature tokens
 
-The DSS framework is able to create signatures from PKCS#11, PKCS#12, MS CAPI and Apple Keystore. To be independent of the signing media, DSS framework uses an interface named SignatureTokenConnection to manage different implementations of the signing process. The base implementation is able to sign a stream of the data in one step. That means that all the data to be signed needs to be sent to the SCDev. This is the case for MS CAPI. As to the PKCS#11 and PKCS#12, which give to the developer a finer control in the signature operation, the DSS framework implements the `AsyncSignatureTokenConnection` abstract class that permits to execute the digest operation and signature operation in two different threads or even in two different hardwares.
-
-This design permits also other card providers/adopters to create own implementations. For example, this can be used for a direct connection to the Smartcard through Java PC/SC.
-
-===== PKCS#11
-
-PKCS#11 is widely used to access smart cards and HSMs. Most commercial software uses PKCS#11 to access the signature key of the CA or to enrol user certificates. In the DSS framework, this standard is encapsulated in the class `Pkcs11SignatureToken`. It requires some installed drivers (dll, sso,...).
-[source,java,indent=0]
-.Pkcs11SignatureToken usage
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS11Snippet.java[tags=demo]
-----
-
-===== PKCS#12
-
-This standard defines a file format commonly used to store the private key and corresponding public key certificate protecting them by password. It allows signing with a PKCS#12 keystore (.p12 file).
-In order to use this format with the DSS framework you have to go through the class `Pkcs12SignatureToken`.
-
-[source,java,indent=0]
-.Pkcs12SignatureToken usage
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS12Snippet.java[tags=demo]
-----
-
-===== MS CAPI
-
-If the middleware for communicating with an SCDev provides a CSP based on MS CAPI (the Microsoft interface to communicate with SmartCards) specification, then to sign the documents you can use MSCAPISignatureToken class.
-[source,java,indent=0]
-.MSCAPISignatureToken usage
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/MSCAPISnippet.java[tags=demo]
-----
-
-===== Apple Keystore
-
-Since DSS 5.10 a new class `AppleSignatureToken` is provided within the source code allowing to access a Keychain store in a MacOS environment.
-
-WARNING: The API does not retrieve keys from a smartcard, as opposite to MS CAPI implementation.
-
-// TODO : add AppleSignatureToken code example
-[source,java,indent=0]
-.AppleSignatureToken usage
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AppleKeychainSnippet.java[tags=demo]
-----
-
-===== Java Key Store
-The JKSSignatureToken class allows signing with a Java Key Store (.jks file).
-
-[source,java,indent=0]
-.JKSSignatureToken usage
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JKSSnippet.java[tags=demo]
-----
-
-===== Other Implementations
-NOTE: The DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK libraries.
-
-As you can see, it is easy to add another implementation of the SignatureTokenConnection, thus enabling the framework to use other API than provided within the framework. For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
 
 
 [[DSSDocuments]]
@@ -236,7 +202,7 @@ DSS allows creation of different kinds of DSSDocument :
 * `HTTPHeader` : represents an HTTP Header used as a signed object within a JAdES implementation (see <<JAdESDetachedPackaging, JAdES Detached Packaging>>).
 * `HTTPHeaderDigest` : represents an HTTP body message's digest to be used as a signed HTTP Header within <<JAdESDetachedPackaging, JAdES Detached Packaging>>. The object is built from another DSSDocument (e.g. from binaries, digest document, etc.).
 
-!!! TODO: 2 examples to be created (InMemoryDocumentTest.java and FileDocumentTest.java) and addition of more information to describe the three types of documents if possible!!!
+// TODO: 2 examples to be created - CMSSignedDocumentTest.java and HTTPHeaderDigestTest.java
 
 [source,java,indent=0]
 .InMemoryDocument
@@ -262,18 +228,95 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocument
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=httpHeader]
 ----
 
+[[SignatureTokens]]
+=== Signature tokens
+
+The DSS framework is able to create signatures using different keystores: PKCS#11, PKCS#12, MS CAPI and Apple Keystore. To be independent of the signing media, the DSS framework uses an interface named SignatureTokenConnection to manage different implementations of the signing process. This base implementation is able to sign a stream of data in one step. That means that all the data to be signed needs to be sent to the SCDev. This is the case for MS CAPI. For the PKCS#11 and PKCS#12, which give the developer a finer control in the signature operation, the DSS framework implements the `AsyncSignatureTokenConnection` abstract class that allows executing the digest operation and signature operation in two different threads or even in two different hardwares.
+
+This design also allows other card providers/adopters to create their own implementations. For example, this can be used for a direct connection to the Smartcard through Java PC/SC.
+
+==== PKCS#11
+
+PKCS#11 is widely used to access smart cards and HSMs. Most commercial software uses PKCS#11 to access the signature key of the CA or to enrol user certificates. In the DSS framework, this standard is encapsulated in the class `Pkcs11SignatureToken`. It requires some installed drivers (dll, sso,...).
+[source,java,indent=0]
+.Pkcs11SignatureToken usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS11Snippet.java[tags=demo]
+----
+
+==== PKCS#12
+
+This standard defines a file format commonly used to store the private key and corresponding public key certificate protecting them with a password. It allows signing with a PKCS#12 keystore (.p12 file).
+In order to use this format with the DSS framework you have to go through the class `Pkcs12SignatureToken`.
+
+[source,java,indent=0]
+.Pkcs12SignatureToken usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS12Snippet.java[tags=demo]
+----
+
+==== MS CAPI
+
+If the middleware for communicating with an SCDev provides a CSP based on MS CAPI (the Microsoft interface to communicate with SmartCards) specification, then you can use the MSCAPISignatureToken class to sign the documents.
+[source,java,indent=0]
+.MSCAPISignatureToken usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/MSCAPISnippet.java[tags=demo]
+----
+
+==== Apple Keystore
+
+Since DSS 5.10 a new class `AppleSignatureToken` is provided within the source code allowing to access a Keychain store in a MacOS environment.
+
+WARNING: The API does not use keys from a smartcard, as opposite to the MS CAPI implementation.
+
+
+[source,java,indent=0]
+.AppleSignatureToken usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AppleKeychainSnippet.java[tags=demo]
+----
+
+==== Java Key Store
+The JKSSignatureToken class allows signing with a Java Key Store (.jks file).
+
+[source,java,indent=0]
+.JKSSignatureToken usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JKSSnippet.java[tags=demo]
+----
+
+==== Other Implementations
+NOTE: The DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK libraries.
+
+As you can see, it is easy to add another implementation of the SignatureTokenConnection, thus enabling the framework to use other API than provided within the framework. For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
+
+
 [[SignatureCreationThreeSteps]]
 === Signature creation in 3 stateless methods
-The DSS framework uses 3 atomic steps to sign a document :
+In the DSS framework, there are two alternatives for signing a document which are illustrated in the following schema.
 
-. Compute the digest to be signed;
-. Sign the digest;
-. Sign the document (add the signed digest).
+image::three-stateless-methods.jpg[sigCreationSteps, width="40%", heigth="40%"]
 
-The DSS fully manages the steps 1 and 3. We need to specify how to do the signature operation. DSS offers some implementations in the dss-token module.
-Moreover, for steps 1 and 3 the same signature parameters shall be used.
+The first path consists in 3 atomic steps:
 
-!!! TODO: more details for each of the three steps needed. Stress importance of same parameters !!!
+. Compute the data to be signed (DTBS);
+. Sign the DTBS to obtain the signature value;
+. Sign the document (add the signature value).
+
+The alternative is to use the following 4 steps:
+
+. Compute the data to be signed (DTBS);
+. Compute the digest of the DTBS to obtain the data to be signed representation (DTBSR);
+. Sign the DTBSR to obtain the signature value;
+. Sign the document (add the signature value).
+
+Usually, the signature creation is done using the 3 stateless methods approach.
+
+DSS fully manages the first and last steps of the document signature process.
+The signature operation (signing the DTBS or the DTBSR respectively) needs to be specified. DSS offers some implementations in the dss-token module. During this step, the signing keys are not retrieved. Instead, a communication channel that allows sending the DTBS/DTBSR to the keys is opened.
+
+The following code presents the three stateless steps.
 
 [source,java,indent=0]
 .Three stateless steps
@@ -281,14 +324,60 @@ Moreover, for steps 1 and 3 the same signature parameters shall be used.
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=threeStepsSign]
 ----
 
+The first step uses the `getDataToSign()` method, which receives the following arguments:
+
+* the document to be signed;
+* the previously selected settings.
+
+This step returns the DTBS. In the case of a XAdES, it corresponds to the https://www.w3.org/TR/xmldsig-core1/#sec-SignedInfo[SignedInfo XMLDSig] element. For XAdES and CAdES, the DTBS is composed of the digest of the original document and the signed attributes. For JAdES, it is not the case.
+
+The second step is a call to the function `sign()`, which is invoked on the object token representing the KeyStore and not on the service. This method takes three parameters:
+
+* the array of bytes that must be signed. It is obtained by the previous method invocation.
+* the algorithm used to create the digest. There is the choice between, for example, SHA256 and SHA512. This list is not exhaustive. For an exhaustive list see https://github.com/esig/dss/blob/master/dss-enumerations/src/main/java/eu/europa/esig/dss/enumerations/DigestAlgorithm.java[this class].
+* the private key entry.
+
+The third and last step of this process is the integration of the signature value in the signature and linking of that one to the signed document based on the selected packaging method. This is done using the method `signDocument()` on the service. It requires three parameters:
+
+* the document to sign;
+* the signature parameters (the same as the ones used in the first step);
+* the value of the signature obtained in the previous step.
+
+This separation into three steps allows use cases where different environments have their precise responsibilities: specifically the distinction between communicating with the token and executing the business logic.
+
+The following code presents the alternative with four stateless steps.
+
+// TODO: add code for the four stateless steps alternative (the one with digest computation)
+[source,java,indent=0]
+.Four stateless steps
+----
+include::
+----
+
+The first and last steps, which compute the DTBS and sign the document, are the same as for the alternative with three steps.
+
+The second step uses the `getDigest` method, which takes the following arguments
+
+* the digest algorithm;
+* the DTBS computed during the first step.
+
+It returns the data to be signed representation (DTBSR) of a DTBS, i.e. is computes the digest.
+
+The step that signs the digest and returns the signature value uses the method `signDigest`, which takes the following arguments:
+
+* the DTBSR.
+* the algorithm used to create the digest. There is the choice between, for example, SHA256 and SHA512. This list is not exhaustive. For an exhaustive list see https://github.com/esig/dss/blob/master/dss-enumerations/src/main/java/eu/europa/esig/dss/enumerations/DigestAlgorithm.java[this class].
+* the private key entry.
+
+
 === Cryptographic signature value creation
-!!! TODO: text !!!
+// TODO: text !!!
 
 ==== One step (hash + encrypt in one go)
-!!! TODO: text !!!
+// TODO: text !!!
 
 ==== Two steps (hash on client/server side + encrypt on HSM side)
-!!! TODO: text !!!
+// TODO: text !!!
 
 === Creating a XAdES baseline B signature
 The simplest way to address the digital signature passes through the XAdES format. Indeed, it allows visualization of the signature content with a simple text editor. Thus, it becomes much easier to make the connection between theoretical concepts and their implementation. Before embarking on the use of the DSS framework, it is advisable to read the following documents:
@@ -298,7 +387,7 @@ The simplest way to address the digital signature passes through the XAdES forma
 The referenced specifications define the following:
 
 * To digitally sign a document, a signing certificate (that proves the signer's identity) and the access to its associated private key is needed.
-* To digitally validate a signed document the signer's certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key used to create the signature must also be provided.
+* To digitally validate a signed document the signer's certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key, associated to the private key used to create the signature, must also be provided.
 
 
 To start, let's take a simple XML document:
@@ -311,14 +400,16 @@ To start, let's take a simple XML document:
 <test>Hello World !</test>
 ----
 
-Since this is an XML document, we will use the XAdES signature and more particularly XAdES-BASELINE-B level, which is the lowest level of protection: just satisfying Directive (cf. <<R07>>) legal requirements for advanced signature.
-For our example, we will use ENVELOPED packaging.
+To instantiate a document from a file in DSS, refer to the section about <<DSSDocuments, DSSDocuments>>.
 
-To write our Java code, we still need to specify the type of KeyStore to use for signing our document, more simply, where the private key can be found. To know more about the use of the different signature tokens, please consult the <<SignatureTokens>> section.
+Since this is an XML document, we will use the XAdES signature and more particularly the XAdES-BASELINE-B level.
+For our example, we will use the ENVELOPED packaging.
 
-In our example the class: `Pkcs12SignatureToken` will be used. A file in PKCS#12 format must be provided to the constructor of the class. It contains an X.509 private key accompanying the public key certificate and protected by symmetrical password. The certification chain can also be included in this file.
+To write our Java code, we still need to specify the type of KeyStore to use for signing our document. In other words, we need to specify where the private key can be found. To know more about the use of the different signature tokens, please consult the <<SignatureTokens>> section.
 
-NOTE: It is possible to generate dummy certificates and their chains with OpenSSL. Please visit http://www.openssl.org/ for more details.
+In our example the class: `Pkcs12SignatureToken` will be used. A file in PKCS#12 format must be provided to the constructor of the class. It contains a private key accompanying the X.509 public key certificate and protected by a password. The certificate chain can also be included in this file.
+
+NOTE: It is possible to generate dummy certificates and their chains with OpenSSL. Please visit http://www.openssl.org/ for more details and http://dss.nowina.lu/pki-factory/keystore/list to access dummy certificates and their chains.
 
 This is the complete code example that allows you to sign an XML document:
 
@@ -328,109 +419,50 @@ This is the complete code example that allows you to sign an XML document:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBTest.java[tags=demo]
 ----
 
-What you may notice is that to sign a document we need to:
+To summarize, signing a document in DSS requires to
 
-* Create an object based on `SerializableSignatureParameters` class. Generally, the number of specified parameters depends on the type and profile of signature. This object also defines some default parameters.
-* Choose the profile, packaging, signature digest algorithm.
-* Indicate the private key entry to be used.
-* Instantiate the adequate signature service.
-* Carry out the signature process.
+* Create an object based on the `SerializableSignatureParameters` class. Generally, the number of specified parameters depends on the format, profile and level of the signature. This object also defines some default parameters.
+* Choose the level, packaging and signature digest algorithm.
+* Indicate the private key entry as well as the associated signing certificate and certificate chain.
+* Instantiate the adequate signature service based on the format of the signature. In our case it is an XML file, so we will instantiate a XAdES service.
+* Carry out the signature process (three or four steps). in our case, the process of signing takes place in three stages.
 
-The encryption algorithm is determined by the private key and therefore cannot be compelled by the setter of the signature parameters object. It will cause an inconsistency in the signature making its validation impossible. This setter can be used in a particular context where the signing process is distributed on different machines and the private key is known only to the signature value creation process. See clause <<SigningProcess>> for more information.
-In the case where the private key entry object is not available, it is possible to choose the signing certificate and its certificate chain as in the following example:
 
-[source,java,indent=0]
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoCertificateChain]
-----
+The encryption algorithm is determined by the private key and therefore shall not be compelled by the setter of the signature parameters object. It would cause an inconsistency in the signature making its validation impossible. This setter can be used in a particular context where the signing process is distributed on different machines and the private key is known only to the signature value creation process.
 
+Setting the signing certificate and the certificate chain shall always be done. They can be set even if the private key is only known to the signature value creation process and there is no access to the private key at DTBS preparation.
+However, of course, the signing certificate shall be associated to the private key that will be used at the signature value creation step.
 Integrating the certificate chain in the signature simplifies the build of a prospective certificate chain during the validation process.
 
-By default, the framework uses the current date time to set the signing date, but in the case where it is necessary to indicate the different time it is possible to use the setter `setSigningDate(Date)` as in the example:
 
-[source,java,indent=0]
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningDate]
-----
+When the specific service is instantiated a certificate verifier must be set. It is recommended to read section <<certificateVerifier>> for information on the configuration of a `CertificateVerifier`.
 
-When the specific service is instantiated a certificate verifier must be set. This object is used to provide four different sources of information:
-
-* the source of trusted certificates (based on the trusted list(s) specific to the context);
-* the source of intermediate certificates used to build the certificate chain till the trust anchor. This source is only needed when these certificates are not included in the signature itself;
-* the source of OCSP;
-* the source of CRL.
-
-In the current implementation this object is only used when profile -LT or -LTA are created.
-
-[[SigningProcess]]
-==== Signing process
-
-Once the parameters of the signature were identified the service object itself must be created. The service used will depend on the type of document to sign. In our case it is an XML file, so we will instantiate a XAdES service. The process of signing takes place in three stages. The first is the `getDataToSign()` method call, passing as a parameter the document to be signed and the previously selected settings. This step returns the data which is going to be digested and encrypted. In our case it corresponds to the SignedInfo XMLDSig element.
-
-[source,java,indent=0]
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningProcessGetDataToSign]
-----
-
-The next step is a call to the function `sign()` which is invoked on the object token representing the KeyStore and not on the service. This method takes three parameters. The first is the array of bytes that must be signed. It is obtained by the previous method invocation. The second is the algorithm used to create the digest. You have the choice between SHA1, SHA256, and SHA512 (this list is not exhaustive). And the last one is the private key entry.
-
-[source,java,indent=0]
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningProcessSign]
-----
-
-The last step of this process is the integration of the signature value in the signature and linking of that one to the signed document based on the selected packaging method. This is the method `signDocument()` on the service. We must pass to it three parameters: again the document to sign, the signature parameters and the value of the signature obtained in the previous step.
-
-This separation into three steps allows use cases where different environments have their precise responsibilities: specifically the distinction between communicating with the token and executing the business logic.
-
-When the breakdown of this process is not necessary, than a simple call to only one method can be done as in the following example:
-
-[source,java,indent=0]
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningProcessSignDocument]
-----
-
-==== Additional attributes
-
-For this type (XAdES-BASELINE-B) of signature it is possible to identify some additional attributes.
-
-[[SignXmlXadesBPropertiesTest.java]]
-[source,java,indent=0]
-.XAdES signature with additional signed attributes
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBPropertiesTest.java[tags=demo]
-----
-
-In XAdES format the following types of a Content Timestamp can be used:
-
-* *AllDataObjectsTimeStamp* - each time-stamp token within this property covers the full set of references defined in the Signature's SignedInfo element, excluding references of type "SignedProperties".
-* *IndividualDataObjectsTimeStamp* - each time-stamp token within this property covers selected signed data objects.
-
-The code above produces the following signature :
-
-.XAdES signature example
-include::{samplesdir}/xades-b-properties.adoc[]
+The code above produces the signature that can be found https://github.com/esig/dss/tree/master/dss-cookbook/src/main/asciidoc/_samples/xades-b.adoc[here].
 
 === Configuration of attributes in DSS
 
 ==== Signed and unsigned attributes
+A signature is composed of signed and unsigned attributes.
 
-===== Table with all attributes per formats
+Signed attributes shall be included in a signature. These are BASELINE-B attributes that are set upon signature creation. They cannot be changed after the signature has been created.
+
+Unsigned attributes are not obligatory and can be added after the signature creation during signature augmentation.
+
+===== Table with all attributes per format and class
 
 // TODO: review the table's representation (columns size should be aligned)
-
+[.landscape]
+<<<
 .File formats and Signature types conformance
-[%header,cols="7*<.<"]
+[%header,cols="7*<.<", orientation=landscape]
 |===
   2+|                                                          |DSS classes and methods                                 |XAdES                                |CAdES                                    |PAdES                                                      |JAdES
-.28+|B-Level    .26+|Signed attributes                         |/                                                       |SigningTime                          |signing-time                             |/                                                          |sigT
+.28+|B-Level    .26+|Signed attributes                         |setSigningDate                                                       |SigningTime                          |signing-time                             |/                                                          |sigT
                                                                |/                                                       |/                                    |signing-certificate                      |signing-certificate                                        |/
                                                                |class xxxSignatureParameters +
                                                                 (class AbstractSignatureParameters) +
                                                                 setSigningCertificate +
-                                                                getSigningCertificate                                   |SigningCertificateV2                 |signing-certificate-v2                   |signing-certificate-v2                                     |x5t#o (reference to the signing certificate only -for extencing semantics of x5t#256 specified in IETF RFC 7515 [2]) +
-                                                                                                                                                                                                                                                                    ------------ +
-                                                                                                                                                                                                                                                                    sigX5ts  (references to the signing certificate and other certificates within the cert path, for mimiking XAdES and CAdES).
+                                                                getSigningCertificate                                   |SigningCertificateV2                 |signing-certificate-v2                   |signing-certificate-v2                                     |x5t#o / sigX5ts
                                                                |class BLevelParameters +
                                                                 setClaimedSignerRoles +
                                                                 getClaimedSignerRoles                                   |SignerRoleV2                         |signer-attributes-v2                     |signer-attributes-v2                                       |srAts
@@ -442,10 +474,13 @@ include::{samplesdir}/xades-b-properties.adoc[]
                                                                 (class SignerLocation) +
                                                                 setSignerLocation +
                                                                 getSignerLocation                                       |SignatureProductionPlaceV2           |signer-location                          |entry with key Location in the Signature Dictionary        |sigPl
-                                                               |For XAdES only: class AllDataObjectsTimeStampBuilder    |AllDataObjectsTimeStamp              |/                                        |/                                                          |adoTst
+                                                               |For XAdES only: class AllDataObjectsTimeStampBuilder +
+                                                                setContentTimestamps +
+                                                                getContentTimestamps                    |AllDataObjectsTimeStamp              |/                                        |/                                                          |adoTst
                                                                |/                                                       |IndividualDataObjectsTimeStamp       |/                                        |/                                                          |/
-                                                               |class SignaturePolicy +
-                                                                getIdentifier                                           |SignaturePolicyIdentifier            |signature-policy-identifier              |signature-policy-identifier                                |sigPId
+                                                               |class Policy +
+                                                                setId +
+                                                                getId       |SignaturePolicyIdentifier            |signature-policy-identifier              |signature-policy-identifier                                |sigPId
                                                                |?                                                       |/                                    |content-type                             |content-type                                               |/
                                                                |?                                                       |/                                    |message-digest                           |message-digest                                             |/
                                                                |?                                                       |/                                    |content-hints                            |/                                                          |/
@@ -485,28 +520,53 @@ include::{samplesdir}/xades-b-properties.adoc[]
                                                                |?                                                       |RenewedDigests                       |/                                        |/                                                          |/
 |===
 
-[.landscape]
+[.portrait]
 <<<
+
+==== Signed attributes
+
+Additional signed attributes can be added to the basic signature configuration as presented in the following example of a XAdES-BASELINE-B signature.
+
+[[SignXmlXadesBPropertiesTest.java]]
+[source,java,indent=0]
+.XAdES signature with additional signed attributes
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBPropertiesTest.java[tags=demo]
+----
+
+In the XAdES format the following types of Content Timestamp can be used:
+
+* *AllDataObjectsTimeStamp* - each time-stamp token within this property covers the full set of references defined in the Signature's SignedInfo element, excluding references of type "SignedProperties".
+* *IndividualDataObjectsTimeStamp* - each time-stamp token within this property covers selected signed data objects.
+
+By default, the AllDataObjectsTimeStamp is used. The IndividualDataObjectsTimeStamp can be configured manually.
+
+NOTE: To set the Content Timestamp, a TSP source needs to be set. The method `getOnlineTSPSource()` is not a core feature of DSS and shall be implemented by the user.
+
+
+Concerning the signing date, the framework uses the current date time by default. In the case where it is necessary to indicate a different time it is possible to use the setter `setSigningDate(Date)`.
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningDate]
+----
+
+The code above produces the signature that can be found https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_samples/xades-b-properties.adoc[here].
 
 
 [[signaturePolicy]]
 ===== Signature Policy
 
-The signature policy handling is linked to -B level.
+The signature policy is a BASELINE-B signed attribute that is set upon signature creation. Thus, this attribute cannot be changed after the signature has been created.
 
-The DSS framework allows you to reference a signature policy, which is a set of rules for the creation and validation of an electronic signature. It includes two kinds of text:
+The DSS framework allows you to reference a signature policy, which is a set of rules for the creation and validation of an electronic signature. For more information on the signature policy refer to section <<SignaturePolicy>>.
 
-* In a human readable form:
-It can be assessed to meet the requirements of the legal and contractual context in which it is being applied.
+The signer may reference the policy either implicitly or explicitly.
 
-* In a machine processable form:
-To facilitate its automatic processing using the electronic rules.
+* An implied policy means the signer follows the rules of a policy but the signature does not indicate which policy. It is assumed the choice of policy is clear from the context in which the signature is used and the `SignaturePolicyIdentifier` element will be empty.
+* When the policy is explicit, the signature contains an `ObjectIdentifier` that uniquely identifies the version of the policy in use. The signature also contains a hash of the policy document to make sure that the signer and verifier agree on the content of the policy document.
 
-If no signature policy is identified then the signature may be assumed to have been generated or verified without any policy constraints, and hence may be given no specific legal or contractual significance through the context of a signature policy.
-
-The signer may reference the policy either implicitly or explicitly. An implied policy means the signer follows the rules of the policy but the signature does not indicate which policy. It is assumed the choice of policy is clear from the context in which the signature is used and SignaturePolicyIdentifier element will be empty. When the policy is not implied, the signature contains an ObjectIdentier that uniquely identifies the version of the policy in use. The signature also contains a hash of the policy document to make sure that the signer and verifier agree on the contents of the policy document.
-
-This example demonstrates an implicit policy identifier. To implement this alternative you must set SignaturePolicyId to empty string.
+This example demonstrates an implicit policy identifier. To implement this alternative, you must set `SignaturePolicyId` to an empty string.
 
 [source,java,indent=0]
 .XAdES with implicit policy
@@ -514,14 +574,12 @@ This example demonstrates an implicit policy identifier. To implement this alter
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBImplicitPolicyTest.java[tags=demo]
 ----
 
-An XML segment will be added to the signature's qualified and signed properties:
+The following XML segment will be added to the signature's qualifying and signed properties (<QualifyingProperties><SignedProperties>):
 
 include::{samplesdir}/xades-implicit-policy.adoc[]
 
-The next example demonstrates an explicit policy identifier. This is obtained by setting -B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID  that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is to the developer to proceed with the calculation using for example `java.security.MessageDigest` class (rt.jar). It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only.
+The next example demonstrates the use of an explicit policy identifier. This is obtained by setting the BASELINE-B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is up to the developer to proceed with the computation. It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only.
 
-// TODO: provide a reference link to a chapter with more info ?
-See also chapter 7 for further information.
 
 [source,java,indent=0]
 .XAdES with explicit policy
@@ -529,14 +587,14 @@ See also chapter 7 for further information.
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBExplicitPolicyTest.java[tags=demo]
 ----
 
-The following XML segment will be added to the signature qualified & signed properties (<QualifyingProperties><SignedProperties>):
+The following XML segment will be added to the signature qualifying and signed properties (<QualifyingProperties><SignedProperties>):
 
 .XAdES Signature Policy element
 include::{samplesdir}/xades-explicit-policy.adoc[]
 
 ===== Signature Policy Store
 
-Since v5.8 DSS provides a possibility of incorporation of a Signature Policy Store element as an unsigned property to the existing signature file.
+DSS provides a possibility of incorporation of a Signature Policy Store element as an unsigned property to the existing signature file.
 
 The following signature formats support the Signature Policy Store addition:
 
@@ -544,7 +602,7 @@ The following signature formats support the Signature Policy Store addition:
 * CAdES (as well as ASiC with CAdES);
 * JAdES.
 
-NOTE: Being an unsigned component the Signature Policy Store is not protected by a digital signature, unlike a Signature Policy Identifier incorporated into the signed properties.
+NOTE: Being an unsigned component, the Signature Policy Store is not protected by a digital signature, unlike for example a Signature Policy Identifier incorporated into the signed properties.
 
 Before incorporating of a Signature Policy Store, you need to ensure the target signature contains the matching Signature Policy Identifier element (see section <<signaturePolicy>>).
 
@@ -557,14 +615,20 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBE
 ----
 
 ==== Trust Anchor Inclusion Policy
-It is possible to indicate to the framework if the certificate related to the trust anchor should be included to the signature or not. The setter `setTrustAnchorBPPolicy(trustAnchorBPPolicy)` of the `BLevelParameters` class should be used for this purpose.
+In DSS, it is possible to indicate whether to include or not the certificate related to the trust anchor in the signature. Refer to section <<TrustAnchors>> for information on trust anchors.
 
-This rule applies as follows: when -B level is constructed the trust anchor is not included, when -LT level is constructed the trust anchor is included.
+By default, when a BASELINE-B signature is constructed the trust anchor is not included, only the certificates previous to the trust anchor are included.
+When a `BASELINE-LT` signature is constructed the trust anchor is included.
 
-NOTE: When trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when -B level is constructed.
+It is possible to indicate to the framework that the certificate related to the trust anchor should be included to the signature even at the BASELINE-B level. The setter `setTrustAnchorBPPolicy(trustAnchorBPPolicy)` of the `BLevelParameters` class should be used for this purpose.
+
+By default, the argument `trustAnchorBPPolicy` is set to true so that only the certificates previous to the trust anchor are included. It should be set to false in order to include all certificates, including the trust anchor.
+
+//TODO: add an example of how this (method/class) could be used
+
 
 ==== [Other parameters]
-!!! TODO: there are only a few parameters mentioned for the moment. Some more need to be added. !!!
+// TODO: there are only a few parameters mentioned for the moment. Some more need to be added.
 
 ===== XAdES
 For XAdES the following parameters shall also be present from BASELINE-B level on:
@@ -579,28 +643,39 @@ For more information on the possible parameters see section <<PAdESVisibleSignat
 
 === Multiple signatures
 
-In everyday life, there are many examples where it is necessary to have multiple signatures covering the same document, such as a contract to purchase a vehicle. Independent signatures are parallel signatures where the ordering of the signatures is not important. The computation of these signatures is performed on exactly the same input but using different private keys.
+==== Parallel signatures
+Parallel signatures, described in section <<ParallelSignatures>>, can be created in DSS according to the corresponding AdES formats.
 
 [source,java,indent=0]
-.Multiple signatures creation
+.Parallel signatures creation
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/MultipleSignXadesBTest.java[tags=demo]
 ----
 
+==== Sequential signatures
+DSS allows creation of sequential signatures according to the PAdES formats (cf. <<SequentialSignatures>>).
+// TODO: code
+
+[source,java,indent=0]
+.Sequential signatures creation
+----
+include::{sourcetestdir}
+----
+
 === Counter signatures
 
-Since v5.8 DSS allows producing of counter signatures according to the corresponding AdES formats.
+DSS allows creation of counter signatures according to the corresponding AdES formats (cf. <<CounterSignatures>>).
 
-NOTE: Counter signature does not provide a Proof Of Existence for a signed signature! Use signature extension / timestamping for this purpose.
+NOTE: A counter signature does not provide a Proof Of Existence for a signed signature! Use signature augmentation / timestamping for this purpose.
 
 The following formats are supported for the counter signature creation:
 
-* `XAdES` - multiple, nested and extended counter signatures (up to LTA level) are allowed;
-* `CAdES` - B-level counter signatures are allowed, as well as multiple counter signatures;
-* `JAdES` - multiple, nested and extended signatures (up to LTA level) are allowed;
+* `XAdES` - multiple, nested and augmented counter signatures (up to LTA level) are allowed;
+* `CAdES` - B-level counter signatures are allowed, as well as multiple counter signatures. This limitation comes from the cryptography library (bouncyCastle) and not from the standard;
+* `JAdES` - multiple, nested and augmented signatures (up to LTA level) are allowed;
 * `ASiC` - counter signatures are allowed according to the used format (XAdES or CAdES).
 
-In order to create a counter signature, the DSS Identifier (or XML Id for XAdES) of the target signature you want to sign shall be provided within the parameters. The example below represents a counter signature creation:
+In order to create a counter signature, the DSS Identifier (or XML Id for XAdES) of the target signature you want to sign shall be provided within the parameters. The example below presents a counter signature creation:
 
 [source,java,indent=0]
 .Counter signature creation

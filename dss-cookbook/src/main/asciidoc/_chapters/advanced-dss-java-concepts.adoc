@@ -67,7 +67,7 @@ If your integration requires `dss-crl-parser`, you will need to choose your impl
 [[dssPades]]
 ==== DSS PAdES
 
-DSS allows generation, extension and validation of PAdES signatures with two different frameworks: PDFBox and OpenPDF (fork of iText). The `dss-pades` module only contains the common code and requires an underlying implementation :
+DSS allows generation, augmentation and validation of PAdES signatures with two different frameworks: PDFBox and OpenPDF (fork of iText). The `dss-pades` module only contains the common code and requires an underlying implementation :
 
 * `dss-pades-pdfbox`: PAdES implementation based on https://github.com/apache/pdfbox[Apache PDFBox]. Supports drawing of custom text, images, as well as text+image, in a signature field.
 * `dss-pades-openpdf`: PAdES implementation based on https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)]. Supports drawing of custom text OR images in a signature field.
@@ -87,7 +87,7 @@ DSS allows switching between two implementations of the PDFBox framework: defaul
 * *Native Drawer*: A native implementation of PDFBox Drawer, allowing a user to add a vector text, image or combination of text and image to a visible signature field. The native implementation embeds the provided custom text to the inner PDF structure, that makes the text selectable and searchable, but also clearer and smoother in comparison with the raster implementation.
 * *Default Drawer*: The original drawer implemented on the PDFBox framework, supports displaying of custom text, images, but also text and image combination in a signature field. The implementation does not include the provided custom text to the inner PDF structure, instead of it, the drawer creates an image representation of the provided text, which is added to the signature field (i.e. the text is not selectable and not searchable).
 
-By default, DSS uses the "Native Drawer" as the PDFBox implementation. In order to switch the implementation, that allowed in runtime, you have to set a new instance for PdfObjFactory as following:
+By default, DSS uses the "Native Drawer" as the PDFBox implementation. In order to switch the implementation, that allowed at runtime, you have to set a new instance for PdfObjFactory as following:
 
 [source,java,indent=0]
 .Runtime PDF Object Factory changing
@@ -208,7 +208,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBP
 [[ReportStylesheets]]
 ==== Report stylesheets
 
-The report modules (namely: `dss-simple-report-jaxb`, `dss-simple-certificate-report-jaxb` and `dss-detailed-report-jaxb`) contain two XSLT style sheets each for final reports generation:
+The report modules (namely: `dss-simple-report-jaxb`, `dss-simple-certificate-report-jaxb` and `dss-detailed-report-jaxb`) contain XSLT style sheets each for final reports generation:
 
 * Bootstrap 4 XSLT for HTML report;
 * PDF XSLT for PDF report.
@@ -223,13 +223,19 @@ In order to generate a report with a selected style sheet you need to call a rel
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/StylesheetSnippet.java[tags=demo]
 ----
 
-Otherwise, in case if you need to customize the transformer, you can create a report by using an `XmlDefiner`:
+Otherwise, in case you need to customize the transformer, you can create a report by using an `XmlDefiner`:
 
 [source,java,indent=0]
 .Custom report generation
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/StylesheetSnippet.java[tags=custom]
 ----
+
+[[DiagnosticDataStylesheets]]
+==== Diagnostic data stylesheets
+The `dss-diagnostic-jaxb` module contains an XSLT stylesheet that creates an SVG image from an XML document in order to visually represent the signature at validation time.
+
+//TODO add code of how to create an SVG image during signature validation
 
 [[xmlSecurities]]
 === XML securities

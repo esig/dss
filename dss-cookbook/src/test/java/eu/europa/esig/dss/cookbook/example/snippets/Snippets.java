@@ -68,7 +68,7 @@ public class Snippets {
 
 		// tag::demoSigningDate[]
 
-		// We set the date of the signature.
+		// Set the date of the signature.
 		parameters.bLevel().setSigningDate(new Date());
 
 		// end::demoSigningDate[]
@@ -137,13 +137,13 @@ public class Snippets {
 
 		// tag::threeStepsSign[]
 
-		// 1 step: generate ToBeSigned data (hash of an original document + signed attributes)
+		// step 1: generate ToBeSigned data
 		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
 
-		// 2 step : sign ToBeSigned data using a private key
+		// step 2: sign ToBeSigned data using a private key
 		SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
 
-		// 3 step : sign document using a SignatureValue obtained on the previous step
+		// step 3: sign document using a SignatureValue obtained on the previous step
 		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
 		// end::threeStepsSign[]

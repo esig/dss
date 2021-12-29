@@ -9,12 +9,25 @@
 
 === DSS upgrades
 ==== Code adaptations
-!!! TODO: explain which parts of the code need to be changed and how to change them to move to a new version of DSS !!!
+// TODO: are there other code parts that need to be adapted when moving to another version of DSS?
+
+In the `pom.xml` of your project, search for the properties and then change the dss version in the `dss.version` field. The following example shows how to switch to DSS version 5.9.
+[source,xml]
+.pom.xml
+----
+<properties>
+    ...
+    <dss.version>5.9</dss.version>
+    ...
+</properties>
+----
+
 
 
 ==== Possible problems and solutions
-!!! TODO: fill the “Problem” and “Solution” columns with possible problems that can occur for someone moving from version v5.8 to v5.9 of DSS and name solutions for each problem !!!
+// TODO: fill the “Problem” and “Solution” columns with possible problems that can occur for someone moving from version v5.8 to v5.9 of DSS and name solutions for each problem !!!
 
+[cols="1,1,3,3"]
 .Possible problems and solutions
 |===
 |Version                 |Release date       |Problem                                      |Solution
@@ -27,13 +40,11 @@
 
 |===
 
-[.landscape]
-<<<
-
 
 
 ==== DSS change history for added features fixed bugs
 
+[cols="1,2,7"]
 .Change history for features and bugs
 |===
 |Version        |Release date                |Features
@@ -235,8 +246,9 @@ Improvements in packaging and core functionalities:
 pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)
 
 ==== DSS change history for validation policy
-!!! TODO: fill the “Change” column with changes that have occurred for the validation policy when moving to v5.9 of DSS !!!
+// TODO: fill the “Change” column with changes that have occurred for the validation policy when moving to v5.9 of DSS !!!
 
+[cols="1,2,7"]
 .Change history for validation policy
 |===
 |Version        |Release date       |Change
@@ -244,8 +256,7 @@ pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)
 
 |===
 
-[.landscape]
-<<<
+
 
 
 

@@ -5,18 +5,25 @@
 :imagesdir: images/
 
 == eIDAS
-=== Verifying the type and qualified status of certificate.
+
+
+=== Overview of certificates
 
 ==== Type of certificate
 
 A certificate can be for electronic signature, for electronic seal or for website authentication.
+
 // TODO: add information how it is determined
+// TODO: Add a word about how this is usually indicated in a certificate
+// TODO: Clarify our X.509 vs profiled X.509 to support the regulation and its annexes (I,III, IV). Also mention QcStatements (See ETSI EN 319 412-5).
 
 ==== Qualified status of certificate
 
 // TODO: add info what qualification statuses do we have
+// TODO: Maybe a word about what it entails to validate the qualified status ? i.e. it requires trusted lists, and why so.
 Explanations as well as an example on the determination of the qualified status of a certificate are presented in section <<CertificateValidation>>.
 
+=== How certificate type and qualification are represented in DSS
 [[CertificateQualificationDetermination]]
 ==== Certificate Qualification determination
 
@@ -42,22 +49,27 @@ DSS provides a special class `SSLCertificateLoader` allowing to extract the SSL 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/QWACValidationTest.java[tags=demo]
 ----
 
-=== Verifying the type (eSig, eSeal) and qualified status of AdES signature.
+
+
+=== Overview of AdES signatures
 
 ==== Type of AdES
 
 Under eIDAS, there exist advanced electronic signatures and seals.
 // TODO : more info
+// TODO: add a word about how the type of an AdES digital signature is represented ? i.e. by means of a certificate of a particular type.
 
 ==== Qualified status of AdES signature
 
 Below is an example of the validation and verification of the qualified status of an AdES signature:
 // TODO : more info
+// TODO: add a word about what the qualified status of an AdES signature entails ? i.e. the use of the trusted lists, the qualified status of the signing certificate and the use of a QSCD
 
+=== How signature type and qualification are represented in DSS
 [[SignatureQualificationDetermination]]
 ==== Signature Qualification determination
 
-In order to determine a type and qualification of signature, an instance of `SignedDocumentValidator` can be used, provided the relevant information extracted from a Trusted List(s).
+In order to determine a type and qualification of a signature, an instance of `SignedDocumentValidator` can be used, provided the relevant information is extracted from a Trusted List(s).
 
 An example of a qualification data extraction for a signature, can be found below:
 
@@ -69,7 +81,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/SignatureQ
 
 === Verifying the qualified status of timestamp
 
-DSS is able to determine a qualification level of a timestamp, if a relative information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>) (cf. <<R14>>).
+ETSI TS 119 615 (<<R14>>) specifies standardized procedures for the determination of the qualification of a timestamp.
+DSS is able to determine a qualification level of a timestamp if a relative information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>).
 
 Three qualification levels are supported by DSS and can be obtained :
 

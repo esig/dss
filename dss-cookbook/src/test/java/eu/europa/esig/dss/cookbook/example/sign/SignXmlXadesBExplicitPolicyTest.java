@@ -54,8 +54,6 @@ public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-			// tag::demo[]
-
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
@@ -65,6 +63,8 @@ public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 			parameters.setSigningCertificate(privateKey.getCertificate());
 			// We set the certificate chain
 			parameters.setCertificateChain(privateKey.getCertificateChain());
+
+			// tag::demo[]
 
 			BLevelParameters bLevelParameters = parameters.bLevel();
 
@@ -80,6 +80,8 @@ public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 			policy.setDigestValue(digestedBytes);
 
 			bLevelParameters.setSignaturePolicy(policy);
+
+			// end::demo[]
 
 			// Create common certificate verifier
 			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
@@ -98,20 +100,18 @@ public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 			// the previous step.
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-			// end::demo[]
-
 			// tag::addSPS[]
 
 			// Create the SignaturePolicyStore object
 			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
-			// Provide the policy content referenced within Signature Policy Identifier
+			// Provide the policy content referenced within the Signature Policy Identifier
 			signaturePolicyStore.setSignaturePolicyContent(policyContent);
-			// Define Id of the policy
+			// Define the Id of the policy
 			SpDocSpecification spDocSpec = new SpDocSpecification();
 			spDocSpec.setId(signaturePolicyId);
 			signaturePolicyStore.setSpDocSpecification(spDocSpec);
 
-			// add the SignaturePolicyStore
+			// Add the SignaturePolicyStore
 			XAdESService xadesService = new XAdESService(commonCertificateVerifier);
 			DSSDocument signedDocumentWithSignaturePolicyStore = xadesService.addSignaturePolicyStore(signedDocument, signaturePolicyStore);
 

@@ -6,23 +6,23 @@
 
 [[RequestingTimestampToken]]
 == Requesting a timestamp token in DSS
+Timestamping is essential when creating digital signatures that need to be preserved. Refer to section <<Timestamps>> for information about the general principles of the timestamping process. The following sections present how a timestamp token can be requested in DSS.
+
 === Configuring timestamp sources
 
-The Time Stamp Authority (TSA) by creating time-stamp tokens provides independent and irrefutable proof of time for business transactions, e-documents and digital signatures. The TSA must comply with the IETF RFC 3161 specifications (cf. <<R08>>). A time-stamp is obtained by sending the digest value of the given data and digest algorithm to the Time Stamp Authority. The returned time-stamp is a signed data that contains the digest value, the identity of the TSA, and the time of stamping. This proves that the given data existed before the time of stamping.
-
-The DSS framework proposes TSPSource interface to implement the communication with TSA. The class `OnlineTSPSource` is the default implementation of TSP using HTTP(S) communication layer.
+The DSS framework proposes a `TSPSource` interface to implement the communication with a Time Stamp Authority (see section <<TSA>> for more information on Time Stamp Authorities). The class `OnlineTSPSource` is the default implementation of `TSPSource` using a HTTP(S) communication layer.
 
 The following snippet of Java code illustrates how you might use this class:
 
 [source,java,indent=0]
-.OnlineTSPSource usage
+.OnlineTSPSource use
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSourceTest.java[tags=demo]
 ----
 
 ==== Timestamp policy
 
-A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. A time-stamp policy may be requested by the user of times-stamp services.
+A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. The user may request the TSA to issue a timestamp under a specific time-stamp policy that is supported by the TSA.
 
 [source,java,indent=0]
 .Timestamp policy
@@ -32,7 +32,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSo
 
 ==== Composite TSP sources
 
-Sometimes timestamping servers may encounter interruptions (e.g. restart, configuration issues, etc.). To avoid failing signature extension, DSS allows a user to configure several TSP Sources. DSS will try source by source until getting a usable timestamp token.
+Sometimes timestamping servers may encounter interruptions (e.g. restart, configuration issues, etc.). To avoid failing signature augmentation, DSS allows a user to configure several TSP Sources. DSS will try one source after the other until getting a usable timestamp token.
 
 [source,java,indent=0]
 .Configuration of a CompositeTSPSource

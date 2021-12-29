@@ -167,12 +167,13 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-			// tag::demoBase64Transform[]
 			DSSDocument document = new InMemoryDocument("Hello World!".getBytes(), "Hello.txt", MimeType.BINARY);
 			List<DSSTransform> transforms = new ArrayList<>();
+			// tag::demoBase64Transform[]
 			DSSTransform base64Transform = new Base64Transform();
-			transforms.add(base64Transform);
 			// end::demoBase64Transform[]
+			transforms.add(base64Transform);
+
 			
 			List<DSSReference> references = new ArrayList<>();
 			DSSReference dssReference = new DSSReference();
@@ -231,12 +232,12 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
-			
-			// tag::demoEnvelopedXPathTransform[]
+
 			List<DSSTransform> transforms = new ArrayList<>();
+			// tag::demoEnvelopedXPathTransform[]
 			DSSTransform envelopedTransform = new XPathTransform("not(ancestor-or-self::ds:Signature)");
-			transforms.add(envelopedTransform);
 			// end::demoEnvelopedXPathTransform[]
+			transforms.add(envelopedTransform);
 			
 			List<DSSReference> references = new ArrayList<>();
 			DSSReference dssReference = new DSSReference();
@@ -296,11 +297,11 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-			// tag::demoEnvelopedXPath2FilterTransform[]
 			List<DSSTransform> transforms = new ArrayList<>();
+			// tag::demoEnvelopedXPath2FilterTransform[]
 			DSSTransform envelopedTransform = new XPath2FilterTransform("descendant::ds:Signature", "subtract");
-			transforms.add(envelopedTransform);
 			// end::demoEnvelopedXPath2FilterTransform[]
+			transforms.add(envelopedTransform);
 			
 			List<DSSReference> references = new ArrayList<>();
 			DSSReference dssReference = new DSSReference();

@@ -18,7 +18,7 @@ This document provides examples of code which allow easy handling of digital sig
 Three main features can be distinguished within the framework :
 
 * The creation of a digital signature;
-* The extension of a digital signature and;
+* The augmentation of a digital signature and;
 * The validation of a digital signature.
 
 In a more detailed manner the following concepts and features are addressed in this document:
@@ -44,7 +44,7 @@ This is not an exhaustive list of all the possibilities offered by the framework
 NOTE: The DSS framework is actively maintained and new features will be released in the future.
 
 === Available demonstrations
-!!! TODO: Info that we (CEF) don’t collect documents. !!!
+// TODO: Info that we (CEF) don’t collect documents.
 
 With the framework, some demonstrations are provided:
 
@@ -171,7 +171,15 @@ For the DSS demo: https://joinup.ec.europa.eu/licence/european-union-public-lice
 |[[R12]]	R12	|eIDAS Regulation No 910/2014													|910/2014/EU			    |
 |[[R13]]	R13	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.3.1
 |[[R14]]	R14	|ESI - Procedures for using and interpreting EU Member States national trusted lists						|ETSI TS 119 615		    |1.1.1
-|[[R15]]    R15 |Internet RFC 2315 PKCS #7: Cryptographic Message Syntax, Version 1.5
+|[[R15]]    R15 |Internet RFC 2315 PKCS #7: Cryptographic Message Syntax |RFC 2315 |Version 1.5
+|[[R16]]    R16 |Commission implementing decision (EU) 2015/1506 of 8 September 2015 |CID 2015/1506 |
+|[[R17]]	R17	|ESI - Building blocks and table of contents for human
+readable signature policy documents    |ETSI TS 119 172-1			|1.1.1
+|[[R18]]	R18	|ESI - XML format for signature policies
+|ETSI TS 119 172-2			|1.1.1
+|[[R19]]	R19	|ESI - ASN.1 format for signature policies
+|ETSI TS 119 172-3			|1.1.1
+
 |=======================
 
 === Useful links

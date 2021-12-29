@@ -4,7 +4,9 @@
 :samplesdir: ../_samples
 :imagesdir: images/
 == Standalone timestamping
-The DSS framework allows an independent document timestamping (without a signature). The following Document Signature Services support the timestamping :
+The DSS framework allows an independent document timestamping (without a signature). These are standalone time assertions, i.e. that no augmentation to the level `BASELINE-T` nor a creation of a signature to this level occurs.
+
+The following Document Signature Services support the standalone timestamping :
 
 * `PAdESService` - adds a timestamp to a PDF document;
 * `ASiCWithCAdESService` - creates a timestamped ASiC container with provided documents.
@@ -12,8 +14,9 @@ The DSS framework allows an independent document timestamping (without a signatu
 DSS also provides a validation service for timestamped documents.
 
 === Timestamping a PDF
+For PAdES, the timestamp shall not be added to the already existing signature like it is the case for example for XAdES. Otherwise, the PAdES signature could not be validated anymore. Instead, a standalone timestamp can be used, creating a new revision.
 
-The code below illustartes a time-stamping process for a PDF document.
+The code below illustrates a time-stamping process for a PDF document.
 
 [source,java,indent=0]
 .PDF timestamping
@@ -23,17 +26,38 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/Timestamp
 
 === Timestamping with a container (ASiC)
 
-The code below illustrates a time-stamping process encapsulating the provided documents and the generated time-stamp to an ASiC container.
+Standalone time assertions can be used in both `ASiC-E` and `ASiC-S`. When time assertions are used, the difference between the two types of containers is that for `ASiC-E` a Manifest file is created in order to list the multiple data objects included in the `ASiC-E` container.
+
+A typical example illustrating a time-stamping process that encapsulates the provided documents and the generated time-stamp to an ASiC-E container can be found below
 
 [source,java,indent=0]
-.Timestamping with a container
+.ASIC-E time assertion
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampWithContainerTest.java[tags=creation]
 ----
 
+In order to create an `ASiC-S`, just change the expected container property in the example above:
+
+[source,java,indent=0]
+.ASIC-S time assertion
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampWithContainerTest.java[tags=asics]
+----
+
+
+=== Standalone timestamps repetition
+It is also worth noting that time assertions can cover each other, i.e. that a timestamp can be added over previously created timestamps. In this case, the validation data for a timestamp is incorporated within the previous (last) time assertion and the digest of that timestamp is added to the new created ArchiveManifest XML file, which is covered by a new timestamp.
+
+This is a procedure similar to the augmentation of ASiC with CAdES with multiple LTA levels. LTA timestamps are created in different time-assertion files instead of an archive-time-stamp attribute like it is the case in a CAdES signature.
+
+This concept is illustrated in the following schema using the ASiC format as an example
+
+image::ASIC-time-assertions.jpg[]
+
+
 === Standalone timestamp validation
 
-As well as a single timestamp creation, DSS provides a validation service for timestamped documents. The timestamp validation process represents the one described in section "5.4 Time-stamp validation building block" of <<R09>>. The validation process is similar to the <<signatureValidation, signature validation>> process. An appropriate validator will be selected automatically. In total, DSS supports timestamp-alone validation for the following file formats:
+As well as a single timestamp creation, DSS provides a validation service for timestamped documents. The timestamp validation process represents the one described in section "5.4 Time-stamp validation building block" of <<R09>>. The validation process is similar to the <<signatureValidationProcess, signature validation>> process. An appropriate validator will be selected automatically. In total, DSS supports timestamp-alone validation for the following file formats:
 
 * Detached CMS timestamp (`DetachedTimestampValidator`) - a detached signed content must be provided (or its digest);
 * PDF document (`PDFDocumentValidator`);
@@ -47,14 +71,6 @@ The validation process can be run with the following inputs:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampPDFTest.java[tags=validation]
 ----
 
-The produced reports use the same structure as for <<signatureValidation>>.
+The produced reports use the same structure as for the <<signatureValidationProcess, signature validation reports>>.
 
-You can see an example of a produced Detailed Report below:
-
-.Timestamp Detailed Report
-
-[source,xml]
-----
-include::{samplesdir}/timestamp-detailed-report-example.xml[]
-----
-
+You can find an example of a produced timestamp Detailed Report https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_samples/timestamp-detailed-report-example.xml[here].

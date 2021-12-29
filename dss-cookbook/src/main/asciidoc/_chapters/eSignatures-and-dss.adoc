@@ -8,71 +8,588 @@
 
 DSS (Digital Signature Services) is an open-source software library for electronic signature creation, augmentation and validation. DSS supports the creation, augmentation and verification of interoperable and secure electronic signatures in line with European legislation. In particular, DSS aims to follow the eIDAS Regulation and related standards closely.
 
-=== Introduction to electronic and digital signatures
-
-An "‘electronic signature’ means data in electronic form which is attached to or logically associated with other data
-in electronic form and which is used by the signatory to sign". (<<R12>> Article 3.10)
-
-A digital signature is "data appended to, or a cryptographic transformation of a data unit that allows a recipient
-of the data unit to prove the source and integrity of the data unit and protect against forgery e.g. by the recipient".
-(https://www.etsi.org/deliver/etsi_tr/119100_119199/119100/01.01.01_60/tr_119100v010101p.pdf[ETSI TR 119 100])
-
-==== EU legislation
+=== EU legislation
 In the European Union the following legislation have had a considerable impact on the topic of electronic and digital signatures:
 
 * the Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures (cf. <<R07>>);
 * Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC (cf. <<R12>>).
 
-In the following sections, differences between the eIDAS Regulation and Directive 1999/93/EC are presented.
+The eIDAS Regulation repealed Directive 1999 and became official on July 1, 2016. A Regulation is a law that applies across all EU Member States (MS). eIDAS aims for interoperability between the EU MS, among others in the field of the electronic signature, by building compatible trust service frameworks.
 
 
-===== Trust services
-Directive 1999/93/EC established the framework for only one trust service, which is the provision of certificates for electronic signatures. Other trust services like electronic timestamps services were not regulated at EU-level.
+=== Electronic and digital signatures
+The terms “Electronic Signature” and “Digital Signature” are often used interchangeably even though they should not, given that digital signatures are only a subset of electronic signatures. In other words, a digital signature is a particular type of electronic signature, but not every electronic signature is a digital signature.
 
-Under the eiDAS Regulation there are nine qualified trust services:
+Before explaining these two concepts, let us first go back to the basic principle: the *handwritten signature*. A handwritten signature is a physical and legal concept that provides strong evidence that a person intended to sign a specific document. It proves that the signer wanted to commit to what was signed.
 
-1. Provision of qualified certificates for electronic signatures
-2. Provision of qualified certificates for electronic seals
-3. Provision of qualified certificates for website authentication
-4. Qualified electronic time stamps services
-5. Qualified validation service for qualified electronic signatures
-6. Qualified validation service for qualified electronic seals
-7. Qualified preservation service for qualified electronic signatures
-8. Qualified preservation service for qualified electronic seals
-9. Qualified electronic registered delivery services
+However, some would say that a handwritten signature is not as secure as one could think. In many cases, the handwritten signature is not composed of a complex design and it is thus easy to forge the signature. It is also complicated and expensive to verify that a physical document that has been signed manually has not been tampered with because it requires the analysis of an expert.
 
-===== Cross-border recognition
-Under Directive 1999/93/EC there was no interoperability between the different EU Member States in terms of qualified electronic signature.
+The *electronic signature*, like its handwritten counterpart, is a legal concept that shows the consent or approval of the signer with regards to the data that has been signed. Thus, any electronic sound, symbol or process that indicates acceptance of an agreement or a record, can be designated as an electronic signature. The electronic signature can, for example, consist in clicking a button or drawing a signature with a mouse, touchpad or other input device. The data to which an electronic signature is bound can be a document such as a contract, application form, nondisclosure agreement, but not only. The electronic signature can also be attached to an email, software, transaction data, binary data, images, etc.
 
-Cross-border recognition of trust services is guaranteed under the eIDAS Regulation.
+An electronic signature does not necessarily guarantee that the signature process is secure nor that it is possible to track the changes that have been brought to the content of a document after it was signed. This depends on the category of the electronic signature. Three categories of electronic signatures can be defined: Basic Electronic Signatures (BES), Advanced Electronic Signatures (AdES) and Qualified Electronic Signatures (QES).
 
-===== Remote signature creation
-Under Directive 1999/93/EC, an advanced electronic signature "is created using means that the signatory can maintain under his sole control".
+A *Basic Electronic Signature* has a low level of security, complexity and assurance and has thus little value in court. There is no guarantee on the identity if the signer. It can for example consist in writing your name at the end of an email, using a tick to accept the Terms and Conditions of a website when logged in the account, using the fingerprint to approve an online transaction.
 
-Under eIDAS, an advanced electronic signature "is created using electronic signature creation data that the signatory can, with a high level of confidence, use under his sole control".
+An *Advanced Electronic Signature* has the following properties:
 
-Thus, the creation of remote qualified signatures was not possible under Directive 1999/93/EC because the private key needed to be under the sole control of the user, while for a remote signature creation the private key is managed by a trust service provider.
-Remote signature creation is possible under eIDAS, where a trust service provider holds the private key but only the user of that key can activate it. This is further explained in section <<SignatureCreation>>.
+* It is uniquely linked to the signatory.
+* It is capable of identifying the signatory.
+* The signatory has the sole control over the data used for the creating signatures.
+* It can detect whether the signed data has been modified since the signature.
+Given these properties, an AdES has more legal value than a BES.
+
+A *Qualified Electronic Signature* is an AdES that is based on a qualified certificate for electronic signatures (cf. <<DigitalCertificate>>) and that has been generated by a qualified signature creation device (QSCD, cf. <<SCDev>>). QES have the same legal value as handwritten signatures. When an electronic signature is a QES, there is a reversal of the burden of proof. There is a presumption that a person has signed until a proof is given that the person did not sign. On the contrary for electronic signatures such as an AdES, a proof needs to be given that the person signed. However, it does not mean that an AdES is necessarily less trustworthy than a QES.
+
+A *digital signature* is a particular kind of electronic signature that is based on a Public Key Infrastructure (PKI, cf.<<PKI>>) to ensure high security of the different signing processes. It is a technical solution that involves, among others, public key cryptography (cf. <<Encryption>>) and public key certificates (cf. <<DigitalCertificate>>). For example, Adobe Sign cloud signatures are certificate-based digital signatures in the cloud.
+
+Digital signatures ensure the unique identification of the signer, the authenticity of the signature and the integrity of the data (cf.<<SignatureValidation>>). The identification of the signer as well as the authenticity of the signature are guaranteed by decrypting the digital signature using a public key attested by a public key certificate (cf. <<DigitalCertificate>>). The component of the digital signature that allows detecting whether signed data has been tampered with is a cryptographic function called a hash function (cf. <<Hashing>>).
+
+A digital signature can meet the legal requirements for AdES and QES.
+
+image::signature-subsets.jpg[Signature Subsets, width="40%", align="center"]
+
+[[DigitalSignatureConcepts]]
+=== Digital signatures concepts
+
+[[Encryption]]
+==== Encryption
+*Encryption* consists in modifying understandable data (e.g. human-readable plaintext) so that this data appears random and becomes unreadable. *Decryption* consists in receiving unreadable encrypted data and transforming it back into understandable data. Unencrypted data is called plaintext, while encrypted data is known as ciphertext.
+
+Encryption requires the use of encryption keys and algorithms. An *encryption algorithm*, also called cipher, uses an encryption key to transform plaintext into ciphertext. An *encryption key* is a string of character whose length depends on the encryption algorithm. Encryption keys shall be unique which is what makes the output of a cryptographic algorithm unique. Like its physical analogue, the encryption key locks/encrypts the data to ensure that the only people able to unlock/decrypt the message are those in possession of the corresponding decryption key.
+
+For example, if we have “hi” as a message and “liorven” as a key we could get “lior**i**ven**h**lior” as a result.
+
+Encryption is performed by the sender of the data, while decryption is performed by the receiver. Only authorized parties shall have access to the decryption key corresponding to the encryption key. This is possible because keys are so complex to guess that it is extremely unlikely for someone to be able to find a decryption key without the key being given to him.
+
+image::encryption-decryption.jpg[encryption decryption, width="70%", height="70%", align="center"]
+
+There exist two main types of encryption: symmetric encryption and asymmetric encryption.
+
+*Symmetric encryption* consists in using the same unique key for encryption and decryption, for example a password. The symmetric key cipher that is currently used the most is the Advanced Encryption Standard (AES).
+
+*Asymmetric encryption*, also called public-key cryptography, uses a pair of key. That pair consist of a private key and a public key, which are both distinct from each other. The private key is used to encrypt and the public key to decrypt data. The private key needs to be kept secret, while the public key can be shared with several parties. The public key still needs to be authenticated and protected against tampering because it uniquely represents a certain individual or entity.
+
+With this type of encryption, two main scenarios can occur:
+
+* You encrypt some data with your private key. Anyone can decrypt the data using the corresponding public key.
+* Someone encrypts data using your public key. Only you can decrypt the data.
+
+The asymmetric key cipher that is currently used the most is the Rivest-Shamir-Adleman (RSA) algorithm. Another well-known cipher is the Elliptic curve cryptography (ECC).
+
+Encryption is used for several reasons
+
+* *Privacy/Confidentiality*: Only authorized parties can read certain sensitive encrypted data.
+* *Security*: Data breaches can be prevented when the data contained in lost or stolen device had been encrypted.
+* *Data integrity*: The data decrypted by the receiver has not been modified since the encryption.
+* *Authentication*: The origin of the encrypted data is known.
+* *Non-repudiation*: The sender cannot deny having sent the encrypted data.
+
+[[Hashing]]
+==== Hashing
+Hashing consists in transforming some data into a fixed-length, unique identifier, also called a fingerprint or hash. Usually, the length of the input is greater than the one of the output. The transformation is performed using a one-way hash function, i.e. that it is almost impossible to reverse the hash to find the original input. But applying the hash function twice on the same data will give the same hash twice. It is like an encryption but for which no decryption is possible.
+
+image::hashing.jpg[hashing, width="50%", height="50%", align="center"]
+
+A hash is secure if every different data gives a different unique hash and it is not possible to reverse the hash. The issue is that one cannot be certain that every document will give a different hash. The bigger the hash, the more one can be sure that this condition will be met. A hash algorithm that is currently used is the SHA-256. However, one day it could become deprecated when computers have become faster and are able to reverse the hash to find the original input. This has already happened for example for SHA-1.
+
+[[DigitalCertificate]]
+==== Digital certificate
+A digital certificate is an electronic attestation that associates an entity (person, company, …) to a unique pair of keys, called private and public key (cf. <<AsymmetricEncryption>>). In everyday life, a digital certificate could be compared to a passport or driver’s license. Most digital certificates are based on the X.509 standard and thus digital certificates are often referred to as X.509 certificates.
+
+A digital certificate contains
+
+* the entity’s public key
+* the identity of the entity to which the private key associated to the public key belongs (Subject)
+* the name of the CA that issued and signed the certificate (Issuer)
+* the restrictions on what the private key can be used for (e.g. signature, seal, website authentication)
+* the signature algorithm
+* the signature hash algorithm
+* a validity period
+* where revocation data about this certificate can be found (Authority Information Access, CRL Distribution Points, cf. <<RevocationDataManagement>>)
+* …
+
+A digital certificate is signed with the private key of a certificate authority (CA) to ensure that the certificate can be trusted (cf. <<Certificate Authority>>).
+
+The lifecycle of a certificate is composed of the following steps:
+
+. *Certificate Enrollment*: An entity (person, device, …) initiates a request for a certificate to the Certificate Authority or Registration Authority. The request contains all the information necessary to identify the requesting party. The public key that will be contained in the certificate can either be given in the request during the enrollment phase or can be generated by the CA. All the information present in the request will be verified by the CA (or part of it by another entity such as the Registration Authority) based on an established set of policy rules.
+. *Certificate Issuance*: The CA creates the certificate and distributes the certificate to the entity that emitted the request. Certificates are stored in so-called certificate store that can contain certificates from different CAs.
+. *Certificate Validation*: Every time before using a certificate, the CA or Validation Authority need to be consulted to verify that the certificate is valid, i.e. that it is signed by a CA and is neither expired nor revoked. The revocation data can be obtained from Certificate Revocation Lists (CRLs) and Online Certificate Status Protocols (OCSPs) (cf. <<RevocationData>>).
+. *Certificate Renewal and Rekey*: When a certificate approaches its expiry date, it can be renewed or rekeyed so that it does not expire and can be used for a period exceeding the initial one. A certificate is renewed if the key is not changed. A certificate is rekeyed if the pair of keys is changed and the old one revoked.
+. *Certificate Expiration*: When a certificate is created, an expiration date is included in the certificate. From this date on, the certificate shall be considered invalid and shall not be used anymore.
+. *Certificate Revocation*: Certain situations can lead to a certificate becoming invalid before its expiration date. The certificate is said to be revoked and is added into a CRL by the CA. Reasons a certificate might need to be revoked include
+* the certificate being lost or thought to have been compromised;
+* the private key corresponding to the public key of the certificate has been lost or stolen and is thus no longer in the sole possession of the entity associated to the certificate
+* an employee to which a certificate was issued is leaving the company;
+* it comes to light that the CA had improperly issued a certificate;
+* a certificate policy has been violated (eg., publication of falsified documents);
+* …
+. *Certificate Suspension*: A certificate might only be temporarily revoked, i.e. that it cannot be used for a certain period. This can happen e.g. if the private key corresponding to the public key in the certificate was thought to be lost but then was found again.
+
+image::certificate-lifecycle.jpg[certificate lifecycle, width="80%", height="80%", align="center"]
+
+[[CA]]
+===== Certificate Authority
+A Certificate authority (CA) is a trusted body that manages the life cycle of digital certificates presented above and by doing so attests for the identity of entities. One of the important tasks of the CA is to sign the public key certificates that it issues with its own private key which allows users to verify if a certificate can be trusted. In other words, it allows verifying whether the public key is indeed associated to the alleged entity and not to a malicious actor. The trust in a certificate comes from the trust in a CA.
+
+A CA could be compared to a state government that issues licenses to citizens. The trust in the validity of a license comes from the trust in the government.
+
+A digital certificate can be signed by more than one CA to increase the trust put on the certificate. This process is called cross-signing.
+
+If the CA is a qualified trust service provider (cf. <<TSP>>), the certificate issued by the CA is a qualified certificate.
+
+[[CertificateChain]]
+===== Certificate Chain / Certification Path
+Often there is a whole chain/path of certificates and signatures involved in the creation of a digital certificate. Such a chain starts with an end-entity certificate, followed by one or more intermediate CA certificates and ends with a root CA certificate.
+
+* *End-entity certificate*: a certificate that cannot be used to sign other certificates. It is issued to an entity such as a natural person or an organization but not to a CA.
+* *Intermediate/Subordinate certificate*: a certificate issued by a CA and placed between the root certificate and the end-entity certificate. Different intermediate certificates can be used for different purposes (e.g. signing, sealing, …), be used in different locations and/or be associated to different types of keys (e.g. RSA key, ECC key).
+* *Root certificate*: a certificate issued by a root CA and that is self-signed.
+
+Each certificate in the certification path is signed with the private key of the CA that is “one step” higher in the hierarchy. Thus, the issuer of a certificate corresponds to the subject of the next certificate in the chain and the public key of the latter can be used to verify the signature on the former. The exception is the root CA certificate, which is signed by the root CA itself.
+
+image::certificate-chain-detailed.jpg[Certificate Chain, width="100%", height="100%", align="center"]
+
+If the private key of the root CA is compromised, all the intermediate and end-entity certificates that are in the same certification path will be compromised. In such a case, all these certificates will need to be revoked and re-issued, which often represents an enormous amount. Thus, to keep its key safer, a root CA will only sign a few intermediate certificates and not all end-entity certificates.
+
+To verify if a certificate can be trusted, the signatures of all certificates in the chain shall be verified up to the root certificate. It is as if the end-entity certificate had been signed by the root CA directly because the trust is propagated through the chain.
+
+[[TrustAnchors]]
+===== Trust Anchors and Trust Stores
+A Trust Anchor is a public-key certificate that can be a root certificate signed by a trusted root CA or an intermediate certificate signed by an intermediate CA. The CA needs to be present in the Trusted List of an EU MS for the signed certificate to be considered as a Trust Anchor. Trust Anchors are trusted by digital signature validators because the signing CA is trusted, and they are used during certificate path validation.
+
+Trust Anchors are collected in Trust Stores. A Trust Anchor can be present in several Trust Stores and a Trust Store can contain more than one Trust Anchor.
 
 
-===== Electronic seals
-Under Directive 1999/93/EC certificates for electronic signatures could be issued to both natural and legal persons.
+[[RevocationDataMangementConcept]]
+==== Revocation data management
+If a public key certificate is revoked (cf. <<DigitalCertificate>>), the CA needs to make that information available so that
 
-Under eIDAS, certificates for natural and legal persons have been separated. Indeed, the concepts of seals and certificates for electronic seals were introduced so that the latter are issued to legal persons, while certificates for electronic signatures are issued to natural persons.
+* users are aware that this certificate shall not be trusted anymore;
+* the private key corresponding to the public key is not used to sign anymore.
 
-eIDAS gives the following definitions:
+That information is made available through certificate revocation lists (CRLs) and/or online certificate status protocols (OCSPs).
 
-* "‘electronic seal’ means data in electronic form, which is attached to or logically associated with other data in electronic form to ensure the latter’s origin and integrity;"
-* "‘certificate for electronic seal’ means an electronic attestation that links electronic seal validation data to a legal person and confirms the name of that person".
+[[CRL]]
+===== Certificate Revocation List (CRL)
+A Certificate Revocation List (CRL) is a list containing the public key certificates that have been revoked or suspended by a CA. Expired certificates are not included in this list.
 
-===== Trusted Lists
-Under eIDAS, each EU Member State maintains a Trusted List, which was not the case under Directive 1999/93/EC.
+Each entry of a CRL is composed of
 
-==== Resources
+* the identity of the revoked certificate, which is represented by its serial number;
+* the revocation date;
+* optionally the reason why the revocation occurred
+* optionally a time period if the revocation is only temporary.
+
+A CRL is digitally signed by a CA or a third party to prove its authenticity and to prevent tampering. It is also time-stamped (cf. <<Timestamp>>) to allow its long-term archival.
+
+A CRL is issued, signed, and maintained by a CA or by a third-party entity, which acts on behalf of that CA and which is in possession of a certificate signed by the CA. Thus, the issuer of the revoked certificates included in the CRL does not necessarily match with the issuer of the CRL but the former is part of the certificate chain of the certificate associated to the signature of the CRL.
+
+When a CRL is issued, it remains valid for a limited amount of time determined by the issuer. Therefore, CRLs are published periodically: hourly, daily or weekly depending on the CRL issuer.
+
+Given that there exists more than one CRL, one needs to find out in which CRL to look for the revocation status of a specific certificate. For that, something called a CRL Distribution Point (CDP) is used. It is an extension of a digital certificate that indicates the location of the CRL from which the revocation status of that certificate can be retrieved. The CDP is a CA or third-party server (e.g. an HTTP point or an LDAP server).
+
+The CRL can be downloaded from the location indicated in the CDP extension of the certificate and it can be cached until it expires. Downloading a CRL often takes a lot of time because of the big size of CRLs. To find out whether a certificate is revoked, the downloaded CRL is browsed until finding the entry corresponding to the certificate. If it is found, the certificate is revoked. Else the certificate is valid or expired.
+
+image::CRL.jpg[CRL, width="100%", height="100%", align="center"]
+
+[[OCSP]]
+===== Online Certificate Status Protocol (OCSP)
+An Online Certificate Status Protocol (OCSP) is an Internet protocol used to check whether a particular public key certificate is revoked or not. To obtain that information, the user sends a status request to an OCSP server. The request contains, amongst other, the certificate’s serial number so that the OCSP server is able to identify it. The OCSP response is sent back to the user and contains, amongst other, the status of the certificate and the time when the response was generated.
+
+The status returned by the OCSP can be one of three values:
+
+* Good: The certificate is valid.
+* Revoked: The certificate is revoked.
+* Unknown: The OCSP does not know the status of the certificate. The reason might be that the issuer of the certificate is not recognized by the OCSP.
+
+An OCSP response is digitally signed by a CA or a third-party to prove its authenticity and to prevent tampering. The response is given in real-time and there is no need to download anything unlike it is the case for CRLs. The OCSP server might use a CRL to get the answer on the status but the CRL does not need to be downloaded.
+
+The OCSP server is the revocation server of a CA or of a third-party that acts on behalf of that CA and that is in possession of a certificate signed by the CA. Thus, the issuer of the revoked certificates does not necessarily match with the signer of the status response but the former is part of the certificate chain of the certificate that is associated to the signature of the response.
+
+A location for the OCSP server is indicated in the Authority Information Access (AIA) extension of the digital certificate. Additionally, up to two locations of the OCSP server can be indicated manually in the CA profile. In case none of these two locations are accessible the request is sent to the location indicated in the AIA extension.
+
+image::OCSP.jpg[OCSP, width="100%", height="100%", align="center"]
+
+
+[[AIA]]
+===== Authority Information Acccess (AIA)
+The Authority Information Access (AIA) is an extension of X.509 digital certificates that serves as service location descriptor. It contains:
+
+* the location of the OCSP server (URL). This location is needed to obtain the revocation status of certificates.
+* the location of CA information and services of the issuer of the certificate. If the intermediate certificates are neither included within a signature nor in trusted sources, the AIA extension can be used to retrieve the intermediate certificates from the CA. This is essential to build and validate the certificate path so that the signature can be validated.
+
+[[Timestamps]]
+==== Timestamping
+A digital timestamp is a date and time that is added to a signature. When signing digitally, a date and time is already included into the signature but it corresponds to the computer’s local time. The latter can easily be modified prior to signing so that the time of signing is not the actual one. Thus, this signing time cannot be trusted. A trustworthy digital timestamp shall be used to prove existence of the signature (and its associated data) at a certain point in time.
+
+This principle exists for handwritten signatures too. When a document is signed manually, it is done in the presence of a trustworthy notary, who verifies not only the identity of the signer but also the date and time of the signature.
+
+Before explaining the timestamping process, let us define some concepts that are involved in this process
+
+* A Timestamp Authority (TSA) is a Trust Service Provider (cf. <<TrustServiceProvider>>) that creates timestamp tokens using one or more Timestamping Units. The TSA must comply with the IETF RFC 3161 specifications (cf. <<R08>>).
+* A Timestamping Unit (TU) is a set of hardware and software that contains a single signing key used by a TSA.
+
+Timestamping, the process of adding a timestamp to a signature, can be broken down into the following steps:
+
+. The user creates a hash of the data associated to the signature (e.g. document, code).
+. The user sends the hash and the digest algorithm to a TSA.
+. The TSA groups the hash, the time of stamping (current date and time) and the identity of the TSA and signs it with a private key contained in a TU.
+. The timestamp token resulting from the previous step is returned to the client.
+. The timestamp token is added to the signature of the data that was sent as a hash in the first step.
+
+image::Timestamp.jpg[Timestamp, width="100%", height="100%", align="center"]
+
+The timestamp token created by a TSA can be considered as trustworthy because
+
+* the TSA is independent from the signing process;
+* the clock of the TSA is synchronized with an authoritative time source;
+* the timestamp is digitally signed by the TSA;
+* the TSA shall follow strict specifications.
+
+If the TSA that issued the timestamp is a qualified trust service provider (cf. <<TSP>>), the timestamp is a qualified timestamp.
+
+Use of a timestamp guarantees the integrity of the date and time of the signature and the long-term validity of the signature.
+
+The integrity of the date and time of the signature is guaranteed because the timestamp token added to the signature has been signed by a TSA. Refer to section <<SignatureValidationIntegrity>> to see how integrity of data is guaranteed when it has been signed digitally.
+
+Timestamps are essential to validate a signature even when the digital certificate is expired or revoked. One of the aspects that needs to be verified during the validation of a signature is whether the digital certificate was expired at the time of signing. To verify this, it is essential to have a trusted timestamp on the signature to compare with and not only the untrustworthy signing time that is automatically included at signature creation.
+
+The following scenarios can occur:
+
+* The timestamp was created before the expiration of the certificate: the signature could be validated.
+* The timestamp was created after the expiration of the certificate: the signature cannot be validated
+* No timestamp is present in the signature: the current time is used and the signature is valid only if the certificate is neither revoked nor expired.
+
+[[PKI]]
+==== Public Key Infrastructure (PKI)
+A public key infrastructure (PKI) is a framework that aims at creating, issuing and maintaining digital certificates in order to map public keys to entities in a secure way. A PKI consists of
+
+* *Public key cryptography*: Use of a pair of keys called public key and private key. (cf. <<AsymmetricEncryption>>)
+* *Digital certificates*: A digital certificate is an electronic attestation that associates an entity (person, company, …) to a public key. It contains information about that entity, the public key of that entity, the scope of the certificate, … (cf. <<DigitalCertificate>>)
+* A *certificate authority* (CA): A CA stores, signs, issues and manages digital certificates. Trust in the entity’s certificate is based on the trust in the CA. (cf. <<CertificateAuthority>>)
+* A *registration authority* (RA): The RA receives requests for obtaining a digital certificate and verifies the identity of the requesting entity prior to the issuance of the digital certificate for that entity. The RA can be part of the CA.
+* A *validation authority* (VA): A VA provides services for validating PKI digital certificates. Since certificates can not only expire but also be revoked, it is essential to verify the validity of a certificate before using it and before validating data that has been encrypted using the private key associated to the public key contained in the certificate. The VA can provide access to certificate chains (cf. <<CertificateChain>>) and to revocation data such as Certificate Revocation Lists (CRLs) (cf. <<CRL>>) and Online Certificate Status Protocols (OCSPs) (cf. <<OCSP>>).
+* A *certificate repository*: A secure location to store the digital certificates, their associated public key, the revocation data, ...
+* A certificate management system: An automated and secure way to issue, revoke, renew and access digital certificates.
+* A *certificate policy*: A document containing a set of rules describing what the PKI does (e.g. roles and responsibilities of the different actors). Users can consult it to find out if they can put their trust in that PKI and to know what they need to pay attention to when using a digital certificate.
+* A *certification practice statement*: A document describing how the PKI does what it says it does. Users can consult it to find out if they can put their trust in that PKI and to know what they need to pay attention to when using a digital certificate.
+
+image::PKI.jpg[PKI, width="80%", height="80%", align="center"]
+
+[[TSP]]
+==== Trust Service Provider
+A Trust Service Provider (TSP) is a natural or legal person who provides one or more trust services. A trust service is an electronic service related, among others, to the creation, validation and preservation of electronic signatures, timestamps, and certificates.
+
+Given that a TSP can provide a combination of trust services, a TSP can take one or more of the following roles
+
+* a certificate issuer (CA)
+* a time-stamp issuer (TSA)
+* a signature verifier (VA)
+* …
+
+A TSP can be either a qualified or non-qualified trust service provider. All TSPs no matter if qualified or not have the following obligations and requirements
+
+* Processing of personal data;
+* Notification of security and personal data breaches;
+* Keeping an up-to-date termination plan;
+* Meeting requirements on employed staff and subcontractors (e.g. trainings);
+* Keeping sufficient financial resources and/or liability insurance;
+* Recording and keeping activities related to data accessible;
+* …
+
+This ensures the validity and security of the trust services that TSPs provide, such as the integrity of the data that was used for certificate and signature creation as well as the security of the signing keys.
+
+A qualified trust service provider (QTSP) is a TSP that provides one or more qualified trust services and is included in a Trusted List (cf. <<TrustedLists>>).
+
+Some aspects are specific to QTSPs and follow from the requirements of eIDAS
+
+* Undergoing a pre-authorization scheme;
+* Being actively supervised;
+* Undergoing regular audits;
+* Presumption of intention or negligence in case of damage due to failure to comply to the law;
+* Providing a high level of security;
+* Providing legal certainty;
+* Presumption of the integrity of the data;
+* …
+
+
+==== Trusted List (TL)
+[[EUTL]]
+===== EU MS Trusted List
+The Trusted List (TL) of an EU Member State is a list that contains
+
+* information on the issuing scheme, i.e. the scheme that indicates how the TL is issued and maintained (e.g. information about the signature of the TL);
+* all the qualified trust service providers (QTSPs) in that MS;
+* all the qualified trust services (QTSs) that the QTSPs of that MS provide;
+* the type, status and status history of the QTSs.
+
+It is also possible for an MS to include
+
+* non-qualified trust service providers and non-qualified trust services in its Trusted List. However, it shall be clearly indicated that they are not qualified.
+* trust services of types that are not defined in eIDAS. This shall be clearly indicated.
+
+TLs have a constitutive power. TSPs and TSs can only be considered qualified once they are included into a TL.
+
+There is one Trusted List per EU Member State. Each EU Member State is responsible for establishing, maintaining and publishing its own trusted list (Article 22 of eIDAS).
+
+Trusted Lists are published using a secure channel and are made publicly available by the European Commission. This allows users to validate trust services or their outputs such as certificates, signatures, seals, timestamps. Given that everyone can access the TLs of all MSs, interoperability of QTSs is fostered. It builds trusts and certainty.
+
+Trusted Lists are available in an XML format which is suitable for automated processing. This format of the TLs is digitally signed/sealed, which allows assuring authenticity and integrity of the TLs.
+
+
+
+[[LOTL]]
+===== List of Trusted Lists (LOTL)
+The List of Trusted Lists (LOTL) is a list that contains
+
+* links towards all the published EU MS Trusted Lists;
+* the certificates used to verify the signatures of these trusted lists.
+
+The LOTL is published using a secure channel and is made publicly available on the Official Journal of the European Commission (OJEU). It is available in an XML format which is suitable for automated processing. This format of the LOTL is digitally signed/sealed, which allows to assure authenticity and integrity of the LOTL. The signing certificates of the LOTL are also made publicly available in the OJEU.
+
+The LOTL is used to authenticate EU MS Trusted Lists and to provide an easy and trustworthy way to access these TLs.
+
+image::LOTL-TLs.jpg[LOTL TLs, width="70%", height="70%", align="center"]
+
+When the LOTL-signing certificates or the location of the LOTL changes, the modification needs to be published by the Commission. The update is done in the form of a “pivot LOTL”, which is a specific instance of a LOTL. Each new modification will create a new pivot LOTL. The pivot LOTLs are grouped in the current LOTL itself, under the < SchemeInformationURI> field. Consulting all the pivot LOTL from the most recent to the oldest gives a trace of all the signing certificates and locations of the LOTL back to the initial ones.
+
+[[SignaturePolicy]]
+==== Signature Policy
+A signature policy is a set of *rules* for the creation, validation and long-term management of one (or more) electronic signature(s).
+
+A Signature Policy *contains* general information such as
+
+* the identifier of the signature policy
+* the name of the signature policy issuer
+* the date of issuance of the signature policy
+* the signing period
+* the field of application
+* …
+
+A Signature Policy is composed of *three main parts* that define technical and procedural requirements:
+
+. Signature Creation Policy: requirements for the signer in creating a signature;
+. Signature Validation Policy: requirements for the verifier when validating a signature;
+. Signature (LTV) Management Policy: requirements for the long term management and preservation of a signature.
+
+A signature policy is a way of *expressing*
+
+* who may sign
+* in what capacity an entity may sign
+* what data is being signed
+* in what circumstances the data is signed
+* why the data is being signed (i.e. what are the consequences).
+* the purpose for the signature
+* the context in which the signature will be used
+* the means for the creation , verification and long-term management of an electronic signature
+* the means for reproducing the formalities of signing
+* the requirements imposed on or committing the involved actors
+
+The exact information contained in a signature policy will depend on the use cases of the signature and on the involved parties as the signature policy can be negotiated between them. Therefore, it is not possible to define a single template policy to cover all use cases.
+
+Having a signature policy, and thus all the above-mentioned information, available in a signature has several *advantages*:
+
+* It allows keeping a trace of the decisions that were made during the analysis of the signatures that will need to be created.
+* It allows a signature to be legally enforceable in any Member State
+* It makes the signature workflow transparent to all involved parties. This enhances trust in electronic signatures that comply with a signature policy.
+
+*Parties involved* in a signature policy are:
+
+* The Signature policy issuer: a legal/natural entity that sets the rules that compose the signature policy.
+* Signature policy users: natural persons that can be one of the two following types of entities:
+. Signer: creates an electronic signature
+. Verifier: ensures the authenticity of the policy and decides whether the signed data is valid or not
+* Trust Service Provider(s)
+
+A signature policy is available in two *forms*:
+
+* In a human readable form: It can be assessed to meet the requirements of the legal and contractual context in which it is being applied. (cf. ETSI TS 119 172-1 <<R17>>)
+* In a machine processable form (XML or ASN.1): To facilitate its automatic processing using the electronic rules. (cf. ETSI TS 119 172-2 <<R18>> and ETSI TS 119 172-3 <<R19>>)
+
+===== Signature policy at creation and validation
+During signature *creation*, the signature policy shall be added to the signed attributes of the signature. Signed attributes are information that can only be included upon signature creation and that cannot be added at a later point in the life of the signature. The signer indicates the signature policy identifier, which is composed of the hash value of the policy and the hash algorithm that was used to hash the policy.
+
+During signature *validation*, the verifier verifies that the signature policy he will use to validate the signature corresponds to the one that was decided at signature creation time. The following steps are used:
+
+. Get a copy of the signature policy;
+. Take the hash algorithm indicated in the signature and apply it on the signature policy to obtain a digest;
+. Extract the digest of the signature policy indicated in the signature policy field of the digitally signed data;
+. Compare the created digest with the extracted digest.
+* If the two digests match, then the signature might be validated (depending on the other steps of the validation process).
+* If the two digests do not match, the signature is invalid.
+
+From the creation and validation processes follows that the same signature policy is used by both the signer and the verifier.
+
+image::signature-policy.jpg[Signature Policy, width="60%", height="60%", align="center"]
+
+
+[[SignatureCreation]]
+==== Signature creation
+
+[[SignatureCreationProcess]]
+===== Signature creation process
+Signing data digitally is a process composed of several steps:
+
+. The data and some attributes, such as the signing certificate, are hashed using a hash function to obtain a digest.
+. The created digest is encrypted using the signer’s private key, which results in a digital signature.
+. The digital signature can be attached to the data and the signed attributes to obtain the digitally signed data.
+
+image::signature-creation.jpg[Signature Creation, width="100%", height="100%", align="center"]
+
+It is worth noting that the data itself is not signed, it is the digest of the data that is signed. This conception choice comes from the fact that encryption/signing is expensive. Signing a small fixed-length data digest instead of the large data saves time and resources. This is possible because the digest of some data is unique so signing the data is equivalent to signing the digest of the data.
+
+[[SAM]]
+===== Signature Activation Module (SAM)
+To digitally sign data, a signing certificate (proving the signer’s identity) and the access to its associated private key are needed. The signature activation shall be protected so that the private key remains under the sole control of the associated user.
+
+Signature Activation Modules (SAMs) are cryptographic hardware used to authenticate the signer and authorize the signature. This ensures the sole control of the signing key. The signer needs to provide signature activation data (e.g. password, PIN, biometric data, …) for the signing key to be activated.
+
+[[SCDev]]
+===== Signature Creation Device (SCDev)
+Signature creation devices (SCDevs) are cryptographic hardware used to securely
+
+* generate, store and protect cryptographic keys (public and private key)
+* activate signing keys
+* create digital signatures
+
+There are two types of signature creation devices:
+
+* Local: The user protects his signing key on his own e.g. on a smartcard or physical hardware token.
+* Remote/ remote signing servers: The private key is stored and protected in a central location, such as an HSM, and is accessed remotely. The central location is managed by a TSP.
+
+A Qualified Signature Creation Device (QSCD) is a signature creation device that has passed the certification process under eIDAS and is therefore considered to provide a higher legal certainty for the created signatures. Under Directive 1999, QSCDs are referred to as Secure Signature Creation Devices (SSCDs).
+
+[[HSM]]
+===== Hardware Security Module (HSM)
+A Hardware Security Module (HSM) is a tamper-resistant hardware device that is managed by a TSP. It is composed of two parts: a Signature Creation Device and a Signature Activation Module. Remote servers are supported by HSMs.
+
+image::HSM.jpg[HSM, width="30%", height="30%", align="center"]
+
+
+==== Multiple signatures
+
+[[ParallelSignatures]]
+===== Parallel signatures
+Parallel signatures are stand-alone, mutually independent signatures where the ordering of the signatures is not important. All the involved parties can receive the data at the same time and sign in any order. The computation of these signatures is performed on exactly the same hash data but using different private keys associated to the different signers. The only dependance between the parallel signatures is that they shall all be present and valid for the associated data to be validly signed.
+
+In everyday life, there are many examples where it is necessary to have multiple signatures covering the same document. It is the case for contracts involving a buyer and a seller (e.g. purchase of a vehicle).
+
+The following schema illustrates the creation of parallel signatures:
+
+image::parallel-signatures.jpg[Parallel Signatures, width="60%", height="60%", align="center"]
+
+[[SequentialSignatures]]
+===== Sequential signatures
+Sequential signatures are mutually dependent signatures where the ordering of the signatures is important. A fixed signing order is defined and the next signer in the chain shall not sign before the preceding signers have signed the data. The computation of these signatures is not performed on the same data. A signer that is further in the signing chain will sign the initial data previously signed by the signers preceding him in the chain. Each signer uses his own private key to sign.
+
+The following schema illustrates the creation of sequential signatures:
+
+image::sequential-signatures.jpg[Sequential Signatures, width="80%", height="80%", align="center"]
+
+[[CounterSignatures]]
+===== Counter signatures
+A counter signature is an additional signature applied on data that has already been signed previously. This type of signature is used to show approval of the data and signature, to confirm the authenticity of the data. The computation of a counter signature is performed on the signed data and it is added to the signature as an unsigned attribute, i.e. added after initial signature creation.
+
+Counter signatures are often created by trustworthy entities such as notaries, doctors or attorneys. Possible use cases are rental and mortgage applications, health documents, passports and visas.
+
+The following schema illustrates the creation of counter signatures:
+
+image::counter-signatures.jpg[Counter Signatures, width="60%", height="60%", align="center"]
+
+[[SignatureValidation]]
+==== Signature validation
+
+[[SignatureValidationInputsOutputs]]
+===== Signature validation inputs and outputs
+A signature validation process takes as input an AdES digital signature and uses a signature validation policy against which the signature is validated.
+
+At the end of a signature validation process, a status indication and a validation report are produced. Generally and following ETSI standard, one of these three following statuses is provided:
+
+* `TOTAL-PASSED` response indicates that the signature has passed verification and it complies with the signature validation policy.
+* `INDETERMINATE` validation response indicates that the format and digital signature verifications have not failed but there is insufficient information to determine if the electronic signature is valid.
+* `TOTAL_FAILED` response indicates that either the signature format is incorrect or that the digital signature value fails the verification.
+
+For each of the validation checks/constraint (e.g. signature format, signing certificate validity), the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications. This allows the user to determine whether the signature validation has succeeded or not and it helps him find out why.
+
+The following table presents the indications and sub-indications that can be encountered at completion of a signature validation process. For a detailed description of their meaning, refer to ETSI TS 119 102-1 (<<R09>>).
+
+[%header,cols=2*^.^]
+.Signature validation indications and sub-indications
+|=======================
+|Indication             |Sub-indication
+|TOTAL-PASSED           |
+.4+|TOTAL-FAILED        |FORMAT_FAILURE
+                        |HASH_FAILURE
+                        |SIG_CRYPTO_FAILURE
+                        |REVOKED
+.19+|INDETERMINATE      |SIG_CONSTRAINTS_FAILURE
+                        |CHAIN_CONSTRAINTS_FAILURE
+                        |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                        |CRYPTO_CONSTRAINTS_FAILURE
+                        |EXPIRED
+                        |NOT_YET_VALID
+                        |POLICY_PROCESSING_ERROR
+                        |SIGNATURE_POLICY_NOT_AVAILABLE
+                        |TIMESTAMP_ORDER_FAILURE
+                        |NO_SIGNING_CERTIFICATE_FOUND
+                        |NO_CERTIFICATE_CHAIN_FOUND
+                        |REVOKED_NO_POE
+                        |REVOKED_CA_NO_POE
+                        |OUT_OF_BOUNDS_NO_POE
+                        |CRYPTO_CONSTRAINTS_FAILURE_NO_POE
+                        |NO_POE
+                        |TRY_LATER
+                        |SIGNED_DATA_NOT_FOUND
+                        |GENERIC
+
+|=======================
+
+===== Integrity of the data
+To validate digitally signed data, it needs to be verified whether the integrity of the data has been preserved, i.e. that the original data has not been modified since it was signed. For example, if a transaction of 5 euros is signed, the signer does not want the data to be modified so that the amount to be paid becomes 1 million euros after the signature.
+
+The integrity of the data can be checked with the following steps:
+
+. The data and the digital signature are extracted from the digitally signed data.
+. The data is hashed using a hash function to obtain a digest.
+. The digital signature is decrypted using the public key corresponding to the private key that was used to sign the data. This gives the digest of the data that was hashed during the signature creation process.
+. It is checked whether the two digests are equal or not.
+* If the two digests are equal, then the data that was signed has not been modified, the integrity is preserved.
+* If the two digests are different, then the data that was signed is not the same as the data that is accompanying the signature.
+
+image::data-integrity.jpg[Data Integrity, width="60%", height="60%", align="center"]
+
+NOTE: A signature does not prevent data from being modified but allows detecting whether the data has been modified.
+
+===== Authenticity of the signature
+The authenticity of a digital signature is verified if the public key contained in the signing certificate allows to decrypt the signature. The signature shall only be validated if the public key is valid. A public key is not valid anymore if
+
+* the certificate is expired
+* the certificate is revoked
+* the cryptographic algorithm is depreciated (e.g. SHA1)
+
+===== Unique identification of the signer
+To digitally validate signed data, as presented in previous sections, the public key, corresponding to the private key used to sign, is needed to decrypt the signature. If the public key can decrypt the signature, it belongs without a doubt to the signer and to no other entity. The information missing is the identity of the signer.
+
+For a handwritten signature, the identity of the signer would be verified using an identity card that contains the identity and the signature of a signer. For a digital signature, the public key is contained together with the identity of the signer in a signing certificate. To be certain about the identity of the signer, it needs to be proved that the signing certificate is authentic and valid. This can be verified through a certification path validation.
+
+[[CertificatePathValidation]]
+===== Certificate path validation
+To verify if a certificate is authentic and can be trusted, the certificate path shall be valid. The signatures of the certificates in the certificate chain (cf. <<CertificateChain>>) shall be verified up to a Trust Anchor. It is as if the target certificate had been signed directly by the Trust Anchor because the trust is propagated through the chain.
+
+* If a Trust Anchor is found in the certificate path, the signing certificate is valid and the signature might get validated.
+* If no Trust Anchor is found, the signature certificate is not valid and the signature is not valid either.
+
+image::certificate-chain-validation.jpg[Certificate Chain Validation, width="80%", height="80%", align="center"]
+
+
+
+=== Resources
 Certain resources have been developed to improve the adoption of the eIDAS Regulation as well as improve information sharing about the eIDAS Regulation and related concepts.
 
 The https://esignature.ec.europa.eu/efda/home/#/screen/home[EU Trust Services Dashboard] (EU TSD) is such a resource. It "proposes a centralized platform that enables interested parties and Digital Single Market players to easily and transparently access information and tools related to the trust services chapter of eIDAS".
-It contains among others a Trusted List Browser to browse through the trusted lists of the different EU Member States.
+
+It contains among others a https://esignature.ec.europa.eu/efda/tl-browser/#/screen/home[Trusted List Browser] to browse through the trusted lists of the different EU Member States.
 
 https://ec.europa.eu/futurium/en/content/eidas-implementing-acts.html[eIDAS implementing acts] have been issued and adopted by the Commission:
 
@@ -86,130 +603,6 @@ https://ec.europa.eu/futurium/en/content/eidas-implementing-acts.html[eIDAS impl
 * Commission Implementing Decision (EU) 2016/650: standards for the security assessment of qualified signature and seal creation devices
 
 ETSI has developed standards that can be followed to be compliant with the eIDAS Regulation.
-
-[[DigitalSignatureConcepts]]
-=== Digital signatures – concepts
-==== Certificates
-The issuance of certificates for electronic signatures, for electronic seals and for website authentication are three trust services provided according to the eIDAS Regulation.
-
-* A "‘certificate for electronic signature’ means an electronic attestation which links electronic signature validation data to a natural person and confirms at least the name or the pseudonym of that person". (cf. eIDAS Article 3.14)
-* A "‘certificate for electronic seal’ means an electronic attestation that links electronic seal validation data to a legal person and confirms the name of that person". (cf. eIDAS Article 3.29)
-* A "‘certificate for website authentication’ means an attestation that makes it possible to authenticate a website and links the website to the natural or legal person to whom the certificate is issued". (cf. eIDAS Article 3.38)
-
-Moreover, certificates can have a qualified status.
-
-* A "‘qualified certificate for electronic signature’ means a certificate for electronic signatures, that is issued by a qualified trust service provider and meets the requirements laid down in Annex I". (cf. eIDAS Article 3.15)
-QES are based on a QCert
-* A "‘qualified certificate for electronic seal’ means a certificate for an electronic seal, that is issued by a qualified trust service provider and meets the requirements laid down in Annex III". (cf. eIDAS Article 3.30)
-* A "‘qualified certificate for website authentication’ means a certificate for website authentication, which is issued by a qualified trust service provider and meets the requirements laid down in Annex IV". (cf. eIDAS Article 3.39)
-
-Use cases:
-
-* To electronically sign a document, a signing certificate (that proves the signer's identity) and the access to its associated private key is needed.
-* To electronically validate a signed document the signer's certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key used to create the signature must also be provided.
-
-
-==== Certificate Revocation Lists (CRLs) / Online Certificate Status Protocol (OCSPs)
-CRLs and OCSPs contain a revocation information about a certificate verifying during the signature validation process.
-
-===== CRL
-
-A Certificate Revocation List (CRL) is a "signed list indicating a set of certificates that are no longer considered valid by the certificate issuer". (cf. ETSI EN 319 102-1)
-
-
-===== OCSP
-
-"The Online Certificate Status Protocol (OCSP) enables applications to determine the (revocation) state of identified certificates. OCSP may be used to satisfy some of the operational requirements of providing more timely revocation information than is possible with CRLs and may also be used to obtain additional status information. An OCSP client issues a status request to an OCSP responder and suspends acceptance of the certificates in question until the responder provides a response.
-
-This protocol specifies the data that needs to be exchanged between an application checking the status of one or more certificates and the server providing the corresponding status." (cf. RFC 6960)
-
-[[Timestamps]]
-==== Timestamps
-
-"Time-stamping is critical for digital signatures in order to know whether the digital signature was affixed during the validity period of the certificate. One method of assuring the signing time is to affix a time-stamp bound to the signature." (cf. ETSI EN 319 422)
-
-As defined by the ETSI EN 319 422 standard:
-
-* time-stamp: data in electronic form which binds other electronic data to a particular time establishing evidence that these data existed at that time
-* time-stamp token: data object defined in IETF RFC 3161 [1], representing a time-stamp
-* Time-Stamping Authority (TSA): Trust Service Provider which issues time-stamp using one or more time-stamping units
-* Time-Stamping Unit (TSU): set of hardware and software which is managed as a unit and has a single time-stamp signing key active at a time
-
-A timestamp can have a qualified status if it follows stricter requirements. In that case, it "shall enjoy the presumption of the accuracy of the date and the time it indicates and the integrity of the data to which the date and time are bound." (cf. eIDAS Article 41)
-
-
-==== Trust Anchors
-
-A Trust Anchor is an "entity that is trusted by a relying party and used for validating certificates in certification paths". (cf. ETSI EN 319 411-1)
-
-RFC 520 defines a Trust anchor as being the end point of a certificate validation process. (I did not find it in this RFC but cf. https://ec.europa.eu/cefdigital/wiki/display/ESIGKB/When+validating+a+qualified+certificate+what+is+the+related+Trust+Anchor[CEF eSignatures Knowledge Base]) TODO: Remove this sentence? !!!
-
-A Trust Anchor can be a Root CA but not necessarily.
-
-In the context of Trusted Lists, the ETSI TS 119 612 standard states that: "When "Service digital identifiers" are used as trust anchors in the context of validating electronic signatures for which signer's certificate is to be validated against TL information, only the public key and the associated subject name are needed as trust anchor information. When more than one certificate are representing the public key identifying the service, they are considered as trust anchor certificates conveying identical information with regard to the information strictly required as trust anchor information."
-
-
-[[EUTrustedLists]]
-==== Trusted lists (TLs)
-===== European Union Member State Trusted Lists (EU MS TLs)
-
-A Trusted List is a "list that provides information about the status and the status history of the trust services from trust service providers regarding compliance with the applicable requirements and the relevant provisions of the applicable legislation" (cf. ETSI TS 119 612)
-
-“Trusted […] lists enable in practice any interested party to determine whether a trust service is or was operating in compliance with relevant requirements, currently or at a given time in the past (e.g. at the time the service was provided, or at the time at which a transaction reliant on that service took place). In order to fulfil this requirement, [...] trusted lists have four major components, in a structured relationship. These components:
-
-* provide information on the issuing scheme, i.e. the relevant scheme underlying the issuance and maintenance of the TL;
-* identify the TSPs recognized by the scheme;
-* indicate the service(s) provided by these TSPs, their type and the current status of the service(s);
-* indicate for each service the status history of that service." (cf. ETSI TS 119 612)
-
-The Trusted Lists can potentially provide "additional relevant information helping the relying party to validate the trust service or its outputs like certificates, signatures or seals, time-stamps" (ETSI TS 119 612)
-
-There is one Trusted List per EU Member State.
-
-===== List Of Trusted Lists (LOTL)
-The List Of Trusted Lists (LOTL) is "a central list with links to the locations where the national trusted lists are published as notified by Member States." (ETSI TS 119 612)
-
-The "LOTL also plays an important role in authenticating EU MS trusted lists. Each national trusted list is electronically signed/or sealed by its MS scheme operator and the certificate to be used to verify such a signature/seal is included in the LOTL after notification to the European Commission. The authenticity and integrity of the machine processable version of the LOTL is ensured through a qualified electronic signature or seal supported by a qualified certificate which can be authenticated and directly trusted through one of the digests published in the Official Journal of the European Union." (ETSI TS 119 612)
-
-
-==== Certificate path validation
-
-A certificate path (chain) validation is a "process of verifying and confirming that a certificate path (chain) is valid". (cf. ETSI EN 319 102-1)
-
-"Certificate path validation based upon X.509 (see IETF RFC 5280 [12]) or ETSI TS 102 853 [i.1] on signature verification requires information on CA certificates that can be used as trust anchors for an application  requiring a particular trust service." (cf. ETSI TS 119 612)
-
-As defined by the RFC 5280: "Certification path validation procedures for the Internet PKI are based on the algorithm supplied in [X.509]. Certification path processing verifies the binding between the subject distinguished name and/or subject alternative name and subject public key. The binding is limited by constraints that are specified in the certificates that comprise the path and inputs that are specified by the relying party."
-
-the following image illustrates the Certification Path Processing Flowchart (RFC 5280 Figure 2).
-
-image::Certification-Path-Processing-Flowchart.PNG[]
-
-
-[[SignatureCreation]]
-==== Signature creation
-===== Signature Creation Device (SCDev)
-A Signature Creation Device (SCDev) is hardware that generates the cryptographic element of an electronic signature.
-This device can be local, for example a secure smartcard or USB token, or remote, for example an HSM managed by a QTSP.
-
-When the SCDev meets certain strict requirements it can get the qualified status. It is then referred to as a QSCD. A QSCD is necessary to generate a QES.
-
-===== Hardware Security Module (HSM)
-A Hardware Security Module (HSM) is tamper resistant hardware used to generate, store, manage and protect signing keys and to perform remote signing.
-
-It is an essential component of a Qualified Signature Creation Device (QSCD).
-Indeed, when a Signature Activation Module (SAM) is used to run code on the HSM that will sign documents, the combination of the two can be considered as a QSCD.
-
-
-==== Signature validation
-Following the ETSI EN 319 102-1 standard:
-
-“A signature validation application (SVA) receives an AdES digital signature and other input from the driving application (DA). The SVA shall validate the signature against a signature validation policy, consisting of a set of validation constraints, and shall output a status indication and validation report providing the details of the technical validation of each of the applicable constraints, which can be relevant for the DA in interpreting the results.
-
-[…] Several validation building blocks are applied: signature format, signing certificate validity, cryptographic verification, etc. The status indication of each single validation building block shall be one of the following values: PASSED, FAILED or INDETERMINATE.
-
-*TOTAL-PASSED*: when the cryptographic checks of the signature (including checks of hashes of individual data objects that have been signed indirectly) succeeded as well as all checks prescribed by the signature validation policy have been passed. +
-*TOTAL-FAILED*: the cryptographic checks of the signature failed (including checks of hashes of individual data objects that have been signed indirectly), or it is proven that the generation of the signature was after the revocation of the signing certificate, or because the signature is not conformant to one of the base standards to the extent that the cryptographic verification building block is unable to process it. +
-*INDETERMINATE*: the results of the performed checks do not allow to ascertain the signature to be TOTAL-PASSED or TOTAL-FAILED.”
 
 === Digital signatures in DSS
 ==== Tokens in DSS
@@ -242,7 +635,7 @@ Trusted lists processes are compliant with ETSI TS 119 612 (<<R11>>).
 Procedures for using and interpreting EU Member States national trusted lists, such as determining the qualified status of a timestamp or of an SSL certificate, are compliant with ETSI TS 119 615 (<<R14>>).
 
 ==== Out of the EU context
-DSS is not limited to EU contexts. It can be used in non-EU contexts with all its basic functions, i.e. signature, extension, validation, etc.
+DSS is not limited to EU contexts. It can be used in non-EU contexts with all its basic functions, i.e. signature, augmentation, validation, etc.
 
 An example would be the configuration of trust anchors (see section <<TrustAnchorConfiguration>>). The certificate sources can be configured from a TrustStore (kind of keystore which only contains certificates), a trusted list and/or a list of trusted lists.
 In case of an EU context you could use any of these three trust anchors.

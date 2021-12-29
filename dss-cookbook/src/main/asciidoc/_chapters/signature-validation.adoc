@@ -10,9 +10,9 @@
 [[CertificateValidation]]
 === Validation of a certificate
 
-The signature validation starts from a validation of a certificate chain. For a given certificate, the framework builds a certificate path until a known trust anchor (trusted list, keystore,...), validates each found certificate (OCSP / CRL) and determines its European "qualification".
+The signature validation starts from a validation of a certificate chain (cf. <<CertificatePathValidation>>). For a given certificate, the framework builds a certificate path until a known trust anchor (trusted list, keystore,...), validates each found certificate (OCSP / CRL) and determines its European "qualification".
 
-To determine the certificate qualification, DSS follows the standard ETSI TS 119 172-4 (<<R10>>). It analyses the certificate properties (QCStatements, Certificate Policies, etc.) and applies possible overrules from the related trusted list ("catched" qualifiers from a trust service). More information about qualifiers can be found in the standard ETSI TS 119 612 (<<R11>>).
+To determine the certificate qualification, DSS follows the standard ETSI TS 119 615 (<<R14>>). It analyses the certificate properties (QCStatements, Certificate Policies, etc.) and applies possible overrules from the related trusted list ("catched" qualifiers from a trust service). More information about qualifiers can be found in the standard ETSI TS 119 612 (<<R11>>).
 
 DSS always computes the status at 2 different times: certificate issuance and signing/validation time. The certificate qualification can evolve in time, its status is not immutable (e.g.: a trust service provider can lose the granted status). The eIDAS regulation (<<R12>>) clearly defines these different times in the Article 32 and related Annex I.
 
@@ -24,14 +24,11 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/Certificat
 
 [[TrustAnchorConfiguration]]
 ==== Trust anchor configuration from a certificate store
-
-In order to determine what certificate or signature to trust, a term "trust anchor" is used. Trust anchors is a set of certificates that are trusted by the validator and have to be reached during the validation process in order to trust a validating signature or a timestamp.
-
-DSS allows configuring of various trusted certificate source(s). These sources can be defined from a TrustStore (kind of keystore which only contains certificates), a trusted list or a list of trusted lists.
+Trust anchors are an essential part of the validation process of a signature as described in section <<TrustAnchors>>. DSS allows configuring of various trusted certificate source(s). These sources can be defined from a TrustStore (kind of keystore which only contains certificates), a trusted list or a list of trusted lists.
 
 ===== Trust store initialization
 
-If you have a collection of certificates to trust, the easier way to provide them to DSS it to use a KeyStore / TrustStore.
+If you have a collection of certificates to trust, the easier way to provide them to DSS it to use a KeyStore / TrustStore (cf. <<TrustAnchors, Trust Stores>>).
 
 [source,java,indent=0]
 .Trust anchor initialization from a Trust Store
@@ -45,7 +42,7 @@ To generate the trust store, there's an utility class CreateKeyStoreApp in the d
 
 In several countries, a list of Trust Service Providers (TSP) is published. This list is usually published in a machine processable format (XML) and sometimes in a human-readable format (PDF). A standard (ETSI TS 119 612) exists with the specifications for the XML format.
 
-DSS contains all needed resources to download, parse, validate and interpret the trusted list contents. Since DSS 5.6, that's possible to configure one or more independent trusted list(s) (aka not linked to a list of trusted lists) and/or one or more list of trusted lists.
+DSS contains all needed resources to download, parse, validate and interpret the trusted list contents. In DSS, it is possible to configure one or more independent trusted list(s) (aka not linked to a list of trusted lists) and/or one or more list of trusted lists.
 
 If you want to collect your trusted certificates from trusted list(s), the TrustedListsCertificateSource is required. The trusted list(s) loading can require some times (connection time-out, xml parsing, xml validation,...). This process is usually executed in background. An instance of TrustedListsCertificateSource needs to be created. That will be synchronized with the TLValidationJob.
 
@@ -67,7 +64,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ==== Certificate chain in DSS
 
-The validation of a certificate requires the access to some other certificates from multiple sources like trusted lists, trust store, the signature itself: certificates can be contained inside of any other source.
+The validation of a certificate requires the access to some other certificates from multiple sources like trusted lists, trust store, the signature itself: certificates can be contained inside any other source.
 Within the framework, an X509 certificate is wrapped through the class:
 
 * `eu.europa.esig.dss.model.x509.CertificateToken`
@@ -109,7 +106,7 @@ This class follows the composite design pattern with a list of CertificateSource
 
 ===== Retrieving certificates by AIA
 
-In case when intermediate certificates are not present within a signature document, nor in trusted/adjunct sources, a certificate chain still can be built using AIA URL obtained from a certificate.
+In case when intermediate certificates are not present within a signature document, nor in trusted/adjunct sources, a certificate chain can still be built using AIA URL obtained from a certificate. For more information on the Authority Information Access (AIA), refer to section <<AIA>>.
 
 To use AIA URLs DSS provides the interface `AIASource` with the following implementations:
 
@@ -125,7 +122,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AIASourceS
 ----
 
 ==== Revocation data handling
-For information on how revocation of data is handled, see chapter <<RevocationDataManagement>>.
+For information on how revocation of data is handled, see section <<RevocationDataMangementConcept, revocation data management concepts>> and chapter <<RevocationDataManagement>>.
 
 ===== Revocation freshness
 The revocation freshness constraint (RFC) is a time interval indicating that the validation accepts CRLs that were emitted at a point in time after the validation time minus the RFC: `valTime - RFC < CRL.thisUpdate`.
@@ -149,8 +146,9 @@ For example for the current RevocationFreshness and the current RevocationDataFr
 <CACertificate> <RevocationDataFreshness Level="WARN" /> … </CACertificate>
 <SigningCertificate><RevocationDataFreshness Level="FAIL" /></SigningCertificate>
 
-the RevocationDataFreshness check of the CA certificate will result in a warning if the RevocationFreshness fails which is the case if the revocation data is older than 2 days.
-the RevocationDataFreshness check of the signing certificate will fail if the RevocationFreshness fails which is the case if the revocation data is older than 2 days.
+* The RevocationDataFreshness check of the CA certificate will result in a warning if the RevocationFreshness fails which is the case if the revocation data is older than 2 days.
+* The RevocationDataFreshness check of the signing certificate will fail if the RevocationFreshness fails which is the case if the revocation data is older than 2 days.
+
 No matter the certificate, the revocation data shall have been issued no later than two days prior to the validation process. However, the validation levels for the signing and CA certificates of this example are different.
 
 In case of a custom validation policy with the following RevocationFreshness and RevocationDataFreshness of a CA certificate:
@@ -159,12 +157,20 @@ In case of a custom validation policy with the following RevocationFreshness and
 <Revocation><RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" /> … </Revocation>
 <CACertificate> <RevocationDataFreshness Level="FAIL" /> … </CACertificate>
 
-Since, the validation level of the RevocationFreshness is set to IGNORE, it will never fail. Any CA certificate revocation data will be usable no matter how long ago it was issued.
+Since the validation level of the RevocationFreshness is set to IGNORE, it will never fail. Any CA certificate revocation data will be usable no matter how long ago it was issued.
 
 [[certificateVerifier]]
 ==== CertificateVerifier configuration
 
-The `CertificateVerifier` and its implementation `CommonCertificateVerifier` determines how DSS accesses the external resources and how it should react in some occasions. This configuration shall be provided into both extension and validation processes.
+The `CertificateVerifier` and its implementation `CommonCertificateVerifier` determines how DSS accesses the external resources and how it should react in some occasions. This object is used to provide four different sources of information:
+
+* the source of trusted certificates (based on the trusted list(s) specific to the context);
+* the source of intermediate certificates used to build the certificate chain until the trust anchor. This source is only needed when these certificates are not included in the signature itself;
+* the source of OCSP;
+* the source of CRL.
+
+In the current implementation this object is only used when profiles `BASELINE-LT` or `BASELINE-LTA` are created.
+This configuration shall be provided into both augmentation and validation processes.
 
 [source,java,indent=0]
 .CertificateVerifier usage
@@ -248,23 +254,16 @@ The default XML validation policy is present below.
 include::{samplesdir}/constraint.xml[]
 ----
 
-[[signatureValidation]]
+[[signatureValidationProcess]]
 === Signature validation in one method and 4 outputs
+Generally, a signature validation process outputs an indication status and a validation report as described in section <<SignatureValidationInputsOutputs>>.
 
-Generally and following ETSI standard, the validation process of an electronic signature must provide one of these three following statuses:
+In DSS, the result of the validation process consists of four elements:
 
-* `TOTAL-PASSED` response indicates that the signature has passed verification and it complies with the signature validation policy.
-* `INDETERMINATE` validation response indicates that the format and digital signature verifications have not failed but there is insufficient information to determine if the electronic signature is valid.
-* `TOTAL_FAILED` response indicates that either the signature format is incorrect or that the digital signature value fails the verification.
-
-For each of the validation checks, the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications.
-
-The result of the validation process consists of four elements:
-
-* the Simple Report,
-* the Detailed Report,
-* the Diagnostic Data and
-* the ETSI Validation Report.
+* the <<SimpleReport, Simple Report>>,
+* the <<DetailedReport, Detailed Report>> ,
+* the <<DiagnosticData, Diagnostic Data>> and
+* the <<ETSIValidationReport, ETSI Validation Report>>.
 
 All these reports are encoded using XML, which allows the implementer to easily manipulate and extract information for further analysis. For each report, XML Schema and JaxB model are available as maven dependencies.
 
@@ -283,7 +282,7 @@ Note that depending on a used signature format and packaging, the whole or only 
 
 At the end of the validation process four reports are created. They contain different detail levels concerning the validation result. They provide different kinds of visions for the validation process: macroscopic, microscopic, validation data and ETSI Validation report conformant with the standard <<R09>>. For more information about these reports, please refer to <<SimpleReport, Simple Report>>, <<DetailedReport, Detailed Report>>, <<DiagnosticData, Diagnostic Data>> and <<ETSIValidationReport, ETSI Validation Report>> chapters respectively.
 
-Below is the simplest example of signature validation from an input document. The first step is instantiating an object named validator, which orchestrates the verification of the different rules. To perform this, it is necessary to invoke a static method `fromDocument()` on the abstract class `SignedDocumentValidator`. This method returns the object in question whose type is chosen dynamically based on the type of source document.
+Below is the simplest example of signature validation from an input document. The first step consists in instantiating an object named validator, which orchestrates the verification of the different rules. To perform this, it is necessary to invoke a static method `fromDocument()` on the abstract class `SignedDocumentValidator`. This method returns the object in question whose type is chosen dynamically based on the type of source document.
 
 The next step is to create an object that will check the status of a certificate using the Trusted List model (see <<TrustedLists, Trusted Lists>> for more information). In order to achieve this, an instance of a `CertificateVerifier` must be created with a defined source of trusted certificates. In our example, the trusted source is instantiated with `CommonTrustedCertificateSource` class. As well as a trusted source, the `CertificateVerifier` object needs an OCSP and/or CRL source and a TSL source (which defines how the certificates are retrieved from the Trusted Lists). See chapter <<RevocationDataManagement, Revocation Data Management>> for more information about revocation sources.
 
@@ -324,19 +323,20 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 
 The result of the validation process is based on very complex rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
 
-This is a sample of the simple validation report:
-
-.Simple Report
-
-[source,xml]
-----
-include::{samplesdir}/simple-report-example.xml[]
-----
+A sample of the simple validation report can be found https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_samples/simple-report-example.xml[here].
 
 [[DetailedReport]]
 ==== Detailed report
 
-The structure of a Detailed Report is based on the ETSI standard <<R09>> and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data.
+The structure of a Detailed Report is based on the ETSI EN 319 102-1 standard (<<R09>>).
+
+It is a representation of steps performed during the validation process, as defined in the ETSI EN 319 102-1 standard, and structured using the processes and blocks defined in that standard:
+
+* Basic Building Blocks;
+* Validation Process for Basic Signatures;
+* Time-stamp validation building block;
+* Validation process for Signatures with Time and Signatures with Long-Term Validation Material;
+* Validation process for Signatures providing Long Term Availability and Integrity of Validation.
 
 For example the Basic Building Blocks are divided into seven elements:
 
@@ -355,6 +355,11 @@ The following additional elements also can be executed in case of validation in 
 * *POE extraction* - Proof Of Existence extraction
 * *PSV* - Past Signature Validation
 
+To process the revocation data, DSS performs the following additional checks:
+
+* *CRS* (CertificateRevocationSelector) - validates a set of revocation data for a given certificate and returns the latest valid entry known to contain information about the concerned certificate.
+* *RAC* (RevocationAcceptanceCheck) - verifies whether one single revocation data is known to contain information about the concerned certificate.
+
 Past certificate/signature validation is used when basic validation of a certificate/signature fails at the current time with an `INDETERMINATE `status such that the provided proofs of existence may help to go to a determined status. The process shall initialize the _best-signature-time_ either to a time indication for a related POE provided, or the current time when this parameter has not been used by the algorithm.
 
 * *Best-signature-time* is an internal variable for the algorithm denoting the earliest time when it can be trusted by the SVA (either because proven by some POE present in the signature or passed by the DA and for this reason assumed to be trusted) that a signature has existed. <<R09>>
@@ -363,19 +368,12 @@ Each block contains a number of rules that are executed sequentially. The rules 
 
 Furthermore, a module has been introduced in DSS to allow changing the language of reports generated by DSS. Currently, this is only possible for messages for the checks executed during the validation process. For more information on that topic, see section <<i18nLanguage>>.
 
-A sample of a DetailedReport is provided below. Some segments were deleted to make reading easier and have been marked by three dots.
-
-.Detailed Report
-
-[source,xml]
-----
-include::{samplesdir}/detailed-report-example.xml[]
-----
+A sample of a DetailedReport is provided https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_samples/detailed-report-example.xml[here].
 
 [[DiagnosticData]]
 ==== Diagnostic data
 
-Diagnostic data is a data set constructed from the information contained in the signature itself, but also from information retrieved dynamically as revocation data and information extrapolated as the mathematical validity of a signature. The diagnostic data is constructed before the validation is completed, and it is used by DSS to validate the signature and create a validation report.
+Diagnostic data is a data set constructed from the information contained in the signature itself, but also from information retrieved dynamically like revocation data and information extrapolated like the mathematical validity of a signature. The diagnostic data is constructed before the validation is completed, and it is used by DSS to validate the signature and create a validation report.
 
 The diagnostic data is independent of the applied validation policy. Two different validation policies applied to the same diagnostic data can lead to different results.
 
@@ -383,68 +381,58 @@ It is also possible to "replay the diagnostic data". Since the diagnostic data i
 
 WARNING: The validation report resulting from the replay of the diagnostic data is useful for observation but cannot be used as a proof of signature validity like the validation report directly resulting from a validation process.
 
-Below is an example of the diagnostic data for a XAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
+https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_samples/diagnostic-data-example.xml[Here] is an example of the diagnostic data for a XAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier.
 
-.Diagnostic Data
-
-[source,xml]
-----
-include::{samplesdir}/diagnostic-data-example.xml[]
-----
 
 [[ETSIValidationReport]]
 ==== ETSI validation report
 The ETSI Validation Report represents an implementation of TS 119 102-2 (cf. <<R13>>). The report contains a standardized result of an ASiC digital signature validation. It includes the original validation input data, the applied validation policy, as well as the validation result of one or more signature(s) and its(their) constraints.
 
-This is an example of the ETSI validation report:
+An example of the ETSI validation report can be found https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_samples/etsi-validation-report-example.xml[here].
 
-.ETSI Validation Report (TS 119 102-2)
+==== Stylesheets for validation reports and diagnostic data
+When reports are generated they are in the XML format, which is not the most straightforward way of reading a report. Therefore, stylesheets are used. A stylesheet is a set of rules that transforms XML content into an HTML or PDF representation to have a human-readable text.
+Refer to section <<ReportStylesheets>> for more information on the stylesheets used for final report generation.
 
-[source,xml]
-----
-include::{samplesdir}/etsi-validation-report-example.xml[]
-----
-
-==== Stylesheets for validation report
-See section <<ReportStylesheets>> for more information on the stylesheets used for final report generation.
+It is also possible to use a stylesheet to generate an SVG image from an XML document such as the diagnostic data. (cf. <<DiagnosticDataStylesheets>>)
 
 === Various DSS validation options
 
-// TODO : currently the constraints corresponds to the options available in a DSS web-application on the validation webpage. But here we need to explain options in relation to the core code, and not the webapp.
-
-!!! TODO: add code for each subsection !!!
+// TODO: add code for each subsection
 
 ==== Validation level
-As an additional option, DSS supports the choice of the validation level of the signature. The validation process can be for basic signatures, signatures with long-term validation data or signatures with archival data.
+There exist four signature levels: `BASELINE-B`, `BASELINE-T`, `BASELINE-LT` and `BASELINE-LTA` (cf. <<SignatureClasses>>). For signature validation, DSS allows indicating which is the level of the signature that needs to be validated. The validation process can be for basic signatures, signatures with long-term validation data or signatures with archival data.
 
 // TODO : explain what each validation level means
 
 ==== Signing Certificate
-The "Signing Certificate" option allows adding the certificate, that was used to sign the document, to the inputs for the validation process. This might be useful if the signing certificate was not included as a signed attribute, for example when validating non-AdES signatures.
+DSS allows adding the certificate that was used to sign the document to the inputs for the validation process. This might be useful if the signing certificate was not included as a signed attribute, for example when validating non-AdES signatures.
 
 ==== Adjunct Certificates
-The "Adjunct Certificates" option allows adding a set of certificates that could be used for a certificate path building, e.g. a timestamp certificate, CA certificate, and so on.
+DSS allows adding a set of certificates that could be used for a certificate path building, e.g. a timestamp certificate, CA certificate, and so on.
 
 ==== Certificates
-If the "Certificates" box is checked the certificates will be available for download at the end of the validation process. In the DSS demonstration, these downloadable files can be found under the "diagnostic tree" tab.
+In DSS, it is possible to return the certificates, included in the signature, as output of the validation process.
 
 ==== Timestamps
-If the "Timestamps" box is checked, the timestamps will be available for download at the end of the validation process. In the DSS demonstration, these downloadable files can be found under the "diagnostic tree" tab.
+DSS allows returning the timestamps, included in the signature, as output of the validation process.
 
 ==== Revocation data
-If the "Revocation data" box is checked, the revocation data (CRLs, OCSPs) will be available for download  at the end of the validation process. In the DSS demonstration, these downloadable files can be found under the "diagnostic tree" tab.
+In DSS, it is possible to return the revocation data (CRLs and OCSPs), included in the signature, as output of the validation process.
 
 ==== User-friendly identifiers
-If the "User-friendly identifiers" box is checked, user-friendly identifiers will be used for signatures and tokens instead of hash-based values. If the box is not checked, a header might contain for example "S-651B6527872B53437C7B9A8696BD9F7A6C311CE6EE418EFE34A4A994C05D08C8". If the box is checked, the header contains the same information but presented in a user-friendly way. For example, it would be a string composed of "SIGNATURE" to indicate that it is a signature, the name in the certificate chain, the signature claimed time and so on.
+DSS supports the use of user-friendly identifiers instead of hash-based values to represent signatures and tokens. A hash-base representation could be "S-651B6527872B53437C7B9A8696BD9F7A6C311CE6EE418EFE34A4A994C05D08C8". The same information but presented in a user-friendly way is a string composed of "SIGNATURE" to indicate that it is a signature, the name in the certificate chain, the signature claimed time and so on.
 
 ==== Semantics
-When a report is downloaded, a "Semantics" section is added at the end explaining the meaning of the result indications, i.e. `TOTAL_PASSED`, `PASSED`, `INDETERMINATE`, `NO_CERTIFICATE_CHAIN_FOUND`.
+With DSS, it is possible to add a "Semantics" section at the end of the reports explaining the meaning of the result indications, i.e. `TOTAL_PASSED`, `PASSED`, `INDETERMINATE`, `NO_CERTIFICATE_CHAIN_FOUND`.
+
+
 
 [[ServiceLoaderValidation]]
 === DocumentValidator implementation management
-!!! TODO: change title !!!
+// TODO: change title !!!
 
-For signature document or a signature policy validation DSS is able to load a corresponding implementation of validator for the given document format in runtime using a `ServiceLoader` (e.g. `XMLDocumentValidator` for XAdES signature).
+For signature document or a signature policy validation, DSS is able to load a corresponding implementation of validator for the given document format at runtime using a `ServiceLoader` (e.g. `XMLDocumentValidator` for XAdES signature).
 
 DSS is able to choose the required implementation for the following interfaces:
 
@@ -471,9 +459,14 @@ The following implementations are present in DSS:
 
 ==== Signature Policy Validator
 
+During the signature validation process, the signature policy shall be validated to verify that the retrieved policy is the one that was used for the signature creation. This can be achieved by verifying whether the digest within the `SignaturePolicyIdentifier` signed attribute of the signature matches the computed digest of the retrieved signature policy document.
+
+The signature policy document can be retrieved from the signature itself when a `SignaturePolicyStore` attribute is present. It can also be retrieved from online or local sources using the `SignaturePolicyProvider` class (e.g. by URL from the Internet).
+
+
 The interface `SignaturePolicyValidator` is used to validate a signature policy reference extracted from a signature. The choice of the implementation is format-specific. The following implementations are provided:
 
-* `BasicASNSignaturePolicyValidator`: validates policy files, which are based on ETSI TR 102 272;
+* `BasicASNSignaturePolicyValidator`: validates ASN.1 signature policies;
 * `XMLSignaturePolicyValidator`: validates XML signature policies supporting transformations;
 * `NonASN1SignaturePolicyValidator`: validates a policy by digest computed on an original file's content;
 * `ZeroHashSignaturePolicyValidator`: validates a policy if "zero hash" value is defined in a signature (see <<R02>>);
@@ -490,8 +483,8 @@ The interface `SignaturePolicyValidator` is used to validate a signature policy 
 DSS provides a set of own utils to detect the "shadow attack" on a signed PDF document. The following algorithms have been introduced:
 
 * `Page amount difference` - the validation tool compares the number of pages between the obtained PDF and signed revision. If the numbers do not match, the validation fail. The validation level can be configured within the <<validationPolicy>> with the constraint `<PdfPageDifference>`.
-* `Annotations overlap` - DSS checks if any annotation overlaps occurred. The overlapping is potentially dangerous, because some annotations can cover a visual content, e.g. forms and signature fields. The validation level can be configured with the constraint `<PdfAnnotationOverlap>`.
-* `Visual difference` - DSS verifies the visual difference between the provided document and signed revision, excluding the newly created annotations (between the validating revisions). The validation level can be configured with the constraint `<PdfVisualDifference>`.
+* `Annotations overlap` - DSS checks if any annotation overlaps occurred. The overlapping is potentially dangerous, because some annotations can cover a visual content, e.g. forms and signature fields. How this check is applied can be configured with the constraint `<PdfAnnotationOverlap>`.
+* `Visual difference` - DSS verifies the visual difference between the provided document and signed revision, excluding the newly created annotations (between the validating revisions). How this check is applied can be configured with the constraint `<PdfVisualDifference>`.
 
 ===== Object modification detection
 
@@ -509,7 +502,7 @@ The following constraints are available to verify the validity of a signature ba
 * `<DocMDP>` - when a `/DocMDP` dictionary is present within a signature, verifies whether the performed modifications in a PDF document are permitted according to the defined level.
 * `FieldMDP` - when a `/FieldMDP` dictionary is present within a signature, verifies whether the performed modifications in a PDF document are permitted according to the defined level.
 * `SigFieldLock` - when a `/FieldMDP` dictionary is present within a signature, verifies whether the performed modifications in a PDF document are permitted.
-* `UndefinedChanges` - verifies whether the document contains modifications that cannot be ambiguously identified.
+* `UndefinedChanges` - verifies whether the document contains modifications that cannot be unambiguously identified.
 
 ===== Password-protected documents
 PDF files can be protected using a password. However, DSS does not support the validation of PAdES signatures on PDF documents protected by a password. DSS has no functionality allowing the user to enter the password when submitting a PDF for validation. Thus, the validation of such documents fails.

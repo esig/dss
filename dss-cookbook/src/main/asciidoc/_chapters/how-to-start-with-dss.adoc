@@ -29,7 +29,7 @@ WARNING: Before processing the integration steps, please ensure you have success
 
 ===== Adding as Maven dependency
 
-The simplest way to include DSS to your Maven project is to add a repository into pom.xml file in the root directory of your project as following:
+The simplest way to include DSS to your Maven project is to add a repository into the pom.xml file in the root directory of your project as following:
 
 [source,xml]
 ----
@@ -46,7 +46,7 @@ The simplest way to include DSS to your Maven project is to add a repository int
 
 After that specify a list of dependencies required for your project. See <<MavenModules>> to get familiar with the available modules in DSS.
 
-Refresh your project in order to download the dependency, and after you will be able to use all modules of DSS framework.
+Refresh your project in order to download the dependency, and then you will be able to use all modules of the DSS framework. Your project needs to be refreshed every time you add new dependencies.
 
 ===== Maven build and profiles
 
@@ -82,7 +82,7 @@ mvn clean install -P *profile_name*
 
 ===== Documentation generation
 
-In order to generate HTML and PDF documentation for DSS project, the module `dss-cookbook` of DSS Core must be built with the following command (please, ensure that you are located in the `/dss-cookbook` directory):
+In order to generate HTML and PDF documentation for the DSS project, the `dss-cookbook` module of the DSS Core must be built with the following command (please, ensure that you are located in the `/dss-cookbook` directory):
 
 ----
 mvn clean install -P asciidoctor
@@ -90,12 +90,12 @@ mvn clean install -P asciidoctor
 
 ===== Javadoc generation
 
-In order to generate https://ec.europa.eu/cefdigital/DSS/webapp-demo/apidocs/index.html[HTML Javadoc], you will need to build completely the DSS Core.
+In order to generate https://ec.europa.eu/cefdigital/DSS/webapp-demo/apidocs/index.html[HTML Javadoc], you will need to build the DSS Core completely.
 
 [[DSSDemo]]
 ==== DSS Demonstrations
 
-This section explains the build and usage requirements for https://github.com/esig/dss-demonstrations[DSS Demonstration Applications].
+This section explains the build and use requirements for the https://github.com/esig/dss-demonstrations[DSS Demonstration Applications].
 
 ===== Requirements
 
@@ -118,11 +118,11 @@ The DSS demo is available online on the https://ec.europa.eu/cefdigital/DSS/weba
 
 The DSS demo is also available as a ready to use downloadable webapp. To use it, you need to complete the following steps:
 
-* https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/Digital+Signature+Service+-++DSS[Download] the webapp as a ZIP folder.
-* Unzip the folder
-* Click on the Webapp-Startup.bat file
-* Wait until this message appears "Server startup in xxx ms"
-* Click on the DSS-Web internet shortcut
+. https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/Digital+Signature+Service+-++DSS[Download] the webapp as a ZIP folder.
+. Unzip the folder
+. Click on the Webapp-Startup.bat file
+. Wait until this message appears "Server startup in xxx ms"
+. Click on the DSS-Web internet shortcut
 
 [[DSSStandaloneApp]]
 ====== DSS Standalone Application
@@ -136,9 +136,9 @@ Download links for the Standalone Application (Windows x64):
 
 ===== Maven build instructions
 
-The build of the project can be done similarly to DSS Core framework build with the command `mvn clean install`.
+The build of the project can be done similarly to the DSS Core framework build with the command `mvn clean install`.
 
-Please, ensure, that you build modules that you really need. Ignore, build failures for non-required modules.
+Please, ensure that you build modules that you really need. Ignore, build failures for non-required modules.
 
 ====== DSS Web Application build
 
@@ -148,17 +148,17 @@ To build the DSS Web Application the following modules are required:
 * dss-demo-webapp;
 * dss-demo-bundle.
 
-After a successful build, in the directory `/dss-demo-bundle/target/` you will be able to find out two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the container type, the content of both files is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be available at the address `http://localhost:8080/`.
+After a successful build, in the directory `/dss-demo-bundle/target/` you will be able to find two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the different container type, the content of both containers is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be available at the address `http://localhost:8080/`.
 
-If during TL/LOTL loading you experience problems with some particular Trusted Lists, please refer the chapter <<KeyStore>> for a resolution.
+If during TL/LOTL loading you experience problems with some particular Trusted Lists, please refer the <<KeyStore>> chapter for a resolution.
 
-The documentation and javadoc will be copied automatically from built DSS Core and available on the following addresses respectively:
+The documentation and javadoc will be copied automatically from the built DSS Core and made available on the following addresses respectively:
 
 * HTML documentation : `http://localhost:8080/doc/dss-documentation.html`;
 * PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
 * Javadoc : `http://localhost:8080/apidocs/index.html`.
 
-In order to build a bundle for JDK 16, the following profile can be used from `dss-demo-bundle` module:
+In order to build a bundle for JDK 16, the following profile can be used from the `dss-demo-bundle` module:
 
 ----
 mvn clean install -P java16
@@ -168,7 +168,7 @@ This will create a bundle with Tomcat 9.
 
 ====== Integration tests
 
-The `dss-demo-webapp` module provides a collection of integration tests in order to test the behavior of REST/SOAP web-services. In order to run the tests, a web-server with DSS Web Application shall be launched and the following profile need to be executed from the module:
+The `dss-demo-webapp` module provides a collection of integration tests in order to test the behavior of REST/SOAP web-services. In order to run the tests, a web-server with the DSS Web Application shall be launched and the following profile needs to be executed from the module:
 
 ----
 mvn clean install -P run-integration-test
@@ -182,10 +182,10 @@ In order to build the standalone application, the following modules are required
 * dss-standalone-app;
 * dss-standalone-package.
 
-If the build is successfull, you will be able to find out the following containers in the directory `/dss-standalone-app-package/target/`:
+If the build is successful, you will be able to find out the following containers in the directory `/dss-standalone-app-package/target/`:
 
-* dss-standalone-app-package-minimal.zip - contains the application code. Requires JDK ad JavaFX installed on a target machine in order to run the application;
-* dss-standalone-app-package-complete.zip - contains the application code, as well as JDK and JavaFX library code. Can be run on a machine whithout pre-installed libraries.
+* `dss-standalone-app-package-minimal.zip` - contains the application code. Requires JDK ad JavaFX installed on a target machine in order to run the application;
+* `dss-standalone-app-package-complete.zip` - contains the application code, as well as JDK and JavaFX library code. Can be run on a machine without pre-installed libraries.
 
 In order to launch the application, you will need to extract the archive and run the file `dss-run.bat`.
 
@@ -246,15 +246,15 @@ dss-document:: Common module to sign and validate document. This module doen't c
 dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP).
 dss-token:: Token definitions and implementations for MS CAPI, MacOS Keychain, PKCS#11, PKCS#12.
 validation-policy:: Business of the signature's validation (ETSI EN 319 102 / TS 119 172-4).
-dss-xades:: Implementation of the XAdES signature, extension and validation.
-dss-cades:: Implementation of the CAdES signature, extension and validation.
-dss-jades:: Implementation of the JAdES signature, extension and validation.
+dss-xades:: Implementation of the XAdES signature, augmentation and validation.
+dss-cades:: Implementation of the CAdES signature, augmentation and validation.
+dss-jades:: Implementation of the JAdES signature, augmentation and validation.
 dss-pades:: Common code which is shared between dss-pades-pdfbox and dss-pades-openpdf.
-dss-pades-pdfbox:: Implementation of the PAdES signature, extension and validation with https://pdfbox.apache.org/[PDFBox].
-dss-pades-openpdf:: Implementation of the PAdES signature, extension and validation with https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)].
+dss-pades-pdfbox:: Implementation of the PAdES signature, augmentation and validation with https://pdfbox.apache.org/[PDFBox].
+dss-pades-openpdf:: Implementation of the PAdES signature, augmentation and validation with https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)].
 dss-asic-common:: Common code which is shared between dss-asic-xades and dss-asic-cades.
-dss-asic-cades:: Implementation of the ASiC-S and ASiC-E signature, extension and validation based on CAdES signatures.
-dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, extension and validation based on XAdES signatures.
+dss-asic-cades:: Implementation of the ASiC-S and ASiC-E signature, augmentation and validation based on CAdES signatures.
+dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, augmentation and validation based on XAdES signatures.
 dss-tsl-validation:: Module which allows loading / parsing / validating of LOTL and TSLs.
 
 ===== WebServices
@@ -263,12 +263,12 @@ dss-common-remote-dto:: Common classes between all remote services (REST and SOA
 dss-common-remote-converter:: Classes which convert the DTO to DSS Objects.
 
 '''
-dss-signature-dto:: Data Transfer Objects used for signature creation/extension (REST and SOAP).
+dss-signature-dto:: Data Transfer Objects used for signature creation/augmentation (REST and SOAP).
 dss-signature-remote:: Common classes between dss-signature-rest and dss-signature-soap.
 dss-signature-rest-client:: Client for the REST webservices.
-dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods), counter-sign and extend a signature.
+dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods), counter-sign and augment a signature.
 dss-signature-soap-client:: Client for the SOAP webservices.
-dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods), counter-sign and extend a signature.
+dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods), counter-sign and augment a signature.
 
 '''
 dss-server-signing-dto:: Data Transfer Objects used for the server signing module (REST and SOAP).
@@ -312,9 +312,9 @@ dss-bom:: Module which helps the integration with all DSS modules and the versio
 [[SpecificModules]]
 ==== Specific modules
 
-Some modules of DSS framework have a specific behavior and has to be handled accordingly.
+Some modules of the DSS framework have a specific behavior and has to be handled accordingly.
 
-DSS contains a bundle of JAXB-based modules, generating Java classes in runtime based on XSD-schema. When any change is made in the XSD, the classes of the module are being re-generated according to the change. The following modules represent this behavior:
+DSS contains a bundle of JAXB-based modules, generating Java classes at runtime based on XSD-schema. When any change is made in the XSD, the classes of the module are being re-generated according to the change. The following modules present this behavior:
 
 * specs-xmldsig;
 * specs-xades;
@@ -333,7 +333,7 @@ Specific modules with JWS and JAdES specifications exist. These modules allow to
 * specs-jws;
 * specs-jades.
 
-Also, as it was explained in the previous section, some modules are required to be built completely for a building of their dependent modules when using a quick profile, namely:
+Also, as it was explained in the previous section, some modules are required to be built completely in order for their dependent modules to be built when using a quick profile, namely:
 
 * <<dssUtils,dss-utils>>;
 * <<dssCrlParser,dss-crl-parser>>;
@@ -341,7 +341,7 @@ Also, as it was explained in the previous section, some modules are required to 
 * <<dssPades,dss-pades>>;
 * dss-asic-common.
 
-The modules contain common interfaces, used in other DSS modules, as well as unit tests to ensure the equal behavior between their implementations.
+The modules contain common interfaces, used in other DSS modules, as well as unit tests to ensure the same behavior between their implementations.
 
 ==== DSS-demonstration modules
 

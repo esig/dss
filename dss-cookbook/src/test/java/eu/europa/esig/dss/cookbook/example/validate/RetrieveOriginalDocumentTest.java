@@ -51,7 +51,7 @@ public class RetrieveOriginalDocumentTest {
 		// We have our signed document, we want to retrieve the original/signed data
 		DSSDocument signedDocument = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 
-		// We create an instance of DocumentValidator. DSS automatically selects the validator depending of the
+		// We create an instance of DocumentValidator. DSS automatically selects the validator depending on the
 		// signature file
 		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(signedDocument);
 
@@ -67,7 +67,7 @@ public class RetrieveOriginalDocumentTest {
 		// We call get original document with the related signature id (DSS unique ID)
 		List<DSSDocument> originalDocuments = documentValidator.getOriginalDocuments(advancedSignature.getId());
 
-		// We can have one or more original documents depending of the signature (ASiC, PDF,...)
+		// We can have one or more original documents depending on the signature (ASiC, PDF,...)
 		DSSDocument original = originalDocuments.get(0);
 
 		// Save the extracted original document if needed

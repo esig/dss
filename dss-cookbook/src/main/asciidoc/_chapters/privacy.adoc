@@ -7,10 +7,12 @@
 == Privacy
 
 === Use of digested documents
+Digested documents can be used during signature creation instead of the original documents to keep the latter private. In that case, the signature is created in a detached way, using the digest of the original document only.
 
-Digested documents allow users to avoid sending the full document (detached signatures). Pre-computed digest values for a given document are used instead.
+Refer to section <<DSSDocuments>> for more information on digested documents, section <<Packaging>> for information on the detached packaging of signatures and section <<DetachedSignatureDigest>> for code illustrations.
 
-See section <<DSSDocuments>> for more information on digested documents.
+=== Original document in the Data To Be Signed
+The data to be signed (DTBS) for CAdES and XAdES does not contain the original document on which the signature value is computed. JAdES and PAdES DTBS, however, does contain the whole original content.
 
 === Private information in logs
 
@@ -31,11 +33,19 @@ For example, when an error occurs on a certificate reading, DSS only WARN users 
 
 Sometimes, DSS uses mixing rules for logging, such as it displays more information within a `WARN` or `INFO` level when `DEBUG` level is enabled.
 
+[[ClientServerSeparation]]
 === Client-side signature creation with server-side remote key activation
 
-With DSS it is possible to sign a document without needing to send it to the signing server. This is useful for users who do not want signing servers to have access to the information contained in their documents. Such a process is possible because DSS decomposes the signature of a document in three atomic steps.
+With DSS, it is possible to sign a document without needing to send it to the signing server. This is useful for users who do not want signing servers to have access to the information contained in their documents. Such a process is possible because DSS decomposes the signature of a document in three or four atomic steps.
 See section <<SignatureCreationThreeSteps>> for an extensive description of these steps.
 
-The first step is performed by the client and consists in the computation of the digest to be signed (hash of the document and of the signed attributes). The client sends the hash to the server. As a second step the server encrypts the hash using the private key and sends the signature value back to the client. The third step takes place at the client-side. The client adds the signature value to the appropriate field.
+. The first step is performed by the client and consists in the computation of the data to be signed (DTBS).
+. For the XAdES and CAdES formats, the client can optionally compute the digest of the DTBS (DTBSR). For JAdES and PAdES the client shall compute the digest of the DTBS to "hide" the content of the original document, given that the DTBS of these two formats contains the whole original content. The client sends the DTBS or the DTBSR to the server.
+. Then, the server encrypts the DTBS using the private key to create the signature value. The server sends the signature value back to the client.
+. The last step takes place at the client-side. The client adds the signature value to the appropriate field.
 
-For code illustrations of the different steps, see the <<Topology>> section in the Annex.
+The following schema illustrates the different steps
+
+image::clientCreation-serverKeyActivation.jpg[client-server, width="80%", height="80%"]
+
+For code illustrations of the different steps, refer to the <<ClientServerAnnex>> section in the Annex.

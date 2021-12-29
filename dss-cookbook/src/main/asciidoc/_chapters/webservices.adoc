@@ -11,7 +11,7 @@ DSS offers REST and SOAP web services.
 
 The different webservices are :
 
-* *Signature webservices* (`dss-signature-soap` / `dss-signature-rest`) and their clients: expose methods to allow signing and extending or counter-signing a signature from a client.
+* *Signature webservices* (`dss-signature-soap` / `dss-signature-rest`) and their clients: expose methods to allow signing and augmenting or counter-signing a signature from a client.
 * *Server-signing webservice* (`dss-server-signing-soap` / `dss-server-signing-rest`) and their clients: expose methods to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
 * *Signature validation webservices* (`dss-validation-soap` / `dss-validation-rest`) and their clients: expose methods to allow signature validation, with an optional detached file and an optional validation policy.
 * *Certificate validation webservices* (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients: expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
@@ -28,7 +28,7 @@ Additionally, we also provide a https://github.com/esig/dss/tree/master/dss-cook
 
 ==== REST signature service
 
-This service exposes 4 methods for one or more document(s) :
+This service exposes several methods taking as input one or more document and having as output a signed data object (possibly a timestamped document):
 
 [source,java,indent=0]
 .Rest signature service
@@ -64,7 +64,7 @@ Samples:
 
 ===== Extend document
 
-The method allows extension of an existing signature to a stronger level.
+The method allows augmentation of an existing signature to a higher level.
 
 Samples:
 
@@ -113,7 +113,7 @@ Samples:
 
 ==== REST server signature service
 
-This service also exposed 4 methods :
+This service also exposes some methods for server signing operations.:
 
 [source,java,indent=0]
 .Rest server signing service
@@ -208,4 +208,4 @@ Samples:
 
 [[SOAP]]
 === SOAP
-!!! TODO: similar examples to the ones on REST to be created !!!
+// TODO: similar examples to the ones on REST to be created !!!

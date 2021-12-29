@@ -10,7 +10,7 @@
 [[tlValidationJob]]
 === Configuration of TL validation job
 
-The `TLValidationJob` allows downloading, parsing and validating the Trusted List(s) (TL) and List(s) Of Trusted Lists (LOTL). Once the task is done, its result is stored in the `TrustedListsCertificateSource`. The job uses 3 different caches (download, parsing and validation) and a state-machine to be efficient.
+The `TLValidationJob` allows downloading, parsing and validating the Trusted List(s) (TL) (cf. <<EUTL>>) and List(s) Of Trusted Lists (LOTL) (cf. <<LOTL>>). Once the task is done, its result is stored in the `TrustedListsCertificateSource`. The job uses 3 different caches (download, parsing and validation) and a state-machine to be efficient.
 
 Trusted lists are stored on the file system. That offers the possibility to run in offline mode with the stored trusted lists. Trusted Lists can be loaded from the file system and/or from Internet.
 
@@ -217,7 +217,12 @@ An eIDAS XML node linked to the status of the Trusted List is included in the DS
 
 === Using non-EU trusted lists
 
-Non-EU trusted lists are supported by DSS. However, there are a few constraints. A first one is that non-EU trusted lists shall have the same XML structure as EU TLs, i.e. they shall be compliant with the XSD schema. Another constraint is that there is no guarantee for a proper qualification determination as the non-EU TL shall also be compliant with EU regulations.
+Non-EU trusted lists are supported by DSS. However, there are a few constraints
+
+* Non-EU trusted lists shall have the same XML structure as EU TLs, i.e. they shall be compliant with the XSD schema.
+* There is no guarantee for a proper qualification determination as the non-EU TL shall also be compliant with EU regulations.
+
+NOTE: Even though the ETSI TS 119 615 standard (<<R14>>) is EU-specific, the diagnostic data contains the necessary information for implementers to implement non-EU ETSI TS 119 615 status determination.
 
 === Signing a trusted list
 
