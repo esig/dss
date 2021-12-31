@@ -78,11 +78,11 @@ The asymmetric key cipher that is currently used the most is the Rivest-Shamir-A
 
 Encryption is used for several reasons
 
-* *Privacy/Confidentiality*: Only authorized parties can read certain sensitive encrypted data.
+* *Privacy/Confidentiality*: Only authorized parties can read the sensitive encrypted data.
 * *Security*: Data breaches can be prevented when the data contained in lost or stolen device had been encrypted.
-* *Data integrity*: The data decrypted by the receiver has not been modified since the encryption.
-* *Authentication*: The origin of the encrypted data is known.
-* *Non-repudiation*: The sender cannot deny having sent the encrypted data.
+* *Data integrity*: It can be verified that the data decrypted by the receiver has not been modified since the encryption.
+* *Authentication*: The entity that encrypted the data is known.
+* *Non-repudiation*: The sender cannot deny having encrypted the data.
 
 [[Hashing]]
 ==== Hashing
