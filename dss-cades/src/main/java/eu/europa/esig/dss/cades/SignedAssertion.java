@@ -24,6 +24,7 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1PrintableString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERSequence;
@@ -49,7 +50,7 @@ public class SignedAssertion extends ASN1Object {
     private final ASN1ObjectIdentifier oid = new ASN1ObjectIdentifier("0.4.0.19122.1.6");
 
     /** The SignedAssertion value */
-    private DERPrintableString assertion;
+    private ASN1PrintableString assertion;
 
     /**
      * Parses the object and returns instance of {@code SignedAssertion},
@@ -78,10 +79,9 @@ public class SignedAssertion extends ASN1Object {
 
     private SignedAssertion(ASN1Sequence seq) {
         if (seq.size() != 2) {
-            throw new IllegalArgumentException("Bad sequence size: "
-                    + seq.size());
+            throw new IllegalArgumentException(String.format("Bad sequence size: %s", seq.size()));
         }
-        this.assertion = DERPrintableString.getInstance(seq.getObjectAt(1));
+        this.assertion = ASN1PrintableString.getInstance(seq.getObjectAt(1));
     }
 
     @Override
