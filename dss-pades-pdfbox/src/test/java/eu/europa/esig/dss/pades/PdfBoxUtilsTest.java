@@ -54,9 +54,9 @@ public class PdfBoxUtilsTest {
 		DSSDocument screenshot = PdfBoxUtils.generateScreenshot(sampleDocument, 1);
 		assertNotNull(screenshot);
 
-		Exception exception = assertThrows(IllegalStateException.class,
+		Exception exception = assertThrows(IndexOutOfBoundsException.class,
 				() -> PdfBoxUtils.generateScreenshot(sampleDocument, 0));
-		assertEquals("1-based index not found: 0", exception.getMessage());
+		assertEquals("Index out of bounds: 0", exception.getMessage());
 
 		exception = assertThrows(IndexOutOfBoundsException.class,
 				() -> PdfBoxUtils.generateScreenshot(sampleDocument, 2));
