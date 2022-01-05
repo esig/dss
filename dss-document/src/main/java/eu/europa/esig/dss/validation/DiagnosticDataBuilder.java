@@ -490,6 +490,12 @@ public abstract class DiagnosticDataBuilder {
 		return result;
 	}
 
+	/**
+	 * Creates a {@code XmlSignerInfo} from {@code SignerIdentifier}
+	 *
+	 * @param signerIdentifier {@link SignerIdentifier}
+	 * @return {@link XmlSignerInfo}
+	 */
 	protected XmlSignerInfo getXmlSignerInfo(SignerIdentifier signerIdentifier) {
 		XmlSignerInfo xmlSignerInfo = new XmlSignerInfo();
 		if (signerIdentifier.getIssuerName() != null) {

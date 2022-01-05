@@ -39,6 +39,7 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 
 	private static final long serialVersionUID = -6284731668494875108L;
 
+	/** List of revocation sources */
 	private List<OfflineRevocationSource<R>> sources = new ArrayList<>();
 
 	/**

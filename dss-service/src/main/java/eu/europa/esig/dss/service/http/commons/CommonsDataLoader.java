@@ -84,8 +84,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -128,7 +128,7 @@ public class CommonsDataLoader implements DataLoader {
 	private static final String DEFAULT_SSL_PROTOCOL = "TLSv1.2";
 
 	/** The list of accepted statuses for a successful connection */
-	private static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
+	private static final List<Integer> ACCEPTED_HTTP_STATUS = Collections.singletonList(HttpStatus.SC_OK);
 
 	/** The content type value */
 	protected String contentType;
@@ -1150,7 +1150,7 @@ public class CommonsDataLoader implements DataLoader {
 				.setConnectionKeepAlive(connectionKeepAlive)
 				.setRedirectsEnabled(redirectsEnabled);
 
-		httpClientBuilder = httpClientBuilder.setConnectionManager(getConnectionManager())
+		httpClientBuilder.setConnectionManager(getConnectionManager())
 				.setDefaultRequestConfig(requestConfigBuilder.build())
 				.setRetryStrategy(retryStrategy);
 		
@@ -1187,7 +1187,7 @@ public class CommonsDataLoader implements DataLoader {
 					userCredentials.getUsername(), toCharArray(userCredentials.getPassword()));
 			credentialsProvider.setCredentials(authscope, usernamePasswordCredentials);
 		}
-		httpClientBuilder = httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+		httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
 		httpClientBuilder = configureProxy(httpClientBuilder, credentialsProvider, url);
 		return httpClientBuilder;
 	}
@@ -1264,7 +1264,7 @@ public class CommonsDataLoader implements DataLoader {
 		return httpClientBuilder.setProxy(proxy);
 	}
 
-	private static final Timeout toTimeoutMilliseconds(int millis) {
+	private static Timeout toTimeoutMilliseconds(int millis) {
 		if (millis < 0) {
 			LOG.info("A negative timeout has been provided. Use system default.");
 			return null;
@@ -1272,15 +1272,15 @@ public class CommonsDataLoader implements DataLoader {
 		return Timeout.ofMilliseconds(millis);
 	}
 
-	private static final TimeValue toTimeValueMilliseconds(int millis) {
+	private static TimeValue toTimeValueMilliseconds(int millis) {
 		return TimeValue.ofMilliseconds(millis);
 	}
 
-	private static final char[] toCharArray(String str) {
+	private static char[] toCharArray(String str) {
 		return str != null ? str.toCharArray() : null;
 	}
 
-	private static final ContentType toContentType(String contentTypeString) {
+	private static ContentType toContentType(String contentTypeString) {
 		return Utils.isStringNotBlank(contentTypeString) ? ContentType.create(contentTypeString) : null;
 	}
 

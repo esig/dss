@@ -22,10 +22,19 @@ package eu.europa.esig.dss.definition.xmldsig;
 
 import eu.europa.esig.dss.definition.DSSNamespace;
 
+/**
+ * Defines the namespace corresponding to the
+ * {@code <a href="https://www.w3.org/TR/xmldsig-core/xmldsig-core-schema.xsd">XMLDSig schema</a>}
+ *
+ */
 public final class XMLDSigNamespace {
 
+	/** Default XMLDSig namespace definition */
 	public static final DSSNamespace NS = new DSSNamespace("http://www.w3.org/2000/09/xmldsig#", "ds");
 
+	/**
+	 * Empty constructor
+	 */
 	private XMLDSigNamespace() {
 	}
 
