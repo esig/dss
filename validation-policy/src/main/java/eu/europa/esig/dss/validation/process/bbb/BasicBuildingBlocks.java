@@ -188,7 +188,7 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlFC executeFormatChecking() {
-		if (Context.SIGNATURE.equals(context)) {
+		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
 			FormatChecking fc = new FormatChecking(i18nProvider, diagnosticData, (SignatureWrapper) token, context, policy);
 			return fc.execute();
 		} else {
@@ -206,7 +206,7 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlVCI executeValidationContextInitialization() {
-		if (Context.SIGNATURE.equals(context)) {
+		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
 			ValidationContextInitialization vci = new ValidationContextInitialization(i18nProvider, (SignatureWrapper) token, context, policy);
 			return vci.execute();
 		}

@@ -94,6 +94,7 @@ import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
@@ -7488,6 +7489,83 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 		}
 		assertTrue(kidPresentCheckFound);
+	}
+
+	@Test
+	public void counterSignatureFailedFormatTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/counter-signature-valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		String counterSigId = null;
+		for (XmlSignature xmlSignature : diagnosticData.getSignatures()) {
+			if (xmlSignature.isCounterSignature() != null && xmlSignature.isCounterSignature()) {
+				xmlSignature.setSignatureFormat(SignatureLevel.XML_NOT_ETSI);
+				counterSigId = xmlSignature.getId();
+			}
+		}
+		assertNotNull(counterSigId);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints counterSignatureConstraints = validationPolicy.getCounterSignatureConstraints();
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.getId().add("XAdES-BASELINE-B");
+		constraint.getId().add("XAdES-BASELINE-T");
+		constraint.getId().add("XAdES-BASELINE-LT");
+		constraint.getId().add("XAdES-BASELINE-LTA");
+		constraint.setLevel(Level.FAIL);
+
+		counterSignatureConstraints.setAcceptableFormats(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(counterSigId));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(counterSigId));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void counterSignatureNoPolicyPresentTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/counter-signature-valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		String counterSigId = null;
+		for (XmlSignature xmlSignature : diagnosticData.getSignatures()) {
+			if (xmlSignature.isCounterSignature() != null && xmlSignature.isCounterSignature()) {
+				counterSigId = xmlSignature.getId();
+			}
+		}
+		assertNotNull(counterSigId);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints counterSignatureConstraints = validationPolicy.getCounterSignatureConstraints();
+
+		MultiValuesConstraint constraint = new MultiValuesConstraint();
+		constraint.getId().add("ANY_POLICY");
+		constraint.setLevel(Level.FAIL);
+
+		counterSignatureConstraints.setAcceptablePolicies(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(counterSigId));
+		assertEquals(SubIndication.POLICY_PROCESSING_ERROR, simpleReport.getSubIndication(counterSigId));
+
+		checkReports(reports);
 	}
 
 	@Test
