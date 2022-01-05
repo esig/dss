@@ -380,13 +380,11 @@ public class CMSSignedDataBuilder {
 		crlsStore = new CollectionStore(newCrlsStore);
 
 		try {
-			cmsSignedData = CMSSignedData.replaceCertificatesAndCRLs(cmsSignedData, certificatesStore,
-					attributeCertificatesStore, crlsStore);
+			return CMSSignedData.replaceCertificatesAndCRLs(
+					cmsSignedData, certificatesStore, attributeCertificatesStore, crlsStore);
 		} catch (CMSException e) {
 			throw new DSSException(String.format("Unable to re-create a CMS signature. Reason : %s", e.getMessage()), e);
 		}
-
-		return cmsSignedData;
 	}
 
 	/**

@@ -91,6 +91,7 @@ public class CAdESCounterSignatureBuilder {
 				parameters, signatureValue, null);
 
 		CMSSignedData updatedCMSSignedData = CMSSignedData.replaceSigners(originalCMSSignedData, new SignerInformationStore(updatedSignerInfo));
+		updatedCMSSignedData = CMSUtils.populateDigestAlgorithmSet(updatedCMSSignedData, originalCMSSignedData);
 		updatedCMSSignedData = addNewCertificates(updatedCMSSignedData, parameters);
 		return new CMSSignedDocument(updatedCMSSignedData);
 	}

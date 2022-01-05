@@ -192,7 +192,8 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 */
 	protected CMSSignedData replaceSigners(CMSSignedData cmsSignedData, List<SignerInformation> newSignerInformationList) {
 		final SignerInformationStore newSignerStore = new SignerInformationStore(newSignerInformationList);
-		return CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
+		CMSSignedData updatedCmsSignedData = CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
+		return CMSUtils.populateDigestAlgorithmSet(updatedCmsSignedData, cmsSignedData);
 	}
 	
 	/**

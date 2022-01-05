@@ -29,7 +29,7 @@ import eu.europa.esig.dss.alert.handler.AlertHandler;
  */
 public abstract class AbstractAlert<T> implements Alert<T> {
 
-	/** Serves as an event detector, in order to trigget the handler */
+	/** Serves as an event detector, in order to trigger the handler */
 	private final AlertDetector<T> detector;
 
 	/** Runs a custom code for the event */

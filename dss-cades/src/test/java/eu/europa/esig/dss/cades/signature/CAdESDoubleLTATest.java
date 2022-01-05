@@ -21,10 +21,12 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -33,6 +35,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.bouncycastle.cms.CMSException;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,6 +64,11 @@ public class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
 		parameters.setSigningCertificate(getSigningCert());
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+		CAdESTimestampParameters archiveTimeStampParameters = new CAdESTimestampParameters();
+		archiveTimeStampParameters.setDigestAlgorithm(DigestAlgorithm.SHA384);
+		parameters.setArchiveTimestampParameters(archiveTimeStampParameters);
 
         service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -79,20 +87,24 @@ public class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
 		DiagnosticData diagnosticData1 = reports.getDiagnosticData();
 
 		assertEquals(SignatureLevel.CAdES_BASELINE_LTA, diagnosticData1.getSignatureFormat(diagnosticData1.getFirstSignatureId()));
+		assertEquals(2, diagnosticData1.getTimestampIdList(diagnosticData1.getFirstSignatureId()).size());
 
 		checkAllRevocationOnce(diagnosticData1);
+
+		CAdESTimestampParameters archiveTimeStampParameters = new CAdESTimestampParameters();
+		archiveTimeStampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		parameters.setArchiveTimestampParameters(archiveTimeStampParameters);
 
 		DSSDocument doubleLtaDoc = service.extendDocument(signed, parameters);
 		reports = verify(doubleLtaDoc);
 
 		DiagnosticData diagnosticData2 = reports.getDiagnosticData();
 
+		assertEquals(SignatureLevel.CAdES_BASELINE_LTA, diagnosticData2.getSignatureFormat(diagnosticData1.getFirstSignatureId()));
 		assertEquals(3, diagnosticData2.getTimestampIdList(diagnosticData2.getFirstSignatureId()).size());
 
 		checkAllRevocationOnce(diagnosticData2);
-
 		checkAllPreviousRevocationDataInNewDiagnosticData(diagnosticData1, diagnosticData2);
-
 	}
 
 	private void checkAllPreviousRevocationDataInNewDiagnosticData(DiagnosticData diagnosticData1, DiagnosticData diagnosticData2) {
@@ -135,6 +147,33 @@ public class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
+		assertEquals(1, signatures.size());
+
+		CAdESSignature cadesSignature = (CAdESSignature) signatures.get(0);
+		Set<DigestAlgorithm> messageDigestAlgorithms = cadesSignature.getMessageDigestAlgorithms();
+
+		assertEquals(cadesSignature.getAllTimestamps().size(), messageDigestAlgorithms.size());
+
+		boolean sha256Found = false;
+		boolean sha384Found = false;
+		boolean sha512Found = false;
+		for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
+			if (DigestAlgorithm.SHA256.equals(digestAlgorithm)) {
+				sha256Found = true;
+			} else if (DigestAlgorithm.SHA384.equals(digestAlgorithm)) {
+				sha384Found = true;
+			} else if (DigestAlgorithm.SHA512.equals(digestAlgorithm)) {
+				sha512Found = true;
+			}
+		}
+		assertTrue(sha256Found);
+		assertTrue(sha384Found);
+		assertEquals(cadesSignature.getAllTimestamps().size() == 3, sha512Found);
 	}
 
 	@Override

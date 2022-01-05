@@ -1,0 +1,122 @@
+package eu.europa.esig.dss.cades.signature;
+
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class CAdESDoubleLTADifferentDigestAlgoTest extends AbstractCAdESTestSignature {
+
+    private static final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World".getBytes());
+
+    private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
+    private CAdESSignatureParameters signatureParameters;
+    private DSSDocument documentToSign;
+
+    @BeforeEach
+    public void init() throws Exception {
+        signatureParameters = new CAdESSignatureParameters();
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+        signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+        CAdESTimestampParameters archiveTimeStampParameters = new CAdESTimestampParameters();
+        archiveTimeStampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+        signatureParameters.setArchiveTimestampParameters(archiveTimeStampParameters);
+
+        service = new CAdESService(getCompleteCertificateVerifier());
+        service.setTspSource(getGoodTsa());
+    }
+
+    @Override
+    protected DSSDocument sign() {
+        documentToSign = ORIGINAL_DOC;
+        DSSDocument signedDocument = super.sign();
+
+        documentToSign = signedDocument;
+        signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA224);
+
+        CAdESTimestampParameters archiveTimeStampParameters = new CAdESTimestampParameters();
+        archiveTimeStampParameters.setDigestAlgorithm(DigestAlgorithm.SHA384);
+        signatureParameters.setArchiveTimestampParameters(archiveTimeStampParameters);
+
+        DSSDocument doubleSignedDocument = super.sign();
+
+        documentToSign = ORIGINAL_DOC;
+        return doubleSignedDocument;
+    }
+
+    @Override
+    protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+        assertEquals(2, diagnosticData.getSignatures().size());
+    }
+
+    @Override
+    protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+        super.checkAdvancedSignatures(signatures);
+
+        assertEquals(2, signatures.size());
+        // both signatures refer the same set of Digest Algos
+        for (AdvancedSignature signature : signatures) {
+            CAdESSignature cadesSignature = (CAdESSignature) signature;
+            Set<DigestAlgorithm> messageDigestAlgorithms = cadesSignature.getMessageDigestAlgorithms();
+            assertEquals(4, messageDigestAlgorithms.size());
+
+            boolean sha224Found = false;
+            boolean sha256Found = false;
+            boolean sha384Found = false;
+            boolean sha512Found = false;
+            for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
+                if (DigestAlgorithm.SHA224.equals(digestAlgorithm)) {
+                    sha224Found = true;
+                } else if (DigestAlgorithm.SHA256.equals(digestAlgorithm)) {
+                    sha256Found = true;
+                } else if (DigestAlgorithm.SHA384.equals(digestAlgorithm)) {
+                    sha384Found = true;
+                } else if (DigestAlgorithm.SHA512.equals(digestAlgorithm)) {
+                    sha512Found = true;
+                }
+            }
+            assertTrue(sha224Found);
+            assertTrue(sha256Found);
+            assertTrue(sha384Found);
+            assertTrue(sha512Found);
+        }
+    }
+
+    @Override
+    protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
+        return service;
+    }
+
+    @Override
+    protected CAdESSignatureParameters getSignatureParameters() {
+        return signatureParameters;
+    }
+
+    @Override
+    protected DSSDocument getDocumentToSign() {
+        return documentToSign;
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return GOOD_USER;
+    }
+
+}
