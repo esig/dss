@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.validation.timestamp;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
-import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.Identifier;
@@ -36,12 +35,12 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
@@ -313,22 +312,10 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<TimestampedReference> getSignatureTimestampReferences() {
 		List<TimestampedReference> timestampedReferences = super.getSignatureTimestampReferences();
-		if (isKeyInfoCovered()) {
+		if (XAdESSignatureUtils.isKeyInfoCovered(signature)) {
 			addReferences(timestampedReferences, getKeyInfoReferences());
 		}
 		return timestampedReferences;
-	}
-
-	private boolean isKeyInfoCovered() {
-		List<ReferenceValidation> referenceValidations = signature.getReferenceValidations();
-		if (Utils.isCollectionNotEmpty(referenceValidations)) {
-			for (ReferenceValidation referenceValidation : referenceValidations) {
-				if (DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) && referenceValidation.isFound() && referenceValidation.isIntact()) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	@Override

@@ -212,6 +212,10 @@
 	<xs:simpleType name="SignatureFormat" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="XML-NOT-ETSI" />
+			<xs:enumeration value="XAdES-BES" />
+			<xs:enumeration value="XAdES-EPES" />
+			<xs:enumeration value="XAdES-T" />
+			<xs:enumeration value="XAdES-LT" />
 			<xs:enumeration value="XAdES-C" />
 			<xs:enumeration value="XAdES-X" />
 			<xs:enumeration value="XAdES-XL" />

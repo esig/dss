@@ -564,6 +564,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected boolean isBaselineT(SignatureLevel signatureLevel) {
 		switch (signatureLevel) {
 			case XAdES_BASELINE_T:
+			case XAdES_T:
 			case XAdES_C:
 			case XAdES_X:
 			case CAdES_BASELINE_T:
@@ -578,6 +579,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected boolean isBaselineLT(SignatureLevel signatureLevel) {
 		switch (signatureLevel) {
 			case XAdES_BASELINE_LT:
+			case XAdES_LT:
 			case XAdES_XL:
 			case CAdES_BASELINE_LT:
 			case JAdES_BASELINE_LT:

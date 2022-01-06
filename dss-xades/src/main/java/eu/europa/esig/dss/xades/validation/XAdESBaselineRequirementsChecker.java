@@ -22,11 +22,14 @@ package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
@@ -96,8 +99,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // SigningCertificate/SigningCertificateV2 (Cardinality == 1)
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificatePath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificateV2Path()) != 1) {
+        if (!isSigningCertificatePresent(signatureElement, xadesPaths)) {
             LOG.warn("SigningCertificate(V2) shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }
@@ -131,7 +133,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                 return false;
             }
         }
-        // SignerRole/SignerRoleV2 (Cardinality == 0)
+        // SignerRole/SignerRoleV2 (Cardinality 0 or 1)
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRolePath()) +
                 getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRoleV2Path()) > 1) {
             LOG.warn("Only one SignerRole(V2) may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
@@ -262,9 +264,15 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             Node signatureTimeStamp = signatureTimeStampList.item(ii);
             NodeList encapsulatedTimestampList = DomUtils.getNodeList(signatureTimeStamp, xadesPaths.getCurrentEncapsulatedTimestamp());
             if (encapsulatedTimestampList.getLength() != 1) {
-                LOG.warn("SignatureTimeStamp shall contain only one electronic timestamp for XAdES-BASELINE-B signature (requirement (n))!");
+                LOG.warn("SignatureTimeStamp shall contain only one electronic timestamp for XAdES-BASELINE-T signature (requirement (n))!");
                 return false;
             }
+        }
+        // Additional requirement (o)
+        if (!areSignatureTimestampsCreatedBeforeSigningCertificateExpiration()) {
+            LOG.warn("SignatureTimeStamp shall be created before expiration of the signing-certificate " +
+                    "for XAdES-BASELINE-T signature (requirement (o))!");
+            return false;
         }
         return true;
     }
@@ -325,6 +333,115 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     @Override
     public boolean hasBaselineLTAProfile() {
         return minimalLTARequirement();
+    }
+
+    /**
+     * Checks if the signature has a corresponding XAdES-BES profile
+     *
+     * @return TRUE if the signature has a XAdES-BES profile, FALSE otherwise
+     */
+    public boolean hasExtendedBESProfile() {
+        Element signatureElement = signature.getSignatureElement();
+        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        // SigningTime (Cardinality 0 or 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigningTimePath()) > 1) {
+            LOG.warn("Only one SigningTime may be present for XAdES-BES signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // SigningCertificate/SigningCertificateV2 (Cardinality 0 or 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificatePath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificateV2Path()) > 1) {
+            LOG.warn("Only one SigningCertificate(V2) may be present for XAdES-BES signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // CommitmentTypeIndication (Cardinality >= 0)
+        // DataObjectFormat (Cardinality >= 0)
+        // SignatureProductionPlace/SignatureProductionPlaceV2 (Cardinality 0 or 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignatureProductionPlacePath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getSignatureProductionPlaceV2Path()) > 1) {
+            LOG.warn("Only one SignatureProductionPlace(V2) may be present for XAdES-BES signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // SignerRole/SignerRoleV2 (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRolePath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRoleV2Path()) > 1) {
+            LOG.warn("Only one SignerRole(V2) may be present for XAdES-BES signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // CounterSignature (Cardinality >= 0)
+        // AllDataObjectsTimeStamp (Cardinality >= 0)
+        // IndividualDataObjectsTimeStamp (Cardinality >= 0)
+        // Additional requirement (a)
+        if (!isSigningCertificatePresent(signatureElement, xadesPaths) && !isSigningCertificateSignedInKeyInfo()) {
+            LOG.warn("SigningCertificate(V2) shall be present for XAdES-BES signature or be present in ds:KeyInfo " +
+                    "and signed by the signature (requirement (a))!");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the signature has a corresponding XAdES-EPES profile
+     *
+     * @return TRUE if the signature has a XAdES-EPES profile, FALSE otherwise
+     */
+    public boolean hasExtendedEPESProfile() {
+        Element signatureElement = signature.getSignatureElement();
+        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        // SignaturePolicyIdentifier (Cardinality == 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignaturePolicyIdentifierPath()) != 1) {
+            LOG.debug("SignaturePolicyIdentifier shall be present for XAdES-EPES signature (cardinality == 1)!");
+            return false;
+        }
+        // SignaturePolicyStore (Cardinality == 0)
+        int signaturePolicyStoreOccurrences = getNumberOfOccurrences(signatureElement, xadesPaths.getSignaturePolicyStorePath());
+        if (signaturePolicyStoreOccurrences > 1) {
+            LOG.debug("Only one SignaturePolicyStore may be present for XAdES-EPES signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // Additional requirement (c)
+        Element signaturePolicyIdentifier = DomUtils.getElement(signatureElement, xadesPaths.getSignaturePolicyIdentifierPath());
+        if (signaturePolicyStoreOccurrences == 1 && (signaturePolicyIdentifier == null ||
+                getNumberOfOccurrences(signaturePolicyIdentifier, xadesPaths.getCurrentSignaturePolicyDigestAlgAndValue()) != 1)) {
+            LOG.debug("SignaturePolicyStore may be present for XAdES-EPES signature only if SignaturePolicyIdentifier is present and " +
+                    "it contains SigPolicyHash element (requirement (c))!");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the signature has a corresponding XAdES-T profile
+     *
+     * @return TRUE if the signature has a XAdES-T profile, FALSE otherwise
+     */
+    public boolean hasExtendedTProfile() {
+        if (!minimalTRequirement()) {
+            return false;
+        }
+        Element signatureElement = signature.getSignatureElement();
+        XAdESPaths xadesPaths = signature.getXAdESPaths();
+
+        // Additional requirement (d)
+        NodeList signatureTimeStampList = DomUtils.getNodeList(signatureElement, xadesPaths.getSignatureTimestampPath());
+        for (int ii = 0; ii < signatureTimeStampList.getLength(); ii++) {
+            Node signatureTimeStamp = signatureTimeStampList.item(ii);
+            NodeList encapsulatedTimestampList = DomUtils.getNodeList(signatureTimeStamp, xadesPaths.getCurrentEncapsulatedTimestamp());
+            if (encapsulatedTimestampList.getLength() == 0) {
+                LOG.warn("SignatureTimeStamp shall contain one or more electronic timestamp for XAdES-T signature (requirement (d))!");
+                return false;
+            }
+        }
+        // Additional requirement (e)
+        if (!areSignatureTimestampsCreatedBeforeSigningCertificateExpiration()) {
+            LOG.warn("SignatureTimeStamp shall be created before expiration of the signing-certificate " +
+                    "for XAdES-T signature (requirement (e))!");
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -398,6 +515,37 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
      */
     public boolean hasExtendedAProfile() {
         return minimalLTARequirement();
+    }
+
+    private boolean isSigningCertificatePresent(Element signatureElement, XAdESPaths xadesPaths) {
+        return getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificatePath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificateV2Path()) == 1;
+    }
+
+    private boolean isSigningCertificateSignedInKeyInfo() {
+        CertificateToken signingCertificate = signature.getSigningCertificateToken();
+        if (signingCertificate != null && XAdESSignatureUtils.isKeyInfoCovered(signature)) {
+            XAdESCertificateSource certificateSource = (XAdESCertificateSource) signature.getCertificateSource();
+            List<CertificateToken> keyInfoCertificates = certificateSource.getKeyInfoCertificates();
+            for (CertificateToken keyInfoCertificate : keyInfoCertificates) {
+                if (signingCertificate.equals(keyInfoCertificate)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean areSignatureTimestampsCreatedBeforeSigningCertificateExpiration() {
+        CertificateToken signingCertificate = signature.getSigningCertificateToken();
+        if (signingCertificate != null && signingCertificate.getNotAfter() != null) {
+            for (TimestampToken timestampToken : signature.getSignatureTimestamps()) {
+                if (signingCertificate.getNotAfter().before(timestampToken.getGenerationTime())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private int getNumberOfOccurrences(Element element, String xPath) {

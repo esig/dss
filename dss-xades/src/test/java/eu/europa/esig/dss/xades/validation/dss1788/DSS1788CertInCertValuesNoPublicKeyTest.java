@@ -55,8 +55,9 @@ public class DSS1788CertInCertValuesNoPublicKeyTest extends AbstractXAdESTestVal
 
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		super.checkSignatureLevel(diagnosticData);
 		// The SigningCertificate shall be present in ds:KeyInfo
-		assertEquals(SignatureLevel.XML_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.XAdES_LT, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 	
 	@Override

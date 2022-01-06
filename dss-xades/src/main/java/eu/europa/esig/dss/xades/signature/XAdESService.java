@@ -228,7 +228,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			extensionLTA.setTspSource(tspSource);
 			return extensionLTA;
 		default:
-			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
+			throw new UnsupportedOperationException(
+					String.format("Unsupported signature format '%s'.", parameters.getSignatureLevel()));
 		}
 	}
 
