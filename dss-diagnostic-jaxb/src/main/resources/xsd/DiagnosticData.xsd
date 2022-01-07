@@ -611,6 +611,10 @@
 			<xs:enumeration value="XAdES-BASELINE-T" />
 			<xs:enumeration value="XAdES-BASELINE-B" />
 			<xs:enumeration value="CMS-NOT-ETSI" />
+			<xs:enumeration value="CAdES-BES" />
+			<xs:enumeration value="CAdES-EPES" />
+			<xs:enumeration value="CAdES-T" />
+			<xs:enumeration value="CAdES-LT" />
 			<xs:enumeration value="CAdES-C" />
 			<xs:enumeration value="CAdES-X" />
 			<xs:enumeration value="CAdES-XL" />

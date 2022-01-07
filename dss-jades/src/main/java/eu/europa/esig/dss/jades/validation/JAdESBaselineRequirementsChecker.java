@@ -185,6 +185,12 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                 return false;
             }
         }
+        // Additional requirement (d)
+        if (!signatureTimestampsCreatedBeforeSignCertExpiration()) {
+            LOG.warn("sigTst shall be created before expiration of the signing-certificate " +
+                    "for JAdES-BASELINE-T signature (requirement (d))!");
+            return false;
+        }
         return true;
     }
 

@@ -1139,18 +1139,29 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
-		if (!hasBProfile()) {
+		if (!hasBESProfile()) {
 			return SignatureLevel.CMS_NOT_ETSI;
 		}
-		if (!hasTProfile()) {
-			return SignatureLevel.CAdES_BASELINE_B;
+
+		boolean baselineProfile = hasBProfile();
+
+		if (!hasExtendedTProfile()) {
+			if (baselineProfile) {
+				return SignatureLevel.CAdES_BASELINE_B;
+			} else if (hasEPESProfile()) {
+				return SignatureLevel.CAdES_EPES;
+			}
+			return SignatureLevel.CAdES_BES;
 		}
 
-		if (hasLTProfile()) {
+		baselineProfile = baselineProfile && hasTProfile();
+
+		if (baselineProfile && hasLTProfile()) {
 			if (hasLTAProfile()) {
 				return SignatureLevel.CAdES_BASELINE_LTA;
 			}
 			return SignatureLevel.CAdES_BASELINE_LT;
+
 		} else if (hasCProfile()) {
 			if (hasXLProfile()) {
 				if (hasAProfile()) {
@@ -1164,9 +1175,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				return SignatureLevel.CAdES_X;
 			}
 			return SignatureLevel.CAdES_C;
-		} else {
-			return SignatureLevel.CAdES_BASELINE_T;
+
+		} else if (hasXLProfile()) {
+			if (hasAProfile()) {
+				return SignatureLevel.CAdES_A; // CAdES-E-A can be built on CAdES-E-T directly
+			}
+			return SignatureLevel.CAdES_LT;
 		}
+
+		return baselineProfile ? SignatureLevel.CAdES_BASELINE_T : SignatureLevel.CAdES_T;
 	}
 
 	@Override
@@ -1177,6 +1194,34 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
 		return new CAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
+	}
+
+	/**
+	 * Checks the presence of signing certificate covered by the signature, what is the proof -BES profile existence
+	 *
+	 * @return true if BES Profile is detected
+	 */
+	public boolean hasBESProfile() {
+		return getBaselineRequirementsChecker().hasExtendedBESProfile();
+	}
+
+	/**
+	 * Checks the presence of signature-policy-identifier element in the signature,
+	 * what is the proof -EPES profile existence
+	 *
+	 * @return true if EPES Profile is detected
+	 */
+	public boolean hasEPESProfile() {
+		return getBaselineRequirementsChecker().hasExtendedEPESProfile();
+	}
+
+	/**
+	 * Checks the presence of signature-time-stamp element in the signature, what is the proof -T profile existence
+	 *
+	 * @return true if T Profile is detected
+	 */
+	public boolean hasExtendedTProfile() {
+		return getBaselineRequirementsChecker().hasExtendedTProfile();
 	}
 
 	/**

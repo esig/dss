@@ -91,19 +91,17 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // content-type (Cardinality == 1)
-        if (!signature.isCounterSignature() &&
-                CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_contentType) == null) {
+        if (!isContentTypeValid(signerInformation)) {
             LOG.warn("content-type attribute shall be present for {}-BASELINE-B signature (cardinality == 1)!", signatureForm);
             return false;
         }
         // message-digest (Cardinality == 1)
-        if (CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_messageDigest) == null) {
+        if (!isMessageDigestPresent(signerInformation)) {
             LOG.warn("message-digest attribute shall be present for {}-BASELINE-B signature (cardinality == 1)!", signatureForm);
             return false;
         }
         // signing-certificate/signing-certificate-v2 (Cardinality == 1)
-        if (!(CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificate) != null ^
-                CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificateV2) != null)) {
+        if (!isOneSigningCertificatePresent(signerInformation)) {
             LOG.warn("signing-certificate(-v2) attribute shall be present for {}-BASELINE-B signature (cardinality == 1)!", signatureForm);
             return false;
         }
@@ -125,27 +123,18 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                     "for {}-BASELINE-B signature (requirement (a))!", signatureForm);
             return false;
         }
+        // Additional requirement (f)
+        if (signature.getContentType() != null && !PKCSObjectIdentifiers.data.getId().equals(signature.getContentType())) {
+            LOG.warn("The content-type attribute shall have value id-data for {}-BASELINE-B signature " +
+                    "(requirement (f))!", signatureForm);
+            return false;
+        }
         // Additional requirement (h) and (i)
-        List<CertificateRef> certificateRefs = signature.getCertificateSource().getSigningCertificateRefs();
-        if (Utils.isCollectionNotEmpty(certificateRefs)) {
-            CertificateRef signingCertificateRef = certificateRefs.iterator().next(); // only one shall be used
-            Digest certDigest = signingCertificateRef.getCertDigest();
-            if (certDigest != null) {
-                DigestAlgorithm digestAlgorithm = certDigest.getAlgorithm();
-                if (DigestAlgorithm.SHA1.equals(digestAlgorithm)) {
-                    if (CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificate) == null) {
-                        LOG.warn("signing-certificate attribute shall be used for SHA1 hash algorithm " +
-                                "for {}-BASELINE-B signature (requirement (h) 319 122-1)!", signatureForm);
-                        return false;
-                    }
-                } else {
-                    if (CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificateV2) == null) {
-                        LOG.warn("signing-certificate-v2 attribute shall be used for SHA1 hash algorithm " +
-                                "for {}-BASELINE-B signature (requirement (i) 319 122-1)!", signatureForm);
-                        return false;
-                    }
-                }
-            }
+        if (!isSigningCertificateAttributeValid(signerInformation)) {
+            LOG.warn("signing-certificate attribute shall be used for SHA1 hash algorithm " +
+                    "and signing-certificate-v2 for other hash algorithms for {}-BASELINE-B signature " +
+                    "(requirements (h) and (i) 319 122-1)!", signatureForm);
+            return false;
         }
         return true;
     }
@@ -167,7 +156,16 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     @Override
     public boolean hasBaselineTProfile() {
-        return minimalTRequirement();
+        if (!minimalTRequirement()) {
+            return false;
+        }
+        // Additional requirement (m)
+        if (!signatureTimestampsCreatedBeforeSignCertExpiration()) {
+            LOG.warn("signature-time-stamp shall be created before expiration of the signing-certificate " +
+                    "for CAdES-BASELINE-T signature (requirement (m))!");
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -236,6 +234,80 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     /**
+     * Checks if the signature has a corresponding CAdES-BES profile
+     *
+     * @return TRUE if the signature has a CAdES-BES profile, FALSE otherwise
+     */
+    public boolean hasExtendedBESProfile() {
+        SignerInformation signerInformation = signature.getSignerInformation();
+        SignatureForm signatureForm = getBaselineSignatureForm();
+        // content-type (Cardinality == 1)
+        if (!isContentTypeValid(signerInformation)) {
+            LOG.warn("content-type attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
+            return false;
+        }
+        // message-digest (Cardinality == 1)
+        if (!isMessageDigestPresent(signerInformation)) {
+            LOG.warn("message-digest attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
+            return false;
+        }
+        // signing-certificate/signing-certificate-v2 (Cardinality == 1)
+        if (!isOneSigningCertificatePresent(signerInformation)) {
+            LOG.warn("signing-certificate(-v2) attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
+            return false;
+        }
+        // Additional requirement (h) and (i)
+        if (!isSigningCertificateAttributeValid(signerInformation)) {
+            LOG.warn("signing-certificate attribute shall be used for SHA1 hash algorithm " +
+                    "and signing-certificate-v2 for other hash algorithms for {}-BES signature " +
+                    "(requirements (a) and (b) 319 122-2)!", signatureForm);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the signature has a corresponding CAdES-EPES profile
+     *
+     * @return TRUE if the signature has a CAdES-EPES profile, FALSE otherwise
+     */
+    public boolean hasExtendedEPESProfile() {
+        SignerInformation signerInformation = signature.getSignerInformation();
+        SignatureForm signatureForm = getBaselineSignatureForm();
+        // signature-policy-identifier (Cardinality == 1)
+        if (CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_sigPolicyId) == null) {
+            LOG.debug("signature-policy-identifier attribute shall be present for {}-EPES signature " +
+                    "(cardinality == 1)!", signatureForm);
+            return false;
+        }
+        SignaturePolicyStore signaturePolicyStore = signature.getSignaturePolicyStore();
+        if (signaturePolicyStore != null && !isSignaturePolicyIdentifierHashPresent()) {
+            LOG.debug("signature-policy-store may be present for {}-EPES signature only if signature-policy-identifier " +
+                    "is present and it contains sigPolicyHash element (requirement (c))!", signatureForm);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the signature has a corresponding CAdES-T profile
+     *
+     * @return TRUE if the signature has a CAdES-T profile, FALSE otherwise
+     */
+    public boolean hasExtendedTProfile() {
+        if (!minimalTRequirement()) {
+            return false;
+        }
+        // Additional requirement (f)
+        if (!signatureTimestampsCreatedBeforeSignCertExpiration()) {
+            LOG.warn("signature-time-stamp shall be created before expiration of the signing-certificate " +
+                    "for CAdES-T signature (requirement (f))!");
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Checks if the signature has a corresponding CAdES-C profile
      *
      * @return TRUE if the signature has a CAdES-C profile, FALSE otherwise
@@ -294,6 +366,41 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         if (Utils.isCollectionEmpty(timestampTokens)) {
             LOG.trace("ArchiveTimeStamp shall be present for CAdES-A signature (cardinality >= 1)!");
             return false;
+        }
+        return true;
+    }
+
+    private boolean isContentTypeValid(SignerInformation signerInformation) {
+        return signature.isCounterSignature() ||
+                CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_contentType) != null;
+    }
+
+    private boolean isMessageDigestPresent(SignerInformation signerInformation) {
+        return CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_messageDigest) != null;
+    }
+
+    private boolean isOneSigningCertificatePresent(SignerInformation signerInformation) {
+        return CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificate) != null ^
+                CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificateV2) != null;
+    }
+
+    private boolean isSigningCertificateAttributeValid(SignerInformation signerInformation) {
+        List<CertificateRef> certificateRefs = signature.getCertificateSource().getSigningCertificateRefs();
+        if (Utils.isCollectionNotEmpty(certificateRefs)) {
+            CertificateRef signingCertificateRef = certificateRefs.iterator().next(); // only one shall be used
+            Digest certDigest = signingCertificateRef.getCertDigest();
+            if (certDigest != null) {
+                DigestAlgorithm digestAlgorithm = certDigest.getAlgorithm();
+                if (DigestAlgorithm.SHA1.equals(digestAlgorithm)) {
+                    if (CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificate) == null) {
+                        return false;
+                    }
+                } else {
+                    if (CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificateV2) == null) {
+                        return false;
+                    }
+                }
+            }
         }
         return true;
     }

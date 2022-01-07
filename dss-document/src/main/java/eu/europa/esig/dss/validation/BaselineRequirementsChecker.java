@@ -92,6 +92,25 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     public abstract boolean hasBaselineLTAProfile();
 
     /**
+     * Checks whether signature timestamps have been created before expiration of the signing-certificate
+     * used to create the signature
+     *
+     * @return TRUE if the available signature-time-stamps have been created
+     *         before expiration of the signing certificate, FALSE otherwise
+     */
+    protected boolean signatureTimestampsCreatedBeforeSignCertExpiration() {
+        CertificateToken signingCertificate = signature.getSigningCertificateToken();
+        if (signingCertificate != null && signingCertificate.getNotAfter() != null) {
+            for (TimestampToken timestampToken : signature.getSignatureTimestamps()) {
+                if (signingCertificate.getNotAfter().before(timestampToken.getGenerationTime())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * Checks the minimal requirement to satisfy T-profile for AdES signatures
      *
      * @return TRUE if the signature has a T-profile, FALSE otherwise

@@ -120,8 +120,7 @@ public class CAdESService extends
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
-		final DSSDocument toSignData = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
-		final CMSTypedData content = CMSUtils.getContentToBeSigned(toSignData);
+		final CMSTypedData content = CMSUtils.getContentToBeSigned(contentToSign);
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
@@ -156,8 +155,7 @@ public class CAdESService extends
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
-		final DSSDocument toSignData = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
-		final CMSTypedData content = CMSUtils.getContentToBeSigned(toSignData);
+		final CMSTypedData content = CMSUtils.getContentToBeSigned(contentToSign);
 
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);

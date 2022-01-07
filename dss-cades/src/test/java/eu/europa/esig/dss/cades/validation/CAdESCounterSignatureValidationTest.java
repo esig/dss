@@ -88,8 +88,9 @@ public class CAdESCounterSignatureValidationTest extends AbstractCAdESTestValida
 
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		super.checkSignatureLevel(diagnosticData);
 		// signing-time is absent
-		assertEquals(SignatureLevel.CMS_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.CAdES_T, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 }

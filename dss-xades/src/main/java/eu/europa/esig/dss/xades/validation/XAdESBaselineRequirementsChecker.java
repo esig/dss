@@ -27,7 +27,6 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
@@ -269,7 +268,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             }
         }
         // Additional requirement (o)
-        if (!areSignatureTimestampsCreatedBeforeSigningCertificateExpiration()) {
+        if (!signatureTimestampsCreatedBeforeSignCertExpiration()) {
             LOG.warn("SignatureTimeStamp shall be created before expiration of the signing-certificate " +
                     "for XAdES-BASELINE-T signature (requirement (o))!");
             return false;
@@ -401,9 +400,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // Additional requirement (c)
-        Element signaturePolicyIdentifier = DomUtils.getElement(signatureElement, xadesPaths.getSignaturePolicyIdentifierPath());
-        if (signaturePolicyStoreOccurrences == 1 && (signaturePolicyIdentifier == null ||
-                getNumberOfOccurrences(signaturePolicyIdentifier, xadesPaths.getCurrentSignaturePolicyDigestAlgAndValue()) != 1)) {
+        if (signaturePolicyStoreOccurrences == 1 && !isSignaturePolicyIdentifierHashPresent()) {
             LOG.debug("SignaturePolicyStore may be present for XAdES-EPES signature only if SignaturePolicyIdentifier is present and " +
                     "it contains SigPolicyHash element (requirement (c))!");
             return false;
@@ -435,7 +432,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             }
         }
         // Additional requirement (e)
-        if (!areSignatureTimestampsCreatedBeforeSigningCertificateExpiration()) {
+        if (!signatureTimestampsCreatedBeforeSignCertExpiration()) {
             LOG.warn("SignatureTimeStamp shall be created before expiration of the signing-certificate " +
                     "for XAdES-T signature (requirement (e))!");
             return false;
@@ -534,18 +531,6 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             }
         }
         return false;
-    }
-
-    private boolean areSignatureTimestampsCreatedBeforeSigningCertificateExpiration() {
-        CertificateToken signingCertificate = signature.getSigningCertificateToken();
-        if (signingCertificate != null && signingCertificate.getNotAfter() != null) {
-            for (TimestampToken timestampToken : signature.getSignatureTimestamps()) {
-                if (signingCertificate.getNotAfter().before(timestampToken.getGenerationTime())) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private int getNumberOfOccurrences(Element element, String xPath) {
