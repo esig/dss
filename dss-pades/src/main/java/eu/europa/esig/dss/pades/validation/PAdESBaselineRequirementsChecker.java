@@ -23,14 +23,28 @@ package eu.europa.esig.dss.pades.validation;
 import eu.europa.esig.dss.cades.validation.CAdESBaselineRequirementsChecker;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Performs checks according to EN 319 142-1 v1.1.1
@@ -178,7 +192,85 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
     }
 
     private boolean coversLTLevelData(TimestampToken timestampToken) {
-        return ArchiveTimestampType.PAdES.equals(timestampToken.getArchiveTimestampType());
+        if (ArchiveTimestampType.PAdES.equals(timestampToken.getArchiveTimestampType())) {
+            ValidationContext validationContext = getValidationContext();
+            ValidationData signatureValidationData = validationContext.getValidationData(signature);
+            Set<CRLToken> crlTokens = signatureValidationData.getCrlTokens();
+            Set<OCSPToken> ocspTokens = signatureValidationData.getOcspTokens();
+            return coversRevocationTokens(timestampToken, crlTokens, ocspTokens);
+        }
+        return false;
+    }
+
+    /**
+     * This method verifies whether all the revocation data is covered by the given timestamp
+     * to fulfil the minimum requirement for LT-level.
+     *
+     * NOTE: This method checks coverage of the available revocation data,
+     * and the actual LT-level shall be determined in prior using {@code hasBaselineLTProfile()} method!
+     *
+     * @param timestampToken {@link TimestampToken} to verify
+     * @param crlTokens a collection of {@link CRLToken}s used for signature validation
+     * @param ocspTokens a collection of {@link OCSPToken}s used for signature validation
+     * @return TRUE if the timestamp covers all the given revocation data to fulfil the minimum LT-level requirement,
+     *         FALSE otherwise
+     */
+    private boolean coversRevocationTokens(TimestampToken timestampToken,
+                                           Collection<CRLToken> crlTokens, Collection<OCSPToken> ocspTokens) {
+        Map<String, Collection<RevocationToken>> revocationsByCertificate = getRevocationsByCertificate(crlTokens, ocspTokens);
+        for (Collection<RevocationToken> revocationTokens : revocationsByCertificate.values()) {
+            boolean revocationForCertificateIsCovered = false;
+            for (RevocationToken revocationToken : revocationTokens) {
+                if (coversToken(timestampToken, revocationToken)) {
+                    revocationForCertificateIsCovered = true;
+                    break;
+                }
+            }
+            if (!revocationForCertificateIsCovered) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * This method returns collections of revocation data filtered by a certificate.
+     * This allows to ensure a minimum requirement of revocation data for LT-level
+     * to be covered by an archival timestamp.
+     *
+     * @param crlTokens collection of {@link CRLToken}s
+     * @param ocspTokens collection of {@link OCSPToken}s
+     * @return a map between related certificate id and corresponding collection of related revocation data
+     */
+    private Map<String, Collection<RevocationToken>> getRevocationsByCertificate(Collection<CRLToken> crlTokens,
+                                                                                Collection<OCSPToken> ocspTokens) {
+        Map<String, Collection<RevocationToken>> result = new HashMap<>();
+        enrichRevocationDataMap(result, crlTokens);
+        enrichRevocationDataMap(result, ocspTokens);
+        return result;
+    }
+
+    private <R extends RevocationToken> void enrichRevocationDataMap(
+            Map<String, Collection<RevocationToken>> revocationDataMap, Collection<R> revocationData) {
+        for (RevocationToken revocationToken : revocationData) {
+            String relatedCertificateId = revocationToken.getRelatedCertificateId();
+            Collection<RevocationToken> relatedRevocationData = revocationDataMap.get(relatedCertificateId);
+            if (Utils.isCollectionEmpty(relatedRevocationData)) {
+                relatedRevocationData = new HashSet<>();
+                revocationDataMap.put(relatedCertificateId, relatedRevocationData);
+            }
+            relatedRevocationData.add(revocationToken);
+        }
+    }
+
+    private boolean coversToken(TimestampToken timestampToken, Token token) {
+        List<TimestampedReference> timestampedReferences = timestampToken.getTimestampedReferences();
+        for (TimestampedReference timestampedReference : timestampedReferences) {
+            if (token.getDSSIdAsString().equals(timestampedReference.getObjectId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean containsRFC3161SubFilter(TimestampToken timestampToken) {

@@ -683,7 +683,28 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	private boolean coversLTLevel(TimestampWrapper timestampWrapper) {
-		return ArchiveTimestampType.PAdES.equals(timestampWrapper.getArchiveTimestampType());
+		return ArchiveTimestampType.PAdES.equals(timestampWrapper.getArchiveTimestampType()) &&
+				coversRevocationDataForCertificateChain(timestampWrapper, getCertificateChain());
+	}
+
+	private boolean coversRevocationDataForCertificateChain(TimestampWrapper timestampWrapper,
+															List<CertificateWrapper> certificateChain) {
+		List<RevocationWrapper> timestampedRevocations = timestampWrapper.getTimestampedRevocations();
+		for (CertificateWrapper certificateWrapper : certificateChain) {
+			List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
+			if (certificateRevocationData != null && certificateRevocationData.size() > 0) {
+				boolean revocationDataCovered = false;
+				for (RevocationWrapper revocation : certificateRevocationData) {
+					if (timestampedRevocations.contains(revocation)) {
+						revocationDataCovered = true;
+					}
+				}
+				if (!revocationDataCovered) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	private boolean isAtLeastOneTimestampValid(List<TimestampWrapper> timestampList) {

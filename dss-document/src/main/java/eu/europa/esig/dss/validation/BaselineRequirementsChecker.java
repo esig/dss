@@ -47,10 +47,11 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     /** The signature object */
     protected final AS signature;
 
-    /**
-     * The offline copy of a CertificateVerifier
-     */
+    /** The offline copy of a CertificateVerifier */
     private final CertificateVerifier offlineCertificateVerifier;
+
+    /** Cached ValidationContext object to ensure validation is processed only once */
+    private ValidationContext validationContext;
 
     /**
      * Default constructor
@@ -152,13 +153,13 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         boolean minimalLTRequirement = !allSelfSigned && !emptyRevocation;
         if (minimalLTRequirement) {
             // check presence of all revocation data
-            return isAllRevocationDataPresent(offlineCertificateVerifier);
+            return isAllRevocationDataPresent();
         }
         return minimalLTRequirement;
     }
 
     /**
-     * Returns a list of certificate sources with an exception of the last archive timestamp if available
+     * Returns a list of certificate sources with an exception to the last archive timestamp if applicable
      *
      * @return {@link ListCertificateSource}
      */
@@ -169,18 +170,30 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         return certificateSource;
     }
 
-    private boolean isAllRevocationDataPresent(CertificateVerifier offlineCertificateVerifier) {
-        SignatureValidationContext validationContext = new SignatureValidationContext();
-        validationContext.initialize(offlineCertificateVerifier);
-
-        validationContext.addDocumentCertificateSource(signature.getCompleteCertificateSource());
-        validationContext.addDocumentCRLSource(signature.getCompleteCRLSource());
-        validationContext.addDocumentOCSPSource(signature.getCompleteOCSPSource());
-
-        addSignatureForVerification(validationContext, signature);
-
-        validationContext.validate();
+    private boolean isAllRevocationDataPresent() {
+        ValidationContext validationContext = getValidationContext();
         return validationContext.checkAllRequiredRevocationDataPresent();
+    }
+
+    /**
+     * Returns a validated validation context
+     *
+     * @return {@link ValidationContext}
+     */
+    protected ValidationContext getValidationContext() {
+        if (validationContext == null) {
+            validationContext = new SignatureValidationContext();
+            validationContext.initialize(offlineCertificateVerifier);
+
+            validationContext.addDocumentCertificateSource(signature.getCompleteCertificateSource());
+            validationContext.addDocumentCRLSource(signature.getCompleteCRLSource());
+            validationContext.addDocumentOCSPSource(signature.getCompleteOCSPSource());
+
+            addSignatureForVerification(validationContext, signature);
+
+            validationContext.validate();
+        }
+        return validationContext;
     }
 
     private void addSignatureForVerification(ValidationContext validationContext, AdvancedSignature signature) {
