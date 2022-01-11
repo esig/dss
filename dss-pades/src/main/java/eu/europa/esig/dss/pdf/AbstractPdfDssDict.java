@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public abstract class AbstractPdfDssDict implements PdfDssDict {
 	private final Map<Long, CRLBinary> crlMap;
 
 	/** The map of OCSP objects */
-	private final Map<Long, BasicOCSPResp> ocspMap;
+	private final Map<Long, OCSPResponseBinary> ocspMap;
 
 	/** The map of certificate objects */
 	private final Map<Long, CertificateToken> certMap;
@@ -87,7 +87,7 @@ public abstract class AbstractPdfDssDict implements PdfDssDict {
 	}
 
 	@Override
-	public Map<Long, BasicOCSPResp> getOCSPs() {
+	public Map<Long, OCSPResponseBinary> getOCSPs() {
 		return ocspMap;
 	}
 

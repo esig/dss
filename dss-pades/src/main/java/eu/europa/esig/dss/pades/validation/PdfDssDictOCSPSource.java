@@ -26,7 +26,6 @@ import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +39,7 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
     private static final long serialVersionUID = 1503525374769179608L;
 
     /** The map of PDF object ids and corresponding OCSP binaries */
-    private transient Map<Long, BasicOCSPResp> ocspMap;
+    private transient Map<Long, OCSPResponseBinary> ocspMap;
 
     /**
      * Default constructor
@@ -62,9 +61,9 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
      * Returns a map of all OCSP entries contained in DSS dictionary or into nested
      * VRI dictionaries
      *
-     * @return a map of BasicOCSPResp with their object ids
+     * @return a map of {@link OCSPResponseBinary}s with their object ids
      */
-    public Map<Long, BasicOCSPResp> getOcspMap() {
+    public Map<Long, OCSPResponseBinary> getOcspMap() {
         if (ocspMap != null) {
             return ocspMap;
         }
@@ -76,7 +75,7 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
      *
      * @return a map with the object number and the ocsp response
      */
-    private Map<Long, BasicOCSPResp> getDssOcspMap(PdfDssDict dssDictionary) {
+    private Map<Long, OCSPResponseBinary> getDssOcspMap(PdfDssDict dssDictionary) {
         if (dssDictionary != null) {
             ocspMap = dssDictionary.getOCSPs();
             return ocspMap;
@@ -90,9 +89,9 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
      * @param dssDictionary {@link PdfDssDict}
      */
     protected void extractDSSOCSPs(PdfDssDict dssDictionary) {
-        Map<Long, BasicOCSPResp> dssOcspMap = getDssOcspMap(dssDictionary);
-        for (BasicOCSPResp basicOCSPResp : dssOcspMap.values()) {
-            addBinary(OCSPResponseBinary.build(basicOCSPResp), RevocationOrigin.DSS_DICTIONARY);
+        Map<Long, OCSPResponseBinary> dssOcspMap = getDssOcspMap(dssDictionary);
+        for (OCSPResponseBinary ocspResponseBinary : dssOcspMap.values()) {
+            addBinary(ocspResponseBinary, RevocationOrigin.DSS_DICTIONARY);
         }
     }
 
@@ -119,11 +118,11 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
      */
     protected void extractVRIOCSPs(PdfVRIDict vriDictionary) {
         if (vriDictionary != null) {
-            for (Map.Entry<Long, BasicOCSPResp> ocspEntry : vriDictionary.getOCSPs().entrySet()) {
+            for (Map.Entry<Long, OCSPResponseBinary> ocspEntry : vriDictionary.getOCSPs().entrySet()) {
                 if (!ocspMap.containsKey(ocspEntry.getKey())) {
                     ocspMap.put(ocspEntry.getKey(), ocspEntry.getValue());
                 }
-                addBinary(OCSPResponseBinary.build(ocspEntry.getValue()), RevocationOrigin.VRI_DICTIONARY);
+                addBinary(ocspEntry.getValue(), RevocationOrigin.VRI_DICTIONARY);
             }
         }
     }
