@@ -97,7 +97,7 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 	/**
 	 * Checks if the current ListRevocationSource and its children are empty
 	 *
-	 * @return TRUE if the current source and its children are empty, FALSE if there is at leats one revocation token
+	 * @return TRUE if the current source and its children are empty, FALSE if there is at least one revocation token
 	 */
 	public boolean isEmpty() {
 		for (OfflineRevocationSource<R> revocationSource : sources) {

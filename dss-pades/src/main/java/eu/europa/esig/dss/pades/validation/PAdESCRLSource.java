@@ -20,74 +20,124 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import eu.europa.esig.dss.crl.CRLUtils;
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.pades.PAdESUtils;
-import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfVRIDict;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.OID;
-import org.bouncycastle.asn1.ASN1Encodable;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCRLSource;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.x509.CertificateList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * CRLSource that will retrieve the CRL from a PAdES Signature
  */
 @SuppressWarnings("serial")
-public class PAdESCRLSource extends PdfDssDictCRLSource {
+public class PAdESCRLSource extends OfflineCRLSource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESCRLSource.class);
+	/** CMS CRL source */
+	private final PdfCmsCRLSource cmsCrlSource;
 
-	/** The name of the corresponding VRI dictionary */
-	private final String vriDictionaryName;
+	/** DSS dictionary CRL source */
+	private final PdfDssDictCRLSource dssDictCrlSource;
 
 	/**
 	 * The default constructor
 	 *
-	 * @param dssDictionary {@link PdfDssDict}
+	 * @param pdfSignatureRevision {@link PdfSignatureRevision}
 	 * @param vriDictionaryName {@link String} the corresponding VRI dictionary name to extract
 	 * @param signedAttributes {@link AttributeTable}
 	 */
-	public PAdESCRLSource(PdfDssDict dssDictionary, final String vriDictionaryName,
-			AttributeTable signedAttributes) {
+	public PAdESCRLSource(PdfSignatureRevision pdfSignatureRevision, final String vriDictionaryName,
+						  AttributeTable signedAttributes) {
 		Objects.requireNonNull(vriDictionaryName, "vriDictionaryName cannot be null!");
-		this.vriDictionaryName = vriDictionaryName;
-		extractDSSCRLs(dssDictionary);
-		extractVRICRLs(dssDictionary);
-		extractCRLArchivalValues(signedAttributes);
+		this.cmsCrlSource = new PdfCmsCRLSource(signedAttributes);
+		this.dssDictCrlSource = new PdfDssDictCRLSource(pdfSignatureRevision.getCompositeDssDictionary().getCrlSource(),
+				pdfSignatureRevision.getDssDictionary(), vriDictionaryName);
+	}
+	@Override
+	public List<RevocationToken<CRL>> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerToken) {
+		List<RevocationToken<CRL>> revocationTokens = new ArrayList<>();
+		revocationTokens.addAll(cmsCrlSource.getRevocationTokens(certificateToken, issuerToken));
+		revocationTokens.addAll(dssDictCrlSource.getRevocationTokens(certificateToken, issuerToken));
+		return revocationTokens;
 	}
 
 	/**
-	 * Extract the CRL Archival values
+	 * Returns a map of all CRL entries contained in DSS dictionary or into nested
+	 * VRI dictionaries
 	 *
-	 * @param signedAttributes {@link AttributeTable}
+	 * @return a map of CRL binaries with their object ids
 	 */
-	private void extractCRLArchivalValues(AttributeTable signedAttributes) {
-		if (signedAttributes != null) {
-			final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(signedAttributes, OID.adbe_revocationInfoArchival);
-			RevocationInfoArchival revValues = PAdESUtils.getRevocationInfoArchival(attValue);
-			if (revValues != null) {
-				for (final CertificateList revValue : revValues.getCrlVals()) {
-					try {
-						addBinary(CRLUtils.buildCRLBinary(revValue.getEncoded()),
-								RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
-					} catch (Exception e) {
-						LOG.warn("Could not convert CertificateList to CRLBinary : {}", e.getMessage());
-					}
-				}
-			}
-		}
+	public Map<Long, CRLBinary> getCrlMap() {
+		return dssDictCrlSource.getCrlMap();
 	}
 
 	@Override
-	protected void extractVRICRLs(PdfVRIDict vriDictionary) {
-		if (vriDictionary != null && vriDictionaryName.equals(vriDictionary.getName())) {
-			super.extractVRICRLs(vriDictionary);
+	public List<EncapsulatedRevocationTokenIdentifier<CRL>> getDSSDictionaryBinaries() {
+		return dssDictCrlSource.getDSSDictionaryBinaries();
+	}
+
+	@Override
+	public List<RevocationToken<CRL>> getDSSDictionaryTokens() {
+		return dssDictCrlSource.getDSSDictionaryTokens();
+	}
+
+	@Override
+	public List<EncapsulatedRevocationTokenIdentifier<CRL>> getVRIDictionaryBinaries() {
+		return dssDictCrlSource.getVRIDictionaryBinaries();
+	}
+
+	@Override
+	public List<RevocationToken<CRL>> getVRIDictionaryTokens() {
+		return dssDictCrlSource.getVRIDictionaryTokens();
+	}
+
+	@Override
+	public List<EncapsulatedRevocationTokenIdentifier<CRL>> getADBERevocationValuesBinaries() {
+		return cmsCrlSource.getADBERevocationValuesBinaries();
+	}
+
+	@Override
+	public List<RevocationToken<CRL>> getADBERevocationValuesTokens() {
+		return dssDictCrlSource.getADBERevocationValuesTokens();
+	}
+
+	@Override
+	public Map<EncapsulatedRevocationTokenIdentifier<CRL>, Set<RevocationOrigin>> getAllRevocationBinariesWithOrigins() {
+		Map<EncapsulatedRevocationTokenIdentifier<CRL>, Set<RevocationOrigin>> result = new HashMap<>();
+		populateMapWithSet(result, cmsCrlSource.getAllRevocationBinariesWithOrigins());
+		populateMapWithSet(result, dssDictCrlSource.getAllRevocationBinariesWithOrigins());
+		return result;
+	}
+
+	@Override
+	public Map<RevocationToken<CRL>, Set<RevocationOrigin>> getAllRevocationTokensWithOrigins() {
+		Map<RevocationToken<CRL>, Set<RevocationOrigin>> result = new HashMap<>();
+		populateMapWithSet(result, cmsCrlSource.getAllRevocationTokensWithOrigins());
+		populateMapWithSet(result, dssDictCrlSource.getAllRevocationTokensWithOrigins());
+		return result;
+	}
+
+	private <R extends Object> void populateMapWithSet(Map<R, Set<RevocationOrigin>> mapToPopulate,
+													   Map<R, Set<RevocationOrigin>> mapToAdd) {
+		for (Map.Entry<R, Set<RevocationOrigin>> entry : mapToAdd.entrySet()) {
+			Set<RevocationOrigin> revocationOrigins = mapToPopulate.get(entry.getKey());
+			if (revocationOrigins == null) {
+				revocationOrigins = new HashSet<>();
+			}
+			revocationOrigins.addAll(entry.getValue());
+			mapToPopulate.put(entry.getKey(), revocationOrigins);
 		}
 	}
 

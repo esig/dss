@@ -705,8 +705,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	private <R extends Revocation> void addRelatedRevocations(List<XmlRelatedRevocation> result,
 			OfflineRevocationSource<R> source) {
-		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : source.getUniqueRevocationTokensWithOrigins()
-				.entrySet()) {
+		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : source.getUniqueRevocationTokensWithOrigins().entrySet()) {
 			RevocationToken<R> token = entry.getKey();
 			String id = token.getDSSIdAsString();
 			XmlRevocation xmlRevocation = xmlRevocationsMap.get(id);

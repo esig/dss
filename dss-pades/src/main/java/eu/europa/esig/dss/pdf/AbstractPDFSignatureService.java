@@ -39,6 +39,7 @@ import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
+import eu.europa.esig.dss.pades.validation.dss.PdfCompositeDssDictionary;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
@@ -274,8 +275,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		final List<PdfRevision> revisions = new ArrayList<>();
 		try (PdfDocumentReader reader = loadPdfDocumentReader(document, pwd)) {
 
+			final PdfCompositeDssDictionary compositeDssDictionary = new PdfCompositeDssDictionary();
+
 			final PdfDssDict dssDictionary = reader.getDSSDictionary();
 			PdfDssDict lastDSSDictionary = dssDictionary; // defined the last created DSS dictionary
+			compositeDssDictionary.populateFromDssDictionary(lastDSSDictionary);
 
 			Map<PdfSignatureDictionary, List<PdfSignatureField>> sigDictionaries = reader.extractSigDictionaries();
 			sigDictionaries = sortSignatureDictionaries(sigDictionaries); // sort from the latest revision to the first
@@ -304,8 +308,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					DSSDocument signedContent = new InMemoryDocument(signedData);
 
 					// create a DSS revision if updated
-					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, lastDSSDictionary,
-							revisionContent, pwd);
+					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
+							lastDSSDictionary, revisionContent, pwd);
 
 					PdfCMSRevision newRevision = null;
 					if (isDocTimestamp(signatureDictionary)) {
@@ -314,8 +318,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 					} else if (isSignature(signatureDictionary)) {
 						// signature contains all dss dictionaries present after
-						newRevision = new PdfSignatureRevision(signatureDictionary, dssDictionary, fields,
-								signedContent, signatureCoversWholeDocument);
+						newRevision = new PdfSignatureRevision(signatureDictionary, compositeDssDictionary,
+								dssDictionary, fields, signedContent, signatureCoversWholeDocument);
 
 					} else {
 						LOG.warn("The entry {} is skipped. A signature dictionary entry with a type '{}' " +
@@ -330,8 +334,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					}
 
 					// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
-					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, lastDSSDictionary,
-							extractBeforeSignatureValue(byteRange, revisionContent), pwd);
+					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
+							lastDSSDictionary, extractBeforeSignatureValue(byteRange, revisionContent), pwd);
 
 
 				} catch (Exception e) {
@@ -416,11 +420,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						(oldValue, newValue) -> oldValue, LinkedHashMap::new));
 	}
 
-	private PdfDssDict getPreviousDssDictAndUpdateIfNeeded(List<PdfRevision> revisions, PdfDssDict lastDSSDictionary,
+	private PdfDssDict getPreviousDssDictAndUpdateIfNeeded(List<PdfRevision> revisions,
+														   PdfCompositeDssDictionary compositeDssDictionary,
+														   PdfDssDict lastDSSDictionary,
 														   byte[] dssDictionaryRevision, String pwd) {
 		PdfDssDict currentDssDict = getDSSDictionaryPresentInRevision(dssDictionaryRevision, pwd);
 		if (lastDSSDictionary != null && !lastDSSDictionary.equals(currentDssDict)) {
-			revisions.add(new PdfDocDssRevision(lastDSSDictionary));
+			compositeDssDictionary.populateFromDssDictionary(lastDSSDictionary);
+			revisions.add(new PdfDocDssRevision(compositeDssDictionary, lastDSSDictionary));
 		}
 		return currentDssDict;
 	}

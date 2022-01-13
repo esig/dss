@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pdf;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
+import eu.europa.esig.dss.pades.validation.dss.PdfCompositeDssDictionary;
 
 import java.util.List;
 
@@ -33,6 +34,9 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 
 	private static final long serialVersionUID = -7955378314622568135L;
 
+	/** The composite DSS dictionary combined from all /DSS revisions' content */
+	private final PdfCompositeDssDictionary compositeDssDictionary;
+
 	/** The corresponding DSS dictionary */
 	private final PdfDssDict dssDictionarySource;
 
@@ -41,6 +45,8 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	 *
 	 * @param signatureDictionary
 	 *            pdf signature dictionary wrapper
+	 * @param compositeDssDictionary
+	 * 			  {@link PdfCompositeDssDictionary} combined from all PDF's /DSS revisions
 	 * @param dssDictionary
 	 *            the DSS dictionary
 	 * @param signatureFields
@@ -50,11 +56,21 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	 * @param coverCompleteRevision
 	 *            identifies if the signature covers the whole revision
 	 */
-	public PdfSignatureRevision(PdfSignatureDictionary signatureDictionary, PdfDssDict dssDictionary,
-								List<PdfSignatureField> signatureFields, DSSDocument signedContent,
+	public PdfSignatureRevision(PdfSignatureDictionary signatureDictionary, PdfCompositeDssDictionary compositeDssDictionary,
+								PdfDssDict dssDictionary, List<PdfSignatureField> signatureFields, DSSDocument signedContent,
 								boolean coverCompleteRevision) {
 		super(signatureDictionary, signatureFields, signedContent, coverCompleteRevision);
+		this.compositeDssDictionary = compositeDssDictionary;
 		this.dssDictionarySource = dssDictionary;
+	}
+
+	/**
+	 * Gets the composite DSS dictionary
+	 *
+	 * @return {@link PdfCompositeDssDictionary}
+	 */
+	public PdfCompositeDssDictionary getCompositeDssDictionary() {
+		return compositeDssDictionary;
 	}
 
 	/**
