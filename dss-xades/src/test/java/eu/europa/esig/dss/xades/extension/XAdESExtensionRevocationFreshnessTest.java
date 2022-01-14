@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
@@ -43,13 +30,29 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	
@@ -61,7 +64,13 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	@BeforeEach
 	public void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-		certificateVerifier = getCompleteCertificateVerifier();
+
+		// avoid caching
+		certificateVerifier = getOfflineCertificateVerifier();
+		certificateVerifier.setAIASource(new DefaultAIASource());
+		certificateVerifier.setCrlSource(new OnlineCRLSource());
+		certificateVerifier.setOcspSource(new OnlineOCSPSource());
+
 		signingAlias = EE_GOOD_USER;
 		
 		signatureParameters = new XAdESSignatureParameters();
@@ -69,13 +78,20 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 	}
+
+	@AfterEach
+	public void after() {
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert());
+		certificateVerifier.setAlertOnUncoveredPOE(new LogOnStatusAlert());
+	}
 	
 	@Test
 	public void noExceptionTest() {
-		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		
 		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert());
+		certificateVerifier.setAlertOnUncoveredPOE(new LogOnStatusAlert());
+
 		XAdESService service = new XAdESService(certificateVerifier);
         service.setTspSource(getAlternateGoodTsa());
 
@@ -85,31 +101,59 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
 		
 		validate(extendedDocument);
-		
 	}
 	
 	@Test
-	public void throwExceptionTest() {
+	public void throwExceptionOnNoRevocationAfterBestSignatureTimeTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
+		certificateVerifier.setAlertOnUncoveredPOE(new LogOnStatusAlert());
+
 		XAdESService service = new XAdESService(certificateVerifier);
-		service.setTspSource(getGoodTsa());
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(signatureParameters.bLevel().getSigningDate());
+		calendar.add(1, Calendar.MINUTE);
+		service.setTspSource(getGoodTsaByTime(calendar.getTime()));
 
 		DSSDocument signedDocument = sign(service, documentToSign);
 
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		Exception exception = assertThrows(AlertException.class,
-				() -> service.extendDocument(signedDocument, signatureParameters));
+		Exception exception = assertThrows(AlertException.class, () ->
+				service.extendDocument(signedDocument, signatureParameters));
 		assertTrue(exception.getMessage().contains("Fresh revocation data is missing for one or more certificate(s)."));
+		assertTrue(exception.getMessage().contains("No revocation data found after the best signature time"));
+	}
+
+	@Test
+	public void throwExceptionOnUncoveredPOETest() {
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert());
+		certificateVerifier.setAlertOnUncoveredPOE(new ExceptionOnStatusAlert());
+
+		XAdESService service = new XAdESService(certificateVerifier);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(signatureParameters.bLevel().getSigningDate());
+		calendar.add(1, Calendar.MINUTE);
+		service.setTspSource(getGoodTsaByTime(calendar.getTime()));
+
+		DSSDocument signedDocument = sign(service, documentToSign);
+
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		Exception exception = assertThrows(AlertException.class, () ->
+				service.extendDocument(signedDocument, signatureParameters));
+		assertTrue(exception.getMessage().contains("Revocation data is missing for one or more POE(s)."));
+		assertTrue(exception.getMessage().contains("No revocation data found after the best signature time"));
 	}
 	
 	@Test
 	public void throwExceptionWithDelayTest() throws Exception {
-		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
+		certificateVerifier.setAlertOnUncoveredPOE(new ExceptionOnStatusAlert());
+
 		XAdESService service = new XAdESService(certificateVerifier);
         service.setTspSource(getAlternateGoodTsa());
 
@@ -124,7 +168,6 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
 		
 		validate(extendedDocument);
-		
 	}
 	
 	private DSSDocument sign(XAdESService service, DSSDocument doc) {
@@ -142,7 +185,6 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		assertNotNull(simpleReport);
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
-	
 
 	@Override
 	protected String getSigningAlias() {
