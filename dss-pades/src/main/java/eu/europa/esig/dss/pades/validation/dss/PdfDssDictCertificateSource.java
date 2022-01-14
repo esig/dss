@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.validation.dss;
 
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
@@ -94,7 +95,7 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
     public Map<Long, CertificateToken> getCertificateMap() {
         if (dssDictionary != null) {
             Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
-            List<PdfVRIDict> vriDicts = getVRIs();
+            List<PdfVRIDict> vriDicts = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
             for (PdfVRIDict vriDict : vriDicts) {
                 dssCerts.putAll(vriDict.getCERTs());
             }
@@ -123,7 +124,7 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
     public List<CertificateToken> getVRIDictionaryCertValues() {
         if (dssDictionary != null) {
             Set<Long> certKeys = new HashSet<>();
-            List<PdfVRIDict> vris = getVRIs();
+            List<PdfVRIDict> vris = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
             for (PdfVRIDict vri : vris) {
                 certKeys.addAll(vri.getCERTs().keySet());
             }
@@ -138,26 +139,6 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
             certificateTokens.addAll(compositeCertificateSource.getCertificateTokensByObjectId(objectId));
         }
         return certificateTokens;
-    }
-
-    private List<PdfVRIDict> getVRIs() {
-        List<PdfVRIDict> result = new ArrayList<>();
-        for (PdfVRIDict vriDict : dssDictionary.getVRIs()) {
-            if (toBeExtracted(vriDict)) {
-                result.add(vriDict);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * This method checks whether the content of /VRI dictionary should be extracted
-     *
-     * @param vri {@link PdfVRIDict} to check
-     * @return TRUE if the content of /VRI dictionary shall be extracted, FALSE otherwise
-     */
-    private boolean toBeExtracted(PdfVRIDict vri) {
-        return relatedVRIDictionaryName == null || relatedVRIDictionaryName.equals(vri.getName());
     }
 
 }

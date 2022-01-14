@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -96,7 +97,7 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
             crlMap = new HashMap<>();
             if (dssDictionary != null) {
                 crlMap.putAll(dssDictionary.getCRLs());
-                List<PdfVRIDict> vriDicts = getVRIs();
+                List<PdfVRIDict> vriDicts = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
                 for (PdfVRIDict vriDict : vriDicts) {
                     crlMap.putAll(vriDict.getCRLs());
                 }
@@ -148,7 +149,7 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
     private Set<Long> getKeySetFromVRIDictionaries() {
         if (dssDictionary != null) {
             Set<Long> result = new HashSet<>();
-            List<PdfVRIDict> vris = getVRIs();
+            List<PdfVRIDict> vris = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
             for (PdfVRIDict vriDict : vris) {
                 result.addAll(vriDict.getCRLs().keySet());
             }
@@ -202,7 +203,7 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
         if (Utils.containsAny(dssDictionary.getCRLs().keySet(), tokenBinaryObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }
-        for (PdfVRIDict vriDict : getVRIs()) {
+        for (PdfVRIDict vriDict : PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName)) {
             if (Utils.containsAny(vriDict.getCRLs().keySet(), tokenBinaryObjectIds)) {
                 result.add(RevocationOrigin.VRI_DICTIONARY);
             }
@@ -228,32 +229,12 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
         if (Utils.containsAny(dssDictionary.getCRLs().keySet(), tokenObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }
-        for (PdfVRIDict vriDict : getVRIs()) {
+        for (PdfVRIDict vriDict : PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName)) {
             if (Utils.containsAny(vriDict.getCRLs().keySet(), tokenObjectIds)) {
                 result.add(RevocationOrigin.VRI_DICTIONARY);
             }
         }
         return result;
-    }
-
-    private List<PdfVRIDict> getVRIs() {
-        List<PdfVRIDict> result = new ArrayList<>();
-        for (PdfVRIDict vriDict : dssDictionary.getVRIs()) {
-            if (toBeExtracted(vriDict)) {
-                result.add(vriDict);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * This method checks whether the content of /VRI dictionary should be extracted
-     *
-     * @param vri {@link PdfVRIDict} to check
-     * @return TRUE if the content of /VRI dictionary shall be extracted, FALSE otherwise
-     */
-    private boolean toBeExtracted(PdfVRIDict vri) {
-        return relatedVRIDictionaryName == null || relatedVRIDictionaryName.equals(vri.getName());
     }
 
 }
