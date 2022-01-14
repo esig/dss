@@ -779,9 +779,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			for (TimestampToken timestampToken : signature.getArchiveTimestamps()) {
 				findTimestampScopes(timestampToken, timestampScopeFinder);
 			}
-			for (TimestampToken timestampToken : signature.getDocumentTimestamps()) {
-				findTimestampScopes(timestampToken, timestampScopeFinder);
-			}
 		}
 	}
 

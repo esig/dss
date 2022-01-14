@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.validation.timestamp;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCRLSource;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCertificateSource;
 import eu.europa.esig.dss.pades.validation.dss.PdfDssDictOCSPSource;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
@@ -88,7 +89,7 @@ public class PdfRevisionTimestampSource extends AbstractTimestampSource {
 
             final List<TimestampedReference> references = new ArrayList<>();
 
-            CertificateSource dssCertificateSource = pdfDocDssRevision.getCertificateSource();
+            PdfDssDictCertificateSource dssCertificateSource = pdfDocDssRevision.getCertificateSource();
             addReferences(references, createReferencesForCertificates(dssCertificateSource.getCertificates()));
 
             PdfDssDictCRLSource dssCRLSource = pdfDocDssRevision.getCRLSource();
