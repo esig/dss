@@ -25,7 +25,6 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,13 +94,9 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
     public Map<Long, CertificateToken> getCertificateMap() {
         if (dssDictionary != null) {
             Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
-            List<PdfVRIDict> vriDicts = dssDictionary.getVRIs();
-            if (Utils.isCollectionNotEmpty(vriDicts)) {
-                for (PdfVRIDict vriDict : vriDicts) {
-                    if (toBeExtracted(vriDict)) {
-                        dssCerts.putAll(vriDict.getCERTs());
-                    }
-                }
+            List<PdfVRIDict> vriDicts = getVRIs();
+            for (PdfVRIDict vriDict : vriDicts) {
+                dssCerts.putAll(vriDict.getCERTs());
             }
             return dssCerts;
         }
@@ -128,17 +123,31 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
     public List<CertificateToken> getVRIDictionaryCertValues() {
         if (dssDictionary != null) {
             Set<Long> certKeys = new HashSet<>();
-            List<PdfVRIDict> vris = dssDictionary.getVRIs();
-            if (vris != null) {
-                for (PdfVRIDict vri : vris) {
-                    if (toBeExtracted(vri)) {
-                        certKeys.addAll(vri.getCERTs().keySet());
-                    }
-                }
+            List<PdfVRIDict> vris = getVRIs();
+            for (PdfVRIDict vri : vris) {
+                certKeys.addAll(vri.getCERTs().keySet());
             }
             return getCertificatesByKeys(certKeys);
         }
         return Collections.emptyList();
+    }
+
+    private List<CertificateToken> getCertificatesByKeys(Collection<Long> objectIds) {
+        List<CertificateToken> certificateTokens = new ArrayList<>();
+        for (Long objectId : objectIds) {
+            certificateTokens.addAll(compositeCertificateSource.getCertificateTokensByObjectId(objectId));
+        }
+        return certificateTokens;
+    }
+
+    private List<PdfVRIDict> getVRIs() {
+        List<PdfVRIDict> result = new ArrayList<>();
+        for (PdfVRIDict vriDict : dssDictionary.getVRIs()) {
+            if (toBeExtracted(vriDict)) {
+                result.add(vriDict);
+            }
+        }
+        return result;
     }
 
     /**
@@ -149,14 +158,6 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
      */
     private boolean toBeExtracted(PdfVRIDict vri) {
         return relatedVRIDictionaryName == null || relatedVRIDictionaryName.equals(vri.getName());
-    }
-
-    private List<CertificateToken> getCertificatesByKeys(Collection<Long> objectIds) {
-        List<CertificateToken> certificateTokens = new ArrayList<>();
-        for (Long objectId : objectIds) {
-            certificateTokens.addAll(compositeCertificateSource.getCertificateTokensByObjectId(objectId));
-        }
-        return certificateTokens;
     }
 
 }

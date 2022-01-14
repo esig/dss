@@ -96,13 +96,9 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
             ocspMap = new HashMap<>();
             if (dssDictionary != null) {
                 ocspMap.putAll(dssDictionary.getOCSPs());
-                List<PdfVRIDict> vriDicts = dssDictionary.getVRIs();
-                if (Utils.isCollectionNotEmpty(vriDicts)) {
-                    for (PdfVRIDict vriDict : vriDicts) {
-                        if (toBeExtracted(vriDict)) {
-                            ocspMap.putAll(vriDict.getOCSPs());
-                        }
-                    }
+                List<PdfVRIDict> vriDicts = getVRIs();
+                for (PdfVRIDict vriDict : vriDicts) {
+                    ocspMap.putAll(vriDict.getOCSPs());
                 }
             }
         }
@@ -150,24 +146,13 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
     private Set<Long> getKeySetFromVRIDictionaries() {
         if (dssDictionary != null) {
             Set<Long> result = new HashSet<>();
-            for (PdfVRIDict vriDict : dssDictionary.getVRIs()) {
-                if (toBeExtracted(vriDict)) {
-                    result.addAll(vriDict.getOCSPs().keySet());
-                }
+            List<PdfVRIDict> vris = getVRIs();
+            for (PdfVRIDict vriDict : vris) {
+                result.addAll(vriDict.getOCSPs().keySet());
             }
             return result;
         }
         return Collections.emptySet();
-    }
-
-    /**
-     * This method checks whether the content of /VRI dictionary should be extracted
-     *
-     * @param vri {@link PdfVRIDict} to check
-     * @return TRUE if the content of /VRI dictionary shall be extracted, FALSE otherwise
-     */
-    private boolean toBeExtracted(PdfVRIDict vri) {
-        return relatedVRIDictionaryName == null || relatedVRIDictionaryName.equals(vri.getName());
     }
 
     private List<EncapsulatedRevocationTokenIdentifier<OCSP>> filterBinariesFromKeys(
@@ -215,8 +200,8 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
         if (Utils.containsAny(dssDictionary.getOCSPs().keySet(), tokenBinaryObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }
-        for (PdfVRIDict vriDict : dssDictionary.getVRIs()) {
-            if (toBeExtracted(vriDict) && Utils.containsAny(vriDict.getOCSPs().keySet(), tokenBinaryObjectIds)) {
+        for (PdfVRIDict vriDict : getVRIs()) {
+            if (Utils.containsAny(vriDict.getOCSPs().keySet(), tokenBinaryObjectIds)) {
                 result.add(RevocationOrigin.VRI_DICTIONARY);
             }
         }
@@ -241,12 +226,32 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
         if (Utils.containsAny(dssDictionary.getOCSPs().keySet(), tokenObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }
-        for (PdfVRIDict vriDict : dssDictionary.getVRIs()) {
-            if (toBeExtracted(vriDict) && Utils.containsAny(vriDict.getOCSPs().keySet(), tokenObjectIds)) {
+        for (PdfVRIDict vriDict : getVRIs()) {
+            if (Utils.containsAny(vriDict.getOCSPs().keySet(), tokenObjectIds)) {
                 result.add(RevocationOrigin.VRI_DICTIONARY);
             }
         }
         return result;
+    }
+
+    private List<PdfVRIDict> getVRIs() {
+        List<PdfVRIDict> result = new ArrayList<>();
+        for (PdfVRIDict vriDict : dssDictionary.getVRIs()) {
+            if (toBeExtracted(vriDict)) {
+                result.add(vriDict);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * This method checks whether the content of /VRI dictionary should be extracted
+     *
+     * @param vri {@link PdfVRIDict} to check
+     * @return TRUE if the content of /VRI dictionary shall be extracted, FALSE otherwise
+     */
+    private boolean toBeExtracted(PdfVRIDict vri) {
+        return relatedVRIDictionaryName == null || relatedVRIDictionaryName.equals(vri.getName());
     }
 
 }

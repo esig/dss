@@ -287,7 +287,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			for (Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> sigDictEntry : sigDictionaries.entrySet()) {
 				PdfSignatureDictionary signatureDictionary = sigDictEntry.getKey();
 				List<PdfSignatureField> fields = sigDictEntry.getValue();
-				List<String> fieldNames = fields.stream().map(f -> f.getFieldName()).collect(Collectors.toList());
+				List<String> fieldNames = fields.stream().map(PdfSignatureField::getFieldName).collect(Collectors.toList());
 
 				try {
 					LOG.info("Signature fields: {}", fieldNames);

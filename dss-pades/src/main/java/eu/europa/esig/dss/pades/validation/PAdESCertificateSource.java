@@ -56,16 +56,16 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 
 		this.dssDictionaryCertificateSource = new PdfDssDictCertificateSource(
 				pdfSignatureRevision.getCompositeDssDictionary().getCertificateSource(),
-				pdfSignatureRevision.getDssDictionary());
+				pdfSignatureRevision.getDssDictionary(), vriDictionaryName);
 
 		extractFromDssDictSource();
 	}
 
 	private void extractFromDssDictSource() {
-		for (CertificateToken certToken : dssDictionaryCertificateSource.getDSSDictionaryCertValues()) {
+		for (CertificateToken certToken : getDSSDictionaryCertValues()) {
 			addCertificate(certToken, CertificateOrigin.DSS_DICTIONARY);
 		}
-		for (CertificateToken certToken : dssDictionaryCertificateSource.getVRIDictionaryCertValues()) {
+		for (CertificateToken certToken : getVRIDictionaryCertValues()) {
 			addCertificate(certToken, CertificateOrigin.VRI_DICTIONARY);
 		}
 	}
