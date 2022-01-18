@@ -141,8 +141,8 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				// Signature qualification
 				CertificateWrapper signingCertificate = signature.getSigningCertificate();
 				if (signingCertificate != null) {
-					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(i18nProvider, signature.getId(), validation,
-							signingCertificate, tlAnalysis);
+					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(
+							i18nProvider, validation, signingCertificate, tlAnalysis);
 					signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 				}
 
