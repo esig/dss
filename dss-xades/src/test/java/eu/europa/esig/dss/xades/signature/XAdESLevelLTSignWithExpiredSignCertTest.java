@@ -69,8 +69,8 @@ public class XAdESLevelLTSignWithExpiredSignCertTest extends AbstractXAdESTestSi
     @Override
     protected DSSDocument sign() {
         Exception exception = assertThrows(AlertException.class, () -> super.sign());
-        assertTrue(exception.getMessage().contains("The signing certificate has been expired and " +
-                "there is no POE during its validity range."));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired and " +
+                "there is no POE during its validity range :"));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());

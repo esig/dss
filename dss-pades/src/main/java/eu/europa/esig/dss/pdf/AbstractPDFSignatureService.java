@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.alert.status.Status;
+import eu.europa.esig.dss.alert.status.MessageStatus;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -650,8 +650,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Executes the alert {@code alertOnSignatureFieldOverlap}
 	 */
 	private void alertOnSignatureFieldOverlap() {
-		String alertMessage = "The new signature field position overlaps with an existing annotation!";
-		alertOnSignatureFieldOverlap.alert(new Status(alertMessage));
+		MessageStatus status = new MessageStatus();
+		status.setMessage("The new signature field position overlaps with an existing annotation!");
+		alertOnSignatureFieldOverlap.alert(status);
 	}
 
 	/**
@@ -671,12 +672,13 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	private void alertOnSignatureFieldOutsidePageDimensions(final AnnotationBox signatureFieldBox,
 															final AnnotationBox pageBox) {
-		String alertMessage = String.format("The new signature field position is outside the page dimensions! " +
+		MessageStatus status = new MessageStatus();
+		status.setMessage(String.format("The new signature field position is outside the page dimensions! " +
 				"Signature Field : [minX=%s, maxX=%s, minY=%s, maxY=%s], " +
 				"Page : [minX=%s, maxX=%s, minY=%s, maxY=%s]",
 				signatureFieldBox.getMinX(), signatureFieldBox.getMaxX(), signatureFieldBox.getMinY(), signatureFieldBox.getMaxY(),
-				pageBox.getMinX(), pageBox.getMaxX(), pageBox.getMinY(), pageBox.getMaxY());
-		alertOnSignatureFieldOutsidePageDimensions.alert(new Status(alertMessage));
+				pageBox.getMinX(), pageBox.getMaxX(), pageBox.getMinY(), pageBox.getMaxY()));
+		alertOnSignatureFieldOutsidePageDimensions.alert(status);
 	}
 
 	@Override
@@ -746,8 +748,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	private void alertOnForbiddenSignatureCreation() {
-		String errorMessage = "The creation of new signatures is not permitted in the current document.";
-		alertOnForbiddenSignatureCreation.alert(new Status(errorMessage));
+		MessageStatus status = new MessageStatus();
+		status.setMessage("The creation of new signatures is not permitted in the current document.");
+		alertOnForbiddenSignatureCreation.alert(status);
 	}
 
 	private boolean isSignatureFieldCreationForbidden(SigFieldPermissions sigFieldPermissions, String signatureFieldId) {

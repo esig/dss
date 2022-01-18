@@ -412,7 +412,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		for (List<CertificateWrapper> certificateChain : chains) {
 			Date certChainMin = getMinExtensionPeriodForChain(certificateChain, null);
 			if (certChainMin != null) {
-				if (min == null || min.after(certChainMin)) {
+				if (min == null || min.before(certChainMin)) {
 					min = certChainMin;
 				}
 			}
@@ -422,7 +422,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			Date certChainMin = getMinExtensionPeriodForChain(timestampWrapper.getCertificateChain(), timestampWrapper.getProductionTime());
 			if (certChainMin != null) {
-				if (min == null || min.after(certChainMin)) {
+				if (min == null || min.before(certChainMin)) {
 					min = certChainMin;
 				}
 			}
@@ -434,40 +434,50 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	private Date getMinExtensionPeriodForChain(List<CertificateWrapper> certificateChain, Date usageTime) {
 		Date min = null;
 		for (CertificateWrapper certificateWrapper : certificateChain) {
-			if (certificateWrapper.isTrusted()) {
-				break;
-			}
-
-			Date lastTrustedUsage;
-			if (usageTime != null) {
-				lastTrustedUsage = usageTime;
-			} else {
-				lastTrustedUsage = poe.getLowestPOETime(certificateWrapper.getId());
-			}
 
 			if (ValidationProcessUtils.isRevocationCheckRequired(certificateWrapper)) {
+				Date lastTrustedUsage;
+				if (usageTime != null) {
+					lastTrustedUsage = usageTime;
+				} else {
+					lastTrustedUsage = poe.getLowestPOETime(certificateWrapper.getId());
+				}
+
 				Date tempMin = null;
+				boolean goodRevocationFound = false;
+
 				List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
 				for (CertificateRevocationWrapper revocationData : certificateRevocationData) {
-					if (lastTrustedUsage.after(revocationData.getThisUpdate())) {
+					// Revocation data shall be issued after the POE time
+					if (lastTrustedUsage.before(revocationData.getThisUpdate())) {
+						goodRevocationFound = true;
+						break;
 
+					} else {
 						Date nextUpdate = revocationData.getNextUpdate();
 						if (nextUpdate == null) {
 							nextUpdate = new Date(lastTrustedUsage.getTime() + 1000); // last usage + 1s
 						}
 
+						// find the minimum for the certificate across related revocations
 						if (tempMin == null || tempMin.after(nextUpdate)) {
 							tempMin = nextUpdate;
 						}
 					}
 				}
 
+				if (goodRevocationFound) {
+					continue;
+				}
+
+				// find maximum across all certificates in the chain
 				if (tempMin != null) {
-					if (min == null || min.after(tempMin)) {
+					if (min == null || min.before(tempMin)) {
 						min = tempMin;
 					}
 				}
 			}
+
 		}
 		return min;
 	}

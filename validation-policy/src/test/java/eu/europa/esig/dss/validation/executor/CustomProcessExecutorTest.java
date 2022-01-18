@@ -56,6 +56,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
@@ -153,6 +154,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -7564,6 +7566,259 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(counterSigId));
 		assertEquals(SubIndication.POLICY_PROCESSING_ERROR, simpleReport.getSubIndication(counterSigId));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void checkMinAndMaxUpdateValidLTTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_xades_level_lta_revo_freshness.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		List<XmlSignature> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+		XmlSignature xmlSignature = signatures.get(0);
+		XmlSigningCertificate signingCertificate = xmlSignature.getSigningCertificate();
+		assertNotNull(signingCertificate);
+		XmlSigningCertificate caCertificate = signingCertificate.getCertificate().getSigningCertificate();
+		assertNotNull(caCertificate);
+		List<XmlCertificateRevocation> revocations = caCertificate.getCertificate().getRevocations();
+		assertEquals(1, revocations.size());
+
+		assertEquals(revocations.get(0).getRevocation().getNextUpdate(),
+				simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+
+		List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
+		assertEquals(1, usedTimestamps.size());
+		XmlTimestamp xmlTimestamp = usedTimestamps.get(0);
+
+		assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void checkMinAndMaxUpdateValidTrustedCATest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_xades_level_lta_revo_freshness.xml"));
+		assertNotNull(diagnosticData);
+
+		List<XmlSignature> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+		XmlSignature xmlSignature = signatures.get(0);
+		XmlSigningCertificate signingCertificate = xmlSignature.getSigningCertificate();
+		assertNotNull(signingCertificate);
+		XmlSigningCertificate caCertificate = signingCertificate.getCertificate().getSigningCertificate();
+		assertNotNull(caCertificate);
+
+		caCertificate.getCertificate().setTrusted(true);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
+		assertEquals(1, usedTimestamps.size());
+		XmlTimestamp xmlTimestamp = usedTimestamps.get(0);
+		XmlSigningCertificate signTstCertificate = xmlTimestamp.getSigningCertificate();
+		assertNotNull(signTstCertificate);
+
+		List<XmlCertificateRevocation> revocations = signTstCertificate.getCertificate().getRevocations();
+		assertEquals(2, revocations.size());
+		Date firstUpdateTime = null;
+		for (XmlCertificateRevocation revocation : revocations) {
+			if (firstUpdateTime == null || firstUpdateTime.after(revocation.getRevocation().getNextUpdate())) {
+				firstUpdateTime = revocation.getRevocation().getNextUpdate();
+			}
+		}
+		assertNotNull(firstUpdateTime);
+
+		assertEquals(firstUpdateTime, simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+
+		assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void checkMinAndMaxUpdateValidTrustedCAAndTstIssuerTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_xades_level_lta_revo_freshness.xml"));
+		assertNotNull(diagnosticData);
+
+		List<XmlSignature> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+		XmlSignature xmlSignature = signatures.get(0);
+		XmlSigningCertificate signingCertificate = xmlSignature.getSigningCertificate();
+		assertNotNull(signingCertificate);
+		XmlSigningCertificate caCertificate = signingCertificate.getCertificate().getSigningCertificate();
+		assertNotNull(caCertificate);
+
+		caCertificate.getCertificate().setTrusted(true);
+
+		List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
+		assertEquals(1, usedTimestamps.size());
+		XmlTimestamp xmlTimestamp = usedTimestamps.get(0);
+		XmlSigningCertificate signTstCertificate = xmlTimestamp.getSigningCertificate();
+		assertNotNull(signTstCertificate);
+
+		signTstCertificate.getCertificate().setTrusted(true);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		List<XmlCertificateRevocation> revocations = signingCertificate.getCertificate().getRevocations();
+		assertEquals(2, revocations.size());
+		Date firstUpdateTime = null;
+		for (XmlCertificateRevocation revocation : revocations) {
+			if (firstUpdateTime == null || firstUpdateTime.after(revocation.getRevocation().getNextUpdate())) {
+				firstUpdateTime = revocation.getRevocation().getNextUpdate();
+			}
+		}
+		assertNotNull(firstUpdateTime);
+
+		assertEquals(firstUpdateTime, simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+
+		assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void checkMinAndMaxNoTstTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_xades_level_lta_revo_freshness.xml"));
+		assertNotNull(diagnosticData);
+
+		diagnosticData.setUsedTimestamps(Collections.emptyList());
+
+		List<XmlSignature> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+		XmlSignature xmlSignature = signatures.get(0);
+
+		xmlSignature.setFoundTimestamps(Collections.emptyList());
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		XmlSigningCertificate signingCertificate = xmlSignature.getSigningCertificate();
+		assertNotNull(signingCertificate);
+		XmlSigningCertificate caCertificate = signingCertificate.getCertificate().getSigningCertificate();
+		assertNotNull(caCertificate);
+		List<XmlCertificateRevocation> revocations = caCertificate.getCertificate().getRevocations();
+		assertEquals(1, revocations.size());
+
+		assertEquals(revocations.get(0).getRevocation().getNextUpdate(),
+				simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+
+		assertEquals(signingCertificate.getCertificate().getNotAfter(),
+				simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void checkMinAndMaxUpdateValidAtSignTimeTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_xades_level_lta_revo_freshness.xml"));
+		assertNotNull(diagnosticData);
+
+		List<XmlSignature> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+		XmlSignature xmlSignature = signatures.get(0);
+		XmlSigningCertificate signingCertificate = xmlSignature.getSigningCertificate();
+		assertNotNull(signingCertificate);
+		XmlSigningCertificate caCertificate = signingCertificate.getCertificate().getSigningCertificate();
+		assertNotNull(caCertificate);
+
+		List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
+		assertEquals(1, usedTimestamps.size());
+		XmlTimestamp xmlTimestamp = usedTimestamps.get(0);
+		xmlTimestamp.setProductionTime(xmlSignature.getClaimedSigningTime());
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		List<XmlCertificateRevocation> revocations = caCertificate.getCertificate().getRevocations();
+		assertEquals(1, revocations.size());
+
+		assertEquals(revocations.get(0).getRevocation().getNextUpdate(),
+				simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+
+		assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void checkMinAndMaxUpdateValidTrustedCATstAtSignTimeTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_xades_level_lta_revo_freshness.xml"));
+		assertNotNull(diagnosticData);
+
+		List<XmlSignature> signatures = diagnosticData.getSignatures();
+		assertEquals(1, signatures.size());
+		XmlSignature xmlSignature = signatures.get(0);
+		XmlSigningCertificate signingCertificate = xmlSignature.getSigningCertificate();
+		assertNotNull(signingCertificate);
+		XmlSigningCertificate caCertificate = signingCertificate.getCertificate().getSigningCertificate();
+		assertNotNull(caCertificate);
+
+		caCertificate.getCertificate().setTrusted(true);
+
+		List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
+		assertEquals(1, usedTimestamps.size());
+		XmlTimestamp xmlTimestamp = usedTimestamps.get(0);
+		xmlTimestamp.setProductionTime(xmlSignature.getClaimedSigningTime());
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		assertNull(simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+		assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
 		checkReports(reports);
 	}

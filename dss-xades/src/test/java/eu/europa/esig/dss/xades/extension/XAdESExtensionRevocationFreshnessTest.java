@@ -20,9 +20,12 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import eu.europa.esig.dss.alert.AbstractStatusAlert;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
+import eu.europa.esig.dss.alert.handler.AlertHandler;
+import eu.europa.esig.dss.alert.status.Status;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -30,14 +33,19 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.status.RevocationFreshnessStatus;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.AfterEach;
@@ -46,10 +54,15 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -113,7 +126,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		XAdESService service = new XAdESService(certificateVerifier);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(signatureParameters.bLevel().getSigningDate());
-		calendar.add(1, Calendar.MINUTE);
+		calendar.add(Calendar.DAY_OF_MONTH, 1);
 		service.setTspSource(getGoodTsaByTime(calendar.getTime()));
 
 		DSSDocument signedDocument = sign(service, documentToSign);
@@ -122,6 +135,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		Exception exception = assertThrows(AlertException.class, () ->
 				service.extendDocument(signedDocument, signatureParameters));
 		assertTrue(exception.getMessage().contains("Fresh revocation data is missing for one or more certificate(s)."));
+		assertTrue(exception.getMessage().contains(getSigningCert().getDSSIdAsString()));
 		assertTrue(exception.getMessage().contains("No revocation data found after the best signature time"));
 	}
 
@@ -135,7 +149,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		XAdESService service = new XAdESService(certificateVerifier);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(signatureParameters.bLevel().getSigningDate());
-		calendar.add(1, Calendar.MINUTE);
+		calendar.add(Calendar.DAY_OF_MONTH, 1);
 		service.setTspSource(getGoodTsaByTime(calendar.getTime()));
 
 		DSSDocument signedDocument = sign(service, documentToSign);
@@ -144,6 +158,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		Exception exception = assertThrows(AlertException.class, () ->
 				service.extendDocument(signedDocument, signatureParameters));
 		assertTrue(exception.getMessage().contains("Revocation data is missing for one or more POE(s)."));
+		assertFalse(exception.getMessage().contains(getSigningCert().getDSSIdAsString()));
 		assertTrue(exception.getMessage().contains("No revocation data found after the best signature time"));
 	}
 	
@@ -169,6 +184,117 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		
 		validate(extendedDocument);
 	}
+
+	@Test
+	public void throwExceptionOnNoRevocationAfterBestSignatureTimeEnsureNextUpdateTimeTest() {
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+
+		RevocationFreshnessStatusCheckAlertHandlerCallback callback = new RevocationFreshnessStatusCheckAlertHandlerCallback();
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new AbstractStatusAlert(callback) {});
+
+		XAdESService service = new XAdESService(certificateVerifier);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(signatureParameters.bLevel().getSigningDate());
+		calendar.add(Calendar.DAY_OF_MONTH, 1);
+		service.setTspSource(getGoodTsaByTime(calendar.getTime()));
+
+		DSSDocument signedDocument = sign(service, documentToSign);
+
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		service.extendDocument(signedDocument, signatureParameters);
+
+		Status statusCallback = callback.status;
+		assertNotNull(statusCallback);
+
+		assertTrue(statusCallback instanceof RevocationFreshnessStatus);
+		RevocationFreshnessStatus revocationFreshnessStatus = (RevocationFreshnessStatus) statusCallback;
+
+		String message = revocationFreshnessStatus.getMessage();
+		assertTrue(Utils.isStringNotEmpty(message));
+
+		Date minimalNextUpdateTime = revocationFreshnessStatus.getMinimalNextUpdateTime();
+		assertNotNull(minimalNextUpdateTime);
+
+		String errorString = revocationFreshnessStatus.getErrorString();
+		assertTrue(Utils.isStringNotEmpty(errorString));
+		assertTrue(errorString.contains(message));
+		assertTrue(errorString.contains(DSSUtils.formatDateToRFC(minimalNextUpdateTime)));
+
+		Collection<Token> relatedTokens = revocationFreshnessStatus.getRelatedTokens();
+		assertEquals(1, relatedTokens.size());
+		Collection<String> relatedObjectIds = revocationFreshnessStatus.getRelatedObjectIds();
+		assertEquals(1, relatedObjectIds.size());
+		assertEquals(new HashSet<>(relatedObjectIds), relatedTokens.stream().map(Token::getDSSIdAsString).collect(Collectors.toSet()));
+
+		Token token = relatedTokens.iterator().next();
+		assertTrue(token instanceof CertificateToken);
+
+		String tokenErrorMessage = revocationFreshnessStatus.getTokenMessage(token);
+		assertTrue(Utils.isStringNotEmpty(tokenErrorMessage));
+		String messageForObjectWithId = revocationFreshnessStatus.getMessageForObjectWithId(token.getDSSIdAsString());
+		assertTrue(Utils.isStringNotEmpty(messageForObjectWithId));
+		assertEquals(tokenErrorMessage, messageForObjectWithId);
+
+		assertTrue(errorString.contains(token.getDSSIdAsString()));
+		assertTrue(errorString.contains(tokenErrorMessage));
+	}
+
+	@Test
+	public void throwExceptionOnNoRevocationAfterBestSignatureTimeStatusTest() {
+		signingAlias = GOOD_USER_WITH_PEM_CRL;
+
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+
+		RevocationFreshnessStatusCheckAlertHandlerCallback callback = new RevocationFreshnessStatusCheckAlertHandlerCallback();
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new AbstractStatusAlert(callback) {});
+
+		XAdESService service = new XAdESService(certificateVerifier);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(signatureParameters.bLevel().getSigningDate());
+		calendar.add(Calendar.DAY_OF_MONTH, 1);
+		service.setTspSource(getGoodTsaByTime(calendar.getTime()));
+
+		DSSDocument signedDocument = sign(service, documentToSign);
+
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		service.extendDocument(signedDocument, signatureParameters);
+
+		Status statusCallback = callback.status;
+		assertNotNull(statusCallback);
+
+		assertTrue(statusCallback instanceof RevocationFreshnessStatus);
+		RevocationFreshnessStatus revocationFreshnessStatus = (RevocationFreshnessStatus) statusCallback;
+
+		String message = revocationFreshnessStatus.getMessage();
+		assertTrue(Utils.isStringNotEmpty(message));
+
+		Date minimalNextUpdateTime = revocationFreshnessStatus.getMinimalNextUpdateTime();
+		assertNotNull(minimalNextUpdateTime);
+
+		String errorString = revocationFreshnessStatus.getErrorString();
+		assertTrue(Utils.isStringNotEmpty(errorString));
+		assertTrue(errorString.contains(message));
+		assertTrue(errorString.contains(DSSUtils.formatDateToRFC(minimalNextUpdateTime)));
+
+		Collection<Token> relatedTokens = revocationFreshnessStatus.getRelatedTokens();
+		assertEquals(2, relatedTokens.size());
+		Collection<String> relatedObjectIds = revocationFreshnessStatus.getRelatedObjectIds();
+		assertEquals(2, relatedObjectIds.size());
+		assertEquals(new HashSet<>(relatedObjectIds), relatedTokens.stream().map(Token::getDSSIdAsString).collect(Collectors.toSet()));
+
+		for (Token token : relatedTokens) {
+			String tokenErrorMessage = revocationFreshnessStatus.getTokenMessage(token);
+			assertTrue(Utils.isStringNotEmpty(tokenErrorMessage));
+			String messageForObjectWithId = revocationFreshnessStatus.getMessageForObjectWithId(token.getDSSIdAsString());
+			assertTrue(Utils.isStringNotEmpty(messageForObjectWithId));
+			assertEquals(tokenErrorMessage, messageForObjectWithId);
+
+			assertTrue(errorString.contains(token.getDSSIdAsString()));
+			assertTrue(errorString.contains(tokenErrorMessage));
+		}
+	}
 	
 	private DSSDocument sign(XAdESService service, DSSDocument doc) {
 		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
@@ -189,6 +315,17 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	@Override
 	protected String getSigningAlias() {
 		return signingAlias;
+	}
+
+	private class RevocationFreshnessStatusCheckAlertHandlerCallback implements AlertHandler<Status> {
+
+		private Status status;
+
+		@Override
+		public void process(Status status) {
+			this.status = status;
+		}
+
 	}
 
 }

@@ -39,7 +39,7 @@ import java.util.Date;
 public abstract class Token implements IdentifierBasedObject, Serializable {
 
 	/**
-	 * The token identifier to avoid to compute more than one time the digest value
+	 * The token identifier to avoid computing more than one time the digest value
 	 */
 	private TokenIdentifier tokenIdentifier;
 
