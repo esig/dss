@@ -28,6 +28,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -43,6 +44,7 @@ import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
@@ -80,10 +82,15 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 		getService().setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 		DSSDocument defaultDrawerPdf = sign("default");
 		getService().setPdfObjFactory(new PdfBoxNativeObjectFactory());
+		DSSDocument previewNative = getService().previewPageWithVisualSignature(getDocumentToSign(), getSignatureParameters());
+		DSSDocument signatureFieldNative = getService().previewSignatureField(getDocumentToSign(), getSignatureParameters());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 
+		assertFalse(areVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(getDocumentToSign(), 0)));
+		assertFalse(areVisuallyEqual(previewNative, signatureFieldNative));
+		assertTrue(areVisuallyEqual(previewNative, nativeDrawerPdf));
 		assertTrue(areVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
 	}
 

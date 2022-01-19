@@ -49,6 +49,7 @@ import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -311,7 +312,8 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 	@Override
 	public BufferedImage generateImageScreenshot(int page) throws IOException {
-		return PdfBoxUtils.generateBufferedImageScreenshot(pdDocument, page);
+		PDFRenderer renderer = new PDFRenderer(pdDocument);
+		return renderer.renderImage(page - ImageUtils.DEFAULT_FIRST_PAGE);
 	}
 
 	@Override
