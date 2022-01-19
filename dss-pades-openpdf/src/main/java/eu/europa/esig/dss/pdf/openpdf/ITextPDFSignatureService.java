@@ -271,6 +271,16 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
+	public DSSDocument previewPageWithVisualSignature(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
+	}
+
+	@Override
+	public DSSDocument previewSignatureField(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
+	}
+
+	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESCommonParameters parameters) {
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();

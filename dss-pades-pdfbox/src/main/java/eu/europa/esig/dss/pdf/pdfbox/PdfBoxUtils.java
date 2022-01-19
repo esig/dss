@@ -22,16 +22,10 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.PDFRenderer;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -40,9 +34,6 @@ import java.util.Objects;
  *
  */
 public class PdfBoxUtils {
-
-	/** The default name for a screenshot document */
-	private static final String SCREENSHOT_PNG_NAME = "screenshot.png";
 
 	private PdfBoxUtils() {
 	}
@@ -68,7 +59,7 @@ public class PdfBoxUtils {
 	 */
 	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, String passwordProtection, int page) {
 		BufferedImage bufferedImage = generateBufferedImageScreenshot(pdfDocument, passwordProtection, page);
-		return toDSSDocument(bufferedImage);
+		return ImageUtils.toDSSDocument(bufferedImage);
 	}
 
 	/**
@@ -88,19 +79,6 @@ public class PdfBoxUtils {
 			throw new DSSException(String.format("Unable to generate a screenshot for the document with name '%s' "
 					+ "for the page number '%s'. Reason : %s", pdfDocument.getName(), page, e.getMessage()), e);
 		}
-	}
-
-	/**
-	 * The method generates a BufferedImage for the specified page of the document
-	 * 
-	 * @param pdDocument {@link PDDocument} to generate screenshot for
-	 * @param page       a page number to be generates (starts from 1)
-	 * @return {@link BufferedImage}
-	 * @throws IOException if an exception occurs
-	 */
-	public static BufferedImage generateBufferedImageScreenshot(PDDocument pdDocument, int page) throws IOException {
-		PDFRenderer renderer = new PDFRenderer(pdDocument);
-		return renderer.renderImage(page - ImageUtils.DEFAULT_FIRST_PAGE);
 	}
 
 	/**
@@ -143,7 +121,7 @@ public class PdfBoxUtils {
 		BufferedImage outputImage = getOutputImage(width, height);
 		ImageUtils.drawSubtractionImage(screenshotDoc1, screenshotDoc2, outputImage);
 
-		return toDSSDocument(outputImage);
+		return ImageUtils.toDSSDocument(outputImage);
 	}
 
 	private static BufferedImage getOutputImage(int width, int height) {
@@ -152,22 +130,6 @@ public class PdfBoxUtils {
 		drawer.setBackground(Color.WHITE);
 		drawer.clearRect(0, 0, width, height);
 		return outputImage;
-	}
-
-	/**
-	 * Transforms a {@code BufferedImage} to {@code DSSDocument}
-	 * 
-	 * @param bufferedImage {@link BufferedImage} to convert
-	 * @return {@link DSSDocument}
-	 */
-	private static DSSDocument toDSSDocument(BufferedImage bufferedImage) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			ImageIO.write(bufferedImage, "png", baos);
-			return new InMemoryDocument(baos.toByteArray(), SCREENSHOT_PNG_NAME, MimeType.PNG);
-		} catch (IOException e) {
-			throw new DSSException(
-					String.format("Unable to convert BufferedImage to DSSDocument. Reason : %s", e.getMessage()), e);
-		}
 	}
 
 }

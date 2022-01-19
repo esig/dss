@@ -126,6 +126,36 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			throw new DSSException("Cannot obtain the content timestamp", e);
 		}
 	}
+	
+	/**
+	 * Returns a page preview with the visual signature
+	 * @param toSignDocument the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return a DSSDocument with the PNG picture
+	 */
+	public DSSDocument previewPageWithVisualSignature(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+
+		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		return pdfSignatureService.previewPageWithVisualSignature(toSignDocument, parameters);
+	}
+
+	/**
+	 * Returns a preview of the signature field
+	 * @param toSignDocument the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return a DSSDocument with the PNG picture
+	 */
+	public DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+
+		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		return pdfSignatureService.previewSignatureField(toSignDocument, parameters);
+	}
 
 	@Override
 	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) throws DSSException {

@@ -47,6 +47,24 @@ public interface PDFSignatureService {
 	byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
 
 	/**
+	 * Returns a page preview with the visual signature
+	 * @param toSignDocument the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return a DSSDocument with the PNG picture
+	 */
+	DSSDocument previewPageWithVisualSignature(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
+
+	/**
+	 * Returns a preview of the signature field
+	 * @param toSignDocument the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return a DSSDocument with the PNG picture
+	 */
+	DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
+
+	/**
 	 * Signs a PDF document
 	 *
 	 * @param pdfData
