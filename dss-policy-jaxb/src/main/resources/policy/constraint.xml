@@ -67,7 +67,7 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="FAIL" />
+				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
@@ -90,7 +90,7 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="FAIL" />
+				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -149,7 +149,7 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="FAIL" />
+				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
@@ -170,7 +170,7 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="FAIL" />
+				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -217,7 +217,7 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="FAIL" />
+				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 				<ExtendedKeyUsage Level="WARN">
 					<Id>timeStamping</Id>
 				</ExtendedKeyUsage>
@@ -232,7 +232,7 @@
 				<RevocationDataAvailable Level="WARN" />
 				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="FAIL" />
+				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -250,7 +250,6 @@
 		<TSAGeneralNameContentMatch Level="WARN" />
 	</Timestamp>
 	<Revocation>
-        <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
         <UnknownStatus Level="FAIL" />
         <SelfIssuedOCSP Level="WARN" />
 		<BasicSignatureConstraints>
@@ -265,7 +264,7 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="FAIL" />
+				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -276,7 +275,7 @@
 				<RevocationDataAvailable Level="WARN" />
 				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
-				<RevocationDataFreshness Level="FAIL" />
+				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />

@@ -7144,12 +7144,13 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(diagnosticData);
 
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
-		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		CertificateConstraints signingCertificate = signatureConstraints.getBasicSignatureConstraints().getSigningCertificate();
 		TimeConstraint timeConstraint = new TimeConstraint();
 		timeConstraint.setUnit(TimeUnit.SECONDS);
 		timeConstraint.setValue(0);
 		timeConstraint.setLevel(Level.IGNORE);
-		revocationConstraints.setRevocationFreshness(timeConstraint);
+		signingCertificate.setRevocationFreshness(timeConstraint);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
@@ -7170,12 +7171,13 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(diagnosticData);
 
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
-		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		CertificateConstraints signingCertificate = signatureConstraints.getBasicSignatureConstraints().getSigningCertificate();
 		TimeConstraint timeConstraint = new TimeConstraint();
 		timeConstraint.setUnit(TimeUnit.SECONDS);
 		timeConstraint.setValue(0);
 		timeConstraint.setLevel(Level.FAIL);
-		revocationConstraints.setRevocationFreshness(timeConstraint);
+		signingCertificate.setRevocationFreshness(timeConstraint);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
@@ -7233,12 +7235,13 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(diagnosticData);
 
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
-		RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		CertificateConstraints signingCertificate = signatureConstraints.getBasicSignatureConstraints().getSigningCertificate();
 		TimeConstraint timeConstraint = new TimeConstraint();
 		timeConstraint.setUnit(TimeUnit.SECONDS);
 		timeConstraint.setValue(0);
 		timeConstraint.setLevel(Level.FAIL);
-		revocationConstraints.setRevocationFreshness(timeConstraint);
+		signingCertificate.setRevocationFreshness(timeConstraint);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
@@ -7576,14 +7579,22 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				new File("src/test/resources/diag_data_xades_level_lta_revo_freshness.xml"));
 		assertNotNull(diagnosticData);
 
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		CertificateConstraints caCertificateConstraints = signatureConstraints
+				.getBasicSignatureConstraints().getCACertificate();
+		caCertificateConstraints.getRevocationFreshness().setLevel(Level.FAIL);
+
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setValidationPolicy(validationPolicy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		List<XmlSignature> signatures = diagnosticData.getSignatures();
 		assertEquals(1, signatures.size());
@@ -7624,14 +7635,21 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		caCertificate.getCertificate().setTrusted(true);
 
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		CertificateConstraints caCertificateConstraints = signatureConstraints
+				.getBasicSignatureConstraints().getCACertificate();
+		caCertificateConstraints.getRevocationFreshness().setLevel(Level.FAIL);
+
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setValidationPolicy(validationPolicy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
 		assertEquals(1, usedTimestamps.size());
@@ -7819,6 +7837,396 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNull(simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 		assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
 				simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void revocationFreshnessSigningCertificateTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		CertificateConstraints signingCertificateConstraints = signatureConstraints
+				.getBasicSignatureConstraints().getSigningCertificate();
+
+		TimeConstraint constraint = new TimeConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.setUnit(TimeUnit.SECONDS);
+		constraint.setValue(0);
+		signingCertificateConstraints.setRevocationFreshness(constraint);
+
+		signatureConstraints.getBasicSignatureConstraints().getCACertificate()
+				.getRevocationFreshness().setLevel(Level.IGNORE);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_RFC_IRIF_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		XmlCertificate signingCertificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
+		String signingCertificateId = signingCertificate.getId();
+		String caCertificateId = signingCertificate.getSigningCertificate().getCertificate().getId();
+
+		boolean signingCertificateFound = false;
+		boolean caCertificateFound = false;
+		boolean rootCertificateFound = false;
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+		for (XmlSubXCV subXCV : subXCVs) {
+			if (signingCertificateId.equals(subXCV.getId())) {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNotNull(rfc);
+				assertEquals(Indication.INDETERMINATE, rfc.getConclusion().getIndication());
+				assertEquals(SubIndication.TRY_LATER, rfc.getConclusion().getSubIndication());
+
+				boolean revocationFreshnessCheckFound = false;
+				for (XmlConstraint xmlConstraint : rfc.getConstraint()) {
+					if (MessageTag.BBB_RFC_IRIF.getId().equals(xmlConstraint.getName().getKey())) {
+						assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+						assertEquals(MessageTag.BBB_RFC_IRIF_ANS.getId(), xmlConstraint.getError().getKey());
+						revocationFreshnessCheckFound = true;
+					}
+				}
+				assertTrue(revocationFreshnessCheckFound);
+
+				signingCertificateFound = true;
+
+			} else if (caCertificateId.equals(subXCV.getId())) {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNotNull(rfc);
+				assertEquals(Indication.PASSED, rfc.getConclusion().getIndication());
+
+				boolean revocationFreshnessCheckFound = false;
+				for (XmlConstraint xmlConstraint : rfc.getConstraint()) {
+					if (MessageTag.BBB_RFC_IRIF.getId().equals(xmlConstraint.getName().getKey())) {
+						assertEquals(XmlStatus.IGNORED, xmlConstraint.getStatus());
+						revocationFreshnessCheckFound = true;
+					}
+				}
+				assertTrue(revocationFreshnessCheckFound);
+				caCertificateFound = true;
+
+			} else {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNull(rfc);
+
+				rootCertificateFound = true;
+			}
+		}
+		assertTrue(signingCertificateFound);
+		assertTrue(caCertificateFound);
+		assertTrue(rootCertificateFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void revocationFreshnessSigningCertificateWithTimeTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		CertificateConstraints signingCertificateConstraints = signatureConstraints
+				.getBasicSignatureConstraints().getSigningCertificate();
+
+		TimeConstraint constraint = new TimeConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.setUnit(TimeUnit.HOURS);
+		constraint.setValue(24);
+		signingCertificateConstraints.setRevocationFreshness(constraint);
+
+		signatureConstraints.getBasicSignatureConstraints().getCACertificate()
+				.getRevocationFreshness().setLevel(Level.IGNORE);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		XmlCertificate signingCertificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
+		String signingCertificateId = signingCertificate.getId();
+		String caCertificateId = signingCertificate.getSigningCertificate().getCertificate().getId();
+
+		boolean signingCertificateFound = false;
+		boolean caCertificateFound = false;
+		boolean rootCertificateFound = false;
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+		for (XmlSubXCV subXCV : subXCVs) {
+			if (signingCertificateId.equals(subXCV.getId())) {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNotNull(rfc);
+				assertEquals(Indication.PASSED, rfc.getConclusion().getIndication());
+
+				boolean revocationFreshnessCheckFound = false;
+				for (XmlConstraint xmlConstraint : rfc.getConstraint()) {
+					if (MessageTag.BBB_RFC_IRIF.getId().equals(xmlConstraint.getName().getKey())) {
+						assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+						revocationFreshnessCheckFound = true;
+					}
+				}
+				assertTrue(revocationFreshnessCheckFound);
+
+				signingCertificateFound = true;
+
+			} else if (caCertificateId.equals(subXCV.getId())) {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNotNull(rfc);
+				assertEquals(Indication.PASSED, rfc.getConclusion().getIndication());
+
+				boolean revocationFreshnessCheckFound = false;
+				for (XmlConstraint xmlConstraint : rfc.getConstraint()) {
+					if (MessageTag.BBB_RFC_IRIF.getId().equals(xmlConstraint.getName().getKey())) {
+						assertEquals(XmlStatus.IGNORED, xmlConstraint.getStatus());
+						revocationFreshnessCheckFound = true;
+					}
+				}
+				assertTrue(revocationFreshnessCheckFound);
+				caCertificateFound = true;
+
+			} else {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNull(rfc);
+
+				rootCertificateFound = true;
+			}
+		}
+		assertTrue(signingCertificateFound);
+		assertTrue(caCertificateFound);
+		assertTrue(rootCertificateFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void revocationFreshnessCACertificateTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+
+		signatureConstraints.getBasicSignatureConstraints().getSigningCertificate()
+				.getRevocationFreshness().setLevel(Level.IGNORE);
+
+		CertificateConstraints caCertificateConstraints = signatureConstraints
+				.getBasicSignatureConstraints().getCACertificate();
+
+		TimeConstraint constraint = new TimeConstraint();
+		constraint.setLevel(Level.FAIL);
+		constraint.setUnit(TimeUnit.SECONDS);
+		constraint.setValue(0);
+		caCertificateConstraints.setRevocationFreshness(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.TRY_LATER, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_RFC_IRIF_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		XmlCertificate signingCertificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
+		String signingCertificateId = signingCertificate.getId();
+		String caCertificateId = signingCertificate.getSigningCertificate().getCertificate().getId();
+
+		boolean signingCertificateFound = false;
+		boolean caCertificateFound = false;
+		boolean rootCertificateFound = false;
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+		for (XmlSubXCV subXCV : subXCVs) {
+			if (signingCertificateId.equals(subXCV.getId())) {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNotNull(rfc);
+				assertEquals(Indication.PASSED, rfc.getConclusion().getIndication());
+
+				boolean revocationFreshnessCheckFound = false;
+				for (XmlConstraint xmlConstraint : rfc.getConstraint()) {
+					if (MessageTag.BBB_RFC_IRIF.getId().equals(xmlConstraint.getName().getKey())) {
+						assertEquals(XmlStatus.IGNORED, xmlConstraint.getStatus());
+						revocationFreshnessCheckFound = true;
+					}
+				}
+				assertTrue(revocationFreshnessCheckFound);
+
+				signingCertificateFound = true;
+
+			} else if (caCertificateId.equals(subXCV.getId())) {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNotNull(rfc);
+				assertEquals(Indication.INDETERMINATE, rfc.getConclusion().getIndication());
+				assertEquals(SubIndication.TRY_LATER, rfc.getConclusion().getSubIndication());
+
+				boolean revocationFreshnessCheckFound = false;
+				for (XmlConstraint xmlConstraint : rfc.getConstraint()) {
+					if (MessageTag.BBB_RFC_IRIF.getId().equals(xmlConstraint.getName().getKey())) {
+						assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+						assertEquals(MessageTag.BBB_RFC_IRIF_ANS.getId(), xmlConstraint.getError().getKey());
+						revocationFreshnessCheckFound = true;
+					}
+				}
+				assertTrue(revocationFreshnessCheckFound);
+
+				caCertificateFound = true;
+
+			} else {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNull(rfc);
+
+				rootCertificateFound = true;
+			}
+		}
+		assertTrue(signingCertificateFound);
+		assertTrue(caCertificateFound);
+		assertTrue(rootCertificateFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void revocationFreshnessCACertificateNextUpdateCheckTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+
+		signatureConstraints.getBasicSignatureConstraints().getSigningCertificate()
+				.getRevocationFreshness().setLevel(Level.IGNORE);
+
+		CertificateConstraints caCertificateConstraints = signatureConstraints
+				.getBasicSignatureConstraints().getCACertificate();
+		caCertificateConstraints.setRevocationFreshness(null);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+		caCertificateConstraints.setRevocationFreshnessNextUpdate(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		reports.print();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+
+		XmlXCV xcv = signatureBBB.getXCV();
+		assertNotNull(xcv);
+
+		XmlCertificate signingCertificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
+		String signingCertificateId = signingCertificate.getId();
+		String caCertificateId = signingCertificate.getSigningCertificate().getCertificate().getId();
+
+		boolean signingCertificateFound = false;
+		boolean caCertificateFound = false;
+		boolean rootCertificateFound = false;
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+		for (XmlSubXCV subXCV : subXCVs) {
+			if (signingCertificateId.equals(subXCV.getId())) {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNotNull(rfc);
+				assertEquals(Indication.PASSED, rfc.getConclusion().getIndication());
+
+				boolean revocationFreshnessCheckFound = false;
+				boolean revocationFreshnessNextUpdateCheckFound = false;
+				for (XmlConstraint xmlConstraint : rfc.getConstraint()) {
+					if (MessageTag.BBB_RFC_IRIF.getId().equals(xmlConstraint.getName().getKey())) {
+						assertEquals(XmlStatus.IGNORED, xmlConstraint.getStatus());
+						revocationFreshnessCheckFound = true;
+					} else if (MessageTag.BBB_RFC_IRIF_TUNU.getId().equals(xmlConstraint.getName().getKey())) {
+						revocationFreshnessNextUpdateCheckFound = true;
+					}
+				}
+				assertTrue(revocationFreshnessCheckFound);
+				assertFalse(revocationFreshnessNextUpdateCheckFound);
+
+				signingCertificateFound = true;
+
+			} else if (caCertificateId.equals(subXCV.getId())) {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNotNull(rfc);
+				assertEquals(Indication.PASSED, rfc.getConclusion().getIndication());
+
+				boolean revocationFreshnessCheckFound = false;
+				boolean revocationFreshnessNextUpdateCheckFound = false;
+				for (XmlConstraint xmlConstraint : rfc.getConstraint()) {
+					if (MessageTag.BBB_RFC_IRIF_TUNU.getId().equals(xmlConstraint.getName().getKey())) {
+						assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+						revocationFreshnessNextUpdateCheckFound = true;
+					} else if (MessageTag.BBB_RFC_IRIF.getId().equals(xmlConstraint.getName().getKey())) {
+						revocationFreshnessCheckFound = true;
+					}
+				}
+				assertFalse(revocationFreshnessCheckFound);
+				assertTrue(revocationFreshnessNextUpdateCheckFound);
+
+				caCertificateFound = true;
+
+			} else {
+				XmlRFC rfc = subXCV.getRFC();
+				assertNull(rfc);
+
+				rootCertificateFound = true;
+			}
+		}
+		assertTrue(signingCertificateFound);
+		assertTrue(caCertificateFound);
+		assertTrue(rootCertificateFound);
 
 		checkReports(reports);
 	}
