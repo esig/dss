@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.validation;
 import eu.europa.esig.dss.cades.validation.CAdESCertificateSource;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCertificateSource;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import org.bouncycastle.cms.SignerInformation;
@@ -30,6 +31,7 @@ import org.bouncycastle.cms.SignerInformation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * CertificateSource that will retrieve the certificate from a PAdES Signature
@@ -47,18 +49,23 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	 * @param pdfSignatureRevision the used {@link PdfSignatureRevision}
 	 * @param signerInformation    the current {@link SignerInformation}
 	 */
-	public PAdESCertificateSource(final PdfSignatureRevision pdfSignatureRevision, final SignerInformation signerInformation) {
+	public PAdESCertificateSource(PdfSignatureRevision pdfSignatureRevision, final String vriDictionaryName,
+								  SignerInformation signerInformation) {
 		super(pdfSignatureRevision.getCMSSignedData(), signerInformation);
+		Objects.requireNonNull(vriDictionaryName, "vriDictionaryName cannot be null!");
 
-		this.dssDictionaryCertificateSource = new PdfDssDictCertificateSource(pdfSignatureRevision.getDssDictionary());
+		this.dssDictionaryCertificateSource = new PdfDssDictCertificateSource(
+				pdfSignatureRevision.getCompositeDssDictionary().getCertificateSource(),
+				pdfSignatureRevision.getDssDictionary(), vriDictionaryName);
+
 		extractFromDssDictSource();
 	}
 
 	private void extractFromDssDictSource() {
-		for (CertificateToken certToken : dssDictionaryCertificateSource.getDSSDictionaryCertValues()) {
+		for (CertificateToken certToken : getDSSDictionaryCertValues()) {
 			addCertificate(certToken, CertificateOrigin.DSS_DICTIONARY);
 		}
-		for (CertificateToken certToken : dssDictionaryCertificateSource.getVRIDictionaryCertValues()) {
+		for (CertificateToken certToken : getVRIDictionaryCertValues()) {
 			addCertificate(certToken, CertificateOrigin.VRI_DICTIONARY);
 		}
 	}

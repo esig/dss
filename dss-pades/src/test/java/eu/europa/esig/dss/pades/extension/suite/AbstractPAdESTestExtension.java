@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -50,6 +35,7 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
 import eu.europa.esig.dss.utils.Utils;
@@ -62,6 +48,19 @@ import eu.europa.esig.validationreport.jaxb.SAVRIType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<PAdESSignatureParameters, PAdESTimestampParameters> {
 
@@ -141,7 +140,7 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 		if (Utils.isCollectionNotEmpty(dssDictionaries) && dssDictionaries.size() > 1) {
 			Map<Long, CertificateToken> previousCertificateMap = null;
 			Map<Long, CRLBinary> previousCrlMap = null;
-			Map<Long, BasicOCSPResp> previousOcspMap = null;
+			Map<Long, OCSPResponseBinary> previousOcspMap = null;
 			
 			for (PdfDssDict dssDict : dssDictionaries) {
 				if (previousCertificateMap != null) {
@@ -163,7 +162,7 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 				previousCrlMap = dssDict.getCRLs();
 				
 				if (previousOcspMap != null) {
-					Map<Long, BasicOCSPResp> currentMap = dssDict.getOCSPs();
+					Map<Long, OCSPResponseBinary> currentMap = dssDict.getOCSPs();
 					assertFalse(currentMap.size() < previousOcspMap.size());
 					for (Long key : previousOcspMap.keySet()) {
 						assertEquals(previousOcspMap.get(key), currentMap.get(key));

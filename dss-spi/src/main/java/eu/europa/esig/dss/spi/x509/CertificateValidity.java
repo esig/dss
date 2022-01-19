@@ -79,7 +79,7 @@ public class CertificateValidity implements Serializable {
 	}
 
 	/**
-	 * This constructor create an object containing all information concerning the validity of a candidate for the
+	 * This constructor creates an object containing all information concerning the validity of a candidate for the
 	 * signing certificate which is based only on the {@code PublicKey}. To be used in case of a non AdES signature.
 	 *
 	 * @param publicKey

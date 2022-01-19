@@ -42,6 +42,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -312,6 +313,11 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	public <T> List<T> reverseList(List<T> list) {
 		return Lists.reverse(new ArrayList<>(list));
+	}
+
+	@Override
+	public <T> boolean containsAny(Collection<T> superCollection, Collection<T> subCollection) {
+		return !Collections.disjoint(superCollection, subCollection);
 	}
 
 }

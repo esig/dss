@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The classes finds a signer data for a PAdESSignature /
+ * The class finds a signer data for a PAdESSignature /
  * PdfSignatureOrDocTimestampInfo instance
  *
  */

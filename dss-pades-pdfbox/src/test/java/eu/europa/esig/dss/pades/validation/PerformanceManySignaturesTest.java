@@ -22,21 +22,28 @@ package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PerformanceManySignaturesTest {
 
@@ -65,6 +72,21 @@ public class PerformanceManySignaturesTest {
         assertNotNull(signatures);
         assertEquals(51, signatures.size());
 
+        List<EncapsulatedRevocationTokenIdentifier<?>> revocationBinaries = new ArrayList<>();
+        for (AdvancedSignature signature : signatures) {
+            assertTrue(signature instanceof PAdESSignature);
+            PAdESSignature padesSignature = (PAdESSignature) signature;
+            verifyRevocationSource(revocationBinaries, padesSignature.getCRLSource());
+            verifyRevocationSource(revocationBinaries, padesSignature.getOCSPSource());
+        }
+
+        for (PdfRevision revision : revisions) {
+            if (revision instanceof PdfDocDssRevision) {
+                verifyRevocationSource(revocationBinaries, ((PdfDocDssRevision) revision).getCRLSource());
+                verifyRevocationSource(revocationBinaries, ((PdfDocDssRevision) revision).getOCSPSource());
+            }
+        }
+
         List<TimestampToken> detachedTimestamps = assertTimeout(Duration.ofSeconds(2), () -> validator.getDetachedTimestamps());
         assertNotNull(detachedTimestamps);
         assertEquals(0, detachedTimestamps.size());
@@ -77,6 +99,25 @@ public class PerformanceManySignaturesTest {
         assertEquals(0, pdfDssDict.getCRLs().size());
         assertEquals(1, pdfDssDict.getOCSPs().size());
         assertEquals(51, pdfDssDict.getVRIs().size());
+    }
+
+    private <R extends Revocation> void verifyRevocationSource(List<EncapsulatedRevocationTokenIdentifier<?>> binaries,
+                                                               OfflineRevocationSource<R> source) {
+        Set<EncapsulatedRevocationTokenIdentifier<R>> allRevocationBinaries = source.getAllRevocationBinaries();
+        for (EncapsulatedRevocationTokenIdentifier<R> identifier : allRevocationBinaries) {
+            // ensure same binaries == same object
+            assertEquals(binaries.contains(identifier), containsMemoryObject(binaries, identifier));
+        }
+        binaries.addAll(allRevocationBinaries);
+    }
+
+    private <T> boolean containsMemoryObject(List<T> list, T object) {
+        for (T item : list) {
+            if (item == object) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Test

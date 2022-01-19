@@ -3,11 +3,13 @@ package eu.europa.esig.dss.pades.validation;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCRLSource;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCertificateSource;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictOCSPSource;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,9 +68,9 @@ public class PdfValidationDataContainer extends ValidationDataContainer {
                     }
 
                     PdfDssDictOCSPSource ocspSource = dssRevision.getOCSPSource();
-                    Map<Long, BasicOCSPResp> storedOcspResps = ocspSource.getOcspMap();
-                    for (Map.Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
-                        final OCSPResponseBinary ocspResponseBinary = OCSPResponseBinary.build(ocspEntry.getValue());
+                    Map<Long, OCSPResponseBinary> storedOcspResps = ocspSource.getOcspMap();
+                    for (Map.Entry<Long, OCSPResponseBinary> ocspEntry : storedOcspResps.entrySet()) {
+                        OCSPResponseBinary ocspResponseBinary = ocspEntry.getValue();
                         String tokenKey = ocspResponseBinary.getDSSId().asXmlId();
                         if (!knownObjects.containsKey(tokenKey)) { // keeps the really first occurrence
                             knownObjects.put(tokenKey, ocspEntry.getKey());

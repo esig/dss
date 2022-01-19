@@ -62,7 +62,7 @@ public abstract class OfflineOCSPSource extends OfflineRevocationSource<OCSP> {
 
 		Set<RevocationToken<OCSP>> allRevocationTokens = getAllRevocationTokens();
 		for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
-			if (certificate.getDSSIdAsString().equals(revocationToken.getRelatedCertificateId()) && issuer.equals(revocationToken.getIssuerCertificateToken())) {
+			if (certificate.getDSSIdAsString().equals(revocationToken.getRelatedCertificateId())) {
 				result.add(revocationToken);
 			}
 		}

@@ -32,6 +32,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -40,7 +41,6 @@ import eu.europa.esig.validationreport.jaxb.SADSSType;
 import eu.europa.esig.validationreport.jaxb.SAFilterType;
 import eu.europa.esig.validationreport.jaxb.SASubFilterType;
 import eu.europa.esig.validationreport.jaxb.SAVRIType;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -73,7 +73,7 @@ public class DSS1523Test extends AbstractPkiFactoryTestValidation<PAdESSignature
 		assertEquals(1, certificateMap.size());
 		assertNotNull(certificateMap.get(20L));
 
-		Map<Long, BasicOCSPResp> ocspMap = pdfDssDict.getOCSPs();
+		Map<Long, OCSPResponseBinary> ocspMap = pdfDssDict.getOCSPs();
 		assertEquals(1, ocspMap.size());
 		assertNotNull(ocspMap.get(22L));
 

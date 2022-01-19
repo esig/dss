@@ -489,8 +489,23 @@ public final class Utils {
 	 * @param <T> the class of list elements
 	 * @return reversed list
 	 */
-	public static <T extends Object> List<T> reverseList(List<T> list) {
+	public static <T> List<T> reverseList(List<T> list) {
 		return impl.reverseList(list);
+	}
+
+	/**
+	 * This method returns boolean result whether the {@code superCollection}
+	 * contains any element of the {@code subCollection}
+	 *
+	 * Ex. {'A', 'B', 'C'}, {'B', 'C', 'D'} = TRUE
+	 *
+	 * @param superCollection first collection
+	 * @param subCollection second collection
+	 * @param <T> object
+	 * @return TRUE if both collection intersect each other, FALSE otherwise
+	 */
+	public static <T> boolean containsAny(Collection<T> superCollection, Collection<T> subCollection) {
+		return impl.containsAny(superCollection, subCollection);
 	}
 
 }
