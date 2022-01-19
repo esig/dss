@@ -229,7 +229,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		Token token = relatedTokens.iterator().next();
 		assertTrue(token instanceof CertificateToken);
 
-		String tokenErrorMessage = revocationFreshnessStatus.getTokenMessage(token);
+		String tokenErrorMessage = revocationFreshnessStatus.getMessageForToken(token);
 		assertTrue(Utils.isStringNotEmpty(tokenErrorMessage));
 		String messageForObjectWithId = revocationFreshnessStatus.getMessageForObjectWithId(token.getDSSIdAsString());
 		assertTrue(Utils.isStringNotEmpty(messageForObjectWithId));
@@ -285,7 +285,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		assertEquals(new HashSet<>(relatedObjectIds), relatedTokens.stream().map(Token::getDSSIdAsString).collect(Collectors.toSet()));
 
 		for (Token token : relatedTokens) {
-			String tokenErrorMessage = revocationFreshnessStatus.getTokenMessage(token);
+			String tokenErrorMessage = revocationFreshnessStatus.getMessageForToken(token);
 			assertTrue(Utils.isStringNotEmpty(tokenErrorMessage));
 			String messageForObjectWithId = revocationFreshnessStatus.getMessageForObjectWithId(token.getDSSIdAsString());
 			assertTrue(Utils.isStringNotEmpty(messageForObjectWithId));

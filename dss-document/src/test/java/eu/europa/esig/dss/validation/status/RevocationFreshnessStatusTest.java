@@ -46,9 +46,9 @@ public class RevocationFreshnessStatusTest {
         status.addRelatedTokenAndErrorMessage(CA_CERTIFICATE, CERT_TWO_MESSAGE);
         status.addRelatedTokenAndErrorMessage(TST_CERTIFICATE, CERT_THREE_MESSAGE);
 
-        assertNotNull(status.getTokenMessage(SIGNING_CERTIFICATE));
-        assertNotNull(status.getTokenMessage(CA_CERTIFICATE));
-        assertNotNull(status.getTokenMessage(TST_CERTIFICATE));
+        assertNotNull(status.getMessageForToken(SIGNING_CERTIFICATE));
+        assertNotNull(status.getMessageForToken(CA_CERTIFICATE));
+        assertNotNull(status.getMessageForToken(TST_CERTIFICATE));
 
         assertNotNull(status.getMessageForObjectWithId(SIGNING_CERTIFICATE.getDSSIdAsString()));
         assertNotNull(status.getMessageForObjectWithId(CA_CERTIFICATE.getDSSIdAsString()));

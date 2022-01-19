@@ -43,7 +43,7 @@ public class TokenStatus extends ObjectStatus {
      * @param token {@link Token} to get caused error message for
      * @return {@link String} error message
      */
-    public String getTokenMessage(Token token) {
+    public String getMessageForToken(Token token) {
         return relatedTokenMap.get(token);
     }
 

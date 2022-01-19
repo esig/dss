@@ -37,6 +37,16 @@ public class SignatureStatus extends ObjectStatus {
         return relatedSignatureMap.keySet();
     }
 
+    /**
+     * Returns error message for the given signature
+     *
+     * @param signature {@link AdvancedSignature} to get caused error message for
+     * @return {@link String} error message
+     */
+    public String getMessageForSignature(AdvancedSignature signature) {
+        return relatedSignatureMap.get(signature);
+    }
+
     @Override
     public boolean isEmpty() {
         return super.isEmpty() && Utils.isMapEmpty(relatedSignatureMap);
