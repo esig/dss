@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.policy;
 
 import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.Model;
@@ -113,7 +114,8 @@ public class ValidationPolicyFacadeTest {
 				.unmarshall(new File("src/test/resources/constraint.xml"));
 		RevocationConstraints revocation = constraintsParameters.getRevocation();
 		assertNotNull(revocation);
-		TimeConstraint revocationFreshness = revocation.getRevocationFreshness();
+		CertificateConstraints signingCertificate = revocation.getBasicSignatureConstraints().getSigningCertificate();
+		TimeConstraint revocationFreshness = signingCertificate.getRevocationFreshness();
 		assertNotNull(revocationFreshness);
 		assertEquals(Level.FAIL, revocationFreshness.getLevel());
 		assertEquals(TimeUnit.DAYS, revocationFreshness.getUnit());

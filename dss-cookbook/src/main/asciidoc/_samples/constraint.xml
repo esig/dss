@@ -62,7 +62,7 @@
                 <RevocationInfoAccessPresent Level="WARN" />
                 <RevocationDataAvailable Level="FAIL" />
                 <CRLNextUpdatePresent Level="WARN" />
-                <RevocationDataFreshness Level="FAIL" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
                 <KeyUsage Level="WARN">
                     <Id>nonRepudiation</Id>
                 </KeyUsage>
@@ -84,7 +84,7 @@
                 <NotExpired Level="FAIL" />
                 <RevocationDataAvailable Level="FAIL" />
                 <CRLNextUpdatePresent Level="WARN" />
-                <RevocationDataFreshness Level="FAIL" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
                 <Cryptographic />
@@ -140,7 +140,7 @@
                 <RevocationInfoAccessPresent Level="WARN" />
                 <RevocationDataAvailable Level="FAIL" />
                 <CRLNextUpdatePresent Level="WARN" />
-                <RevocationDataFreshness Level="FAIL" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
                 <KeyUsage Level="WARN">
                     <Id>nonRepudiation</Id>
                 </KeyUsage>
@@ -160,7 +160,7 @@
                 <NotExpired Level="FAIL" />
                 <RevocationDataAvailable Level="FAIL" />
                 <CRLNextUpdatePresent Level="WARN" />
-                <RevocationDataFreshness Level="FAIL" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
                 <Cryptographic />
@@ -202,7 +202,7 @@
                 <NotExpired Level="FAIL" />
                 <RevocationDataAvailable Level="FAIL" />
                 <CRLNextUpdatePresent Level="WARN" />
-                <RevocationDataFreshness Level="FAIL" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
                 <ExtendedKeyUsage Level="WARN">
                     <Id>timeStamping</Id>
                 </ExtendedKeyUsage>
@@ -216,7 +216,7 @@
                 <NotExpired Level="FAIL" />
                 <RevocationDataAvailable Level="WARN" />
                 <CRLNextUpdatePresent Level="WARN" />
-                <RevocationDataFreshness Level="FAIL" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
                 <Cryptographic />
@@ -233,7 +233,6 @@
         <TSAGeneralNameContentMatch Level="WARN" />
     </Timestamp>
     <Revocation>
-        <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
         <UnknownStatus Level="FAIL" />
         <SelfIssuedOCSP Level="WARN" />
         <BasicSignatureConstraints>
@@ -247,7 +246,7 @@
                 <NotExpired Level="FAIL" />
                 <RevocationDataAvailable Level="FAIL" />
                 <CRLNextUpdatePresent Level="WARN" />
-                <RevocationDataFreshness Level="FAIL" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
                 <Cryptographic />
@@ -257,7 +256,7 @@
                 <NotExpired Level="FAIL" />
                 <RevocationDataAvailable Level="WARN" />
                 <CRLNextUpdatePresent Level="WARN" />
-                <RevocationDataFreshness Level="FAIL" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
                 <Cryptographic />

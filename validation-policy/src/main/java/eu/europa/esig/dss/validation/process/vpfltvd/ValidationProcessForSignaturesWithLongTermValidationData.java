@@ -449,7 +449,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				XmlRFC xmlRFC = rfc.execute();
 				result.getRFC().add(xmlRFC);
 
-				item = item.setNextItem(checkRevocationFreshnessCheckerResult(xmlRFC, currentContext, subContext));
+				item = item.setNextItem(checkRevocationFreshnessCheckerResult(xmlRFC));
 
 				if (!isValid(xmlRFC)) {
 					break;
@@ -460,9 +460,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return item;
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult, Context context, SubContext subContext) {
-		LevelConstraint constraint = policy.getCertificateRevocationFreshnessConstraint(context, subContext);
-		return new RevocationFreshnessCheckerResultCheck<XmlValidationProcessLongTermData>(i18nProvider, result, rfcResult, constraint) {
+	private ChainItem<XmlValidationProcessLongTermData> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
+		return new RevocationFreshnessCheckerResultCheck<XmlValidationProcessLongTermData>(i18nProvider, result, rfcResult, getFailLevelConstraint()) {
 			@Override
 			protected Indication getFailedIndicationForConclusion() {
 				return Indication.INDETERMINATE;

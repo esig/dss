@@ -22,13 +22,11 @@ package eu.europa.esig.dss.jaxb.common;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.alert.status.Status;
+import eu.europa.esig.dss.alert.status.ObjectStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -132,20 +130,17 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	 * @param factory object
 	 */
 	protected void setSecurityFeatures(F factory) {
-		List<String> messages = new ArrayList<>();
+		ObjectStatus status = new ObjectStatus();
 		for (Map.Entry<String, Boolean> entry : features.entrySet()) {
 			try {
 				setSecurityFeature(factory, entry.getKey(), entry.getValue());
 			} catch (Exception e) {
-				String message = String.format(
-						"Feature '%s' = '%s'. Cause : %s",
-						entry.getKey(), entry.getValue(), e.getMessage());
-				messages.add(message);
+				status.addRelatedObjectIdentifierAndErrorMessage(entry.getKey(), e.getMessage());
 			}
 		}
 
-		if (!messages.isEmpty()) {
-			Status status = new Status("SECURITY : unable to set feature(s)", messages);
+		if (!status.isEmpty()) {
+			status.setMessage("SECURITY : unable to set feature(s)!");
 			securityExceptionAlert.alert(status);
 		}
 	}
@@ -166,20 +161,17 @@ public abstract class AbstractFactoryBuilder<F extends Object> {
 	 * @param factory object
 	 */
 	protected void setSecurityAttributes(F factory) {
-		List<String> messages = new ArrayList<>();
+		ObjectStatus status = new ObjectStatus();
 		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
 			try {
 				setSecurityAttribute(factory, entry.getKey(), entry.getValue());
 			} catch (Exception e) {
-				String message = String.format(
-						"Attribute '%s' = '%s'. Cause : %s",
-						entry.getKey(), entry.getValue(), e.getMessage());
-				messages.add(message);
+				status.addRelatedObjectIdentifierAndErrorMessage(entry.getKey(), e.getMessage());
 			}
 		}
 
-		if (!messages.isEmpty()) {
-			Status status = new Status("SECURITY : unable to set attribute(s)", messages);
+		if (!status.isEmpty()) {
+			status.setMessage("SECURITY : unable to set attribute(s)!");
 			securityExceptionAlert.alert(status);
 		}
 	}

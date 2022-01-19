@@ -361,11 +361,6 @@
   		<xsd:complexContent>
 			<xsd:extension base="LevelConstraint">
 				<xsd:sequence>
-					<xsd:element name="RevocationFreshness" type="TimeConstraint" minOccurs="0">
-						<xsd:annotation>
-							<xsd:documentation>Checks the freshness of the revocation data, the policy can expect a recent revocation data</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
 					<xsd:element name="UnknownStatus" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks the returned status is not unknown</xsd:documentation>
@@ -554,9 +549,14 @@
 					<xsd:documentation>Checks the presence of the NextUpdate value for an OCSP response</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="RevocationDataFreshness" type="LevelConstraint" minOccurs="0">
+			<xsd:element name="RevocationFreshness" type="TimeConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the revocation data is fresh</xsd:documentation>
+					<xsd:documentation>Checks the freshness of the revocation data against the defined time constraint (whether the revocation data has been issued after the control time minus the defined time)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="RevocationFreshnessNextUpdate" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Defines whether the revocation freshness shall be checked against the difference between thisUpdate and nextUpdate times, in case when the RevocationFreshness constraint is not defined.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="KeyUsage" type="MultiValuesConstraint" minOccurs="0">

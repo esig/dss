@@ -23,6 +23,8 @@ package eu.europa.esig.dss.alert;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.alert.handler.LogHandler;
+import eu.europa.esig.dss.alert.status.MessageStatus;
+import eu.europa.esig.dss.alert.status.ObjectStatus;
 import eu.europa.esig.dss.alert.status.Status;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
@@ -38,7 +40,8 @@ public class LogAlertTest {
 	
 	@Test
 	public void warnLogAlertTest() {
-		Status exception = new Status(EXCEPTION_MESSAGE);
+		MessageStatus status = new MessageStatus();
+		status.setMessage(EXCEPTION_MESSAGE);
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
 		LogHandler<Status> logExceptionAlertHandler = new LogHandler<>(Level.WARN);
@@ -46,14 +49,15 @@ public class LogAlertTest {
 		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<>(Arrays.asList(callback, logExceptionAlertHandler));
 		
 		CustomStatusAlert exceptionAlert = new CustomStatusAlert(alertHandler);
-		exceptionAlert.alert(exception);
+		exceptionAlert.alert(status);
 		
 		assertTrue(callback.called);
 	}
 	
 	@Test
 	public void errorLogAlertTest() {
-		Status exception = new Status(EXCEPTION_MESSAGE);
+		MessageStatus status = new MessageStatus();
+		status.setMessage(EXCEPTION_MESSAGE);
 		
 		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
 		LogHandler<Status> logExceptionAlertHandler = new LogHandler<>(Level.ERROR);
@@ -61,20 +65,40 @@ public class LogAlertTest {
 		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<>(Arrays.asList(callback, logExceptionAlertHandler));
 		
 		CustomStatusAlert exceptionAlert = new CustomStatusAlert(alertHandler);
-		exceptionAlert.alert(exception);
+		exceptionAlert.alert(status);
 		
 		assertTrue(callback.called);
 	}
 	
 	@Test
 	public void dssLogAlertTest() {
-		Status exception = new Status(EXCEPTION_MESSAGE);
+		MessageStatus status = new MessageStatus();
+		status.setMessage(EXCEPTION_MESSAGE);
 		
 		// manual testing
 		assertDoesNotThrow(() -> {
 			LogOnStatusAlert dssLogAlert = new LogOnStatusAlert(Level.INFO);
-			dssLogAlert.alert(exception);
+			dssLogAlert.alert(status);
 		});
+	}
+
+	@Test
+	public void logAlertWithSubMessageTest() {
+		ObjectStatus status = new ObjectStatus();
+		status.setMessage(EXCEPTION_MESSAGE);
+
+		String objectError = "Cannot process the object!";
+		status.addRelatedObjectIdentifierAndErrorMessage("id-12345", objectError);
+
+		CallbackExceptionAlertHandler callback = new CallbackExceptionAlertHandler();
+		LogHandler<Status> logExceptionAlertHandler = new LogHandler<>(Level.WARN);
+
+		CompositeAlertHandler<Status> alertHandler = new CompositeAlertHandler<>(Arrays.asList(callback, logExceptionAlertHandler));
+
+		CustomStatusAlert exceptionAlert = new CustomStatusAlert(alertHandler);
+		exceptionAlert.alert(status);
+
+		assertTrue(callback.called);
 	}
 	
 	private static class CustomStatusAlert extends AbstractStatusAlert {

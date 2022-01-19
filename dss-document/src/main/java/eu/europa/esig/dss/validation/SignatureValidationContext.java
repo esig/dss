@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.CertificateReorderer;
-import eu.europa.esig.dss.alert.status.Status;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -32,6 +31,7 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
@@ -48,13 +48,15 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSuppo
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.status.RevocationFreshnessStatus;
+import eu.europa.esig.dss.validation.status.SignatureStatus;
+import eu.europa.esig.dss.validation.status.TokenStatus;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -200,7 +202,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 		List<TimestampToken> timestamps = signature.getAllTimestamps();
 		prepareTimestamps(timestamps);
-		registerBestSignatureTime(signature, timestamps);
+
+		registerBestSignatureTime(signature); // to be done after timestamp POE extraction
 
 		List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
 		prepareCounterSignatures(counterSignatures);
@@ -265,7 +268,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 	}
 
-	private void registerBestSignatureTime(AdvancedSignature signature, List<TimestampToken> timestamps) {
+	private void registerBestSignatureTime(AdvancedSignature signature) {
 		CertificateToken signingCertificate = signature.getSigningCertificateToken();
 		if (signingCertificate != null) {
 			// shall not return null
@@ -875,20 +878,21 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean checkAllRequiredRevocationDataPresent() {
-		List<String> errors = new ArrayList<>();
+		TokenStatus status = new TokenStatus();
 		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
 		for (List<CertificateToken> orderedCertChain : orderedCertificateChains.values()) {
-			checkRevocationForCertificateChainAgainstBestSignatureTime(orderedCertChain, null, errors);
+			checkRevocationForCertificateChainAgainstBestSignatureTime(orderedCertChain, null, status);
 		}
-		if (!errors.isEmpty()) {
-			Status status = new Status("Revocation data is missing for one or more certificate(s).", errors);
+		boolean success = status.isEmpty();
+		if (!success) {
+			status.setMessage("Revocation data is missing for one or more certificate(s).");
 			certificateVerifier.getAlertOnMissingRevocationData().alert(status);
 		}
-		return errors.isEmpty();
+		return success;
 	}
 	
 	private void checkRevocationForCertificateChainAgainstBestSignatureTime(List<CertificateToken> certificates,
-			Date bestSignatureTime, List<String> errors) {
+			Date bestSignatureTime, TokenStatus status) {
 		for (CertificateToken certificateToken : certificates) {
 			if (isSelfSignedOrTrusted(certificateToken)) {
 				// break on the first trusted entry
@@ -899,13 +903,14 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 			
 			boolean found = false;
-			Date earliestNextUpdate = null; // used for informational purpose only
+			Date earliestNextUpdate = null;
 
 			List<RevocationToken> relatedRevocationTokens = getRelatedRevocationTokens(certificateToken);
 			for (RevocationToken<Revocation> revocationToken : relatedRevocationTokens) {
 				if (bestSignatureTime == null || bestSignatureTime.before(revocationToken.getThisUpdate())) {
 					found = true;
 					break;
+
 				} else {
 					if (revocationToken.getNextUpdate() != null &&
 							(earliestNextUpdate == null || earliestNextUpdate.after(revocationToken.getNextUpdate()))) {
@@ -916,18 +921,33 @@ public class SignatureValidationContext implements ValidationContext {
 			
 			if (!found) {
 				if (!certificateVerifier.isCheckRevocationForUntrustedChains() && !containsTrustAnchor(certificates)) {
-					errors.add(String.format("Revocation data is skipped for untrusted certificate chain for the token : '%s'", certificateToken.getDSSIdAsString()));
-				} else if (bestSignatureTime == null) {
+					status.addRelatedTokenAndErrorMessage(certificateToken,
+							"Revocation data is skipped for untrusted certificate chain!");
+
+				} else if (Utils.isCollectionEmpty(relatedRevocationTokens) || bestSignatureTime == null) {
 					// simple revocation presence check
-					errors.add(String.format("No revocation data found for certificate : %s", certificateToken.getDSSIdAsString()));
+					status.addRelatedTokenAndErrorMessage(certificateToken, "No revocation data found for certificate!");
+
 				} else if (earliestNextUpdate != null) {
-					errors.add(String.format(
-							"No revocation data found after the best signature time [%s] "
-							+ "for the certificate : %s. \n The nextUpdate available after : [%s]",
-							bestSignatureTime, certificateToken.getDSSIdAsString(), earliestNextUpdate));
+					status.addRelatedTokenAndErrorMessage(certificateToken, String.format(
+							"No revocation data found after the best signature time [%s]! " +
+									"The nextUpdate available after : [%s]",
+							DSSUtils.formatDateToRFC(bestSignatureTime), DSSUtils.formatDateToRFC(earliestNextUpdate)));
+
 				} else {
-					errors.add(String.format("No revocation data found after the best signature time [%s] for the certificate : %s", bestSignatureTime,
-							certificateToken.getDSSIdAsString()));
+					status.addRelatedTokenAndErrorMessage(certificateToken, String.format(
+							"No revocation data found after the best signature time [%s]!",
+							DSSUtils.formatDateToRFC(bestSignatureTime)));
+				}
+
+				if (status instanceof RevocationFreshnessStatus) {
+					if (Utils.isCollectionNotEmpty(relatedRevocationTokens) && earliestNextUpdate == null) {
+						Date lowestPOETime = getLowestPOETime(certificateToken);
+						earliestNextUpdate = new Date(lowestPOETime.getTime() + 1000); // last usage + 1s
+					}
+					if (earliestNextUpdate != null) {
+						((RevocationFreshnessStatus) status).addTokenAndRevocationNextUpdateTime(certificateToken, earliestNextUpdate);
+					}
 				}
 			}
 		}
@@ -935,61 +955,43 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean checkAllPOECoveredByRevocationData() {
-		List<String> errors = new ArrayList<>();
-		for (Entry<CertificateToken, Date> entry : lastTimestampCertChainDates.entrySet()) {
-			Date lastUsage = entry.getValue();
-
-			CertificateToken certificateToken = entry.getKey();
-			if (!isRevocationDataNotRequired(certificateToken)) {
-
-				boolean foundValidRevocationDataAfterLastUsage = false;
-				Date nextUpdate = null;
-
-				List<RevocationToken> relatedRevocationTokens = getRelatedRevocationTokens(certificateToken);
-				for (RevocationToken<Revocation> revocationToken : relatedRevocationTokens) {
-					Date thisUpdate = revocationToken.getThisUpdate();
-					if (thisUpdate.after(lastUsage)) {
-						foundValidRevocationDataAfterLastUsage = true;
-						break;
-					}
-
-					Date currentNextUpdate = revocationToken.getNextUpdate();
-					if (nextUpdate == null || (currentNextUpdate != null && nextUpdate.before(currentNextUpdate))) {
-						nextUpdate = currentNextUpdate;
-					}
-				}
-				if (!foundValidRevocationDataAfterLastUsage) {
-					errors.add(String.format("POE certificate '%s' not covered by a valid revocation data (nextUpdate : %s)",
-							certificateToken.getDSSIdAsString(), nextUpdate));
-				}
+		RevocationFreshnessStatus status = new RevocationFreshnessStatus();
+		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
+		for (Map.Entry<CertificateToken, List<CertificateToken>> entry : orderedCertificateChains.entrySet()) {
+			CertificateToken firstChainCertificate = entry.getKey();
+			Date lastCertUsageDate = lastTimestampCertChainDates.get(firstChainCertificate);
+			if (lastCertUsageDate != null) {
+				checkRevocationForCertificateChainAgainstBestSignatureTime(entry.getValue(), lastCertUsageDate, status);
 			}
 		}
-		if (!errors.isEmpty()) {
-			Status status = new Status("Revocation data is missing for one or more POE(s).", errors);
+		boolean success = status.isEmpty();
+		if (!success) {
+			status.setMessage("Revocation data is missing for one or more POE(s).");
 			certificateVerifier.getAlertOnUncoveredPOE().alert(status);
 		}
-		return errors.isEmpty();
+		return success;
 	}
 
 	@Override
 	public boolean checkAllTimestampsValid() {
-		Set<String> invalidTimestampIds = new HashSet<>();
+		TokenStatus status = new TokenStatus();
 		for (TimestampToken timestampToken : processedTimestamps) {
 			if (!timestampToken.isSignatureIntact() || !timestampToken.isMessageImprintDataFound() ||
 					!timestampToken.isMessageImprintDataIntact()) {
-				invalidTimestampIds.add(timestampToken.getDSSIdAsString());
+				status.addRelatedTokenAndErrorMessage(timestampToken, "Signature is not intact!");
 			}
 		}
-		if (!invalidTimestampIds.isEmpty()) {
-			Status status = new Status("Broken timestamp(s) detected.", invalidTimestampIds);
+		boolean success = status.isEmpty();
+		if (!success) {
+			status.setMessage("Broken timestamp(s) detected.");
 			certificateVerifier.getAlertOnInvalidTimestamp().alert(status);
 		}
-		return invalidTimestampIds.isEmpty();
+		return success;
 	}
 
 	@Override
 	public boolean checkAllCertificatesValid() {
-		Set<String> invalidCertificateIds = new HashSet<>();
+		TokenStatus status = new TokenStatus();
 		for (CertificateToken certificateToken : processedCertificates) {
 			if (!isRevocationDataNotRequired(certificateToken)) {
 				List<RevocationToken> relatedRevocationTokens = getRelatedRevocationTokens(certificateToken);
@@ -1002,17 +1004,18 @@ public class SignatureValidationContext implements ValidationContext {
 						if ((revocationToken.getStatus().isRevoked() && lowestPOETime != null &&
 								!lowestPOETime.before(revocationToken.getRevocationDate())) ||
 								!revocationToken.getStatus().isKnown()) {
-							invalidCertificateIds.add(certificateToken.getDSSIdAsString());
+							status.addRelatedTokenAndErrorMessage(certificateToken, "Certificate is revoked/suspended!");
 						}
 					}
 				}
 			}
 		}
-		if (!invalidCertificateIds.isEmpty()) {
-			Status status = new Status("Revoked/Suspended certificate(s) detected.", invalidCertificateIds);
+		boolean success = status.isEmpty();
+		if (!success) {
+			status.setMessage("Revoked/Suspended certificate(s) detected.");
 			certificateVerifier.getAlertOnRevokedCertificate().alert(status);
 		}
-		return invalidCertificateIds.isEmpty();
+		return success;
 	}
 
 	private boolean isRevocationDataNotRequired(CertificateToken certToken) {
@@ -1173,20 +1176,22 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(AdvancedSignature signature) {
-		List<String> errors = new ArrayList<>();
+		RevocationFreshnessStatus status = new RevocationFreshnessStatus();
 		CertificateToken signingCertificateToken = signature.getSigningCertificateToken();
 		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
 		for (Map.Entry<CertificateToken, List<CertificateToken>> entry : orderedCertificateChains.entrySet()) {
 			CertificateToken firstChainCertificate = entry.getKey();
-			Date bestSignatureTime = firstChainCertificate.equals(signingCertificateToken) ? getEarliestTimestampTime()
-					: lastTimestampCertChainDates.get(firstChainCertificate);
-			checkRevocationForCertificateChainAgainstBestSignatureTime(entry.getValue(), bestSignatureTime, errors);
+			if (firstChainCertificate.equals(signingCertificateToken)) {
+				Date bestSignatureTime = getEarliestTimestampTime();
+				checkRevocationForCertificateChainAgainstBestSignatureTime(entry.getValue(), bestSignatureTime, status);
+			}
 		}
-		if (!errors.isEmpty()) {
-			Status status = new Status("Fresh revocation data is missing for one or more certificate(s).", errors);
+		boolean success = status.isEmpty();
+		if (!success) {
+			status.setMessage("Fresh revocation data is missing for one or more certificate(s).");
 			certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime().alert(status);
 		}
-		return errors.isEmpty();
+		return success;
 	}
 	
 	private Date getEarliestTimestampTime() {
@@ -1204,12 +1209,16 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean checkSignatureNotExpired(AdvancedSignature signature) {
+		SignatureStatus status = new SignatureStatus();
 		CertificateToken signingCertificate = signature.getSigningCertificateToken();
 		if (signingCertificate != null) {
 			boolean signatureNotExpired = verifyCertificateTokenHasPOERecursively(signingCertificate, poeTimes.get(signature.getId()));
 			if (!signatureNotExpired) {
-				Status status = new Status("The signing certificate has been expired and " +
-						"there is no POE during its validity range.", Arrays.asList(signingCertificate.getDSSIdAsString()));
+				status.addRelatedTokenAndErrorMessage(signature, String.format("The signing certificate has expired " +
+								"and there is no POE during its validity range : [%s - %s]!",
+						DSSUtils.formatDateToRFC(signingCertificate.getNotBefore()),
+						DSSUtils.formatDateToRFC(signingCertificate.getNotAfter())));
+				status.setMessage("Expired signature found.");
 				certificateVerifier.getAlertOnExpiredSignature().alert(status);
 			}
 			return signatureNotExpired;

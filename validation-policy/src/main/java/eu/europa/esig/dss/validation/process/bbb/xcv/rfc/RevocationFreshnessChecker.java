@@ -123,7 +123,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 * nextUpdate time, the revocation status information will not be
 			 * considered fresh.
 			 */
-			TimeConstraint revocationFreshnessConstraint = policy.getRevocationFreshnessConstraint();
+			TimeConstraint revocationFreshnessConstraint = policy.getRevocationFreshnessConstraint(context, subContext);
 			if (revocationFreshnessConstraint == null || Level.IGNORE.equals(revocationFreshnessConstraint.getLevel())) {
 				switch (revocationData.getRevocationType()) {
 					case CRL:
@@ -181,9 +181,9 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		 * freshness.
 		 */
 		else {
-			return new RevocationDataFreshCheckWithNullConstraint(i18nProvider, result, revocationData, validationDate, getFailLevelConstraint());
+			LevelConstraint constraint = policy.getRevocationFreshnessNextUpdateConstraint(context, subContext);
+			return new RevocationDataFreshCheckWithNullConstraint(i18nProvider, result, revocationData, validationDate, constraint);
 		}
-
 	}
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {

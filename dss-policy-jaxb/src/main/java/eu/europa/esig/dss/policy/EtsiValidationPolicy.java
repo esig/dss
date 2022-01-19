@@ -597,10 +597,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateRevocationFreshnessConstraint(Context context, SubContext subContext) {
+	public TimeConstraint getRevocationFreshnessConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getRevocationDataFreshness();
+			return certificateConstraints.getRevocationFreshness();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationFreshnessNextUpdateConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRevocationFreshnessNextUpdate();
 		}
 		return null;
 	}
@@ -997,15 +1006,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		TimestampConstraints timestampConstraints = getTimestampConstraints();
 		if (timestampConstraints != null) {
 			return timestampConstraints.getTSAGeneralNameOrderMatch();
-		}
-		return null;
-	}
-
-	@Override
-	public TimeConstraint getRevocationFreshnessConstraint() {
-		RevocationConstraints revocationConstraints = getRevocationConstraints();
-		if (revocationConstraints != null) {
-			return revocationConstraints.getRevocationFreshness();
 		}
 		return null;
 	}
