@@ -35,7 +35,8 @@ public class XAdESLevelBWithSignCertV2WrongDigestTest extends AbstractXAdESTestV
 
         boolean containsInvalidDigest = false;
         for (String message : signatureWrapper.getStructuralValidationMessages()) {
-            if (message.contains("The value '...' of element 'ds:DigestValue' is not valid")) {
+            if (message.contains("ds:DigestValue")) {
+                assertTrue(message.contains("..."));
                 containsInvalidDigest = true;
             }
         }

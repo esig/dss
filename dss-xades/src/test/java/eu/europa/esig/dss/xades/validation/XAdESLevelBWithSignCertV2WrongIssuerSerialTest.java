@@ -40,7 +40,8 @@ public class XAdESLevelBWithSignCertV2WrongIssuerSerialTest extends AbstractXAdE
 
         boolean containsInvalidIssuerSerial = false;
         for (String message : signatureWrapper.getStructuralValidationMessages()) {
-            if (message.contains("The value '...' of element 'xades:IssuerSerialV2' is not valid")) {
+            if (message.contains("xades:IssuerSerialV2")) {
+                assertTrue(message.contains("..."));
                 containsInvalidIssuerSerial = true;
             }
         }

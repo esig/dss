@@ -40,7 +40,8 @@ public class XAdESLevelBWithSignCertV1WrongSerialNumberTest extends AbstractXAdE
 
         boolean containsIntegerDecodingIssue = false;
         for (String message : signatureWrapper.getStructuralValidationMessages()) {
-            if (message.contains("The value '...' of element 'ds:X509SerialNumber' is not valid")) {
+            if (message.contains("ds:X509SerialNumber")) {
+                assertTrue(message.contains("..."));
                 containsIntegerDecodingIssue = true;
             }
         }
