@@ -51,11 +51,10 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevoc
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Checks if the revocation is acceptable and can be used
@@ -74,8 +73,8 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	/** Validation policy */
 	private final ValidationPolicy policy;
 
-	/** Internal list of processed tokens (avoids infinite loop) */
-	private final List<String> validatedTokens;
+	/** Internal set of processed tokens (avoids infinite loop) */
+	private final Set<String> validatedTokens;
 
 	/** Defines the map between certificates in the chain and their latest valid revocation data */
 	private final Map<CertificateWrapper, CertificateRevocationWrapper> certificateRevocationMap;
@@ -88,16 +87,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	 * @param revocationData {@link CertificateRevocationWrapper}
 	 * @param controlTime {@link Date}
 	 * @param policy {@link ValidationPolicy}
+	 * @param validatedTokens a set of token {@link String} identifiers that have been already processed
 	 */
 	public RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate,
-									   CertificateRevocationWrapper revocationData, Date controlTime,
-									   ValidationPolicy policy) {
-		this(i18nProvider, certificate, revocationData, controlTime, policy, new ArrayList<>());
-	}
-	
-	private RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate,
 										CertificateRevocationWrapper revocationData, Date controlTime,
-										ValidationPolicy policy, List<String> validatedTokens) {
+										ValidationPolicy policy, Set<String> validatedTokens) {
 		super(i18nProvider, new XmlRAC());
 		this.certificate = certificate;
 		this.revocationData = revocationData;
@@ -109,7 +103,7 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		result.setId(revocationData.getId());
 		result.setRevocationThisUpdate(revocationData.getThisUpdate());
 		result.setRevocationProductionDate(revocationData.getProductionDate());
-		validatedTokens.add(certificate.getId());
+		this.validatedTokens.add(certificate.getId());
 	}
 
 	@Override
@@ -174,7 +168,7 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 				if (Utils.isCollectionNotEmpty(revocationCertificate.getCertificateRevocationData())) {
 
 					CertificateRevocationSelector certificateRevocationSelector = new CertificateRevocationSelector(
-							i18nProvider, revocationCertificate, controlTime, policy);
+							i18nProvider, revocationCertificate, controlTime, policy, validatedTokens);
 					XmlCRS xmlCRS = certificateRevocationSelector.execute();
 					result.setCRS(xmlCRS);
 
