@@ -806,31 +806,7 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	private CertificateToken getBestCertificateFromCandidates(Token token, Collection<CertificateToken> candidates) {
-		List<CertificateToken> issuers = getCertsWithPublicKey(token.getPublicKeyOfTheSigner(), candidates);
-		if (Utils.isCollectionNotEmpty(issuers)) {
-
-			List<CertificateToken> issuersBySubject = new ArrayList<>();
-			X500Principal issuerX500Principal = token.getIssuerX500Principal();
-			if (issuerX500Principal != null) {
-				for (CertificateToken cert : issuers) {
-					if (DSSASN1Utils.x500PrincipalAreEquals(issuerX500Principal, cert.getSubject().getPrincipal())) {
-						issuersBySubject.add(cert);
-					}
-				}
-			}
-			if (Utils.isCollectionNotEmpty(issuersBySubject)) {
-				issuers = issuersBySubject;
-			}
-
-			for (CertificateToken cert : issuers) {
-				if (cert.isValidOn(token.getCreationDate())) {
-					return cert;
-				}
-			}
-
-			return issuers.iterator().next();
-		}
-		return null;
+		return DSSUtils.getTokenIssuerFromCandidates(token, candidates);
 	}
 
 	private List<CertificateToken> getCertsWithPublicKey(final PublicKey publicKey, final Collection<CertificateToken> candidates) {

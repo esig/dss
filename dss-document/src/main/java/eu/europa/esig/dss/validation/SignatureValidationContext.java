@@ -402,7 +402,7 @@ public class SignatureValidationContext implements ValidationContext {
 			candidates = processedCertificates;
 		}
 
-		issuerCertificateToken = getTokenIssuerFromCandidates(token, candidates);
+		issuerCertificateToken = DSSUtils.getTokenIssuerFromCandidates(token, candidates);
 
 		if (issuerCertificateToken == null && token instanceof CertificateToken && aiaSource != null) {
 			final AIACertificateSource aiaCertificateSource = new AIACertificateSource((CertificateToken) token, aiaSource);
@@ -494,7 +494,7 @@ public class SignatureValidationContext implements ValidationContext {
 				if (responderId.getX500Principal() != null) {
 					issuerCandidates.addAll(allCertificateSources.getBySubject(new X500PrincipalHelper(responderId.getX500Principal())));
 				}
-				return getTokenIssuerFromCandidates(token, issuerCandidates);
+				return DSSUtils.getTokenIssuerFromCandidates(token, issuerCandidates);
 			}
 
 		}
@@ -513,31 +513,7 @@ public class SignatureValidationContext implements ValidationContext {
 			} else {
 				issuerCandidates.add(timestampSigner);
 			}
-			return getTokenIssuerFromCandidates(timestamp, issuerCandidates);
-		}
-		return null;
-	}
-
-	/**
-	 * This method returns a token issuer from a collection of {@code candidates}
-	 *
-	 * @param token {@link Token} to get an issuer for
-	 * @param candidates a collection of {@link CertificateToken} to get an issuer from
-	 * @return {@link CertificateToken} issuer certificate token if found, null if no matching issuer has been found
-	 */
-	private CertificateToken getTokenIssuerFromCandidates(Token token, Collection<CertificateToken> candidates) {
-		List<CertificateToken> issuers = new ArrayList<>();
-		for (CertificateToken candidate : candidates) {
-			if (token.isSignedBy(candidate)) {
-				issuers.add(candidate);
-				if (candidate.isValidOn(token.getCreationDate())) {
-					return candidate;
-				}
-			}
-		}
-		if (Utils.isCollectionNotEmpty(issuers)) {
-			LOG.warn("No issuer found for the token creation date. The process continues with an issuer which has the same public key.");
-			return issuers.iterator().next();
+			return DSSUtils.getTokenIssuerFromCandidates(timestamp, issuerCandidates);
 		}
 		return null;
 	}
