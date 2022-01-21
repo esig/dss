@@ -427,7 +427,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		LOG.info("Document validation...");
 		assertConfigurationValid();
 
-		final XmlDiagnosticData diagnosticData = prepareDiagnosticDataBuilder().build();
+		final XmlDiagnosticData diagnosticData = getDiagnosticData();
 
 		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
@@ -438,6 +438,17 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected void assertConfigurationValid() {
 		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
 		Objects.requireNonNull(document, "Document is not provided to the validator");
+	}
+
+	/**
+	 * This method retrieves {@code XmlDiagnosticData} containing all information relevant
+	 * for the validation process, including the certificate and revocation tokens obtained
+	 * from online resources, e.g. AIA, CRL, OCSP (when applicable).
+	 *
+	 * @return {@link XmlDiagnosticData}
+	 */
+	public final XmlDiagnosticData getDiagnosticData() {
+		return prepareDiagnosticDataBuilder().build();
 	}
 
 	/**
