@@ -67,7 +67,7 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 		this.basicOCSPResp = basicOCSPResp;
 		
 		extractCertificateTokens();
-		extractCertificatRefs();
+		extractCertificateRefs();
 	}
 	
 	private void extractCertificateTokens() {
@@ -77,7 +77,7 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 		}
 	}
 
-	private void extractCertificatRefs() {
+	private void extractCertificateRefs() {
 		final ResponderId responderId = DSSRevocationUtils.getDSSResponderId(basicOCSPResp.getResponderId());
 		CertificateRef signingCertificateRef = new CertificateRef();
 		signingCertificateRef.setResponderId(responderId);
