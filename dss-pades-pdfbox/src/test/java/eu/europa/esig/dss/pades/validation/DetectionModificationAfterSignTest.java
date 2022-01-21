@@ -62,7 +62,7 @@ public class DetectionModificationAfterSignTest extends AbstractTestVisualCompar
 		assertEquals(expected.getDigest(DigestAlgorithm.SHA256), retrievedDocument.getDigest(DigestAlgorithm.SHA256));
 
 		// Additional code to detect visual difference
-		assertFalse(areVisuallyEqual(dssDocument, expected));
+		assertFalse(arePdfDocumentsVisuallyEqual(dssDocument, expected));
 
 		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(dssDocument, expected, 1);
 		assertNotNull(subtractionImage);

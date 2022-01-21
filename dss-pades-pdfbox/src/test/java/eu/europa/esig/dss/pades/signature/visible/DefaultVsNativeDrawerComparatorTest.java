@@ -42,6 +42,7 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,6 +56,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -121,7 +123,25 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		textParameters.setTextColor(new Color(0, 255, 0, 0));
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(imageParameters);
-		drawAndCompareExplicitly();
+
+		// invisible, expects different test result
+
+		getService().setPdfObjFactory(new PdfBoxDefaultObjectFactory());
+		DSSDocument defaultDrawerPdf = sign("default");
+
+		getService().setPdfObjFactory(new PdfBoxNativeObjectFactory());
+		DSSDocument nativeDrawerPdf = sign("native");
+
+		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
+		assertTrue(arePdfDocumentsVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
+
+		DSSDocument previewNative = getService().previewPageWithVisualSignature(getDocumentToSign(), getSignatureParameters());
+		DSSDocument signatureFieldNative = getService().previewSignatureField(getDocumentToSign(), getSignatureParameters());
+
+		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(getDocumentToSign(), 1)));
+		assertFalse(areImagesVisuallyEqual(previewNative, signatureFieldNative));
+		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(nativeDrawerPdf, 1)));
 	}
 	
 	@Test
