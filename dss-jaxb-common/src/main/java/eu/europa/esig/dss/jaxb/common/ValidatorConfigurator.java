@@ -28,9 +28,10 @@ import javax.xml.validation.Validator;
 import java.util.Objects;
 
 /**
- * Builds a {@code Validator}
+ * Configures a provided {@code Validator}
+ *
  */
-public class ValidatorConfigurator extends AbstractFactoryBuilder<Validator> {
+public class ValidatorConfigurator extends AbstractConfigurator<Validator> {
 
 	/**
 	 * The alert used to process the errors collected during the validation process
@@ -39,7 +40,10 @@ public class ValidatorConfigurator extends AbstractFactoryBuilder<Validator> {
 	 */
 	private Alert<DSSErrorHandler> errorHandlerAlert = new DSSErrorHandlerAlert();
 
-	private ValidatorConfigurator() {
+	/**
+	 * Default constructor
+	 */
+	protected ValidatorConfigurator() {
 		// The configuration protects against XXE
 		// (https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#validator)
 		setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");

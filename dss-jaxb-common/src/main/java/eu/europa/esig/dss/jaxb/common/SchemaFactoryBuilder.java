@@ -30,8 +30,11 @@ import javax.xml.validation.SchemaFactory;
 public class SchemaFactoryBuilder extends AbstractFactoryBuilder<SchemaFactory> {
 	
 	private String schemaLanguage = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-	
-	private SchemaFactoryBuilder() {
+
+	/**
+	 * Default constructor
+	 */
+	protected SchemaFactoryBuilder() {
 		enableFeature(XMLConstants.FEATURE_SECURE_PROCESSING);
 		setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 		setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
@@ -52,12 +55,17 @@ public class SchemaFactoryBuilder extends AbstractFactoryBuilder<SchemaFactory> 
 	 * @return {@link TransformerFactory}
 	 */
 	public SchemaFactory build() {
-		SchemaFactory sf = SchemaFactory.newInstance(schemaLanguage);
+		SchemaFactory sf = instantiateFactory();
 		setSecurityFeatures(sf);
 		setSecurityAttributes(sf);
 		return sf;
 	}
 	
+	@Override
+	protected SchemaFactory instantiateFactory() {
+		return SchemaFactory.newInstance(schemaLanguage);
+	}
+
 	/**
 	 * Sets a schemaLanguage to instantiate {@code SchemaFactory} with
 	 * 

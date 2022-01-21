@@ -25,10 +25,14 @@ import javax.xml.transform.TransformerFactory;
 
 /**
  * Builds a {@code TransformerFactory}
+ *
  */
 public class TransformerFactoryBuilder extends AbstractFactoryBuilder<TransformerFactory> {
-	
-	private TransformerFactoryBuilder() {
+
+	/**
+	 * Default constructor
+	 */
+	protected TransformerFactoryBuilder() {
 		enableFeature(XMLConstants.FEATURE_SECURE_PROCESSING);
 		setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 		setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
@@ -49,12 +53,17 @@ public class TransformerFactoryBuilder extends AbstractFactoryBuilder<Transforme
 	 * @return {@link TransformerFactory}
 	 */
 	public TransformerFactory build() {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		TransformerFactory transformerFactory = instantiateFactory();
 		setSecurityFeatures(transformerFactory);
 		setSecurityAttributes(transformerFactory);
 		return transformerFactory;
 	}
 	
+	@Override
+	protected TransformerFactory instantiateFactory() {
+		return TransformerFactory.newInstance();
+	}
+
 	@Override
 	public TransformerFactoryBuilder enableFeature(String feature) {
 		return (TransformerFactoryBuilder) super.enableFeature(feature);

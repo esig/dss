@@ -23,8 +23,14 @@ package eu.europa.esig.dss.jaxb.common;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.validation.SchemaFactory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class XmlDefinerUtilsTest {
@@ -37,6 +43,95 @@ public class XmlDefinerUtilsTest {
 	@Test
 	public void getSecureTransformerFactory() throws TransformerConfigurationException {
 		assertNotNull(XmlDefinerUtils.getInstance().getSecureTransformerFactory());
+	}
+
+	@Test
+	public void getSecureDocumentBuilderFactory() {
+		assertNotNull(XmlDefinerUtils.getInstance().getSecureDocumentBuilderFactory());
+	}
+
+	@Test
+	public void mockSecureSchemaFactoryBuilderTest() throws SAXException {
+		MockSchemaFactoryBuilder schemaFactoryBuilder = new MockSchemaFactoryBuilder();
+
+		SchemaFactory secureSchemaFactory = XmlDefinerUtils.getInstance().getSecureSchemaFactory();
+		assertNotNull(secureSchemaFactory);
+		assertNotEquals(schemaFactoryBuilder.schemaFactory, secureSchemaFactory);
+
+		XmlDefinerUtils.getInstance().setSchemaFactoryBuilder(schemaFactoryBuilder);
+		secureSchemaFactory = XmlDefinerUtils.getInstance().getSecureSchemaFactory();
+		assertNotNull(secureSchemaFactory);
+		assertEquals(schemaFactoryBuilder.schemaFactory, secureSchemaFactory);
+	}
+
+	private class MockSchemaFactoryBuilder extends SchemaFactoryBuilder {
+
+		private SchemaFactory schemaFactory;
+
+		@Override
+		protected SchemaFactory instantiateFactory() {
+			if (schemaFactory == null) {
+				schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			}
+			return schemaFactory;
+		}
+
+	}
+
+	@Test
+	public void mockTransformerFactoryBuilderTest() {
+		MockTransformerFactoryBuilder transformerFactoryBuilder = new MockTransformerFactoryBuilder();
+
+		TransformerFactory transformerFactory = XmlDefinerUtils.getInstance().getSecureTransformerFactory();
+		assertNotNull(transformerFactory);
+		assertNotEquals(transformerFactoryBuilder.transformerFactory, transformerFactory);
+
+		XmlDefinerUtils.getInstance().setTransformerFactoryBuilder(transformerFactoryBuilder);
+		transformerFactory = XmlDefinerUtils.getInstance().getSecureTransformerFactory();
+		assertNotNull(transformerFactory);
+		assertEquals(transformerFactoryBuilder.transformerFactory, transformerFactory);
+	}
+
+	private class MockTransformerFactoryBuilder extends TransformerFactoryBuilder {
+
+		private TransformerFactory transformerFactory;
+
+		@Override
+		protected TransformerFactory instantiateFactory() {
+			if (transformerFactory == null) {
+				transformerFactory = TransformerFactory.newInstance();
+			}
+			return transformerFactory;
+		}
+
+	}
+
+	@Test
+	public void mockDocumentBuilderFactoryBuilderTest() {
+		MockDocumentBuilderFactoryBuilder documentBuilderFactoryBuilder = new MockDocumentBuilderFactoryBuilder();
+
+		DocumentBuilderFactory documentBuilderFactory = XmlDefinerUtils.getInstance().getSecureDocumentBuilderFactory();
+		assertNotNull(documentBuilderFactory);
+		assertNotEquals(documentBuilderFactoryBuilder.documentBuilderFactory, documentBuilderFactory);
+
+		XmlDefinerUtils.getInstance().setDocumentBuilderFactoryBuilder(documentBuilderFactoryBuilder);
+		documentBuilderFactory = XmlDefinerUtils.getInstance().getSecureDocumentBuilderFactory();
+		assertNotNull(documentBuilderFactory);
+		assertEquals(documentBuilderFactoryBuilder.documentBuilderFactory, documentBuilderFactory);
+	}
+
+	private class MockDocumentBuilderFactoryBuilder extends DocumentBuilderFactoryBuilder {
+
+		private DocumentBuilderFactory documentBuilderFactory;
+
+		@Override
+		protected DocumentBuilderFactory instantiateFactory() {
+			if (documentBuilderFactory == null) {
+				documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			}
+			return documentBuilderFactory;
+		}
+
 	}
 
 }
