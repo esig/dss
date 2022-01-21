@@ -40,6 +40,7 @@ import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
+import eu.europa.esig.dss.spi.x509.TokenIssuerSelector;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
@@ -402,7 +403,7 @@ public class SignatureValidationContext implements ValidationContext {
 			candidates = processedCertificates;
 		}
 
-		issuerCertificateToken = DSSUtils.getTokenIssuerFromCandidates(token, candidates);
+		issuerCertificateToken = new TokenIssuerSelector(token, candidates).getIssuer();
 
 		if (issuerCertificateToken == null && token instanceof CertificateToken && aiaSource != null) {
 			final AIACertificateSource aiaCertificateSource = new AIACertificateSource((CertificateToken) token, aiaSource);
@@ -494,7 +495,7 @@ public class SignatureValidationContext implements ValidationContext {
 				if (responderId.getX500Principal() != null) {
 					issuerCandidates.addAll(allCertificateSources.getBySubject(new X500PrincipalHelper(responderId.getX500Principal())));
 				}
-				return DSSUtils.getTokenIssuerFromCandidates(token, issuerCandidates);
+				return new TokenIssuerSelector(token, issuerCandidates).getIssuer();
 			}
 
 		}
@@ -513,7 +514,7 @@ public class SignatureValidationContext implements ValidationContext {
 			} else {
 				issuerCandidates.add(timestampSigner);
 			}
-			return DSSUtils.getTokenIssuerFromCandidates(timestamp, issuerCandidates);
+			return new TokenIssuerSelector(timestamp, issuerCandidates).getIssuer();
 		}
 		return null;
 	}

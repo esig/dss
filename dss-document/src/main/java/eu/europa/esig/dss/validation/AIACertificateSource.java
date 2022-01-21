@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.spi.x509.TokenIssuerSelector;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -88,7 +88,7 @@ public class AIACertificateSource extends CommonCertificateSource {
 				addCertificate(candidate);
 			}
 
-			CertificateToken issuer = DSSUtils.getTokenIssuerFromCandidates(certificate, candidates);
+			CertificateToken issuer = new TokenIssuerSelector(certificate, candidates).getIssuer();
 			if (issuer == null) {
 				LOG.warn("The retrieved certificate(s) using AIA do not sign the certificate with Id : {}.",
 						certificate.getDSSIdAsString());

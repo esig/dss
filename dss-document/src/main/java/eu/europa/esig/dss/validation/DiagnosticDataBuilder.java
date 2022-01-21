@@ -101,6 +101,7 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
+import eu.europa.esig.dss.spi.x509.TokenIssuerSelector;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
@@ -806,7 +807,7 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	private CertificateToken getBestCertificateFromCandidates(Token token, Collection<CertificateToken> candidates) {
-		return DSSUtils.getTokenIssuerFromCandidates(token, candidates);
+		return new TokenIssuerSelector(token, candidates).getIssuer();
 	}
 
 	private List<CertificateToken> getCertsWithPublicKey(final PublicKey publicKey, final Collection<CertificateToken> candidates) {

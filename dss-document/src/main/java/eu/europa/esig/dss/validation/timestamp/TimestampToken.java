@@ -306,14 +306,14 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Checks if the OCSP token is signed by the given publicKey
+	 * Checks if the timestamp token is signed by the given publicKey
 	 * 
 	 * @param certificateToken
 	 *              the candidate to be tested
 	 * @return true if this token is signed by the given public key
 	 */
 	@Override
-	public boolean isSignedBy(final CertificateToken certificateToken) {
+	public synchronized boolean isSignedBy(final CertificateToken certificateToken) {
 		if (publicKeyOfTheSigner != null) {
 			return publicKeyOfTheSigner.equals(certificateToken.getPublicKey());
 		} else if (SignatureValidity.VALID == checkIsSignedBy(certificateToken)) {
@@ -326,7 +326,7 @@ public class TimestampToken extends Token {
 	}
 	
 	@Override
-	public boolean isSignedBy(final PublicKey publicKey) {
+	public synchronized boolean isSignedBy(final PublicKey publicKey) {
 		throw new UnsupportedOperationException("Use method isSignedBy(certificateToken) for a TimestampToken validation!");
 	}
 

@@ -32,8 +32,6 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -791,80 +789,6 @@ public final class DSSUtils {
 			LOG.warn("Unable to create an instance of X500Principal : {}", e.getMessage());
 			return null;
 		} 
-	}
-
-	/**
-	 * This method returns a token issuer from a collection of {@code candidates}
-	 *
-	 * @param token {@link Token} to get an issuer for
-	 * @param candidates a collection of {@link CertificateToken} to get an issuer from
-	 * @return {@link CertificateToken} issuer certificate token if found, null if no matching issuer has been found
-	 */
-	public static CertificateToken getTokenIssuerFromCandidates(Token token, Collection<CertificateToken> candidates) {
-		if (Utils.isCollectionNotEmpty(candidates)) {
-			candidates = filterIssuersByPublicKey(token, candidates);
-			candidates = filterIssuersByIssuerSubjectName(token, candidates);
-
-			for (CertificateToken candidate : candidates) {
-				if (candidate.isValidOn(token.getCreationDate())) {
-					return candidate;
-				}
-			}
-			if (Utils.isCollectionNotEmpty(candidates)) {
-				LOG.warn("No issuer found for the token creation date. The process continues with an issuer which has the same public key.");
-				return candidates.iterator().next();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * This method filters a collection of {@code candidates} having a public key
-	 * matching the one used to sign {@code token}
-	 *
-	 * @param token {@link Token} to get issuers for
-	 * @param candidates a collection of {@link CertificateToken}s
-	 * @return a collection of {@code CertificateToken}s issuer candidates
-	 */
-	private static Collection<CertificateToken> filterIssuersByPublicKey(Token token, Collection<CertificateToken> candidates) {
-		List<CertificateToken> issuers = new ArrayList<>();
-		for (CertificateToken candidate : candidates) {
-			if (token.isSignedBy(candidate)) {
-				issuers.add(candidate);
-			}
-		}
-		return issuers;
-	}
-
-	/**
-	 * Filters a collection of {@code candidates} with a Subject name matching
-	 * the Issuer Subject name of the {@code token}.
-	 * In case none of the certificates matching the Issuer Subject name found across {@code candidates},
-	 * returns the original collection of {@code candidates}.
-	 *
-	 * @param token {@link Token} to get issuers for
-	 * @param candidates a collection of {@link CertificateToken}s
-	 * @return a collection of {@code CertificateToken}s issuer candidates
-	 */
-	private static Collection<CertificateToken> filterIssuersByIssuerSubjectName(Token token, Collection<CertificateToken> candidates) {
-		List<CertificateToken> issuers = new ArrayList<>();
-		X500Principal issuerX500Principal = token.getIssuerX500Principal();
-		if (issuerX500Principal != null) {
-			X500PrincipalHelper issuerX500PrincipalHelper = new X500PrincipalHelper(issuerX500Principal);
-			for (CertificateToken candidate : candidates) {
-				if (issuerX500PrincipalHelper.equals(candidate.getSubject())) {
-					issuers.add(candidate);
-				} else {
-					LOG.info("The issuer subject name and subject name does not match (more details in debug mode).");
-					if (LOG.isDebugEnabled()) {
-						LOG.info("CERT ISSUER    : {}", issuerX500PrincipalHelper.getCanonical());
-						LOG.info("ISSUER SUBJECT : {}", candidate.getSubject().getCanonical());
-					}
-				}
-			}
-		}
-		// return provided collection of candidates if no issuers matching the subject name have been found
-		return Utils.isCollectionNotEmpty(issuers) ? issuers : candidates;
 	}
 
 	/**
