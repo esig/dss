@@ -285,7 +285,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			final List<DSSReference> defaultReferences = referenceBuilder.build();
 			// The SignatureParameters object is updated with the default references
 			// in order to ensure validity on next steps
-			params.setReferences(defaultReferences);
+			params.getContext().setReferences(defaultReferences);
 		} else {
 			referenceBuilder.checkReferencesValidity();
 		}

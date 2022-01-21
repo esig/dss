@@ -21,8 +21,10 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.xades.reference.DSSReference;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * This class manages the internal variables used in the process of creating of a signature and which allows to
@@ -47,6 +49,11 @@ public class ProfileParameters implements Serializable {
 	 * Indicates the type of the operation to be done
 	 */
 	private SigningOperation operationKind;
+
+	/**
+	 * List of references created by a reference builder
+	 */
+	private List<DSSReference> references;
 
 	/**
 	 * Returns the current Profile used to generate the signature or its extension
@@ -101,6 +108,23 @@ public class ProfileParameters implements Serializable {
 	 */
 	public void setOperationKind(SigningOperation operationKind) {
 		this.operationKind = operationKind;
+	}
+	/**
+	 * Returns a list of references to be incorporated to the signature
+	 *
+	 * @return a list of {@link DSSReference}s
+	 */
+	public List<DSSReference> getReferences() {
+		return references;
+	}
+
+	/**
+	 * Sets a list of references to be incorporated into the signature
+	 *
+	 * @param references a list of {@link DSSReference}s
+	 */
+	public void setReferences(List<DSSReference> references) {
+		this.references = references;
 	}
 
 }

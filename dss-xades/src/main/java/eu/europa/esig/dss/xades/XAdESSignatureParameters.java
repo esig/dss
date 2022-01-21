@@ -296,7 +296,13 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * @return a list of {@link DSSReference}s
 	 */
 	public List<DSSReference> getReferences() {
-		return dssReferences;
+		if (Utils.isCollectionNotEmpty(dssReferences)) {
+			return dssReferences;
+		}
+		if (context != null) {
+			return context.getReferences();
+		}
+		return null;
 	}
 
 	/**
@@ -637,4 +643,10 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		return archiveTimestampParameters;
 	}
 	
+	@Override
+	public void reinit() {
+		super.reinit();
+		context = null;
+	}
+
 }

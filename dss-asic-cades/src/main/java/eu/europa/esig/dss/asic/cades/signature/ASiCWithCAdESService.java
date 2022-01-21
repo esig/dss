@@ -157,7 +157,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		final DSSDocument asicContainer = buildASiCContainer(asicContent, parameters.getZipCreationDate());
 		asicContainer.setName(getFinalDocumentName(asicContainer, SigningOperation.SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		return asicContainer;
 	}
 

@@ -171,7 +171,7 @@ public class CAdESService extends
 			signature = new CMSSignedDocument(extendedCMSSignature);
 		}
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		return signature;
 	}
 

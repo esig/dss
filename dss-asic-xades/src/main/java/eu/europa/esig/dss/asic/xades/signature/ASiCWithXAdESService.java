@@ -132,7 +132,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 		final DSSDocument asicSignature = buildASiCContainer(asicContent, parameters.bLevel().getSigningDate());
 		asicSignature.setName(getFinalDocumentName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		return asicSignature;
 	}
 

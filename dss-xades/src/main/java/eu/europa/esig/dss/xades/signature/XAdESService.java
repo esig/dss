@@ -149,7 +149,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 		// The deterministic id is reset between two consecutive signing operations. It prevents having two
 		// signatures with the same Id within the same document.
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		result.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		return result;
 	}
@@ -312,7 +312,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		final DSSDocument counterSignature = signDocument(signatureValueToSign, parameters, signatureValue);
 		final DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
 		
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());
 		
