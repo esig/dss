@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -181,7 +180,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			dssDocument.setName(getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			return dssDocument;
 		}
-		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel().name());
+		throw new UnsupportedOperationException(
+				String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 	}
 
 	@Override
@@ -229,7 +229,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			return extensionLTA;
 		default:
 			throw new UnsupportedOperationException(
-					String.format("Unsupported signature format '%s'.", parameters.getSignatureLevel()));
+					String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 		}
 	}
 

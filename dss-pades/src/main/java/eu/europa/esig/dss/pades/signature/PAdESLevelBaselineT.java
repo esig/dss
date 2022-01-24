@@ -37,11 +37,11 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static eu.europa.esig.dss.enumerations.SignatureLevel.PAdES_BASELINE_T;
 
 /**
  * PAdES Baseline T signature
@@ -101,9 +101,10 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
 				certificateVerifier, parameters);
 		for (AdvancedSignature signature : signatures) {
-			if (requiresDocumentTimestamp(signature)) {
-				assertExtendSignatureToTPossible((PAdESSignature) signature, parameters);
-				signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
+			PAdESSignature padesSignature = (PAdESSignature) signature;
+			if (requiresDocumentTimestamp(padesSignature, parameters)) {
+				assertExtendSignatureToTPossible(padesSignature, parameters);
+				signatureRequirementsChecker.assertSigningCertificateIsValid(padesSignature);
 				tLevelExtensionRequired = true;
 			}
 		}
@@ -167,19 +168,17 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 		}
 	}
 
-	private void assertExtendSignatureToTPossible(PAdESSignature signature, PAdESSignatureParameters parameters) {
-		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-		if (SignatureLevel.PAdES_BASELINE_T.equals(signatureLevel) && (signature.hasLTProfile() || signature.hasLTAProfile())) {
-			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
-			throw new IllegalInputException(String.format(exceptionMessage, "PAdES LT"));
-		}
+	private boolean requiresDocumentTimestamp(PAdESSignature signature, PAdESSignatureParameters signatureParameters) {
+		return PAdES_BASELINE_T.equals(signatureParameters.getSignatureLevel()) || !signature.hasTProfile();
 	}
 
-	private boolean requiresDocumentTimestamp(AdvancedSignature signature) {
-		List<TimestampToken> timestamps = new ArrayList<>(signature.getSignatureTimestamps());
-		timestamps.addAll(signature.getArchiveTimestamps());
-		timestamps.addAll(signature.getDocumentTimestamps());
-		return Utils.isCollectionEmpty(timestamps);
+	private void assertExtendSignatureToTPossible(PAdESSignature signature, PAdESSignatureParameters parameters) {
+		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
+		if (PAdES_BASELINE_T.equals(signatureLevel) && (signature.hasLTAProfile() ||
+				(signature.hasLTProfile() && !signature.areAllSelfSignedCertificates()) )) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signature is already extended with LT level.", signatureLevel));
+		}
 	}
 
 }

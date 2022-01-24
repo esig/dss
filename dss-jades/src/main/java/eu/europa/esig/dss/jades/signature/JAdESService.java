@@ -253,7 +253,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			dssDocument.setMimeType(MimeType.JOSE_JSON);
 			return dssDocument;
 		}
-		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel());
+		throw new UnsupportedOperationException(
+				String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 	}
 
 	private void assertExtensionPossible(JAdESSignatureParameters parameters) {
@@ -281,7 +282,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			extensionLTA.setTspSource(tspSource);
 			return extensionLTA;
 		default:
-			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
+			throw new UnsupportedOperationException(
+					String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 		}
 	}
 

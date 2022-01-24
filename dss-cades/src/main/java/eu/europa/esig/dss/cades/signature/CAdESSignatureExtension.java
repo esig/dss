@@ -205,9 +205,11 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * @param detachedContents a list of detached {@link DSSDocument}s
 	 * @return created {@link CAdESSignature}
 	 */
-	protected CAdESSignature newCAdESSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
+	protected CAdESSignature newCAdESSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation,
+											   List<DSSDocument> detachedContents) {
 		final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(detachedContents);
+		cadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 		return cadesSignature;
 	}
 

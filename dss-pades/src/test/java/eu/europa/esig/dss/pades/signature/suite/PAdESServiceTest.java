@@ -235,8 +235,8 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         assertEquals("Only PAdES form is allowed !", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-        exception = assertThrows(IllegalArgumentException.class, () -> extendAndValidate(signedDocument, extensionParameters));
-        assertEquals("Cannot extend to PAdES_BASELINE_B", exception.getMessage());
+        exception = assertThrows(UnsupportedOperationException.class, () -> extendAndValidate(signedDocument, extensionParameters));
+        assertEquals("Unsupported signature format 'PAdES-BASELINE-B' for extension.", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
         extendAndValidate(signedDocument, extensionParameters);

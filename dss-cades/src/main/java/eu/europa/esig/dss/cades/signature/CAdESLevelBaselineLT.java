@@ -25,6 +25,7 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -45,6 +46,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static eu.europa.esig.dss.enumerations.SignatureLevel.CAdES_BASELINE_LT;
 
 /**
  * This class holds the CAdES-LT signature profiles
@@ -78,7 +81,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 			CAdESSignature cadesSignature = (CAdESSignature) signature;
 			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
 				// check if the resulted signature can be extended
-				assertExtendSignatureLevelLTPossible(cadesSignature);
+				assertExtendSignatureLevelLTPossible(cadesSignature, parameters);
 				signaturesToExtend.add(cadesSignature);
 			}
 		}
@@ -210,8 +213,12 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		return cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion);
 	}
 	
-	private void assertExtendSignatureLevelLTPossible(CAdESSignature cadesSignature) {
-		if (cadesSignature.areAllSelfSignedCertificates()) {
+	private void assertExtendSignatureLevelLTPossible(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) {
+		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
+		if (CAdES_BASELINE_LT.equals(signatureLevel) && cadesSignature.hasLTAProfile()) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signedData is already extended with LTA level.", signatureLevel));
+		} else if (cadesSignature.areAllSelfSignedCertificates()) {
 			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}

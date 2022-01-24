@@ -38,6 +38,7 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithCompositeT
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithError500TimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithFailTimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithRevokedCertTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionInvalidLevelsTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTAWithDifferentTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTASelfSignedTSATest;
@@ -73,7 +74,8 @@ import org.junit.platform.suite.api.Suite;
 		PAdESExtensionTToLTANotTrustedTSPTest.class, PAdESExtensionNonPDFToTLevelTest.class, PAdESExtensionNonPDFToLTLevelTest.class,
         PAdESExtensionNonPDFToLTALevelTest.class, PAdESExtensionBToLTWithRevokedCertificateTest.class,
         PAdESExtensionBToLTWithRevokedSkipCheckTest.class, BuildKnownObjectsTest.class, PAdESExtensionBToTWithRevokedCertTest.class,
-		PAdESExtensionBToLTWithRevokedCertTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class, PAdESExtensionTToLTANoChangesPermittedTest.class })
+		PAdESExtensionBToLTWithRevokedCertTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class, PAdESExtensionTToLTANoChangesPermittedTest.class,
+		PAdESExtensionInvalidLevelsTest.class })
 public class ITextPAdESExtensionSuiteTest {
 
 }

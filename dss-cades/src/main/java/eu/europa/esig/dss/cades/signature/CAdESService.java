@@ -270,7 +270,8 @@ public class CAdESService extends
 			case CAdES_BASELINE_LTA:
 				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier);
 			default:
-				throw new IllegalArgumentException("Unsupported signature format : " + signatureLevel);
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s' for extension.", signatureLevel));
 		}
 	}
 

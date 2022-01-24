@@ -5,6 +5,7 @@ import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -32,6 +33,15 @@ public class PAdESExtensionService {
     private final IPdfObjFactory pdfObjectFactory;
 
     /**
+     * Constructor instantiating default {@code IPdfObjFactory}
+     *
+     * @param certificateVerifier {@link CertificateVerifier}
+     */
+    public PAdESExtensionService(final CertificateVerifier certificateVerifier) {
+        this(certificateVerifier, new ServiceLoaderPdfObjFactory());
+    }
+
+    /**
      * Default constructor
      *
      * @param certificateVerifier {@link CertificateVerifier}
@@ -47,6 +57,19 @@ public class PAdESExtensionService {
     /**
      * This method adds a DSS dictionary revision to the given {@code document}
      * with the required validation data if needed
+     *
+     * NOTE: This method does not check the validity of the provided signatures/timestamps (e.g. a T-level, ...)
+     *
+     * @param document {@link DSSDocument} to extend
+     * @return {@link DSSDocument} extended document
+     */
+    public DSSDocument incorporateValidationData(DSSDocument document) {
+        return incorporateValidationData(document, null);
+    }
+
+    /**
+     * This method adds a DSS dictionary revision to the given {@code document} protected by a {@code passwordProtection}
+     * with the required validation data if needed.
      *
      * NOTE: This method does not check the validity of the provided signatures/timestamps (e.g. a T-level, ...)
      *

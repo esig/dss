@@ -10,6 +10,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -185,6 +186,19 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
         CAdESSignatureParameters parameters = new CAdESSignatureParameters();
         parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
         return parameters;
+    }
+
+    @Override
+    protected boolean extensionRequired(CAdESSignatureParameters parameters, boolean coveredByManifest) {
+        return !coveredByManifest;
+    }
+
+    @Override
+    protected void assertExtendSignaturePossible(CAdESSignatureParameters parameters, boolean coveredByManifest) {
+        if (coveredByManifest) {
+            throw new IllegalInputException(String.format(
+                    "Cannot extend signature to '%s'. The signature is already covered by an archive manifest.", parameters.getSignatureLevel()));
+        }
     }
 
 }

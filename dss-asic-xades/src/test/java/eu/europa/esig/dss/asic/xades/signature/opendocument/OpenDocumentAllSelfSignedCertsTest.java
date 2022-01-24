@@ -100,7 +100,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
 		documentToSign = new FileDocument(file);
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		assertEquals("Cannot extend signature. The signature contains only self-signed certificate chains.", exception.getMessage());
 	}
 
 	@ParameterizedTest
@@ -109,7 +109,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
 		documentToSign = new FileDocument(file);
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		assertEquals("Cannot extend signature. The signature contains only self-signed certificate chains.", exception.getMessage());
 	}
 	
 	private DSSDocument sign() {

@@ -198,25 +198,31 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
 
+			// The timestamp must be added only if there is no one or the extension -T level is being created
+			if (!tLevelExtensionRequired()) {
+				continue;
+			}
+
 			assertExtendSignatureToTPossible();
 			assertSignatureValid(xadesSignature);
 
 			Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-			// The timestamp must be added only if there is no one or the extension -T level is being created
-			if (!xadesSignature.hasTProfile() || XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
-				signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
+			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
-				final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
-				final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
-				final byte[] canonicalizedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
-				final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
-				final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalizedValue);
-				createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
+			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
+			final byte[] canonicalizedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
+			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
+			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalizedValue);
+			createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
 
-				unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
-			}
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
 		}
+	}
+
+	private boolean tLevelExtensionRequired() {
+		return XAdES_BASELINE_T.equals(params.getSignatureLevel()) || !xadesSignature.hasTProfile();
 	}
 
 	/**
@@ -224,9 +230,10 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	private void assertExtendSignatureToTPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (XAdES_BASELINE_T.equals(signatureLevel) && (xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
-			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
-			throw new IllegalInputException(String.format(exceptionMessage, "XAdES LT"));
+		if (XAdES_BASELINE_T.equals(signatureLevel) && (xadesSignature.hasLTAProfile() ||
+				((xadesSignature.hasLTProfile() || xadesSignature.hasCProfile()) && !xadesSignature.areAllSelfSignedCertificates()) )) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signature is already extended with LT level.", signatureLevel));
 		}
 	}
 

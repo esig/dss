@@ -46,6 +46,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_C;
+import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_XL;
+
 /**
  * Contains XAdES-C profile aspects
  *
@@ -87,7 +90,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			initializeSignatureBuilder((XAdESSignature) signature);
 
 			// for XL-level it is required to re-initialize refs
-			if (!cLevelExtensionRequired(params.getSignatureLevel())) {
+			if (!cLevelExtensionRequired()) {
 				continue;
 			}
 
@@ -109,7 +112,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		// Append ValidationData
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (!cLevelExtensionRequired(params.getSignatureLevel())) {
+			if (!cLevelExtensionRequired()) {
 				continue;
 			}
 
@@ -144,9 +147,9 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 	}
 
-	private boolean cLevelExtensionRequired(SignatureLevel signatureLevel) {
-		return !xadesSignature.hasCProfile() || SignatureLevel.XAdES_C.equals(signatureLevel) ||
-				SignatureLevel.XAdES_XL.equals(signatureLevel);
+	private boolean cLevelExtensionRequired() {
+		return XAdES_C.equals(params.getSignatureLevel()) || XAdES_XL.equals(params.getSignatureLevel()) ||
+				!xadesSignature.hasCProfile();
 	}
 
 	private String removeOldCertificateRefs() {
@@ -357,10 +360,11 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	 */
 	private void assertExtendSignatureToCPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (SignatureLevel.XAdES_C.equals(signatureLevel) && (xadesSignature.hasXProfile() ||
-				xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
-			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
-			throw new IllegalInputException(String.format(exceptionMessage, "XAdES X"));
+		if ((XAdES_C.equals(signatureLevel) && (xadesSignature.hasXProfile() || xadesSignature.hasAProfile() ||
+				(xadesSignature.hasXLProfile() && !xadesSignature.areAllSelfSignedCertificates()) )) ||
+				(XAdES_XL.equals(signatureLevel) && xadesSignature.hasAProfile()) ) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signature is already extended with higher level.", signatureLevel));
 		} else if (xadesSignature.areAllSelfSignedCertificates()) {
 			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}

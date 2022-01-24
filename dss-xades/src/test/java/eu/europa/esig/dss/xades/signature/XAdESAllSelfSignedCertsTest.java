@@ -75,14 +75,14 @@ public class XAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	public void ltLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		assertEquals("Cannot extend signature. The signature contains only self-signed certificate chains.", exception.getMessage());
 	}
 
 	@Test
 	public void ltaLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		assertEquals("Cannot extend signature. The signature contains only self-signed certificate chains.", exception.getMessage());
 	}
 	
 	private DSSDocument sign() {

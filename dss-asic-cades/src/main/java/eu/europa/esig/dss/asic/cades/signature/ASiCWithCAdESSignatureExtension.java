@@ -8,6 +8,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -16,6 +17,9 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+
+import static eu.europa.esig.dss.enumerations.SignatureLevel.CAdES_BASELINE_LT;
+import static eu.europa.esig.dss.enumerations.SignatureLevel.CAdES_BASELINE_T;
 
 /**
  * This class is used to extend an ASiC with CAdES signature
@@ -61,8 +65,11 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
         }
 
         for (DSSDocument signature : signatureDocuments) {
-            // not to extend the signature covered by a manifest
-            if (!ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), signature.getName())) {
+            boolean coveredByManifest = isCoveredByManifest(asicContent, signature);
+            if (extensionRequired(parameters, coveredByManifest)) {
+                // not to extend the signature covered by a manifest
+                assertExtendSignaturePossible(parameters, coveredByManifest);
+
                 DSSDocument extendedSignature = extendSignatureDocument(signature, asicContent, parameters);
                 ASiCUtils.addOrReplaceDocument(signatureDocuments, extendedSignature);
             }
@@ -109,6 +116,43 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
             cadesService.setTspSource(tspSource);
         }
         return cadesService;
+    }
+
+    /**
+     * Checks whether the signature extension is required for the particular document
+     *
+     * @param parameters {@link CAdESSignatureParameters}
+     * @param coveredByManifest defines whether the signature document is covered by an archive manifest
+     * @return TRUE if the signature extension is required, FALSE otherwise
+     */
+    protected boolean extensionRequired(CAdESSignatureParameters parameters, boolean coveredByManifest) {
+        SignatureLevel signatureLevel = parameters.getSignatureLevel();
+        return CAdES_BASELINE_T.equals(signatureLevel) || CAdES_BASELINE_LT.equals(signatureLevel) || !coveredByManifest;
+    }
+
+    /**
+     * Checks if the signature extension is possible
+     *
+     * @param parameters {@link CAdESSignatureParameters}
+     * @param coveredByManifest defines whether the signature document is covered by an archive manifest
+     */
+    protected void assertExtendSignaturePossible(CAdESSignatureParameters parameters, boolean coveredByManifest) {
+        SignatureLevel signatureLevel = parameters.getSignatureLevel();
+        if ((CAdES_BASELINE_T.equals(signatureLevel) || CAdES_BASELINE_LT.equals(signatureLevel)) && coveredByManifest) {
+            throw new IllegalInputException(String.format(
+                    "Cannot extend signature to '%s'. The signature is already covered by an archive manifest.", signatureLevel));
+        }
+    }
+
+    /**
+     * Verifies whether the {@code signature} document is covered by an Archive Manifest
+     *
+     * @param asicContent {@link ASiCContent}
+     * @param signature {@link DSSDocument}
+     * @return TRUE if the signature is covered by an archive manifest, FALSE otherwise
+     */
+    protected boolean isCoveredByManifest(ASiCContent asicContent, DSSDocument signature) {
+        return ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), signature.getName());
     }
 
 }

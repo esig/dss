@@ -110,7 +110,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			case PAdES_BASELINE_LTA:
 				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier, pdfObjFactory);
 			default:
-				throw new IllegalArgumentException("Signature format '" + signatureLevel + "' not supported");
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s' for extension.", signatureLevel));
 		}
 	}
 
@@ -259,7 +260,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		if (SignatureLevel.PAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
-			throw new IllegalArgumentException("Cannot extend to PAdES_BASELINE_B");
+			throw new UnsupportedOperationException(
+					String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 		}
 		
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters.getSignatureLevel());

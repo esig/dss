@@ -241,11 +241,12 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 
 		boolean addASiCEArchiveManifest = isAddASiCEArchiveManifest(parameters.getSignatureLevel(), containerType);
+		final ASiCWithCAdESSignatureExtension extensionProfile = getExtensionProfile(parameters.getSignatureLevel(), containerType);
+
 		if (addASiCEArchiveManifest) {
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		}
 
-		ASiCWithCAdESSignatureExtension extensionProfile = getExtensionProfile(addASiCEArchiveManifest);
 		asicContent = extensionProfile.extend(asicContent, parameters);
 
 		if (addASiCEArchiveManifest) {
@@ -399,14 +400,26 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	/**
 	 * Returns the extension profile to be used for the current signature
 	 *
-	 * @param isAddArchiveManifest defines whether the ArchiveManifest shall be created
-	 * @return {@link ASiCWithCAdESSignatureExtension}
+	 * @param signatureLevel
+	 *            {@link SignatureLevel}
+	 * @param containerType
+	 * 			  {@link ASiCContainerType}
+	 * @return {@code ASiCWithCAdESSignatureExtension} related to the pre-defined profile
 	 */
-	protected ASiCWithCAdESSignatureExtension getExtensionProfile(boolean isAddArchiveManifest) {
-		if (isAddArchiveManifest) {
-			return new ASiCWithCAdESLevelBaselineLTA(certificateVerifier, tspSource);
-		} else {
-			return new ASiCWithCAdESSignatureExtension(certificateVerifier, tspSource);
+	protected ASiCWithCAdESSignatureExtension getExtensionProfile(final SignatureLevel signatureLevel,
+																final ASiCContainerType containerType) {
+		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
+		switch (signatureLevel) {
+			case CAdES_BASELINE_T:
+			case CAdES_BASELINE_LT:
+				return new ASiCWithCAdESSignatureExtension(certificateVerifier, tspSource);
+			case CAdES_BASELINE_LTA:
+				return ASiCContainerType.ASiC_E.equals(containerType) ?
+						new ASiCWithCAdESLevelBaselineLTA(certificateVerifier, tspSource) :
+						new ASiCWithCAdESSignatureExtension(certificateVerifier, tspSource);
+			default:
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s' for extension.", signatureLevel));
 		}
 	}
 

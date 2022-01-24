@@ -249,8 +249,8 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         assertEquals("Only XAdES form is allowed !", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-        exception = assertThrows(DSSException.class, () -> extendAndValidate(signedDocument, extensionParameters));
-        assertEquals("Cannot extend to XAdES_BASELINE_B", exception.getMessage());
+        exception = assertThrows(UnsupportedOperationException.class, () -> extendAndValidate(signedDocument, extensionParameters));
+        assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         extendAndValidate(signedDocument, extensionParameters);
