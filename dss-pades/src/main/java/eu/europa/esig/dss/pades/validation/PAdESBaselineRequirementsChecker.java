@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESBaselineRequirementsChecker;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -27,6 +28,7 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -36,6 +38,7 @@ import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import org.bouncycastle.cms.CMSTypedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -287,22 +290,53 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
     }
 
     /**
-     * Checks if the signature has PKCS#7 profile
+     * Checks if the signature has PKCS#7 profile (according to ISO 32000-1)
      *
      * @return TRUE if the signature has a PKCS#7 profile, FALSE otherwise
      */
     public boolean hasPKCS7Profile() {
         PAdESSignature padesSignature = (PAdESSignature) signature;
         PdfSignatureDictionary pdfSignatureDictionary = padesSignature.getPdfSignatureDictionary();
+        // SubFilter shall take one of the following values: (adbe.pkcs7.detached, adbe.pkcs7.sha1)
         if (!PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(pdfSignatureDictionary.getSubFilter()) &&
                 !PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(pdfSignatureDictionary.getSubFilter())) {
             LOG.debug("Entry with a key SubFilter shall have a value adbe.pkcs7.detached or adbe.pkcs7.sha1 " +
                     "for PKCS#7 signature!");
             return false;
         }
+        // At minimum the CMS object shall include the signer’s X.509 signing certificate.
         if (!containsSigningCertificate(padesSignature.getCertificateSource().getCertificates())) {
             LOG.warn("PKCS#7 signature shall include signing certificate!");
             return false;
+        }
+        // SubFilter adbe.pkcs7.detached
+        if (PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(pdfSignatureDictionary.getSubFilter())) {
+            // The original signed message digest over the document’s byte range shall be
+            // incorporated as the normal CMS SignedData field.
+            if (Utils.isArrayEmpty(padesSignature.getMessageDigestValue())) {
+                LOG.warn("PKCS#7 signature shall include message digest!");
+                return false;
+            }
+            // No data shall be encapsulated in the CMS SignedData field.
+            if (!padesSignature.getCmsSignedData().isDetachedSignature()) {
+                LOG.warn("No data shall be encapsulated in the CMS SignedData field for PKCS#7 signature!");
+                return false;
+            }
+        }
+        // SubFilter adbe.pkcs7.sha1
+        if (PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(pdfSignatureDictionary.getSubFilter())) {
+            CMSTypedData signedContent = padesSignature.getCmsSignedData().getSignedContent();
+            if (signedContent == null) {
+                LOG.warn("ContentInfo of type Data shall be encapsulated in the CMS SignedData field for " +
+                        "PKCS#7 signature with SHA-1 SubFilter!");
+                return false;
+            }
+            byte[] signedContentBytes = CMSUtils.getSignedContent(signedContent);
+            if (!DSSUtils.isSHA1Digest(Utils.toHex(signedContentBytes))) {
+                LOG.warn("The SHA-1 digest of the document’s byte range shall be encapsulated in the CMS " +
+                        "SignedData field with ContentInfo of type Data for PKCS#7 signature with SHA-1 SubFilter!");
+                return false;
+            }
         }
         return true;
     }
