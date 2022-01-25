@@ -74,7 +74,7 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
     private DSSDocument extendSignatureDocument(DSSDocument signature, ASiCContent asicContent,
                                                 CAdESSignatureParameters cadesParameters) {
         List<DSSDocument> detachedContents = getDetachedContents(signature, asicContent);
-        cadesParameters.setDetachedContents(detachedContents);
+        cadesParameters.getContext().setDetachedContents(detachedContents);
 
         String originalName = signature.getName();
         DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);

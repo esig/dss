@@ -49,7 +49,7 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.ProfileParameters;
+import eu.europa.esig.dss.xades.XAdESProfileParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
@@ -110,7 +110,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		Objects.requireNonNull(dssDocument, "The document cannot be null");
 		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
 		this.params = params;
-		final ProfileParameters context = params.getContext();
+		final XAdESProfileParameters context = params.getContext();
 		if (LOG.isInfoEnabled()) {
 			LOG.info("====> Extending: {}", (dssDocument.getName() == null ? "IN MEMORY DOCUMENT" : dssDocument.getName()));
 		}

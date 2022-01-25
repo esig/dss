@@ -104,7 +104,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		assertSignaturePossible(asicContent.getTimestampDocuments(), parameters.aSiC());
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
+		cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
 
 		DSSDocument toBeSigned = dataToSignHelper.getToBeSigned();
 		return getCAdESService().getDataToSign(toBeSigned, cadesParameters);
@@ -129,7 +129,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		assertSignaturePossible(asicContent.getTimestampDocuments(), asicParameters);
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
+		cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
 
 		// Archive Timestamp in case of ASiC-E is not embedded into the CAdES signature
 		boolean addASiCArchiveManifest = isAddASiCEArchiveManifest(parameters.getSignatureLevel(), parameters.aSiC().getContainerType());
@@ -294,7 +294,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	 */
 	protected CAdESSignatureParameters getCAdESParameters(ASiCWithCAdESSignatureParameters parameters) {
 		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		parameters.setDetachedContents(null);
+		parameters.getContext().setDetachedContents(null);
 		return parameters;
 	}
 
