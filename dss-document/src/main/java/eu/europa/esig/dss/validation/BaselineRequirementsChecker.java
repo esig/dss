@@ -214,9 +214,6 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         for (TimestampToken timestampToken : signature.getTimestampSource().getAllTimestampsExceptLastArchiveTimestamp()) {
             validationContext.addTimestampTokenForVerification(timestampToken);
         }
-        for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
-            addSignatureForVerification(validationContext, counterSignature);
-        }
     }
 
     /**
