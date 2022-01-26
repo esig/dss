@@ -22,7 +22,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSo
 
 ==== Timestamp policy
 
-A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. The user may request the TSA to issue a timestamp under a specific time-stamp policy that is supported by the TSA.
+A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in https://datatracker.ietf.org/doc/html/rfc3628[RFC 3628]. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. The user may request the TSA to issue a timestamp under a specific time-stamp policy that is supported by the TSA.
 
 [source,java,indent=0]
 .Timestamp policy

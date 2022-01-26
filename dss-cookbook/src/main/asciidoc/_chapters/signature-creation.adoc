@@ -55,8 +55,7 @@ The DSS framework is compatible with the baseline profiles. However, it is not p
 The ETSI standard EN 319 102-1 (cf. <<R09>>) defines four conformance classes to address the need to protect the validity of the signature in time. Henceforth, to denote the class of the signature the word "level" will be used. Follows the list of profiles implementing the four classes defined in the standard:
 
 * AdES-BASELINE-*B*: Profile implementing the signature class _Basic Signature_ +
-The lowest and simplest version containing the SignedInfo, SignatureValue, KeyInfo and SignedProperties.
-This form extends the definition of an electronic signature to conform to the identified signature policy.
+The lowest and simplest version containing at least a signature value, a reference to or a copy of the signing certificate as a signed attribute, and optionally other signed or unsigned attributes.
 * AdES-BASELINE-*T*: Profile implementing the signature class _Signature with time_ +
 A timestamp regarding the time of signing is added to protect against repudiation.
 * AdES-BASELINE-*LT*: Profile implementing the signature class _Signature with Long-Term Validation Material_ +
@@ -559,7 +558,7 @@ The code above produces the signature that can be found https://github.com/esig/
 
 The signature policy is a BASELINE-B signed attribute that is set upon signature creation. Thus, this attribute cannot be changed after the signature has been created.
 
-The DSS framework allows you to reference a signature policy, which is a set of rules for the creation and validation of an electronic signature. For more information on the signature policy refer to section <<SignaturePolicy>>.
+The DSS framework allows you to reference a signature policy, which is a set of rules for the creation and validation of an electronic signature. For more information on the signature policy refer to section <<SignaturePolicies>>.
 
 The signer may reference the policy either implicitly or explicitly.
 

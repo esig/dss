@@ -59,7 +59,7 @@ The requirements and build instructions for DSS demonstrations can be found in t
 === License
 For the DSS core: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)].
 
-For the DSS demo: https://joinup.ec.europa.eu/licence/european-union-public-licence-version-11-or-later-eupl[MOCCA EUPL].
+For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-union-public-licence-version-11-or-later-eupl[MOCCA EUPL] and https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)]. For more information please see https://github.com/esig/dss-demonstrations/blob/master/LICENSE[DSS demonstration LICENSE]
 
 === Abbreviations and Acronyms
 
@@ -73,39 +73,27 @@ For the DSS demo: https://joinup.ec.europa.eu/licence/european-union-public-lice
 |BB				|Building Block (CEF)
 |CA				|Certificate authority
 |CAdES			|CMS Advanced Electronic Signatures
-|CD				|Commission Decision
 |CEF			|Connecting Europe Facility
 |CMS			|Cryptographic Message Syntax
 |CRL			|Certificate Revocation List
-|CSP			|Core Service Platform (CEF)
 |CSP			|Cryptographic Service Provider
 |DER			|Distinguished Encoding Rules
 |DSA			|Digital Signature Algorithm - an algorithm for public-key cryptography
-|DSI			|Digital Service Infrastructure (CEF)
 |DSS			|Digital Signature Service
 |EC				|European Commission
-|eID			|Electronic Identity Card
 |ESI			|Electronic Signatures and Infrastructures
 |ETSI			|European Telecommunications Standards Institute
 |EUPL			|European Union Public License
-|FSF			|Free Software Foundation
-|GS				|Generic Service (CEF)
-|GUI			|Graphical User Interface
 |HSM			|Hardware Security Modules
 |HTTP			|Hypertext Transfer Protocol
-|I18N			|Internationalization
 |JAdES          |JSON Advanced Electronic Signatures
 |Java EE		|Java Enterprise Edition
 |JavaDoc		|JavaDoc is developed by Sun Microsystems to create API documentation in HTML format from the comments in the source code. JavaDoc is an industrial standard for documenting Java classes.
 |JAXB			|Java Architecture for XML Binding
-|JCA			|Java Cryptographic Architecture
-|JCE			|Java Cryptography Extension
 |JDBC			|Java DataBase Connectivity
 |JWS			|JSON Web Signatures
 |LGPL			|Lesser General Public License
 |LOTL			|List of Trusted List or List of the Lists
-|LSP			|Large Scale Pilot
-|MIT			|Massachusetts Institute of Technology
 |MOCCA			|Austrian Modular Open Citizen Card Architecture; implemented in Java
 |MS / EUMS		|Member State
 |MS CAPI		|Microsoft Cryptographic Application Programming Interface
@@ -116,8 +104,6 @@ For the DSS demo: https://joinup.ec.europa.eu/licence/european-union-public-lice
 |OEBPS			|Open eBook Publication Structure
 |OID			|Object Identifier
 |OOXML			|Office Open XML
-|OSI			|Open Source Initiative
-|OSS			|Open Source Software
 |PAdES			|PDF Advanced Electronic Signatures
 |PC/SC			|Personal computer/Smart Card
 |PDF			|Portable Document Format
@@ -128,8 +114,6 @@ For the DSS demo: https://joinup.ec.europa.eu/licence/european-union-public-lice
 |RSA			|Rivest Shamir Adleman - an algorithm for public-key cryptography
 |SCA			|Signature Creation Application
 |SCD			|Signature Creation Device
-|SME			|Subject Matter Expert
-|SMO			|Stakeholder Management Office (CEF)
 |SOAP			|Simple Object Access Protocol
 |SSCD			|Secure Signature-Creation Device
 |SVA			|Signature Validation Application
@@ -137,7 +121,6 @@ For the DSS demo: https://joinup.ec.europa.eu/licence/european-union-public-lice
 |TLManager		|Application for managing trusted lists.
 |TSA			|Time Stamping Authority
 |TSL			|Trust-service Status List
-|TSP			|Time Stamp Protocol
 |TSP			|Trusted Service Provider
 |TST			|Time-Stamp Token
 |UCF			|Universal Container Format
@@ -179,6 +162,11 @@ readable signature policy documents    |ETSI TS 119 172-1			|1.1.1
 |ETSI TS 119 172-2			|1.1.1
 |[[R19]]	R19	|ESI - ASN.1 format for signature policies
 |ETSI TS 119 172-3			|1.1.1
+|[[R20]]    R20 |Internet RFC 7515: JSON Web Signature (JWS) |RFC 7515 |
+|[[R21]]    R21 |Internet RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile |RFC 5280 |
+|[[R22]]    R22 |Internet RFC 6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP |RFC 6960 |
+|[[R23]]    R23 |COMMON PKI SPECIFICATIONS FOR INTEROPERABLE APPLICATIONS FROM T7 & TELETRUST |Common PKI v2.0 | v2.0
+
 
 |=======================
 

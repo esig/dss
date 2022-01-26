@@ -1104,5 +1104,73 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>init-quick</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<!-- <excludes>
+								<include>%regex[dss-utils|dss-crl-parser|dss-test|dss-pades|dss-asic-common]</include>
+								<exclude>%regex[(dss-enumerations)|(dss-alert|dss-jaxb-common)|(dss-jaxb-parsers)|(specs-xmldsig)|(specs-xades)|specs-trusted-list|specs-validation-report|specs-asic-manifest|specs-saml-assertion|specs-jws]</exclude>
+
+								<exclude>dss-alert/*Test.java</exclude>
+								<exclude>eu.europa.ec.joinup.sd-dss:dss-alert</exclude>
+							</excludes>
+						-->
+							<!--
+							<classpathDependencyExcludes>eu.europa.ec.joinup.sd-dss:dss-alert</classpathDependencyExcludes>
+							-->
+							<groups>eu.europa.ec.joinup.sd-dss:dss-utils</groups>
+
+
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>init-quick-2</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<!-- Default test configuration -->
+							<skipTests>true</skipTests>
+							<classpathDependencyExcludes>
+								<classpathDependencyExclude>commons-logging:commons-logging</classpathDependencyExclude>
+							</classpathDependencyExcludes>
+							<threadCount>1</threadCount>
+						</configuration>
+						<executions>
+						<execution>
+							<id>non-regression</id>
+							<phase>test</phase>
+							<goals>
+								<goal>test</goal>
+							</goals>
+							<configuration>
+								<skipTests>false</skipTests>
+								<testFailureIgnore>false</testFailureIgnore>
+								<includes>
+									<include>dss/utils/**/*Test.*</include>
+									<include>dss/crl-parser/**/*Test.*</include>
+									<include>dss/crl-parser/**/*Test.*</include>
+									<include>dss/test/**/*Test.*</include>
+									<include>dss/pades/**/*Test.*</include>
+									<include>dss/asic-common/**/*Test.*</include>
+								</includes>
+								<excludedGroups>${exclude.tag.tests}</excludedGroups>
+							</configuration>
+						</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>

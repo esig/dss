@@ -30,13 +30,16 @@ The usage of alerts is available in the following classes:
 * CertificateVerifier - to handle the unexpected situation(s) in a custom way (introduced `AlertException` to re-throw exceptions, see section <<certificateVerifier>> for more information);
 * TLValidationJob - to process custom actions on change/state on loading of LOTL/TLs (see `LOTLAlert` and `TLAlert` in the <<AlertingTL>> section).
 
+[.landscape]
+<<<
+
 === Configuration of validation policy in different use cases
 ==== General
-A Signature validation policy is a set of rules/constraints that need to be fulfilled to validate a signature (cf. <<SignaturePolicy>>). When a constraint is not validated it leads to a sub-indication in the validation report (cf. <<SignatureValidationInputsOutputs, Signature validation output>>)
+A Signature validation policy is a set of rules/constraints that need to be fulfilled to validate a signature. When checking a constraints fails, this leads to a sub-indication in the validation report.
 //TODO: Fill the “subindication” column of the table to indicate what subindications each constraint can lead to.
 
 .Validation policy constraints
-[%header,cols="^.^1,^.^1,^.^1,^.^1,^.^1,^.^1"]
+[%header,cols="6*^.^1"]
 |===
    |Constraint                  |Sub-constraint             |Sub-constraint         |Sub-constraint         |Level          |Sub-indication
 .32+|ContainerConstraints    .4+|AcceptableContainerTypes        .4+|                            .4+|                               |FAIL           |
@@ -726,6 +729,8 @@ A Signature validation policy is a set of rules/constraints that need to be fulf
 
 |===
 
+[.portrait]
+<<<
 
 ==== AdES validation
 
@@ -987,7 +992,6 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDo
 
 ==== Hash encryption
 In order to avoid transfer of original or sensitive information, and also to reduce the amount of data by online protocols, a hash of a document or data to be signed can be computed.
-Refer to section <<Hashing>> for more information on the hash encryption.
 
 [source,java,indent=0]
 .Hash encryption
@@ -1016,3 +1020,107 @@ When a private key signing is operated remotely, i.e. on an external server, the
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ServerSignTest.java[tags=demo]
 ----
+
+[[DetaliedReportInterpretation]]
+=== Interpreting a detailed report
+We will illustrate here how to read a detailed validation report where the validation succeeds even though the signing certificate has been revoked.
+
+This will illustrate how to look up at which check failed and how the overall validation process can succeed even when a sub-process failed.
+
+First, as explained in <<DetailedReport>> the structure of the detailed validation report is based on ETSI EN 319 102-1 (<<R09>>). This means that the detailed report is structured in terms of:
+
+* Validation processes; and
+* Building blocks.
+
+There are three validation processes specified in ETSI EN 319 102-1:
+
+* The Validation process for Basic Signatures;
+* The Validation process for Signatures with Time and Signatures with Long-Term Validation Material;
+* The Validation process for Signatures providing Long Term Availability and Integrity of Validation Material, abbreviated in the report as "Validation Process for Signatures with Archival Data".
+
+Those validation processes in turn rely on building blocks, which are denoted in ETSI EN 319 102-1 as:
+
+* The basic building blocks;
+* The time-stamp validation building block;
+* The additional building blocks.
+
+DSS groups the basic building blocks and the additional building blocks related to the validation of a particular signature together. However, it separates the time-stamp validation builiding block from the rest and present it alongside the validation processes because this building block essentially consists in applying the validation process for basic signatures to a timestamp token taken as a CMS object.
+
+Now let's see how this looks in a validation report (we use here the HTML representation provided by the demonstration).
+
+First, as mentionned, are the validation processes and the time-stamp validation building block, which are numbered in the figure below with:
+
+. The validation process for Basic Signatures;
+. The time-stamp building block in which appears the validation process of the timestamp;
+. The validation process for Signatures with Time and Signatures with Long-Term Validation Material;
+. The validation process for Signatures with Archival Data.
+
+image::DetailedReport-Illustration-SigProcesses.png[width="100%", height="100%", align="center"]
+
+As further illustrated in the figure above:
+
+* The validation process for Basic signature is executed against the first time which is the (current) validation time;
+* The validation process for Signatures with Time and Signatures with Long-Term Validation Material is executed against a second time which is the "best signature time" that is determined using the signature timestamp;
+* The validation process for Signatures with Archival Data is executed aginst a third time which is the "best signature time" determined using all time assertions present in the signature.
+
+Additionally, each process has an associated indication, here:
+
+. REVOKED_NO_POE for the validation process for basic signatures;
+. PASSED for the timestamp validation block;
+. PASSED for the validation process for Signatures with Time and Signatures with Long-Term Validation Material;
+. PASSED for the validation process for Signatures with Archival Data.
+
+Each of those indications is determined using the result of the associated building blocks, and applying additional checks.
+
+Here we can see that the REVOKED_NO_POE indication arises from the fact that the result of the "X.509 Certificate Validation" building block is not conclusive.
+
+Now delving into the building blocks themselves, we can see in the figure below that the building blocks are grouped by the signed objects to which they relate:
+
+* BBB SIG are the building blocks used for the validation of the signature itself;
+* BBB TIMESTAMP are the building blocks used for the validation of the timestamp;
+* BBB REVOCATION DATA are the building blocks used for the validation of the OCSP responses taken as CMS objects.
+
+image::DetailedReport-Illustration-BB.png[width="100%", height="100%", align="center"]
+
+We saw previously that the "validation process for basic signature" resulted in the REVOKED_NO_POE indication because the result of the "X.509 Certificate Validation" building block was not conclusive.
+
+To check what went wrong, we must therefore look at the "X.509 Certificate Validation" building block associated to the signature, that is the "X.509 Certificate Validation" building block that is in BBB SIG.
+
+We see there that the check "Is the certificate validation conclusive?" has failed. Therefore, we now need to look at the "Certificate" sub-block of BBB SIG.
+
+In the "Certificate" sub-block we can see that all checks succeded except for "Is the certificate not revoked?". We can thus conclude that the validation process for basic signature resulted in the indication "REVOKED_NO_POE" because the signing certificate is revoked at validation time.
+
+That being said, we saw before that although the validation process for basic signature failed with "REVOKED_NO_POE", the other validation processes resulted in the PASSED indication. And in fact, the overall result of the validation process is TOTAL_PASSED.
+
+To understand why that is so, we need to look back at the signature validation processes. There we can see in the "validation process for Signatures with Time and Signatures with Long-Term Validation Material" that specific checks differing from the building blocks are executed. Which checks are executed depends on the indication determined during the "validation process for basic signatures". In the present case, because the indication was "REVOKED_NO_POE" the specific check "Is the revocation time after best-signature-time" is executed.
+
+As mentioned before, "best-signature-time" is determined, for that validation process, using the signature timestamp. Because here the validation of the signature timestamp succeeded, the time indicated in the timestamp is used as best-signature-time, and because this time is indeed before the time of revocation of the signing certificate, the check succeeds, and the whole "validation process for Signatures with Time and Signatures with Long-Term Validation Material" succeeds.
+
+Now to understand why the overall result of the validation is TOTAL_PASSED, we need to go back to the procedures specified in ETSI EN 319 102-1. The three validation processes specified in that standard are in fact not independent:
+
+* The "validation process for Signatures providing Long Term Availability and Integrity of Validation Material" calls the "validation process for Signatures with Time and Signatures with Long-Term Validation Material"; and
+* The "validation process for Signatures with Time and Signatures with Long-Term Validation Material" itself calls the "validation process for basic signatures".
+
+The overall validation result is then provided as the indication returned by the validation process against which the validation was performed.
+
+Although it is possible to only run the validation process for basic signature, in our case the process that was run was the "validation process for Signatures providing Long Term Availability and Integrity of Validation Material" which required to run the other two validation processes.
+
+Therefore, because that validation process returned PASSED, the overall validation result is TOTAL_PASSED.
+
+Finally, the report contains information on the determination of the qualification of the signature.
+
+image::DetailedReport-Illustration-Qualification.png[width="100%", height="100%", align="center"]
+
+This determination is not specified in ETSI EN 319 102-1, but rather in ETSI TS 119 172-4 (<<R10>>).
+
+Essentially, a signature can be determined as qualified if:
+
+. The result of running the "validation process for Signatures providing Long Term Availability and Integrity of Validation Material" defined in ETSI EN 319 102-1 is TOTAL_PASSED
+. The signing certificate is determined as qualified at best-signature-time and at issuance time (the time when the certificate was issued i.e. the value of the "notBefore" field);
+. The private key corresponding to the signing certificate is determined as being held in a qualified signature creation device (QSCD).
+
+We discussed above the validation processes defined in ETSI EN 319 102-1. The determinations of point 2 and 3 on the other hand rely on the procedures specified in ETSI TS 119 615 (<<R14>>).
+
+Without going into details, ETSI TS 119 615 specifies procedures for interpreting the content of EUMS trusted lists, including procedures for validating EUMS trusted lists.
+
+Illustrated in the figure above are the results of the main steps defined in that standard.

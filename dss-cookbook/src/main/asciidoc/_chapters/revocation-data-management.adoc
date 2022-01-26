@@ -6,14 +6,11 @@
 
 [[RevocationDataManagement]]
 == Revocation data management
-Revocation data management is an essential part in the lifecycle of a digital certificate and thus of a digital signature too. Refer to the corresponding section about the <<RevocationDataManagementConcept, concepts of revocation data management>> for general information.
+Revocation data management is an essential part in the lifecycle of a digital certificate and thus of a digital signature too.
 
 === Tokens and sources
 
-DSS provides utilities for processing and validation of both CRL and OCSP tokens, containing a revocation information about a certificate:
-
-* *Certificate Revocation List (CRL)* is a time-stamped list identifying revoked certificates. It is signed by a Certificate Authority (CA) and made freely available in a public repository. Each revoked certificate is identified in a CRL by its certificate serial number.
-* *Online Certificate Status Protocol (OCSP)* is an Internet protocol used for obtaining the revocation status of a unique X.509 digital certificate.
+DSS provides utilities for processing and validation of both CRL and OCSP tokens, containing a revocation information about a certificate (see <<CRLsAndOCSP>> for more information on CRLs and OCSP)
 
 For every certificate, the validity has to be checked via CRL or OCSP responses. The information may originate from different CRLSources or OCSPSources:
 For easing the usage of such sources, DSS implements a `CRLSource` and `OCSPSource` interfaces (which inherit from `RevocationSource`), which offer a generic and uniform way of accessing CRL and OCSP sources, respectively. Furthermore, a caching mechanism can be easily attached to those sources, optimizing the access time to revocation information by reducing network connections to online servers.
