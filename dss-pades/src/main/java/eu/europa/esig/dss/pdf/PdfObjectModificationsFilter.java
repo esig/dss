@@ -167,11 +167,7 @@ public class PdfObjectModificationsFilter {
     }
 
     private static boolean isValueChange(PdfDict pdfDict) {
-        final PdfDict vDict = pdfDict.getAsDict(PAdESConstants.VALUE_NAME);
-        if (vDict != null) {
-            return true;
-        }
-        return false;
+        return pdfDict.getAsDict(PAdESConstants.VALUE_NAME) != null;
     }
 
     private static boolean isAnnotsKey(String key) {
@@ -212,11 +208,8 @@ public class PdfObjectModificationsFilter {
     private static boolean isCatalogVersionChange(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
-        if (PdfObjectModificationType.MODIFICATION.equals(objectModification.getActionType()) &&
-                PAdESConstants.VERSION_NAME.equals(key) && PAdESConstants.CATALOG_NAME.equals(parentKey)) {
-            return true;
-        }
-        return false;
+        return PdfObjectModificationType.MODIFICATION.equals(objectModification.getActionType()) &&
+                PAdESConstants.VERSION_NAME.equals(key) && PAdESConstants.CATALOG_NAME.equals(parentKey);
     }
 
     private static boolean isCatalogExtensionsChange(ObjectModification objectModification) {
@@ -241,11 +234,8 @@ public class PdfObjectModificationsFilter {
 
     private static boolean isCatalogPermsCreationChange(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
-        if (PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
-                PAdESConstants.PERMS_NAME.equals(key)) {
-            return true;
-        }
-        return false;
+        return PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
+                PAdESConstants.PERMS_NAME.equals(key);
     }
 
     private static boolean isCatalogNamesChange(ObjectModification objectModification) {
@@ -260,20 +250,14 @@ public class PdfObjectModificationsFilter {
 
     private static boolean isCatalogOutputIntentsChange(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
-        if (PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
-                PAdESConstants.OUTPUT_INTENTS_NAME.equals(key)) {
-            return true;
-        }
-        return false;
+        return PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
+                PAdESConstants.OUTPUT_INTENTS_NAME.equals(key);
     }
 
     private static boolean isMetaDataChange(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
-        if (PAdESConstants.METADATA_NAME.equals(key) || PAdESConstants.METADATA_NAME.equals(parentKey)) {
-            return true;
-        }
-        return false;
+        return PAdESConstants.METADATA_NAME.equals(key) || PAdESConstants.METADATA_NAME.equals(parentKey);
     }
 
     private static boolean isAcroFormDictionaryChange(ObjectModification objectModification) {
@@ -294,11 +278,8 @@ public class PdfObjectModificationsFilter {
     private static boolean isFontCreationChange(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
-        if (PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
-                (PAdESConstants.FONT_NAME.equals(key) || PAdESConstants.FONT_NAME.equals(parentKey))) {
-            return true;
-        }
-        return false;
+        return PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
+                (PAdESConstants.FONT_NAME.equals(key) || PAdESConstants.FONT_NAME.equals(parentKey));
     }
 
     private static String getParentKey(ObjectModification objectModification) {
@@ -310,10 +291,7 @@ public class PdfObjectModificationsFilter {
     }
 
     private static boolean isAnnotationCreationChange(ObjectModification objectModification) {
-        if (isAnnotCreation(objectModification)) {
-            return true;
-        }
-        return false;
+        return isAnnotCreation(objectModification);
     }
 
     private static boolean isAnnotCreation(ObjectModification objectModification) {

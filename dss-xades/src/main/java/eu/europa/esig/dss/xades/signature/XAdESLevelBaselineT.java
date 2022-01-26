@@ -66,8 +66,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -136,7 +136,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 			for (AdvancedSignature signature : signatures) {
 				if (signatureId.equals(signature.getDAIdentifier())) {
-					signaturesToExtend = Arrays.asList(signature);
+					signaturesToExtend = Collections.singletonList(signature);
 					break;
 				}
 			}
@@ -328,7 +328,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		}
 		final Element crlValuesDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCRLValues());
 
-		for (final RevocationToken revocationToken : crlTokens) {
+		for (final RevocationToken<?> revocationToken : crlTokens) {
 			final byte[] encodedCRL = revocationToken.getEncoded();
 			final String base64EncodedCRL = Utils.toBase64(encodedCRL);
 			DomUtils.addTextElement(documentDom, crlValuesDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedCRLValue(), base64EncodedCRL);
@@ -358,7 +358,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		}
 		final Element ocspValuesDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementOCSPValues());
 
-		for (final RevocationToken revocationToken : ocspTokens) {
+		for (final RevocationToken<?> revocationToken : ocspTokens) {
 			final byte[] encodedOCSP = revocationToken.getEncoded();
 			final String base64EncodedOCSP = Utils.toBase64(encodedOCSP);
 			DomUtils.addTextElement(documentDom, ocspValuesDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedOCSPValue(), base64EncodedOCSP);
@@ -488,7 +488,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 			String id = "1";
 			final List<TimestampToken> archiveTimestamps = xadesSignature.getArchiveTimestamps();
-			if (archiveTimestamps.size() > 0) {
+			if (Utils.isCollectionNotEmpty(archiveTimestamps)) {
 				final TimestampToken timestampToken = archiveTimestamps.get(archiveTimestamps.size() - 1);
 				id = timestampToken.getDSSIdAsString();
 			}

@@ -307,7 +307,7 @@ public class ImageUtils {
 		return raster.getNumBands() == 4; // number of parameters for CMYK color scheme per pixel
 	}
 
-	private static BufferedImage convertCMYKToRGB(Raster raster) throws IOException {
+	private static BufferedImage convertCMYKToRGB(Raster raster) {
 		int width = raster.getWidth();
 		int height = raster.getHeight();
 		BufferedImage rgbImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

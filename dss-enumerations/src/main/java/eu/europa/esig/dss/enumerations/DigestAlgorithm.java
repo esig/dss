@@ -92,6 +92,9 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	 */
 	// @formatter:on
 
+	/** Default message error to be thrown in case of an unsupported algorithm exception */
+	private static final String UNSUPPORTED_ALGORITHM_MESSAGE = "Unsupported algorithm: %s";
+
 	/** Name of the algorithm */
 	private final String name;
 
@@ -190,7 +193,7 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	public static DigestAlgorithm forName(final String name) {
 		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(name);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + name);
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGORITHM_MESSAGE, name));
 		}
 		return algorithm;
 	}
@@ -236,7 +239,7 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	public static DigestAlgorithm forJavaName(final String javaName) {
 		final DigestAlgorithm algorithm = Registry.JAVA_ALGORITHMS.get(javaName);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + javaName);
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGORITHM_MESSAGE, javaName));
 		}
 		return algorithm;
 	}
@@ -254,7 +257,7 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	public static DigestAlgorithm forOID(final String oid) {
 		final DigestAlgorithm algorithm = Registry.OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + oid);
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGORITHM_MESSAGE, oid));
 		}
 		return algorithm;
 	}
@@ -272,7 +275,7 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	public static DigestAlgorithm forXML(final String xmlName) {
 		final DigestAlgorithm algorithm = Registry.XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + xmlName);
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGORITHM_MESSAGE, xmlName));
 		}
 		return algorithm;
 	}
@@ -289,7 +292,7 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	public static DigestAlgorithm forJAdES(final String algoId) {
 		final DigestAlgorithm algorithm = Registry.JADES_ALGORITHMS.get(algoId);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + algoId);
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGORITHM_MESSAGE, algoId));
 		}
 		return algorithm;
 	}
@@ -306,7 +309,7 @@ public enum DigestAlgorithm implements OidAndUriBasedEnum {
 	public static DigestAlgorithm forHttpHeader(final String hashName) {
 		final DigestAlgorithm algorithm = Registry.HTTP_HEADER_ALGORITHMS.get(hashName);
 		if (algorithm == null) {
-			throw new IllegalArgumentException("Unsupported algorithm: " + hashName);
+			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGORITHM_MESSAGE, hashName));
 		}
 		return algorithm;
 	}

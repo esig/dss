@@ -36,7 +36,7 @@ public class RevocationRefIdentifier extends Identifier {
 	 *
 	 * @param revocationRef {@link RevocationRef}
 	 */
-	public RevocationRefIdentifier(RevocationRef revocationRef) {
+	public RevocationRefIdentifier(RevocationRef<?> revocationRef) {
 		this(revocationRef.getDigest());
 	}
 

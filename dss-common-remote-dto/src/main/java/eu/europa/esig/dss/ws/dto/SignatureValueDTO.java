@@ -119,10 +119,7 @@ public class SignatureValueDTO implements Serializable {
 		if (algorithm != other.algorithm) {
 			return false;
 		}
-		if (!Arrays.equals(value, other.value)) {
-			return false;
-		}
-		return true;
+		return Arrays.equals(value, other.value);
 	}
 
 	@Override

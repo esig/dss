@@ -172,7 +172,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	
 	@Override
 	public boolean isSigningCertificateReferencePresent() {
-		return getSigningCertificateReferences().size() > 0;
+		return !getSigningCertificateReferences().isEmpty();
 	}
 	
 	@Override
@@ -184,26 +184,33 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public CertificateRefWrapper getSigningCertificateReference() {
 		List<CertificateRefWrapper> signingCertificateReferences = foundCertificates()
 				.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-		if (signingCertificateReferences.size() > 0) {
+		if (!signingCertificateReferences.isEmpty()) {
 			// return a reference matching a signing certificate
 			CertificateWrapper signingCertificate = getSigningCertificate();
 			if (signingCertificate != null) {
-				for (RelatedCertificateWrapper relatedCertificate : foundCertificates().getRelatedCertificates()) {
-					List<CertificateRefWrapper> signCertRefs = relatedCertificate.getReferences();
-					if (signingCertificate.getId().equals(relatedCertificate.getId()) && signCertRefs.size() > 0) {
-						for (CertificateRefWrapper signCertRef : signCertRefs) {
-							if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(signCertRef.getOrigin())) {
-								return signCertRef;
-							}
-						}
-					}
-				}
+				return getCertificateReferenceOfReferenceOriginType(signingCertificate, CertificateRefOrigin.SIGNING_CERTIFICATE);
 			}
+
 		} else {
 			List<CertificateRefWrapper> orphanSigningCertificateReferences = foundCertificates()
 					.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-			if (orphanSigningCertificateReferences.size() > 0) {
+			if (!orphanSigningCertificateReferences.isEmpty()) {
 				return orphanSigningCertificateReferences.iterator().next();
+			}
+		}
+		return null;
+	}
+
+	private CertificateRefWrapper getCertificateReferenceOfReferenceOriginType(CertificateWrapper certificate,
+																			   CertificateRefOrigin refOrigin) {
+		for (RelatedCertificateWrapper relatedCertificate : foundCertificates().getRelatedCertificates()) {
+			List<CertificateRefWrapper> signCertRefs = relatedCertificate.getReferences();
+			if (certificate.getId().equals(relatedCertificate.getId()) && !signCertRefs.isEmpty()) {
+				for (CertificateRefWrapper signCertRef : signCertRefs) {
+					if (refOrigin.equals(signCertRef.getOrigin())) {
+						return signCertRef;
+					}
+				}
 			}
 		}
 		return null;
@@ -263,9 +270,9 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		if (pdfRevision != null) {
 			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
 			if (modificationDetection != null) {
-				return modificationDetection.getAnnotationOverlap().size() != 0 ||
-						modificationDetection.getVisualDifference().size() != 0 ||
-						modificationDetection.getPageDifference().size() != 0;
+				return !modificationDetection.getAnnotationOverlap().isEmpty() ||
+						!modificationDetection.getVisualDifference().isEmpty() ||
+						!modificationDetection.getPageDifference().isEmpty();
 			}
 		}
 		return false;
@@ -454,13 +461,8 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			return false;
 		AbstractTokenProxy other = (AbstractTokenProxy) obj;
 		if (getId() == null) {
-			if (other.getId() != null) {
-				return false;
-			}
-		} else if (!getId().equals(other.getId())) {
-			return false;
-		}
-		return true;
+			return other.getId() == null;
+		} else return getId().equals(other.getId());
 	}
 
 }

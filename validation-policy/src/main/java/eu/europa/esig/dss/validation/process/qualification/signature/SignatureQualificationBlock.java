@@ -244,8 +244,8 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		for (XmlValidationCertificateQualification certQualAtTime : result.getValidationCertificateQualification()) {
 			collectAllMessages(conclusion, certQualAtTime.getConclusion());
 		}
-		for (XmlTLAnalysis tlAnalysis : relatedTLAnalyses) {
-			collectAllMessages(conclusion, tlAnalysis.getConclusion());
+		for (XmlTLAnalysis relatedTLAnalysis : relatedTLAnalyses) {
+			collectAllMessages(conclusion, relatedTLAnalysis.getConclusion());
 		}
 	}
 

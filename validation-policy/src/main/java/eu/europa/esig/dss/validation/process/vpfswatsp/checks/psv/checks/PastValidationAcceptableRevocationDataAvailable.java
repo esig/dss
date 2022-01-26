@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -65,7 +66,7 @@ public class PastValidationAcceptableRevocationDataAvailable<T extends XmlConstr
     @Override
     protected String buildAdditionalInfo() {
         if (Utils.isCollectionNotEmpty(revocationData)) {
-            List<String> revocationDataIds = revocationData.stream().map(r -> r.getId()).collect(Collectors.toList());
+            List<String> revocationDataIds = revocationData.stream().map(RevocationWrapper::getId).collect(Collectors.toList());
             return i18nProvider.getMessage(MessageTag.ACCEPTABLE_REVOCATION, revocationDataIds);
         }
         return null;

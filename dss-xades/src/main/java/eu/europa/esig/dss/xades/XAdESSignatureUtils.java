@@ -45,6 +45,12 @@ import java.util.List;
 public final class XAdESSignatureUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignatureUtils.class);
+
+	/**
+	 * Empty constructor
+	 */
+	private XAdESSignatureUtils() {
+	}
 	
 	/**
 	 * Returns list of original signed documents

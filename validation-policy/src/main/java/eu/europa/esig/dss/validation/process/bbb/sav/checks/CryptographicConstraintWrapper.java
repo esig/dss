@@ -108,19 +108,24 @@ public class CryptographicConstraintWrapper {
 	public boolean isEncryptionAlgorithmWithKeySizeReliable(EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
 		int keySize = parseKeySize(keyLength);
 		if (encryptionAlgorithm != null && keySize != 0 && constraint != null) {
-			ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
-			if (miniPublicKeySize != null) {
-				for (Algo algo : miniPublicKeySize.getAlgos()) {
-					if (algo.getValue().equals(encryptionAlgorithm.getName())) {
-						Integer size = algo.getSize();
-						if (size != null && size <= keySize) {
-							return true;
-						}
-					}
-				}
+			Integer size = getAlgoKeySizeFromConstraint(encryptionAlgorithm);
+			if (size != null && size <= keySize) {
+				return true;
 			}
 		}
 		return false;
+	}
+
+	private Integer getAlgoKeySizeFromConstraint(EncryptionAlgorithm encryptionAlgorithm) {
+		ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
+		if (miniPublicKeySize != null) {
+			for (Algo algo : miniPublicKeySize.getAlgos()) {
+				if (algo.getValue().equals(encryptionAlgorithm.getName())) {
+					return algo.getSize();
+				}
+			}
+		}
+		return null;
 	}
 
 	/**

@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.TimestampType;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
-
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
-import eu.europa.esig.dss.enumerations.TimestampType;
 
 /**
  * The class compares two {@code POE} instances, by its production time, origin and covered context
@@ -42,50 +42,64 @@ public class POEComparator implements Comparator<POE>, Serializable {
 
 	@Override
 	public int compare(POE poe1, POE poe2) {
-		
-		int result = poe1.getTime().compareTo(poe2.getTime());
-		
+		int result = compareByTime(poe1, poe2);
 		if (result == 0) {
-			// POE defined by a timestamp is preferred over a POE defined by a control time
-			if (poe1.isTimestampPoe() && !poe2.isTimestampPoe()) {
-				result = -1;
-			} else if (!poe1.isTimestampPoe() && poe2.isTimestampPoe()) {
-				result = 1;
-			}
+			result = compareByType(poe1, poe2);
 		}
-		
 		if (result == 0) {
-			TimestampType poe1TstType = poe1.getTimestampType();
-			TimestampType poe2TstType = poe2.getTimestampType();
-			if (poe1TstType != null && poe2TstType != null) {
-				result = poe1TstType.compare(poe2TstType);
-			}
+			result = compareByTimestampType(poe1, poe2);
 		}
-		
 		if (result == 0) {
-			List<XmlTimestampedObject> poe1References = poe1.getTimestampedObjects();
-			List<XmlTimestampedObject> poe2References = poe2.getTimestampedObjects();
-			if (poe1References != null && poe2References != null) {
-				if (poe1References.size() < poe2References.size()) {
-					result = -1;
-				} else if (poe1References.size() > poe2References.size()) {
-					result = 1;
-				}
-			}
+			result = compareByTimestampedReferences(poe1, poe2);
 		}
-		
 		return result;
+	}
+
+	private int compareByTime(POE poe1, POE poe2) {
+		return poe1.getTime().compareTo(poe2.getTime());
+	}
+
+	private int compareByType(POE poe1, POE poe2) {
+		// POE defined by a timestamp is preferred over a POE defined by a control time
+		if (poe1.isTimestampPoe() && !poe2.isTimestampPoe()) {
+			return -1;
+		} else if (!poe1.isTimestampPoe() && poe2.isTimestampPoe()) {
+			return 1;
+		}
+		return 0;
+	}
+
+	private int compareByTimestampType(POE poe1, POE poe2) {
+		TimestampType poe1TstType = poe1.getTimestampType();
+		TimestampType poe2TstType = poe2.getTimestampType();
+		if (poe1TstType != null && poe2TstType != null) {
+			return poe1TstType.compare(poe2TstType);
+		}
+		return 0;
+	}
+
+	private int compareByTimestampedReferences(POE poe1, POE poe2) {
+		List<XmlTimestampedObject> poe1References = poe1.getTimestampedObjects();
+		List<XmlTimestampedObject> poe2References = poe2.getTimestampedObjects();
+		if (poe1References != null && poe2References != null) {
+			if (poe1References.size() < poe2References.size()) {
+				return -1;
+			} else if (poe1References.size() > poe2References.size()) {
+				return 1;
+			}
+		}
+		return 0;
 	}
 	
 	/**
-	 * Checks if the {@code poeOne} is before the {@code poetwo}
+	 * Checks if the {@code poe1} is before the {@code poe2}
 	 * 
-	 * @param poeOne {@link POE} to check if it is before the {@code poeTwo}
-	 * @param poeTwo {@link POE} to compare with
-	 * @return TRUE if the {@code poeOne} is before {@code poeTwo}, FALSE otherwise
+	 * @param poe1 {@link POE} to check if it is before the {@code poe2}
+	 * @param poe2 {@link POE} to compare with
+	 * @return TRUE if the {@code poe1} is before {@code poe2}, FALSE otherwise
 	 */
-	public boolean before(POE poeOne, POE poeTwo) {
-		return compare(poeOne, poeTwo) == -1;
+	public boolean before(POE poe1, POE poe2) {
+		return compare(poe1, poe2) == -1;
 	}
 
 }

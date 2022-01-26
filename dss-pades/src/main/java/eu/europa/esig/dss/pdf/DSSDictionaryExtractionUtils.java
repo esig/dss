@@ -34,11 +34,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Contains utils for a DSS dictionary content extarction
+ * Contains utils for a DSS dictionary content extraction
  */
 public class DSSDictionaryExtractionUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSDictionaryExtractionUtils.class);
+
+	/**
+	 * Empty constructor
+	 */
+	private DSSDictionaryExtractionUtils() {
+	}
 
 	/**
 	 * Extract certificate object map

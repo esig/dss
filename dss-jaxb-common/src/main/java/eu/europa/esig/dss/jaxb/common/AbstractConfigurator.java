@@ -3,6 +3,7 @@ package eu.europa.esig.dss.jaxb.common;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.alert.status.ObjectStatus;
+import eu.europa.esig.dss.jaxb.common.exception.SecurityConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,15 +16,15 @@ import java.util.Objects;
  *
  * @param <F> class of the object to be configured
  */
-public abstract class AbstractConfigurator<F extends Object> {
+public abstract class AbstractConfigurator<F> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractFactoryBuilder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractConfigurator.class);
 
     /** Map of features to set */
-    private Map<String, Boolean> features = new HashMap<>();
+    private final Map<String, Boolean> features = new HashMap<>();
 
     /** Map of attribute names and values to set */
-    private Map<String, Object> attributes = new HashMap<>();
+    private final Map<String, Object> attributes = new HashMap<>();
 
     /** Defines the behaviour for processing a security exception */
     private StatusAlert securityExceptionAlert = new ExceptionOnStatusAlert();
@@ -46,8 +47,7 @@ public abstract class AbstractConfigurator<F extends Object> {
      * @return this builder
      */
     public AbstractConfigurator<F> enableFeature(String feature) {
-        setFeature(feature, true);
-        return this;
+        return setFeature(feature, true);
     }
 
     /**
@@ -57,18 +57,19 @@ public abstract class AbstractConfigurator<F extends Object> {
      * @return this builder
      */
     public AbstractConfigurator<F> disableFeature(String feature) {
-        setFeature(feature, false);
-        return this;
+        return setFeature(feature, false);
     }
 
-    private void setFeature(String feature, boolean value) {
+    private AbstractConfigurator<F> setFeature(String feature, boolean value) {
         Objects.requireNonNull(feature, "The feature constraint cannot be null!");
-        if (features.containsKey(feature) && features.get(feature) != value) {
-            LOG.warn("SECURITY : feature with the name [{}] changed from [{}] to [{}]", feature, features.get(feature), value);
+        Boolean currentValue = features.get(feature);
+        if (currentValue != null && currentValue != value) {
+            LOG.warn("SECURITY : feature with the name [{}] changed from [{}] to [{}]", feature, currentValue, value);
         } else if (LOG.isDebugEnabled()) {
             LOG.debug("The feature {} = {} has been added to the configuration", feature, value);
         }
         features.put(feature, value);
+        return this;
     }
 
     /**
@@ -80,8 +81,9 @@ public abstract class AbstractConfigurator<F extends Object> {
      */
     public AbstractConfigurator<F> setAttribute(String attribute, Object value) {
         Objects.requireNonNull(attribute, "The attribute constraint cannot be null!");
-        if (attributes.containsKey(attribute) && attributes.get(attribute).equals(value)) {
-            LOG.warn("SECURITY : attribute with the name [{}] changed from [{}] to [{}]", attribute, attributes.get(attribute), value);
+        Object currentValue = attributes.get(attribute);
+        if (currentValue != null && currentValue.equals(value)) {
+            LOG.warn("SECURITY : attribute with the name [{}] changed from [{}] to [{}]", attribute, currentValue, value);
         } else if (LOG.isDebugEnabled()) {
             LOG.debug("The attribute {} = {} has been added to the configuration", attribute, value);
         }
@@ -114,7 +116,7 @@ public abstract class AbstractConfigurator<F extends Object> {
         for (Map.Entry<String, Boolean> entry : features.entrySet()) {
             try {
                 setSecurityFeature(factory, entry.getKey(), entry.getValue());
-            } catch (Exception e) {
+            } catch (SecurityConfigurationException e) {
                 status.addRelatedObjectIdentifierAndErrorMessage(entry.getKey(), e.getMessage());
             }
         }
@@ -131,9 +133,9 @@ public abstract class AbstractConfigurator<F extends Object> {
      * @param factory to set the feature to
      * @param feature {@link String} feature constraint to set
      * @param value {@link Boolean} value of the feature to add
-     * @throws Exception in case if any exception occurs
+     * @throws SecurityConfigurationException in case if any exception occurs
      */
-    protected abstract void setSecurityFeature(F factory, String feature, Boolean value) throws Exception;
+    protected abstract void setSecurityFeature(F factory, String feature, Boolean value) throws SecurityConfigurationException;
 
     /**
      * Sets all attributes to the factory
@@ -145,7 +147,7 @@ public abstract class AbstractConfigurator<F extends Object> {
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             try {
                 setSecurityAttribute(factory, entry.getKey(), entry.getValue());
-            } catch (Exception e) {
+            } catch (SecurityConfigurationException e) {
                 status.addRelatedObjectIdentifierAndErrorMessage(entry.getKey(), e.getMessage());
             }
         }
@@ -162,8 +164,8 @@ public abstract class AbstractConfigurator<F extends Object> {
      * @param factory {@code Factory} to set the attribute to
      * @param attribute {@link String} attribute constraint to set
      * @param value {@link Object} value of the attribute to add
-     * @throws Exception in case if any exception occurs
+     * @throws SecurityConfigurationException in case if any exception occurs
      */
-    protected abstract void setSecurityAttribute(F factory, String attribute, Object value) throws Exception;
+    protected abstract void setSecurityAttribute(F factory, String attribute, Object value) throws SecurityConfigurationException;
 
 }

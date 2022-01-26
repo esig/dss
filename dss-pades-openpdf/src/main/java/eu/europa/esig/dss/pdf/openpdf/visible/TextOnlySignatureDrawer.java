@@ -199,7 +199,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 		// OpenPDF does not rotate signature automatically to the page's rotation
 		int finalRotation = getFinalRotation(globalRotation, pageRotation);
-		double theta = Math.toRadians(360 - finalRotation);
+		double theta = Math.toRadians((double) ImageRotationUtils.ANGLE_360 - finalRotation);
 		float cosTheta = (float)Math.cos(theta);
 		float sinTheta = (float)Math.sin(theta);
 		switch (finalRotation) {

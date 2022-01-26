@@ -35,7 +35,7 @@ public class RevocationTokenIdentifier extends TokenIdentifier {
 	 *
 	 * @param revocationToken {@link RevocationToken}
 	 */
-	public RevocationTokenIdentifier(RevocationToken revocationToken) {
+	public RevocationTokenIdentifier(RevocationToken<?> revocationToken) {
 		this("R-", revocationToken);
 	}
 
@@ -45,7 +45,7 @@ public class RevocationTokenIdentifier extends TokenIdentifier {
 	 * @param prefix {@link String}
 	 * @param revocationToken {@link RevocationToken}
 	 */
-	RevocationTokenIdentifier(String prefix, RevocationToken revocationToken) {
+	RevocationTokenIdentifier(String prefix, RevocationToken<?> revocationToken) {
 		super(prefix, revocationToken);
 	}
 

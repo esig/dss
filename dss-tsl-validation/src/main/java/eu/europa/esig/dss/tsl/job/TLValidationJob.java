@@ -68,14 +68,14 @@ public class TLValidationJob {
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidationJob.class);
 
 	/**
+	 * Contains all caches for the current validation job
+	 */
+	private final CacheAccessFactory cacheAccessFactory = new CacheAccessFactory();
+
+	/**
 	 * Provides methods to manage the asynchronous behaviour
 	 */
 	private ExecutorService executorService = Executors.newCachedThreadPool();
-	
-	/**
-	 * Contains all caches for the current validation job
-	 */
-	private CacheAccessFactory cacheAccessFactory = new CacheAccessFactory();
 
 	/**
 	 * Array of zero, one or more Trusted List (TL) sources.
@@ -417,7 +417,7 @@ public class TLValidationJob {
 	 *                a list of TLSource
 	 */
 	private void checkNoDuplicateUrls(List<? extends TLSource> sources) {
-		List<String> allUrls = sources.stream().map(s -> s.getUrl()).collect(Collectors.toList());
+		List<String> allUrls = sources.stream().map(TLSource::getUrl).collect(Collectors.toList());
 		Set<String> uniqueUrls = new HashSet<>(allUrls);
 		if (allUrls.size() > uniqueUrls.size()) {
 			throw new DSSException(String.format("Duplicate urls found : %s", allUrls));

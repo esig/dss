@@ -109,7 +109,7 @@ public final class DomUtils {
 	private static final XPathFactory factory = XPathFactory.newInstance();
 
 	/** Map containing the defined namespaces */
-	private static NamespaceContextMap namespacePrefixMapper;
+	private static final NamespaceContextMap namespacePrefixMapper;
 
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
@@ -260,7 +260,7 @@ public final class DomUtils {
 	 * 
 	 * @param bytes
 	 *            the binaries to be tested
-	 * @return true if the binaries is a XML
+	 * @return true if the binaries represent an XML
 	 */
 	public static boolean isDOM(final byte[] bytes) {
 		try {
@@ -277,7 +277,7 @@ public final class DomUtils {
 	 * 
 	 * @param inputStream {@link InputStream} to be tested
 	 * @return true if the document is an XML
-	 * @deprecated since 5.10. Use isDOM(DSSDocument dssDocument) or isDOM(byte[] bytes)
+	 * @deprecated since 5.10. Use {@code isDOM(DSSDocument dssDocument)} or {@code isDOM(byte[] bytes)}
 	 *                         for a fast failure in case of invalid XML document (this does not verify XML preamble).
 	 */
 	@Deprecated

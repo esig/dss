@@ -120,11 +120,11 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
     /**
      * Returns corresponding PDF object identifier for the extracted revocation token
      *
-     * @param OCSPToken {@link eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary} to get id for
+     * @param ocspToken {@link eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary} to get id for
      * @return a set of {@link Long} identifiers
      */
-    protected Set<Long> getRevocationTokenIds(RevocationToken<OCSP> OCSPToken) {
-        return ocspTokenMap.get(OCSPToken);
+    protected Set<Long> getRevocationTokenIds(RevocationToken<OCSP> ocspToken) {
+        return ocspTokenMap.get(ocspToken);
     }
 
     @Override

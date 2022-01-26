@@ -67,12 +67,12 @@ public class ValidationTimeSlidingCertificateRevocationSelector extends LongTerm
         item = super.verifyRevocationData(item, revocationWrapper);
 
         Boolean validity = revocationDataValidityMap.get(revocationWrapper);
-        if (validity) {
+        if (Boolean.TRUE.equals(validity)) {
             item = item.setNextItem(revocationIssuedBeforeControlTime(revocationWrapper, currentTime));
 
             validity = revocationWrapper.getThisUpdate() != null && revocationWrapper.getThisUpdate().before(currentTime);
 
-            if (validity) {
+            if (Boolean.TRUE.equals(validity)) {
 
                 item = item.setNextItem(poeExistsAtOrBeforeControlTime(certificate, TimestampedObjectType.CERTIFICATE, currentTime));
 
@@ -90,11 +90,11 @@ public class ValidationTimeSlidingCertificateRevocationSelector extends LongTerm
     }
 
     private ChainItem<XmlCRS> revocationIssuedBeforeControlTime(RevocationWrapper revocation, Date controlTime) {
-        return new RevocationIssuedBeforeControlTimeCheck(i18nProvider, result, revocation, controlTime, getWarnLevelConstraint());
+        return new RevocationIssuedBeforeControlTimeCheck<>(i18nProvider, result, revocation, controlTime, getWarnLevelConstraint());
     }
 
     private ChainItem<XmlCRS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampedObjectType objectType, Date controlTime) {
-        return new POEExistsAtOrBeforeControlTimeCheck(i18nProvider, result, token, objectType, controlTime, poe, getWarnLevelConstraint());
+        return new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result, token, objectType, controlTime, poe, getWarnLevelConstraint());
     }
 
 }

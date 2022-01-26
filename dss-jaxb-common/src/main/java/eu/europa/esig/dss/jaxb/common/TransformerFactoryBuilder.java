@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.jaxb.common;
 
+import eu.europa.esig.dss.jaxb.common.exception.SecurityConfigurationException;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerFactory;
 
@@ -85,13 +87,21 @@ public class TransformerFactoryBuilder extends AbstractFactoryBuilder<Transforme
 	}
 
 	@Override
-	protected void setSecurityFeature(TransformerFactory factory, String feature, Boolean value) throws Exception {
-		factory.setFeature(feature, value);
+	protected void setSecurityFeature(TransformerFactory factory, String feature, Boolean value) throws SecurityConfigurationException {
+		try {
+			factory.setFeature(feature, value);
+		} catch (Exception e) {
+			throw new SecurityConfigurationException(e);
+		}
 	}
 
 	@Override
-	protected void setSecurityAttribute(TransformerFactory factory, String attribute, Object value) throws IllegalArgumentException {
-		factory.setAttribute(attribute, value);
+	protected void setSecurityAttribute(TransformerFactory factory, String attribute, Object value) throws SecurityConfigurationException {
+		try {
+			factory.setAttribute(attribute, value);
+		} catch (Exception e) {
+			throw new SecurityConfigurationException(e);
+		}
 	}
 
 }

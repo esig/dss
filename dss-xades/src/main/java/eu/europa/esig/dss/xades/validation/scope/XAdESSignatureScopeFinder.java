@@ -177,12 +177,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 
 	private boolean isEverythingCovered(XAdESSignature signature, String coveredObjectId) {
 		Element parent = signature.getSignatureElement().getOwnerDocument().getDocumentElement();
-		if (parent != null) {
-			if (isRelatedToUri(parent, coveredObjectId)) {
-				return true;
-			}
-		}
-		return false;
+		return parent != null && isRelatedToUri(parent, coveredObjectId);
 	}
 
 	private boolean isRelatedToUri(Node currentNode, String id) {

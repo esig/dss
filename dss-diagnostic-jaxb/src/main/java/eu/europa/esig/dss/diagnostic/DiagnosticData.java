@@ -465,7 +465,7 @@ public class DiagnosticData {
 		final List<SignerDataWrapper> result = new ArrayList<>();
 		SignatureWrapper signatureWrapper = getSignatureByIdNullSafe(signatureId);
 		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
-		if (signatureScopes != null && signatureScopes.size() > 0) {
+		if (signatureScopes != null && !signatureScopes.isEmpty()) {
 			for (XmlSignatureScope xmlSignatureScope : signatureScopes) {
 				XmlSignerData signerData = xmlSignatureScope.getSignerData();
 				// return first level data only
@@ -515,9 +515,7 @@ public class DiagnosticData {
 		CertificateRevocationWrapper latestRevocationData = getLatestRevocationDataForCertificate(certificate) ;
 		final boolean revocationValid = (latestRevocationData != null) && latestRevocationData.getStatus().isGood();
 		final boolean trusted = certificate.isTrusted();
-
-		final boolean validity = signatureValid && (trusted ? true : revocationValid);
-		return validity;
+		return signatureValid && (trusted || revocationValid);
 	}
 
 	/**
@@ -614,7 +612,7 @@ public class DiagnosticData {
 
 	private SignatureWrapper getFirstSignatureNullSafe() {
 		List<SignatureWrapper> signatures = getSignatures();
-		if (signatures != null && signatures.size() > 0) {
+		if (signatures != null && !signatures.isEmpty()) {
 			return signatures.get(0);
 		}
 		return new SignatureWrapper(new XmlSignature()); // TODO improve ?

@@ -129,9 +129,7 @@ public class ExpirationAndSignatureCheckStrategy implements SynchronizationStrat
 		if (!syncInvalid) {
 			ValidationInfoRecord validationCacheInfo = tlInfo.getValidationCacheInfo();
 			if (validationCacheInfo.isResultExist()) {
-				if (!validationCacheInfo.isValid()) {
-					return false;
-				}
+				return validationCacheInfo.isValid();
 			}
 		}
 

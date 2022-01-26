@@ -230,7 +230,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	private ChainItem<XmlSAV> contentTimestampMessageImprint(TimestampWrapper contentTimestamp) {
 		LevelConstraint constraint = validationPolicy.getContentTimestampMessageImprintConstraint(context);
-		return new TimestampMessageImprintCheck(i18nProvider, result, contentTimestamp, constraint);
+		return new TimestampMessageImprintCheck<>(i18nProvider, result, contentTimestamp, constraint);
 	}
 
 	private ChainItem<XmlSAV> countersignature() {

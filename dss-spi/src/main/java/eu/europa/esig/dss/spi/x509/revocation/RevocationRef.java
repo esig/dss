@@ -106,15 +106,10 @@ public abstract class RevocationRef<R extends Revocation> implements IdentifierB
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		RevocationRef other = (RevocationRef) obj;
+		RevocationRef<?> other = (RevocationRef<?>) obj;
 		if (digest == null) {
-			if (other.digest != null) {
-				return false;
-			}
-		} else if (!digest.equals(other.digest)) {
-			return false;
-		}
-		return true;
+			return other.digest == null;
+		} else return digest.equals(other.digest);
 	}
 
 }

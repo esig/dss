@@ -90,7 +90,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to be used
 	 */
 	protected AbstractASiCContainerValidator(final DSSDocument document,
-			final SignatureScopeFinder signatureScopeFinder) {
+			final SignatureScopeFinder<?> signatureScopeFinder) {
 		super(signatureScopeFinder);
 		this.document = document;
 		this.asicContent = extractEntries();
@@ -103,7 +103,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to be used
 	 */
 	protected AbstractASiCContainerValidator(final ASiCContent asicContent,
-											 final SignatureScopeFinder signatureScopeFinder) {
+											 final SignatureScopeFinder<?> signatureScopeFinder) {
 		super(signatureScopeFinder);
 		this.document = asicContent.getAsicContainer();
 		this.asicContent = asicContent;

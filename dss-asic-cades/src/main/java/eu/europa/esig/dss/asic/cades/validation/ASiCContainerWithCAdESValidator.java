@@ -230,18 +230,25 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				ManifestFile coveredManifest = timestampValidator.getCoveredManifest();
 				if (coveredManifest != null) {
 					for (ManifestEntry entry : coveredManifest.getEntries()) {
-						for (AdvancedSignature advancedSignature : allSignatures) {
-							if (Utils.areStringsEqual(entry.getFileName(), advancedSignature.getSignatureFilename()) &&
-									!advancedSignature.isCounterSignature()) {
-								CAdESSignature cadesSig = (CAdESSignature) advancedSignature;
-								cadesSig.addExternalTimestamp(timestamp);
-							}
+						CAdESSignature cadesSignature = getCAdESSignatureFromFileName(allSignatures, entry.getFileName());
+						if (cadesSignature != null) {
+							cadesSignature.addExternalTimestamp(timestamp);
 						}
 					}
 				}
 			}
 
 			return timestamp;
+		}
+		return null;
+	}
+
+	private CAdESSignature getCAdESSignatureFromFileName(List<AdvancedSignature> signatures, String fileName) {
+		for (AdvancedSignature advancedSignature : signatures) {
+			if (Utils.areStringsEqual(fileName, advancedSignature.getSignatureFilename()) &&
+					!advancedSignature.isCounterSignature()) {
+				return (CAdESSignature) advancedSignature;
+			}
 		}
 		return null;
 	}

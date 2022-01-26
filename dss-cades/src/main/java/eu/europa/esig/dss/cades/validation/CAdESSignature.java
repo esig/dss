@@ -52,7 +52,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -486,14 +485,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				}
 				final org.bouncycastle.asn1.x509.Attribute[] signerAttrValueArray = (org.bouncycastle.asn1.x509.Attribute[]) signerAttrValue;
 				for (final org.bouncycastle.asn1.x509.Attribute claimedRole : signerAttrValueArray) {
-					final ASN1Encodable[] attrValues1 = claimedRole.getAttrValues().toArray();
-					for (final ASN1Encodable asn1Encodable : attrValues1) {
-						if (asn1Encodable instanceof ASN1String) {
-							ASN1String asn1String = (ASN1String) asn1Encodable;
-							final String role = asn1String.getString();
-							claimedRoles.add(new SignerRole(role, EndorsementType.CLAIMED));
-						}
-					}
+					claimedRoles.addAll(getClaimedSignerRoles(claimedRole));
 				}
 			}
 			return claimedRoles;
@@ -501,6 +493,19 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			LOG.error("Error when dealing with claimed signer roles : {}", signerAttrValues, e);
 			return Collections.emptyList();
 		}
+	}
+
+	private List<SignerRole> getClaimedSignerRoles(final org.bouncycastle.asn1.x509.Attribute claimedRole) {
+		final List<SignerRole> claimedRoles = new ArrayList<>();
+		final ASN1Encodable[] attrValues1 = claimedRole.getAttrValues().toArray();
+		for (final ASN1Encodable asn1Encodable : attrValues1) {
+			if (asn1Encodable instanceof ASN1String) {
+				ASN1String asn1String = (ASN1String) asn1Encodable;
+				final String role = asn1String.getString();
+				claimedRoles.add(new SignerRole(role, EndorsementType.CLAIMED));
+			}
+		}
+		return claimedRoles;
 	}
 
 	@Override
@@ -521,27 +526,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			List<SignerRole> roles = new ArrayList<>();
 			for (final Object signerAttrValue : signerAttrValues) {
 				if (signerAttrValue instanceof AttributeCertificate) {
-					final AttributeCertificate attributeCertificate = (AttributeCertificate) signerAttrValue;
-					final AttributeCertificateInfo acInfo = attributeCertificate.getAcinfo();
-					final AttCertValidityPeriod attrCertValidityPeriod = acInfo.getAttrCertValidityPeriod();
-					final ASN1Sequence attributes = acInfo.getAttributes();
-					for (int ii = 0; ii < attributes.size(); ii++) {
-
-						final ASN1Encodable objectAt = attributes.getObjectAt(ii);
-						final org.bouncycastle.asn1.x509.Attribute attribute = org.bouncycastle.asn1.x509.Attribute.getInstance(objectAt);
-						final ASN1Set attrValues1 = attribute.getAttrValues();
-						ASN1Encodable firstItem = attrValues1.getObjectAt(0);
-						if (firstItem instanceof ASN1Sequence) {
-							ASN1Sequence sequence = (ASN1Sequence) firstItem;
-							RoleSyntax roleSyntax = RoleSyntax.getInstance(sequence);
-							SignerRole certifiedRole = new SignerRole(roleSyntax.getRoleNameAsString(), EndorsementType.CERTIFIED);
-							certifiedRole.setNotBefore(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotBeforeTime()));
-							certifiedRole.setNotAfter(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotAfterTime()));
-							roles.add(certifiedRole);
-						} else {
-							LOG.warn("Unsupported type for RoleSyntax : {}", firstItem == null ? null : firstItem.getClass().getSimpleName());
-						}
-					}
+					roles.addAll(getCertifiedSignerRoles((AttributeCertificate) signerAttrValue));
 				}
 			}
 			return roles;
@@ -549,6 +534,31 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			LOG.error("Error when dealing with certified signer roles : {}", signerAttrValues, e);
 			return Collections.emptyList();
 		}
+	}
+
+	private List<SignerRole> getCertifiedSignerRoles(final AttributeCertificate attributeCertificate) {
+		List<SignerRole> roles = new ArrayList<>();
+		final AttributeCertificateInfo acInfo = attributeCertificate.getAcinfo();
+		final AttCertValidityPeriod attrCertValidityPeriod = acInfo.getAttrCertValidityPeriod();
+		final ASN1Sequence attributes = acInfo.getAttributes();
+		for (int ii = 0; ii < attributes.size(); ii++) {
+
+			final ASN1Encodable objectAt = attributes.getObjectAt(ii);
+			final org.bouncycastle.asn1.x509.Attribute attribute = org.bouncycastle.asn1.x509.Attribute.getInstance(objectAt);
+			final ASN1Set attrValues1 = attribute.getAttrValues();
+			ASN1Encodable firstItem = attrValues1.getObjectAt(0);
+			if (firstItem instanceof ASN1Sequence) {
+				ASN1Sequence sequence = (ASN1Sequence) firstItem;
+				RoleSyntax roleSyntax = RoleSyntax.getInstance(sequence);
+				SignerRole certifiedRole = new SignerRole(roleSyntax.getRoleNameAsString(), EndorsementType.CERTIFIED);
+				certifiedRole.setNotBefore(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotBeforeTime()));
+				certifiedRole.setNotAfter(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotAfterTime()));
+				roles.add(certifiedRole);
+			} else {
+				LOG.warn("Unsupported type for RoleSyntax : {}", firstItem == null ? null : firstItem.getClass().getSimpleName());
+			}
+		}
+		return roles;
 	}
 
 	private SignerAttribute getSignerAttributeV1() {
@@ -1192,7 +1202,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
+	protected CAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
 		return new CAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 

@@ -40,6 +40,12 @@ public final class TextFitter {
 	private static final int FONT_SIZE_COEFFICIENT = 32;
 
 	/**
+	 * Empty constructor
+	 */
+	private TextFitter() {
+	}
+
+	/**
 	 * Attempts to fit the given {@code text} in the given {@code textBox}
 	 * using {@code metrics} to estimate the text size. Existing line breaks
 	 * in {@code text} will be maintained.

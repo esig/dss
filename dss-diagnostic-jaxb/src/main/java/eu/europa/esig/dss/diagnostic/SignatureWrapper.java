@@ -532,7 +532,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 */
 	public boolean isThereXLevel() {
 		List<TimestampWrapper> timestampLevelX = getTimestampLevelX();
-		return timestampLevelX != null && timestampLevelX.size() > 0;
+		return timestampLevelX != null && !timestampLevelX.isEmpty();
 	}
 
 	/**
@@ -563,7 +563,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 */
 	public boolean isThereALevel() {
 		List<TimestampWrapper> timestamps = getALevelTimestamps();
-		return timestamps != null && timestamps.size() > 0;
+		return timestamps != null && !timestamps.isEmpty();
 	}
 
 	/**
@@ -603,7 +603,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 */
 	public boolean isThereTLevel() {
 		List<TimestampWrapper> timestamps = getTLevelTimestamps();
-		return timestamps != null && timestamps.size() > 0;
+		return timestamps != null && !timestamps.isEmpty();
 	}
 
 	/**
@@ -692,11 +692,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		List<RevocationWrapper> timestampedRevocations = timestampWrapper.getTimestampedRevocations();
 		for (CertificateWrapper certificateWrapper : certificateChain) {
 			List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
-			if (certificateRevocationData != null && certificateRevocationData.size() > 0) {
+			if (certificateRevocationData != null && !certificateRevocationData.isEmpty()) {
 				boolean revocationDataCovered = false;
 				for (RevocationWrapper revocation : certificateRevocationData) {
 					if (timestampedRevocations.contains(revocation)) {
 						revocationDataCovered = true;
+						break;
 					}
 				}
 				if (!revocationDataCovered) {
@@ -746,7 +747,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		List<CertificateRefWrapper> certificateRefs = new ArrayList<>();
 		certificateRefs.addAll(foundCertificates().getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER));
 		certificateRefs.addAll(foundCertificates().getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER));
-		if (certificateRefs.size() > 0) {
+		if (!certificateRefs.isEmpty()) {
 			// only one shall be present
 			return certificateRefs.iterator().next();
 		}
@@ -1120,7 +1121,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
 			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
-			if (fields != null && fields.size() > 0) {
+			if (fields != null && !fields.isEmpty()) {
 				return fields.iterator().next().getName();
 			}
 		}
@@ -1137,7 +1138,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = signature.getPDFRevision();
 		if (pdfRevision != null) {
 			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
-			if (fields != null && fields.size() > 0) {
+			if (fields != null && !fields.isEmpty()) {
 				for (XmlPDFSignatureField signatureField : fields) {
 					names.add(signatureField.getName());
 				}

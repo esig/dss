@@ -55,7 +55,7 @@ public abstract class AbstractPastTokenValidationCheck extends ChainItem<XmlVali
      * @param xmlPSV {@link XmlPSV}
      * @param constraint {@link LevelConstraint}
      */
-    public AbstractPastTokenValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
+    protected AbstractPastTokenValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
                                         TokenProxy token, XmlPSV xmlPSV, LevelConstraint constraint) {
         super(i18nProvider, result, constraint, token.getId() + PSV_BLOCK_SUFFIX);
         this.xmlPSV = xmlPSV;

@@ -88,7 +88,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
      * @param token {@link TokenProxy}
      * @param bbbs map of BasicBuildingBlocks
      */
-    public AbstractBasicValidationProcess(I18nProvider i18nProvider, T result, DiagnosticData diagnosticData,
+    protected AbstractBasicValidationProcess(I18nProvider i18nProvider, T result, DiagnosticData diagnosticData,
                                           TokenProxy token, Map<String, XmlBasicBuildingBlocks> bbbs) {
         super(i18nProvider, result);
         this.diagnosticData = diagnosticData;

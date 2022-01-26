@@ -59,26 +59,10 @@ public class DataToSignASiCEWithXAdESHelper extends AbstractGetDataToSignHelper 
 
     @Override
     public String getSignatureFilename() {
-        return getSignatureFileName(asicParameters, asicContent.getSignatureDocuments());
-    }
-
-    @Override
-    public String getTimestampFilename() {
-        throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-E + XAdES");
-    }
-
-    /**
-     * Returns the signature filename
-     *
-     * @param asicParameters {@link ASiCParameters}
-     * @param existingSignatures a list of {@link DSSDocument}s
-     * @return {@link String} signature filename
-     */
-	protected String getSignatureFileName(final ASiCParameters asicParameters, List<DSSDocument> existingSignatures) {
-		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
-		}
-
+        if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
+            return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
+        }
+        List<DSSDocument>existingSignatures = asicContent.getSignatureDocuments();
         if (Utils.isCollectionNotEmpty(existingSignatures)) {
             return ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE.replace("001", getSignatureNumber(existingSignatures));
         } else {
@@ -92,6 +76,11 @@ public class DataToSignASiCEWithXAdESHelper extends AbstractGetDataToSignHelper 
         String zeroPad = "000";
         return zeroPad.substring(sigNumberStr.length()) + sigNumberStr; // 2 -> 002
 	}
+
+    @Override
+    public String getTimestampFilename() {
+        throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-E + XAdES");
+    }
 
     @Override
     public boolean isOpenDocument() {

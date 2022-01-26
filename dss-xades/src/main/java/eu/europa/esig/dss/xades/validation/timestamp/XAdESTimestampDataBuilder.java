@@ -326,7 +326,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		en319132 = timestampToken != null ?
 				checkAttributeNameMatches(timestampAttribute, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2) : en319132;
 
-		/**
+		/*
 		 * A.1.5.1 The SigAndRefsTimeStampV2 qualifying property (A.1.5.1.2 Not distributed case)
 		 *
 		 * The input to the electronic time-stamp's message imprint computation input
@@ -335,12 +335,12 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		 * the resulting octet streams:
 		 */
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-			/**
+			/*
 			 * 1) The ds:SignatureValue element.
 			 */
 			writeCanonicalizedValue(XMLDSigPaths.SIGNATURE_VALUE_PATH, canonicalizationMethod, buffer);
 
-			/**
+			/*
 			 * 2) Those among the following unsigned qualifying properties that appear before SigAndRefsTimeStampV2,
 			 * in their order of appearance within the UnsignedSignatureProperties element:
 			 */
@@ -357,8 +357,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 					break;
 				}
 
-				if (en319132) {
-					/**
+				if (Boolean.TRUE.equals(en319132)) {
+					/*
 					 * - The SignatureTimeStamp qualifying properties.
 					 * - The CompleteCertificateRefsV2 qualifying property.
 					 * - The CompleteRevocationRefs qualifying property.
@@ -372,7 +372,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 					}
 
 				} else {
-					/**
+					/*
 					 * TS 101 903 v1.4.2 : 7.5.1 The SigAndRefsTimeStamp element (7.5.1.1 Not distributed case)
 					 *
 					 * 2) Those among the following unsigned properties that appear before SigAndRefsTimeStamp,
@@ -449,7 +449,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		en319132 = timestampToken != null ?
 				checkAttributeNameMatches(timestampAttribute, XAdES141Element.REFS_ONLY_TIMESTAMP_V2) : en319132;
 
-		/**
+		/*
 		 * A.1.5.2 The RefsOnlyTimeStampV2 qualifying property (A.1.5.2.2 Not distributed case)
 		 *
 		 * The electronic time-stamp's message imprint computation input shall be
@@ -474,8 +474,8 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 				}
 
 				// Use RefsOnlyTimeStampV2 on signature creation/extension
-				if (en319132) {
-					/**
+				if (Boolean.TRUE.equals(en319132)) {
+					/*
 					 * - The CompleteCertificateRefsV2 qualifying property.
 					 * - The CompleteRevocationRefs qualifying property.
 					 * - The AttributeCertificateRefsV2 qualifying property if it is present. And
@@ -488,7 +488,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 					}
 
 				} else {
-					/**
+					/*
 					 * TS 101 903 v1.4.2 : 7.5.1 The SigAndRefsTimeStamp element (7.5.1.1 Not distributed case)
 					 *
 					 * - The CompleteCertificateRefs element.
@@ -558,7 +558,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			LOG.trace("--->Get archive timestamp data : {}", (timestampToken == null ? "--> CREATION" : "--> VALIDATION"));
 		}
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
-		/**
+		/*
 		 * 8.2.1 Not distributed case<br>
 		 *
 		 * When xadesv141:ArchiveTimeStamp and all the unsigned properties covered by its time-stamp certificateToken
@@ -570,7 +570,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 		 */
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 
-			/**
+			/*
 			 * 2) Take all the ds:Reference elements in their order of appearance within ds:SignedInfo referencing
 			 * whatever the signer wants to sign including the SignedProperties element.
 			 * Process each one as indicated below:<br>
@@ -581,7 +581,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 * - Concatenate the resulting octets to the final octet stream.
 			 */
 
-			/**
+			/*
 			 * The references are already calculated {@see #checkSignatureIntegrity()}
 			 */
 			final Set<String> referenceURIs = new HashSet<>();
@@ -590,7 +590,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 				writeReferenceBytes(reference, canonicalizationMethod, buffer);
 			}
 
-			/**
+			/*
 			 * 3) Take the following XMLDSIG elements in the order they are listed below, canonicalize each one and
 			 * concatenate each resulting octet stream to the final octet stream:<br>
 			 * - The ds:SignedInfo element.<br>
@@ -600,7 +600,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			writeCanonicalizedValue(XMLDSigPaths.SIGNED_INFO_PATH, canonicalizationMethod, buffer);
 			writeCanonicalizedValue(XMLDSigPaths.SIGNATURE_VALUE_PATH, canonicalizationMethod, buffer);
 			writeCanonicalizedValue(XMLDSigPaths.KEY_INFO_PATH, canonicalizationMethod, buffer);
-			/**
+			/*
 			 * 4) Take the unsigned signature properties that appear before the current xadesv141:ArchiveTimeStamp in
 			 * the order they appear within the xades:UnsignedSignatureProperties, canonicalize each one and
 			 * concatenate each resulting octet stream to the final octet stream.
@@ -608,7 +608,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 			 */
 			writeTimestampedUnsignedProperties(timestampToken, canonicalizationMethod, buffer);
 			
-			/**
+			/*
 			 * 5) Take all the ds:Object elements except the one containing xades:QualifyingProperties element.
 			 * Canonicalize each one and concatenate each resulting octet stream to the final octet stream. 
 			 * If ds:Canonicalization is present, the algorithm indicated by this element is used. If not, 
@@ -747,7 +747,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 	private boolean checkAttributeNameMatches(XAdESAttribute attribute, DSSElement... elements) {
 		if (attribute != null) {
-			return Arrays.stream(elements).map(e -> e.getTagName()).anyMatch(attribute.getName()::equals);
+			return Arrays.stream(elements).map(DSSElement::getTagName).anyMatch(attribute.getName()::equals);
 		}
 		return false;
 	}
@@ -781,7 +781,7 @@ public class XAdESTimestampDataBuilder implements TimestampDataBuilder {
 				continue;
 			}
 			if (!xades141) {
-				/**
+				/*
 				 * !!! ETSI TS 101 903 V1.3.2 (2006-03)
 				 * 5) Take any ds:Object element in the signature that is not referenced by any ds:Reference within
 				 * ds:SignedInfo, except that one containing the QualifyingProperties element. Canonicalize each one

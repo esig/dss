@@ -46,7 +46,7 @@ public class JAdESCRLSource extends OfflineCRLSource {
 	private static final long serialVersionUID = -8088419662779006608L;
 
 	/** Represents the unsigned 'etsiU' header */
-	private transient final JAdESEtsiUHeader etsiUHeader;
+	private final transient JAdESEtsiUHeader etsiUHeader;
 
 	/**
 	 * Default constructor
@@ -120,19 +120,22 @@ public class JAdESCRLSource extends OfflineCRLSource {
 		if (Utils.isCollectionNotEmpty(crlVals)) {
 			for (Object item : crlVals) {
 				Map<?, ?> pkiOb = DSSJsonUtils.toMap(item, JAdESHeaderParameterNames.PKI_OB);
-				if (Utils.isMapNotEmpty(pkiOb)) {
-					String encoding = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.ENCODING);
-					if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-						String val = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.VAL);
-						if (Utils.isStringNotEmpty(val)) {
-							add(val, origin);
-						}
+				extractCRLFromPkiOb(pkiOb, origin);
+			}
+		}
+	}
 
-					} else {
-						LOG.warn("Unsupported encoding '{}'", encoding);
-					}
+	private void extractCRLFromPkiOb(Map<?, ?> pkiOb, RevocationOrigin origin) {
+		if (Utils.isMapNotEmpty(pkiOb)) {
+			String encoding = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.ENCODING);
+			if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+				String val = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.VAL);
+				if (Utils.isStringNotEmpty(val)) {
+					add(val, origin);
 				}
 
+			} else {
+				LOG.warn("Unsupported encoding '{}'", encoding);
 			}
 		}
 	}

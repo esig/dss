@@ -28,11 +28,10 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -214,30 +213,9 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		List<CertificateRef> signingCertificateRefs = getSigningCertificateRefs();
 		if (Utils.isCollectionNotEmpty(signingCertificateRefs)) {
 			for (CertificateRef certificateRef : signingCertificateRefs) {
-				SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
-				if (signerIdentifier != null) {
-					Set<CertificateToken> certificatesByIdentifier = certificateSource
-							.getBySignerIdentifier(signerIdentifier);
-					if (Utils.isCollectionNotEmpty(certificatesByIdentifier)) {
-						LOG.debug("Resolved certificate by certificate identifier");
-						for (CertificateToken certCandidate : certificatesByIdentifier) {
-							candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
-						}
-						return;
-					}
-				}
-
-				Digest certDigest = certificateRef.getCertDigest();
-				if (certDigest != null) {
-					Set<CertificateToken> certificatesByDigest = certificateSource.getByCertificateDigest(certDigest);
-					if (Utils.isCollectionNotEmpty(certificatesByDigest)) {
-						LOG.debug("Resolved certificate by digest");
-						for (CertificateToken certCandidate : certificatesByDigest) {
-							candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
-						}
-					}
-				}
+				resolveForReference(certificateRef, certificateSource, candidatesForSigningCertificate);
 			}
+
 		} else if (candidatesForSigningCertificate.isEmpty()) {
 			List<CertificateToken> certificates = certificateSource.getCertificates();
 			LOG.debug("No signing certificate reference found. " +
@@ -248,45 +226,68 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		}
 	}
 
+	private void resolveForReference(CertificateRef certificateRef, CertificateSource certificateSource,
+									 CandidatesForSigningCertificate candidatesForSigningCertificate) {
+		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
+		if (signerIdentifier != null) {
+			Set<CertificateToken> certificatesByIdentifier = certificateSource
+					.getBySignerIdentifier(signerIdentifier);
+			if (Utils.isCollectionNotEmpty(certificatesByIdentifier)) {
+				LOG.debug("Resolved certificate by certificate identifier");
+				for (CertificateToken certCandidate : certificatesByIdentifier) {
+					candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
+				}
+				return;
+			}
+		}
+
+		Digest certDigest = certificateRef.getCertDigest();
+		if (certDigest != null) {
+			Set<CertificateToken> certificatesByDigest = certificateSource.getByCertificateDigest(certDigest);
+			if (Utils.isCollectionNotEmpty(certificatesByDigest)) {
+				LOG.debug("Resolved certificate by digest");
+				for (CertificateToken certCandidate : certificatesByDigest) {
+					candidatesForSigningCertificate.add(new CertificateValidity(certCandidate));
+				}
+			}
+		}
+	}
+
 	/**
 	 * This method checks the protection of the certificates included within the signature (XAdES: KeyInfo) against the
 	 * substitution attack.
 	 */
 	private void checkCandidatesAgainstSigningCertificateRef(final CandidatesForSigningCertificate candidates) {
-
 		final List<CertificateRef> potentialSigningCertificates = getSigningCertificateRefs();
-		
 		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
 			// first reference shall be a reference to a signing certificate
 			final CertificateRef signingCert = potentialSigningCertificates.get(0);
-			
-			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
 			
 			CertificateValidity bestCertificateValidity = null;
 			// check all certificates against the signingCert ref and find the best one
 			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
 			for (final CertificateValidity certificateValidity : certificateValidityList) {
-				
-				certificateValidity.setDigestPresent(signingCert.getCertDigest() != null);
-				certificateValidity.setIssuerSerialPresent(signingCert.getCertificateIdentifier() != null);
-
-				CertificateToken certificateToken = certificateValidity.getCertificateToken();
-				if (certificateToken != null) {
-					certificateValidity.setDigestEqual(matcher.matchByDigest(certificateToken, signingCert));
-					certificateValidity.setSerialNumberEqual(matcher.matchBySerialNumber(certificateToken, signingCert));
-					certificateValidity.setDistinguishedNameEqual(matcher.matchByIssuerName(certificateToken, signingCert));
-				}
-				
-				if (certificateValidity.isValid()) {
+				if (isValid(certificateValidity, signingCert)) {
 					bestCertificateValidity = certificateValidity;
 				}
 			}
-
 			if (bestCertificateValidity != null) {
 				candidates.setTheCertificateValidity(bestCertificateValidity);
 			}
 		}
-		
+	}
+
+	private boolean isValid(CertificateValidity certificateValidity, CertificateRef signingCert) {
+		certificateValidity.setDigestPresent(signingCert.getCertDigest() != null);
+		certificateValidity.setIssuerSerialPresent(signingCert.getCertificateIdentifier() != null);
+
+		CertificateToken certificateToken = certificateValidity.getCertificateToken();
+		if (certificateToken != null) {
+			certificateValidity.setDigestEqual(certificateMatcher.matchByDigest(certificateToken, signingCert));
+			certificateValidity.setSerialNumberEqual(certificateMatcher.matchBySerialNumber(certificateToken, signingCert));
+			certificateValidity.setDistinguishedNameEqual(certificateMatcher.matchByIssuerName(certificateToken, signingCert));
+		}
+		return certificateValidity.isValid();
 	}
 
 }

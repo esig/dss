@@ -44,13 +44,18 @@ public class DocMDPCheck extends ChainItem<XmlFC> {
         }
         switch (docMDPPermissions) {
             case NO_CHANGE_PERMITTED:
-                if (Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges())) {
+                if (Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()) ||
+                        Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()) ||
+                        Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges())) {
                     return false;
                 }
+                break;
             case MINIMAL_CHANGES_PERMITTED:
-                if (Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges())) {
+                if (Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()) ||
+                        Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges())) {
                     return false;
                 }
+                break;
             case CHANGES_PERMITTED:
                 if (Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges())) {
                     return false;

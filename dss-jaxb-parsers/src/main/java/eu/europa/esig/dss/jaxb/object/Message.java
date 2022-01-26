@@ -52,7 +52,7 @@ public class Message {
      */
     public String getKey() {
         return key;
-    };
+    }
 
     /**
      * Gets the value of the message.
@@ -61,7 +61,7 @@ public class Message {
      */
     public String getValue() {
         return value;
-    };
+    }
 
     @Override
     public boolean equals(Object o) {

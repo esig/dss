@@ -115,7 +115,7 @@ public class FormatChecking extends Chain<XmlFC> {
 			
 			item = item.setNextItem(pdfAnnotationOverlapCheck());
 			
-			item = item.setNextItem(pdfVisualDifferenceCheck());;
+			item = item.setNextItem(pdfVisualDifferenceCheck());
 
 			// /DocMDP check
 			if (signature.getDocMDPPermissions() != null) {

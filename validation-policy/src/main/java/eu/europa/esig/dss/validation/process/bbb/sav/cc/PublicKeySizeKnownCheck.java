@@ -52,10 +52,7 @@ public class PublicKeySizeKnownCheck extends AbstractCryptographicCheck {
 
 	@Override
 	protected boolean process() {
-		if (!Utils.isStringDigits(keySize)) {
-			return false;
-		}
-		return true;
+		return Utils.isStringDigits(keySize);
 	}
 	
 	@Override

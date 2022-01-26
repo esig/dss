@@ -42,7 +42,7 @@ public class CurrentCacheContext implements CacheContext {
 	private Date lastSuccessSynchronizationTime;
 
 	/** The exception message */
-	private CachedException exception;
+	private CachedExceptionWrapper exception;
 
 	/**
 	 * Default constructor
@@ -84,14 +84,14 @@ public class CurrentCacheContext implements CacheContext {
 	}
 
 	@Override
-	public void error(CachedException cachedException) {
+	public void error(CachedExceptionWrapper cachedException) {
 		LOG.trace("State transition from '{}' to '{}'", state, CacheStateEnum.ERROR);
 		state = CacheStateEnum.ERROR;
 		exception = cachedException;
 	}
 	
 	@Override
-	public void errorUpdateDate(CachedException updatedException) {
+	public void errorUpdateDate(CachedExceptionWrapper updatedException) {
 		LOG.trace("Exception last occurrence updated '{}'", updatedException.getDate());
 		exception.setLastOccurrenceDate(updatedException.getDate());
 	}
@@ -128,7 +128,7 @@ public class CurrentCacheContext implements CacheContext {
 	}
 
 	@Override
-	public CachedException getException() {
+	public CachedExceptionWrapper getException() {
 		return exception;
 	}
 

@@ -42,10 +42,10 @@ public class JWSCompactSerializationParser {
 	private static final Logger LOG = LoggerFactory.getLogger(JWSCompactSerializationParser.class);
 
 	/** Defines the maximum number of '.' character inside a JWS signature */
-	private final static int NUMBER_DOTS = 2;
+	private static final int NUMBER_DOTS = 2;
 
 	/** Dot character, used as a separator of parts within a JWS Compact signature */
-	private final static byte DOT_CHARACTER = '.';
+	private static final byte DOT_CHARACTER = '.';
 
 	/** The document to be parsed */
 	private final DSSDocument document;

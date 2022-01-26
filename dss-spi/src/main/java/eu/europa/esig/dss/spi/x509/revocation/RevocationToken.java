@@ -317,18 +317,13 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		RevocationToken other = (RevocationToken) obj;
+		RevocationToken<?> other = (RevocationToken<?>) obj;
 		if (!getDSSId().equals(other.getDSSId())) {
 			return false;
 		}
 		if (relatedCertificate == null) {
-			if (other.relatedCertificate != null) {
-				return false;
-			}
-		} else if (!relatedCertificate.equals(other.relatedCertificate)) {
-			return false;
-		}
-		return true;
+			return other.relatedCertificate == null;
+		} else return relatedCertificate.equals(other.relatedCertificate);
 	}
 
 }

@@ -143,8 +143,8 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 	}
 
 	private void addBasicOcspRespFrom_id_ri_ocsp_response() {
-		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
-		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
+		final Store<?> otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
+		final Collection<?> otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
 			if (object instanceof ASN1Sequence) {
 				final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
@@ -166,8 +166,8 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 	}
 
 	private void addBasicOcspRespFrom_id_pkix_ocsp_basic() {
-		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
+		final Store<?> otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
+		final Collection<?> otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
 			if (object instanceof ASN1Sequence) {
 				final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;

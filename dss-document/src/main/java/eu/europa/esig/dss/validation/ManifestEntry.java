@@ -23,10 +23,14 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.MimeType;
 
+import java.io.Serializable;
+
 /**
  * Defines a references document entry of a ManifestFile
  */
-public class ManifestEntry {
+public class ManifestEntry implements Serializable {
+
+	private static final long serialVersionUID = -7997341134695311883L;
 
 	/** The filename of the entry */
 	private String filename;
@@ -38,13 +42,13 @@ public class ManifestEntry {
 	private Digest digest;
 
 	/**
-	 * Defines if the references data is found
+	 * Defines if the referenced data is found
 	 * (used for reference validation)
 	 */
 	private boolean dataFound;
 
 	/**
-	 * Defines if the references data is intact (digest matches)
+	 * Defines if the referenced data is intact (digest matches)
 	 * (used for reference validation)
 	 */
 	private boolean dataIntact;

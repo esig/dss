@@ -295,7 +295,6 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 					pdRect.getUpperRightX(), pdRect.getUpperRightY());
 			PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 			pdfAnnotation.setName(getSignatureFieldName(pdAnnotation));
-			pdfAnnotation.setSigned(isSigned(pdAnnotation));
 			return pdfAnnotation;
 		}
 		return null;
@@ -303,11 +302,6 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 	private String getSignatureFieldName(PDAnnotation pdAnnotation) {
 		return pdAnnotation.getCOSObject().getString(COSName.T);
-	}
-
-	private boolean isSigned(PDAnnotation pdAnnotation) {
-		COSObject sigDicObject = pdAnnotation.getCOSObject().getCOSObject(COSName.V);
-		return sigDicObject != null;
 	}
 
 	@Override

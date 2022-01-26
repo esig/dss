@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.jaxb.common;
 
 import eu.europa.esig.dss.alert.Alert;
+import eu.europa.esig.dss.jaxb.common.exception.SecurityConfigurationException;
 import org.xml.sax.ErrorHandler;
 
 import javax.xml.XMLConstants;
@@ -104,13 +105,21 @@ public class ValidatorConfigurator extends AbstractConfigurator<Validator> {
 	}
 
 	@Override
-	protected void setSecurityFeature(Validator validator, String feature, Boolean value) throws Exception {
-		validator.setFeature(feature, value);
+	protected void setSecurityFeature(Validator validator, String feature, Boolean value) throws SecurityConfigurationException {
+		try {
+			validator.setFeature(feature, value);
+		} catch (Exception e) {
+			throw new SecurityConfigurationException(e);
+		}
 	}
 
 	@Override
-	protected void setSecurityAttribute(Validator validator, String attribute, Object value) throws Exception {
-		validator.setProperty(attribute, value);
+	protected void setSecurityAttribute(Validator validator, String attribute, Object value) throws SecurityConfigurationException {
+		try {
+			validator.setProperty(attribute, value);
+		} catch (Exception e) {
+			throw new SecurityConfigurationException(e);
+		}
 	}
 
 	/**

@@ -161,7 +161,7 @@ public final class DSSUtils {
 	 * @return {@link String} formatted date
 	 */
 	public static String formatDateWithCustomFormat(final Date date, final String format, final String timeZone) {
-		return formatDateWithCustomFormat(date, format, Utils.isStringNotEmpty(timeZone) ? TimeZone.getTimeZone(timeZone) : (TimeZone) null);
+		return formatDateWithCustomFormat(date, format, Utils.isStringNotEmpty(timeZone) ? TimeZone.getTimeZone(timeZone) : null);
 	}
 
 	/**
@@ -1243,7 +1243,7 @@ public final class DSSUtils {
 	 * @param toAddCollection a collection to add values from
 	 * @param <T> an Object
 	 */
-	public static <T extends Object> void enrichCollection(Collection<T> currentCollection, Collection<T> toAddCollection) {
+	public static <T> void enrichCollection(Collection<T> currentCollection, Collection<T> toAddCollection) {
 		for (T object : toAddCollection) {
 			if (!currentCollection.contains(object)) {
 				currentCollection.add(object);

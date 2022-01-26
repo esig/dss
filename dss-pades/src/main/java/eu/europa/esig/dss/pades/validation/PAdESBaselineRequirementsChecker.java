@@ -220,10 +220,10 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
      */
     private boolean coversRevocationTokens(TimestampToken timestampToken,
                                            Collection<CRLToken> crlTokens, Collection<OCSPToken> ocspTokens) {
-        Map<String, Collection<RevocationToken>> revocationsByCertificate = getRevocationsByCertificate(crlTokens, ocspTokens);
-        for (Collection<RevocationToken> revocationTokens : revocationsByCertificate.values()) {
+        Map<String, Collection<RevocationToken<?>>> revocationsByCertificate = getRevocationsByCertificate(crlTokens, ocspTokens);
+        for (Collection<RevocationToken<?>> revocationTokens : revocationsByCertificate.values()) {
             boolean revocationForCertificateIsCovered = false;
-            for (RevocationToken revocationToken : revocationTokens) {
+            for (RevocationToken<?> revocationToken : revocationTokens) {
                 if (coversToken(timestampToken, revocationToken)) {
                     revocationForCertificateIsCovered = true;
                     break;
@@ -245,19 +245,19 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
      * @param ocspTokens collection of {@link OCSPToken}s
      * @return a map between related certificate id and corresponding collection of related revocation data
      */
-    private Map<String, Collection<RevocationToken>> getRevocationsByCertificate(Collection<CRLToken> crlTokens,
+    private Map<String, Collection<RevocationToken<?>>> getRevocationsByCertificate(Collection<CRLToken> crlTokens,
                                                                                 Collection<OCSPToken> ocspTokens) {
-        Map<String, Collection<RevocationToken>> result = new HashMap<>();
+        Map<String, Collection<RevocationToken<?>>> result = new HashMap<>();
         enrichRevocationDataMap(result, crlTokens);
         enrichRevocationDataMap(result, ocspTokens);
         return result;
     }
 
-    private <R extends RevocationToken> void enrichRevocationDataMap(
-            Map<String, Collection<RevocationToken>> revocationDataMap, Collection<R> revocationData) {
-        for (RevocationToken revocationToken : revocationData) {
+    private <R extends RevocationToken<?>> void enrichRevocationDataMap(
+            Map<String, Collection<RevocationToken<?>>> revocationDataMap, Collection<R> revocationData) {
+        for (RevocationToken<?> revocationToken : revocationData) {
             String relatedCertificateId = revocationToken.getRelatedCertificateId();
-            Collection<RevocationToken> relatedRevocationData = revocationDataMap.get(relatedCertificateId);
+            Collection<RevocationToken<?>> relatedRevocationData = revocationDataMap.get(relatedCertificateId);
             if (Utils.isCollectionEmpty(relatedRevocationData)) {
                 relatedRevocationData = new HashSet<>();
                 revocationDataMap.put(relatedCertificateId, relatedRevocationData);
@@ -281,9 +281,7 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
             PdfDocTimestampRevision pdfRevision = ((PdfTimestampToken) timestampToken).getPdfRevision();
             if (pdfRevision != null) {
                 PdfSignatureDictionary pdfSigDictInfo = pdfRevision.getPdfSigDictInfo();
-                if (pdfSigDictInfo != null && PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(pdfSigDictInfo.getSubFilter())) {
-                    return true;
-                }
+                return pdfSigDictInfo != null && PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(pdfSigDictInfo.getSubFilter());
             }
         }
         return false;

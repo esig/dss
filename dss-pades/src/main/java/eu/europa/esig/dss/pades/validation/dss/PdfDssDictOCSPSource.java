@@ -157,9 +157,9 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
     }
 
     private List<EncapsulatedRevocationTokenIdentifier<OCSP>> filterBinariesFromKeys(
-            Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> OCSPBinaries, Collection<Long> keySet) {
+            Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> ocspBinaries, Collection<Long> keySet) {
         List<EncapsulatedRevocationTokenIdentifier<OCSP>> result = new ArrayList<>();
-        for (EncapsulatedRevocationTokenIdentifier<OCSP> OCSPBinary : OCSPBinaries) {
+        for (EncapsulatedRevocationTokenIdentifier<OCSP> OCSPBinary : ocspBinaries) {
             Set<Long> objectIds = compositeOCSPSource.getTokenBinaryObjectIds(OCSPBinary);
             if (Utils.containsAny(keySet, objectIds)) {
                 result.add(OCSPBinary);

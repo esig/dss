@@ -99,7 +99,7 @@ public abstract class RevocationDataLoadingStrategy {
 	 *                               issuer of the certificateToken
 	 * @return an instance of {@code RevocationToken}
 	 */
-	protected abstract RevocationToken getRevocationToken(CertificateToken certificateToken,
+	protected abstract RevocationToken<?> getRevocationToken(CertificateToken certificateToken,
 												CertificateToken issuerCertificateToken);
 
 	/**

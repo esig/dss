@@ -115,9 +115,9 @@ public class CachedEntry<R extends CachedResult> {
 	/**
 	 * Sets the error
 	 *
-	 * @param exception {@link CachedException}
+	 * @param exception {@link CachedExceptionWrapper}
 	 */
-	public void error(CachedException exception) {
+	public void error(CachedExceptionWrapper exception) {
 		if (isNewError(exception)) {
 			cacheContext.error(exception);
 			cachedResult = null; // reset in case of error
@@ -130,10 +130,10 @@ public class CachedEntry<R extends CachedResult> {
 	/**
 	 * Checks if the {@code wrappedException} is a new one
 	 *
-	 * @param wrappedException {@link CachedException}
+	 * @param wrappedException {@link CachedExceptionWrapper}
 	 * @return TRUE if the given exception has not been defined before, FALSE otherwise
 	 */
-	private boolean isNewError(CachedException wrappedException) {
+	private boolean isNewError(CachedExceptionWrapper wrappedException) {
 		return !isError() || !Utils.areStringsEqual(getExceptionStackTrace(), wrappedException.getStackTrace());
 	}
 

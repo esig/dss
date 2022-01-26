@@ -78,6 +78,8 @@ public class PAdESLevelBWithPlainECDSATokenTest extends AbstractPAdESTestSignatu
         signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.ECDSA);
 
         service = new PAdESService(getOfflineCertificateVerifier());
+
+        super.signAndVerify();
     }
 
     @Override

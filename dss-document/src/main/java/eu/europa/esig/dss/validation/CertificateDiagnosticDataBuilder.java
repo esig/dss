@@ -40,7 +40,7 @@ public class CertificateDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	@Override
-	public CertificateDiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
+	public CertificateDiagnosticDataBuilder usedRevocations(Set<RevocationToken<?>> usedRevocations) {
 		return (CertificateDiagnosticDataBuilder) super.usedRevocations(usedRevocations);
 	}
 

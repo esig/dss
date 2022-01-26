@@ -37,7 +37,7 @@ public class MessageStatus implements Status {
 
     @Override
     public String getErrorString() {
-        return message;
+        return getMessage();
     }
 
     @Override

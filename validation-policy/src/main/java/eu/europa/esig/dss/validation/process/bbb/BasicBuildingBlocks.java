@@ -225,8 +225,7 @@ public class BasicBuildingBlocks {
 	private XmlXCV executeX509CertificateValidation() {
 		X509CertificateValidation x509CertificateValidation = getX509CertificateValidation();
 		if (x509CertificateValidation != null) {
-			XmlXCV xcv = x509CertificateValidation.execute();
-			return xcv;
+			return x509CertificateValidation.execute();
 		}
 		return null;
 	}

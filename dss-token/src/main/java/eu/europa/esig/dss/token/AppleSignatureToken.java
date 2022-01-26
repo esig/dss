@@ -35,6 +35,7 @@ public class AppleSignatureToken extends AbstractKeyStoreTokenConnection {
 
     @Override
     public void close() {
+        // nothing to close
     }
 
 }
