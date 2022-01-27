@@ -33,16 +33,35 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qu
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategyFactory;
 
-public class CertificateQualificationCalculation {
+/**
+ * This class is used to determine certificate's qualification based on its content and
+ * the given {@code TrustedServiceWrapper}
+ *
+ */
+public class CertificateQualificationCalculator {
 
+	/** Certificate to get qualification for */
 	private final CertificateWrapper endEntityCert;
+
+	/** Trusted Service to be used to help to determine the qualification */
 	private final TrustedServiceWrapper caqcTrustService;
 
-	public CertificateQualificationCalculation(CertificateWrapper endEntityCert, TrustedServiceWrapper caqcTrustService) {
+	/**
+	 * Default constructor
+	 *
+	 * @param endEntityCert {@link CertificateWrapper} to get qualification for
+	 * @param caqcTrustService {@link TrustedServiceWrapper} related TrustedService to extract qualification from
+	 */
+	public CertificateQualificationCalculator(CertificateWrapper endEntityCert, TrustedServiceWrapper caqcTrustService) {
 		this.endEntityCert = endEntityCert;
 		this.caqcTrustService = caqcTrustService;
 	}
 
+	/**
+	 * This method returns the qualification result for the given {@code CertificateWrapper}
+	 *
+	 * @return {@link CertificateQualification}
+	 */
 	public CertificateQualification getQualification() {
 		QualificationStrategy qcStrategy = QualificationStrategyFactory.createQualificationFromCertAndTL(endEntityCert, caqcTrustService);
 		CertificateQualifiedStatus qualifiedStatus = qcStrategy.getQualifiedStatus();

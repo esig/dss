@@ -20,25 +20,44 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.checks;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.RuleUtils;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
+import java.util.Date;
+
+/**
+ * Verifies whether the Trusted List is fresh
+ *
+ */
 public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 
+	/** Trusted List to check */
 	private final XmlTrustedList currentTL;
+
+	/** Validation time */
 	private final Date currentTime;
+
+	/** Constraint defining the maximum freshness time */
 	private final TimeConstraint timeConstraint;
 
-	public TLFreshnessCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTL, Date currentTime, TimeConstraint timeConstraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlTLAnalysis}
+	 * @param currentTL {@link XmlTrustedList}
+	 * @param currentTime {@link Date}
+	 * @param timeConstraint {@link TimeConstraint}
+	 */
+	public TLFreshnessCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTL,
+							Date currentTime, TimeConstraint timeConstraint) {
 		super(i18nProvider, result, timeConstraint);
 		this.currentTL = currentTL;
 		this.currentTime = currentTime;

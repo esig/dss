@@ -27,18 +27,37 @@ public class DSSReportException extends RuntimeException {
 
 	private static final long serialVersionUID = -2849739549071583052L;
 
+    /**
+     * Empty constructor
+     */
 	public DSSReportException() {
         super();
     }
 
+    /**
+     * Constructor with an exception message
+     *
+     * @param message {@link String}
+     */
     public DSSReportException(String message) {
         super(message);
     }
 
+    /**
+     * Constructor with a caused exception or error
+     *
+     * @param cause {@link Throwable}
+     */
     public DSSReportException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Constructor with a caused exception or error and a custom message
+     *
+     * @param cause {@link Throwable}
+     * @param message {@link String}
+     */
     public DSSReportException(String message, Throwable cause) {
         super(message, cause);
     }

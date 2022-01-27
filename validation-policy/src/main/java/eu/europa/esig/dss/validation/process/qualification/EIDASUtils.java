@@ -28,6 +28,9 @@ import java.util.Date;
  */
 public final class EIDASUtils {
 
+	/**
+	 * Empty constructor
+	 */
 	private EIDASUtils() {
 	}
 
@@ -43,14 +46,32 @@ public final class EIDASUtils {
 	 */
 	private static final Date EIDAS_GRACE_DATE = DatatypeConverter.parseDateTime("2017-06-30T22:00:00.000Z").getTime();
 
+	/**
+	 * Gets if the given date relates to a post eIDAS time
+	 *
+	 * @param date {@link Date}
+	 * @return TRUE if the date is at or after eIDAS
+	 */
 	public static boolean isPostEIDAS(Date date) {
 		return date != null && date.compareTo(EIDAS_DATE) >= 0;
 	}
 
+	/**
+	 * Gets if the given date relates to a pre eIDAS time
+	 *
+	 * @param date {@link Date}
+	 * @return TRUE if the date is before eIDAS
+	 */
 	public static boolean isPreEIDAS(Date date) {
 		return date != null && date.compareTo(EIDAS_DATE) < 0;
 	}
 
+	/**
+	 * Gets if the given date relates to a post grace period
+	 *
+	 * @param date {@link Date}
+	 * @return TRUE if the date is at or after grace period
+	 */
 	public static boolean isPostGracePeriod(Date date) {
 		return date != null && date.compareTo(EIDAS_GRACE_DATE) >= 0;
 	}

@@ -30,13 +30,30 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
+/**
+ * Checks whether the certificate is qualified at validation time
+ *
+ */
 public class QualifiedCheck extends ChainItem<XmlValidationCertificateQualification> {
 
+	/** The certificate qualification status */
 	private final CertificateQualifiedStatus qualifiedStatus;
+
+	/** Validation time type */
 	private final ValidationTime validationTime;
 
-	public QualifiedCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, CertificateQualifiedStatus qualifiedStatus,
-			ValidationTime validationTime, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationCertificateQualification}
+	 * @param qualifiedStatus {@link CertificateQualifiedStatus}
+	 * @param validationTime {@link ValidationTime}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public QualifiedCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
+						  CertificateQualifiedStatus qualifiedStatus, ValidationTime validationTime,
+						  LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.qualifiedStatus = qualifiedStatus;

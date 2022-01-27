@@ -28,7 +28,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
  */
 public class QCLimitValueWrapper {
 
-    /** Th wrapped object */
+    /** Wrapped object */
     private final XmlQcEuLimitValue wrapped;
 
     /**

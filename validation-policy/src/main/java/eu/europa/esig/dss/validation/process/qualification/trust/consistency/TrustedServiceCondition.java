@@ -22,8 +22,18 @@ package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 
+/**
+ * Checks whether the TrustedService is valid
+ *
+ */
 public interface TrustedServiceCondition {
 
+	/**
+	 * Whether the TrustedService is consistent
+	 *
+	 * @param trustedService {@link TrustedServiceWrapper} to check
+	 * @return TRUE if the {@code trustedService} is consistent, FALSE otherwise
+	 */
 	boolean isConsistent(TrustedServiceWrapper trustedService);
 
 }

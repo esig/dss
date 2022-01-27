@@ -32,6 +32,11 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+/**
+ * Checks whether the validation result of EN 319 102-1 ch. "5.4 Time-stamp validation building block" process is valid
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class BasicTimestampValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** The timestamp to check */

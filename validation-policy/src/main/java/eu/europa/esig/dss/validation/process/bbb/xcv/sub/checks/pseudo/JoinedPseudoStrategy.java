@@ -20,14 +20,20 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Represents a merged strategy to extract pseudo information, accepting the certificate's pseudo attribute and
+ * custom German pseudo processing algorithm
+ *
+ */
 public class JoinedPseudoStrategy implements PseudoStrategy {
 
+    /** List of strategies to be used to extract pseudo */
     private static final List<PseudoStrategy> STRATEGIES;
 
     static {

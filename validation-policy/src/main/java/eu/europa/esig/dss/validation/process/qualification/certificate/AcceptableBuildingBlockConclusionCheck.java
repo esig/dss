@@ -29,11 +29,25 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
+/**
+ * Verifies whether the BasicBuildingBlock's validation succeeded
+ *
+ */
 public class AcceptableBuildingBlockConclusionCheck extends ChainItem<XmlCertificate> {
 
+	/** BasicBuildingBlock's validation conclusion */
 	private final XmlConclusion buildingBlockConclusion;
 
-	public AcceptableBuildingBlockConclusionCheck(I18nProvider i18nProvider, XmlCertificate result, XmlConclusion buildingBlockConclusion, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlCertificate}
+	 * @param buildingBlockConclusion {@link XmlConclusion} to verify
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public AcceptableBuildingBlockConclusionCheck(I18nProvider i18nProvider, XmlCertificate result,
+												  XmlConclusion buildingBlockConclusion, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.buildingBlockConclusion = buildingBlockConclusion;

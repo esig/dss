@@ -37,7 +37,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
- * The wrapper for a cryptographic information retrieved from a validation policy
+ * The wrapper for cryptographic information retrieved from a validation policy
+ *
  */
 public class CryptographicConstraintWrapper {
 

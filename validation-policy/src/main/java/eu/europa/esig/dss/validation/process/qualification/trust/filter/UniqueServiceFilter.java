@@ -20,25 +20,35 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.certificate.CertificateQualificationCalculation;
+import eu.europa.esig.dss.validation.process.qualification.certificate.CertificateQualificationCalculator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+
+/**
+ * This class is used to select a TrustedService that is unambiguous and does not have conflicts with other TrustedServices.
+ * In case of a conflict for the given {@code endEntityCert}, none of the TrustedServices is returned.
+ *
+ */
 public class UniqueServiceFilter implements TrustedServiceFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UniqueServiceFilter.class);
 
+	/** Certificate to check TrustedServices for */
 	private final CertificateWrapper endEntityCert;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param endEntityCert {@link CertificateWrapper} to check TrustedServices for
+	 */
 	public UniqueServiceFilter(CertificateWrapper endEntityCert) {
 		this.endEntityCert = endEntityCert;
 	}
@@ -55,7 +65,7 @@ public class UniqueServiceFilter implements TrustedServiceFilter {
 			EnumMap<CertificateQualification, List<String>> qualificationResults = new EnumMap<>(
 					CertificateQualification.class);
 			for (TrustedServiceWrapper trustService : trustServices) {
-				CertificateQualificationCalculation calculator = new CertificateQualificationCalculation(endEntityCert, trustService);
+				CertificateQualificationCalculator calculator = new CertificateQualificationCalculator(endEntityCert, trustService);
 				CertificateQualification certQualification = calculator.getQualification();
 				if (!qualificationResults.containsKey(certQualification)) {
 					qualificationResults.put(certQualification, trustService.getServiceNames());

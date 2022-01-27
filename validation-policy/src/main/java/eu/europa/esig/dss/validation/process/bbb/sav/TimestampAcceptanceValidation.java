@@ -88,17 +88,17 @@ public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<
 		item = item.setNextItem(cryptographic());
 	}
 
-	protected ChainItem<XmlSAV> tsaGeneralNamePresent() {
+	private ChainItem<XmlSAV> tsaGeneralNamePresent() {
 		LevelConstraint constraint = validationPolicy.getTimestampTSAGeneralNamePresent();
 		return new TSAGeneralNameFieldPresentCheck(i18nProvider, result, token, constraint);
 	}
 
-	protected ChainItem<XmlSAV> tsaGeneralNameMatch() {
+	private ChainItem<XmlSAV> tsaGeneralNameMatch() {
 		LevelConstraint constraint = validationPolicy.getTimestampTSAGeneralNameContentMatch();
 		return new TSAGeneralNameValueMatchCheck(i18nProvider, result, token, constraint);
 	}
 
-	protected ChainItem<XmlSAV> tsaGeneralNameOrderMatch() {
+	private ChainItem<XmlSAV> tsaGeneralNameOrderMatch() {
 		LevelConstraint constraint = validationPolicy.getTimestampTSAGeneralNameOrderMatch();
 		return new TSAGeneralNameOrderMatchCheck(i18nProvider, result, token, constraint);
 	}

@@ -26,6 +26,22 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum SignatureTokenType {
 
-	PKCS11, PKCS12, MSCAPI, JKS, MOCCA
+	/** PKCS11 keystore token */
+	PKCS11,
+
+	/** PKCS12 keystore token */
+	PKCS12,
+
+	/** Windows keystore token */
+	MSCAPI,
+
+	/** MacOS keystore token */
+	APPLE,
+
+	/** Java keystore token */
+	JKS,
+
+	/** MOCCA-implementation keystore token */
+	MOCCA
 
 }

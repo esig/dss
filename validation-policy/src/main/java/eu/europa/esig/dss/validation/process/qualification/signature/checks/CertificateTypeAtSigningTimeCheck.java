@@ -38,6 +38,14 @@ public class CertificateTypeAtSigningTimeCheck extends ChainItem<XmlValidationSi
 	/** The Certificate Qualification to be checked */
 	private final CertificateQualification certificateQualification;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationSignatureQualification}
+	 * @param certificateQualification {@link CertificateQualification}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public CertificateTypeAtSigningTimeCheck(I18nProvider i18nProvider, XmlValidationSignatureQualification result,
 											 CertificateQualification certificateQualification, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

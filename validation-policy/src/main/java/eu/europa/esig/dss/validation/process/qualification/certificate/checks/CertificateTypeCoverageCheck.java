@@ -20,22 +20,35 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
+import java.util.List;
+
+/**
+ * Verifies if a TrustedService(s) issuing the certificate have been found
+ *
+ */
 public class CertificateTypeCoverageCheck extends ChainItem<XmlValidationCertificateQualification> {
 
+	/** List of TrustedServices issuing the certificate in question */
 	private final List<TrustedServiceWrapper> trustServicesAtTime;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationCertificateQualification}
+	 * @param trustServicesAtTime a list of {@link TrustedServiceWrapper}s
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public CertificateTypeCoverageCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
 			List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

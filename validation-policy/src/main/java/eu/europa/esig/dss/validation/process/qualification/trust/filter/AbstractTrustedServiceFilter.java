@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-
+/**
+ * Abstract filter defining the main logic of filters
+ *
+ */
 public abstract class AbstractTrustedServiceFilter implements TrustedServiceFilter {
 
 	@Override
@@ -38,6 +42,12 @@ public abstract class AbstractTrustedServiceFilter implements TrustedServiceFilt
 		return result;
 	}
 
+	/**
+	 * Checks whether the {@code service} is acceptable
+	 *
+	 * @param service {@link TrustedServiceWrapper} to check
+	 * @return TRUE if the {@code service} is acceptable, FALSE otherwise
+	 */
 	abstract boolean isAcceptable(TrustedServiceWrapper service);
 
 }

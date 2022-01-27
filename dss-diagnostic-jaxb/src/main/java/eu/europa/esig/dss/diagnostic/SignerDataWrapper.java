@@ -23,22 +23,47 @@ package eu.europa.esig.dss.diagnostic;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 
+/**
+ * Wraps the {@code XmlSignerData}
+ *
+ */
 public class SignerDataWrapper {
 	
+	/** Wrapped Signed data */
 	private final XmlSignerData signerData;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param signerData {@link XmlSignerData}
+	 */
 	public SignerDataWrapper(final XmlSignerData signerData) {
 		this.signerData = signerData;
 	}
 	
+	/**
+	 * Gets identifier of the signer data
+	 *
+	 * @return {@link String}
+	 */
 	public String getId() {
 		return signerData.getId();
 	}
 	
+	/**
+	 * Gets referenced name of the signer data
+	 *
+	 * @return {@link String}
+	 */
 	public String getReferencedName() {
 		return signerData.getReferencedName();
 	}
 	
+	/**
+	 * Gets digest algo and value of the signer data
+	 *
+	 * @return {@link XmlDigestAlgoAndValue}
+	 */
 	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
 		return signerData.getDigestAlgoAndValue();
 	}

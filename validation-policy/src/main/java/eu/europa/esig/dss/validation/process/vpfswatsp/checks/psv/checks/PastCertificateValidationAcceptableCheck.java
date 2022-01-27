@@ -32,6 +32,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * Checks if the Past Certificate Validation result is acceptable
+ *
  */
 public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> {
 
@@ -51,6 +52,8 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 	 * @param result {@link XmlPSV}
 	 * @param pcv {@link XmlPCV}
 	 * @param tokenId {@link String}
+	 * @param currentIndication {@link Indication}
+	 * @param currentSubIndication {@link SubIndication}
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public PastCertificateValidationAcceptableCheck(I18nProvider i18nProvider, XmlPSV result, XmlPCV pcv, String tokenId,

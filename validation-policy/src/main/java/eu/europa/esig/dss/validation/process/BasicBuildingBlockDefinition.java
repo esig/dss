@@ -23,32 +23,49 @@ package eu.europa.esig.dss.validation.process;
 import eu.europa.esig.dss.enumerations.UriBasedEnum;
 
 /**
- * Definition of signature Basic Building Blocks
+ * Definition of signature Basic Building Blocks as per EN 319 102-1
+ *
  */
 public enum BasicBuildingBlockDefinition implements UriBasedEnum {
 
+	/** 5.2.2 Format Checking */
 	FORMAT_CHECKING("urn:cef:dss:bbb:formatChecking"),
 
+	/** 5.2.3 Identification of the signing certificate */
 	IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE("urn:cef:dss:bbb:identificationOfTheSigningCertificate"),
 
+	/** 5.2.4 Validation context initialization */
 	VALIDATION_CONTEXT_INITIALIZATION("urn:cef:dss:bbb:validationContextInitialization"),
 
-	CRYPTOGRAPHIC_VERIFICATION("urn:cef:dss:bbb:cryptographicVerification"),
-
-	SIGNATURE_ACCEPTANCE_VALIDATION("urn:cef:dss:bbb:signatureAcceptanceValidation"),
-
-	X509_CERTIFICATE_VALIDATION("urn:cef:dss:bbb:x509CertificateValidation"),
-
+	/** 5.2.5 Revocation freshness checker  */
 	REVOCATION_FRESHNESS_CHECKER("urn:cef:dss:bbb:revocationFreshnessChecker"),
 
-	PAST_SIGNATURE_VALIDATION("urn:cef:dss:bbb:pastSignatureValidation"),
+	/** 5.2.6 X.509 certificate validation */
+	X509_CERTIFICATE_VALIDATION("urn:cef:dss:bbb:x509CertificateValidation"),
 
+	/** 5.2.7 Cryptographic verification */
+	CRYPTOGRAPHIC_VERIFICATION("urn:cef:dss:bbb:cryptographicVerification"),
+
+	/** 5.2.8 Signature Acceptance Validation (SAV) */
+	SIGNATURE_ACCEPTANCE_VALIDATION("urn:cef:dss:bbb:signatureAcceptanceValidation"),
+
+	/** 5.6.2.1 Past certificate validation */
 	PAST_CERTIFICATE_VALIDATION("urn:cef:dss:bbb:pastCertificateValidation"),
 
-	VALIDATION_TIME_SLIDING("urn:cef:dss:bbb:validationTimeSliding");
+	/** 5.6.2.2 Validation time sliding process */
+	VALIDATION_TIME_SLIDING("urn:cef:dss:bbb:validationTimeSliding"),
 
+	/** 5.6.2.4 Past signature validation building block */
+	PAST_SIGNATURE_VALIDATION("urn:cef:dss:bbb:pastSignatureValidation");
+
+	/** URI identifying the BasicBuildingBlock */
 	private final String uri;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param uri {@link String}
+	 */
 	BasicBuildingBlockDefinition(String uri) {
 		this.uri = uri;
 	}

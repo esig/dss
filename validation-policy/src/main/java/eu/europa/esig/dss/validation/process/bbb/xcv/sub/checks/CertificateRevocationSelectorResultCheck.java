@@ -13,6 +13,11 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.List;
 
+/**
+ * This class verifies the result of a {@code CertificateRevocationSelector}
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public class CertificateRevocationSelectorResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** CRS result */
