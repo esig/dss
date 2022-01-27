@@ -50,7 +50,7 @@ public class DSSDocumentTest {
 		// Or from InputStream
 		DSSDocument isInMemoryDocument;
 		try (InputStream is = new FileInputStream("src/main/resources/xml_example.xml")) {
-			isInMemoryDocument = new InMemoryDocument("Hello World".getBytes());
+			isInMemoryDocument = new InMemoryDocument(is);
 		}
 
 		// end::inMemoryDocument[]

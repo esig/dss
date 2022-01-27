@@ -990,11 +990,11 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDo
 [[Topology]]
 === Examples of SCA and SCDev Topology and Workflows.
 
-==== Hash encryption
+==== Hash computation
 In order to avoid transfer of original or sensitive information, and also to reduce the amount of data by online protocols, a hash of a document or data to be signed can be computed.
 
 [source,java,indent=0]
-.Hash encryption
+.Hash computation
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=hashComputation]
 ----

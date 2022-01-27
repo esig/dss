@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -147,6 +148,32 @@ public class Snippets {
 		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
 		// end::threeStepsSign[]
+	}
+
+	public void fourAtomicSteps() {
+		XAdESService service = new XAdESService(new CommonCertificateVerifier());
+		DSSDocument toSignDocument = new InMemoryDocument("Hello world".getBytes());
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		DigestAlgorithm digestAlgorithm = signatureParameters.getDigestAlgorithm();
+
+		JKSSignatureToken signingToken = null;
+		DSSPrivateKeyEntry privateKey = null;
+
+		// tag::fourStepsSign[]
+
+		// step 1: generate ToBeSigned data
+		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
+
+		// step 2: compute the digest of the ToBeSigned data
+		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(), DSSUtils.digest(signatureParameters.getDigestAlgorithm(), dataToSign.getBytes()));
+
+		// step 3: sign the digested data using a private key
+		SignatureValue signatureValue = signingToken.signDigest(digest, privateKey);
+
+		// step 4: sign document using a SignatureValue obtained on the previous step
+		DSSDocument signedDocument = service.signDocument(toSignDocument, signatureParameters, signatureValue);
+
+		// end::fourStepsSign[]
 	}
 
 	@Test

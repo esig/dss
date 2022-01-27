@@ -230,7 +230,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocument
 [[SignatureTokens]]
 === Signature tokens
 
-The DSS framework is able to create signatures using different keystores: PKCS#11, PKCS#12, MS CAPI and Apple Keystore. To be independent of the signing media, the DSS framework uses an interface named SignatureTokenConnection to manage different implementations of the signing process. This base implementation is able to sign a stream of data in one step. That means that all the data to be signed needs to be sent to the SCDev. This is the case for MS CAPI. For the PKCS#11 and PKCS#12, which give the developer a finer control in the signature operation, the DSS framework implements the `AsyncSignatureTokenConnection` abstract class that allows executing the digest operation and signature operation in two different threads or even in two different hardwares.
+The DSS framework is able to create signatures using different keystores: PKCS#11, PKCS#12, JKS, MS CAPI and Apple Keystore. To be independent of the signing media, the DSS framework uses an interface named SignatureTokenConnection to manage different implementations of the signing process. All tokens extend the `AbstractSignatureTokenConnection` abstract class that allows executing complete signature operation (digest and encryption on the token) or raw signature operation (external digest and encryption on the token).
 
 This design also allows other card providers/adopters to create their own implementations. For example, this can be used for a direct connection to the Smartcard through Java PC/SC.
 
@@ -291,8 +291,8 @@ NOTE: The DSS also provides the support for MOCCA framework to communicate with 
 As you can see, it is easy to add another implementation of the SignatureTokenConnection, thus enabling the framework to use other API than provided within the framework. For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
 
 
-[[SignatureCreationThreeSteps]]
-=== Signature creation in 3 stateless methods
+[[SignatureCreationInDSS]]
+=== Signature creation in DSS
 In the DSS framework, there are two alternatives for signing a document which are illustrated in the following schema.
 
 image::three-stateless-methods.jpg[sigCreationSteps, width="40%", heigth="40%"]
@@ -310,6 +310,7 @@ The alternative is to use the following 4 steps:
 . Sign the DTBSR to obtain the signature value;
 . Sign the document (add the signature value).
 
+==== Signature creation in 3 stateless methods
 Usually, the signature creation is done using the 3 stateless methods approach.
 
 DSS fully manages the first and last steps of the document signature process.
@@ -344,39 +345,30 @@ The third and last step of this process is the integration of the signature valu
 
 This separation into three steps allows use cases where different environments have their precise responsibilities: specifically the distinction between communicating with the token and executing the business logic.
 
+==== Signature creation in 4 stateless methods
+
 The following code presents the alternative with four stateless steps.
 
-// TODO: add code for the four stateless steps alternative (the one with digest computation)
 [source,java,indent=0]
 .Four stateless steps
 ----
-include::
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=fourStepsSign]
 ----
 
 The first and last steps, which compute the DTBS and sign the document, are the same as for the alternative with three steps.
 
-The second step uses the `getDigest` method, which takes the following arguments
+The second step uses the `digest` method, which takes the following arguments
 
 * the digest algorithm;
 * the DTBS computed during the first step.
 
-It returns the data to be signed representation (DTBSR) of a DTBS, i.e. is computes the digest.
+It returns the data to be signed representation (DTBSR) of a DTBS, i.e. it computes the digest.
 
-The step that signs the digest and returns the signature value uses the method `signDigest`, which takes the following arguments:
+The step that signs the digest with a raw signature (eg: NONEwithECDSA) and returns the signature value uses the method `signDigest`, which takes the following arguments:
 
 * the DTBSR.
-* the algorithm used to create the digest. There is the choice between, for example, SHA256 and SHA512. This list is not exhaustive. For an exhaustive list see https://github.com/esig/dss/blob/master/dss-enumerations/src/main/java/eu/europa/esig/dss/enumerations/DigestAlgorithm.java[this class].
 * the private key entry.
 
-
-=== Cryptographic signature value creation
-// TODO: text !!!
-
-==== One step (hash + encrypt in one go)
-// TODO: text !!!
-
-==== Two steps (hash on client/server side + encrypt on HSM side)
-// TODO: text !!!
 
 === Creating a XAdES baseline B signature
 The simplest way to address the digital signature passes through the XAdES format. Indeed, it allows visualization of the signature content with a simple text editor. Thus, it becomes much easier to make the connection between theoretical concepts and their implementation. Before embarking on the use of the DSS framework, it is advisable to read the following documents:
